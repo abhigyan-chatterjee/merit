@@ -1,0 +1,105 @@
+{
+  "id": "graph-1",
+  "slug": "number-of-islands",
+  "title": "Number of Islands",
+  "topic": "graphs",
+  "difficulty": "Medium",
+  "pattern": "Grid DFS / Flood Fill",
+  "statement": "Given an m x n 2D binary grid which represents a map of 1s (land) and 0s (water), return the number of islands.",
+  "examples": [
+    {
+      "input": "grid = [[1,1,0],[0,1,0],[0,0,1]]",
+      "output": "2"
+    },
+    {
+      "input": "grid = [[1,1,1],[0,1,0],[1,1,1]]",
+      "output": "1"
+    }
+  ],
+  "constraints": [
+    "1 <= m, n <= 300"
+  ],
+  "hints": [
+    "Iterate over every cell (r, c) in the grid.",
+    "When you find a land cell (1), increment islands count and start a DFS flood fill.",
+    "Mark visited land cells as 0 so they are not counted again."
+  ],
+  "solutions": [
+    {
+      "title": "DFS Flood Fill",
+      "complexity": "Time: O(R * C) | Space: O(R * C)",
+      "code": "function solve(grid) {\n  const g = grid.map(r => [...r]);\n  let count = 0;\n  function dfs(r, c) {\n    if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] === 0) return;\n    g[r][c] = 0;\n    dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n  }\n  for (let r = 0; r < g.length; r++) {\n    for (let c = 0; c < g[0].length; c++) {\n      if (g[r][c] === 1) { count++; dfs(r, c); }\n    }\n  }\n  return count;\n}"
+    },
+    {
+      "title": "BFS Queue Flood Fill",
+      "complexity": "Time: O(R * C) | Space: O(min(R, C))",
+      "code": "function solve(grid) {\n  const g = grid.map(r => [...r]);\n  let count = 0;\n  for (let r = 0; r < g.length; r++) {\n    for (let c = 0; c < g[0].length; c++) {\n      if (g[r][c] === 1) {\n        count++;\n        const q = [[r, c]]; g[r][c] = 0;\n        while (q.length) {\n          const [cr, cc] = q.shift();\n          for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n            const nr = cr + dr, nc = cc + dc;\n            if (nr>=0 && nc>=0 && nr<g.length && nc<g[0].length && g[nr][nc]===1) {\n              g[nr][nc] = 0; q.push([nr, nc]);\n            }\n          }\n        }\n      }\n    }\n  }\n  return count;\n}"
+    }
+  ],
+  "starterCode": "function solve(grid) {\n  const g = grid.map(row => [...row]);\n  let islands = 0;\n  function dfs(r, c) {\n    if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] === 0) return;\n    g[r][c] = 0;\n    dfs(r + 1, c);\n    dfs(r - 1, c);\n    dfs(r, c + 1);\n    dfs(r, c - 1);\n  }\n  for (let r = 0; r < g.length; r++) {\n    for (let c = 0; c < g[0].length; c++) {\n      if (g[r][c] === 1) {\n        islands++;\n        dfs(r, c);\n      }\n    }\n  }\n  return islands;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      ],
+      "expected": 2,
+      "label": "3x3 grid with 2 islands"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ]
+      ],
+      "expected": 1,
+      "label": "3x3 connected island"
+    },
+    {
+      "input": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "label": "All water"
+    }
+  ]
+}

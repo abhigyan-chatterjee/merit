@@ -23,7 +23,7 @@ test.describe('Progress Sync and Guest Import', () => {
     await expect(page.getByRole('heading', { name: 'Two Sum' })).toBeVisible();
 
     // Toggle status to "Done"
-    await page.getByRole('combobox').selectOption('Done');
+    await page.getByLabel('Problem Status').selectOption('Done');
 
     // Reload page and verify status persists
     await page.reload();

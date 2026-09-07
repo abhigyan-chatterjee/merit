@@ -2,7 +2,9 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
+import app.models.content  # noqa: F401
 import app.models.progress  # noqa: F401
+import app.models.submission  # noqa: F401
 import app.models.user  # noqa: F401
 from alembic import context
 from app.config import settings

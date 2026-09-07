@@ -1,0 +1,89 @@
+{
+  "id": "ll-2",
+  "slug": "middle-of-the-linked-list",
+  "title": "Middle of the Linked List",
+  "topic": "linked-list",
+  "difficulty": "Easy",
+  "pattern": "Fast & Slow Pointers",
+  "statement": "Given the head of a singly linked list, return the values starting from the middle node to the end. If there are two middle nodes, return from the second middle node.",
+  "examples": [
+    {
+      "input": "head = [1,2,3,4,5]",
+      "output": "[3,4,5]"
+    },
+    {
+      "input": "head = [1,2,3,4,5,6]",
+      "output": "[4,5,6]"
+    }
+  ],
+  "constraints": [
+    "1 <= nodes <= 100"
+  ],
+  "hints": [
+    "Use slow pointer advancing 1 step and fast pointer advancing 2 steps.",
+    "When fast reaches the end, slow is at the exact midpoint.",
+    "For array representation, slice from Math.floor(length / 2)."
+  ],
+  "solutions": [
+    {
+      "title": "Two-Pass Length Count",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(arr) {\n  return arr.slice(Math.floor(arr.length / 2));\n}"
+    },
+    {
+      "title": "Fast & Slow Pointer",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(arr) {\n  let slow = 0, fast = 0;\n  while (fast < arr.length && fast + 1 < arr.length) {\n    slow += 1;\n    fast += 2;\n  }\n  return arr.slice(slow);\n}"
+    }
+  ],
+  "starterCode": "function solve(headArray) {\n  let slow = 0, fast = 0;\n  while (fast < headArray.length && fast + 1 < headArray.length) {\n    slow += 1;\n    fast += 2;\n  }\n  return headArray.slice(slow);\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        3,
+        4,
+        5
+      ],
+      "label": "[1,2,3,4,5]"
+    },
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      ],
+      "expected": [
+        4,
+        5,
+        6
+      ],
+      "label": "[1,2,3,4,5,6]"
+    },
+    {
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        1
+      ],
+      "label": "[1]"
+    }
+  ]
+}

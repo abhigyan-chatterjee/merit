@@ -250,3 +250,56 @@ export const progressApi = {
   },
 };
 
+export interface TestCaseResult {
+  label: string;
+  passed: boolean;
+  input: unknown;
+  expected: unknown;
+  actual: unknown;
+  runtime_ms: number;
+  error: string | null;
+}
+
+export interface JudgeResponse {
+  verdict: "AC" | "WA" | "TLE" | "RE" | "CE";
+  runtime_ms: number;
+  test_results: TestCaseResult[];
+  compile_output: string;
+}
+
+export interface SubmissionItem {
+  id: string;
+  problem_slug: string;
+  language: string;
+  verdict: "AC" | "WA" | "TLE" | "RE" | "CE";
+  runtime_ms: number;
+  test_results: TestCaseResult[];
+  created_at: string;
+}
+
+export const judgeApi = {
+  async runSamples(problemSlug: string, language: string, code: string): Promise<JudgeResponse> {
+    return await apiRequest<JudgeResponse>("/api/v1/judge/run", {
+      method: "POST",
+      body: JSON.stringify({ problem_slug: problemSlug, language, code }),
+    });
+  },
+
+  async submit(problemSlug: string, language: string, code: string): Promise<SubmissionItem> {
+    return await apiRequest<SubmissionItem>("/api/v1/judge/submit", {
+      method: "POST",
+      body: JSON.stringify({ problem_slug: problemSlug, language, code }),
+    });
+  },
+
+  async getSubmissions(problemSlug: string): Promise<SubmissionItem[]> {
+    return await apiRequest<SubmissionItem[]>(
+      `/api/v1/judge/submissions/${encodeURIComponent(problemSlug)}`,
+      {
+        method: "GET",
+      }
+    );
+  },
+};
+
+

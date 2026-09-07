@@ -1,0 +1,141 @@
+{
+  "id": "graph-4",
+  "slug": "flood-fill",
+  "title": "Flood Fill",
+  "topic": "graphs",
+  "difficulty": "Easy",
+  "pattern": "Matrix BFS / DFS Traversal",
+  "statement": "Given an image grid, starting pixel (sr, sc), and a new color, perform a 4-directional flood fill from the starting pixel and return the modified image.",
+  "examples": [
+    {
+      "input": "image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2",
+      "output": "[[2,2,2],[2,2,0],[2,0,1]]"
+    }
+  ],
+  "constraints": [
+    "1 <= m, n <= 50"
+  ],
+  "hints": [
+    "Record the original color at image[sr][sc].",
+    "If originalColor === color, return immediately to prevent infinite recursion.",
+    "DFS in 4 directions replacing originalColor with color."
+  ],
+  "solutions": [
+    {
+      "title": "Recursive DFS Fill",
+      "complexity": "Time: O(N) | Space: O(N)",
+      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const startColor = img[sr][sc];\n  if (startColor === color) return img;\n  function dfs(r, c) {\n    if (r<0 || c<0 || r>=img.length || c>=img[0].length || img[r][c] !== startColor) return;\n    img[r][c] = color;\n    dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n  }\n  dfs(sr, sc);\n  return img;\n}"
+    },
+    {
+      "title": "Iterative BFS Fill",
+      "complexity": "Time: O(N) | Space: O(N)",
+      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  const q = [[sr, sc]]; img[sr][sc] = color;\n  while (q.length) {\n    const [r, c] = q.shift();\n    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n      const nr = r + dr, nc = c + dc;\n      if (nr>=0 && nc>=0 && nr<img.length && nc<img[0].length && img[nr][nc]===orig) {\n        img[nr][nc] = color; q.push([nr, nc]);\n      }\n    }\n  }\n  return img;\n}"
+    }
+  ],
+  "starterCode": "function solve(image, sr, sc, color) {\n  const img = image.map(row => [...row]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  function fill(r, c) {\n    if (r < 0 || c < 0 || r >= img.length || c >= img[0].length || img[r][c] !== orig) return;\n    img[r][c] = color;\n    fill(r + 1, c);\n    fill(r - 1, c);\n    fill(r, c + 1);\n    fill(r, c - 1);\n  }\n  fill(sr, sc);\n  return img;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        1,
+        1,
+        2
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          0
+        ],
+        [
+          2,
+          0,
+          1
+        ]
+      ],
+      "label": "3x3 flood fill center"
+    },
+    {
+      "input": [
+        [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        0,
+        0,
+        0
+      ],
+      "expected": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "label": "Same color no-op"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        0,
+        0,
+        5
+      ],
+      "expected": [
+        [
+          5,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "label": "Single isolated cell"
+    }
+  ]
+}

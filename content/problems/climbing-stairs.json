@@ -1,0 +1,64 @@
+{
+  "id": "dp-1",
+  "slug": "climbing-stairs",
+  "title": "Climbing Stairs",
+  "topic": "dp",
+  "difficulty": "Easy",
+  "pattern": "1D Fibonacci State Transition",
+  "statement": "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+  "examples": [
+    {
+      "input": "n = 2",
+      "output": "2"
+    },
+    {
+      "input": "n = 3",
+      "output": "3"
+    }
+  ],
+  "constraints": [
+    "1 <= n <= 45"
+  ],
+  "hints": [
+    "To reach step i, you could have come from step (i - 1) or step (i - 2).",
+    "Recurrence relation: ways[i] = ways[i - 1] + ways[i - 2].",
+    "Use two variables prev1 and prev2 for O(1) space."
+  ],
+  "solutions": [
+    {
+      "title": "Tabulation Array",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(n) {\n  const dp = [1, 1];\n  for (let i = 2; i <= n; i++) dp[i] = dp[i - 1] + dp[i - 2];\n  return dp[n];\n}"
+    },
+    {
+      "title": "Constant Space Variables",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(n) {\n  let a = 1, b = 1;\n  for (let i = 2; i <= n; i++) [a, b] = [b, a + b];\n  return b;\n}"
+    }
+  ],
+  "starterCode": "function solve(n) {\n  let prev2 = 1, prev1 = 1;\n  for (let i = 2; i <= n; i++) {\n    const curr = prev1 + prev2;\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        2
+      ],
+      "expected": 2,
+      "label": "n = 2"
+    },
+    {
+      "input": [
+        3
+      ],
+      "expected": 3,
+      "label": "n = 3"
+    },
+    {
+      "input": [
+        5
+      ],
+      "expected": 8,
+      "label": "n = 5"
+    }
+  ]
+}

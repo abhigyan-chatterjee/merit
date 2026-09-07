@@ -1,0 +1,93 @@
+{
+  "id": "arr-3",
+  "slug": "product-of-array-except-self",
+  "title": "Product of Array Except Self",
+  "topic": "arrays",
+  "difficulty": "Medium",
+  "pattern": "Prefix & Suffix Products",
+  "statement": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. Must run in O(n) without division.",
+  "examples": [
+    {
+      "input": "nums = [1, 2, 3, 4]",
+      "output": "[24, 12, 8, 6]"
+    },
+    {
+      "input": "nums = [-1, 1, 0, -3, 3]",
+      "output": "[0, 0, 9, 0, 0]"
+    }
+  ],
+  "constraints": [
+    "2 <= nums.length <= 10^5",
+    "-30 <= nums[i] <= 30"
+  ],
+  "hints": [
+    "Maintain running prefix product from left to right.",
+    "Multiply by running suffix product from right to left.",
+    "Use the output array itself to achieve O(1) auxiliary space."
+  ],
+  "solutions": [
+    {
+      "title": "Left and Right Arrays",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(nums) {\n  const n = nums.length;\n  const res = new Array(n).fill(1);\n  let prefix = 1;\n  for (let i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }\n  let suffix = 1;\n  for (let i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }\n  return res;\n}"
+    },
+    {
+      "title": "In-Place Prefix/Suffix",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(nums) {\n  const n = nums.length, res = new Array(n).fill(1);\n  for (let i = 1; i < n; i++) res[i] = res[i - 1] * nums[i - 1];\n  let right = 1;\n  for (let i = n - 1; i >= 0; i--) { res[i] *= right; right *= nums[i]; }\n  return res;\n}"
+    }
+  ],
+  "starterCode": "function solve(nums) {\n  const n = nums.length;\n  const res = new Array(n).fill(1);\n  let prefix = 1;\n  for (let i = 0; i < n; i++) {\n    res[i] = prefix;\n    prefix *= nums[i];\n  }\n  let suffix = 1;\n  for (let i = n - 1; i >= 0; i--) {\n    res[i] *= suffix;\n    suffix *= nums[i];\n  }\n  return res;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "expected": [
+        24,
+        12,
+        8,
+        6
+      ],
+      "label": "[1,2,3,4]"
+    },
+    {
+      "input": [
+        [
+          -1,
+          1,
+          0,
+          -3,
+          3
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        9,
+        0,
+        0
+      ],
+      "label": "[-1,1,0,-3,3]"
+    },
+    {
+      "input": [
+        [
+          2,
+          5
+        ]
+      ],
+      "expected": [
+        5,
+        2
+      ],
+      "label": "[2,5]"
+    }
+  ]
+}

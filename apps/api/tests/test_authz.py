@@ -96,3 +96,38 @@ def test_progress_user_isolation(client: TestClient):
     sum_b = client.get("/api/v1/progress/summary", cookies=user_b["cookies"]).json()
     assert sum_b["solved_count"] == 0
     assert "two-sum" not in sum_b["progress"]
+
+
+def test_judge_submissions_user_isolation(client: TestClient, db_session):
+    from app.seed import seed_problems
+
+    seed_problems(db_session)
+
+    user_a = register_user(client, "alice_judge@example.com", "Alice Judge")
+    user_b = register_user(client, "bob_judge@example.com", "Bob Judge")
+
+    # Alice submits code for two-sum
+    res_a = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": "function twoSum(nums, target) { return [0, 1]; }",
+        },
+        cookies=user_a["cookies"],
+    )
+    assert res_a.status_code == 200
+
+    # Alice sees her submission
+    alice_subs = client.get(
+        "/api/v1/judge/submissions/two-sum",
+        cookies=user_a["cookies"],
+    ).json()
+    assert len(alice_subs) == 1
+
+    # Bob asks for submissions for two-sum -> must be empty (cannot see Alice's)
+    bob_subs = client.get(
+        "/api/v1/judge/submissions/two-sum",
+        cookies=user_b["cookies"],
+    ).json()
+    assert len(bob_subs) == 0

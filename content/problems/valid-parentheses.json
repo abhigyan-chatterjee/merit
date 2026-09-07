@@ -1,0 +1,64 @@
+{
+  "id": "str-5",
+  "slug": "valid-parentheses",
+  "title": "Valid Parentheses",
+  "topic": "strings",
+  "difficulty": "Easy",
+  "pattern": "Stack Matching",
+  "statement": "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
+  "examples": [
+    {
+      "input": "s = \"()[]{}\"",
+      "output": "true"
+    },
+    {
+      "input": "s = \"(]\"",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= s.length <= 10^4"
+  ],
+  "hints": [
+    "Push opening brackets onto a LIFO stack.",
+    "When encountering a closing bracket, check if top of stack matches.",
+    "The stack must be completely empty at the end."
+  ],
+  "solutions": [
+    {
+      "title": "Stack Bracket Matcher",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(s) {\n  const stack = [], map = { ')': '(', '}': '{', ']': '[' };\n  for (const c of s) {\n    if (map[c]) {\n      if (stack.pop() !== map[c]) return false;\n    } else stack.push(c);\n  }\n  return stack.length === 0;\n}"
+    },
+    {
+      "title": "Expected Closing Stack",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(s) {\n  const stack = [];\n  for (const c of s) {\n    if (c === '(') stack.push(')');\n    else if (c === '{') stack.push('}');\n    else if (c === '[') stack.push(']');\n    else if (stack.pop() !== c) return false;\n  }\n  return stack.length === 0;\n}"
+    }
+  ],
+  "starterCode": "function solve(s) {\n  const stack = [];\n  const pairs = { ')': '(', '}': '{', ']': '[' };\n  for (const ch of s) {\n    if (pairs[ch]) {\n      if (stack.pop() !== pairs[ch]) return false;\n    } else {\n      stack.push(ch);\n    }\n  }\n  return stack.length === 0;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "()[]{}"
+      ],
+      "expected": true,
+      "label": "\"()[]{}\""
+    },
+    {
+      "input": [
+        "(]"
+      ],
+      "expected": false,
+      "label": "\"(]\""
+    },
+    {
+      "input": [
+        "{[]}"
+      ],
+      "expected": true,
+      "label": "\"{[]}\""
+    }
+  ]
+}

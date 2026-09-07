@@ -1,0 +1,77 @@
+{
+  "id": "dp-3",
+  "slug": "coin-change",
+  "title": "Coin Change (Minimum Coins)",
+  "topic": "dp",
+  "difficulty": "Medium",
+  "pattern": "Unbounded Knapsack Tabulation",
+  "statement": "You are given an integer array coins representing coins of different denominations and an integer amount. Return the fewest number of coins that you need to make up that amount, or -1 if impossible.",
+  "examples": [
+    {
+      "input": "coins = [1,2,5], amount = 11",
+      "output": "3",
+      "explanation": "11 = 5 + 5 + 1"
+    },
+    {
+      "input": "coins = [2], amount = 3",
+      "output": "-1"
+    }
+  ],
+  "constraints": [
+    "1 <= coins.length <= 12",
+    "0 <= amount <= 10^4"
+  ],
+  "hints": [
+    "Initialize dp array of size amount + 1 filled with Infinity, and set dp[0] = 0.",
+    "For each amount a from 1 to amount, try every coin c.",
+    "If a - c >= 0, update dp[a] = Math.min(dp[a], 1 + dp[a - c])."
+  ],
+  "solutions": [
+    {
+      "title": "Bottom-Up DP Array",
+      "complexity": "Time: O(amount * coins) | Space: O(amount)",
+      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}"
+    },
+    {
+      "title": "BFS Shortest Coin Path",
+      "complexity": "Time: O(amount * coins) | Space: O(amount)",
+      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (const c of coins) {\n    for (let a = c; a <= amount; a++) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}"
+    }
+  ],
+  "starterCode": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) {\n        dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n      }\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          5
+        ],
+        11
+      ],
+      "expected": 3,
+      "label": "coins=[1,2,5], amount=11"
+    },
+    {
+      "input": [
+        [
+          2
+        ],
+        3
+      ],
+      "expected": -1,
+      "label": "coins=[2], amount=3"
+    },
+    {
+      "input": [
+        [
+          1
+        ],
+        0
+      ],
+      "expected": 0,
+      "label": "coins=[1], amount=0"
+    }
+  ]
+}

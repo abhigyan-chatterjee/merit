@@ -1,0 +1,76 @@
+{
+  "id": "str-4",
+  "slug": "longest-common-prefix",
+  "title": "Longest Common Prefix",
+  "topic": "strings",
+  "difficulty": "Easy",
+  "pattern": "Horizontal / Vertical Scan",
+  "statement": "Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string \"\".",
+  "examples": [
+    {
+      "input": "strs = [\"flower\",\"flow\",\"flight\"]",
+      "output": "\"fl\""
+    },
+    {
+      "input": "strs = [\"dog\",\"racecar\",\"car\"]",
+      "output": "\"\""
+    }
+  ],
+  "constraints": [
+    "1 <= strs.length <= 200"
+  ],
+  "hints": [
+    "Sort the array lexicographically and compare only the first and last strings.",
+    "Or compare characters column by column across all strings.",
+    "Return substring up to the first mismatch."
+  ],
+  "solutions": [
+    {
+      "title": "Vertical Character Scan",
+      "complexity": "Time: O(S) | Space: O(1)",
+      "code": "function solve(strs) {\n  if (!strs.length) return \"\";\n  for (let i = 0; i < strs[0].length; i++) {\n    for (let j = 1; j < strs.length; j++) {\n      if (strs[j][i] !== strs[0][i]) return strs[0].slice(0, i);\n    }\n  }\n  return strs[0];\n}"
+    },
+    {
+      "title": "Sorted First/Last Match",
+      "complexity": "Time: O(n log n) | Space: O(1)",
+      "code": "function solve(strs) {\n  strs.sort();\n  const first = strs[0], last = strs[strs.length - 1];\n  let i = 0;\n  while (i < first.length && first[i] === last[i]) i++;\n  return first.slice(0, i);\n}"
+    }
+  ],
+  "starterCode": "function solve(strs) {\n  if (!strs.length) return \"\";\n  for (let i = 0; i < strs[0].length; i++) {\n    const char = strs[0][i];\n    for (let j = 1; j < strs.length; j++) {\n      if (i >= strs[j].length || strs[j][i] !== char) {\n        return strs[0].slice(0, i);\n      }\n    }\n  }\n  return strs[0];\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          "flower",
+          "flow",
+          "flight"
+        ]
+      ],
+      "expected": "fl",
+      "label": "[\"flower\",\"flow\",\"flight\"]"
+    },
+    {
+      "input": [
+        [
+          "dog",
+          "racecar",
+          "car"
+        ]
+      ],
+      "expected": "",
+      "label": "[\"dog\",\"racecar\",\"car\"]"
+    },
+    {
+      "input": [
+        [
+          "interstellar",
+          "internet",
+          "internal"
+        ]
+      ],
+      "expected": "inter",
+      "label": "[\"interstellar\",...]"
+    }
+  ]
+}

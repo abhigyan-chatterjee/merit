@@ -1,0 +1,64 @@
+{
+  "id": "str-2",
+  "slug": "valid-palindrome",
+  "title": "Valid Palindrome",
+  "topic": "strings",
+  "difficulty": "Easy",
+  "pattern": "Two Pointers",
+  "statement": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
+  "examples": [
+    {
+      "input": "s = \"A man, a plan, a canal: Panama\"",
+      "output": "true"
+    },
+    {
+      "input": "s = \"race a car\"",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= s.length <= 2 * 10^5"
+  ],
+  "hints": [
+    "Filter non-alphanumeric characters using regex /[^a-z0-9]/gi.",
+    "Use two pointers at start and end moving toward the middle.",
+    "Return false immediately if s[left] !== s[right]."
+  ],
+  "solutions": [
+    {
+      "title": "Reverse String Compare",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return clean === clean.split('').reverse().join('');\n}"
+    },
+    {
+      "title": "Two Pointers In-Place",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) if (clean[l++] !== clean[r--]) return false;\n  return true;\n}"
+    }
+  ],
+  "starterCode": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) {\n    if (clean[l] !== clean[r]) return false;\n    l++;\n    r--;\n  }\n  return true;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "A man, a plan, a canal: Panama"
+      ],
+      "expected": true,
+      "label": "\"A man, a plan...\""
+    },
+    {
+      "input": [
+        "race a car"
+      ],
+      "expected": false,
+      "label": "\"race a car\""
+    },
+    {
+      "input": [
+        " "
+      ],
+      "expected": true,
+      "label": "\" \""
+    }
+  ]
+}

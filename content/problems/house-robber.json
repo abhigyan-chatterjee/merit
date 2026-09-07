@@ -1,0 +1,80 @@
+{
+  "id": "dp-2",
+  "slug": "house-robber",
+  "title": "House Robber",
+  "topic": "dp",
+  "difficulty": "Medium",
+  "pattern": "Include / Exclude Choice DP",
+  "statement": "Given an integer array nums representing the amount of money of each house along a street, return the maximum amount of money you can rob tonight without alerting the police (cannot rob two adjacent houses).",
+  "examples": [
+    {
+      "input": "nums = [1,2,3,1]",
+      "output": "4"
+    },
+    {
+      "input": "nums = [2,7,9,3,1]",
+      "output": "12"
+    }
+  ],
+  "constraints": [
+    "1 <= nums.length <= 100"
+  ],
+  "hints": [
+    "At house i, you have two choices: rob house i (add nums[i] + dp[i-2]) or skip it (keep dp[i-1]).",
+    "Transition: dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]).",
+    "Maintain rob1 and rob2 variables."
+  ],
+  "solutions": [
+    {
+      "title": "1D DP Table",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(nums) {\n  if (!nums.length) return 0;\n  const dp = [0, nums[0]];\n  for (let i = 1; i < nums.length; i++) {\n    dp[i + 1] = Math.max(dp[i], dp[i - 1] + nums[i]);\n  }\n  return dp[nums.length];\n}"
+    },
+    {
+      "title": "Two Variable Rolling DP",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}"
+    }
+  ],
+  "starterCode": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const nextRob = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = nextRob;\n  }\n  return rob2;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          1
+        ]
+      ],
+      "expected": 4,
+      "label": "[1,2,3,1]"
+    },
+    {
+      "input": [
+        [
+          2,
+          7,
+          9,
+          3,
+          1
+        ]
+      ],
+      "expected": 12,
+      "label": "[2,7,9,3,1]"
+    },
+    {
+      "input": [
+        [
+          2,
+          1,
+          1,
+          2
+        ]
+      ],
+      "expected": 4,
+      "label": "[2,1,1,2]"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "tree-5",
+  "slug": "same-tree",
+  "title": "Same Tree",
+  "topic": "trees",
+  "difficulty": "Easy",
+  "pattern": "Simultaneous DFS Comparison",
+  "statement": "Given the level-order arrays of two binary trees p and q, write a function to check if they are structurally identical and nodes have the same values.",
+  "examples": [
+    {
+      "input": "p = [1,2,3], q = [1,2,3]",
+      "output": "true"
+    },
+    {
+      "input": "p = [1,2], q = [1,null,2]",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "0 <= nodes <= 100"
+  ],
+  "hints": [
+    "Check if both trees have identical length.",
+    "Compare p[i] === q[i] at each corresponding index.",
+    "Return true only if all nodes match."
+  ],
+  "solutions": [
+    {
+      "title": "Recursive Structural Check",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) if (p[i] !== q[i]) return false;\n  return true;\n}"
+    },
+    {
+      "title": "JSON Serialization Check",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}"
+    }
+  ],
+  "starterCode": "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) {\n    if (p[i] !== q[i]) return false;\n  }\n  return true;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": true,
+      "label": "p=[1,2,3], q=[1,2,3]"
+    },
+    {
+      "input": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          null,
+          2
+        ]
+      ],
+      "expected": false,
+      "label": "p=[1,2], q=[1,null,2]"
+    },
+    {
+      "input": [
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          1,
+          2
+        ]
+      ],
+      "expected": false,
+      "label": "p=[1,2,1], q=[1,1,2]"
+    }
+  ]
+}

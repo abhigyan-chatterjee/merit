@@ -1,0 +1,91 @@
+{
+  "id": "arr-1",
+  "slug": "two-sum",
+  "title": "Two Sum",
+  "topic": "arrays",
+  "difficulty": "Easy",
+  "pattern": "Hash Map / Complement",
+  "statement": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution.",
+  "examples": [
+    {
+      "input": "nums = [2, 7, 11, 15], target = 9",
+      "output": "[0, 1]",
+      "explanation": "nums[0] + nums[1] == 9, so we return [0, 1]."
+    },
+    {
+      "input": "nums = [3, 2, 4], target = 6",
+      "output": "[1, 2]"
+    }
+  ],
+  "constraints": [
+    "2 <= nums.length <= 10^4",
+    "-10^9 <= nums[i] <= 10^9",
+    "Only one valid answer exists."
+  ],
+  "hints": [
+    "A brute force approach inspects all pairs (i, j) in O(n²) time.",
+    "Can we look up the complement (target - nums[i]) in O(1) time?",
+    "Store previously visited numbers and their indices in a Map."
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force Nested Loops",
+      "complexity": "Time: O(n²) | Space: O(1)",
+      "code": "function solve(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    for (let j = i + 1; j < nums.length; j++) {\n      if (nums[i] + nums[j] === target) return [i, j];\n    }\n  }\n  return [];\n}"
+    },
+    {
+      "title": "One-Pass Hash Map",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const diff = target - nums[i];\n    if (seen.has(diff)) return [seen.get(diff), i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}"
+    }
+  ],
+  "starterCode": "function solve(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (seen.has(complement)) {\n      return [seen.get(complement), i];\n    }\n    seen.set(nums[i], i);\n  }\n  return [];\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          2,
+          7,
+          11,
+          15
+        ],
+        9
+      ],
+      "expected": [
+        0,
+        1
+      ],
+      "label": "nums=[2,7,11,15], target=9"
+    },
+    {
+      "input": [
+        [
+          3,
+          2,
+          4
+        ],
+        6
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "label": "nums=[3,2,4], target=6"
+    },
+    {
+      "input": [
+        [
+          3,
+          3
+        ],
+        6
+      ],
+      "expected": [
+        0,
+        1
+      ],
+      "label": "nums=[3,3], target=6"
+    }
+  ]
+}

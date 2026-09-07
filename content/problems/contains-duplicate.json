@@ -1,0 +1,85 @@
+{
+  "id": "arr-5",
+  "slug": "contains-duplicate",
+  "title": "Contains Duplicate",
+  "topic": "arrays",
+  "difficulty": "Easy",
+  "pattern": "Hash Set",
+  "statement": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
+  "examples": [
+    {
+      "input": "nums = [1,2,3,1]",
+      "output": "true"
+    },
+    {
+      "input": "nums = [1,2,3,4]",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= nums.length <= 10^5"
+  ],
+  "hints": [
+    "Sorting the array puts identical items next to each other in O(n log n).",
+    "A Set stores unique elements in O(1) average lookup.",
+    "Compare new Set(nums).size !== nums.length."
+  ],
+  "solutions": [
+    {
+      "title": "Sort & Scan Neighbor",
+      "complexity": "Time: O(n log n) | Space: O(1)",
+      "code": "function solve(nums) {\n  nums.sort((a,b) => a - b);\n  for (let i = 1; i < nums.length; i++) if (nums[i] === nums[i-1]) return true;\n  return false;\n}"
+    },
+    {
+      "title": "Hash Set Early Exit",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(nums) {\n  return new Set(nums).size !== nums.length;\n}"
+    }
+  ],
+  "starterCode": "function solve(nums) {\n  const seen = new Set();\n  for (const n of nums) {\n    if (seen.has(n)) return true;\n    seen.add(n);\n  }\n  return false;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          1
+        ]
+      ],
+      "expected": true,
+      "label": "[1,2,3,1]"
+    },
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "expected": false,
+      "label": "[1,2,3,4]"
+    },
+    {
+      "input": [
+        [
+          1,
+          1,
+          1,
+          3,
+          3,
+          4,
+          3,
+          2,
+          4,
+          2
+        ]
+      ],
+      "expected": true,
+      "label": "[1,1,1,3,3...]"
+    }
+  ]
+}

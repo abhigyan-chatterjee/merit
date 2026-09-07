@@ -1,0 +1,107 @@
+{
+  "id": "graph-2",
+  "slug": "find-if-path-exists-in-graph",
+  "title": "Find if Path Exists in Graph",
+  "topic": "graphs",
+  "difficulty": "Easy",
+  "pattern": "BFS / Union-Find Connectivity",
+  "statement": "There is a bi-directional graph with n vertices. Given n, an edge list edges, source, and destination, return true if there is a valid path from source to destination.",
+  "examples": [
+    {
+      "input": "n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2",
+      "output": "true"
+    },
+    {
+      "input": "n = 6, edges = [[0,1],[0,2],[3,5],[5,4],[4,3]], source = 0, destination = 5",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= n <= 2 * 10^5"
+  ],
+  "hints": [
+    "Build an adjacency list from the undirected edge pairs.",
+    "Run BFS or DFS starting at source vertex.",
+    "Return true as soon as destination vertex is reached."
+  ],
+  "solutions": [
+    {
+      "title": "BFS Shortest Path Queue",
+      "complexity": "Time: O(V + E) | Space: O(V + E)",
+      "code": "function solve(n, edges, source, destination) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) { adj[u].push(v); adj[v].push(u); }\n  const visited = new Set([source]);\n  const q = [source];\n  while (q.length) {\n    const curr = q.shift();\n    if (curr === destination) return true;\n    for (const next of adj[curr]) {\n      if (!visited.has(next)) { visited.add(next); q.push(next); }\n    }\n  }\n  return false;\n}"
+    },
+    {
+      "title": "Disjoint Set Union (DSU)",
+      "complexity": "Time: O(E α(V)) | Space: O(V)",
+      "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}"
+    }
+  ],
+  "starterCode": "function solve(n, edges, source, destination) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) {\n    adj[u].push(v);\n    adj[v].push(u);\n  }\n  const visited = new Set([source]);\n  const queue = [source];\n  while (queue.length > 0) {\n    const curr = queue.shift();\n    if (curr === destination) return true;\n    for (const neighbor of adj[curr]) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        queue.push(neighbor);\n      }\n    }\n  }\n  return false;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        3,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        0,
+        2
+      ],
+      "expected": true,
+      "label": "n=3, connected"
+    },
+    {
+      "input": [
+        6,
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        0,
+        5
+      ],
+      "expected": false,
+      "label": "n=6, disconnected"
+    },
+    {
+      "input": [
+        1,
+        [],
+        0,
+        0
+      ],
+      "expected": true,
+      "label": "n=1, same source/dest"
+    }
+  ]
+}

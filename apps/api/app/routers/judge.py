@@ -1,0 +1,199 @@
+import json
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.db import get_db
+from app.models.content import Problem, ProblemTestCase
+from app.models.progress import ProblemProgress
+from app.models.submission import Submission
+from app.models.user import User, utcnow_iso
+from app.schemas.judge import (
+    JudgeRunRequest,
+    JudgeRunResponse,
+    SubmissionResponse,
+    TestCaseResult,
+)
+from app.security import get_current_user
+from app.services.judge import execute_code
+from app.services.streak import record_activity
+
+router = APIRouter(prefix="/api/v1/judge", tags=["Judge"])
+
+
+@router.post("/run", response_model=JudgeRunResponse)
+async def run_samples(
+    req: JudgeRunRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    problem = db.scalar(select(Problem).where(Problem.slug == req.problem_slug))
+    if not problem:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROBLEM_NOT_FOUND",
+                "message": f"Problem '{req.problem_slug}' not found",
+            },
+        )
+
+    # Load sample test cases
+    tc_rows = db.scalars(
+        select(ProblemTestCase)
+        .where(ProblemTestCase.problem_slug == req.problem_slug, ProblemTestCase.is_sample == 1)
+        .order_by(ProblemTestCase.ordinal)
+    ).all()
+
+    # Fallback to first two if none marked sample
+    if not tc_rows:
+        tc_rows = db.scalars(
+            select(ProblemTestCase)
+            .where(ProblemTestCase.problem_slug == req.problem_slug)
+            .order_by(ProblemTestCase.ordinal)
+            .limit(2)
+        ).all()
+
+    cases = []
+    for tc in tc_rows:
+        cases.append({
+            "label": tc.label,
+            "input": json.loads(tc.input_json),
+            "expected": json.loads(tc.expected_json),
+        })
+
+    res = await execute_code(
+        language=req.language,
+        code=req.code,
+        function_name=problem.function_name,
+        test_cases=cases,
+        time_limit_ms=problem.time_limit_ms,
+    )
+
+    return JudgeRunResponse(
+        verdict=res.verdict,
+        runtime_ms=res.runtime_ms,
+        test_results=[TestCaseResult(**t) for t in res.test_results],
+        compile_output=res.compile_output,
+    )
+
+
+@router.post("/submit", response_model=SubmissionResponse)
+async def submit_solution(
+    req: JudgeRunRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    problem = db.scalar(select(Problem).where(Problem.slug == req.problem_slug))
+    if not problem:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROBLEM_NOT_FOUND",
+                "message": f"Problem '{req.problem_slug}' not found",
+            },
+        )
+
+    # Load all test cases
+    tc_rows = db.scalars(
+        select(ProblemTestCase)
+        .where(ProblemTestCase.problem_slug == req.problem_slug)
+        .order_by(ProblemTestCase.ordinal)
+    ).all()
+
+    cases = []
+    for tc in tc_rows:
+        cases.append({
+            "label": tc.label,
+            "input": json.loads(tc.input_json),
+            "expected": json.loads(tc.expected_json),
+        })
+
+    res = await execute_code(
+        language=req.language,
+        code=req.code,
+        function_name=problem.function_name,
+        test_cases=cases,
+        time_limit_ms=problem.time_limit_ms,
+    )
+
+    now_str = utcnow_iso()
+    test_results_json = json.dumps(res.test_results)
+
+    submission = Submission(
+        user_id=user.id,
+        problem_slug=req.problem_slug,
+        language=req.language,
+        code=req.code,
+        verdict=res.verdict,
+        runtime_ms=res.runtime_ms,
+        test_results=test_results_json,
+        created_at=now_str,
+    )
+    db.add(submission)
+
+    # If AC, flip problem_progress to Done
+    if res.verdict == "AC":
+        prog = db.scalar(
+            select(ProblemProgress).where(
+                ProblemProgress.user_id == user.id,
+                ProblemProgress.problem_slug == req.problem_slug,
+            )
+        )
+        if prog:
+            prog.status = "Done"
+            prog.updated_at = now_str
+        else:
+            prog = ProblemProgress(
+                user_id=user.id,
+                problem_slug=req.problem_slug,
+                status="Done",
+                updated_at=now_str,
+            )
+            db.add(prog)
+
+    record_activity(db, user.id)
+    db.commit()
+    db.refresh(submission)
+
+    return SubmissionResponse(
+        id=submission.id,
+        problem_slug=submission.problem_slug,
+        language=submission.language,
+        verdict=submission.verdict,
+        runtime_ms=submission.runtime_ms,
+        test_results=[TestCaseResult(**t) for t in res.test_results],
+        created_at=submission.created_at,
+    )
+
+
+@router.get("/submissions/{problem_slug}", response_model=list[SubmissionResponse])
+def get_submissions(
+    problem_slug: str,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    rows = db.scalars(
+        select(Submission)
+        .where(
+            Submission.user_id == user.id,
+            Submission.problem_slug == problem_slug,
+        )
+        .order_by(Submission.created_at.desc())
+    ).all()
+
+    resp = []
+    for s in rows:
+        results_data = json.loads(s.test_results) if s.test_results else []
+        resp.append(
+            SubmissionResponse(
+                id=s.id,
+                problem_slug=s.problem_slug,
+                language=s.language,
+                verdict=s.verdict,
+                runtime_ms=s.runtime_ms,
+                test_results=[TestCaseResult(**t) for t in results_data],
+                created_at=s.created_at,
+            )
+        )
+    return resp

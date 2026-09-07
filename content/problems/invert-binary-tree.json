@@ -1,0 +1,88 @@
+{
+  "id": "tree-2",
+  "slug": "invert-binary-tree",
+  "title": "Invert Binary Tree",
+  "topic": "trees",
+  "difficulty": "Easy",
+  "pattern": "Recursive Subtree Swap",
+  "statement": "Given the root of a complete binary tree level-order array, invert the tree by swapping every left and right child and return the inverted level-order array.",
+  "examples": [
+    {
+      "input": "root = [4,2,7,1,3,6,9]",
+      "output": "[4,7,2,9,6,3,1]"
+    },
+    {
+      "input": "root = [2,1,3]",
+      "output": "[2,3,1]"
+    }
+  ],
+  "constraints": [
+    "0 <= nodes <= 100"
+  ],
+  "hints": [
+    "For every level of the binary tree, reverse the slice of nodes in that level.",
+    "Level k starts at index 2^k - 1 and has 2^k elements.",
+    "Combine reversed levels into the output array."
+  ],
+  "solutions": [
+    {
+      "title": "Level-by-Level Reversal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(arr) {\n  const res = [];\n  let levelSize = 1, idx = 0;\n  while (idx < arr.length) {\n    const slice = arr.slice(idx, idx + levelSize).reverse();\n    res.push(...slice);\n    idx += levelSize;\n    levelSize *= 2;\n  }\n  return res;\n}"
+    },
+    {
+      "title": "DFS Swap Children",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}"
+    }
+  ],
+  "starterCode": "function solve(arr) {\n  const result = [];\n  let levelSize = 1, i = 0;\n  while (i < arr.length) {\n    const level = arr.slice(i, i + levelSize).reverse();\n    result.push(...level);\n    i += levelSize;\n    levelSize *= 2;\n  }\n  return result;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          4,
+          2,
+          7,
+          1,
+          3,
+          6,
+          9
+        ]
+      ],
+      "expected": [
+        4,
+        7,
+        2,
+        9,
+        6,
+        3,
+        1
+      ],
+      "label": "[4,2,7,1,3,6,9]"
+    },
+    {
+      "input": [
+        [
+          2,
+          1,
+          3
+        ]
+      ],
+      "expected": [
+        2,
+        3,
+        1
+      ],
+      "label": "[2,1,3]"
+    },
+    {
+      "input": [
+        []
+      ],
+      "expected": [],
+      "label": "[]"
+    }
+  ]
+}

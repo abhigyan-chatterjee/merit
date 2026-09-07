@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
-import { Play, RotateCcw, CheckCircle2, XCircle, Terminal } from 'lucide-react';
-import { TestCase } from '../data/problems';
-
-import { runTestCasesInWorker, ExecutionResult } from '../workers/runnerClient';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Play,
+  Send,
+  RotateCcw,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  Terminal,
+  History,
+  Code2,
+} from "lucide-react";
+import { TestCase } from "../data/problems";
+import {
+  judgeApi,
+  JudgeResponse,
+  SubmissionItem,
+  TestCaseResult,
+} from "../utils/api";
+import { useAuth } from "../store/AuthContext";
 
 interface CodeRunnerProps {
+  problemSlug: string;
   starterCode: string;
   functionName: string;
   testCases: TestCase[];
@@ -12,154 +29,354 @@ interface CodeRunnerProps {
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
+  problemSlug,
   starterCode,
   functionName,
-  testCases,
-  onAllPassed
+  testCases: _testCases,
+  onAllPassed,
 }) => {
+  const { user } = useAuth();
+  const [language, setLanguage] = useState<"javascript" | "python">("javascript");
   const [code, setCode] = useState(starterCode);
   const [activeTab, setActiveTab] = useState(0);
-  const [results, setResults] = useState<ExecutionResult[] | null>(null);
+  const [activeView, setActiveView] = useState<"results" | "submissions">("results");
+  const [results, setResults] = useState<TestCaseResult[] | null>(null);
+  const [verdict, setVerdict] = useState<string | null>(null);
+  const [runtimeMs, setRuntimeMs] = useState<number | null>(null);
+  const [compileError, setCompileError] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
 
-  const handleRunTests = async () => {
-    setIsRunning(true);
+  // Update default starter code when switching languages
+  const handleLanguageChange = (lang: "javascript" | "python") => {
+    setLanguage(lang);
+    if (lang === "python") {
+      setCode(`def ${functionName}(*args):\n    # Write Python solution here\n    pass\n`);
+    } else {
+      setCode(starterCode);
+    }
+    setResults(null);
+    setVerdict(null);
+    setCompileError(null);
+  };
+
+  const fetchSubmissions = useCallback(async () => {
+    if (!user) return;
     try {
-      const { results: testResults, allPassed } = await runTestCasesInWorker(
-        code,
-        functionName,
-        testCases,
-        3000
-      );
-      setResults(testResults);
-      if (allPassed && onAllPassed) {
-        onAllPassed();
+      const subs = await judgeApi.getSubmissions(problemSlug);
+      setSubmissions(subs);
+    } catch {
+      // Offline / guest
+    }
+  }, [user, problemSlug]);
+
+  useEffect(() => {
+    fetchSubmissions();
+  }, [fetchSubmissions]);
+
+  const handleRunSamples = async () => {
+    setIsRunning(true);
+    setCompileError(null);
+    setActiveView("results");
+    try {
+      const res: JudgeResponse = await judgeApi.runSamples(problemSlug, language, code);
+      setVerdict(res.verdict);
+      setRuntimeMs(res.runtime_ms);
+      setResults(res.test_results);
+      if (res.compile_output && res.verdict !== "AC") {
+        setCompileError(res.compile_output);
       }
+    } catch (err: unknown) {
+      setVerdict("RE");
+      setCompileError(err instanceof Error ? err.message : "Execution failed");
     } finally {
       setIsRunning(false);
     }
   };
 
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setCompileError(null);
+    setActiveView("results");
+    try {
+      const sub: SubmissionItem = await judgeApi.submit(problemSlug, language, code);
+      setVerdict(sub.verdict);
+      setRuntimeMs(sub.runtime_ms);
+      setResults(sub.test_results);
+      if (sub.verdict === "AC" && onAllPassed) {
+        onAllPassed();
+      }
+      fetchSubmissions();
+    } catch (err: unknown) {
+      setVerdict("RE");
+      setCompileError(err instanceof Error ? err.message : "Submission failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderVerdictBadge = () => {
+    if (!verdict) return null;
+    if (verdict === "AC") {
+      return (
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>Accepted (AC)</span>
+          {runtimeMs !== null && <span className="text-[10px] text-muted">· {runtimeMs.toFixed(1)}ms</span>}
+        </div>
+      );
+    }
+    if (verdict === "WA") {
+      return (
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold">
+          <XCircle className="w-3.5 h-3.5" />
+          <span>Wrong Answer (WA)</span>
+        </div>
+      );
+    }
+    if (verdict === "TLE") {
+      return (
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber/40 bg-amber/10 text-amber font-mono text-xs font-semibold">
+          <Clock className="w-3.5 h-3.5" />
+          <span>Time Limit Exceeded (TLE)</span>
+        </div>
+      );
+    }
+    return (
+      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold">
+        <AlertCircle className="w-3.5 h-3.5" />
+        <span>{verdict === "CE" ? "Compile Error" : "Runtime Error"} ({verdict})</span>
+      </div>
+    );
+  };
+
   return (
-    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-hidden">
+    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-hidden shadow-sm">
       {/* Code Editor Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-line bg-canvas">
-        <div className="flex items-center gap-2">
-          <Terminal className="w-4 h-4 text-mint" />
-          <span className="text-xs font-mono font-semibold text-ink">
-            solution.js (JavaScript ES2023 Sandbox)
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-b border-line bg-canvas">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Terminal className="w-4 h-4 text-mint" />
+            <select
+              value={language}
+              aria-label="Execution Language"
+              onChange={(e) => handleLanguageChange(e.target.value as "javascript" | "python")}
+              className="bg-surface border border-line rounded px-2 py-0.5 text-xs font-mono text-ink focus:outline-none focus:border-mint cursor-pointer"
+            >
+              <option value="javascript">JavaScript (Node.js)</option>
+              <option value="python">Python 3</option>
+            </select>
+          </div>
+          <span className="hidden sm:inline text-[11px] font-mono text-muted">
+            Sandboxed Judge
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => {
-              setCode(starterCode);
-              setResults(null);
-            }}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface border border-line text-xs font-mono text-muted hover:text-ink cursor-pointer"
+            onClick={() => handleLanguageChange(language)}
+            title="Reset to starter code"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface border border-line text-xs font-mono text-muted hover:text-ink cursor-pointer transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Reset Code
+            <span className="hidden sm:inline">Reset</span>
           </button>
 
           <button
-            onClick={handleRunTests}
-            disabled={isRunning}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-semibold text-xs transition ${
-              isRunning ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-110 cursor-pointer'
+            onClick={handleRunSamples}
+            disabled={isRunning || isSubmitting}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
+              isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
             }`}
           >
-            <Play className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin' : ''}`} />
-            {isRunning ? 'Running...' : `Run ${testCases.length} Test Cases`}
+            <Play className={`w-3.5 h-3.5 text-mint ${isRunning ? "animate-spin" : ""}`} />
+            <span>{isRunning ? "Testing…" : "Run Samples"}</span>
+          </button>
+
+          <button
+            onClick={handleSubmit}
+            disabled={isRunning || isSubmitting}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
+            }`}
+          >
+            <Send className={`w-3.5 h-3.5 ${isSubmitting ? "animate-spin" : ""}`} />
+            <span>{isSubmitting ? "Judging…" : "Submit"}</span>
           </button>
         </div>
       </div>
 
-      {/* Textarea Code Editor */}
+      {/* Code Area */}
       <div className="p-0 bg-canvas">
         <textarea
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          rows={11}
+          rows={12}
           spellCheck={false}
-          aria-label="Interactive JavaScript Code Editor"
+          aria-label="Code Editor"
           className="w-full p-4 bg-canvas text-ink font-mono text-xs leading-relaxed focus:outline-none resize-y border-b border-line"
         />
       </div>
 
-      {/* Test Cases Result Tabs */}
-      <div className="p-4 bg-surface">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            {testCases.map((_, idx) => {
-              const res = results?.[idx];
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTab(idx)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono border transition cursor-pointer ${
-                    activeTab === idx
-                      ? 'border-mint bg-canvas text-ink'
-                      : 'border-line bg-canvas/50 text-muted'
-                  }`}
-                >
-                  {res &&
-                    (res.passed ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-mint" />
-                    ) : (
-                      <XCircle className="w-3.5 h-3.5 text-rose" />
-                    ))}
-                  Case #{idx + 1}
-                </button>
-              );
-            })}
-          </div>
+      {/* Results / Submissions Navigation Bar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-line bg-canvas text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveView("results")}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition ${
+              activeView === "results"
+                ? "bg-surface border border-line text-ink font-semibold"
+                : "text-muted hover:text-ink"
+            }`}
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Test Results</span>
+          </button>
 
-          {results && (
-            <span className="text-xs font-mono">
-              {results.every((r) => r.passed) ? (
-                <span className="text-mint font-bold">✓ All 3 Test Cases Passed!</span>
-              ) : (
-                <span className="text-rose font-bold">
-                  ✗ {results.filter((r) => !r.passed).length} Test Case(s) Failed
-                </span>
-              )}
-            </span>
-          )}
+          <button
+            onClick={() => setActiveView("submissions")}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition ${
+              activeView === "submissions"
+                ? "bg-surface border border-line text-ink font-semibold"
+                : "text-muted hover:text-ink"
+            }`}
+          >
+            <History className="w-3.5 h-3.5" />
+            <span>Submissions ({submissions.length})</span>
+          </button>
         </div>
 
-        {/* Active Case Detail Box */}
-        <div className="p-3 rounded-lg border border-line bg-canvas font-mono text-xs space-y-2">
-          <div>
-            <span className="text-muted">Input: </span>
-            <span className="text-ink">{testCases[activeTab]?.label}</span>
-          </div>
-          <div>
-            <span className="text-muted">Expected Output: </span>
-            <span className="text-mint">{JSON.stringify(testCases[activeTab]?.expected)}</span>
-          </div>
+        {activeView === "results" && renderVerdictBadge()}
+      </div>
 
-          {results && results[activeTab] && (
-            <>
-              <div>
-                <span className="text-muted">Actual Output: </span>
-                {results[activeTab].error ? (
-                  <span className="text-rose">{results[activeTab].error}</span>
-                ) : (
-                  <span
-                    className={results[activeTab].passed ? 'text-mint' : 'text-rose'}
-                  >
-                    {JSON.stringify(results[activeTab].actual)}
-                  </span>
+      {/* View Content */}
+      <div className="p-4 bg-surface min-h-[160px]">
+        {activeView === "results" ? (
+          <div>
+            {compileError && (
+              <div className="mb-4 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose font-mono text-xs whitespace-pre-wrap">
+                <div className="flex items-center gap-1.5 font-bold mb-1">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Error Output</span>
+                </div>
+                {compileError}
+              </div>
+            )}
+
+            {results ? (
+              <div className="space-y-3">
+                {/* Tabs */}
+                <div className="flex flex-wrap items-center gap-2">
+                  {results.map((res, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveTab(idx)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono border cursor-pointer transition ${
+                        activeTab === idx
+                          ? res.passed
+                            ? "border-mint bg-mint/15 text-ink"
+                            : "border-rose bg-rose/15 text-ink"
+                          : "border-line bg-canvas text-muted hover:text-ink"
+                      }`}
+                    >
+                      {res.passed ? (
+                        <CheckCircle2 className="w-3 h-3 text-mint" />
+                      ) : (
+                        <XCircle className="w-3 h-3 text-rose" />
+                      )}
+                      <span>{res.label || `Case ${idx + 1}`}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Selected Case Details */}
+                {results[activeTab] && (
+                  <div className="p-3 rounded-lg border border-line bg-canvas space-y-2 font-mono text-xs">
+                    <div className="flex items-center justify-between text-muted text-[11px] pb-1 border-b border-line">
+                      <span>{results[activeTab].label}</span>
+                      {results[activeTab].runtime_ms !== undefined && (
+                        <span>Runtime: {results[activeTab].runtime_ms} ms</span>
+                      )}
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-muted text-[10px] uppercase">Input:</span>
+                      <pre className="p-2 rounded bg-surface border border-line text-ink overflow-x-auto text-[11px]">
+                        {JSON.stringify(results[activeTab].input)}
+                      </pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-muted text-[10px] uppercase">Expected:</span>
+                      <pre className="p-2 rounded bg-surface border border-line text-ink overflow-x-auto text-[11px]">
+                        {JSON.stringify(results[activeTab].expected)}
+                      </pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-muted text-[10px] uppercase">Actual Output:</span>
+                      <pre
+                        className={`p-2 rounded border overflow-x-auto text-[11px] ${
+                          results[activeTab].passed
+                            ? "bg-surface border-line text-mint"
+                            : "bg-rose/10 border-rose/30 text-rose"
+                        }`}
+                      >
+                        {results[activeTab].error
+                          ? results[activeTab].error
+                          : JSON.stringify(results[activeTab].actual)}
+                      </pre>
+                    </div>
+                  </div>
                 )}
               </div>
-              <div className="text-[11px] text-muted">
-                Execution Time: <span className="text-ink">{results[activeTab].timeMs} ms</span>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 text-center text-muted font-mono text-xs space-y-1">
+                <Terminal className="w-6 h-6 text-mint/60 mb-1" />
+                <p>Ready to run.</p>
+                <p className="text-[11px] text-muted/70">
+                  Click &ldquo;Run Samples&rdquo; to test sample cases or &ldquo;Submit&rdquo; to evaluate all test cases.
+                </p>
               </div>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          /* Submissions History */
+          <div className="space-y-2 font-mono text-xs">
+            {submissions.length === 0 ? (
+              <div className="py-8 text-center text-muted">
+                <p>No submissions recorded for this problem yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {submissions.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center justify-between p-2.5 rounded-lg border border-line bg-canvas text-xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          s.verdict === "AC"
+                            ? "bg-mint/20 text-mint"
+                            : "bg-rose/20 text-rose"
+                        }`}
+                      >
+                        {s.verdict}
+                      </span>
+                      <span className="text-ink uppercase text-[10px]">{s.language}</span>
+                      <span className="text-muted text-[10px]">{s.runtime_ms.toFixed(1)} ms</span>
+                    </div>
+                    <span className="text-[10px] text-muted">
+                      {new Date(s.created_at).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,67 @@
+{
+  "id": "str-1",
+  "slug": "valid-anagram",
+  "title": "Valid Anagram",
+  "topic": "strings",
+  "difficulty": "Easy",
+  "pattern": "Frequency Counter",
+  "statement": "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
+  "examples": [
+    {
+      "input": "s = \"anagram\", t = \"nagaram\"",
+      "output": "true"
+    },
+    {
+      "input": "s = \"rat\", t = \"car\"",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= s.length, t.length <= 5 * 10^4"
+  ],
+  "hints": [
+    "Anagrams must have identical lengths.",
+    "Count occurrences of each character in s using an array of size 26.",
+    "Decrement counts while iterating through t."
+  ],
+  "solutions": [
+    {
+      "title": "Sorting Characters",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "code": "function solve(s, t) {\n  return s.split('').sort().join('') === t.split('').sort().join('');\n}"
+    },
+    {
+      "title": "Fixed Array Counter",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  const counts = {};\n  for (const c of s) counts[c] = (counts[c] || 0) + 1;\n  for (const c of t) {\n    if (!counts[c]) return false;\n    counts[c]--;\n  }\n  return true;\n}"
+    }
+  ],
+  "starterCode": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  const counts = {};\n  for (const c of s) counts[c] = (counts[c] || 0) + 1;\n  for (const c of t) {\n    if (!counts[c]) return false;\n    counts[c]--;\n  }\n  return true;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "anagram",
+        "nagaram"
+      ],
+      "expected": true,
+      "label": "\"anagram\", \"nagaram\""
+    },
+    {
+      "input": [
+        "rat",
+        "car"
+      ],
+      "expected": false,
+      "label": "\"rat\", \"car\""
+    },
+    {
+      "input": [
+        "listen",
+        "silent"
+      ],
+      "expected": true,
+      "label": "\"listen\", \"silent\""
+    }
+  ]
+}

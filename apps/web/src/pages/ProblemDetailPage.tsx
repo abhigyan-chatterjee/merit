@@ -83,6 +83,7 @@ export const ProblemDetailPage: React.FC = () => {
             <CheckCircle2 className="w-4 h-4 text-mint" />
             <span className="text-xs font-mono text-muted">Status:</span>
             <select
+              aria-label="Problem Status"
               value={currentStatus}
               onChange={(e) => setProblemStatus(problem.slug, e.target.value as ProblemStatus)}
               className="bg-transparent text-xs font-mono text-ink focus:outline-none cursor-pointer"
@@ -236,6 +237,7 @@ export const ProblemDetailPage: React.FC = () => {
         {/* Right Column: Interactive Sandbox Code Runner */}
         <div className="lg:col-span-7">
           <CodeRunner
+            problemSlug={problem.slug}
             starterCode={problem.starterCode}
             functionName={problem.functionName}
             testCases={problem.testCases}

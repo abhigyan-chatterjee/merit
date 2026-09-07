@@ -9,9 +9,8 @@ npm-debug.log*
 __pycache__/
 *.py[cod]
 *$py.class
-*.sqlite
-*.sqlite3
-*.db
+*.sqlite*
+*.db*
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/

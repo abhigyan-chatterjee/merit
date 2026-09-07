@@ -1,0 +1,65 @@
+{
+  "id": "str-3",
+  "slug": "longest-substring-without-repeating",
+  "title": "Longest Substring Without Repeating Characters",
+  "topic": "strings",
+  "difficulty": "Medium",
+  "pattern": "Sliding Window",
+  "statement": "Given a string s, find the length of the longest substring without repeating characters.",
+  "examples": [
+    {
+      "input": "s = \"abcabcbb\"",
+      "output": "3",
+      "explanation": "The answer is \"abc\", with length 3."
+    },
+    {
+      "input": "s = \"bbbbb\"",
+      "output": "1"
+    }
+  ],
+  "constraints": [
+    "0 <= s.length <= 5 * 10^4"
+  ],
+  "hints": [
+    "Maintain a sliding window [left, right] with unique characters.",
+    "Use a Map or Set to store characters inside the current window.",
+    "When duplicate is seen, advance left pointer past previous occurrence."
+  ],
+  "solutions": [
+    {
+      "title": "Set Sliding Window",
+      "complexity": "Time: O(n) | Space: O(min(n, m))",
+      "code": "function solve(s) {\n  const set = new Set();\n  let l = 0, max = 0;\n  for (let r = 0; r < s.length; r++) {\n    while (set.has(s[r])) set.delete(s[l++]);\n    set.add(s[r]);\n    max = Math.max(max, r - l + 1);\n  }\n  return max;\n}"
+    },
+    {
+      "title": "Index Jump Map",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(s) {\n  const map = new Map();\n  let l = 0, max = 0;\n  for (let r = 0; r < s.length; r++) {\n    if (map.has(s[r])) l = Math.max(l, map.get(s[r]) + 1);\n    map.set(s[r], r);\n    max = Math.max(max, r - l + 1);\n  }\n  return max;\n}"
+    }
+  ],
+  "starterCode": "function solve(s) {\n  const seen = new Set();\n  let left = 0, maxLen = 0;\n  for (let right = 0; right < s.length; right++) {\n    while (seen.has(s[right])) {\n      seen.delete(s[left]);\n      left++;\n    }\n    seen.add(s[right]);\n    maxLen = Math.max(maxLen, right - left + 1);\n  }\n  return maxLen;\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "abcabcbb"
+      ],
+      "expected": 3,
+      "label": "\"abcabcbb\""
+    },
+    {
+      "input": [
+        "bbbbb"
+      ],
+      "expected": 1,
+      "label": "\"bbbbb\""
+    },
+    {
+      "input": [
+        "pwwkew"
+      ],
+      "expected": 3,
+      "label": "\"pwwkew\""
+    }
+  ]
+}

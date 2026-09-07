@@ -1,0 +1,67 @@
+{
+  "id": "dp-5",
+  "slug": "unique-paths",
+  "title": "Unique Paths in Grid",
+  "topic": "dp",
+  "difficulty": "Medium",
+  "pattern": "2D Grid Path DP",
+  "statement": "There is a robot on an m x n grid at top-left (0, 0). The robot can only move down or right. Return the number of possible unique paths to reach the bottom-right corner (m - 1, n - 1).",
+  "examples": [
+    {
+      "input": "m = 3, n = 7",
+      "output": "28"
+    },
+    {
+      "input": "m = 3, n = 2",
+      "output": "3"
+    }
+  ],
+  "constraints": [
+    "1 <= m, n <= 100"
+  ],
+  "hints": [
+    "First row and first column cells have only 1 unique path.",
+    "For any interior cell (r, c), paths[r][c] = paths[r - 1][c] + paths[r][c - 1].",
+    "Can be computed with a single 1D row of length n."
+  ],
+  "solutions": [
+    {
+      "title": "1D Rolling Array DP",
+      "complexity": "Time: O(m * n) | Space: O(n)",
+      "code": "function solve(m, n) {\n  const row = new Array(n).fill(1);\n  for (let r = 1; r < m; r++) {\n    for (let c = 1; c < n; c++) row[c] += row[c - 1];\n  }\n  return row[n - 1];\n}"
+    },
+    {
+      "title": "Combinatorics Formula",
+      "complexity": "Time: O(min(m, n)) | Space: O(1)",
+      "code": "function solve(m, n) {\n  let res = 1;\n  for (let i = 1; i < m; i++) res = (res * (n - 1 + i)) / i;\n  return Math.round(res);\n}"
+    }
+  ],
+  "starterCode": "function solve(m, n) {\n  const row = new Array(n).fill(1);\n  for (let r = 1; r < m; r++) {\n    for (let c = 1; c < n; c++) {\n      row[c] += row[c - 1];\n    }\n  }\n  return row[n - 1];\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        3,
+        7
+      ],
+      "expected": 28,
+      "label": "m=3, n=7"
+    },
+    {
+      "input": [
+        3,
+        2
+      ],
+      "expected": 3,
+      "label": "m=3, n=2"
+    },
+    {
+      "input": [
+        1,
+        1
+      ],
+      "expected": 1,
+      "label": "m=1, n=1"
+    }
+  ]
+}

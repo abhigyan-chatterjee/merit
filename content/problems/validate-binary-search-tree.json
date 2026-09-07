@@ -1,0 +1,84 @@
+{
+  "id": "tree-3",
+  "slug": "validate-binary-search-tree",
+  "title": "Validate Binary Search Tree",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "Range Bound DFS (min, max)",
+  "statement": "Given the level-order representation of a binary tree, determine if it is a valid Binary Search Tree (BST).",
+  "examples": [
+    {
+      "input": "root = [2,1,3]",
+      "output": "true"
+    },
+    {
+      "input": "root = [5,1,4,null,null,3,6]",
+      "output": "false"
+    }
+  ],
+  "constraints": [
+    "1 <= nodes <= 10^4"
+  ],
+  "hints": [
+    "Every node must fall strictly within a (minVal, maxVal) interval.",
+    "Going left updates maxVal = node.val.",
+    "Going right updates minVal = node.val."
+  ],
+  "solutions": [
+    {
+      "title": "Recursive Range Validation",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(arr) {\n  function valid(i, min, max) {\n    if (i >= arr.length || arr[i] === null) return true;\n    if (arr[i] <= min || arr[i] >= max) return false;\n    return valid(2 * i + 1, min, arr[i]) && valid(2 * i + 2, arr[i], max);\n  }\n  return valid(0, -Infinity, Infinity);\n}"
+    },
+    {
+      "title": "Inorder Monotonic Check",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(arr) {\n  const inorder = [];\n  function dfs(i) {\n    if (i >= arr.length || arr[i] === null) return;\n    dfs(2 * i + 1);\n    inorder.push(arr[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  for (let i = 1; i < inorder.length; i++) if (inorder[i] <= inorder[i-1]) return false;\n  return true;\n}"
+    }
+  ],
+  "starterCode": "function solve(tree) {\n  function validate(idx, min, max) {\n    if (idx >= tree.length || tree[idx] === null) return true;\n    const val = tree[idx];\n    if (val <= min || val >= max) return false;\n    return validate(2 * idx + 1, min, val) && validate(2 * idx + 2, val, max);\n  }\n  return validate(0, -Infinity, Infinity);\n}",
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          2,
+          1,
+          3
+        ]
+      ],
+      "expected": true,
+      "label": "[2,1,3]"
+    },
+    {
+      "input": [
+        [
+          5,
+          1,
+          4,
+          null,
+          null,
+          3,
+          6
+        ]
+      ],
+      "expected": false,
+      "label": "[5,1,4,null,null,3,6]"
+    },
+    {
+      "input": [
+        [
+          10,
+          5,
+          15,
+          null,
+          null,
+          6,
+          20
+        ]
+      ],
+      "expected": false,
+      "label": "[10,5,15,null,null,6,20]"
+    }
+  ]
+}
