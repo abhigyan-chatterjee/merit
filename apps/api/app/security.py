@@ -1,11 +1,13 @@
 import hashlib
 import secrets
-from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException, Request, Response, status
+from datetime import UTC, datetime, timedelta
+
 import jwt
+from fastapi import Depends, HTTPException, Request, Response, status
 from pwdlib import PasswordHash
 from pwdlib.hashers.argon2 import Argon2Hasher
 from sqlalchemy.orm import Session
+
 from app.config import settings
 from app.db import get_db
 from app.models.user import User
@@ -32,7 +34,7 @@ def generate_opaque_token() -> str:
 
 
 def create_access_token(user_id: str, role: str = "student") -> str:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     expire = now + timedelta(minutes=settings.access_token_expire_minutes)
     payload = {
         "sub": user_id,
@@ -58,16 +60,16 @@ def decode_access_token(token: str) -> dict:
                 detail={"code": "INVALID_TOKEN_TYPE", "message": "Invalid token type"},
             )
         return payload
-    except jwt.ExpiredSignatureError:
+    except jwt.ExpiredSignatureError as err:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "TOKEN_EXPIRED", "message": "Access token has expired"},
-        )
-    except jwt.PyJWTError:
+        ) from err
+    except jwt.PyJWTError as err:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "INVALID_TOKEN", "message": "Could not validate credentials"},
-        )
+        ) from err
 
 
 def set_auth_cookies(response: Response, access_token: str, refresh_token: str) -> None:

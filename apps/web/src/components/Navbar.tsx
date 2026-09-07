@@ -10,10 +10,14 @@ import {
   Flame,
   X,
   CornerDownLeft,
-  Route
+  Route,
+  LogIn,
+  LogOut,
+  User as UserIcon
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { useProgress } from '../store/ProgressContext';
+import { useAuth } from '../store/AuthContext';
 import { PROBLEMS } from '../data/problems';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
@@ -22,6 +26,7 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentStreak } = useProgress();
+  const { user, logout } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -167,6 +172,34 @@ export const Navbar: React.FC = () => {
             </Link>
 
             <ThemeToggle />
+
+            {user ? (
+              <div className="flex items-center gap-1.5 pl-1 border-l border-line">
+                <div
+                  title={`Signed in as ${user.displayName} (${user.email})`}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg border border-line bg-surface text-xs font-mono text-ink"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-mint" />
+                  <span className="max-w-[80px] sm:max-w-[120px] truncate">{user.displayName}</span>
+                </div>
+                <button
+                  onClick={() => logout()}
+                  title="Sign out"
+                  aria-label="Sign out"
+                  className="p-1.5 rounded-lg border border-line bg-surface text-muted hover:border-rose/50 hover:text-rose transition cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-ink hover:border-mint hover:text-mint transition"
+              >
+                <LogIn className="w-3.5 h-3.5 text-mint" />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
         </div>
       </header>

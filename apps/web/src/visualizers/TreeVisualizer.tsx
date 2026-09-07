@@ -5,7 +5,6 @@ import { PseudoCodePanel } from '../components/PseudoCodePanel';
 import { PSEUDOCODE_MAP } from '../data/pseudocode';
 import {
   TreeNode,
-  createTreeNode,
   insertBST,
   searchBST,
   insertBinaryTree,
