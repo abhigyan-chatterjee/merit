@@ -20,7 +20,7 @@ export function useStreak(streakDates: string[], recordActivityDate: (date: stri
     yesterdayDate.setDate(d.getDate() - 1);
     const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
 
-    let checkDate = uniqueSorted.includes(todayStr)
+    const checkDate = uniqueSorted.includes(todayStr)
       ? new Date(d)
       : uniqueSorted.includes(yesterdayStr)
       ? yesterdayDate

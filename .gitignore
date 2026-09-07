@@ -1,0 +1,27 @@
+# Node
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite
+*.sqlite3
+*.db
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Testing
+playwright-report/
+test-results/
+
+# Environment & OS
+.env
+.env.local
+.DS_Store
+*.swp

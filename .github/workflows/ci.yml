@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  web-lint:
+    name: Web Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+      - name: Lint
+        working-directory: apps/web
+        run: npm run lint
+
+  web-test:
+    name: Web Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+      - name: Run Vitest
+        working-directory: apps/web
+        run: npm test
+
+  api-test:
+    name: API Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Setup Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        working-directory: apps/api
+        run: uv venv && uv pip install -e ".[dev]"
+      - name: Lint & Typecheck
+        working-directory: apps/api
+        run: |
+          uv run ruff check .
+          uv run mypy app tests
+      - name: Run Pytest
+        working-directory: apps/api
+        run: uv run pytest -q
+
+  content-validate:
+    name: Content Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Content Validators
+        run: python3 content/validators/run_all.py

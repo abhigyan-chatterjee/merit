@@ -1,0 +1,1 @@
+"""Algovista API package."""
