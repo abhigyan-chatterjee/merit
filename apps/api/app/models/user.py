@@ -14,14 +14,15 @@ def utcnow_iso() -> str:
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(
-        String, primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     display_name: Mapped[str] = mapped_column(String, nullable=False)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
     role: Mapped[str] = mapped_column(String, default="student", nullable=False)  # student | admin
     is_active: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    has_imported_local: Mapped[int] = mapped_column(
+        Integer, server_default="0", default=0, nullable=False
+    )
     created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
     last_login_at: Mapped[str | None] = mapped_column(String, nullable=True)
 
@@ -33,9 +34,7 @@ class User(Base):
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
-    id: Mapped[str] = mapped_column(
-        String, primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id: Mapped[str] = mapped_column(
         String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )

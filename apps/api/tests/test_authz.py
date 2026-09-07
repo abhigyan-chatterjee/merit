@@ -61,3 +61,38 @@ def test_unauthenticated_requests_rejected(client: TestClient):
             "INVALID_TOKEN",
             "USER_INACTIVE",
         ]
+
+
+def test_progress_user_isolation(client: TestClient):
+    user_a = register_user(client, "alice_progress@example.com", "Alice Progress")
+    user_b = register_user(client, "bob_progress@example.com", "Bob Progress")
+
+    # Alice sets problem progress and note
+    res = client.put(
+        "/api/v1/progress/problems/two-sum",
+        json={"status": "Done"},
+        cookies=user_a["cookies"],
+    )
+    assert res.status_code == 200
+
+    res = client.put(
+        "/api/v1/progress/notes/two-sum",
+        json={"text": "Alice's secret note"},
+        cookies=user_a["cookies"],
+    )
+    assert res.status_code == 200
+
+    # Bob checks problem progress -> should be default "Todo", NOT Alice's "Done"
+    res_b = client.get("/api/v1/progress/problems/two-sum", cookies=user_b["cookies"])
+    assert res_b.status_code == 200
+    assert res_b.json()["status"] == "Todo"
+
+    # Bob checks note -> should be empty, NOT Alice's note
+    res_b_note = client.get("/api/v1/progress/notes/two-sum", cookies=user_b["cookies"])
+    assert res_b_note.status_code == 200
+    assert res_b_note.json()["text"] == ""
+
+    # Bob's summary shows 0 solved
+    sum_b = client.get("/api/v1/progress/summary", cookies=user_b["cookies"]).json()
+    assert sum_b["solved_count"] == 0
+    assert "two-sum" not in sum_b["progress"]

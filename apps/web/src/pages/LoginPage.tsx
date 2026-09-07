@@ -59,7 +59,7 @@ export const LoginPage: React.FC = () => {
 
         <Reveal delay={0.1}>
           <Panel bracket label="Credentials">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               {error && (
                 <div
                   role="alert"

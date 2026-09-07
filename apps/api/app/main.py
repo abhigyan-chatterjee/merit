@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
-from app.routers import auth
+from app.routers import auth, progress
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -34,6 +34,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(progress.router)
 
 
 @app.get("/api/v1/health")

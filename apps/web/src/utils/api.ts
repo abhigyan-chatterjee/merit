@@ -177,3 +177,76 @@ export const authApi = {
     });
   },
 };
+
+export interface ProgressSummary {
+  solved_count: number;
+  doing_count: number;
+  total_problems: number;
+  current_streak: number;
+  activity_days: Record<string, number>;
+  progress: Record<string, string>;
+  notes: Record<string, string>;
+  bookmarks: Array<{ item_type: string; item_id: string }>;
+  visited_visualizers: string[];
+  has_imported_local: boolean;
+}
+
+export const progressApi = {
+  async getSummary(): Promise<ProgressSummary> {
+    return await apiRequest<ProgressSummary>("/api/v1/progress/summary", { method: "GET" });
+  },
+
+  async updateProblem(
+    slug: string,
+    status: string,
+    localDate?: string
+  ): Promise<{ problem_slug: string; status: string; updated_at: string }> {
+    return await apiRequest(`/api/v1/progress/problems/${encodeURIComponent(slug)}`, {
+      method: "PUT",
+      body: JSON.stringify({ status, local_date: localDate }),
+    });
+  },
+
+  async updateNote(
+    slug: string,
+    text: string,
+    localDate?: string
+  ): Promise<{ problem_slug: string; text: string; updated_at: string }> {
+    return await apiRequest(`/api/v1/progress/notes/${encodeURIComponent(slug)}`, {
+      method: "PUT",
+      body: JSON.stringify({ text, local_date: localDate }),
+    });
+  },
+
+  async toggleBookmark(
+    itemType: string,
+    itemId: string
+  ): Promise<{ item_type: string; item_id: string; bookmarked: boolean }> {
+    return await apiRequest("/api/v1/progress/bookmarks/toggle", {
+      method: "POST",
+      body: JSON.stringify({ item_type: itemType, item_id: itemId }),
+    });
+  },
+
+  async visitVisualizer(visualizerId: string): Promise<{ visualizer_id: string; visits: number }> {
+    return await apiRequest(`/api/v1/progress/visualizers/${encodeURIComponent(visualizerId)}/visit`, {
+      method: "POST",
+    });
+  },
+
+  async importLocal(data: {
+    progress: Record<string, string>;
+    notes: Record<string, string>;
+    quizzes: Record<string, number>;
+    streak: number;
+    activity_days: string[];
+    visited_visualizers: string[];
+    local_date?: string;
+  }): Promise<ProgressSummary> {
+    return await apiRequest<ProgressSummary>("/api/v1/progress/import-local", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+};
+

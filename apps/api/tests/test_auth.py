@@ -108,9 +108,10 @@ def test_refresh_token_rotation_and_theft_detection(client: TestClient):
     assert theft_resp.json()["detail"]["code"] == "TOKEN_REUSE_DETECTED"
 
     # All tokens should now be revoked for this user
-    assert client.post(
-        "/api/v1/auth/refresh", cookies={"av_refresh": rotated_refresh}
-    ).status_code == 401
+    assert (
+        client.post("/api/v1/auth/refresh", cookies={"av_refresh": rotated_refresh}).status_code
+        == 401
+    )
 
 
 def test_export_and_delete_account(client: TestClient):
