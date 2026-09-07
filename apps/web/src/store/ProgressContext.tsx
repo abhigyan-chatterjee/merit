@@ -1,25 +1,15 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useStreak } from '../hooks/useStreak';
+import {
+  EMPTY_INITIAL_STATE,
+  ProgressStateSchema,
+  ProgressStateZodSchema,
+  ProblemStatus,
+  LastVisitedItem,
+} from './schema';
 
-export type ProblemStatus = 'Todo' | 'Doing' | 'Done';
-
-export interface LastVisitedItem {
-  type: 'visualizer' | 'problem';
-  title: string;
-  path: string;
-  subtitle: string;
-}
-
-export interface ProgressStateSchema {
-  progress: Record<string, ProblemStatus>;
-  quizzes: Record<string, number>;
-  streak: string[];
-  notes: Record<string, string>;
-  bookmarks: string[];
-  dailyGoalDone: Record<string, boolean>;
-  lastVisited: LastVisitedItem;
-}
+export type { ProblemStatus, LastVisitedItem, ProgressStateSchema };
 
 interface ProgressContextType {
   state: ProgressStateSchema;
@@ -32,55 +22,19 @@ interface ProgressContextType {
   toggleDailyGoal: () => void;
   isDailyGoalDone: boolean;
   setLastVisited: (item: LastVisitedItem) => void;
+  recordVisualizerVisit: (id: string) => void;
   currentStreak: number;
   resetAllData: () => void;
 }
 
-// Generate initial streak dates over the last 30 days so the GitHub heatmap has realistic activity
-function getInitialStreakDates(): string[] {
-  const dates: string[] = [];
-  const today = new Date();
-  const offsets = [0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 19, 20, 22, 24, 25, 28];
-  for (const offset of offsets) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - offset);
-    dates.push(d.toISOString().split('T')[0]);
-  }
-  return dates;
-}
-
-const INITIAL_STATE: ProgressStateSchema = {
-  progress: {
-    'two-sum': 'Done',
-    'maximum-subarray': 'Done',
-    'valid-anagram': 'Done',
-    'reverse-linked-list': 'Done',
-    'maximum-depth-of-binary-tree': 'Doing'
-  },
-  quizzes: {
-    arrays: 90,
-    trees: 80,
-    graphs: 60,
-    dp: 50
-  },
-  streak: getInitialStreakDates(),
-  notes: {
-    'two-sum': 'Use Map to store seen[nums[i]] = i. Check complement = target - nums[i] in O(1).'
-  },
-  bookmarks: ['sorting', 'two-sum', 'graph'],
-  dailyGoalDone: {},
-  lastVisited: {
-    type: 'visualizer',
-    title: 'Sorting Algorithms (Quick & Merge)',
-    path: '/visualizers/sorting',
-    subtitle: 'Step Debugger'
-  }
-};
-
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useLocalStorage<ProgressStateSchema>('algovista_store_v1', INITIAL_STATE);
+  const [state, setState] = useLocalStorage<ProgressStateSchema>(
+    'algovista_store_v1',
+    EMPTY_INITIAL_STATE,
+    ProgressStateZodSchema
+  );
   const [theme, setTheme] = useLocalStorage<'dark' | 'light'>('algovista_theme_v1', 'dark');
 
   const recordActivityDate = (dateStr: string) => {
@@ -111,7 +65,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     markTodayActive();
     setState((prev) => ({
       ...prev,
-      progress: { ...prev.progress, [slug]: status }
+      progress: { ...prev.progress, [slug]: status },
     }));
   };
 
@@ -121,8 +75,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       ...prev,
       quizzes: {
         ...prev.quizzes,
-        [topic]: Math.max(prev.quizzes[topic] || 0, score)
-      }
+        [topic]: Math.max(prev.quizzes[topic] || 0, score),
+      },
     }));
   };
 
@@ -130,7 +84,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     markTodayActive();
     setState((prev) => ({
       ...prev,
-      notes: { ...prev.notes, [slug]: text }
+      notes: { ...prev.notes, [slug]: text },
     }));
   };
 
@@ -148,20 +102,32 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       ...prev,
       dailyGoalDone: {
         ...prev.dailyGoalDone,
-        [today]: !prev.dailyGoalDone[today]
-      }
+        [today]: !prev.dailyGoalDone[today],
+      },
     }));
   };
 
   const setLastVisited = (item: LastVisitedItem) => {
     setState((prev) => ({
       ...prev,
-      lastVisited: item
+      lastVisited: item,
     }));
   };
 
+  const recordVisualizerVisit = (id: string) => {
+    markTodayActive();
+    setState((prev) => {
+      const visited = prev.visitedVisualizers || [];
+      if (visited.includes(id)) return prev;
+      return {
+        ...prev,
+        visitedVisualizers: [...visited, id],
+      };
+    });
+  };
+
   const resetAllData = () => {
-    setState(INITIAL_STATE);
+    setState(EMPTY_INITIAL_STATE);
   };
 
   const isDailyGoalDone = Boolean(state.dailyGoalDone[today]);
@@ -179,8 +145,9 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         toggleDailyGoal,
         isDailyGoalDone,
         setLastVisited,
+        recordVisualizerVisit,
         currentStreak,
-        resetAllData
+        resetAllData,
       }}
     >
       {children}

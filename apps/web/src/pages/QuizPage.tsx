@@ -4,13 +4,24 @@ import { QUIZZES, QUIZ_TOPICS } from '../data/quizzes';
 import { QuizEngine } from '../components/QuizEngine';
 import { useProgress } from '../store/ProgressContext';
 import { BrainCircuit, Shuffle } from 'lucide-react';
+import { NotFound } from '../components/NotFound';
 
 export const QuizPage: React.FC = () => {
   const { topic = 'arrays' } = useParams<{ topic: string }>();
   const { saveQuizScore } = useProgress();
 
-  const currentTopic = QUIZ_TOPICS.find((t) => t.id === topic) || QUIZ_TOPICS[0];
-  const questions = QUIZZES[currentTopic.id] || QUIZZES.arrays;
+  const currentTopic = QUIZ_TOPICS.find((t) => t.id === topic);
+  if (!currentTopic) {
+    return (
+      <NotFound
+        title="Quiz Not Found"
+        message={`We couldn't find a quiz for topic "${topic}". Please pick an assessment topic from our curriculum.`}
+        backTo="/dashboard"
+        backLabel="Dashboard"
+      />
+    );
+  }
+  const questions = QUIZZES[currentTopic.id] || [];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">

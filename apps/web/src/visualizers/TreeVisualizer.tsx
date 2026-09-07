@@ -1,228 +1,478 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { ControlBar } from '../components/ControlBar';
 import { VisualizerCanvas } from '../components/VisualizerCanvas';
 import { PseudoCodePanel } from '../components/PseudoCodePanel';
 import { PSEUDOCODE_MAP } from '../data/pseudocode';
+import {
+  TreeNode,
+  createTreeNode,
+  insertBST,
+  searchBST,
+  insertBinaryTree,
+  inorderTraversal,
+  preorderTraversal,
+  postorderTraversal,
+  computeTreeLayout,
+  BinaryHeap,
+  computeHeapLayout,
+  HeapType,
+} from './treeEngine';
 
 interface TreeVisualizerProps {
   variant?: 'binary-tree' | 'bst' | 'heap';
 }
 
+interface Frame {
+  highlightNodeIds: string[];
+  activeNodeId: string | null;
+  activeLine: number;
+  log: string;
+}
+
 export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binary-tree' }) => {
-  const [values, setValues] = useState<number[]>([40, 22, 65, 11, 30, 52, 85]);
+  // Tree state
+  const [treeRoot, setTreeRoot] = useState<TreeNode | null>(() => {
+    let root: TreeNode | null = null;
+    const initial = variant === 'bst' ? [40, 20, 60, 10, 30, 50, 70] : [1, 2, 3, 4, 5, 6, 7];
+    for (const v of initial) {
+      root = variant === 'bst' ? insertBST(root, v) : insertBinaryTree(root, v);
+    }
+    return root;
+  });
+
+  // Heap state
+  const [heapType, setHeapType] = useState<HeapType>('min');
+  const [heapInstance, setHeapInstance] = useState<BinaryHeap>(() => new BinaryHeap('min', [12, 18, 25, 30, 42, 55, 68]));
+
+  // Controls & Inputs
   const [inputVal, setInputVal] = useState('');
+  const [searchVal, setSearchVal] = useState('');
   const [traversalOrder, setTraversalOrder] = useState<'inorder' | 'preorder' | 'postorder'>('inorder');
-  const [visitedSequence, setVisitedSequence] = useState<number[]>([]);
-  const [stepIdx, setStepIdx] = useState(0);
+
+  // Playback
+  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
 
-  const computeTraversalOrder = (arr: number[], order: 'inorder' | 'preorder' | 'postorder') => {
-    const seq: number[] = [];
-    const dfs = (idx: number) => {
-      if (idx >= arr.length) return;
-      if (order === 'preorder') seq.push(idx);
-      dfs(2 * idx + 1);
-      if (order === 'inorder') seq.push(idx);
-      dfs(2 * idx + 2);
-      if (order === 'postorder') seq.push(idx);
-    };
-    dfs(0);
-    return seq;
-  };
+  // Compute Layout
+  const layout = useMemo(() => {
+    if (variant === 'heap') {
+      return computeHeapLayout(heapInstance.items, 440, 320);
+    }
+    return computeTreeLayout(treeRoot, 440, 320);
+  }, [variant, treeRoot, heapInstance]);
 
+  // Generate Traversal Frames
+  const generateTraversalFrames = useCallback(() => {
+    if (variant === 'heap') return;
+    let res: { values: number[]; ids: string[] };
+    if (traversalOrder === 'preorder') {
+      res = preorderTraversal(treeRoot);
+    } else if (traversalOrder === 'postorder') {
+      res = postorderTraversal(treeRoot);
+    } else {
+      res = inorderTraversal(treeRoot);
+    }
+
+    const generated: Frame[] = [
+      {
+        highlightNodeIds: [],
+        activeNodeId: null,
+        activeLine: 1,
+        log: `Starting ${traversalOrder} traversal on tree...`,
+      },
+    ];
+
+    const visitedIds: string[] = [];
+    for (let i = 0; i < res.ids.length; i++) {
+      visitedIds.push(res.ids[i]);
+      generated.push({
+        highlightNodeIds: [...visitedIds],
+        activeNodeId: res.ids[i],
+        activeLine: 3,
+        log: `Visited node with value ${res.values[i]} (${i + 1}/${res.ids.length})`,
+      });
+    }
+
+    generated.push({
+      highlightNodeIds: [...visitedIds],
+      activeNodeId: null,
+      activeLine: 5,
+      log: `Traversal completed: [${res.values.join(', ')}]`,
+    });
+
+    setFrames(generated);
+    setFrameIdx(0);
+  }, [variant, treeRoot, traversalOrder]);
+
+  // Sync frames on tree or traversal change
   useEffect(() => {
-    const seq = computeTraversalOrder(values, traversalOrder);
-    setVisitedSequence(seq);
-    setStepIdx(0);
-  }, [values, traversalOrder]);
+    generateTraversalFrames();
+  }, [generateTraversalFrames]);
 
+  // Timer loop for animation
   useEffect(() => {
     if (!isPlaying) return;
     const timer = window.setInterval(() => {
-      setStepIdx((prev) => {
-        if (prev >= visitedSequence.length) {
+      setFrameIdx((prev) => {
+        if (prev >= frames.length - 1) {
           setIsPlaying(false);
           return prev;
         }
         return prev + 1;
       });
-    }, Math.max(150, Math.round(700 / speed)));
+    }, Math.max(120, Math.round(750 / speed)));
     return () => clearInterval(timer);
-  }, [isPlaying, speed, visitedSequence.length]);
+  }, [isPlaying, speed, frames.length]);
 
-  const handleInsertNode = (e: React.FormEvent) => {
+  // Insert handler
+  const handleInsert = (e: React.FormEvent) => {
     e.preventDefault();
     const num = parseInt(inputVal, 10);
     if (isNaN(num)) return;
-    if (values.length >= 15) {
-      alert('Tree max display depth reached (15 nodes)');
-      return;
+
+    if (variant === 'heap') {
+      const newHeap = new BinaryHeap(heapType, heapInstance.items);
+      const opFrames = newHeap.insert(num);
+      setHeapInstance(newHeap);
+
+      const animFrames: Frame[] = opFrames.map((f, i) => ({
+        highlightNodeIds: f.activeIndices.map((idx) => `heap-${idx}`),
+        activeNodeId: f.activeIndices[0] !== undefined ? `heap-${f.activeIndices[0]}` : null,
+        activeLine: i + 1,
+        log: f.log,
+      }));
+      setFrames(animFrames);
+      setFrameIdx(0);
+      setIsPlaying(true);
+    } else if (variant === 'bst') {
+      const newRoot = insertBST(treeRoot ? { ...treeRoot } : null, num);
+      setTreeRoot(newRoot);
+    } else {
+      const newRoot = insertBinaryTree(treeRoot ? { ...treeRoot } : null, num);
+      setTreeRoot(newRoot);
     }
-    const next = [...values, num];
-    if (variant === 'bst') {
-      next.sort((a, b) => a - b);
-    } else if (variant === 'heap') {
-      next.sort((a, b) => a - b);
-    }
-    setValues(next);
+
     setInputVal('');
   };
 
-  // Fixed coordinates for complete binary tree up to 15 nodes
-  const getCoords = (index: number): { x: number; y: number } => {
-    const level = Math.floor(Math.log2(index + 1));
-    const offsetInLevel = index - ((1 << level) - 1);
-    const nodesInLevel = 1 << level;
-    const width = 440;
-    const segment = width / (nodesInLevel + 1);
-    return {
-      x: segment * (offsetInLevel + 1),
-      y: 50 + level * 75
-    };
+  // Search handler (BST only)
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const num = parseInt(searchVal, 10);
+    if (isNaN(num)) return;
+
+    const { path, found } = searchBST(treeRoot, num);
+    const animFrames: Frame[] = [
+      {
+        highlightNodeIds: [],
+        activeNodeId: null,
+        activeLine: 1,
+        log: `Searching for ${num} in BST...`,
+      },
+    ];
+
+    const currentPath: string[] = [];
+    for (let i = 0; i < path.length; i++) {
+      currentPath.push(path[i]);
+      animFrames.push({
+        highlightNodeIds: [...currentPath],
+        activeNodeId: path[i],
+        activeLine: 2,
+        log: `Checking node ${path[i]} against target ${num}`,
+      });
+    }
+
+    animFrames.push({
+      highlightNodeIds: [...currentPath],
+      activeNodeId: found ? path[path.length - 1] : null,
+      activeLine: found ? 4 : 5,
+      log: found ? `Found ${num} in BST!` : `Target ${num} not found in BST.`,
+    });
+
+    setFrames(animFrames);
+    setFrameIdx(0);
+    setIsPlaying(true);
   };
 
-  const activeVisitedIndices = visitedSequence.slice(0, stepIdx);
-  const currentActiveIndex = visitedSequence[stepIdx - 1];
+  // Extract root for Heap
+  const handleExtractRoot = () => {
+    if (variant !== 'heap') return;
+    const newHeap = new BinaryHeap(heapType, heapInstance.items);
+    const { value, frames: opFrames } = newHeap.extractRoot();
+    if (value === null) return;
+    setHeapInstance(newHeap);
 
-  const pseudo = PSEUDOCODE_MAP.tree;
+    const animFrames: Frame[] = opFrames.map((f, i) => ({
+      highlightNodeIds: f.activeIndices.map((idx) => `heap-${idx}`),
+      activeNodeId: f.activeIndices[0] !== undefined ? `heap-${f.activeIndices[0]}` : null,
+      activeLine: i + 1,
+      log: f.log,
+    }));
+    setFrames(animFrames);
+    setFrameIdx(0);
+    setIsPlaying(true);
+  };
+
+  // Toggle Heap type
+  const handleToggleHeapType = (type: HeapType) => {
+    setHeapType(type);
+    const rebuilt = new BinaryHeap(type, heapInstance.items);
+    setHeapInstance(rebuilt);
+  };
+
+  // Reset to default
+  const handleReset = () => {
+    setIsPlaying(false);
+    if (variant === 'heap') {
+      setHeapInstance(new BinaryHeap(heapType, [12, 18, 25, 30, 42, 55, 68]));
+    } else if (variant === 'bst') {
+      let root: TreeNode | null = null;
+      for (const v of [40, 20, 60, 10, 30, 50, 70]) {
+        root = insertBST(root, v);
+      }
+      setTreeRoot(root);
+    } else {
+      let root: TreeNode | null = null;
+      for (const v of [1, 2, 3, 4, 5, 6, 7]) {
+        root = insertBinaryTree(root, v);
+      }
+      setTreeRoot(root);
+    }
+  };
+
+  const currentFrame = frames[frameIdx] || {
+    highlightNodeIds: [],
+    activeNodeId: null,
+    activeLine: 0,
+    log: 'Ready',
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-line bg-surface">
-        <div className="flex flex-wrap items-center gap-2">
-          {(['inorder', 'preorder', 'postorder'] as const).map((ord) => (
-            <button
-              key={ord}
-              onClick={() => setTraversalOrder(ord)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold capitalize cursor-pointer ${
-                traversalOrder === ord
-                  ? 'bg-mint text-canvas'
-                  : 'bg-canvas text-muted border border-line'
-              }`}
-            >
-              {ord} Traversal
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={handleInsertNode} className="flex items-center gap-2">
-          <input
-            type="number"
-            placeholder="Insert key (e.g. 48)..."
-            value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
-            className="w-40 px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink focus:outline-none focus:border-mint"
-          />
-          <button
-            type="submit"
-            className="px-3.5 py-1.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
-          >
-            + Insert Node
-          </button>
-        </form>
-      </div>
-
+      {/* Control Bar */}
       <ControlBar
         isPlaying={isPlaying}
-        onPlayPause={() => setIsPlaying((p) => !p)}
-        onStep={() => setStepIdx((i) => Math.min(visitedSequence.length, i + 1))}
-        onReset={() => {
+        onPlayPause={() => setIsPlaying(!isPlaying)}
+        onStepForward={() => {
           setIsPlaying(false);
-          setStepIdx(0);
+          setFrameIdx((p) => Math.min(frames.length - 1, p + 1));
         }}
-        onRandomize={() =>
-          setValues(
-            Array.from({ length: 7 }, () => Math.floor(Math.random() * 89) + 10).sort((a, b) => a - b)
-          )
-        }
+        onStepBack={() => {
+          setIsPlaying(false);
+          setFrameIdx((p) => Math.max(0, p - 1));
+        }}
+        onReset={handleReset}
+        onRandomize={() => {
+          if (variant === 'heap') {
+            const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
+            setHeapInstance(new BinaryHeap(heapType, randoms));
+          } else {
+            const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
+            let root: TreeNode | null = null;
+            for (const r of randoms) {
+              root = variant === 'bst' ? insertBST(root, r) : insertBinaryTree(root, r);
+            }
+            setTreeRoot(root);
+          }
+        }}
         speed={speed}
         onSpeedChange={setSpeed}
       />
 
+      {/* Operation Toolbar */}
+      <div className="flex flex-wrap items-center gap-3 p-3 bg-surface/50 border border-line rounded-xl text-xs">
+        {/* Insert form */}
+        <form onSubmit={handleInsert} className="flex items-center gap-2">
+          <input
+            type="number"
+            value={inputVal}
+            onChange={(e) => setInputVal(e.target.value)}
+            placeholder="Value..."
+            className="w-20 px-2 py-1 bg-surface border border-line rounded text-ink focus:outline-none focus:border-mint"
+          />
+          <button
+            type="submit"
+            className="px-3 py-1 bg-mint text-canvas font-medium rounded hover:bg-mint/90 transition"
+          >
+            Insert
+          </button>
+        </form>
+
+        {/* BST Search */}
+        {variant === 'bst' && (
+          <form onSubmit={handleSearch} className="flex items-center gap-2 border-l border-line pl-3">
+            <input
+              type="number"
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              placeholder="Search..."
+              className="w-20 px-2 py-1 bg-surface border border-line rounded text-ink focus:outline-none focus:border-violet"
+            />
+            <button
+              type="submit"
+              className="px-3 py-1 bg-violet text-canvas font-medium rounded hover:bg-violet/90 transition"
+            >
+              Search
+            </button>
+          </form>
+        )}
+
+        {/* Heap Operations */}
+        {variant === 'heap' && (
+          <div className="flex items-center gap-2 border-l border-line pl-3">
+            <button
+              onClick={handleExtractRoot}
+              className="px-3 py-1 bg-amber text-canvas font-medium rounded hover:bg-amber/90 transition"
+            >
+              Extract Root ({heapType === 'min' ? 'Min' : 'Max'})
+            </button>
+            <div className="flex rounded border border-line overflow-hidden">
+              <button
+                onClick={() => handleToggleHeapType('min')}
+                className={`px-2 py-1 ${heapType === 'min' ? 'bg-mint text-canvas' : 'bg-surface text-muted'}`}
+              >
+                Min-Heap
+              </button>
+              <button
+                onClick={() => handleToggleHeapType('max')}
+                className={`px-2 py-1 ${heapType === 'max' ? 'bg-mint text-canvas' : 'bg-surface text-muted'}`}
+              >
+                Max-Heap
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Traversal selector (Tree/BST only) */}
+        {variant !== 'heap' && (
+          <div className="flex items-center gap-2 ml-auto border-l border-line pl-3">
+            <span className="text-muted">Traversal:</span>
+            {(['inorder', 'preorder', 'postorder'] as const).map((order) => (
+              <button
+                key={order}
+                onClick={() => setTraversalOrder(order)}
+                className={`px-2 py-1 rounded capitalize transition ${
+                  traversalOrder === order ? 'bg-white/10 text-ink font-semibold' : 'text-muted hover:text-ink'
+                }`}
+              >
+                {order}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Main Visualizer Area */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 space-y-3">
           <VisualizerCanvas
             metrics={[
               {
-                label: 'Traversal Sequence',
-                value: activeVisitedIndices.map((idx) => values[idx]).join(' → ') || 'Ready',
-                color: 'var(--c-mint)'
-              }
+                label: 'Total Nodes',
+                value: layout.nodes.length.toString(),
+                color: 'var(--c-mint)',
+              },
+              {
+                label: variant === 'heap' ? 'Heap Array' : 'Mode',
+                value:
+                  variant === 'heap'
+                    ? `[${heapInstance.items.join(', ')}]`
+                    : variant === 'bst'
+                    ? 'Binary Search Tree'
+                    : 'Binary Tree',
+                color: 'var(--c-violet)',
+              },
+            ]}
+            legend={[
+              { label: 'Normal Node', color: 'var(--c-steel)' },
+              { label: 'Active / Searched', color: 'var(--c-amber)' },
+              { label: 'Traversed / Settled', color: 'var(--c-mint)' },
             ]}
           >
-            <svg className="w-full h-72 select-none" viewBox="0 0 440 290">
+            <svg
+              data-testid="tree-svg"
+              className="w-full h-80 select-none"
+              viewBox="0 0 440 320"
+            >
               {/* Edges */}
-              {values.map((_, idx) => {
-                if (idx === 0) return null;
-                const parentIdx = Math.floor((idx - 1) / 2);
-                const p = getCoords(parentIdx);
-                const c = getCoords(idx);
-                return (
-                  <line
-                    key={`edge-${idx}`}
-                    x1={p.x}
-                    y1={p.y}
-                    x2={c.x}
-                    y2={c.y}
-                    stroke="var(--c-steel)"
-                    strokeWidth={2}
-                  />
-                );
-              })}
+              {layout.edges.map((e, idx) => (
+                <line
+                  key={`edge-${idx}`}
+                  x1={e.x1}
+                  y1={e.y1}
+                  x2={e.x2}
+                  y2={e.y2}
+                  stroke="var(--c-line)"
+                  strokeWidth="2"
+                />
+              ))}
 
               {/* Nodes */}
-              {values.map((val, idx) => {
-                const { x, y } = getCoords(idx);
-                const isVisited = activeVisitedIndices.includes(idx);
-                const isCurrent = currentActiveIndex === idx;
+              {layout.nodes.map((node) => {
+                const isHighlighted = currentFrame.highlightNodeIds.includes(node.id);
+                const isActive = currentFrame.activeNodeId === node.id;
 
                 let fill = 'var(--c-surface)';
-                let stroke = 'var(--c-steel)';
-                if (isCurrent) {
+                let stroke = 'var(--c-line)';
+                let textColor = 'var(--c-ink)';
+
+                if (isActive) {
                   fill = 'var(--c-amber)';
                   stroke = 'var(--c-amber)';
-                } else if (isVisited) {
+                  textColor = '#0f141c';
+                } else if (isHighlighted) {
                   fill = 'var(--c-mint)';
                   stroke = 'var(--c-mint)';
+                  textColor = '#0f141c';
                 }
 
                 return (
-                  <g key={idx}>
+                  <g key={node.id} className="transition-all duration-200">
                     <circle
-                      cx={x}
-                      cy={y}
-                      r={19}
+                      cx={node.x}
+                      cy={node.y}
+                      r="16"
                       fill={fill}
                       stroke={stroke}
-                      strokeWidth={2.5}
+                      strokeWidth="2"
                     />
                     <text
-                      x={x}
-                      y={y + 4}
+                      x={node.x}
+                      y={node.y + 4}
                       textAnchor="middle"
-                      className="font-mono text-xs font-bold"
-                      fill={isCurrent || isVisited ? 'var(--c-canvas)' : 'var(--c-ink)'}
+                      fill={textColor}
+                      fontSize="11"
+                      fontWeight="bold"
+                      className="font-mono pointer-events-none"
                     >
-                      {val}
+                      {node.value}
                     </text>
                   </g>
                 );
               })}
             </svg>
           </VisualizerCanvas>
+
+          {/* Activity Log */}
+          <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span>{currentFrame.log}</span>
+          </div>
         </div>
 
+        {/* Pseudo-code panel */}
         <div className="lg:col-span-4">
           <PseudoCodePanel
-            title={`${traversalOrder.toUpperCase()} Tree Traversal`}
-            lines={pseudo.lines}
-            activeLine={stepIdx > 0 ? 3 : 0}
-            timeComplexity="O(n)"
-            spaceComplexity="O(h)"
-            logs={activeVisitedIndices.map(
-              (idx, step) => `Step #${step + 1}: Visited node key ${values[idx]}`
-            )}
+            codeLines={
+              variant === 'heap'
+                ? PSEUDOCODE_MAP.heap || ['procedure HeapOp():', '  // Invariant preserved']
+                : variant === 'bst'
+                ? PSEUDOCODE_MAP.bst || ['procedure BST():', '  // BST Invariant: Left < Root <= Right']
+                : PSEUDOCODE_MAP['binary-tree'] || ['procedure Traverse(node):', '  // DFS traversal']
+            }
+            activeLine={currentFrame.activeLine}
           />
         </div>
       </div>

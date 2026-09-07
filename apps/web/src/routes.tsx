@@ -10,6 +10,8 @@ import { QuizPage } from './pages/QuizPage';
 import { GuidedPathsPage } from './pages/GuidedPathsPage';
 import { GuidedPathDetailPage } from './pages/GuidedPathDetailPage';
 
+import { NotFound } from './components/NotFound';
+
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
@@ -22,7 +24,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/problems/:topic" element={<ProblemListPage />} />
       <Route path="/problems/:topic/:slug" element={<ProblemDetailPage />} />
       <Route path="/quiz/:topic" element={<QuizPage />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -13,25 +13,39 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useProgress, ProblemStatus } from '../store/ProgressContext';
+import { NotFound } from '../components/NotFound';
 
 export const ProblemDetailPage: React.FC = () => {
   const { topic = 'arrays', slug = 'two-sum' } = useParams<{ topic: string; slug: string }>();
   const { state, setProblemStatus, saveNote, toggleBookmark, setLastVisited } = useProgress();
 
-  const problem = PROBLEMS.find((p) => p.slug === slug) || PROBLEMS[0];
+  const problem = PROBLEMS.find((p) => p.slug === slug && p.topic === topic);
   const [hintsOpen, setHintsOpen] = useState(false);
   const [activeSolutionTab, setActiveSolutionTab] = useState<number | null>(null);
-  const [noteText, setNoteText] = useState(state.notes[problem.slug] || '');
+  const [noteText, setNoteText] = useState(problem ? state.notes[problem.slug] || '' : '');
 
   useEffect(() => {
-    setNoteText(state.notes[problem.slug] || '');
-    setLastVisited({
-      type: 'problem',
-      title: problem.title,
-      path: `/problems/${problem.topic}/${problem.slug}`,
-      subtitle: `${problem.difficulty} • ${problem.pattern}`
-    });
-  }, [problem.slug]);
+    if (problem) {
+      setNoteText(state.notes[problem.slug] || '');
+      setLastVisited({
+        type: 'problem',
+        title: problem.title,
+        path: `/problems/${problem.topic}/${problem.slug}`,
+        subtitle: `${problem.difficulty} • ${problem.pattern}`
+      });
+    }
+  }, [problem?.slug, problem?.topic]);
+
+  if (!problem) {
+    return (
+      <NotFound
+        title="Problem Not Found"
+        message={`The problem "${slug}" was not found under topic "${topic}".`}
+        backTo="/problems"
+        backLabel="All Problems"
+      />
+    );
+  }
 
   const currentStatus = state.progress[problem.slug] || 'Todo';
   const isBookmarked = state.bookmarks.includes(problem.slug);

@@ -164,8 +164,12 @@ export const GraphVisualizer: React.FC = () => {
 
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.round(e.clientX - rect.left);
-    const y = Math.round(e.clientY - rect.top);
+    if (!rect.width || !rect.height) return;
+    const [vbW, vbH] = [420, 350];
+    const x = Math.round((e.clientX - rect.left) * (vbW / rect.width));
+    const y = Math.round((e.clientY - rect.top) * (vbH / rect.height));
+    // Keep within bounds
+    if (x < 20 || x > vbW - 20 || y < 20 || y > vbH - 20) return;
     // Avoid adding on top of existing node
     if (nodes.some((n) => Math.hypot(n.x - x, n.y - y) < 35)) return;
     const newId = nodes.length > 0 ? Math.max(...nodes.map((n) => n.id)) + 1 : 0;
@@ -267,6 +271,7 @@ export const GraphVisualizer: React.FC = () => {
             ]}
           >
             <svg
+              data-testid="graph-svg"
               onClick={handleSvgClick}
               className="w-full h-80 cursor-crosshair select-none"
               viewBox="0 0 420 350"

@@ -16,6 +16,7 @@ import {
 import { LEARNING_PATHS, PathStep } from '../data/learningPaths';
 import { resolveStep } from '../utils/stepLink';
 import { useProgress } from '../store/ProgressContext';
+import { NotFound } from '../components/NotFound';
 
 const PATH_ICONS: Record<string, React.ComponentType<any>> = { LayoutGrid, GitCommit, Network, Cpu };
 const STEP_ICONS: Record<PathStep['type'], React.ComponentType<any>> = {
@@ -38,7 +39,17 @@ export const GuidedPathDetailPage: React.FC = () => {
   const { id = 'foundations' } = useParams<{ id: string }>();
   const { state } = useProgress();
 
-  const path = LEARNING_PATHS.find((p) => p.id === id) || LEARNING_PATHS[0];
+  const path = LEARNING_PATHS.find((p) => p.id === id);
+  if (!path) {
+    return (
+      <NotFound
+        title="Learning Path Not Found"
+        message={`The learning path "${id}" does not exist.`}
+        backTo="/paths"
+        backLabel="All Guided Paths"
+      />
+    );
+  }
   const Icon = PATH_ICONS[path.icon] ?? LayoutGrid;
 
   // Compute per-step completion
@@ -49,7 +60,7 @@ export const GuidedPathDetailPage: React.FC = () => {
     } else if (step.type === 'quiz') {
       done = (state.quizzes[step.id] ?? 0) >= 70;
     } else if (step.type === 'visualizer') {
-      done = state.lastVisited?.path === `/visualizers/${step.id}`;
+      done = state.visitedVisualizers?.includes(step.id) ?? false;
     }
     return { done, next: false };
   });

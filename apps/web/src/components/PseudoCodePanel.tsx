@@ -2,29 +2,32 @@ import React, { useEffect, useRef } from 'react';
 import { ComplexityBadge } from './ComplexityBadge';
 
 interface PseudoCodePanelProps {
-  title: string;
-  lines: string[];
+  title?: string;
+  lines?: string[];
+  codeLines?: string[];
   activeLine?: number;
-  timeComplexity: string;
-  spaceComplexity: string;
-  logs: string[];
+  timeComplexity?: string;
+  spaceComplexity?: string;
+  logs?: string[];
 }
 
 export const PseudoCodePanel: React.FC<PseudoCodePanelProps> = ({
-  title,
+  title = 'Algorithm Logic',
   lines,
+  codeLines,
   activeLine,
-  timeComplexity,
-  spaceComplexity,
-  logs
+  timeComplexity = 'O(log n)',
+  spaceComplexity = 'O(h)',
+  logs = []
 }) => {
+  const displayLines = lines || codeLines || [];
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
-  }, [logs.length]);
+  }, [logs?.length]);
 
   const visibleLogs = logs.slice(-40);
 
@@ -40,7 +43,7 @@ export const PseudoCodePanel: React.FC<PseudoCodePanelProps> = ({
         </div>
 
         <div className="font-mono text-[11px] leading-relaxed py-1.5 bg-canvas">
-          {lines.map((line, index) => {
+          {displayLines.map((line, index) => {
             const isActive = activeLine === index;
             return (
               <div

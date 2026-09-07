@@ -138,28 +138,55 @@ export const DashboardPage: React.FC = () => {
         </Panel>
 
         <Panel label="Resume session" className="lg:col-span-4" bracket>
-          <div className="flex flex-col justify-between h-full gap-4">
-            <div className="space-y-1.5">
-              <span className="inline-block px-2 py-0.5 rounded border border-line bg-canvas text-[10px] font-mono uppercase tracking-wider text-violet">
-                {state.lastVisited.type}
-              </span>
-              <h3 className="text-base font-bold text-ink leading-snug">
-                {state.lastVisited.title}
-              </h3>
-              <p className="text-xs text-muted">{state.lastVisited.subtitle}</p>
-            </div>
+          {state.lastVisited ? (
+            <div className="flex flex-col justify-between h-full gap-4">
+              <div className="space-y-1.5">
+                <span className="inline-block px-2 py-0.5 rounded border border-line bg-canvas text-[10px] font-mono uppercase tracking-wider text-violet">
+                  {state.lastVisited.type}
+                </span>
+                <h3 className="text-base font-bold text-ink leading-snug">
+                  {state.lastVisited.title}
+                </h3>
+                <p className="text-xs text-muted">{state.lastVisited.subtitle}</p>
+              </div>
 
-            <Link
-              to={state.lastVisited.path}
-              className="group inline-flex items-center justify-between px-4 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition"
-            >
-              <span className="inline-flex items-center gap-2">
-                <Play className="w-3.5 h-3.5" />
-                Continue where you left off
-              </span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
+              <Link
+                to={state.lastVisited.path}
+                className="group inline-flex items-center justify-between px-4 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Play className="w-3.5 h-3.5" />
+                  Continue where you left off
+                </span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-between h-full gap-4">
+              <div className="space-y-1.5">
+                <span className="inline-block px-2 py-0.5 rounded border border-line bg-canvas text-[10px] font-mono uppercase tracking-wider text-mint">
+                  Start Learning
+                </span>
+                <h3 className="text-base font-bold text-ink leading-snug">
+                  Start your first problem
+                </h3>
+                <p className="text-xs text-muted">
+                  No activity recorded yet. Pick a problem to begin your practice streak!
+                </p>
+              </div>
+
+              <Link
+                to="/problems/arrays/two-sum"
+                className="group inline-flex items-center justify-between px-4 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Play className="w-3.5 h-3.5" />
+                  Start your first problem
+                </span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          )}
         </Panel>
 
         <Panel
@@ -169,28 +196,40 @@ export const DashboardPage: React.FC = () => {
           bracket
         >
           <div className="space-y-2.5">
-            {weakTopics.map(([slug, score]) => (
-              <div key={slug} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="capitalize text-ink font-medium">{slug}</span>
-                  <div className="flex items-center gap-2.5">
-                    <span className={`font-mono font-bold tnum ${scoreTone(score)}`}>{score}%</span>
-                    <Link
-                      to={`/quiz/${slug}`}
-                      className="text-[10px] font-mono text-muted hover:text-mint transition-colors"
-                    >
-                      retake →
-                    </Link>
-                  </div>
-                </div>
-                <span className="block h-1 rounded-full bg-line overflow-hidden">
-                  <span
-                    className={`block h-full transition-all duration-300 ${barTone(score)}`}
-                    style={{ width: `${score}%` }}
-                  />
-                </span>
+            {weakTopics.length === 0 ? (
+              <div className="py-5 text-center space-y-2">
+                <p className="text-xs text-muted">No assessment scores recorded yet.</p>
+                <Link
+                  to="/quiz/arrays"
+                  className="inline-flex items-center gap-1.5 text-xs text-mint hover:underline font-mono"
+                >
+                  Take a diagnostic quiz →
+                </Link>
               </div>
-            ))}
+            ) : (
+              weakTopics.map(([slug, score]) => (
+                <div key={slug} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="capitalize text-ink font-medium">{slug}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className={`font-mono font-bold tnum ${scoreTone(score)}`}>{score}%</span>
+                      <Link
+                        to={`/quiz/${slug}`}
+                        className="text-[10px] font-mono text-muted hover:text-mint transition-colors"
+                      >
+                        retake →
+                      </Link>
+                    </div>
+                  </div>
+                  <span className="block h-1 rounded-full bg-line overflow-hidden">
+                    <span
+                      className={`block h-full transition-all duration-300 ${barTone(score)}`}
+                      style={{ width: `${score}%` }}
+                    />
+                  </span>
+                </div>
+              ))
+            )}
 
             <Link
               to="/quiz/mixed"

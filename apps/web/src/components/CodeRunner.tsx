@@ -2,19 +2,13 @@ import React, { useState } from 'react';
 import { Play, RotateCcw, CheckCircle2, XCircle, Terminal } from 'lucide-react';
 import { TestCase } from '../data/problems';
 
+import { runTestCasesInWorker, ExecutionResult } from '../workers/runnerClient';
+
 interface CodeRunnerProps {
   starterCode: string;
   functionName: string;
   testCases: TestCase[];
   onAllPassed?: () => void;
-}
-
-interface TestResult {
-  passed: boolean;
-  actual: any;
-  expected: any;
-  timeMs: number;
-  error?: string;
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
@@ -25,51 +19,24 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 }) => {
   const [code, setCode] = useState(starterCode);
   const [activeTab, setActiveTab] = useState(0);
-  const [results, setResults] = useState<TestResult[] | null>(null);
+  const [results, setResults] = useState<ExecutionResult[] | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
 
-  const deepEqual = (a: any, b: any): boolean => {
-    return JSON.stringify(a) === JSON.stringify(b);
-  };
-
-  const handleRunTests = () => {
-    const output: TestResult[] = [];
-    let allPass = true;
-
-    for (const tc of testCases) {
-      const start = performance.now();
-      try {
-        // Sandboxed new Function evaluation
-        const runner = new Function(
-          `${code};\nreturn typeof ${functionName} !== 'undefined' ? ${functionName} : solve;`
-        )();
-        // Clone input arguments so in-place mutations don't corrupt test cases
-        const clonedArgs = JSON.parse(JSON.stringify(tc.input));
-        const actual = runner(...clonedArgs);
-        const end = performance.now();
-        const passed = deepEqual(actual, tc.expected);
-        if (!passed) allPass = false;
-
-        output.push({
-          passed,
-          actual,
-          expected: tc.expected,
-          timeMs: Math.max(0.1, Number((end - start).toFixed(2)))
-        });
-      } catch (err: any) {
-        allPass = false;
-        output.push({
-          passed: false,
-          actual: null,
-          expected: tc.expected,
-          timeMs: 0,
-          error: err?.message || 'Runtime Error'
-        });
+  const handleRunTests = async () => {
+    setIsRunning(true);
+    try {
+      const { results: testResults, allPassed } = await runTestCasesInWorker(
+        code,
+        functionName,
+        testCases,
+        3000
+      );
+      setResults(testResults);
+      if (allPassed && onAllPassed) {
+        onAllPassed();
       }
-    }
-
-    setResults(output);
-    if (allPass && onAllPassed) {
-      onAllPassed();
+    } finally {
+      setIsRunning(false);
     }
   };
 
@@ -98,10 +65,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
           <button
             onClick={handleRunTests}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
+            disabled={isRunning}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-semibold text-xs transition ${
+              isRunning ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-110 cursor-pointer'
+            }`}
           >
-            <Play className="w-3.5 h-3.5" />
-            Run 3 Test Cases
+            <Play className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin' : ''}`} />
+            {isRunning ? 'Running...' : `Run ${testCases.length} Test Cases`}
           </button>
         </div>
       </div>

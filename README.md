@@ -109,3 +109,38 @@ src/
   }
 }
 ```
+
+---
+
+## 🚀 Deployment & SPA Fallback (D12)
+
+Because Algovista uses HTML5 client-side routing (`BrowserRouter`), static hosts must rewrite non-asset requests to `/index.html`:
+
+### Vercel
+Configured in `apps/web/vercel.json`:
+```json
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+### Netlify / Cloudflare Pages
+Configured in `apps/web/public/_redirects`:
+```
+/*    /index.html   200
+```
+
+### Nginx
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /var/www/algovista/apps/web/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+

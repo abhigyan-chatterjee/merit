@@ -5,32 +5,76 @@ import { VISUALIZERS } from '../data/curriculum';
 import { SortingVisualizer } from '../visualizers/SortingVisualizer';
 import { GraphVisualizer } from '../visualizers/GraphVisualizer';
 import { TreeVisualizer } from '../visualizers/TreeVisualizer';
+import { ArrayVisualizer } from '../visualizers/ArrayVisualizer';
+import { LinkedListVisualizer } from '../visualizers/LinkedListVisualizer';
+import { StackVisualizer } from '../visualizers/StackVisualizer';
+import { QueueVisualizer } from '../visualizers/QueueVisualizer';
+import { HashMapVisualizer } from '../visualizers/HashMapVisualizer';
+import { SearchingVisualizer } from '../visualizers/SearchingVisualizer';
+import { RecursionTreeVisualizer } from '../visualizers/RecursionTreeVisualizer';
 import { LinearVisualizer } from '../visualizers/LinearVisualizer';
 import { useProgress } from '../store/ProgressContext';
+import { NotFound } from '../components/NotFound';
 
 export const VisualizerDetailPage: React.FC = () => {
   const { id = 'sorting' } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { setLastVisited } = useProgress();
+  const { setLastVisited, recordVisualizerVisit } = useProgress();
 
-  const currentItem = VISUALIZERS.find((v) => v.id === id) || VISUALIZERS[0];
+  const currentItem = VISUALIZERS.find((v) => v.id === id);
 
   useEffect(() => {
-    setLastVisited({
-      type: 'visualizer',
-      title: currentItem.title,
-      path: `/visualizers/${currentItem.id}`,
-      subtitle: `${currentItem.category} workbench · avg ${currentItem.timeComplexity.avg}`
-    });
-  }, [currentItem.id]);
+    if (currentItem) {
+      recordVisualizerVisit(currentItem.id);
+      setLastVisited({
+        type: 'visualizer',
+        title: currentItem.title,
+        path: `/visualizers/${currentItem.id}`,
+        subtitle: `${currentItem.category} workbench · avg ${currentItem.timeComplexity.avg}`
+      });
+    }
+  }, [currentItem?.id]);
+
+  if (!currentItem) {
+    return (
+      <NotFound
+        title="Visualizer Not Found"
+        message={`We couldn't find a visualizer for "${id}". Check out our curriculum for all available visualizers.`}
+        backTo="/visualizers"
+        backLabel="All Visualizers"
+      />
+    );
+  }
 
   const renderWorkbench = () => {
-    if (id === 'sorting') return <SortingVisualizer />;
-    if (id === 'graph') return <GraphVisualizer />;
-    if (id === 'binary-tree' || id === 'bst' || id === 'heap') {
-      return <TreeVisualizer variant={id as any} />;
+    switch (id) {
+      case 'sorting':
+        return <SortingVisualizer />;
+      case 'array':
+        return <ArrayVisualizer />;
+      case 'linked-list':
+        return <LinkedListVisualizer />;
+      case 'stack':
+        return <StackVisualizer />;
+      case 'queue':
+        return <QueueVisualizer />;
+      case 'binary-tree':
+        return <TreeVisualizer variant="binary-tree" />;
+      case 'bst':
+        return <TreeVisualizer variant="bst" />;
+      case 'heap':
+        return <TreeVisualizer variant="heap" />;
+      case 'hashmap':
+        return <HashMapVisualizer />;
+      case 'graph':
+        return <GraphVisualizer />;
+      case 'searching':
+        return <SearchingVisualizer />;
+      case 'recursion-tree':
+        return <RecursionTreeVisualizer />;
+      default:
+        return <LinearVisualizer id={id} />;
     }
-    return <LinearVisualizer id={id} />;
   };
 
   return (
