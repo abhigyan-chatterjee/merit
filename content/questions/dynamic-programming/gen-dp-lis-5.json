@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lis-5",
+  "topic": "dynamic-programming",
+  "subtopic": "lis",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the integer sequence `[1, 3, 6, 7, 9, 4, 10, 5, 6]`, what is the length of the Longest Strictly Increasing Subsequence (LIS)?",
+  "options": [
+    "5",
+    "7",
+    "9",
+    "6"
+  ],
+  "correct_index": 3,
+  "explanation": "By dynamic programming or patience sorting, the longest strictly increasing subsequence in `[1, 3, 6, 7, 9, 4, 10, 5, 6]` has length 6.",
+  "source": "generated",
+  "generator_key": "dp.lis",
+  "content_hash": "b6ec2e777da00a207b9501c63adbfcf12d9542adc3e7843ba81c5120b45be52a",
+  "review_status": "verified"
+}

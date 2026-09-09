@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q4",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How much memory does an Adjacency Matrix require for a graph with V vertices?",
+  "options": [
+    "O(V\u00b2)",
+    "O(V + E)",
+    "O(E)",
+    "O(V log V)"
+  ],
+  "correct_index": 0,
+  "explanation": "An adjacency matrix allocates a V \u00d7 V grid regardless of how sparse or dense the edge set E is.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "06ef3713615053b652af87d64e0770f2a55b571c867f63f806cdece9fcdee5c9",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q10",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How many connected components exist in an undirected graph if a full DFS traversal requires 4 outer loop starts?",
+  "options": [
+    "4 connected components",
+    "1 connected component",
+    "2 connected components",
+    "0 connected components"
+  ],
+  "correct_index": 0,
+  "explanation": "Each outer loop invocation of DFS visits one entire connected component.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "d95a0b1babf65a61a50c0feff830b99d61c899f487e2d7e5484d4e07df754c6c",
+  "review_status": "verified"
+}

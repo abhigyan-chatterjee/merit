@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-rec-5",
+  "topic": "sorting",
+  "subtopic": "recurrence-relations",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 3T(n/3) + O(1) with base case T(1) = O(1)?",
+  "options": [
+    "O(n)",
+    "O(log n)",
+    "O(n log n)",
+    "O(1)"
+  ],
+  "correct_index": 0,
+  "explanation": "Case 1 of Master Theorem: a=3, b=3, log_3(3)=1. Since f(n)=O(1)=O(n^0), T(n) = \u0398(n).",
+  "source": "generated",
+  "generator_key": "time_complexity.recurrence",
+  "content_hash": "cc02bd9d8afb160882daab5fba6bca9d735958f3d84eb2b42ff0f5b2899a2c38",
+  "review_status": "verified"
+}

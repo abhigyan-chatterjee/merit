@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q9",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Why does Dijkstra\u2019s Shortest Path algorithm fail on graphs containing negative edge weights?",
+  "options": [
+    "It greedily assumes adding future edges can never decrease a path weight",
+    "It only works on trees",
+    "It uses a FIFO queue instead of a heap",
+    "It cannot handle disconnected components"
+  ],
+  "correct_index": 0,
+  "explanation": "Dijkstra finalizes the shortest distance to a popped vertex; negative edges downstream could later yield a shorter path.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "223e4ab20879187cd5fb55da1d5661ce76d9a665c5007d2a0a971961103b8372",
+  "review_status": "verified"
+}

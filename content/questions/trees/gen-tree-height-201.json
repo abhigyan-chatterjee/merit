@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-height-201",
+  "topic": "trees",
+  "subtopic": "tree-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Keys `[36, 18, 54, 9, 27, 45, 63]` are inserted into an initially empty Binary Search Tree. What is the height (maximum number of levels / depth from root to deepest node) of this tree?",
+  "options": [
+    "4",
+    "3",
+    "6",
+    "5"
+  ],
+  "correct_index": 1,
+  "explanation": "By following BST insertion rules for `[36, 18, 54, 9, 27, 45, 63]`, the deepest path spans 3 levels.",
+  "source": "generated",
+  "generator_key": "tree_traversals.height",
+  "content_hash": "dba1c7ae4dd6a16258cbd14f6560f4a5fc6f96491429317f6becea985780c448",
+  "review_status": "verified"
+}

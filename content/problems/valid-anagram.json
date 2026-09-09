@@ -2,7 +2,7 @@
   "id": "str-1",
   "slug": "valid-anagram",
   "title": "Valid Anagram",
-  "topic": "strings",
+  "topic": "arrays-hashing",
   "difficulty": "Easy",
   "pattern": "Frequency Counter",
   "statement": "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
@@ -36,7 +36,10 @@
       "code": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  const counts = {};\n  for (const c of s) counts[c] = (counts[c] || 0) + 1;\n  for (const c of t) {\n    if (!counts[c]) return false;\n    counts[c]--;\n  }\n  return true;\n}"
     }
   ],
-  "starterCode": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  const counts = {};\n  for (const c of s) counts[c] = (counts[c] || 0) + 1;\n  for (const c of t) {\n    if (!counts[c]) return false;\n    counts[c]--;\n  }\n  return true;\n}",
+  "starterCode": {
+    "javascript": "function solve(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -63,5 +66,8 @@
       "expected": true,
       "label": "\"listen\", \"silent\""
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "contains-duplicate",
+  "nextSlug": "product-of-array-except-self"
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-concept-48",
+  "topic": "dynamic-programming",
+  "subtopic": "dp-theory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of solving the 0/1 Knapsack problem with N items and integer capacity W using dynamic programming?",
+  "options": [
+    "O(N * W) pseudo-polynomial time",
+    "O(N\u00b2 + W) linear time",
+    "O(2^N) exponential time",
+    "O(N log W) strictly polynomial"
+  ],
+  "correct_index": 0,
+  "explanation": "The DP table requires filling N * W cells, with O(1) work per cell. Because runtime is proportional to the numeric value of W rather than the input bit-length log(W), it is classified as pseudo-polynomial.",
+  "source": "generated",
+  "generator_key": "dp.concepts",
+  "content_hash": "ccd6df6e456848ce8fd9bcc9412ce3c51510f7f5a90cfcb825f05b5a1dde1485",
+  "review_status": "verified"
+}

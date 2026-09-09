@@ -1,0 +1,20 @@
+{
+  "id": "gen-sort-prop-19",
+  "topic": "sorting",
+  "subtopic": "sorting-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the theoretical lower bound on the number of comparisons required for any comparison-based sorting algorithm on n items?",
+  "options": [
+    "\u03a9(n)",
+    "\u03a9(n log n)",
+    "\u03a9(log n)",
+    "\u03a9(n\u00b2)"
+  ],
+  "correct_index": 1,
+  "explanation": "Any comparison sort can be modeled as a decision tree with n! leaf nodes. The height of a binary tree with n! leaves is at least log\u2082(n!) = \u0398(n log n) comparisons.",
+  "source": "generated",
+  "generator_key": "sorting_searching.properties",
+  "content_hash": "3bdbe6a0c7ebe86671300a0cae7f0919bcb2cff6eeb71d576da0ad98800f32aa",
+  "review_status": "verified"
+}

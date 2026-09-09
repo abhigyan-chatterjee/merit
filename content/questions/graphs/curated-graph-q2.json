@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q2",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which algorithm finds the shortest path in an unweighted graph from a source vertex to all other vertices?",
+  "options": [
+    "Breadth-First Search (BFS)",
+    "Depth-First Search (DFS)",
+    "Kruskal MST",
+    "Topological Sort"
+  ],
+  "correct_index": 0,
+  "explanation": "BFS explores vertices in concentric layers of distance d, d+1, d+2, guaranteeing shortest hop count upon first visit.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "2c1c47f4fa1c62392df2815c64e1dfaf69c1f7b6361fe9b722824ee6bf6430e3",
+  "review_status": "verified"
+}

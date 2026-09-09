@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-concept-41",
+  "topic": "bit-manipulation",
+  "subtopic": "xor-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the result of applying XOR between any integer x and itself (`x ^ x`)?",
+  "options": [
+    "x",
+    "1",
+    "-1",
+    "0"
+  ],
+  "correct_index": 3,
+  "explanation": "The XOR operation returns 1 only when bits differ. For identical inputs, every corresponding bit pair is identical, yielding 0.",
+  "source": "generated",
+  "generator_key": "bit_manipulation.concepts",
+  "content_hash": "83b2023462158c688a55e66d4c268b929921b1702aa90e7e56bded923e1d340a",
+  "review_status": "verified"
+}

@@ -2,7 +2,7 @@
   "id": "dp-4",
   "slug": "longest-increasing-subsequence",
   "title": "Longest Increasing Subsequence",
-  "topic": "dp",
+  "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "Patience Sorting / DP Subsequence",
   "statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "Quadratic DP Tabulation",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "code": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}"
     },
     {
@@ -37,7 +37,10 @@
       "code": "function solve(nums) {\n  const tails = [];\n  for (const x of nums) {\n    let l = 0, r = tails.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (tails[m] < x) l = m + 1; else r = m;\n    }\n    tails[l] = x;\n  }\n  return tails.length;\n}"
     }
   ],
-  "starterCode": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) {\n        dp[i] = Math.max(dp[i], 1 + dp[j]);\n      }\n    }\n  }\n  return Math.max(...dp);\n}",
+  "starterCode": {
+    "javascript": "function solve(nums,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -82,5 +85,8 @@
       "expected": 1,
       "label": "[7,7,7,7]"
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "coin-change",
+  "nextSlug": "unique-paths"
 }

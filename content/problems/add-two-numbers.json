@@ -1,0 +1,115 @@
+{
+  "id": "ll-7",
+  "slug": "add-two-numbers",
+  "title": "Add Two Numbers",
+  "topic": "linked-lists",
+  "difficulty": "Medium",
+  "pattern": "Digit Carry Simulation",
+  "statement": "Two non-negative integers are stored as arrays of digits in reverse order (least significant digit first). Add them and return the sum in the same reverse-digit array format.",
+  "examples": [
+    {
+      "input": "l1 = [2,4,3], l2 = [5,6,4]",
+      "output": "[7,0,8]",
+      "explanation": "342 + 465 = 807, stored reversed as [7,0,8]."
+    },
+    {
+      "input": "l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]",
+      "output": "[8,9,9,9,0,0,0,1]"
+    }
+  ],
+  "constraints": [
+    "1 <= l1.length, l2.length <= 100",
+    "0 <= l1[i], l2[i] <= 9"
+  ],
+  "hints": [
+    "Walk both arrays from index 0 with a carry starting at 0.",
+    "At each position: sum = (l1[i] || 0) + (l2[i] || 0) + carry; push sum % 10; carry = floor(sum / 10).",
+    "After the loop, if carry remains, push it as the final digit."
+  ],
+  "solutions": [
+    {
+      "title": "BigInt Conversion",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(l1, l2) {\n  const toBig = (d) => BigInt([...d].reverse().join('') || '0');\n  const sum = (toBig(l1) + toBig(l2)).toString().split('').reverse().map(Number);\n  return sum;\n}"
+    },
+    {
+      "title": "Single-Pass Carry",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(l1, l2) {\n  const out = [];\n  let carry = 0, i = 0;\n  while (i < l1.length || i < l2.length || carry) {\n    const s = (l1[i] || 0) + (l2[i] || 0) + carry;\n    carry = Math.floor(s / 10);\n    out.push(s % 10);\n    i++;\n  }\n  return out;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(l1, l2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          2,
+          4,
+          3
+        ],
+        [
+          5,
+          6,
+          4
+        ]
+      ],
+      "expected": [
+        7,
+        0,
+        8
+      ],
+      "label": "[2,4,3] + [5,6,4]"
+    },
+    {
+      "input": [
+        [
+          0
+        ],
+        [
+          0
+        ]
+      ],
+      "expected": [
+        0
+      ],
+      "label": "[0] + [0]"
+    },
+    {
+      "input": [
+        [
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        [
+          9,
+          9,
+          9,
+          9
+        ]
+      ],
+      "expected": [
+        8,
+        9,
+        9,
+        9,
+        0,
+        0,
+        0,
+        1
+      ],
+      "label": "carry cascade"
+    }
+  ],
+  "sequence": 5,
+  "prevSlug": "palindrome-linked-list",
+  "nextSlug": null
+}

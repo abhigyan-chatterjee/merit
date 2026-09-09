@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-concept-64",
+  "topic": "linked-lists",
+  "subtopic": "data-structure-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the primary motivation for using a Doubly Linked List over a Singly Linked List when implementing an LRU Cache?",
+  "options": [
+    "Faster cache lookups",
+    "Lower memory usage per node",
+    "Simpler concurrency locks",
+    "O(1) deletion of an arbitrary node given only its direct pointer"
+  ],
+  "correct_index": 3,
+  "explanation": "An LRU cache pairs a hash map with a doubly linked list. When a key is accessed, its node can be spliced out of its current position in O(1) time because prev and next pointers are directly available.",
+  "source": "generated",
+  "generator_key": "ds_operations.concepts",
+  "content_hash": "c46ad5c78ae86c2817f29f468788f2358b209f35bd48c227da8df16d3deae476",
+  "review_status": "verified"
+}

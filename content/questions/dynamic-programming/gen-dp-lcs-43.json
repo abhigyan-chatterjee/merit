@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-43",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"OXFORD\"` and `\"CAMBRIDGE\"`?",
+  "options": [
+    "3",
+    "2",
+    "1",
+    "5"
+  ],
+  "correct_index": 1,
+  "explanation": "Standard 2D DP matrix comparison between 'OXFORD' and 'CAMBRIDGE' yields an LCS length of 2.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "208ac498a8a872b046b9e616a6e7ebf384e72690ae76dc17cd4710c43fa2d105",
+  "review_status": "verified"
+}

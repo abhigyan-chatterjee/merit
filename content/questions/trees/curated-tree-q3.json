@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q3",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the worst-case height of a Binary Search Tree containing n nodes inserted in strictly increasing order?",
+  "options": [
+    "O(log n)",
+    "O(n)",
+    "O(\u221an)",
+    "O(1)"
+  ],
+  "correct_index": 1,
+  "explanation": "Inserting sorted keys into an unbalanced BST creates a degenerate right-skewed chain of height n.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "f6e748bf9458485fc413dd5e5ffb321e9c1ff5521600de52a9ad3341b83e81ca",
+  "review_status": "verified"
+}

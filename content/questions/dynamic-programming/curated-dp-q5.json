@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q5",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How can the space complexity of 2D Grid Unique Paths dp[r][c] = dp[r-1][c] + dp[r][c-1] be reduced?",
+  "options": [
+    "To O(columns) using a single 1D rolling array",
+    "To O(1) without math formulas",
+    "It cannot be reduced below O(rows * columns)",
+    "By sorting the grid first"
+  ],
+  "correct_index": 0,
+  "explanation": "Because row r only depends on row r-1 and the current row, a 1D array updated left-to-right suffices.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "53b78c59c944669340e8b9b5f0d0019b2008fc50bc30d2fe23b2793f5a73df1d",
+  "review_status": "verified"
+}

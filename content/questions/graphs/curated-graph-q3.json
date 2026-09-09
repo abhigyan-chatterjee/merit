@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q3",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "For which class of graphs does a valid Topological Ordering exist?",
+  "options": [
+    "Directed Acyclic Graphs (DAGs)",
+    "Undirected Connected Graphs",
+    "Graphs with Negative Cycles",
+    "Complete Graphs K_n"
+  ],
+  "correct_index": 0,
+  "explanation": "Any directed cycle creates a circular dependency where no node in the cycle can come first.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "b716c7bc152ec0fcc9b744723ec6312c046b35535cb2cc9efe32a2c879a6a1ee",
+  "review_status": "verified"
+}

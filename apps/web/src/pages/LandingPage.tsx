@@ -247,7 +247,7 @@ export const LandingPage: React.FC = () => {
               tone: 'text-violet'
             },
             {
-              to: '/problems/arrays',
+              to: '/problems/arrays-hashing',
               title: 'Solve a problem',
               hint: 'Arrays & pointers',
               Icon: Code2,

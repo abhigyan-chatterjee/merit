@@ -36,7 +36,10 @@
       "code": "function solve(tree, k) {\n  const sorted = [];\n  function dfs(i) {\n    if (i >= tree.length || tree[i] === null) return;\n    dfs(2 * i + 1);\n    sorted.push(tree[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  return sorted[k - 1];\n}"
     }
   ],
-  "starterCode": "function solve(tree, k) {\n  const sorted = [];\n  function inorder(idx) {\n    if (idx >= tree.length || tree[idx] === null) return;\n    inorder(2 * idx + 1);\n    sorted.push(tree[idx]);\n    inorder(2 * idx + 2);\n  }\n  inorder(0);\n  return sorted[k - 1];\n}",
+  "starterCode": {
+    "javascript": "function solve(tree, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -82,5 +85,8 @@
       "expected": 2,
       "label": "root=[2,1,3], k=2"
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "validate-binary-search-tree",
+  "nextSlug": "lowest-common-ancestor-of-a-binary-tree"
 }

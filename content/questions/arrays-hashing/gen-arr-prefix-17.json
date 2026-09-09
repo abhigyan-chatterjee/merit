@@ -1,0 +1,20 @@
+{
+  "id": "gen-arr-prefix-17",
+  "topic": "arrays-hashing",
+  "subtopic": "prefix-sums",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given array `[3, 1, 4, 1, 5, 9, 2]`, what is the range sum of elements from index 2 to 5 inclusive (`nums[2..5]`) computed in O(1) time using a precomputed prefix sum array?",
+  "options": [
+    "19",
+    "16",
+    "22",
+    "29"
+  ],
+  "correct_index": 0,
+  "explanation": "Using prefix sums P[i], RangeSum(L, R) = P[R] - (P[L-1] if L > 0 else 0) = 19.",
+  "source": "generated",
+  "generator_key": "arrays_strings.prefix_sum",
+  "content_hash": "4a4930b8ca7f230e841348ab6aa528bc93b900e958aaf937d7f01a3f818256c4",
+  "review_status": "verified"
+}

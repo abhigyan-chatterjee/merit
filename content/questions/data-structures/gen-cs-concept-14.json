@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-14",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In relational database normalization, what distinguishes Boyce-Codd Normal Form (BCNF) from Third Normal Form (3NF)?",
+  "options": [
+    "BCNF applies only to unindexed tables",
+    "In BCNF, for every non-trivial functional dependency X -> Y, X MUST be a superkey",
+    "3NF forbids composite primary keys",
+    "BCNF allows transitive dependencies"
+  ],
+  "correct_index": 1,
+  "explanation": "3NF allows X -> Y if X is a superkey OR Y is a prime attribute. BCNF is stricter: X must always be a superkey without exception.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "ce99937cdd28d2cf980d1ee55447078187001a7377c7e5d6cd3f3a6f2d324037",
+  "review_status": "verified"
+}

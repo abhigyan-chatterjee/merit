@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-37",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"DYNAMIC\"` and `\"PROGRAMMING\"`?",
+  "options": [
+    "5",
+    "6",
+    "3",
+    "4"
+  ],
+  "correct_index": 2,
+  "explanation": "Standard 2D DP matrix comparison between 'DYNAMIC' and 'PROGRAMMING' yields an LCS length of 3.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "4ce6a1b97e24ea7af6bbfc7bddffe1049743b00a241e97ec241e8e2cfd7b2d49",
+  "review_status": "verified"
+}

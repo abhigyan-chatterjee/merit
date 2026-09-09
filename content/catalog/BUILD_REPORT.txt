@@ -1,0 +1,60 @@
+ALGOVISTA DSA CATALOG -- BUILD REPORT
+=====================================
+Source rows: 4199 canonical + 219 supplement-only = 4418
+Canonical entries after normalized re-dedup: 3997
+Merged dup groups (exact-title missed): 421
+Supplement-only titles folded in: 219
+
+DIFFICULTY: Medium=1803, Easy=815, Hard=774, Unknown=605
+ALGO TOPICS: arrays-hashing=1241, sliding-windows=730, dynamic-programming=612, graphs=332, trees=290, data-structures=222, math-matrices=143, linked-lists=132, stack=91, bit-manipulation=68, greedy=35, backtracking=32, sorting=27, binary-search=26, heap=9, trie=6, two-pointers=1
+Already in content/problems: 41
+New candidates: 3956
+
+TOP 25 COMPANIES (individual, cleaned):
+   2339  Google
+   2011  Amazon
+   1388  Meta
+   1373  Microsoft
+   1223  Bloomberg
+    348  Uber
+    336  TikTok
+    298  Apple
+    287  Oracle
+    259  Goldman Sachs
+    242  TCS
+    215  Infosys
+    182  Salesforce
+    168  LinkedIn
+    167  IBM
+    148  Adobe
+    143  Zoho
+    140  Walmart Labs
+    133  Visa
+    129  Accenture
+    124  Nvidia
+    122  Yandex
+    112  DE Shaw
+    104  Flipkart
+     96  Snowflake
+
+TOP 20 CANDIDATES (by company count, not yet in Algovista):
+   74 cos | dynamic-programming | Medium  | Longest Palindromic Substring [longest-palindromic-substring]
+   73 cos | dynamic-programming | Hard    | Trapping Rain Water [trapping-rain-water]
+   49 cos | linked-lists | Hard    | Merge K Sorted Lists [merge-k-sorted-lists]
+   44 cos | arrays-hashing | Hard    | Median of Two Sorted Arrays [median-of-two-sorted-arrays]
+   43 cos | data-structures | Hard    | Find Median from Data Stream [find-median-from-data-stream]
+   43 cos | arrays-hashing | Medium  | Koko Eating Bananas [koko-eating-bananas]
+   41 cos | arrays-hashing | Medium  | Kth Largest Element in an Array [kth-largest-element-in-an-array]
+   41 cos | arrays-hashing | Medium  | Meeting Rooms II [meeting-rooms-ii]
+   39 cos | arrays-hashing | Easy    | Move Zeroes [move-zeroes]
+   38 cos | graphs      | Hard    | Word Ladder [word-ladder]
+   37 cos | arrays-hashing | Medium  | Insert Delete GetRandom O(1) [insert-delete-getrandom-o-1]
+   37 cos | sliding-windows | Medium  | Letter Combinations of a Phone Number [letter-combinations-of-a-phone-number]
+   37 cos | stack       | Medium  | Min Stack [min-stack]
+   37 cos | arrays-hashing | Medium  | Sort Colors [sort-colors]
+   37 cos | sliding-windows | Medium  | String Compression [string-compression]
+   37 cos | graphs      | Medium  | Word Search [word-search]
+   36 cos | dynamic-programming | Hard    | Minimum Window Substring [minimum-window-substring]
+   35 cos | stack       | Medium  | Asteroid Collision [asteroid-collision]
+   35 cos | dynamic-programming | Medium  | Generate Parentheses [generate-parentheses]
+   35 cos | sliding-windows | Hard    | Text Justification [text-justification]

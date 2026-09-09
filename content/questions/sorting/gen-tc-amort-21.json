@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-amort-21",
+  "topic": "sorting",
+  "subtopic": "amortized-analysis",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Regarding computational complexity analysis: What is the maximum auxiliary stack space consumed by Depth-First Search on a balanced binary tree of n nodes?. Which of the following correctly characterizes the complexity?",
+  "options": [
+    "O(n)",
+    "O(log n)",
+    "O(1)",
+    "O(\u221an)"
+  ],
+  "correct_index": 1,
+  "explanation": "On a balanced binary tree of n nodes, the maximum depth from root to leaf is \u230alog\u2082 n\u230b. The recursion call stack at any moment contains at most O(log n) frames.",
+  "source": "generated",
+  "generator_key": "time_complexity.amortized",
+  "content_hash": "918a8792b6cdf227165f023559166889620824d7b50164a4446c6ec315da2f46",
+  "review_status": "verified"
+}

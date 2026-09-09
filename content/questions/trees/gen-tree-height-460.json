@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-height-460",
+  "topic": "trees",
+  "subtopic": "tree-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Keys `[215, 165, 265, 140, 190, 240, 290]` are inserted into an initially empty Binary Search Tree. What is the height (maximum number of levels / depth from root to deepest node) of this tree?",
+  "options": [
+    "6",
+    "2",
+    "3",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "By following BST insertion rules for `[215, 165, 265, 140, 190, 240, 290]`, the deepest path spans 3 levels.",
+  "source": "generated",
+  "generator_key": "tree_traversals.height",
+  "content_hash": "0041accc9def22549365cca6d851c8c7c4a3f1a461686d73a5b8836b6c4cd943",
+  "review_status": "verified"
+}

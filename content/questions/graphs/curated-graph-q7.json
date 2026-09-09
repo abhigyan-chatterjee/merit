@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q7",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a connected undirected graph with V vertices and no cycles (a tree), how many edges E are present?",
+  "options": [
+    "E = V - 1",
+    "E = V",
+    "E = V + 1",
+    "E = V(V - 1)/2"
+  ],
+  "correct_index": 0,
+  "explanation": "Every tree with V vertices has exactly V - 1 edges; adding any edge creates a cycle.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "45fde0695ab975e2bb45d0dc1ebf13c7750680001c968ea92465a353e3460e18",
+  "review_status": "verified"
+}

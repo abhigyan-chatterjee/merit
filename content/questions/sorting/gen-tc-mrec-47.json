@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-mrec-47",
+  "topic": "sorting",
+  "subtopic": "master-theorem",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Solve the asymptotic recurrence relation for an algorithm with base case T(1) = O(1):\n`T(n) = T(n/2) + O(1)`",
+  "options": [
+    "O(log n)",
+    "O(1)",
+    "O(n log n)",
+    "O(n)"
+  ],
+  "correct_index": 0,
+  "explanation": "Case 2: a=1, b=2, log\u2082 1 = 0. f(n) = O(1) = O(n^0). Hence \u0398(log n). This represents standard Binary Search.",
+  "source": "generated",
+  "generator_key": "time_complexity.master_theorem",
+  "content_hash": "a6ed10fda378c63276bef5407db8c644e19d727018fe6e16e96579b70a4f61a2",
+  "review_status": "verified"
+}

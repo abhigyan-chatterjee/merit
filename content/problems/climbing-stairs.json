@@ -2,7 +2,7 @@
   "id": "dp-1",
   "slug": "climbing-stairs",
   "title": "Climbing Stairs",
-  "topic": "dp",
+  "topic": "dynamic-programming",
   "difficulty": "Easy",
   "pattern": "1D Fibonacci State Transition",
   "statement": "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
@@ -36,7 +36,10 @@
       "code": "function solve(n) {\n  let a = 1, b = 1;\n  for (let i = 2; i <= n; i++) [a, b] = [b, a + b];\n  return b;\n}"
     }
   ],
-  "starterCode": "function solve(n) {\n  let prev2 = 1, prev1 = 1;\n  for (let i = 2; i <= n; i++) {\n    const curr = prev1 + prev2;\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}",
+  "starterCode": {
+    "javascript": "function solve(n,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -60,5 +63,8 @@
       "expected": 8,
       "label": "n = 5"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "house-robber"
 }

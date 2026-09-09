@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-40",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"HORSE\"` and `\"ROS\"`?",
+  "options": [
+    "5",
+    "3",
+    "2",
+    "1"
+  ],
+  "correct_index": 2,
+  "explanation": "Standard 2D DP matrix comparison between 'HORSE' and 'ROS' yields an LCS length of 2.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "05272ab85d39dfb1e91e7bd0b4f6cb3222714c62bf89b9b13a1b2daaed38daa2",
+  "review_status": "verified"
+}

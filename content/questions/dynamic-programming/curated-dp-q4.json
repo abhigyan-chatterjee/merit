@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q4",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In the 0/1 Knapsack problem with N items and capacity W, what is the state space dimension of the DP table?",
+  "options": [
+    "O(N * W)",
+    "O(2^N)",
+    "O(N + W)",
+    "O(N\u00b2)"
+  ],
+  "correct_index": 0,
+  "explanation": "Each state depends on item index i \u2208 [0..N] and remaining knapsack capacity w \u2208 [0..W].",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "fed72de0aa8e9b22ce8a3f30d1153202ab3c33064471ae4a866564c4032c9791",
+  "review_status": "verified"
+}

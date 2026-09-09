@@ -2,7 +2,7 @@
   "id": "arr-4",
   "slug": "container-with-most-water",
   "title": "Container With Most Water",
-  "topic": "arrays",
+  "topic": "two-pointers",
   "difficulty": "Medium",
   "pattern": "Two Pointers",
   "statement": "Given n non-negative integers height where each represents a point at coordinate (i, height[i]), find two lines that together with the x-axis form a container that holds the most water.",
@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(height) {\n  let max = 0;\n  for (let i = 0; i < height.length; i++) {\n    for (let j = i + 1; j < height.length; j++) {\n      max = Math.max(max, (j - i) * Math.min(height[i], height[j]));\n    }\n  }\n  return max;\n}"
     },
     {
@@ -37,7 +37,10 @@
       "code": "function solve(height) {\n  let l = 0, r = height.length - 1, max = 0;\n  while (l < r) {\n    max = Math.max(max, (r - l) * Math.min(height[l], height[r]));\n    if (height[l] < height[r]) l++; else r--;\n  }\n  return max;\n}"
     }
   ],
-  "starterCode": "function solve(height) {\n  let l = 0, r = height.length - 1;\n  let maxWater = 0;\n  while (l < r) {\n    const h = Math.min(height[l], height[r]);\n    maxWater = Math.max(maxWater, (r - l) * h);\n    if (height[l] < height[r]) l++;\n    else r--;\n  }\n  return maxWater;\n}",
+  "starterCode": {
+    "javascript": "function solve(height) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -80,5 +83,8 @@
       "expected": 16,
       "label": "[4,3,2,1,4]"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "valid-palindrome"
 }

@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q1",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What two fundamental properties must a problem exhibit to be solved effectively via Dynamic Programming?",
+  "options": [
+    "Overlapping Subproblems & Optimal Substructure",
+    "Greedy Choice Property & Sorted Input",
+    "Divide and Conquer & Disjoint Subproblems",
+    "Bipartite Graph & Monotonicity"
+  ],
+  "correct_index": 0,
+  "explanation": "Optimal solutions build from optimal sub-solutions (Optimal Substructure), and recursive branches repeat identical states (Overlapping Subproblems).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "a00e279668270e169322faeb2b16a0bd52c3f32674698135bbd5244175678551",
+  "review_status": "verified"
+}

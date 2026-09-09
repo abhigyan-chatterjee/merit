@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q7",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the optimal time complexity for finding the Longest Increasing Subsequence (LIS) of an array of length n?",
+  "options": [
+    "O(n log n) via binary search patience piles",
+    "O(n\u00b2)",
+    "O(n)",
+    "O(2\u207f)"
+  ],
+  "correct_index": 0,
+  "explanation": "Maintaining the smallest tail of all increasing subsequences of length k allows binary search updates in O(n log n).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "f7322b21c36b5edf7d8e2e1b3b2912b670a2f7fb303a7f6a2e257d2f8b4c8a5a",
+  "review_status": "verified"
+}

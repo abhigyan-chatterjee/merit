@@ -1,0 +1,20 @@
+{
+  "id": "gen-str-concept-43",
+  "topic": "sliding-windows",
+  "subtopic": "string-algorithms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How does the Boyer-Moore string matching algorithm achieve sublinear average-case time complexity?",
+  "options": [
+    "By compressing the text using Huffman encoding",
+    "By scanning the pattern from right-to-left and applying the Bad Character and Good Suffix skip heuristics",
+    "By sorting all characters in the text first",
+    "By hashing every character to 32 bits"
+  ],
+  "correct_index": 1,
+  "explanation": "Boyer-Moore matches characters backwards from the end of the pattern, allowing it to skip up to M characters at a time when a mismatch occurs.",
+  "source": "generated",
+  "generator_key": "arrays_strings.concepts",
+  "content_hash": "09743f9f0ce4463d7f24cba0601e31e683946647df3e89e727417e4815cf884c",
+  "review_status": "verified"
+}

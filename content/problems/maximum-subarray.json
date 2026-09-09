@@ -2,7 +2,7 @@
   "id": "arr-2",
   "slug": "maximum-subarray",
   "title": "Maximum Subarray (Kadane)",
-  "topic": "arrays",
+  "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "Kadane's Algorithm",
   "statement": "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
@@ -29,7 +29,7 @@
   "solutions": [
     {
       "title": "Quadratic Prefix Sums",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}"
     },
     {
@@ -38,7 +38,10 @@
       "code": "function solve(nums) {\n  let curr = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    best = Math.max(best, curr);\n  }\n  return best;\n}"
     }
   ],
-  "starterCode": "function solve(nums) {\n  let currentSum = nums[0];\n  let maxSum = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    currentSum = Math.max(nums[i], currentSum + nums[i]);\n    maxSum = Math.max(maxSum, currentSum);\n  }\n  return maxSum;\n}",
+  "starterCode": {
+    "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -80,5 +83,8 @@
       "expected": 23,
       "label": "[5,4,-1,7,8]"
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "house-robber",
+  "nextSlug": "coin-change"
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-amort-19",
+  "topic": "sorting",
+  "subtopic": "amortized-analysis",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Regarding computational complexity analysis: Populating a binary heap of n elements using Floyd's bottom-up buildHeap algorithm versus n sequential heap insertions. Which of the following correctly characterizes the complexity?",
+  "options": [
+    "Both are O(n)",
+    "buildHeap is O(n log n), sequential is O(n)",
+    "buildHeap is O(n), sequential insertion is O(n log n)",
+    "Both are O(n log n)"
+  ],
+  "correct_index": 2,
+  "explanation": "Floyd's algorithm computes sum_{h=0}^{log n} (n / 2^{h+1}) * O(h) which converges to O(n). In contrast, inserting n elements one-by-one into a heap can take up to sum log(i) = O(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.amortized",
+  "content_hash": "71cc3957a63e1b7e797832be4058841a6329aaca9fdb9c2248ac60dbe9c112dc",
+  "review_status": "verified"
+}

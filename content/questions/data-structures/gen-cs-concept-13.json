@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-13",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the primary difference between a process and a thread in modern operating systems?",
+  "options": [
+    "Processes have independent virtual address spaces; threads within a process share the same memory space",
+    "Processes run on the GPU; threads run on the CPU",
+    "Threads cannot be scheduled concurrently by the kernel",
+    "Threads have their own heap and global variables; processes share memory"
+  ],
+  "correct_index": 0,
+  "explanation": "A process is an execution unit with its own private virtual memory space. Threads belonging to the same process share code, data, and heap segments, maintaining only private stack and registers.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "5a9d48ab4f6afad639e70fb946c2da754706c0045d758d320db58fade05dd478",
+  "review_status": "verified"
+}

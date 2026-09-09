@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-count-7",
+  "topic": "bit-manipulation",
+  "subtopic": "popcount",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many set bits (1s in binary representation) are in the integer `23` (`0b10111`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
+  "options": [
+    "4",
+    "3",
+    "6",
+    "5"
+  ],
+  "correct_index": 0,
+  "explanation": "Integer 23 has binary representation 0b10111, containing exactly 4 set bit(s).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.popcount",
+  "content_hash": "2018ce9acb5e4715690607d7afc01050b61f34c11e8dd2c2d742a7e63972dfe8",
+  "review_status": "verified"
+}

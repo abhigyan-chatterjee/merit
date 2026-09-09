@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-stack-14",
+  "topic": "stack",
+  "subtopic": "stack-operations",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An initially empty LIFO stack undergoes the following sequence of operations:\n`push(4) -> push(8) -> pop() -> push(12) -> push(16) -> pop() -> pop()`\n\nWhat value is currently at the top of the stack?",
+  "options": [
+    "8",
+    "12",
+    "4",
+    "16"
+  ],
+  "correct_index": 2,
+  "explanation": "Simulating operations in LIFO order: Top of stack is 4.",
+  "source": "generated",
+  "generator_key": "ds_operations.stack_sim",
+  "content_hash": "c9abf96a35097603861386f456f5877c92050c225cc13937cce5c012dd036707",
+  "review_status": "verified"
+}

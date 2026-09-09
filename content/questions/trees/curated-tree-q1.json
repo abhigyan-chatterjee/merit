@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q1",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which traversal of a Binary Search Tree (BST) visits all node keys in non-decreasing sorted order?",
+  "options": [
+    "Preorder (NLR)",
+    "Inorder (LNR)",
+    "Postorder (LRN)",
+    "Level-Order BFS"
+  ],
+  "correct_index": 1,
+  "explanation": "Inorder traversal visits Left subtree (< root), then Root, then Right subtree (> root), producing sorted output.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "db67588c36babf1d6cc049809b05fa2c4b85538651511d7a407622146da91352",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q7",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In Quick Sort, what happens if the pivot chosen is repeatedly the smallest or largest element?",
+  "options": [
+    "Time complexity degrades to O(n\u00b2)",
+    "Time complexity remains O(n log n)",
+    "Space complexity becomes O(1)",
+    "The array cannot be sorted"
+  ],
+  "correct_index": 0,
+  "explanation": "Unbalanced partitions of size 0 and n-1 create a recursion depth of n, resulting in O(n\u00b2) comparisons.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "71f25bccd538ef38f7f5f4b6b0a912158a99a510ab7d706b06b6d5544d168ced",
+  "review_status": "verified"
+}

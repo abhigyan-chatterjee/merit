@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-count-33",
+  "topic": "bit-manipulation",
+  "subtopic": "popcount",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many set bits (1s in binary representation) are in the integer `77` (`0b1001101`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
+  "options": [
+    "5",
+    "4",
+    "3",
+    "7"
+  ],
+  "correct_index": 1,
+  "explanation": "Integer 77 has binary representation 0b1001101, containing exactly 4 set bit(s).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.popcount",
+  "content_hash": "367abd4c11e4bfdc78aa3099e143091fa3b25a43026efb60a6e050cd19f32048",
+  "review_status": "verified"
+}

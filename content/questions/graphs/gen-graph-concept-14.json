@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-concept-14",
+  "topic": "graphs",
+  "subtopic": "graph-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of detecting a cycle in a directed graph of V vertices and E edges using Kahn's algorithm (indegree BFS)?",
+  "options": [
+    "O(V * E)",
+    "O(V + E)",
+    "O(E log V)",
+    "O(V\u00b2)"
+  ],
+  "correct_index": 1,
+  "explanation": "Kahn's algorithm initializes indegrees in O(V + E), then processes each vertex and decrements edge counts in O(V + E) total time.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.concepts",
+  "content_hash": "53315542bea203dc870eb3357dd0a3fc72af8394bfc2eea11206d34c4694814e",
+  "review_status": "verified"
+}

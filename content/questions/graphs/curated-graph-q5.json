@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q5",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In Kahn\u2019s BFS algorithm for Topological Sort, which vertices are pushed into the initial queue?",
+  "options": [
+    "All vertices with in-degree equal to 0",
+    "All vertices with out-degree equal to 0",
+    "The vertex with highest degree",
+    "A randomly chosen vertex"
+  ],
+  "correct_index": 0,
+  "explanation": "Vertices with 0 prerequisites (in-degree 0) can be scheduled immediately without dependencies.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "094418657db85f269f5a986fad9447796936c285622cb8221b5dc91f855d345a",
+  "review_status": "verified"
+}

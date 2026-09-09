@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q8",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "When running DFS on a directed graph, which edge type indicates the presence of a directed cycle?",
+  "options": [
+    "Back Edge (to an ancestor currently on the recursion stack)",
+    "Cross Edge",
+    "Forward Edge",
+    "Tree Edge"
+  ],
+  "correct_index": 0,
+  "explanation": "A back edge points to an active ancestor node (colored gray / in recursion stack), completing a cycle.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "22627b416d47dabeef3952cb9f10216c2c958b2566507db6218ebc65ed528680",
+  "review_status": "verified"
+}

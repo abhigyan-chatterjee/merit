@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-rec-8",
+  "topic": "sorting",
+  "subtopic": "recurrence-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 2T(n-1) + O(1) with base case T(1) = O(1)?",
+  "options": [
+    "O(n\u00b2)",
+    "O(n log n)",
+    "O(n)",
+    "O(2^n)"
+  ],
+  "correct_index": 3,
+  "explanation": "A full binary recursion tree of depth n with constant work per node gives 2^0 + 2^1 + ... + 2^n = 2^(n+1) - 1 = \u0398(2^n).",
+  "source": "generated",
+  "generator_key": "time_complexity.recurrence",
+  "content_hash": "aab753f1e422ed27e341eb0a13ff5d4804b06a91f4f8286e09910b8d9a9e6b58",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-mrec-44",
+  "topic": "sorting",
+  "subtopic": "master-theorem",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Solve the asymptotic recurrence relation for an algorithm with base case T(1) = O(1):\n`T(n) = 9T(n/3) + O(n)`",
+  "options": [
+    "O(n log n)",
+    "O(n\u00b2)",
+    "O(n)",
+    "O(n\u00b3)"
+  ],
+  "correct_index": 1,
+  "explanation": "Case 1: a=9, b=3, log\u2083 9 = 2. f(n) = O(n\u00b9), so \u0398(n\u00b2).",
+  "source": "generated",
+  "generator_key": "time_complexity.master_theorem",
+  "content_hash": "59282bc28d5debf7d49ec0346abf44f612a3c1ee09f56dbf1cf53b251d9ac40c",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q8",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In House Robber (cannot rob adjacent houses), what is the recurrence for dp[i]?",
+  "options": [
+    "dp[i] = max(dp[i - 1], nums[i] + dp[i - 2])",
+    "dp[i] = dp[i - 1] + dp[i - 2]",
+    "dp[i] = nums[i] + dp[i - 1]",
+    "dp[i] = min(dp[i - 1], dp[i - 2])"
+  ],
+  "correct_index": 0,
+  "explanation": "Either skip house i (retaining dp[i-1]) or rob house i (adding nums[i] to best result from i-2).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "9a302c84159b68128cf87c8a470d48cb762a3b08a76a0da43a149edbca996190",
+  "review_status": "verified"
+}

@@ -2,7 +2,7 @@
   "id": "str-5",
   "slug": "valid-parentheses",
   "title": "Valid Parentheses",
-  "topic": "strings",
+  "topic": "stack",
   "difficulty": "Easy",
   "pattern": "Stack Matching",
   "statement": "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
@@ -36,7 +36,10 @@
       "code": "function solve(s) {\n  const stack = [];\n  for (const c of s) {\n    if (c === '(') stack.push(')');\n    else if (c === '{') stack.push('}');\n    else if (c === '[') stack.push(']');\n    else if (stack.pop() !== c) return false;\n  }\n  return stack.length === 0;\n}"
     }
   ],
-  "starterCode": "function solve(s) {\n  const stack = [];\n  const pairs = { ')': '(', '}': '{', ']': '[' };\n  for (const ch of s) {\n    if (pairs[ch]) {\n      if (stack.pop() !== pairs[ch]) return false;\n    } else {\n      stack.push(ch);\n    }\n  }\n  return stack.length === 0;\n}",
+  "starterCode": {
+    "javascript": "function solve(s,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -60,5 +63,8 @@
       "expected": true,
       "label": "\"{[]}\""
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "decode-string",
+  "nextSlug": null
 }

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q2",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which algorithmic technique finds a pair summing to a target in a sorted array using O(1) extra space?",
+  "options": [
+    "Hash Map Complement",
+    "Converging Two Pointers",
+    "Breadth-First Search",
+    "Monotonic Stack"
+  ],
+  "correct_index": 1,
+  "explanation": "With a sorted array, left=0 and right=n-1 pointers adjust inward based on sum comparisons in O(n) time and O(1) space.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "1708dfb05153684a5e3f25668dbb6054d8c85ebee09a6e29bc2164c5f0b4f62e",
+  "review_status": "verified"
+}

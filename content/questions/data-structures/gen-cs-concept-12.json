@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-12",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What anomaly describes the phenomenon where increasing the number of page frames results in an increased number of page faults under FIFO page replacement?",
+  "options": [
+    "Cache Thrashing",
+    "Amdahl's Law",
+    "Convoy Effect",
+    "Belady's Anomaly"
+  ],
+  "correct_index": 3,
+  "explanation": "Belady's Anomaly occurs in FIFO replacement because FIFO is not a stack-based algorithm (unlike LRU or Optimal), so increasing allocated frames can increase page fault count.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "ae5c30c85d99c399b353b0fc624d16c71e2e4a0a555f42b0a363376b9ceb4102",
+  "review_status": "verified"
+}

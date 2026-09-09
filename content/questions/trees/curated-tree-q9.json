@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q9",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "To validate if a binary tree is a valid BST, what state must be passed down recursive calls?",
+  "options": [
+    "Valid range (minAllowed, maxAllowed) for each subtree",
+    "Only the immediate parent value",
+    "Current depth counter",
+    "Total number of nodes"
+  ],
+  "correct_index": 0,
+  "explanation": "Checking only parent < child is insufficient; every node in the left subtree must be smaller than all ancestors above it.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "2d0a141809337f1d3c74f984ac0d94d313d41341164c0ac03f1936dcb41f6860",
+  "review_status": "verified"
+}

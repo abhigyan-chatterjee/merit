@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-rec-1",
+  "topic": "sorting",
+  "subtopic": "recurrence-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 2T(n/2) + O(n) with base case T(1) = O(1)?",
+  "options": [
+    "O(n)",
+    "O(n\u00b2)",
+    "O(n log n)",
+    "O(n log\u00b2 n)"
+  ],
+  "correct_index": 2,
+  "explanation": "Case 2 of Master Theorem: a=2, b=2, log_b(a)=1, f(n)=\u0398(n^1). Hence T(n) = \u0398(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.recurrence",
+  "content_hash": "7d87f32ad7f286a94b84bbbdf9284ffbc2e6239ac1c93128459ddb13d04fa113",
+  "review_status": "verified"
+}

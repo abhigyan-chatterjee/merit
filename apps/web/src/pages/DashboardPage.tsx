@@ -168,7 +168,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             <Link
-              to="/problems/arrays/two-sum"
+              to="/problems/arrays-hashing/two-sum"
               className="group inline-flex items-center justify-between gap-6 px-4 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer shrink-0"
             >
               <span className="inline-flex items-center gap-2">
@@ -290,7 +290,7 @@ export const DashboardPage: React.FC = () => {
               <div className="py-5 text-center space-y-2">
                 <p className="text-xs text-muted">No assessment scores recorded yet.</p>
                 <Link
-                  to="/quiz/arrays"
+                  to="/quiz/arrays-hashing"
                   className="inline-flex items-center gap-1.5 text-xs text-mint hover:underline font-mono"
                 >
                   Take a diagnostic quiz →

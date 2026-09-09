@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-16",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Why are B+ trees preferred over standard Binary Search Trees or Hash Indexes for relational database table indexing?",
+  "options": [
+    "B+ trees require O(1) time for all operations",
+    "B+ trees eliminate the need for write-ahead logging",
+    "B+ trees use less memory than hash tables for point lookups",
+    "B+ trees keep data in sorted leaf nodes linked sequentially, enabling efficient range scans and high-fanout shallow disk I/O"
+  ],
+  "correct_index": 3,
+  "explanation": "Disk I/O is costly; B+ trees have high branching factor (fanout > 100), meaning tree depth is typically 3-4. All records are stored at leaf level in linked order, making range queries (`BETWEEN a AND b`) efficient.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "28aaf32b00e8136913a1c07355eee5c2b9ede4bef2565caf758fff9b55222a6c",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-concept-62",
+  "topic": "linked-lists",
+  "subtopic": "data-structure-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of searching for a word of length L in a standard Trie containing N total words of average length M?",
+  "options": [
+    "O(M * log N)",
+    "O(N * L)",
+    "O(L)",
+    "O(log N)"
+  ],
+  "correct_index": 2,
+  "explanation": "Trie lookup checks one edge per character of the query string. Finding or failing a word of length L takes exactly O(L) time, completely independent of the number of words N stored in the Trie.",
+  "source": "generated",
+  "generator_key": "ds_operations.concepts",
+  "content_hash": "a62cb6ec42a3042ad63f36e9413e1109ef09bbb2e8fbbda023488701bfe9ef36",
+  "review_status": "verified"
+}

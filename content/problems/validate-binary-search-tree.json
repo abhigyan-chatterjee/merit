@@ -36,7 +36,10 @@
       "code": "function solve(arr) {\n  const inorder = [];\n  function dfs(i) {\n    if (i >= arr.length || arr[i] === null) return;\n    dfs(2 * i + 1);\n    inorder.push(arr[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  for (let i = 1; i < inorder.length; i++) if (inorder[i] <= inorder[i-1]) return false;\n  return true;\n}"
     }
   ],
-  "starterCode": "function solve(tree) {\n  function validate(idx, min, max) {\n    if (idx >= tree.length || tree[idx] === null) return true;\n    const val = tree[idx];\n    if (val <= min || val >= max) return false;\n    return validate(2 * idx + 1, min, val) && validate(2 * idx + 2, val, max);\n  }\n  return validate(0, -Infinity, Infinity);\n}",
+  "starterCode": {
+    "javascript": "function solve(tree,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -80,5 +83,8 @@
       "expected": false,
       "label": "[10,5,15,null,null,6,20]"
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "diameter-of-binary-tree",
+  "nextSlug": "kth-smallest-element-in-a-bst"
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-rec-7",
+  "topic": "sorting",
+  "subtopic": "recurrence-relations",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = T(n-1) + O(n) with base case T(1) = O(1)?",
+  "options": [
+    "O(n\u00b2)",
+    "O(2^n)",
+    "O(n log n)",
+    "O(n)"
+  ],
+  "correct_index": 0,
+  "explanation": "Unrolling gives the arithmetic series n + (n-1) + ... + 1 = n(n+1)/2 = \u0398(n\u00b2).",
+  "source": "generated",
+  "generator_key": "time_complexity.recurrence",
+  "content_hash": "da460a26236d336531e2d8dda8678fbb135af7522983cf062ffe549280dda32e",
+  "review_status": "verified"
+}

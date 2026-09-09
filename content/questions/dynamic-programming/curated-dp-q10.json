@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q10",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "When converting a 2D DP table into a 1D array for 0/1 Knapsack, in which direction must the inner capacity loop iterate?",
+  "options": [
+    "Backwards from W down to item.weight",
+    "Forwards from item.weight up to W",
+    "In random order",
+    "Only even capacities"
+  ],
+  "correct_index": 0,
+  "explanation": "Iterating backwards ensures each item is used at most once (reading from the previous row state rather than reusing the same item twice).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "37a31a2b2aa9e000d8b57468a38eb2605b64307e79ce48a629c06387d40fcbe8",
+  "review_status": "verified"
+}

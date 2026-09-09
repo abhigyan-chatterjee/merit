@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q3",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the recurrence invariant maintained by Kadane's Maximum Subarray algorithm?",
+  "options": [
+    "currMax = max(nums[i], currMax + nums[i])",
+    "currMax = min(nums[i], currMax - nums[i])",
+    "currMax = currMax * nums[i]",
+    "currMax = nums[i] + nums[i - 1]"
+  ],
+  "correct_index": 0,
+  "explanation": "At each index i, we either extend the previous subarray or start fresh at nums[i] if the prior sum became negative.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "060176fefc6da323aa000ed388dce2d96f50caa976e2bd3c9034ff1a9312e3c6",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-mrec-43",
+  "topic": "sorting",
+  "subtopic": "master-theorem",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Solve the asymptotic recurrence relation for an algorithm with base case T(1) = O(1):\n`T(n) = 3T(n/2) + O(n)`",
+  "options": [
+    "O(n\u00b2)",
+    "O(n^log\u2082 3)",
+    "O(n log n)",
+    "O(n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Case 1: a=3, b=2, log\u2082 3 \u2248 1.58 > 1. Hence \u0398(n^log\u2082 3).",
+  "source": "generated",
+  "generator_key": "time_complexity.master_theorem",
+  "content_hash": "8934fcd170701957f3bd93346cee6c4f746fdcccc619b340f985dade66e8852b",
+  "review_status": "verified"
+}

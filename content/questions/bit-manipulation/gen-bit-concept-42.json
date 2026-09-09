@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-concept-42",
+  "topic": "bit-manipulation",
+  "subtopic": "xor-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What bitwise expression checks whether a positive integer n is an exact power of 2 in O(1) time?",
+  "options": [
+    "(n & (n - 1)) == 0",
+    "(n | (n - 1)) == 0",
+    "(n & 1) == 0",
+    "(n ^ (n + 1)) == 0"
+  ],
+  "correct_index": 0,
+  "explanation": "A power of 2 has exactly one set bit (100...0). Subtracting 1 yields (011...1). Bitwise AND between them clears that single bit to 0.",
+  "source": "generated",
+  "generator_key": "bit_manipulation.concepts",
+  "content_hash": "3a8dd19ab2bc83a1bac4a23577481b465ba017da23fd5e53086912f3ca436bba",
+  "review_status": "verified"
+}

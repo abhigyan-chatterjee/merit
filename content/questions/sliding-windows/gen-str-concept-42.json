@@ -1,0 +1,20 @@
+{
+  "id": "gen-str-concept-42",
+  "topic": "sliding-windows",
+  "subtopic": "string-algorithms",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What data structure allows querying the Longest Common Prefix (LCP) and finding all occurrences of any substring in a text of length N in O(M) time after O(N) construction?",
+  "options": [
+    "Suffix Tree or Suffix Automaton",
+    "Adjacency Matrix",
+    "Disjoint Set Union",
+    "Binary Search Tree"
+  ],
+  "correct_index": 0,
+  "explanation": "A Suffix Tree exposes all substrings as root-to-node paths, enabling linear-time pattern search and LCP queries.",
+  "source": "generated",
+  "generator_key": "arrays_strings.concepts",
+  "content_hash": "a0905aab3920b7a745a694915da9578fa891fa20b7e604a28b0efc57faef98ef",
+  "review_status": "verified"
+}

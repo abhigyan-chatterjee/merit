@@ -1,0 +1,152 @@
+{
+  "id": "arr-7",
+  "slug": "merge-intervals",
+  "title": "Merge Intervals",
+  "topic": "intervals",
+  "difficulty": "Medium",
+  "pattern": "Sort & Sweep Merge",
+  "statement": "Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals.",
+  "examples": [
+    {
+      "input": "intervals = [[1,3],[2,6],[8,10],[15,18]]",
+      "output": "[[1,6],[8,10],[15,18]]"
+    },
+    {
+      "input": "intervals = [[1,4],[4,5]]",
+      "output": "[[1,5]]",
+      "explanation": "Intervals [1,4] and [4,5] touch at 4, so they merge."
+    }
+  ],
+  "constraints": [
+    "1 <= intervals.length <= 10^4",
+    "intervals[i].length == 2",
+    "0 <= start <= end <= 10^4"
+  ],
+  "hints": [
+    "Sort intervals by start time so overlaps become adjacent.",
+    "Keep a merged list; compare each interval against its last entry.",
+    "If next.start <= last.end, extend last.end; otherwise append a new interval."
+  ],
+  "solutions": [
+    {
+      "title": "Pairwise Overlap Scan",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "code": "function solve(intervals) {\n  const ivs = intervals.map(x => x.slice()).sort((a, b) => a[0] - b[0]);\n  const out = [];\n  for (const cur of ivs) {\n    let merged = false;\n    for (const prev of out) {\n      if (cur[0] <= prev[1] && prev[0] <= cur[1]) {\n        prev[0] = Math.min(prev[0], cur[0]);\n        prev[1] = Math.max(prev[1], cur[1]);\n        merged = true;\n        break;\n      }\n    }\n    if (!merged) out.push(cur.slice());\n  }\n  return out.sort((a, b) => a[0] - b[0]);\n}"
+    },
+    {
+      "title": "Sort & Single Sweep",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "code": "function solve(intervals) {\n  intervals.sort((a, b) => a[0] - b[0]);\n  const out = [intervals[0].slice()];\n  for (let i = 1; i < intervals.length; i++) {\n    const last = out[out.length - 1];\n    if (intervals[i][0] <= last[1]) last[1] = Math.max(last[1], intervals[i][1]);\n    else out.push(intervals[i].slice());\n  }\n  return out;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(intervals) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            8,
+            10
+          ],
+          [
+            15,
+            18
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          6
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          15,
+          18
+        ]
+      ],
+      "label": "[[1,3],[2,6],[8,10],[15,18]]"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            4
+          ],
+          [
+            4,
+            5
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          5
+        ]
+      ],
+      "label": "[[1,4],[4,5]]"
+    },
+    {
+      "input": [
+        [
+          [
+            4,
+            7
+          ],
+          [
+            1,
+            4
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          7
+        ]
+      ],
+      "label": "[[4,7],[1,4]] unsorted"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            3
+          ]
+        ]
+      ],
+      "expected": [
+        [
+          1,
+          4
+        ]
+      ],
+      "label": "[[1,4],[2,3]] nested"
+    }
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": null
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q7",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A full binary tree is defined as a tree where every node has how many children?",
+  "options": [
+    "Either 0 or 2 children",
+    "Exactly 2 children",
+    "At most 1 child",
+    "All leaves at same depth"
+  ],
+  "correct_index": 0,
+  "explanation": "In a full (proper) binary tree, every internal node has exactly 2 children and leaves have 0.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "6d457b75927527f96675ace8c1ada8b5e5dcf35f228994255ceace3c01797a4d",
+  "review_status": "verified"
+}

@@ -36,7 +36,10 @@
       "code": "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}"
     }
   ],
-  "starterCode": "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) {\n    if (p[i] !== q[i]) return false;\n  }\n  return true;\n}",
+  "starterCode": {
+    "javascript": "function solve(p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -86,5 +89,8 @@
       "expected": false,
       "label": "p=[1,2,1], q=[1,1,2]"
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "maximum-depth-of-binary-tree",
+  "nextSlug": "invert-binary-tree"
 }

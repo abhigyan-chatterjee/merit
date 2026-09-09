@@ -6,6 +6,7 @@ import {
   Layers,
   Code2,
   BrainCircuit,
+  GraduationCap,
   Search,
   Flame,
   X,
@@ -57,19 +58,20 @@ export const Navbar: React.FC = () => {
         visualizers: VISUALIZERS.slice(0, 4),
         problems: PROBLEMS.slice(0, 5)
       };
+    const problemHits = PROBLEMS.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.pattern.toLowerCase().includes(q) ||
+        p.topic.toLowerCase().includes(q)
+    ).slice(0, 20);
     return {
       paths: LEARNING_PATHS.filter(
         (p) => p.title.toLowerCase().includes(q) || p.blurb.toLowerCase().includes(q)
-      ),
+      ).slice(0, 10),
       visualizers: VISUALIZERS.filter(
         (v) => v.title.toLowerCase().includes(q) || v.category.toLowerCase().includes(q)
-      ),
-      problems: PROBLEMS.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.pattern.toLowerCase().includes(q) ||
-          p.topic.toLowerCase().includes(q)
-      )
+      ).slice(0, 10),
+      problems: problemHits
     };
   }, [query]);
 
@@ -80,11 +82,13 @@ export const Navbar: React.FC = () => {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/learn', label: 'Paths', icon: Route },
     { to: '/visualizers', label: 'Visualizers', icon: Layers },
-    { to: '/problems/arrays', label: 'Problems', icon: Code2 },
-    { to: '/quiz/mixed', label: 'Quizzes', icon: BrainCircuit }
+    { to: '/problems/arrays-hashing', label: 'Problems', icon: Code2 },
+    { to: '/quiz/mixed', label: 'Quizzes', icon: BrainCircuit },
+    { to: '/exams', label: 'Exams', icon: GraduationCap }
   ];
 
   const isActive = (path: string) => {
+    if (path.startsWith('/exams') && location.pathname.startsWith('/exams')) return true;
     if (path.startsWith('/learn') && location.pathname.startsWith('/learn')) return true;
     if (path.startsWith('/problems') && location.pathname.startsWith('/problems')) return true;
     if (path.startsWith('/quiz') && location.pathname.startsWith('/quiz')) return true;
@@ -175,6 +179,15 @@ export const Navbar: React.FC = () => {
 
             {user ? (
               <div className="flex items-center gap-1.5 pl-1 border-l border-line">
+                {user.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    title="Admin Console"
+                    className="px-2 py-1 rounded-lg border border-violet/40 bg-violet/10 text-xs font-mono text-violet hover:bg-violet/20 transition"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <div
                   title={`Signed in as ${user.displayName} (${user.email})`}
                   className="flex items-center gap-1.5 px-2 py-1 rounded-lg border border-line bg-surface text-xs font-mono text-ink"
@@ -182,6 +195,7 @@ export const Navbar: React.FC = () => {
                   <UserIcon className="w-3.5 h-3.5 text-mint" />
                   <span className="max-w-[80px] sm:max-w-[120px] truncate">{user.displayName}</span>
                 </div>
+
                 <button
                   onClick={() => logout()}
                   title="Sign out"
@@ -206,7 +220,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile bottom tab bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-line bg-canvas/95 backdrop-blur-md">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-6">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = isActive(link.to);
@@ -214,7 +228,7 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative flex flex-col items-center justify-center gap-1 h-14 text-[10px] font-mono tracking-wide ${
+                className={`relative flex flex-col items-center justify-center gap-1 h-14 text-[9px] font-mono tracking-wide ${
                   active ? 'text-mint' : 'text-muted'
                 }`}
               >

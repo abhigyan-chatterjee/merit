@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-cidr-28",
+  "topic": "data-structures",
+  "subtopic": "subnetting",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/28`?",
+  "options": [
+    "15",
+    "16",
+    "14",
+    "18"
+  ],
+  "correct_index": 2,
+  "explanation": "A /28 subnet has 32 - 28 = 4 host bits, yielding 2^4 = 16 total addresses. Subtracting 2 (network and broadcast) yields 14 usable host IPs.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.cidr",
+  "content_hash": "cf06d9d6c9280872b42bd4158a790ef20b3d591150c57da30c7dea888ba9bb53",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-concept-45",
+  "topic": "dynamic-programming",
+  "subtopic": "dp-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What two core mathematical properties must a problem satisfy to be solvable via Dynamic Programming?",
+  "options": [
+    "Optimal substructure and overlapping subproblems",
+    "Greedy choice property and independence",
+    "Divide and conquer and sparsity",
+    "Polynomial time and monotonicity"
+  ],
+  "correct_index": 0,
+  "explanation": "Dynamic programming applies when the problem exhibits overlapping subproblems (recomputing identical states) and optimal substructure (optimal solution composed of optimal solutions to subproblems).",
+  "source": "generated",
+  "generator_key": "dp.concepts",
+  "content_hash": "c7fe94027d4cff104d491c6ba22c78880ad0dd822b0da25cb0447f8752920174",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-dijk-8",
+  "topic": "graphs",
+  "subtopic": "shortest-path",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Consider a directed graph with weighted edges:\n```text\n  U -> (V, w=2), (W, w=4)\n  V -> (W, w=1), (X, w=7)\n  W -> (X, w=3)\n  X -> (Y, w=1)\n  Y -> \n```\nUsing Dijkstra's algorithm, what is the length of the shortest path from vertex `U` to vertex `Y`?",
+  "options": [
+    "7",
+    "5",
+    "11",
+    "13"
+  ],
+  "correct_index": 0,
+  "explanation": "Applying Dijkstra's algorithm from source U greedily relaxes edges. The shortest distance to Y is 7.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.dijkstra",
+  "content_hash": "68ed8158b853f9f0b838bc9bf1d19b9c275496120c5437720580022485095cd1",
+  "review_status": "verified"
+}

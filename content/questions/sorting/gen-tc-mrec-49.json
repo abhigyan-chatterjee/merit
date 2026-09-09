@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-mrec-49",
+  "topic": "sorting",
+  "subtopic": "master-theorem",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Solve the asymptotic recurrence relation for an algorithm with base case T(1) = O(1):\n`T(n) = 4T(n/2) + O(n\u00b2)`",
+  "options": [
+    "O(n\u00b3)",
+    "O(n\u00b2)",
+    "O(n log n)",
+    "O(n\u00b2 log n)"
+  ],
+  "correct_index": 3,
+  "explanation": "Case 2: a=4, b=2, log\u2082 4 = 2. f(n) = \u0398(n\u00b2). Hence \u0398(n\u00b2 log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.master_theorem",
+  "content_hash": "75e16fb920c791d7aeb32f5294b672fa08303d20fa65ce1cbb7279d02c57281a",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-param-26",
+  "topic": "sorting",
+  "subtopic": "nested-loops",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    j = 1\n    while j <= n:\n        j *= 3\n```",
+  "options": [
+    "O(n log n)",
+    "O(n * 3)",
+    "O(n\u00b2)",
+    "O(n\u00b2 log n)"
+  ],
+  "correct_index": 0,
+  "explanation": "Outer loop runs n times. Inner loop multiplies j by 3 each step, running log_3(n) times. Asymptotic time is \u0398(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.param_loop",
+  "content_hash": "2f816c03c57f20675f85d3323383a5f0028ed5d319fbcaf5a9ba3f28617f74cd",
+  "review_status": "verified"
+}

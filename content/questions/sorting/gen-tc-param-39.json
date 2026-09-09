@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-param-39",
+  "topic": "sorting",
+  "subtopic": "nested-loops",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    for k from 1 to n:\n        j = 1\n        while j <= n:\n            j *= 8\n```",
+  "options": [
+    "O(n\u00b2)",
+    "O(n\u00b2 log n)",
+    "O(n\u00b3)",
+    "O(n\u00b3 log n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Two outer loops each run n times (total n\u00b2 combinations). The innermost loop runs log_8(n) times. Asymptotic time is \u0398(n\u00b2 log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.param_loop",
+  "content_hash": "774cc82330e340e67f4031b6edc897a194c0bc89402991a5c7d3a94a47a7336e",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-41",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"DISTANCE\"` and `\"EDITING\"`?",
+  "options": [
+    "4",
+    "5",
+    "7",
+    "3"
+  ],
+  "correct_index": 0,
+  "explanation": "Standard 2D DP matrix comparison between 'DISTANCE' and 'EDITING' yields an LCS length of 4.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "1cdb8a3eccad89a564bc0d9e31bf496acb93a72a70813b31987f1af02b6b687f",
+  "review_status": "verified"
+}

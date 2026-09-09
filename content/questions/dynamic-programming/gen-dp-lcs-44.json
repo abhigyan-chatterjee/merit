@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-44",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"HELLO\"` and `\"WORLD\"`?",
+  "options": [
+    "1",
+    "4",
+    "3",
+    "2"
+  ],
+  "correct_index": 0,
+  "explanation": "Standard 2D DP matrix comparison between 'HELLO' and 'WORLD' yields an LCS length of 1.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "147828e851da603eafae0a3dccba549e185c4c8d0024e1413c44d4f893c17494",
+  "review_status": "verified"
+}

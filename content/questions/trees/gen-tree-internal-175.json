@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-internal-175",
+  "topic": "trees",
+  "subtopic": "tree-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Keys `[12, 6, 18, 3, 9, 15, 21]` are inserted into an initially empty Binary Search Tree. How many internal nodes (non-leaf nodes with at least one child) exist in the resulting tree?",
+  "options": [
+    "5",
+    "6",
+    "2",
+    "3"
+  ],
+  "correct_index": 3,
+  "explanation": "With 7 total nodes and 4 leaves, the number of internal nodes is 7 - 4 = 3.",
+  "source": "generated",
+  "generator_key": "tree_traversals.internal_nodes",
+  "content_hash": "199550b7220ba9a8626536e8b492bffce9c3a56170d332b7688249ff94f486c0",
+  "review_status": "verified"
+}

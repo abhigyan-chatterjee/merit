@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q6",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What data structure achieves nearly O(1) time per operation for Dynamic Connectivity & Cycle Detection in undirected graphs?",
+  "options": [
+    "Disjoint Set Union (Union-Find) with Path Compression",
+    "Adjacency Matrix",
+    "Binary Search Tree",
+    "Min-Heap"
+  ],
+  "correct_index": 0,
+  "explanation": "Union by rank + path compression yields O(\u03b1(V)) inverse Ackermann time per find/union operation.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "da86192db8b56e8fc8f00ed336fc29d46d662f5ff27c91413d735a23814eebf9",
+  "review_status": "verified"
+}

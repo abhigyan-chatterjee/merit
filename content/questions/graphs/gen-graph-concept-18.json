@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-concept-18",
+  "topic": "graphs",
+  "subtopic": "graph-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the maximum number of edges in a simple connected undirected graph with V vertices?",
+  "options": [
+    "V(V - 1)",
+    "V(V - 1) / 2",
+    "V\u00b2",
+    "2^(V - 1)"
+  ],
+  "correct_index": 1,
+  "explanation": "Each vertex can connect to at most (V - 1) other vertices. Dividing by 2 because edges are undirected yields C(V, 2) = V(V - 1) / 2 edges in a complete graph K_V.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.concepts",
+  "content_hash": "808a538b0dd87dd46b753336b3c813becd49b3c584549113839007d3114886c5",
+  "review_status": "verified"
+}

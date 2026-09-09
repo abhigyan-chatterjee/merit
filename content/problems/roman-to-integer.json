@@ -1,0 +1,74 @@
+{
+  "id": "str-7",
+  "slug": "roman-to-integer",
+  "title": "Roman to Integer",
+  "topic": "math-matrices",
+  "difficulty": "Easy",
+  "pattern": "Subtractive Peek",
+  "statement": "Given a valid roman numeral string s using symbols I, V, X, L, C, D, M, convert it to its integer value using standard subtractive notation (IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900).",
+  "examples": [
+    {
+      "input": "s = \"MCMXCIV\"",
+      "output": "1994",
+      "explanation": "M + CM + XC + IV = 1000 + 900 + 90 + 4."
+    },
+    {
+      "input": "s = \"LVIII\"",
+      "output": "58",
+      "explanation": "L + V + III = 50 + 5 + 3."
+    }
+  ],
+  "constraints": [
+    "1 <= s.length <= 15",
+    "s contains only I, V, X, L, C, D, M",
+    "s is a valid roman numeral in range 1 to 3999"
+  ],
+  "hints": [
+    "Map each symbol to its value: I=1, V=5, X=10, L=50, C=100, D=500, M=1000.",
+    "Scan left to right comparing each symbol with the next one.",
+    "If current < next, subtract it; otherwise add it."
+  ],
+  "solutions": [
+    {
+      "title": "Right-to-Left Max Tracking",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0, maxSeen = 0;\n  for (let i = s.length - 1; i >= 0; i--) {\n    if (v[s[i]] >= maxSeen) { total += v[s[i]]; maxSeen = v[s[i]]; }\n    else total -= v[s[i]];\n  }\n  return total;\n}"
+    },
+    {
+      "title": "Left-to-Right Subtractive Peek",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0;\n  for (let i = 0; i < s.length; i++) {\n    const cur = v[s[i]], next = v[s[i + 1]] || 0;\n    if (cur < next) total -= cur;\n    else total += cur;\n  }\n  return total;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "III"
+      ],
+      "expected": 3,
+      "label": "\"III\""
+    },
+    {
+      "input": [
+        "LVIII"
+      ],
+      "expected": 58,
+      "label": "\"LVIII\""
+    },
+    {
+      "input": [
+        "MCMXCIV"
+      ],
+      "expected": 1994,
+      "label": "\"MCMXCIV\""
+    }
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "spiral-matrix"
+}

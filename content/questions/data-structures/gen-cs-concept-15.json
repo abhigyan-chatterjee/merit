@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-15",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which ACID transaction property guarantees that committed transaction changes survive system crashes or power failures?",
+  "options": [
+    "Atomicity",
+    "Durability",
+    "Isolation",
+    "Consistency"
+  ],
+  "correct_index": 1,
+  "explanation": "Durability guarantees that once a transaction has committed, its updates are recorded in non-volatile storage (WAL/disk) and will not be lost even during a crash.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "3420cf6618d157095bb758e72a4f020e19d710859e2dfe393c9571f16dd28389",
+  "review_status": "verified"
+}

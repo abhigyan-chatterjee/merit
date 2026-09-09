@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-cidr-30",
+  "topic": "data-structures",
+  "subtopic": "subnetting",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/30`?",
+  "options": [
+    "6",
+    "4",
+    "2",
+    "3"
+  ],
+  "correct_index": 2,
+  "explanation": "A /30 subnet has 32 - 30 = 2 host bits, yielding 2^2 = 4 total addresses. Subtracting 2 (network and broadcast) yields 2 usable host IPs.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.cidr",
+  "content_hash": "717b6557b041a562602c4fc3dfca9f3f99bda84c4c6cd8050ebe41bebfbbc1dc",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q10",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of Binary Search on a sorted array of size n?",
+  "options": [
+    "O(1)",
+    "O(log\u2082 n)",
+    "O(\u221an)",
+    "O(n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Each comparison eliminates half of the remaining search space, requiring at most floor(log\u2082 n) + 1 steps.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "c54a21e2714a73d749c3ba2c408009de647147c4f34794fc2f4c704cd7ec0f36",
+  "review_status": "verified"
+}

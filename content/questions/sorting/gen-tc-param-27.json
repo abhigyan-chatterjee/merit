@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-param-27",
+  "topic": "sorting",
+  "subtopic": "nested-loops",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    for k from 1 to n:\n        j = 1\n        while j <= n:\n            j *= 3\n```",
+  "options": [
+    "O(n\u00b2 log n)",
+    "O(n\u00b3 log n)",
+    "O(n\u00b3)",
+    "O(n\u00b2)"
+  ],
+  "correct_index": 0,
+  "explanation": "Two outer loops each run n times (total n\u00b2 combinations). The innermost loop runs log_3(n) times. Asymptotic time is \u0398(n\u00b2 log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.param_loop",
+  "content_hash": "dc57407c4ec6b305431f4243fe012a5b5aa5e582663d7b0e16dc5bbac03d0576",
+  "review_status": "verified"
+}

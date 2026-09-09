@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q6",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In Coin Change (minimum coins to make amount A), what value should dp[0] be initialized to?",
+  "options": [
+    "0 (zero coins needed to make amount 0)",
+    "Infinity",
+    "1",
+    "-1"
+  ],
+  "correct_index": 0,
+  "explanation": "Base case: making an amount of 0 requires 0 coins. All positive amounts start at Infinity.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "1e6edb26536db59a820d74b572534d089c868c8ac722ed6ea6ab11d06ab5f552",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q1",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of accessing an element by index in a contiguous static array?",
+  "options": [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n log n)"
+  ],
+  "correct_index": 0,
+  "explanation": "Memory address is computed directly via base_address + index * element_size in O(1) constant time.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "7ee41c777674c23d1f434b668c58443c452294549e820c75acab8f0e0630d75a",
+  "review_status": "verified"
+}

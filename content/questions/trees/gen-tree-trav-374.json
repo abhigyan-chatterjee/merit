@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-trav-374",
+  "topic": "trees",
+  "subtopic": "postorder-traversal",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[155, 105, 205, 80, 130, 180, 230]`\n\nWhat is the exact **Postorder** traversal sequence of this tree?",
+  "options": [
+    "80, 105, 130, 155, 180, 205, 230",
+    "80, 130, 105, 180, 230, 205, 155",
+    "155, 105, 205, 80, 130, 180, 230",
+    "155, 105, 80, 130, 205, 180, 230"
+  ],
+  "correct_index": 1,
+  "explanation": "Postorder traversal visits Left Subtree -> Right Subtree -> Root. Root 155 is processed last after all its children: [80, 130, 105, 180, 230, 205, 155].",
+  "source": "generated",
+  "generator_key": "tree_traversals.sequence",
+  "content_hash": "a49c1bf3e735f391ae2e45552d13193c4408330cc596ceadf3f50282d8cee2e0",
+  "review_status": "verified"
+}

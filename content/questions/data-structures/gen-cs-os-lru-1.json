@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-os-lru-1",
+  "topic": "data-structures",
+  "subtopic": "virtual-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In an Operating System virtual memory system with `3` physical page frames initially empty, the page reference stream is:\n`[7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]`\n\nUsing the Least Recently Used (LRU) page replacement algorithm, how many total page faults occur?",
+  "options": [
+    "8",
+    "9",
+    "12",
+    "11"
+  ],
+  "correct_index": 1,
+  "explanation": "Tracking page presence in 3 frames with LRU eviction on misses results in exactly 9 page faults.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.lru_faults",
+  "content_hash": "05b88ded0f95eaec36d42e8b1aae2a5d2f29a11f649e218518663f272876d2b4",
+  "review_status": "verified"
+}

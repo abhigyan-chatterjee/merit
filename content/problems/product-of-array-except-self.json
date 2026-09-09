@@ -2,7 +2,7 @@
   "id": "arr-3",
   "slug": "product-of-array-except-self",
   "title": "Product of Array Except Self",
-  "topic": "arrays",
+  "topic": "arrays-hashing",
   "difficulty": "Medium",
   "pattern": "Prefix & Suffix Products",
   "statement": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. Must run in O(n) without division.",
@@ -37,7 +37,10 @@
       "code": "function solve(nums) {\n  const n = nums.length, res = new Array(n).fill(1);\n  for (let i = 1; i < n; i++) res[i] = res[i - 1] * nums[i - 1];\n  let right = 1;\n  for (let i = n - 1; i >= 0; i--) { res[i] *= right; right *= nums[i]; }\n  return res;\n}"
     }
   ],
-  "starterCode": "function solve(nums) {\n  const n = nums.length;\n  const res = new Array(n).fill(1);\n  let prefix = 1;\n  for (let i = 0; i < n; i++) {\n    res[i] = prefix;\n    prefix *= nums[i];\n  }\n  let suffix = 1;\n  for (let i = n - 1; i >= 0; i--) {\n    res[i] *= suffix;\n    suffix *= nums[i];\n  }\n  return res;\n}",
+  "starterCode": {
+    "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -89,5 +92,8 @@
       ],
       "label": "[2,5]"
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "valid-anagram",
+  "nextSlug": "subarray-sum-equals-k"
 }

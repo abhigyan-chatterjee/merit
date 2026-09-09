@@ -1,0 +1,20 @@
+{
+  "id": "gen-sort-prop-18",
+  "topic": "sorting",
+  "subtopic": "sorting-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Why is Heap Sort typically not preferred for cache-sensitive performance compared to Quick Sort, despite having O(n log n) worst-case guarantee?",
+  "options": [
+    "Heap Sort requires O(n\u00b2) operations on average",
+    "Heap Sort makes non-contiguous parent-child jumps in memory, causing frequent CPU cache misses",
+    "Heap Sort is not in-place",
+    "Heap Sort uses O(n) auxiliary memory"
+  ],
+  "correct_index": 1,
+  "explanation": "Heap navigation hops between index i and 2i+1, which rapidly breaks cache locality on modern processor hierarchies. Quick Sort exhibits excellent contiguous sequential spatial locality.",
+  "source": "generated",
+  "generator_key": "sorting_searching.properties",
+  "content_hash": "05ffa233ba3d1f6639aa18fefb77574df3a4a89ef0d3c32b3f046ecb03b37108",
+  "review_status": "verified"
+}

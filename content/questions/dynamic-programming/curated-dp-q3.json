@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q3",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the naive recursive time complexity of fib(n) = fib(n-1) + fib(n-2) WITHOUT memoization?",
+  "options": [
+    "O(2\u207f)",
+    "O(n)",
+    "O(n\u00b2)",
+    "O(n log n)"
+  ],
+  "correct_index": 0,
+  "explanation": "The recursion tree branches into 2 calls at every depth up to n, yielding ~1.618^n = O(2\u207f) calls.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "9839c638565a14c8ad7f93f31ea60f47c232021b141f6027b3d08d0a94a4098a",
+  "review_status": "verified"
+}

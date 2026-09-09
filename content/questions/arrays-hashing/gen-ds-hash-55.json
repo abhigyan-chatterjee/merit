@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-hash-55",
+  "topic": "arrays-hashing",
+  "subtopic": "collision-resolution",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A hash table of size 7 uses open addressing with linear probing (hash function `h(k) = k mod 7`). Keys are inserted in the following order: `[3, 10, 17, 24, 31]`.\nAt which slot index in the table will key `31` be placed?",
+  "options": [
+    "6",
+    "2",
+    "0",
+    "1"
+  ],
+  "correct_index": 2,
+  "explanation": "Key 31 has initial hash 31 % 7 = 3. Due to prior collisions, it requires 5 probe(s) and lands in slot 0.",
+  "source": "generated",
+  "generator_key": "ds_operations.linear_probing",
+  "content_hash": "5eab26ed824a9b7e8929cd6724d20e5ba5171c00494aaf22bfc19e2d70c6c2b0",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-cidr-23",
+  "topic": "data-structures",
+  "subtopic": "subnetting",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/23`?",
+  "options": [
+    "512",
+    "506",
+    "510",
+    "1022"
+  ],
+  "correct_index": 2,
+  "explanation": "A /23 subnet has 32 - 23 = 9 host bits, yielding 2^9 = 512 total addresses. Subtracting 2 (network and broadcast) yields 510 usable host IPs.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.cidr",
+  "content_hash": "d7c3348e73b58ea2bc6b2fe541ea996511a2e335b0a58e7459081863b5535b1b",
+  "review_status": "verified"
+}

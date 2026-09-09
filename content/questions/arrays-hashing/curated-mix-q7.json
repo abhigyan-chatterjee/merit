@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q7",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the worst-case time complexity of Quick Sort using Lomuto partition?",
+  "options": [
+    "O(n log n)",
+    "O(n\u00b2)",
+    "O(n)",
+    "O(log n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Choosing the smallest or largest element as pivot at every step produces unbalanced partitions of size 0 and n-1.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "8fa1ca9c46cb3e563092fbfd538979fce2c4acbac9a0306aef4cf9783e776f32",
+  "review_status": "verified"
+}

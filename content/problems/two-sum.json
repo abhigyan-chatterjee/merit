@@ -2,7 +2,7 @@
   "id": "arr-1",
   "slug": "two-sum",
   "title": "Two Sum",
-  "topic": "arrays",
+  "topic": "arrays-hashing",
   "difficulty": "Easy",
   "pattern": "Hash Map / Complement",
   "statement": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution.",
@@ -23,14 +23,14 @@
     "Only one valid answer exists."
   ],
   "hints": [
-    "A brute force approach inspects all pairs (i, j) in O(n²) time.",
+    "A brute force approach inspects all pairs (i, j) in O(n\u00b2) time.",
     "Can we look up the complement (target - nums[i]) in O(1) time?",
     "Store previously visited numbers and their indices in a Map."
   ],
   "solutions": [
     {
       "title": "Brute Force Nested Loops",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    for (let j = i + 1; j < nums.length; j++) {\n      if (nums[i] + nums[j] === target) return [i, j];\n    }\n  }\n  return [];\n}"
     },
     {
@@ -39,7 +39,10 @@
       "code": "function solve(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const diff = target - nums[i];\n    if (seen.has(diff)) return [seen.get(diff), i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}"
     }
   ],
-  "starterCode": "function solve(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (seen.has(complement)) {\n      return [seen.get(complement), i];\n    }\n    seen.set(nums[i], i);\n  }\n  return [];\n}",
+  "starterCode": {
+    "javascript": "function solve(nums, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -87,5 +90,8 @@
       ],
       "label": "nums=[3,3], target=6"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "contains-duplicate"
 }

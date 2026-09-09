@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-leaf-160",
+  "topic": "trees",
+  "subtopic": "tree-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Keys `[52, 26, 78, 13, 39, 65, 91]` are inserted into an initially empty Binary Search Tree. How many leaf nodes (nodes with no left or right children) exist in the resulting tree?",
+  "options": [
+    "5",
+    "4",
+    "7",
+    "3"
+  ],
+  "correct_index": 1,
+  "explanation": "A leaf node has both left and right pointers equal to null. In the resulting tree, exactly 4 such nodes are formed.",
+  "source": "generated",
+  "generator_key": "tree_traversals.leaves",
+  "content_hash": "060f4d58a1608b622946fc42de31be2f7ba4e62ea5a67c7d1af89eac42365685",
+  "review_status": "verified"
+}

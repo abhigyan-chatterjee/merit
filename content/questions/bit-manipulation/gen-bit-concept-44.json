@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-concept-44",
+  "topic": "bit-manipulation",
+  "subtopic": "xor-properties",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of reversing the bits of a 32-bit integer using divide-and-conquer bit masks (swapping 16, 8, 4, 2, and 1-bit chunks)?",
+  "options": [
+    "O(32)",
+    "O(log 32)",
+    "O(n)",
+    "O(1)"
+  ],
+  "correct_index": 3,
+  "explanation": "Because the word size is fixed at 32 bits, swapping bitfields using 5 constant bit masks executes in a constant number of CPU cycles (O(1) time).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.concepts",
+  "content_hash": "c52dfc5d1f59a6a7800861661955a374bc3535a5f451f5fb04a7c36e6520f85c",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q10",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How is the space complexity of 2D grid DP (dp[r][c] = dp[r-1][c] + dp[r][c-1]) reduced?",
+  "options": [
+    "To O(columns) with a 1D rolling array",
+    "To O(1) with no changes",
+    "It cannot be reduced below O(rows\u00b7columns)",
+    "By sorting the grid first"
+  ],
+  "correct_index": 0,
+  "explanation": "Each row only depends on the previous row and itself, so a single 1D array updated left-to-right suffices.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "fb52d85ef9942ee7bdf9d91ed690f0adeab85dcc3ee389151b3d3957eeec72da",
+  "review_status": "verified"
+}

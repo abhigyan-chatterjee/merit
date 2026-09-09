@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-lowest-20",
+  "topic": "bit-manipulation",
+  "subtopic": "bit-tricks",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the result of evaluating the bitwise expression `n & (-n)` when `n = 29`? (This expression isolates the lowest set bit using two's complement arithmetic).",
+  "options": [
+    "4",
+    "0",
+    "1",
+    "2"
+  ],
+  "correct_index": 2,
+  "explanation": "In two's complement, -n = ~n + 1. Performing n & (-n) isolates the rightmost 1-bit, yielding 1.",
+  "source": "generated",
+  "generator_key": "bit_manipulation.lowest_bit",
+  "content_hash": "f785f21780d5454578daf694baf6c4e244c9df1736fd39c4c86bfad78c6b4d89",
+  "review_status": "verified"
+}

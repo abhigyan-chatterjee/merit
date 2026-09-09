@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q2",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the difference between Top-Down Memoization and Bottom-Up Tabulation?",
+  "options": [
+    "Top-Down caches recursive calls on demand; Bottom-Up iteratively fills a table from base cases",
+    "Top-Down is always O(1) space; Bottom-Up is always O(n\u00b2)",
+    "Bottom-Up uses recursion; Top-Down uses loops",
+    "They produce different time complexities on dense state spaces"
+  ],
+  "correct_index": 0,
+  "explanation": "Memoization wraps recursive functions with a lookup cache, whereas Tabulation orders states topologically in loops.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "e23002ed0dd27d324f5df23d20e1536e3bc46f7a086873a710e9768b911f5bc0",
+  "review_status": "verified"
+}

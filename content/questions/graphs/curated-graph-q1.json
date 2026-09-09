@@ -1,0 +1,20 @@
+{
+  "id": "curated-graph-q1",
+  "topic": "graphs",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of Breadth-First Search (BFS) on a graph represented as an Adjacency List with V vertices and E edges?",
+  "options": [
+    "O(V + E)",
+    "O(V\u00b2)",
+    "O(V * E)",
+    "O(E log V)"
+  ],
+  "correct_index": 0,
+  "explanation": "BFS visits every vertex at most once O(V) and inspects every directed/undirected edge at most twice O(E).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "bf36eb4f1ffe86fc3cf43763901570d7bf9d8691bff7ed2cdea8f4085bdef6c0",
+  "review_status": "verified"
+}

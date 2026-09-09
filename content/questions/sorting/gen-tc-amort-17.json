@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-amort-17",
+  "topic": "sorting",
+  "subtopic": "amortized-analysis",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Regarding computational complexity analysis: Inserting n elements sequentially into an initially empty dynamic array with capacity doubling strategy. Which of the following correctly characterizes the complexity?",
+  "options": [
+    "O(n) amortized per insert, O(n\u00b2) total",
+    "O(log n) amortized per insert",
+    "O(1) amortized per insert, O(n) total",
+    "O(n log n) total"
+  ],
+  "correct_index": 2,
+  "explanation": "Doubling capacity when full causes reallocations at powers of 2 (1, 2, 4, ..., n). Total copy cost <= 2n, so average cost per insertion is (n + 2n)/n = O(1) amortized.",
+  "source": "generated",
+  "generator_key": "time_complexity.amortized",
+  "content_hash": "ce6255298624725605b6913ed550ee7b479c354a0e6b6160bb5daf6dd095426d",
+  "review_status": "verified"
+}

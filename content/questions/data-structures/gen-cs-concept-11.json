@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-11",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What four Coffman conditions are simultaneously necessary and sufficient for a system deadlock to occur?",
+  "options": [
+    "Race Condition, Deadlock, Livelock, Starvation",
+    "Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait",
+    "Virtual Memory, Thrashing, Belady's Anomaly, Semaphore",
+    "Mutual Exclusion, Starvation, Priority Inversion, Aging"
+  ],
+  "correct_index": 1,
+  "explanation": "Coffman proved that deadlock can occur if and only if all 4 conditions hold simultaneously: Mutual exclusion, Hold and wait, No preemption, and Circular wait.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "63eee4e0e6e8c48a8e280b810c1a77ea85dc9f702f712a7cbbfd45962049bca4",
+  "review_status": "verified"
+}

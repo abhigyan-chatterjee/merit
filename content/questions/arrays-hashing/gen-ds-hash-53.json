@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-hash-53",
+  "topic": "arrays-hashing",
+  "subtopic": "collision-resolution",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A hash table of size 13 uses open addressing with linear probing (hash function `h(k) = k mod 13`). Keys are inserted in the following order: `[26, 39, 52, 65, 13]`.\nAt which slot index in the table will key `13` be placed?",
+  "options": [
+    "3",
+    "6",
+    "5",
+    "4"
+  ],
+  "correct_index": 3,
+  "explanation": "Key 13 has initial hash 13 % 13 = 0. Due to prior collisions, it requires 5 probe(s) and lands in slot 4.",
+  "source": "generated",
+  "generator_key": "ds_operations.linear_probing",
+  "content_hash": "91fc86f052b16a1d0a95da6312c60b7a9ff56496edbe88d19e81a77dc0276ffc",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-cidr-24",
+  "topic": "data-structures",
+  "subtopic": "subnetting",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/24`?",
+  "options": [
+    "250",
+    "254",
+    "510",
+    "256"
+  ],
+  "correct_index": 1,
+  "explanation": "A /24 subnet has 32 - 24 = 8 host bits, yielding 2^8 = 256 total addresses. Subtracting 2 (network and broadcast) yields 254 usable host IPs.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.cidr",
+  "content_hash": "bfc5f11813a08ef79b451050d8558cf3993aafcd8d3dcfa7d28241b8a68b3c4f",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-concept-16",
+  "topic": "graphs",
+  "subtopic": "graph-theory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which algorithmic technique finds the shortest path between all pairs of vertices in a weighted graph with possible negative edges (no negative cycles) in O(V\u00b3) time?",
+  "options": [
+    "Dijkstra with Fibonacci heaps",
+    "Floyd-Warshall algorithm",
+    "Bellman-Ford repeated V times",
+    "Johnson's algorithm"
+  ],
+  "correct_index": 1,
+  "explanation": "Floyd-Warshall is a dynamic programming algorithm using recurrence `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])` with three nested loops over V vertices, running in O(V\u00b3) time.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.concepts",
+  "content_hash": "35a89d03dcb4799923bea830c5f2927477392a7e18643a05c884ec171e2106d4",
+  "review_status": "verified"
+}

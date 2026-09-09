@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-count-39",
+  "topic": "bit-manipulation",
+  "subtopic": "popcount",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many set bits (1s in binary representation) are in the integer `150` (`0b10010110`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
+  "options": [
+    "6",
+    "4",
+    "5",
+    "7"
+  ],
+  "correct_index": 1,
+  "explanation": "Integer 150 has binary representation 0b10010110, containing exactly 4 set bit(s).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.popcount",
+  "content_hash": "e2d5fa32ee942c925944592a5935f9956a3727a1018ff08f2f47054e430c8c47",
+  "review_status": "verified"
+}

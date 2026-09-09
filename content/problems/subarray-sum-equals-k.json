@@ -1,0 +1,89 @@
+{
+  "id": "arr-9",
+  "slug": "subarray-sum-equals-k",
+  "title": "Subarray Sum Equals K",
+  "topic": "arrays-hashing",
+  "difficulty": "Medium",
+  "pattern": "Prefix Sum Hash Map",
+  "statement": "Given an array of integers nums and an integer k, return the number of contiguous subarrays whose elements sum to exactly k.",
+  "examples": [
+    {
+      "input": "nums = [1,1,1], k = 2",
+      "output": "2",
+      "explanation": "Subarrays [1,1] starting at index 0 and starting at index 1."
+    },
+    {
+      "input": "nums = [1,2,3], k = 3",
+      "output": "2",
+      "explanation": "Subarrays [1,2] and [3]."
+    }
+  ],
+  "constraints": [
+    "1 <= nums.length <= 2 * 10^4",
+    "-1000 <= nums[i] <= 1000",
+    "-10^7 <= k <= 10^7"
+  ],
+  "hints": [
+    "A subarray (j+1..i) sums to k exactly when prefix[i] - prefix[j] == k.",
+    "So for each running prefix sum s, count how many earlier prefixes equal s - k.",
+    "Store prefix frequencies in a Map seeded with {0: 1} for subarrays starting at index 0."
+  ],
+  "solutions": [
+    {
+      "title": "All Start-End Pairs",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "code": "function solve(nums, k) {\n  let count = 0;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      if (sum === k) count++;\n    }\n  }\n  return count;\n}"
+    },
+    {
+      "title": "Prefix Sum Frequencies",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(nums, k) {\n  const freq = new Map([[0, 1]]);\n  let sum = 0, count = 0;\n  for (const n of nums) {\n    sum += n;\n    if (freq.has(sum - k)) count += freq.get(sum - k);\n    freq.set(sum, (freq.get(sum) || 0) + 1);\n  }\n  return count;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          1,
+          1
+        ],
+        2
+      ],
+      "expected": 2,
+      "label": "[1,1,1], k=2"
+    },
+    {
+      "input": [
+        [
+          1,
+          2,
+          3
+        ],
+        3
+      ],
+      "expected": 2,
+      "label": "[1,2,3], k=3"
+    },
+    {
+      "input": [
+        [
+          1,
+          -1,
+          0
+        ],
+        0
+      ],
+      "expected": 3,
+      "label": "[1,-1,0], k=0"
+    }
+  ],
+  "sequence": 5,
+  "prevSlug": "product-of-array-except-self",
+  "nextSlug": "best-time-to-buy-and-sell-stock"
+}

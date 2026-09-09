@@ -2,7 +2,7 @@
   "id": "dp-2",
   "slug": "house-robber",
   "title": "House Robber",
-  "topic": "dp",
+  "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "Include / Exclude Choice DP",
   "statement": "Given an integer array nums representing the amount of money of each house along a street, return the maximum amount of money you can rob tonight without alerting the police (cannot rob two adjacent houses).",
@@ -36,7 +36,10 @@
       "code": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}"
     }
   ],
-  "starterCode": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const nextRob = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = nextRob;\n  }\n  return rob2;\n}",
+  "starterCode": {
+    "javascript": "function solve(nums,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -76,5 +79,8 @@
       "expected": 4,
       "label": "[2,1,1,2]"
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "climbing-stairs",
+  "nextSlug": "maximum-subarray"
 }

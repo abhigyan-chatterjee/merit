@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-stack-5",
+  "topic": "stack",
+  "subtopic": "stack-operations",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An initially empty LIFO stack undergoes the following sequence of operations:\n`push(100) -> push(200) -> pop() -> push(300) -> pop() -> push(400)`\n\nWhat value is currently at the top of the stack?",
+  "options": [
+    "200",
+    "400",
+    "300",
+    "100"
+  ],
+  "correct_index": 1,
+  "explanation": "Simulating operations in LIFO order: Top of stack is 400.",
+  "source": "generated",
+  "generator_key": "ds_operations.stack_sim",
+  "content_hash": "81b9da0a543845803eae9dcbe02220c95ebffa477c2490f324ac51889a4d3c8f",
+  "review_status": "verified"
+}

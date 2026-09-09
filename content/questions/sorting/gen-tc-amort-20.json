@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-amort-20",
+  "topic": "sorting",
+  "subtopic": "amortized-analysis",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Regarding computational complexity analysis: What is the auxiliary space complexity of Breadth-First Search on a balanced binary tree of n nodes?. Which of the following correctly characterizes the complexity?",
+  "options": [
+    "O(1)",
+    "O(log n)",
+    "O(n log n)",
+    "O(n)"
+  ],
+  "correct_index": 3,
+  "explanation": "In a balanced binary tree, the last level contains approximately n/2 nodes. BFS queues an entire level before processing, requiring O(n/2) = O(n) maximum queue space.",
+  "source": "generated",
+  "generator_key": "time_complexity.amortized",
+  "content_hash": "48ee83022b0399240fe3b531606d5dc48c3150b662b10e8e4b60756609fd2a9a",
+  "review_status": "verified"
+}

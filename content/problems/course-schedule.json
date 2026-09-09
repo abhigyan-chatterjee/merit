@@ -36,7 +36,10 @@
       "code": "function solve(numCourses, prerequisites) {\n  const adj = Array.from({ length: numCourses }, () => []);\n  for (const [a, b] of prerequisites) adj[b].push(a);\n  const state = new Array(numCourses).fill(0);\n  function hasCycle(u) {\n    if (state[u] === 1) return true;\n    if (state[u] === 2) return false;\n    state[u] = 1;\n    for (const v of adj[u]) if (hasCycle(v)) return true;\n    state[u] = 2;\n    return false;\n  }\n  for (let i = 0; i < numCourses; i++) if (hasCycle(i)) return false;\n  return true;\n}"
     }
   ],
-  "starterCode": "function solve(numCourses, prerequisites) {\n  const indegree = new Array(numCourses).fill(0);\n  const adj = Array.from({ length: numCourses }, () => []);\n  for (const [course, pre] of prerequisites) {\n    adj[pre].push(course);\n    indegree[course]++;\n  }\n  const queue = [];\n  for (let i = 0; i < numCourses; i++) {\n    if (indegree[i] === 0) queue.push(i);\n  }\n  let finished = 0;\n  while (queue.length > 0) {\n    const curr = queue.shift();\n    finished++;\n    for (const next of adj[curr]) {\n      indegree[next]--;\n      if (indegree[next] === 0) queue.push(next);\n    }\n  }\n  return finished === numCourses;\n}",
+  "starterCode": {
+    "javascript": "function solve(numCourses, prerequisites) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -94,5 +97,8 @@
       "expected": true,
       "label": "4 courses DAG"
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "flood-fill",
+  "nextSlug": "course-schedule-ii"
 }

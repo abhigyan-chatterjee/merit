@@ -1,0 +1,20 @@
+{
+  "id": "gen-sort-bs-14",
+  "topic": "binary-search",
+  "subtopic": "binary-search",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Binary search with integer division `mid = (low + high) // 2` searches for target `30` in the sorted array:\n`[2, 6, 12, 20, 30, 42, 56, 72, 90]`\n\nWhat is the exact sequence of indices checked at `mid` until finding the target?",
+  "options": [
+    "3",
+    "5",
+    "2",
+    "4"
+  ],
+  "correct_index": 3,
+  "explanation": "Tracing standard binary search: low and high intervals update, checking index sequence [4] where arr[4] == 30.",
+  "source": "generated",
+  "generator_key": "sorting_searching.bs_trace",
+  "content_hash": "808606f8b75fc8522d39819affc830087eff00e7af4e1678fb31b8a691058c8e",
+  "review_status": "verified"
+}

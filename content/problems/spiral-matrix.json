@@ -1,0 +1,156 @@
+{
+  "id": "arr-8",
+  "slug": "spiral-matrix",
+  "title": "Spiral Matrix",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "Boundary Shrinking",
+  "statement": "Given an m x n matrix, return all elements of the matrix in clockwise spiral order starting from the top-left cell.",
+  "examples": [
+    {
+      "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+      "output": "[1,2,3,6,9,8,7,4,5]"
+    },
+    {
+      "input": "matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]",
+      "output": "[1,2,3,4,8,12,11,10,9,5,6,7]"
+    }
+  ],
+  "constraints": [
+    "1 <= m, n <= 10",
+    "-100 <= matrix[i][j] <= 100"
+  ],
+  "hints": [
+    "Maintain four boundaries: top, bottom, left, right.",
+    "Walk top row left to right, then right column top to bottom, then bottom row, then left column.",
+    "Shrink the used boundary after each side and stop when top > bottom or left > right."
+  ],
+  "solutions": [
+    {
+      "title": "Visited-Set Walk",
+      "complexity": "Time: O(m * n) | Space: O(m * n)",
+      "code": "function solve(matrix) {\n  const out = [];\n  const seen = new Set();\n  const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];\n  let r = 0, c = 0, d = 0;\n  for (let k = 0; k < matrix.length * matrix[0].length; k++) {\n    out.push(matrix[r][c]);\n    seen.add(r + ',' + c);\n    const nr = r + dirs[d][0], nc = c + dirs[d][1];\n    if (nr < 0 || nc < 0 || nr >= matrix.length || nc >= matrix[0].length || seen.has(nr + ',' + nc)) d = (d + 1) % 4;\n    r += dirs[d][0]; c += dirs[d][1];\n  }\n  return out;\n}"
+    },
+    {
+      "title": "Boundary Shrinking Layers",
+      "complexity": "Time: O(m * n) | Space: O(1)",
+      "code": "function solve(matrix) {\n  const out = [];\n  if (!matrix.length) return out;\n  let top = 0, bottom = matrix.length - 1, left = 0, right = matrix[0].length - 1;\n  while (top <= bottom && left <= right) {\n    for (let c = left; c <= right; c++) out.push(matrix[top][c]);\n    top++;\n    for (let r = top; r <= bottom; r++) out.push(matrix[r][right]);\n    right--;\n    if (top <= bottom) {\n      for (let c = right; c >= left; c--) out.push(matrix[bottom][c]);\n      bottom--;\n    }\n    if (left <= right) {\n      for (let r = bottom; r >= top; r--) out.push(matrix[r][left]);\n      left++;\n    }\n  }\n  return out;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(matrix) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6
+          ],
+          [
+            7,
+            8,
+            9
+          ]
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        6,
+        9,
+        8,
+        7,
+        4,
+        5
+      ],
+      "label": "3x3 square"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            5,
+            6,
+            7,
+            8
+          ],
+          [
+            9,
+            10,
+            11,
+            12
+          ]
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        8,
+        12,
+        11,
+        10,
+        9,
+        5,
+        6,
+        7
+      ],
+      "label": "3x4 rectangle"
+    },
+    {
+      "input": [
+        [
+          [
+            1
+          ]
+        ]
+      ],
+      "expected": [
+        1
+      ],
+      "label": "1x1 single"
+    },
+    {
+      "input": [
+        [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        4,
+        3
+      ],
+      "label": "2x2 square"
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "roman-to-integer",
+  "nextSlug": null
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-32",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"abc\"` and `\"abc\"`?",
+  "options": [
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  "correct_index": 0,
+  "explanation": "Standard 2D DP matrix comparison between 'abc' and 'abc' yields an LCS length of 3.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "a9c70576af217b80e7c548d88b9ed32ed09a283419295fa651d6e44016dd40ff",
+  "review_status": "verified"
+}

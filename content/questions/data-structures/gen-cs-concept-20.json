@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-20",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "At which layer of the OSI model do routers primarily operate to forward packets based on IP addresses?",
+  "options": [
+    "Session Layer (Layer 5)",
+    "Data Link Layer (Layer 2)",
+    "Network Layer (Layer 3)",
+    "Transport Layer (Layer 4)"
+  ],
+  "correct_index": 2,
+  "explanation": "Routers operate at Layer 3 (Network layer), inspecting IP headers to make packet routing and forwarding decisions.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "592ac1cc4eec820e31dc5283404eec7288190f188ecde0e48996fdefaeeec8e8",
+  "review_status": "verified"
+}

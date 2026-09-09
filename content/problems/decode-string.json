@@ -1,0 +1,73 @@
+{
+  "id": "str-6",
+  "slug": "decode-string",
+  "title": "Decode String",
+  "topic": "stack",
+  "difficulty": "Medium",
+  "pattern": "Stack Unwinding",
+  "statement": "Given an encoded string where k[encoded] means the encoded part repeats exactly k times, return the fully decoded string. Inputs are always valid with balanced brackets.",
+  "examples": [
+    {
+      "input": "s = \"3[a]2[bc]\"",
+      "output": "\"aaabcbc\""
+    },
+    {
+      "input": "s = \"3[a2[c]]\"",
+      "output": "\"accaccacc\"",
+      "explanation": "Inner 2[c] becomes cc, then 3[acc] repeats it three times."
+    }
+  ],
+  "constraints": [
+    "1 <= s.length <= 30",
+    "s contains lowercase letters, digits, and brackets",
+    "1 <= k <= 300 for every repeat count"
+  ],
+  "hints": [
+    "Use one stack for repeat counts and one for the string built so far.",
+    "On '[', push the current count and current string, then reset both.",
+    "On ']', pop count and previous string, then set current = prev + current.repeat(count)."
+  ],
+  "solutions": [
+    {
+      "title": "Recursive Descent",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(s) {\n  let i = 0;\n  function decode() {\n    let out = '', num = 0;\n    while (i < s.length && s[i] !== ']') {\n      if (s[i] >= '0' && s[i] <= '9') num = num * 10 + +s[i++];\n      else if (s[i] === '[') { i++; out += decode().repeat(num); num = 0; }\n      else out += s[i++];\n    }\n    i++;\n    return out;\n  }\n  return decode();\n}"
+    },
+    {
+      "title": "Dual Stack Iteration",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(s) {\n  const countStack = [], strStack = [];\n  let cur = '', k = 0;\n  for (const ch of s) {\n    if (ch >= '0' && ch <= '9') k = k * 10 + +ch;\n    else if (ch === '[') { countStack.push(k); strStack.push(cur); cur = ''; k = 0; }\n    else if (ch === ']') { const prev = strStack.pop(), n = countStack.pop(); cur = prev + cur.repeat(n); }\n    else cur += ch;\n  }\n  return cur;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        "3[a]2[bc]"
+      ],
+      "expected": "aaabcbc",
+      "label": "\"3[a]2[bc]\""
+    },
+    {
+      "input": [
+        "3[a2[c]]"
+      ],
+      "expected": "accaccacc",
+      "label": "\"3[a2[c]]\""
+    },
+    {
+      "input": [
+        "2[abc]3[cd]ef"
+      ],
+      "expected": "abcabccdcdcdef",
+      "label": "\"2[abc]3[cd]ef\""
+    }
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "valid-parentheses"
+}

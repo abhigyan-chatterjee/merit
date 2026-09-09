@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-hash-56",
+  "topic": "arrays-hashing",
+  "subtopic": "collision-resolution",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A hash table of size 10 uses open addressing with linear probing (hash function `h(k) = k mod 10`). Keys are inserted in the following order: `[20, 30, 40, 50, 60]`.\nAt which slot index in the table will key `60` be placed?",
+  "options": [
+    "6",
+    "5",
+    "4",
+    "3"
+  ],
+  "correct_index": 2,
+  "explanation": "Key 60 has initial hash 60 % 10 = 0. Due to prior collisions, it requires 5 probe(s) and lands in slot 4.",
+  "source": "generated",
+  "generator_key": "ds_operations.linear_probing",
+  "content_hash": "170bf9a610efba1bdcc28a8e15e24f6c333088fb882033e447cb775bb9da7e80",
+  "review_status": "verified"
+}

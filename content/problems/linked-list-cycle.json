@@ -1,0 +1,97 @@
+{
+  "id": "ll-6",
+  "slug": "linked-list-cycle",
+  "title": "Linked List Cycle",
+  "topic": "linked-lists",
+  "difficulty": "Easy",
+  "pattern": "Fast & Slow Pointers",
+  "statement": "A singly linked list is given as an array of values plus an integer pos, where pos is the index that the tail connects back to (-1 means the tail points to null). Return true if the list contains a cycle, otherwise false. A pos of 0 with a non-empty list is a cycle.",
+  "examples": [
+    {
+      "input": "values = [3,2,0,-4], pos = 1",
+      "output": "true",
+      "explanation": "The tail (-4) links back to index 1 (value 2)."
+    },
+    {
+      "input": "values = [1,2], pos = -1",
+      "output": "false",
+      "explanation": "The tail points to null, so there is no cycle."
+    }
+  ],
+  "constraints": [
+    "0 <= values.length <= 10^4",
+    "-10^5 <= values[i] <= 10^5",
+    "-1 <= pos < values.length"
+  ],
+  "hints": [
+    "A cycle exists exactly when pos is a valid index (pos >= 0) and the list is non-empty.",
+    "The classic proof uses slow (1 step) and fast (2 steps) pointers meeting inside the loop.",
+    "Simulate the walk with a visited set to confirm the pointer reasoning."
+  ],
+  "solutions": [
+    {
+      "title": "Visited Index Set",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "code": "function solve(values, pos) {\n  const visited = new Set();\n  let idx = 0;\n  while (idx !== -1 && idx < values.length) {\n    if (visited.has(idx)) return true;\n    visited.add(idx);\n    idx = idx + 1 === values.length ? pos : idx + 1;\n    if (visited.size > values.length + 5) return true;\n  }\n  return false;\n}"
+    },
+    {
+      "title": "Direct Position Check",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "code": "function solve(values, pos) {\n  return values.length > 0 && pos >= 0 && pos < values.length;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(values, pos) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          3,
+          2,
+          0,
+          -4
+        ],
+        1
+      ],
+      "expected": true,
+      "label": "[3,2,0,-4], pos=1"
+    },
+    {
+      "input": [
+        [
+          1,
+          2
+        ],
+        -1
+      ],
+      "expected": false,
+      "label": "[1,2], pos=-1"
+    },
+    {
+      "input": [
+        [
+          1
+        ],
+        -1
+      ],
+      "expected": false,
+      "label": "[1], pos=-1"
+    },
+    {
+      "input": [
+        [
+          1
+        ],
+        0
+      ],
+      "expected": true,
+      "label": "[1], pos=0 self-loop"
+    }
+  ],
+  "sequence": 3,
+  "prevSlug": "middle-of-the-linked-list",
+  "nextSlug": "palindrome-linked-list"
+}

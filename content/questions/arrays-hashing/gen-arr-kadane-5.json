@@ -1,0 +1,20 @@
+{
+  "id": "gen-arr-kadane-5",
+  "topic": "arrays-hashing",
+  "subtopic": "kadane",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using Kadane's algorithm, what is the maximum subarray sum in the integer array:\n`[2, 3, -2, 4]`?",
+  "options": [
+    "9",
+    "13",
+    "7",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "Kadane's algorithm maintains `currMax = max(x, currMax + x)`. The maximum contiguous subarray sum is 7.",
+  "source": "generated",
+  "generator_key": "arrays_strings.kadane",
+  "content_hash": "585abcb0925e96b640093134e1cc8da95e18b9acb6ad03fde11ce6fcbb47bc85",
+  "review_status": "verified"
+}

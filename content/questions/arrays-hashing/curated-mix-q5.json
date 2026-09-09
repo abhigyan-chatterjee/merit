@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q5",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In Kadane's algorithm, how is the running maximum updated at each index?",
+  "options": [
+    "curr = max(nums[i], curr + nums[i])",
+    "curr = min(nums[i], curr - nums[i])",
+    "curr = curr * nums[i]",
+    "curr = nums[i] + nums[i-1]"
+  ],
+  "correct_index": 0,
+  "explanation": "Either extend the existing subarray (curr + nums[i]) or start fresh at nums[i] when the prior sum is negative.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "bb4d94b01b50b9d84a36ec3cb9cf9668e31d58a3c148f866007ed1e18306bf0f",
+  "review_status": "verified"
+}

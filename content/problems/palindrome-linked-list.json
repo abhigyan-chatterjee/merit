@@ -2,7 +2,7 @@
   "id": "ll-5",
   "slug": "palindrome-linked-list",
   "title": "Palindrome Linked List",
-  "topic": "linked-list",
+  "topic": "linked-lists",
   "difficulty": "Easy",
   "pattern": "Reverse Second Half",
   "statement": "Given the head of a singly linked list, return true if it is a palindrome or false otherwise.",
@@ -36,7 +36,10 @@
       "code": "function solve(head) {\n  return head.join(',') === [...head].reverse().join(',');\n}"
     }
   ],
-  "starterCode": "function solve(head) {\n  let left = 0, right = head.length - 1;\n  while (left < right) {\n    if (head[left] !== head[right]) return false;\n    left++;\n    right--;\n  }\n  return true;\n}",
+  "starterCode": {
+    "javascript": "function solve(head,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -72,5 +75,8 @@
       "expected": true,
       "label": "[1,3,1]"
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "linked-list-cycle",
+  "nextSlug": "add-two-numbers"
 }

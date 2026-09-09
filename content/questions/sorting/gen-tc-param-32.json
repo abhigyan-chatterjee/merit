@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-param-32",
+  "topic": "sorting",
+  "subtopic": "nested-loops",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    j = 1\n    while j <= n:\n        j *= 5\n```",
+  "options": [
+    "O(log n)",
+    "O(n * 5)",
+    "O(n\u00b2)",
+    "O(n log n)"
+  ],
+  "correct_index": 3,
+  "explanation": "Outer loop runs n times. Inner loop multiplies j by 5 each step, running log_5(n) times. Asymptotic time is \u0398(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.param_loop",
+  "content_hash": "8be689ab5d8772c9e1774c18b76410f678b304c36f707fc9c14957ed1f4ad1b6",
+  "review_status": "verified"
+}

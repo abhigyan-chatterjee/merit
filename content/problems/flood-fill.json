@@ -32,7 +32,10 @@
       "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  const q = [[sr, sc]]; img[sr][sc] = color;\n  while (q.length) {\n    const [r, c] = q.shift();\n    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n      const nr = r + dr, nc = c + dc;\n      if (nr>=0 && nc>=0 && nr<img.length && nc<img[0].length && img[nr][nc]===orig) {\n        img[nr][nc] = color; q.push([nr, nc]);\n      }\n    }\n  }\n  return img;\n}"
     }
   ],
-  "starterCode": "function solve(image, sr, sc, color) {\n  const img = image.map(row => [...row]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  function fill(r, c) {\n    if (r < 0 || c < 0 || r >= img.length || c >= img[0].length || img[r][c] !== orig) return;\n    img[r][c] = color;\n    fill(r + 1, c);\n    fill(r - 1, c);\n    fill(r, c + 1);\n    fill(r, c - 1);\n  }\n  fill(sr, sc);\n  return img;\n}",
+  "starterCode": {
+    "javascript": "function solve(image, sr, sc, color) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -137,5 +140,8 @@
       ],
       "label": "Single isolated cell"
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "number-of-islands",
+  "nextSlug": "course-schedule"
 }

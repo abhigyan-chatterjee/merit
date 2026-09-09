@@ -2,7 +2,7 @@
   "id": "ll-4",
   "slug": "remove-nth-node-from-end",
   "title": "Remove Nth Node From End of List",
-  "topic": "linked-list",
+  "topic": "two-pointers",
   "difficulty": "Medium",
   "pattern": "Two Pointers with Gap N",
   "statement": "Given the head of a linked list, remove the nth node from the end of the list and return the resulting node values.",
@@ -37,7 +37,10 @@
       "code": "function solve(head, n) {\n  const res = [...head];\n  res.splice(res.length - n, 1);\n  return res;\n}"
     }
   ],
-  "starterCode": "function solve(head, n) {\n  const indexToRemove = head.length - n;\n  return head.filter((_, idx) => idx !== indexToRemove);\n}",
+  "starterCode": {
+    "javascript": "function solve(head, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -82,5 +85,8 @@
       ],
       "label": "[1,2], n=1"
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "merge-two-sorted-lists",
+  "nextSlug": null
 }

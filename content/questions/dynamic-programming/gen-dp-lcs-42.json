@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-lcs-42",
+  "topic": "dynamic-programming",
+  "subtopic": "lcs",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"BANANA\"` and `\"ATANA\"`?",
+  "options": [
+    "3",
+    "7",
+    "4",
+    "6"
+  ],
+  "correct_index": 2,
+  "explanation": "Standard 2D DP matrix comparison between 'BANANA' and 'ATANA' yields an LCS length of 4.",
+  "source": "generated",
+  "generator_key": "dp.lcs",
+  "content_hash": "7a609da0a8eb138df2a5b7f9f08078150e315981500b3e2c623d56312cd0f702",
+  "review_status": "verified"
+}

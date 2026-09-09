@@ -22,46 +22,130 @@ export interface TopicItem {
 
 export const TOPICS: TopicItem[] = [
   {
-    slug: 'arrays',
-    title: 'Arrays & Two Pointers',
-    description: 'Contiguous memory indexing, prefix sums, two pointers, and sliding windows.',
-    problemCount: 5,
+    slug: 'arrays-hashing',
+    title: 'Arrays & Hashing',
+    description: 'Contiguous storage, frequency maps, prefix products, and complement lookups.',
+    problemCount: 7,
     iconName: 'LayoutGrid'
   },
   {
-    slug: 'strings',
-    title: 'Strings & Sliding Window',
-    description: 'Character hashing, substrings, palindrome checks, and anagram invariants.',
-    problemCount: 5,
-    iconName: 'Type'
+    slug: 'two-pointers',
+    title: 'Two Pointers',
+    description: 'Converging and parallel pointers on sorted data and linked structures.',
+    problemCount: 4,
+    iconName: 'MoveHorizontal'
   },
   {
-    slug: 'linked-list',
+    slug: 'sliding-windows',
+    title: 'Sliding Windows',
+    description: 'Fixed and variable windows for subarrays and substrings.',
+    problemCount: 1,
+    iconName: 'PanelRight'
+  },
+  {
+    slug: 'stack',
+    title: 'Stack',
+    description: 'LIFO matching, monotonic stacks, and expression evaluation.',
+    problemCount: 2,
+    iconName: 'Layers'
+  },
+  {
+    slug: 'linked-lists',
     title: 'Linked Lists',
     description: 'Pointer rewiring, fast-slow cycle detection, and in-place reversal.',
     problemCount: 5,
     iconName: 'GitCommit'
   },
   {
+    slug: 'binary-search',
+    title: 'Binary Search',
+    description: 'Halving invariants on sorted arrays, rotated data, and answer spaces.',
+    problemCount: 0,
+    iconName: 'Search'
+  },
+  {
     slug: 'trees',
-    title: 'Binary Trees & BST',
-    description: 'Recursive DFS traversals, level-order BFS, and binary search tree invariants.',
-    problemCount: 5,
+    title: 'Trees',
+    description: 'DFS traversals, BST invariants, and path/diameter reasoning.',
+    problemCount: 7,
     iconName: 'Network'
   },
   {
+    slug: 'heap',
+    title: 'Heap',
+    description: 'Priority queues, k-way merges, and top-k selection.',
+    problemCount: 0,
+    iconName: 'ChevronsUp'
+  },
+  {
+    slug: 'backtracking',
+    title: 'Backtracking',
+    description: 'Choice trees, pruning, permutations, and constraint search.',
+    problemCount: 0,
+    iconName: 'Split'
+  },
+  {
     slug: 'graphs',
-    title: 'Graphs & Traversals',
-    description: 'Adjacency lists, BFS shortest path, DFS connected components, and topological sort.',
-    problemCount: 5,
+    title: 'Graphs',
+    description: 'BFS/DFS, connectivity, topological sort, and shortest paths.',
+    problemCount: 6,
     iconName: 'Share2'
   },
   {
-    slug: 'dp',
+    slug: 'dynamic-programming',
     title: 'Dynamic Programming',
-    description: 'Overlapping subproblems, optimal substructure, 1D/2D memoization & tabulation.',
-    problemCount: 5,
+    description: '1D and 2D memoization and tabulation over optimal substructure.',
+    problemCount: 6,
     iconName: 'Cpu'
+  },
+  {
+    slug: 'greedy',
+    title: 'Greedy',
+    description: 'Locally optimal choices with exchange arguments and intervals.',
+    problemCount: 0,
+    iconName: 'Zap'
+  },
+  {
+    slug: 'trie',
+    title: 'Trie',
+    description: 'Prefix trees for word sets, autocomplete, and XOR queries.',
+    problemCount: 1,
+    iconName: 'ListTree'
+  },
+  {
+    slug: 'intervals',
+    title: 'Intervals',
+    description: 'Merging, inserting, and scheduling overlapping ranges.',
+    problemCount: 1,
+    iconName: 'AlignHorizontalDistributeCenter'
+  },
+  {
+    slug: 'math-matrices',
+    title: 'Math & Matrices',
+    description: 'Number theory, combinatorics, and matrix traversal/rotation.',
+    problemCount: 2,
+    iconName: 'Sigma'
+  },
+  {
+    slug: 'bit-manipulation',
+    title: 'Bit Manipulation',
+    description: 'Masks, shifts, popcounts, and XOR invariants.',
+    problemCount: 0,
+    iconName: 'Binary'
+  },
+  {
+    slug: 'sorting',
+    title: 'Sorting',
+    description: 'Comparison sorts, partitioning, and order statistics.',
+    problemCount: 0,
+    iconName: 'ArrowDownWideNarrow'
+  },
+  {
+    slug: 'data-structures',
+    title: 'Data Structures',
+    description: 'Design problems composing maps, queues, and caches.',
+    problemCount: 0,
+    iconName: 'Database'
   }
 ];
 

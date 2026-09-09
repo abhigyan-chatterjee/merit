@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q2",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the maximum number of nodes in a binary tree of height h (where a single root node has height 1)?",
+  "options": [
+    "2^h - 1",
+    "2^(h-1)",
+    "h\u00b2",
+    "2h + 1"
+  ],
+  "correct_index": 0,
+  "explanation": "Summing nodes across levels 0 to h-1 gives 1 + 2 + 4 + ... + 2^(h-1) = 2^h - 1.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "4624e7e727df9e3a6224eedbdb551051e09295682212580225df0452c5ddbabc",
+  "review_status": "verified"
+}

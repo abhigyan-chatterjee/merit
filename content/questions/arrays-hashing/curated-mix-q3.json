@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q3",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of BFS on a graph represented as an adjacency list with V vertices and E edges?",
+  "options": [
+    "O(V + E)",
+    "O(V\u00b2)",
+    "O(V \u00b7 E)",
+    "O(E log V)"
+  ],
+  "correct_index": 0,
+  "explanation": "Each vertex is visited once and each edge inspected (at most twice for undirected), giving O(V + E).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "682b1ca42ae8a8f716a61068e51784114a97b439b7a8317ac4a5a782e8c81891",
+  "review_status": "verified"
+}

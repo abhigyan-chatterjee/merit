@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-os-fifo-6",
+  "topic": "data-structures",
+  "subtopic": "virtual-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In an Operating System virtual memory system with `3` physical page frames initially empty, the page reference stream is:\n`[2, 3, 2, 1, 5, 2, 4, 5, 3, 2, 5, 2]`\n\nUsing the First-In First-Out (FIFO) page replacement algorithm, how many total page faults occur?",
+  "options": [
+    "9",
+    "12",
+    "10",
+    "11"
+  ],
+  "correct_index": 0,
+  "explanation": "Tracking FIFO queue eviction on misses results in 9 page faults.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.fifo_faults",
+  "content_hash": "aa35ae88892c1f2e88e9fb7bf46b086b428f8a95ef06da431ef347af29b2afc6",
+  "review_status": "verified"
+}

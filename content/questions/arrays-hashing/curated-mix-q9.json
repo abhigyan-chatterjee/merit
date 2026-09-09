@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q9",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which technique finds the longest substring without repeating characters in O(n)?",
+  "options": [
+    "Sliding window",
+    "Binary search",
+    "Prefix product",
+    "Union-Find"
+  ],
+  "correct_index": 0,
+  "explanation": "A sliding window with a hash set expands the right edge and contracts the left when a duplicate appears.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "688cf6a209e009cb497f65e63a4af1660ebf218ed20c4869c40376e61309aaed",
+  "review_status": "verified"
+}

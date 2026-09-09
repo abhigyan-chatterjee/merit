@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q8",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a Min-Heap, what is the time complexity of extracting the minimum element?",
+  "options": [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n log n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Swapping root with the last leaf is O(1), then Sift-Down runs along tree height O(log n).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "66689e99b6c01f6091abd53cabd4aa303aeab73a7d7dc5980e6ca1dd2d8c82d2",
+  "review_status": "verified"
+}

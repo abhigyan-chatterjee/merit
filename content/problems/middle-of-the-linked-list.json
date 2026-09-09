@@ -2,7 +2,7 @@
   "id": "ll-2",
   "slug": "middle-of-the-linked-list",
   "title": "Middle of the Linked List",
-  "topic": "linked-list",
+  "topic": "linked-lists",
   "difficulty": "Easy",
   "pattern": "Fast & Slow Pointers",
   "statement": "Given the head of a singly linked list, return the values starting from the middle node to the end. If there are two middle nodes, return from the second middle node.",
@@ -36,7 +36,10 @@
       "code": "function solve(arr) {\n  let slow = 0, fast = 0;\n  while (fast < arr.length && fast + 1 < arr.length) {\n    slow += 1;\n    fast += 2;\n  }\n  return arr.slice(slow);\n}"
     }
   ],
-  "starterCode": "function solve(headArray) {\n  let slow = 0, fast = 0;\n  while (fast < headArray.length && fast + 1 < headArray.length) {\n    slow += 1;\n    fast += 2;\n  }\n  return headArray.slice(slow);\n}",
+  "starterCode": {
+    "javascript": "function solve(headArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -85,5 +88,8 @@
       ],
       "label": "[1]"
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "reverse-linked-list",
+  "nextSlug": "linked-list-cycle"
 }

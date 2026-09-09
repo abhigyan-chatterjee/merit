@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-concept-47",
+  "topic": "dynamic-programming",
+  "subtopic": "dp-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How can the space complexity of the standard Fibonacci calculation or 1D DP `dp[i] = dp[i-1] + dp[i-2]` be optimized from O(n) to O(1)?",
+  "options": [
+    "By using binary search memoization",
+    "By maintaining only two previous state variables instead of a full array",
+    "By storing values in a min-heap",
+    "By hashing every fourth index"
+  ],
+  "correct_index": 1,
+  "explanation": "Because each state only depends on the immediately preceding two states, two scalar variables can be updated in a rolling loop, reducing auxiliary space from O(n) to O(1).",
+  "source": "generated",
+  "generator_key": "dp.concepts",
+  "content_hash": "abf4951a07b6cbaab391384721cd79e6af79251c2db025426ddebc92626a4636",
+  "review_status": "verified"
+}

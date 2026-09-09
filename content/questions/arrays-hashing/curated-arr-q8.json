@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q8",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the amortized time complexity of appending (push) to a dynamically resizing array (e.g., C++ std::vector)?",
+  "options": [
+    "O(1) amortized",
+    "O(log n) amortized",
+    "O(n) amortized",
+    "O(n\u00b2)"
+  ],
+  "correct_index": 0,
+  "explanation": "Doubling capacity when full spreads the O(n) copy cost over n insertions, giving O(1) amortized time per push.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "5a9011f6a644f867fb8e6ed82abab99d48f806bf2e3fad4642ea07c580993db3",
+  "review_status": "verified"
+}

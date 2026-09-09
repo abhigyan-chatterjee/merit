@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-concept-19",
+  "topic": "graphs",
+  "subtopic": "graph-theory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What is the worst-case space complexity of Kosaraju's algorithm for finding Strongly Connected Components in a directed graph?",
+  "options": [
+    "O(V\u00b2)",
+    "O(V * E)",
+    "O(V + E)",
+    "O(log V)"
+  ],
+  "correct_index": 2,
+  "explanation": "Kosaraju's algorithm creates a transposed graph of size O(V + E) and performs two DFS passes, each requiring O(V) stack space and O(V) visited tracking.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.concepts",
+  "content_hash": "12100dc5662b249e6275393388baa4685f1a5d342a64349aaa640c81afd1df49",
+  "review_status": "verified"
+}

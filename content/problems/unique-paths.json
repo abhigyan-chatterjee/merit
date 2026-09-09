@@ -2,7 +2,7 @@
   "id": "dp-5",
   "slug": "unique-paths",
   "title": "Unique Paths in Grid",
-  "topic": "dp",
+  "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "2D Grid Path DP",
   "statement": "There is a robot on an m x n grid at top-left (0, 0). The robot can only move down or right. Return the number of possible unique paths to reach the bottom-right corner (m - 1, n - 1).",
@@ -36,7 +36,10 @@
       "code": "function solve(m, n) {\n  let res = 1;\n  for (let i = 1; i < m; i++) res = (res * (n - 1 + i)) / i;\n  return Math.round(res);\n}"
     }
   ],
-  "starterCode": "function solve(m, n) {\n  const row = new Array(n).fill(1);\n  for (let r = 1; r < m; r++) {\n    for (let c = 1; c < n; c++) {\n      row[c] += row[c - 1];\n    }\n  }\n  return row[n - 1];\n}",
+  "starterCode": {
+    "javascript": "function solve(m, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -63,5 +66,8 @@
       "expected": 1,
       "label": "m=1, n=1"
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "longest-increasing-subsequence",
+  "nextSlug": null
 }

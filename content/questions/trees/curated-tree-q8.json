@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q8",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What data structure is used internally to implement Level-Order (Breadth-First) Tree Traversal?",
+  "options": [
+    "FIFO Queue",
+    "LIFO Stack",
+    "Priority Queue",
+    "Hash Set"
+  ],
+  "correct_index": 0,
+  "explanation": "A FIFO queue processes nodes level by level, enqueuing left and right children as each node is visited.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "356687483bfc83915fa7e7bb77039854a063af7534296960e0da113988927c44",
+  "review_status": "verified"
+}

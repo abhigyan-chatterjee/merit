@@ -1,0 +1,80 @@
+{
+  "id": "tree-6",
+  "slug": "diameter-of-binary-tree",
+  "title": "Diameter of Binary Tree",
+  "topic": "trees",
+  "difficulty": "Easy",
+  "pattern": "Postorder Height & Best",
+  "statement": "Given the level-order array representation of a binary tree, return the diameter: the number of edges on the longest path between any two nodes in the tree.",
+  "examples": [
+    {
+      "input": "root = [1,2,3,4,5]",
+      "output": "3",
+      "explanation": "The longest path is 4 -> 2 -> 1 -> 3, which uses 3 edges."
+    },
+    {
+      "input": "root = [1,2]",
+      "output": "1"
+    }
+  ],
+  "constraints": [
+    "0 <= nodes <= 10^4"
+  ],
+  "hints": [
+    "For node index i, children sit at 2*i + 1 and 2*i + 2 in the level-order array.",
+    "The longest path through a node equals leftHeight + rightHeight (in edges).",
+    "Track the global best across all nodes while returning 1 + max(left, right) upward."
+  ],
+  "solutions": [
+    {
+      "title": "All-Pairs Path Check",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
+      "code": "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}"
+    },
+    {
+      "title": "Single Postorder Pass",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(arr) {\n  let best = 0;\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    const l = depth(2 * i + 1), r = depth(2 * i + 2);\n    best = Math.max(best, l + r);\n    return 1 + Math.max(l, r);\n  }\n  depth(0);\n  return best;\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": 3,
+      "label": "[1,2,3,4,5]"
+    },
+    {
+      "input": [
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": 1,
+      "label": "[1,2]"
+    },
+    {
+      "input": [
+        []
+      ],
+      "expected": 0,
+      "label": "[]"
+    }
+  ],
+  "sequence": 4,
+  "prevSlug": "invert-binary-tree",
+  "nextSlug": "validate-binary-search-tree"
+}

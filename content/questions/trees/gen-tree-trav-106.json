@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-trav-106",
+  "topic": "trees",
+  "subtopic": "inorder-traversal",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[65, 35, 85, 20, 45, 75, 95]`\n\nWhat is the exact **Inorder** traversal sequence of this tree?",
+  "options": [
+    "20, 35, 45, 65, 75, 85, 95",
+    "65, 35, 85, 20, 45, 75, 95",
+    "65, 35, 20, 45, 85, 75, 95",
+    "20, 45, 35, 75, 95, 85, 65"
+  ],
+  "correct_index": 0,
+  "explanation": "Inorder traversal visits Left Subtree -> Root -> Right Subtree. For any valid BST, an Inorder traversal always yields the keys in ascending sorted order: [20, 35, 45, 65, 75, 85, 95].",
+  "source": "generated",
+  "generator_key": "tree_traversals.sequence",
+  "content_hash": "9213bf0fd1c7338d51b57e5af86091c7c4c5e38f7973835b69d8437a70edf6db",
+  "review_status": "verified"
+}

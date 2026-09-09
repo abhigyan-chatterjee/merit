@@ -10,13 +10,14 @@ import {
   BookOpen,
   FileText,
   Bookmark,
-  CheckCircle2
+  CheckCircle2,
 } from 'lucide-react';
 import { useProgress, ProblemStatus } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
+import { LessonNav } from '../components/LessonNav';
 
 export const ProblemDetailPage: React.FC = () => {
-  const { topic = 'arrays', slug = 'two-sum' } = useParams<{ topic: string; slug: string }>();
+  const { topic = 'arrays-hashing', slug = 'two-sum' } = useParams<{ topic: string; slug: string }>();
   const { state, setProblemStatus, saveNote, toggleBookmark, setLastVisited } = useProgress();
 
   const problem = PROBLEMS.find((p) => p.slug === slug && p.topic === topic);
@@ -35,6 +36,7 @@ export const ProblemDetailPage: React.FC = () => {
       });
     }
   }, [problem?.slug, problem?.topic]);
+
 
   if (!problem) {
     return (
@@ -57,6 +59,35 @@ export const ProblemDetailPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      {/* Guided Path Lesson Navigation */}
+      <LessonNav currentType="problem" currentId={problem.slug} />
+
+      {/* Prev / Next in category sequence */}
+      {(problem.prevSlug || problem.nextSlug) && (
+        <nav aria-label="Sequence" className="flex items-center justify-between gap-3 text-xs font-mono">
+          {problem.prevSlug ? (
+            <Link
+              to={`/problems/${problem.topic}/${problem.prevSlug}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-steel transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Previous in {problem.topic}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {problem.nextSlug && (
+            <Link
+              to={`/problems/${problem.topic}/${problem.nextSlug}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-steel transition"
+            >
+              Next in {problem.topic}
+              <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+            </Link>
+          )}
+        </nav>
+      )}
+
       {/* Top Breadcrumb & Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-line">
         <div className="flex items-center gap-3">
@@ -77,6 +108,7 @@ export const ProblemDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-surface border border-line">

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q5",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "When computing prefix sums P[i] = nums[0] + ... + nums[i], how do you query the sum of subarray nums[L..R] in O(1)?",
+  "options": [
+    "P[R] - P[L - 1] (or P[R] if L == 0)",
+    "P[R] + P[L]",
+    "P[R - L]",
+    "P[L] - P[R]"
+  ],
+  "correct_index": 0,
+  "explanation": "Prefix sum subtraction cancels all elements before index L, leaving the exact sum of range [L..R] in O(1).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "aaa273ecf6c79211a80c2256b6d818d809887b5faf1909a7707667b87553cd8b",
+  "review_status": "verified"
+}

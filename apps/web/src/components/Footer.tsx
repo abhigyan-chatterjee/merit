@@ -15,16 +15,16 @@ const COLUMNS: { title: string; links: { to: string; label: string }[] }[] = [
     title: 'Learn',
     links: [
       { to: '/learn', label: 'Guided paths' },
-      { to: '/problems/arrays', label: 'Arrays' },
+      { to: '/problems/arrays-hashing', label: 'Arrays' },
       { to: '/problems/graphs', label: 'Graphs' },
-      { to: '/problems/dp', label: 'Dynamic Programming' }
+      { to: '/problems/dynamic-programming', label: 'Dynamic Programming' }
     ]
   },
   {
     title: 'Assess',
     links: [
       { to: '/quiz/mixed', label: 'Mixed quiz' },
-      { to: '/quiz/arrays', label: 'Arrays quiz' },
+      { to: '/quiz/arrays-hashing', label: 'Arrays quiz' },
       { to: '/quiz/graphs', label: 'Graphs quiz' },
       { to: '/dashboard', label: 'Progress dashboard' }
     ]

@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q4",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the worst-case time complexity of inserting an element at index 0 of an n-element array?",
+  "options": [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n\u00b2)"
+  ],
+  "correct_index": 2,
+  "explanation": "All n existing elements must shift one position to the right in memory, costing O(n) operations.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "ff80c6e63b6edac0e54b4e5e63526553e5693d2a9a4e962aa80c8b023f020b75",
+  "review_status": "verified"
+}

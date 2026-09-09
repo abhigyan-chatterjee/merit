@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-concept-61",
+  "topic": "linked-lists",
+  "subtopic": "data-structure-properties",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "In a Disjoint Set Union (DSU) structure using both Union by Rank and Path Compression, what is the maximum tree height after any sequence of operations on n elements?",
+  "options": [
+    "O(\u221an)",
+    "O(log n)",
+    "O(\u03b1(n))",
+    "O(1)"
+  ],
+  "correct_index": 2,
+  "explanation": "Union by rank and path compression together bound the depth to the inverse Ackermann function \u03b1(n).",
+  "source": "generated",
+  "generator_key": "ds_operations.concepts",
+  "content_hash": "6d8b04d8bc394dcf556e4b29be8bed4247fd0d8f8ae4d84bbf7d9a00f0c8cc10",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q5",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which traversal order is most appropriate for deleting or freeing all nodes in a tree from bottom up?",
+  "options": [
+    "Preorder",
+    "Inorder",
+    "Postorder",
+    "Level-order"
+  ],
+  "correct_index": 2,
+  "explanation": "Postorder processes both Left and Right children completely before processing the parent node.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "a48942274025d3cea9c3df68719e085c89b4545f8fc5646e3d0f2b2853500e8c",
+  "review_status": "verified"
+}

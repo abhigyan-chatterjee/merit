@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q6",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which data structure is used to implement Level-Order tree traversal?",
+  "options": [
+    "FIFO Queue",
+    "LIFO Stack",
+    "Min-Heap",
+    "Hash Set"
+  ],
+  "correct_index": 0,
+  "explanation": "A FIFO queue processes nodes layer by layer, enqueuing children as each node is visited.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "403d08a4b4cd2799c0c27a7b57bf5b0990af3b3e68cfcdce26a945b5d36269ed",
+  "review_status": "verified"
+}

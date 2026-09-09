@@ -1,0 +1,20 @@
+{
+  "id": "gen-dp-knap-30",
+  "topic": "dynamic-programming",
+  "subtopic": "knapsack",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a 0/1 Knapsack problem with knapsack capacity 7, items with weights `[1, 2, 5, 6]` and corresponding values `[1, 6, 18, 22]` are available. What is the maximum total value that can fit within the capacity?",
+  "options": [
+    "24",
+    "32",
+    "29",
+    "22"
+  ],
+  "correct_index": 0,
+  "explanation": "The optimal subset yields total value 24 without exceeding capacity 7.",
+  "source": "generated",
+  "generator_key": "dp.knapsack",
+  "content_hash": "1678df82464a1bd6feec7ad061dec0aea22e91249a6439d82f411b6571d56e51",
+  "review_status": "verified"
+}

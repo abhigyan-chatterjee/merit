@@ -36,7 +36,10 @@
       "code": "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}"
     }
   ],
-  "starterCode": "function solve(arr) {\n  const result = [];\n  let levelSize = 1, i = 0;\n  while (i < arr.length) {\n    const level = arr.slice(i, i + levelSize).reverse();\n    result.push(...level);\n    i += levelSize;\n    levelSize *= 2;\n  }\n  return result;\n}",
+  "starterCode": {
+    "javascript": "function solve(treeArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -84,5 +87,8 @@
       "expected": [],
       "label": "[]"
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "same-tree",
+  "nextSlug": "diameter-of-binary-tree"
 }

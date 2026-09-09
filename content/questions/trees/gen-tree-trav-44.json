@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-trav-44",
+  "topic": "trees",
+  "subtopic": "preorder-traversal",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[20, 10, 30, 5, 15, 25, 35]`\n\nWhat is the exact **Preorder** traversal sequence of this tree?",
+  "options": [
+    "20, 10, 5, 15, 30, 25, 35",
+    "5, 10, 15, 20, 25, 30, 35",
+    "5, 15, 10, 25, 35, 30, 20",
+    "20, 10, 30, 5, 15, 25, 35"
+  ],
+  "correct_index": 0,
+  "explanation": "Preorder traversal visits Root -> Left Subtree -> Right Subtree. Root 20 is visited first, recursively followed by its left and right descendants: [20, 10, 5, 15, 30, 25, 35].",
+  "source": "generated",
+  "generator_key": "tree_traversals.sequence",
+  "content_hash": "578e5baec7fad6cadfef043188cf68833b0ce942f785c519d72ce2c9bfae059d",
+  "review_status": "verified"
+}

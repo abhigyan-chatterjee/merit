@@ -1,0 +1,20 @@
+{
+  "id": "gen-arr-win-31",
+  "topic": "arrays-hashing",
+  "subtopic": "sliding-window",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using a sliding window of fixed size `k = 2`, what is the **maximum subarray sum** over all contiguous subarrays of size 2 in array `[100, 200, 300, 400]`?",
+  "options": [
+    "695",
+    "700",
+    "706",
+    "698"
+  ],
+  "correct_index": 1,
+  "explanation": "By maintaining a sliding window of size 2 and updating sum in O(1) time per shift, the maximum window sum is 700.",
+  "source": "generated",
+  "generator_key": "arrays_strings.sliding_window",
+  "content_hash": "1a5db2d5ae95d82a4ade7ef90cb00ff8b1bc12623aa64be0060cc850b619bfb9",
+  "review_status": "verified"
+}

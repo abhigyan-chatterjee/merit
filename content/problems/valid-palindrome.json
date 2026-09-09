@@ -2,7 +2,7 @@
   "id": "str-2",
   "slug": "valid-palindrome",
   "title": "Valid Palindrome",
-  "topic": "strings",
+  "topic": "two-pointers",
   "difficulty": "Easy",
   "pattern": "Two Pointers",
   "statement": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
@@ -36,7 +36,10 @@
       "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) if (clean[l++] !== clean[r--]) return false;\n  return true;\n}"
     }
   ],
-  "starterCode": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) {\n    if (clean[l] !== clean[r]) return false;\n    l++;\n    r--;\n  }\n  return true;\n}",
+  "starterCode": {
+    "javascript": "function solve(s,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -60,5 +63,8 @@
       "expected": true,
       "label": "\" \""
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "container-with-most-water",
+  "nextSlug": "merge-two-sorted-lists"
 }

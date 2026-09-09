@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-queue-30",
+  "topic": "data-structures",
+  "subtopic": "circular-queue",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A circular queue is implemented using a 0-indexed array of capacity 12. Currently, `front = 5` and it contains 5 elements. If 4 `dequeue()` operations are performed, followed by 2 `enqueue()` operations, what will be the new index of `front` in the array?",
+  "options": [
+    "9",
+    "11",
+    "8",
+    "10"
+  ],
+  "correct_index": 0,
+  "explanation": "Each dequeue advances front modulo capacity: new_front = (front + dequeues) % capacity = (5 + 4) % 12 = 9.",
+  "source": "generated",
+  "generator_key": "ds_operations.circular_queue",
+  "content_hash": "274c5dfd033081438efefd774a3167cf4768c1fa929f373371893afbcbf43f0b",
+  "review_status": "verified"
+}

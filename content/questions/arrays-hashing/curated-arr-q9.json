@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q9",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "To find the minimum length subarray with sum >= S in an array of positive integers, which pattern is optimal?",
+  "options": [
+    "Variable-Size Sliding Window",
+    "Binary Search on Unsorted Array",
+    "Floyd Cycle Detection",
+    "Bellman-Ford"
+  ],
+  "correct_index": 0,
+  "explanation": "Because all numbers are positive, expanding right increases sum and shrinking left decreases sum monotonically in O(n).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "1ce1a8099f76857a5c24cde314d882d368bb40af26cae415eb466d9a8fe54e6f",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q6",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the time complexity of extracting the minimum element from a Min-Heap of size n?",
+  "options": [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n log n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Swapping root with the last leaf takes O(1), followed by Sift-Down along the tree height of O(log n).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "f330002b4d0e524099f460283dad4630159239d1f77896e87cb8156a4415187b",
+  "review_status": "verified"
+}

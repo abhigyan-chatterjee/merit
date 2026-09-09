@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q4",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In an array-backed 0-indexed Binary Heap, what are the indices of the left and right children of node i?",
+  "options": [
+    "left = 2i + 1, right = 2i + 2",
+    "left = 2i, right = 2i + 1",
+    "left = i + 1, right = i + 2",
+    "left = i/2, right = i/2 + 1"
+  ],
+  "correct_index": 0,
+  "explanation": "Level-order packing places children of index i at 2i + 1 and 2i + 2, with parent at floor((i - 1) / 2).",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "93783375531ba6681ec179df41ebc41cedf4ce366d25483e44e5f7fbe48663d4",
+  "review_status": "verified"
+}

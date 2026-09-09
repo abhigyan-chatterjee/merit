@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-param-35",
+  "topic": "sorting",
+  "subtopic": "nested-loops",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    j = 1\n    while j <= n:\n        j *= 6\n```",
+  "options": [
+    "O(n\u00b2)",
+    "O(n * 6)",
+    "O(n log n)",
+    "O(log n)"
+  ],
+  "correct_index": 2,
+  "explanation": "Outer loop runs n times. Inner loop multiplies j by 6 each step, running log_6(n) times. Asymptotic time is \u0398(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.param_loop",
+  "content_hash": "9d4d8a6f85e3facad122903dcc836cbc856a53f7d5d9bd5efd19cb28a8296608",
+  "review_status": "verified"
+}

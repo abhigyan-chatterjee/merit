@@ -32,11 +32,14 @@
     },
     {
       "title": "Disjoint Set Union (DSU)",
-      "complexity": "Time: O(E α(V)) | Space: O(V)",
+      "complexity": "Time: O(E \u03b1(V)) | Space: O(V)",
       "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}"
     }
   ],
-  "starterCode": "function solve(n, edges, source, destination) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) {\n    adj[u].push(v);\n    adj[v].push(u);\n  }\n  const visited = new Set([source]);\n  const queue = [source];\n  while (queue.length > 0) {\n    const curr = queue.shift();\n    if (curr === destination) return true;\n    for (const neighbor of adj[curr]) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        queue.push(neighbor);\n      }\n    }\n  }\n  return false;\n}",
+  "starterCode": {
+    "javascript": "function solve(n, edges, source, destination) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -103,5 +106,8 @@
       "expected": true,
       "label": "n=1, same source/dest"
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "find-the-town-judge",
+  "nextSlug": "number-of-islands"
 }

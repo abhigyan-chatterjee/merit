@@ -1,0 +1,20 @@
+{
+  "id": "gen-sort-prop-16",
+  "topic": "sorting",
+  "subtopic": "sorting-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which of the following comparison-based sorting algorithms is guaranteed to be STABLE and runs in O(n log n) worst-case time?",
+  "options": [
+    "Heap Sort",
+    "Quick Sort",
+    "Merge Sort",
+    "Selection Sort"
+  ],
+  "correct_index": 2,
+  "explanation": "Merge Sort stably maintains relative order of duplicate elements and guarantees O(n log n) time across best, average, and worst cases.",
+  "source": "generated",
+  "generator_key": "sorting_searching.properties",
+  "content_hash": "4b79901e383e2f9c5ee283c5493b2d2c332c9a8d41fcb3f1131ffb19bc1f5a1e",
+  "review_status": "verified"
+}

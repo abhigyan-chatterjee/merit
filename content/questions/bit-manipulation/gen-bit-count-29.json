@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-count-29",
+  "topic": "bit-manipulation",
+  "subtopic": "popcount",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many set bits (1s in binary representation) are in the integer `255` (`0b11111111`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
+  "options": [
+    "10",
+    "7",
+    "8",
+    "9"
+  ],
+  "correct_index": 2,
+  "explanation": "Integer 255 has binary representation 0b11111111, containing exactly 8 set bit(s).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.popcount",
+  "content_hash": "8b0a3ec8182515420b9418ce15eebe5dafa152a3b77f01d9bd29f044a47fe692",
+  "review_status": "verified"
+}

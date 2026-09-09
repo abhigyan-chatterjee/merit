@@ -1,0 +1,20 @@
+{
+  "id": "curated-arr-q6",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which sorting algorithm guarantees O(n log n) worst-case time complexity and is stable, but requires O(n) auxiliary space?",
+  "options": [
+    "Quick Sort",
+    "Heap Sort",
+    "Merge Sort",
+    "Insertion Sort"
+  ],
+  "correct_index": 2,
+  "explanation": "Merge Sort splits arrays in half recursively and merges sorted halves stably using an O(n) temporary buffer.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "c9da89077c58c0169bb28546ad9f8df5ef4db0b4aedb1d8b6a806e762580727e",
+  "review_status": "verified"
+}

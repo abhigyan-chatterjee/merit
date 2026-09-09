@@ -1,0 +1,20 @@
+{
+  "id": "gen-cs-concept-19",
+  "topic": "data-structures",
+  "subtopic": "core-concepts",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many usable host IP addresses are available in an IPv4 subnet with CIDR prefix /26?",
+  "options": [
+    "30",
+    "126",
+    "62",
+    "64"
+  ],
+  "correct_index": 2,
+  "explanation": "A /26 subnet leaves 32 - 26 = 6 host bits. 2^6 = 64 total addresses. Subtracting 2 (network address and broadcast address) yields 62 usable host addresses.",
+  "source": "generated",
+  "generator_key": "cs_fundamentals.concepts",
+  "content_hash": "09416b05f119603e076f83730ee90b072e8462f7691fc0ebd4451349973cf94c",
+  "review_status": "verified"
+}

@@ -2,7 +2,7 @@
   "id": "dp-3",
   "slug": "coin-change",
   "title": "Coin Change (Minimum Coins)",
-  "topic": "dp",
+  "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "Unbounded Knapsack Tabulation",
   "statement": "You are given an integer array coins representing coins of different denominations and an integer amount. Return the fewest number of coins that you need to make up that amount, or -1 if impossible.",
@@ -38,7 +38,10 @@
       "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (const c of coins) {\n    for (let a = c; a <= amount; a++) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}"
     }
   ],
-  "starterCode": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) {\n        dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n      }\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+  "starterCode": {
+    "javascript": "function solve(coins, amount) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -73,5 +76,8 @@
       "expected": 0,
       "label": "coins=[1], amount=0"
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "maximum-subarray",
+  "nextSlug": "longest-increasing-subsequence"
 }

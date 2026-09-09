@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-concept-63",
+  "topic": "linked-lists",
+  "subtopic": "data-structure-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In a Singly Linked List with head and tail pointers, which operation CANNOT be performed in O(1) time without extra pointers?",
+  "options": [
+    "Inserting at head",
+    "Inserting at tail",
+    "Deleting the tail node",
+    "Deleting the head node"
+  ],
+  "correct_index": 2,
+  "explanation": "Deleting the tail requires updating the second-to-last node's next pointer to null. In a singly linked list, finding the second-to-last node requires traversing from the head in O(n) time.",
+  "source": "generated",
+  "generator_key": "ds_operations.concepts",
+  "content_hash": "21f6d155684e7b33ccf04f84022bc47465299711560955821612e89b3db069ad",
+  "review_status": "verified"
+}

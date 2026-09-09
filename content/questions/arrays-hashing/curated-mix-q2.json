@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q2",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which traversal of a Binary Search Tree visits keys in sorted order?",
+  "options": [
+    "Preorder (NLR)",
+    "Inorder (LNR)",
+    "Postorder (LRN)",
+    "Level-order (BFS)"
+  ],
+  "correct_index": 1,
+  "explanation": "Inorder visits Left subtree, then Root, then Right subtree \u2014 yielding ascending key order for a BST.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "3390ca05ee944ee1dd0868fb61ac74e489a07f5236b34f2abfd4cdee5d6a3ee3",
+  "review_status": "verified"
+}

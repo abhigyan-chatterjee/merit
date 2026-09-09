@@ -1,0 +1,20 @@
+{
+  "id": "gen-arr-win-34",
+  "topic": "arrays-hashing",
+  "subtopic": "sliding-window",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using a sliding window of fixed size `k = 3`, what is the **maximum subarray sum** over all contiguous subarrays of size 3 in array `[4, 2, 1, 7, 8, 1, 2, 8, 1, 0]`?",
+  "options": [
+    "11",
+    "22",
+    "16",
+    "14"
+  ],
+  "correct_index": 2,
+  "explanation": "By maintaining a sliding window of size 3 and updating sum in O(1) time per shift, the maximum window sum is 16.",
+  "source": "generated",
+  "generator_key": "arrays_strings.sliding_window",
+  "content_hash": "7e7e07203cd3cca9be84b337c5f8c7f72d384cc945138b3e40f981258f32d702",
+  "review_status": "verified"
+}

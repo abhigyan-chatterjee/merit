@@ -1,0 +1,106 @@
+{
+  "id": "tree-7",
+  "slug": "lowest-common-ancestor-of-a-binary-tree",
+  "title": "Lowest Common Ancestor of a Binary Tree",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "Root-to-Node Path Compare",
+  "statement": "Given the level-order array of a binary tree and two node values p and q that both exist in the tree, return the value of their lowest common ancestor: the deepest node that has both p and q in its subtree.",
+  "examples": [
+    {
+      "input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1",
+      "output": "3",
+      "explanation": "Nodes 5 and 1 sit in different subtrees of the root 3."
+    },
+    {
+      "input": "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4",
+      "output": "5",
+      "explanation": "Node 4 is inside the subtree of 5, so 5 is the ancestor."
+    }
+  ],
+  "constraints": [
+    "2 <= nodes <= 10^4",
+    "p and q both exist in the tree and are distinct"
+  ],
+  "hints": [
+    "For array index i, children are at 2*i + 1 and 2*i + 2; null marks a missing child.",
+    "Find the root-to-p path and the root-to-q path by DFS.",
+    "Walk both paths together; the last shared value before they diverge is the answer."
+  ],
+  "solutions": [
+    {
+      "title": "Path Lists Compare",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(arr, p, q) {\n  function findPath(i, target, path) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    const next = [...path, arr[i]];\n    if (arr[i] === target) return next;\n    return findPath(2 * i + 1, target, next) || findPath(2 * i + 2, target, next);\n  }\n  const P = findPath(0, p, []), Q = findPath(0, q, []);\n  let lca = null;\n  for (let i = 0; i < Math.min(P.length, Q.length); i++) {\n    if (P[i] === Q[i]) lca = P[i];\n    else break;\n  }\n  return lca;\n}"
+    },
+    {
+      "title": "Recursive Subtree Search",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "code": "function solve(arr, p, q) {\n  function lca(i) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    if (arr[i] === p || arr[i] === q) return arr[i];\n    const l = lca(2 * i + 1), r = lca(2 * i + 2);\n    if (l !== null && r !== null) return arr[i];\n    return l !== null ? l : r;\n  }\n  return lca(0);\n}"
+    }
+  ],
+  "starterCode": {
+    "javascript": "function solve(treeArray, p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "solve",
+  "testCases": [
+    {
+      "input": [
+        [
+          3,
+          5,
+          1,
+          6,
+          2,
+          0,
+          8,
+          null,
+          null,
+          7,
+          4
+        ],
+        5,
+        1
+      ],
+      "expected": 3,
+      "label": "p=5, q=1 -> 3"
+    },
+    {
+      "input": [
+        [
+          3,
+          5,
+          1,
+          6,
+          2,
+          0,
+          8,
+          null,
+          null,
+          7,
+          4
+        ],
+        5,
+        4
+      ],
+      "expected": 5,
+      "label": "p=5, q=4 -> 5"
+    },
+    {
+      "input": [
+        [
+          1,
+          2
+        ],
+        1,
+        2
+      ],
+      "expected": 1,
+      "label": "p=1, q=2 -> 1"
+    }
+  ],
+  "sequence": 7,
+  "prevSlug": "kth-smallest-element-in-a-bst",
+  "nextSlug": null
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-concept-13",
+  "topic": "graphs",
+  "subtopic": "graph-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which condition guarantees that Dijkstra's algorithm will always find the correct shortest path?",
+  "options": [
+    "All edge weights must be non-negative",
+    "The graph must be planar",
+    "All edge weights must be integers",
+    "The graph must be a Directed Acyclic Graph (DAG)"
+  ],
+  "correct_index": 0,
+  "explanation": "Dijkstra relies on greedy choices assuming that visiting a node establishes its final shortest distance. Negative edge weights invalidate this premise, requiring Bellman-Ford instead.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.concepts",
+  "content_hash": "af3e388875530096fe523d3842e933b77ec5d630ca63fa54324c0760626bfaa7",
+  "review_status": "verified"
+}

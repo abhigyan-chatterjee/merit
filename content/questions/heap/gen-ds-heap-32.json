@@ -1,0 +1,20 @@
+{
+  "id": "gen-ds-heap-32",
+  "topic": "heap",
+  "subtopic": "binary-heap",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Elements `[5, 8, 12, 16, 20, 15, 30]` are placed into an array and converted into a Min-Heap using Floyd's bottom-up buildHeap algorithm. Which array representation satisfies the min-heap parent-child invariant `A[i] <= A[2i+1]` and `A[i] <= A[2i+2]`?",
+  "options": [
+    "[5, 8, 12, 16, 20, 15, 30]",
+    "[30, 15, 20, 16, 12, 8, 5]",
+    "[8, 12, 16, 20, 15, 30, 5]",
+    "[30, 5, 8, 12, 16, 20, 15]"
+  ],
+  "correct_index": 0,
+  "explanation": "A valid binary min-heap must satisfy A[i] <= children for every parent. Bottom-up heapify rearranges `[5, 8, 12, 16, 20, 15, 30]` to `[5, 8, 12, 16, 20, 15, 30]`.",
+  "source": "generated",
+  "generator_key": "ds_operations.heapify",
+  "content_hash": "3a37978a3700ea134091c1a754f21afa1e908a9eb10a5f0517eaac35aec21344",
+  "review_status": "verified"
+}

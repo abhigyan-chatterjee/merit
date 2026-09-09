@@ -1,0 +1,20 @@
+{
+  "id": "gen-str-concept-41",
+  "topic": "sliding-windows",
+  "subtopic": "string-algorithms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In the Rabin-Karp string matching algorithm, what technique enables O(1) computation of the hash of the next substring window?",
+  "options": [
+    "Cryptographic SHA-256",
+    "Suffix automaton",
+    "Huffman frequency tree",
+    "Rolling hash (Rabin fingerprint)"
+  ],
+  "correct_index": 3,
+  "explanation": "A rolling hash removes the leading character's contribution and adds the trailing character's contribution in O(1) arithmetic operations.",
+  "source": "generated",
+  "generator_key": "arrays_strings.concepts",
+  "content_hash": "0c4384dcc323bda08f837987334224f1ecf52f0eea97a2684418d7ac4634d4d1",
+  "review_status": "verified"
+}

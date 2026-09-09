@@ -2,7 +2,7 @@
   "id": "ll-1",
   "slug": "reverse-linked-list",
   "title": "Reverse Linked List",
-  "topic": "linked-list",
+  "topic": "linked-lists",
   "difficulty": "Easy",
   "pattern": "In-Place Pointer Reversal",
   "statement": "Given the head of a singly linked list represented as a sequence of values, reverse the list and return the reversed sequence.",
@@ -36,7 +36,10 @@
       "code": "function solve(arr) {\n  return [...arr].reverse();\n}"
     }
   ],
-  "starterCode": "function solve(headArray) {\n  // Reverse the linked list values\n  const result = [];\n  for (let i = headArray.length - 1; i >= 0; i--) {\n    result.push(headArray[i]);\n  }\n  return result;\n}",
+  "starterCode": {
+    "javascript": "function solve(headArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -78,5 +81,8 @@
       "expected": [],
       "label": "[]"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "middle-of-the-linked-list"
 }

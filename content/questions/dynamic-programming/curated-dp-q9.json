@@ -1,0 +1,20 @@
+{
+  "id": "curated-dp-q9",
+  "topic": "dynamic-programming",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which DP problem computes the minimum number of insertions, deletions, and substitutions to transform string A into string B?",
+  "options": [
+    "Edit Distance (Levenshtein Distance)",
+    "Longest Common Substring",
+    "KMP String Matching",
+    "Rabin-Karp Rolling Hash"
+  ],
+  "correct_index": 0,
+  "explanation": "Edit distance builds an (m+1)\u00d7(n+1) table comparing prefixes of A and B.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "7019ea3f8decf694fc3595d562c10fb6b5fc824848f40413854ce7378099f522",
+  "review_status": "verified"
+}

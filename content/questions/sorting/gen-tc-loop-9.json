@@ -1,0 +1,20 @@
+{
+  "id": "gen-tc-loop-9",
+  "topic": "sorting",
+  "subtopic": "loop-analysis",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Determine the worst-case asymptotic time complexity of the following code snippet with respect to input n:\n\n```text\nfor i from 1 to n:\n    for j from 1 to n with j *= 2:\n        sum += 1\n```",
+  "options": [
+    "O(n\u00b2 log n)",
+    "O(n)",
+    "O(n\u00b2)",
+    "O(n log n)"
+  ],
+  "correct_index": 3,
+  "explanation": "The outer loop executes n times. The inner loop doubles j until reaching n, which executes \u230alog\u2082 n\u230b + 1 times. Multiplying gives \u0398(n log n).",
+  "source": "generated",
+  "generator_key": "time_complexity.loops",
+  "content_hash": "7358dff091992ddf758bdb3bf278bf1dcb4b4351df4425d3862fbcfc11683cee",
+  "review_status": "verified"
+}

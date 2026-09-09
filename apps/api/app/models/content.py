@@ -20,6 +20,9 @@ class Problem(Base):
     starter_code: Mapped[str] = mapped_column(Text, nullable=False)  # JSON string {lang: code}
     function_name: Mapped[str] = mapped_column(String, nullable=False)
     time_limit_ms: Mapped[int] = mapped_column(Integer, default=2000, nullable=False)
+    sequence: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    prev_slug: Mapped[str | None] = mapped_column(String, nullable=True)
+    next_slug: Mapped[str | None] = mapped_column(String, nullable=True)
     review_status: Mapped[str] = mapped_column(
         String, default="verified", nullable=False, index=True
     )
@@ -64,3 +67,81 @@ class ProblemSolution(Base):
     is_reference: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     problem: Mapped["Problem"] = relationship("Problem", back_populates="solutions")
+
+
+class Question(Base):
+    __tablename__ = "questions"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    topic: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    subtopic: Mapped[str | None] = mapped_column(String, nullable=True)
+    difficulty: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    qtype: Mapped[str] = mapped_column(String, default="mcq", nullable=False)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    options: Mapped[str] = mapped_column(Text, nullable=False)  # JSON string list
+    correct_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(String, nullable=False)  # curated | generated
+    generator_key: Mapped[str | None] = mapped_column(String, nullable=True)
+    content_hash: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    review_status: Mapped[str] = mapped_column(
+        String, default="draft", nullable=False, index=True
+    )  # draft | verified
+    created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
+    updated_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
+
+    reviews: Mapped[list["QuestionReview"]] = relationship(
+        "QuestionReview", back_populates="question", cascade="all, delete-orphan"
+    )
+
+
+class QuestionReview(Base):
+    __tablename__ = "question_reviews"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    question_id: Mapped[str] = mapped_column(
+        String, ForeignKey("questions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    reviewer_id: Mapped[str] = mapped_column(
+        String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    action: Mapped[str] = mapped_column(String, nullable=False)  # approved | rejected | edited
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
+
+    question: Mapped["Question"] = relationship("Question", back_populates="reviews")
+
+
+class LearningPath(Base):
+    __tablename__ = "learning_paths"
+
+    slug: Mapped[str] = mapped_column(String, primary_key=True)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    blurb: Mapped[str] = mapped_column(Text, nullable=False)
+    icon: Mapped[str] = mapped_column(String, nullable=False)
+    track: Mapped[str] = mapped_column(
+        String, nullable=False, index=True
+    )  # foundational | specialised | placement
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_published: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    steps: Mapped[list["PathStep"]] = relationship(
+        "PathStep", back_populates="path", cascade="all, delete-orphan"
+    )
+
+
+class PathStep(Base):
+    __tablename__ = "path_steps"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    path_slug: Mapped[str] = mapped_column(
+        String, ForeignKey("learning_paths.slug", ondelete="CASCADE"), nullable=False, index=True
+    )
+    ordinal: Mapped[int] = mapped_column(Integer, nullable=False)
+    step_type: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # visualizer | problem | quiz | mock
+    ref_id: Mapped[str] = mapped_column(String, nullable=False)
+    title: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    path: Mapped["LearningPath"] = relationship("LearningPath", back_populates="steps")

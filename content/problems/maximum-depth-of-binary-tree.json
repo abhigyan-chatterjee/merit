@@ -36,7 +36,10 @@
       "code": "function solve(arr) {\n  if (!arr.length) return 0;\n  return Math.floor(Math.log2(arr.length)) + 1;\n}"
     }
   ],
-  "starterCode": "function solve(treeArray) {\n  function dfs(index) {\n    if (index >= treeArray.length || treeArray[index] === null) return 0;\n    const left = dfs(2 * index + 1);\n    const right = dfs(2 * index + 2);\n    return 1 + Math.max(left, right);\n  }\n  return dfs(0);\n}",
+  "starterCode": {
+    "javascript": "function solve(treeArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -72,5 +75,8 @@
       "expected": 0,
       "label": "[]"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "same-tree"
 }

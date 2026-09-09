@@ -36,7 +36,10 @@
       "code": "function solve(n, trust) {\n  const inD = new Array(n + 1).fill(0), outD = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) { outD[a]++; inD[b]++; }\n  for (let i = 1; i <= n; i++) if (inD[i] === n - 1 && outD[i] === 0) return i;\n  return -1;\n}"
     }
   ],
-  "starterCode": "function solve(n, trust) {\n  const score = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) {\n    score[a]--;\n    score[b]++;\n  }\n  for (let i = 1; i <= n; i++) {\n    if (score[i] === n - 1) return i;\n  }\n  return -1;\n}",
+  "starterCode": {
+    "javascript": "function solve(n, trust) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
   "functionName": "solve",
   "testCases": [
     {
@@ -90,5 +93,8 @@
       "expected": -1,
       "label": "n=3, no judge"
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "find-if-path-exists-in-graph"
 }

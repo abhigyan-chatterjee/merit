@@ -1,0 +1,20 @@
+{
+  "id": "gen-sort-prop-20",
+  "topic": "sorting",
+  "subtopic": "sorting-properties",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which non-comparison sorting algorithm runs in O(n + k) time where k is the range of non-negative integer input values?",
+  "options": [
+    "Bucket Sort",
+    "Counting Sort",
+    "Radix Sort",
+    "Shell Sort"
+  ],
+  "correct_index": 1,
+  "explanation": "Counting Sort tallies frequencies of keys in range [0..k] and computes prefix sums in O(n + k) time and space.",
+  "source": "generated",
+  "generator_key": "sorting_searching.properties",
+  "content_hash": "7722560eaaf12c55b4f7787b28937d07d963d9c5f2bcbc6bd64afdd0a9c95856",
+  "review_status": "verified"
+}

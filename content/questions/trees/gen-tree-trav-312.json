@@ -1,0 +1,20 @@
+{
+  "id": "gen-tree-trav-312",
+  "topic": "trees",
+  "subtopic": "level-order-traversal",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[110, 60, 160, 35, 85, 135, 185]`\n\nWhat is the exact **Level-order** traversal sequence of this tree?",
+  "options": [
+    "35, 60, 85, 110, 135, 160, 185",
+    "35, 85, 60, 135, 185, 160, 110",
+    "110, 60, 160, 35, 85, 135, 185",
+    "110, 60, 35, 85, 160, 135, 185"
+  ],
+  "correct_index": 2,
+  "explanation": "Level-order traversal (BFS) processes nodes level-by-level from top to bottom, left to right: [110, 60, 160, 35, 85, 135, 185].",
+  "source": "generated",
+  "generator_key": "tree_traversals.sequence",
+  "content_hash": "83f22e76860261dc22316d6a50e46ced251b6f516260d68760008a016684e4d6",
+  "review_status": "verified"
+}

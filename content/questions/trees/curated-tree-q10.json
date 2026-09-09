@@ -1,0 +1,20 @@
+{
+  "id": "curated-tree-q10",
+  "topic": "trees",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the space complexity of recursive DFS traversal on a balanced binary tree with n nodes?",
+  "options": [
+    "O(log n) call stack frames",
+    "O(n) call stack frames",
+    "O(1)",
+    "O(n\u00b2)"
+  ],
+  "correct_index": 0,
+  "explanation": "The recursion stack only holds nodes along the active root-to-leaf path, which is O(height) = O(log n) for balanced trees.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "89e580619cbec006100bdcda879572c16dc2eac3cf8f9e009fe0b23795da9234",
+  "review_status": "verified"
+}

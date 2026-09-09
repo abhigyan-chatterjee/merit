@@ -1,0 +1,20 @@
+{
+  "id": "gen-bit-count-17",
+  "topic": "bit-manipulation",
+  "subtopic": "popcount",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How many set bits (1s in binary representation) are in the integer `15` (`0b1111`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
+  "options": [
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "Integer 15 has binary representation 0b1111, containing exactly 4 set bit(s).",
+  "source": "generated",
+  "generator_key": "bit_manipulation.popcount",
+  "content_hash": "283cef8693276755866e566df656c976534d71cb82f5e08af4072b1ba9c00bcd",
+  "review_status": "verified"
+}

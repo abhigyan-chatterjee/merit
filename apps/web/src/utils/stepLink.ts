@@ -31,7 +31,7 @@ export function resolveStep(step: PathStep): ResolvedStep {
       step,
       title: problem?.title ?? step.id,
       subtitle: problem ? `${problem.difficulty} · ${problem.pattern}` : 'Coding problem',
-      link: problem ? `/problems/${problem.topic}/${problem.slug}` : '/problems/arrays'
+      link: problem ? `/problems/${problem.topic}/${problem.slug}` : '/problems/arrays-hashing'
     };
   }
 

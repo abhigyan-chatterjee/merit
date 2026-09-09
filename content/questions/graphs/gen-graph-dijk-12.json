@@ -1,0 +1,20 @@
+{
+  "id": "gen-graph-dijk-12",
+  "topic": "graphs",
+  "subtopic": "shortest-path",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Consider a directed graph with weighted edges:\n```text\n  1 -> (2, w=1), (3, w=5)\n  2 -> (3, w=2), (4, w=4)\n  3 -> (4, w=1)\n  4 -> \n```\nUsing Dijkstra's algorithm, what is the length of the shortest path from vertex `1` to vertex `4`?",
+  "options": [
+    "2",
+    "8",
+    "4",
+    "10"
+  ],
+  "correct_index": 2,
+  "explanation": "Applying Dijkstra's algorithm from source 1 greedily relaxes edges. The shortest distance to 4 is 4.",
+  "source": "generated",
+  "generator_key": "graph_algorithms.dijkstra",
+  "content_hash": "6913f20f2e9a404006675a48bb4bc48f22a788e51700d8f84fc4030b8ddf7c5c",
+  "review_status": "verified"
+}

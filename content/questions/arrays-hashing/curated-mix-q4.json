@@ -1,0 +1,20 @@
+{
+  "id": "curated-mix-q4",
+  "topic": "arrays-hashing",
+  "subtopic": "curated",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which two properties must hold for a problem to be solved by Dynamic Programming?",
+  "options": [
+    "Overlapping subproblems & optimal substructure",
+    "Sorted input & greedy choice",
+    "Disjoint subproblems & divide-and-conquer",
+    "Bipartite graph & monotonicity"
+  ],
+  "correct_index": 0,
+  "explanation": "DP works when optimal solutions are built from optimal sub-solutions and subproblems repeat.",
+  "source": "curated",
+  "generator_key": null,
+  "content_hash": "5af94b0c21b614c537c5f9a8a96d9aebf0eee76d27a5890b01672748d8ab1988",
+  "review_status": "verified"
+}
