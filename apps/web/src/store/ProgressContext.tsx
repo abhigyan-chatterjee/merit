@@ -5,13 +5,16 @@ import { useAuth } from './AuthContext';
 import { progressApi } from '../utils/api';
 import {
   EMPTY_INITIAL_STATE,
+  DAILY_GOAL_PRESETS,
+  DailyGoal,
   ProgressStateSchema,
   ProgressStateZodSchema,
   ProblemStatus,
   LastVisitedItem,
 } from './schema';
 
-export type { ProblemStatus, LastVisitedItem, ProgressStateSchema };
+export type { ProblemStatus, LastVisitedItem, ProgressStateSchema, DailyGoal };
+export { DAILY_GOAL_PRESETS };
 
 interface ProgressContextType {
   state: ProgressStateSchema;
@@ -21,8 +24,13 @@ interface ProgressContextType {
   saveQuizScore: (topic: string, score: number) => void;
   saveNote: (slug: string, text: string) => void;
   toggleBookmark: (id: string) => void;
-  toggleDailyGoal: () => void;
+  dailyGoal: DailyGoal | null;
+  dailyGoalProgressToday: number;
   isDailyGoalDone: boolean;
+  setDailyGoal: (goal: DailyGoal | null, opts?: { permanent?: boolean }) => void;
+  clearDailyGoal: () => void;
+  unpinDailyGoal: () => void;
+  toggleDailyGoal: () => void;
   setLastVisited: (item: LastVisitedItem) => void;
   recordVisualizerVisit: (id: string) => void;
   currentStreak: number;
@@ -54,6 +62,9 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (!user) return;
     try {
       const summary = await progressApi.getSummary();
+      // NOTE: intentionally reads `state` from closure; callers invoke this
+      // on explicit user/login transitions only, never from render effects
+      // that would loop. Keep the dep list in sync if this changes.
       if (!summary.has_imported_local) {
         // One-time merge of local progress
         const hasLocalData =
@@ -119,10 +130,21 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const setProblemStatus = (slug: string, status: ProblemStatus) => {
     markTodayActive();
-    setState((prev) => ({
-      ...prev,
-      progress: { ...prev.progress, [slug]: status },
-    }));
+    setState((prev) => {
+      const wasDone = prev.progress[slug] === 'Done';
+      const next: ProgressStateSchema = {
+        ...prev,
+        progress: { ...prev.progress, [slug]: status },
+      };
+      if (!wasDone && status === 'Done' && prev.dailyGoal?.kind === 'problems') {
+        const key = today;
+        next.dailyGoalProgress = {
+          ...prev.dailyGoalProgress,
+          [key]: (prev.dailyGoalProgress?.[key] ?? 0) + 1,
+        };
+      }
+      return next;
+    });
 
     if (user) {
       progressApi.updateProblem(slug, status, today).catch(() => {});
@@ -131,13 +153,29 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const saveQuizScore = (topic: string, score: number) => {
     markTodayActive();
-    setState((prev) => ({
-      ...prev,
-      quizzes: {
-        ...prev.quizzes,
-        [topic]: Math.max(prev.quizzes[topic] || 0, score),
-      },
-    }));
+    setState((prev) => {
+      const prevBest = prev.quizzes[topic] || 0;
+      const nextBest = Math.max(prevBest, score);
+      const next: ProgressStateSchema = {
+        ...prev,
+        quizzes: {
+          ...prev.quizzes,
+          [topic]: nextBest,
+        },
+      };
+      if (
+        prev.dailyGoal?.kind === 'quiz-score' &&
+        score >= prev.dailyGoal.target &&
+        prevBest < prev.dailyGoal.target
+      ) {
+        const key = today;
+        next.dailyGoalProgress = {
+          ...prev.dailyGoalProgress,
+          [key]: (prev.dailyGoalProgress?.[key] ?? 0) + prev.dailyGoal.target,
+        };
+      }
+      return next;
+    });
   };
 
   const saveNote = (slug: string, text: string) => {
@@ -175,6 +213,54 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }));
   };
 
+  const setDailyGoal = (goal: DailyGoal | null, opts?: { permanent?: boolean }) => {
+    setState((prev) => {
+      // A pinned goal survives a "clear": clearing with a pinned goal restores it.
+      if (goal === null && prev.dailyGoal?.permanent && !opts?.permanent) {
+        return prev;
+      }
+      const next: ProgressStateSchema = {
+        ...prev,
+        dailyGoal: goal ? { ...goal, permanent: opts?.permanent ?? goal.permanent ?? false } : null,
+      };
+      return next;
+    });
+
+    if (user && (goal !== null || opts?.permanent === true)) {
+      progressApi
+        .saveDailyGoal(goal ? { ...goal, permanent: opts?.permanent ?? goal.permanent ?? false } : null)
+        .catch(() => {});
+    }
+  };
+
+  const clearDailyGoal = () => {
+    setState((prev) => {
+      // Pinned goals are sticky: an explicit unpin is required to remove them.
+      if (prev.dailyGoal?.permanent) return prev;
+      return { ...prev, dailyGoal: null };
+    });
+    if (user) {
+      progressApi.saveDailyGoal(null).catch(() => {});
+    }
+  };
+
+  const unpinDailyGoal = () => {
+    setState((prev) => ({ ...prev, dailyGoal: null }));
+    if (user) {
+      progressApi.saveDailyGoal(null).catch(() => {});
+    }
+  };
+
+  const dailyGoal = state.dailyGoal ?? null;
+  const dailyGoalProgressToday = state.dailyGoalProgress?.[today] ?? 0;
+
+  const isDailyGoalDone = (() => {
+    if (state.dailyGoalDone[today]) return true;
+    if (!dailyGoal) return false;
+    if (dailyGoal.kind === 'custom') return false;
+    return dailyGoalProgressToday >= dailyGoal.target;
+  })();
+
   const setLastVisited = (item: LastVisitedItem) => {
     setState((prev) => ({
       ...prev,
@@ -202,8 +288,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setState(EMPTY_INITIAL_STATE);
   };
 
-  const isDailyGoalDone = Boolean(state.dailyGoalDone[today]);
-
   return (
     <ProgressContext.Provider
       value={{
@@ -214,8 +298,13 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         saveQuizScore,
         saveNote,
         toggleBookmark,
-        toggleDailyGoal,
+        dailyGoal,
+        dailyGoalProgressToday,
         isDailyGoalDone,
+        setDailyGoal,
+        clearDailyGoal,
+        unpinDailyGoal,
+        toggleDailyGoal,
         setLastVisited,
         recordVisualizerVisit,
         currentStreak,

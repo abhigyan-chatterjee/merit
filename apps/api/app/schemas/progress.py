@@ -1,5 +1,6 @@
 import re
 from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -101,6 +102,12 @@ class ProgressSummaryResponse(BaseModel):
     bookmarks: list[dict[str, str]]
     visited_visualizers: list[str]
     has_imported_local: bool
+    quiz_scores: dict[str, int] = Field(default_factory=dict)
+    weakest_topics: list[str] = Field(default_factory=list)
+    revision_due: list[dict[str, Any]] = Field(default_factory=list)
+    preferred_language: str = "javascript"
+    daily_goal: dict[str, Any] | None = None
+
 
 
 class LocalImportRequest(BaseModel):
@@ -116,3 +123,35 @@ class LocalImportRequest(BaseModel):
     @classmethod
     def validate_date(cls, v: str | None) -> str | None:
         return validate_local_date(v)
+
+
+class DailyGoalPayload(BaseModel):
+    kind: str
+    label: str
+    target: float
+    permanent: bool = False
+
+    @field_validator("kind")
+    @classmethod
+    def validate_kind(cls, v: str) -> str:
+        if v not in {"problems", "quiz-score", "custom"}:
+            raise ValueError("kind must be one of: problems, quiz-score, custom")
+        return v
+
+
+class SettingsUpdate(BaseModel):
+    preferred_language: str | None = None
+    daily_goal: DailyGoalPayload | None = None
+    clear_daily_goal: bool = False
+
+    @field_validator("preferred_language")
+    @classmethod
+    def validate_lang(cls, v: str | None) -> str | None:
+        if v is not None and v not in {"javascript", "python"}:
+            raise ValueError("preferred_language must be javascript or python")
+        return v
+
+
+class SettingsResponse(BaseModel):
+    preferred_language: str
+    daily_goal: dict[str, Any] | None = None

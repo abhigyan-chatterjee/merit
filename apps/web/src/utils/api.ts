@@ -178,6 +178,15 @@ export const authApi = {
   },
 };
 
+export interface RevisionItem {
+  type: "problem" | "question";
+  id: string;
+  title: string;
+  reason: string;
+  due_stage: string;
+  link: string;
+}
+
 export interface ProgressSummary {
   solved_count: number;
   doing_count: number;
@@ -189,7 +198,20 @@ export interface ProgressSummary {
   bookmarks: Array<{ item_type: string; item_id: string }>;
   visited_visualizers: string[];
   has_imported_local: boolean;
+  quiz_scores?: Record<string, number>;
+  weakest_topics?: string[];
+  revision_due?: RevisionItem[];
+  preferred_language?: string;
+  daily_goal?: { kind: string; label: string; target: number; permanent?: boolean } | null;
 }
+
+export interface DailyGoalPayload {
+  kind: string;
+  label: string;
+  target: number;
+  permanent?: boolean;
+}
+
 
 export const progressApi = {
   async getSummary(): Promise<ProgressSummary> {
@@ -248,6 +270,39 @@ export const progressApi = {
       body: JSON.stringify(data),
     });
   },
+
+  async getSettings(): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+    return await apiRequest("/api/v1/progress/settings", { method: "GET" });
+  },
+
+  async saveSettings(data: {
+    preferred_language?: string;
+    daily_goal?: DailyGoalPayload | null;
+    clear_daily_goal?: boolean;
+  }): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+    const body: Record<string, unknown> = {};
+    if (data.preferred_language !== undefined) body.preferred_language = data.preferred_language;
+    if (data.clear_daily_goal) body.clear_daily_goal = true;
+    else if (data.daily_goal !== undefined) body.daily_goal = data.daily_goal;
+    return await apiRequest("/api/v1/progress/settings", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  },
+
+  async saveDailyGoal(goal: DailyGoalPayload | null): Promise<void> {
+    if (goal === null) {
+      await apiRequest("/api/v1/progress/settings", {
+        method: "PUT",
+        body: JSON.stringify({ clear_daily_goal: true }),
+      });
+      return;
+    }
+    await apiRequest("/api/v1/progress/settings", {
+      method: "PUT",
+      body: JSON.stringify({ daily_goal: goal }),
+    });
+  },
 };
 
 export interface TestCaseResult {
@@ -301,5 +356,183 @@ export const judgeApi = {
     );
   },
 };
+
+export interface QuizQuestionItem {
+  id: string;
+  topic: string;
+  subtopic: string | null;
+  difficulty: string;
+  prompt: string;
+  options: string[];
+}
+
+export interface QuizGenerateResponse {
+  attempt_id: string;
+  questions: QuizQuestionItem[];
+  total: number;
+  is_mock?: boolean;
+  duration_sec?: number | null;
+  expires_at?: string | null;
+}
+
+export interface QuizQuestionResult {
+  question_id: string;
+  prompt: string;
+  options: string[];
+  selected_index: number | null;
+  correct_index: number;
+  is_correct: boolean;
+  explanation: string;
+}
+
+export interface QuizSubmitResponse {
+  attempt_id: string;
+  total: number;
+  correct: number;
+  score_pct: number;
+  duration_sec: number;
+  results: QuizQuestionResult[];
+}
+
+export const quizApi = {
+  async generateQuiz(
+    topics: string[],
+    count: number = 10,
+    difficulty?: string,
+    isMock: boolean = false,
+    durationSec?: number
+  ): Promise<QuizGenerateResponse> {
+    return await apiRequest<QuizGenerateResponse>("/api/v1/quizzes/generate", {
+      method: "POST",
+      body: JSON.stringify({
+        topics,
+        count,
+        difficulty,
+        is_mock: isMock,
+        duration_sec: durationSec,
+      }),
+    });
+  },
+
+
+  async submitQuiz(
+    attemptId: string,
+    durationSec: number,
+    selected: Record<string, number>
+  ): Promise<QuizSubmitResponse> {
+    return await apiRequest<QuizSubmitResponse>(`/api/v1/quizzes/attempts/${encodeURIComponent(attemptId)}`, {
+      method: "POST",
+      body: JSON.stringify({ duration_sec: durationSec, selected }),
+    });
+  },
+
+  async retryWrong(attemptId: string): Promise<QuizGenerateResponse> {
+    return await apiRequest<QuizGenerateResponse>(
+      `/api/v1/quizzes/attempts/${encodeURIComponent(attemptId)}/retry-wrong`,
+      {
+        method: "POST",
+      }
+    );
+  },
+
+  async getAttempt(attemptId: string): Promise<QuizSubmitResponse> {
+    return await apiRequest<QuizSubmitResponse>(
+      `/api/v1/quizzes/attempts/${encodeURIComponent(attemptId)}`,
+      {
+        method: "GET",
+      }
+    );
+  },
+};
+
+export const contentApi = {
+  async getProblems(params?: { topic?: string; difficulty?: string }): Promise<any[]> {
+    const sp = new URLSearchParams();
+    if (params?.topic) sp.append("topic", params.topic);
+    if (params?.difficulty) sp.append("difficulty", params.difficulty);
+    const qs = sp.toString() ? `?${sp.toString()}` : "";
+    return await apiRequest<any[]>(`/api/v1/problems${qs}`);
+  },
+
+  async getProblem(slug: string): Promise<any> {
+    return await apiRequest<any>(`/api/v1/problems/${encodeURIComponent(slug)}`);
+  },
+
+  async getQuestions(params?: { topic?: string; difficulty?: string }): Promise<any[]> {
+    const sp = new URLSearchParams();
+    if (params?.topic) sp.append("topic", params.topic);
+    if (params?.difficulty) sp.append("difficulty", params.difficulty);
+    const qs = sp.toString() ? `?${sp.toString()}` : "";
+    return await apiRequest<any[]>(`/api/v1/questions${qs}`);
+  },
+
+  async getPaths(): Promise<any[]> {
+    return await apiRequest<any[]>("/api/v1/paths");
+  },
+
+  async getPath(slug: string): Promise<any> {
+    return await apiRequest<any>(`/api/v1/paths/${encodeURIComponent(slug)}`);
+  },
+
+  async getVisualizers(): Promise<any[]> {
+    return await apiRequest<any[]>("/api/v1/visualizers");
+  },
+
+  async completeStep(stepId: number): Promise<{ step_id: number; completed: boolean }> {
+    return await apiRequest<{ step_id: number; completed: boolean }>(
+      `/api/v1/paths/steps/${stepId}/complete`,
+      { method: "POST" }
+    );
+  },
+};
+
+export interface AdminStats {
+  users_count: number;
+  total_submissions: number;
+  ac_submissions: number;
+  ac_rate_pct: number;
+  total_quiz_attempts: number;
+  verified_questions: number;
+  draft_questions: number;
+  verified_problems: number;
+  draft_problems: number;
+}
+
+export const adminApi = {
+  async getStats(): Promise<AdminStats> {
+    return await apiRequest<AdminStats>("/api/v1/admin/stats");
+  },
+
+  async getReviewQueue(type: "questions" | "problems" = "questions"): Promise<any[]> {
+    return await apiRequest<any[]>(`/api/v1/admin/review-queue?type=${encodeURIComponent(type)}`);
+  },
+
+  async reviewQuestion(
+    id: string,
+    action: "approved" | "rejected" | "edited",
+    note?: string
+  ): Promise<any> {
+    return await apiRequest(`/api/v1/admin/questions/${encodeURIComponent(id)}/review`, {
+      method: "POST",
+      body: JSON.stringify({ action, note }),
+    });
+  },
+
+  async reviewProblem(slug: string, action: "approved" | "rejected", note?: string): Promise<any> {
+    return await apiRequest(`/api/v1/admin/problems/${encodeURIComponent(slug)}/review`, {
+      method: "POST",
+      body: JSON.stringify({ action, note }),
+    });
+  },
+
+  async getCoverage(): Promise<{ matrix: Record<string, Record<string, number>>; total_verified: number }> {
+    return await apiRequest("/api/v1/admin/coverage");
+  },
+
+  async getAuditLogs(): Promise<any[]> {
+    return await apiRequest<any[]>("/api/v1/admin/audit-logs");
+  },
+};
+
 
 

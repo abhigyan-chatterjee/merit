@@ -1,8 +1,12 @@
+import json
+from typing import Any
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.models.content import Problem, Question
 from app.models.progress import (
     ActivityDay,
     Bookmark,
@@ -10,6 +14,8 @@ from app.models.progress import (
     ProblemProgress,
     VisualizerCompletion,
 )
+from app.models.quiz import QuizAttempt, QuizAttemptAnswer
+from app.models.submission import Submission
 from app.models.user import User, utcnow_iso
 from app.schemas.progress import (
     BookmarkResponse,
@@ -20,6 +26,8 @@ from app.schemas.progress import (
     ProblemProgressResponse,
     ProblemProgressUpdate,
     ProgressSummaryResponse,
+    SettingsResponse,
+    SettingsUpdate,
     VisualizerVisitResponse,
 )
 from app.security import get_current_user
@@ -217,6 +225,132 @@ def get_progress_summary(
     ).all()
     visited_list = [v.visualizer_id for v in vis_rows]
 
+    # Fetch quiz attempts for per-topic scores and weak areas
+    attempts = db.scalars(
+        select(QuizAttempt)
+        .where(QuizAttempt.user_id == user.id)
+        .order_by(QuizAttempt.created_at.desc())
+    ).all()
+
+    quiz_scores: dict[str, int] = {}
+    topic_correct: dict[str, int] = {}
+    topic_total: dict[str, int] = {}
+
+    # Analyze last 5 attempts
+    last_5_attempts = attempts[:5]
+    wrong_questions: list[tuple[str, str, str]] = []
+    solved_qids: set[str] = set()
+
+    for att in attempts:
+        try:
+            spec = json.loads(att.topic_spec) if att.topic_spec else {}
+            topics = spec.get("topics", [])
+            topic_key = topics[0] if len(topics) == 1 else "mixed"
+            quiz_scores[topic_key] = max(quiz_scores.get(topic_key, 0), att.score_pct)
+        except Exception:
+            continue
+
+    if last_5_attempts:
+        att_ids = [a.id for a in last_5_attempts]
+        answers = db.scalars(
+            select(QuizAttemptAnswer).where(QuizAttemptAnswer.attempt_id.in_(att_ids))
+        ).all()
+        q_ids = list({ans.question_id for ans in answers})
+        if q_ids:
+            q_rows = db.scalars(select(Question).where(Question.id.in_(q_ids))).all()
+            q_map = {q.id: q for q in q_rows}
+            for ans in answers:
+                q = q_map.get(ans.question_id)
+                t = q.topic if q else "general"
+                topic_total[t] = topic_total.get(t, 0) + 1
+                if ans.is_correct == 1:
+                    topic_correct[t] = topic_correct.get(t, 0) + 1
+                    solved_qids.add(ans.question_id)
+                else:
+                    if ans.question_id not in solved_qids:
+                        preview = (
+                            (q.prompt[:60] + "...")
+                            if q and len(q.prompt) > 60
+                            else (q.prompt if q else "Question")
+                        )
+                        wrong_questions.append((ans.question_id, t, preview))
+
+    # Incorporate submissions into weak areas
+    recent_subs = db.scalars(
+        select(Submission)
+        .where(Submission.user_id == user.id)
+        .order_by(Submission.created_at.desc())
+        .limit(20)
+    ).all()
+    sub_slugs = list({s.problem_slug for s in recent_subs})
+    wa_problems: list[tuple[str, str]] = []
+    p_map: dict[str, Problem] = {}
+
+    if sub_slugs:
+        p_rows = db.scalars(select(Problem).where(Problem.slug.in_(sub_slugs))).all()
+        p_map = {p.slug: p for p in p_rows}
+        for sub in recent_subs:
+            p = p_map.get(sub.problem_slug)
+            t = p.topic if p else "general"
+            topic_total[t] = topic_total.get(t, 0) + 1
+            if sub.verdict == "AC":
+                topic_correct[t] = topic_correct.get(t, 0) + 1
+            else:
+                if progress_map.get(sub.problem_slug) != "Done":
+                    wa_problems.append((sub.problem_slug, p.title if p else sub.problem_slug))
+
+    # Weakest topics: rolling accuracy < 70% or quiz score < 70%
+    weak_set: set[str] = set()
+    for t, tot in topic_total.items():
+        if tot >= 2:
+            acc = (topic_correct.get(t, 0) / tot) * 100
+            if acc < 70:
+                weak_set.add(t)
+
+    for t, s in quiz_scores.items():
+        if s < 70:
+            weak_set.add(t)
+
+    weakest_topics = sorted(weak_set)
+
+    # Build revision queue (spaced repetition: up to 5 items due today)
+    revision_due: list[dict[str, Any]] = []
+    seen_rev_ids: set[str] = set()
+
+    for slug, title in wa_problems:
+        if slug not in seen_rev_ids and progress_map.get(slug) != "Done":
+            seen_rev_ids.add(slug)
+            prob_topic = p_map[slug].topic if slug in p_map else "arrays"
+            revision_due.append(
+                {
+                    "type": "problem",
+                    "id": slug,
+                    "title": title,
+                    "reason": "Recent Wrong Answer on test cases",
+                    "due_stage": "1d review",
+                    "link": f"/problems/{prob_topic}/{slug}",
+                }
+            )
+            if len(revision_due) >= 5:
+                break
+
+    if len(revision_due) < 5:
+        for qid, topic, preview in wrong_questions:
+            if qid not in seen_rev_ids and qid not in solved_qids:
+                seen_rev_ids.add(qid)
+                revision_due.append(
+                    {
+                        "type": "question",
+                        "id": qid,
+                        "title": f"Concept: {preview}",
+                        "reason": f"Missed in {topic}",
+                        "due_stage": "Spaced recall",
+                        "link": f"/quiz/{topic}",
+                    }
+                )
+                if len(revision_due) >= 5:
+                    break
+
     return ProgressSummaryResponse(
         solved_count=solved_count,
         doing_count=doing_count,
@@ -228,7 +362,51 @@ def get_progress_summary(
         bookmarks=bookmarks_list,
         visited_visualizers=visited_list,
         has_imported_local=bool(user.has_imported_local),
+        quiz_scores=quiz_scores,
+        weakest_topics=weakest_topics,
+        revision_due=revision_due,
+        preferred_language=getattr(user, "preferred_language", None) or "javascript",
+        daily_goal=_user_daily_goal(user),
     )
+
+
+
+def _user_daily_goal(user: User) -> dict | None:
+    raw = getattr(user, "daily_goal_json", None)
+    return json.loads(raw) if raw else None
+
+
+@router.get("/settings", response_model=SettingsResponse)
+def get_settings(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return SettingsResponse(
+        preferred_language=getattr(user, "preferred_language", None) or "javascript",
+        daily_goal=_user_daily_goal(user),
+    )
+
+
+@router.put("/settings", response_model=SettingsResponse)
+def update_settings(
+    req: SettingsUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if req.preferred_language is not None:
+        user.preferred_language = req.preferred_language
+    if req.clear_daily_goal:
+        # Pinned goals are sticky server-side too: only an explicit clear removes them.
+        user.daily_goal_json = None
+    elif req.daily_goal is not None:
+        user.daily_goal_json = json.dumps(req.daily_goal.model_dump())
+    db.commit()
+    db.refresh(user)
+    return SettingsResponse(
+        preferred_language=user.preferred_language or "javascript",
+        daily_goal=json.loads(user.daily_goal_json) if user.daily_goal_json else None,
+    )
+
 
 
 @router.post("/import-local", response_model=ProgressSummaryResponse)
