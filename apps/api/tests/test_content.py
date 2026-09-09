@@ -114,17 +114,18 @@ def test_list_and_get_learning_paths():
     resp = client.get("/api/v1/paths")
     assert resp.status_code == 200
     paths = resp.json()
-    assert len(paths) >= 4
+    assert len(paths) >= 3
     slugs = {p["slug"] for p in paths}
-    assert "foundations" in slugs
-    assert "structures" in slugs
+    assert slugs == {"foundation", "targeted", "mastery"}
 
     # Detail path
-    p_resp = client.get("/api/v1/paths/foundations")
+    p_resp = client.get("/api/v1/paths/foundation")
     assert p_resp.status_code == 200
-    foundations = p_resp.json()
-    assert foundations["slug"] == "foundations"
-    assert len(foundations["steps"]) >= 5
+    foundation = p_resp.json()
+    assert foundation["slug"] == "foundation"
+    assert len(foundation["steps"]) >= 5
     # Steps are sorted by ordinal
-    ordinals = [s["ordinal"] for s in foundations["steps"]]
+    ordinals = [s["ordinal"] for s in foundation["steps"]]
     assert ordinals == sorted(ordinals)
+    # Foundation steps carry summaries (not visualization alone)
+    assert any(s.get("summary") for s in foundation["steps"])

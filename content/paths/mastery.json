@@ -1,0 +1,483 @@
+{
+  "slug": "mastery",
+  "title": "Mastery",
+  "blurb": "Everything verified: all coding problems sequenced by category plus the full quiz bank.",
+  "icon": "Network",
+  "track": "specialised",
+  "ordinal": 3,
+  "is_published": true,
+  "steps": [
+    {
+      "ordinal": 1,
+      "step_type": "visualizer",
+      "ref_id": "array",
+      "title": "Arrays",
+      "summary": "Indexed storage and two-pointer scans.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Array_data_structure"]
+    },
+    {
+      "ordinal": 2,
+      "step_type": "visualizer",
+      "ref_id": "sorting",
+      "title": "Sorting",
+      "summary": "Comparison sorts and partitioning.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Sorting_algorithm"]
+    },
+    {
+      "ordinal": 3,
+      "step_type": "visualizer",
+      "ref_id": "searching",
+      "title": "Searching",
+      "summary": "Binary search invariants.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Binary_search"]
+    },
+    {
+      "ordinal": 4,
+      "step_type": "visualizer",
+      "ref_id": "linked-list",
+      "title": "Linked lists",
+      "summary": "Pointer rewiring and reversal.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Linked_list"]
+    },
+    {
+      "ordinal": 5,
+      "step_type": "visualizer",
+      "ref_id": "stack",
+      "title": "Stacks",
+      "summary": "LIFO matching and evaluation.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"]
+    },
+    {
+      "ordinal": 6,
+      "step_type": "visualizer",
+      "ref_id": "queue",
+      "title": "Queues",
+      "summary": "FIFO buffers and BFS frontiers.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Queue_(abstract_data_type)"]
+    },
+    {
+      "ordinal": 7,
+      "step_type": "visualizer",
+      "ref_id": "binary-tree",
+      "title": "Binary trees",
+      "summary": "Traversals and structural recursion.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Tree_traversal"]
+    },
+    {
+      "ordinal": 8,
+      "step_type": "visualizer",
+      "ref_id": "bst",
+      "title": "Binary search trees",
+      "summary": "Ordered inserts, search, and delete.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Binary_search_tree"]
+    },
+    {
+      "ordinal": 9,
+      "step_type": "visualizer",
+      "ref_id": "heap",
+      "title": "Heaps",
+      "summary": "Priority queues with sift operations.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Heap_(data_structure)"]
+    },
+    {
+      "ordinal": 10,
+      "step_type": "visualizer",
+      "ref_id": "hashmap",
+      "title": "Hash maps",
+      "summary": "Buckets, hashing, and collision chains.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Hash_table"]
+    },
+    {
+      "ordinal": 11,
+      "step_type": "visualizer",
+      "ref_id": "graph",
+      "title": "Graphs",
+      "summary": "BFS and DFS exploration.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Graph_traversal"]
+    },
+    {
+      "ordinal": 12,
+      "step_type": "visualizer",
+      "ref_id": "recursion-tree",
+      "title": "Recursion",
+      "summary": "Call trees and overlapping subproblems.",
+      "reading_links": ["https://en.wikipedia.org/wiki/Recursion_(computer_science)"]
+    },
+    {
+      "ordinal": 13,
+      "step_type": "problem",
+      "ref_id": "two-sum",
+      "title": "Two Sum",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 14,
+      "step_type": "problem",
+      "ref_id": "contains-duplicate",
+      "title": "Contains Duplicate",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 15,
+      "step_type": "problem",
+      "ref_id": "valid-anagram",
+      "title": "Valid Anagram",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 16,
+      "step_type": "problem",
+      "ref_id": "product-of-array-except-self",
+      "title": "Product of Array Except Self",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 17,
+      "step_type": "problem",
+      "ref_id": "subarray-sum-equals-k",
+      "title": "Subarray Sum Equals K",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 18,
+      "step_type": "problem",
+      "ref_id": "best-time-to-buy-and-sell-stock",
+      "title": "Best Time to Buy and Sell Stock",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 19,
+      "step_type": "problem",
+      "ref_id": "longest-consecutive-sequence",
+      "title": "Longest Consecutive Sequence",
+      "summary": "Full arrays-hashing chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 20,
+      "step_type": "problem",
+      "ref_id": "container-with-most-water",
+      "title": "Container With Most Water",
+      "summary": "Full two-pointers chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 21,
+      "step_type": "problem",
+      "ref_id": "valid-palindrome",
+      "title": "Valid Palindrome",
+      "summary": "Full two-pointers chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 22,
+      "step_type": "problem",
+      "ref_id": "merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "summary": "Full two-pointers chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 23,
+      "step_type": "problem",
+      "ref_id": "remove-nth-node-from-end",
+      "title": "Remove Nth Node From End",
+      "summary": "Full two-pointers chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 24,
+      "step_type": "problem",
+      "ref_id": "longest-substring-without-repeating",
+      "title": "Longest Substring Without Repeating Characters",
+      "summary": "Sliding-windows chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 25,
+      "step_type": "problem",
+      "ref_id": "decode-string",
+      "title": "Decode String",
+      "summary": "Full stack chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 26,
+      "step_type": "problem",
+      "ref_id": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "summary": "Full stack chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 27,
+      "step_type": "problem",
+      "ref_id": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "summary": "Full linked-lists chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 28,
+      "step_type": "problem",
+      "ref_id": "middle-of-the-linked-list",
+      "title": "Middle of the Linked List",
+      "summary": "Full linked-lists chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 29,
+      "step_type": "problem",
+      "ref_id": "linked-list-cycle",
+      "title": "Linked List Cycle",
+      "summary": "Full linked-lists chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 30,
+      "step_type": "problem",
+      "ref_id": "palindrome-linked-list",
+      "title": "Palindrome Linked List",
+      "summary": "Full linked-lists chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 31,
+      "step_type": "problem",
+      "ref_id": "add-two-numbers",
+      "title": "Add Two Numbers",
+      "summary": "Full linked-lists chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 32,
+      "step_type": "problem",
+      "ref_id": "maximum-depth-of-binary-tree",
+      "title": "Maximum Depth of Binary Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 33,
+      "step_type": "problem",
+      "ref_id": "same-tree",
+      "title": "Same Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 34,
+      "step_type": "problem",
+      "ref_id": "invert-binary-tree",
+      "title": "Invert Binary Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 35,
+      "step_type": "problem",
+      "ref_id": "diameter-of-binary-tree",
+      "title": "Diameter of Binary Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 36,
+      "step_type": "problem",
+      "ref_id": "validate-binary-search-tree",
+      "title": "Validate Binary Search Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 37,
+      "step_type": "problem",
+      "ref_id": "kth-smallest-element-in-a-bst",
+      "title": "Kth Smallest Element in a BST",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 38,
+      "step_type": "problem",
+      "ref_id": "lowest-common-ancestor-of-a-binary-tree",
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "summary": "Full trees chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 39,
+      "step_type": "problem",
+      "ref_id": "longest-common-prefix",
+      "title": "Longest Common Prefix",
+      "summary": "Trie-adjacent prefix scan.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 40,
+      "step_type": "problem",
+      "ref_id": "merge-intervals",
+      "title": "Merge Intervals",
+      "summary": "Intervals chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 41,
+      "step_type": "problem",
+      "ref_id": "roman-to-integer",
+      "title": "Roman to Integer",
+      "summary": "Math chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 42,
+      "step_type": "problem",
+      "ref_id": "spiral-matrix",
+      "title": "Spiral Matrix",
+      "summary": "Math chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 43,
+      "step_type": "problem",
+      "ref_id": "find-the-town-judge",
+      "title": "Find the Town Judge",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 44,
+      "step_type": "problem",
+      "ref_id": "find-if-path-exists-in-graph",
+      "title": "Find if Path Exists in Graph",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 45,
+      "step_type": "problem",
+      "ref_id": "number-of-islands",
+      "title": "Number of Islands",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 46,
+      "step_type": "problem",
+      "ref_id": "flood-fill",
+      "title": "Flood Fill",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 47,
+      "step_type": "problem",
+      "ref_id": "course-schedule",
+      "title": "Course Schedule",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 48,
+      "step_type": "problem",
+      "ref_id": "course-schedule-ii",
+      "title": "Course Schedule II",
+      "summary": "Full graphs chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 49,
+      "step_type": "problem",
+      "ref_id": "climbing-stairs",
+      "title": "Climbing Stairs",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 50,
+      "step_type": "problem",
+      "ref_id": "house-robber",
+      "title": "House Robber",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 51,
+      "step_type": "problem",
+      "ref_id": "maximum-subarray",
+      "title": "Maximum Subarray",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 52,
+      "step_type": "problem",
+      "ref_id": "coin-change",
+      "title": "Coin Change",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 53,
+      "step_type": "problem",
+      "ref_id": "longest-increasing-subsequence",
+      "title": "Longest Increasing Subsequence",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 54,
+      "step_type": "problem",
+      "ref_id": "unique-paths",
+      "title": "Unique Paths",
+      "summary": "Full dynamic-programming chain in category order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 55,
+      "step_type": "quiz",
+      "ref_id": "arrays-hashing",
+      "title": "Arrays & hashing check",
+      "summary": "Quiz checkpoint after the arrays block.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 56,
+      "step_type": "quiz",
+      "ref_id": "trees",
+      "title": "Trees check",
+      "summary": "Quiz checkpoint after the trees block.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 57,
+      "step_type": "quiz",
+      "ref_id": "graphs",
+      "title": "Graphs check",
+      "summary": "Quiz checkpoint after the graphs block.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 58,
+      "step_type": "quiz",
+      "ref_id": "dynamic-programming",
+      "title": "DP check",
+      "summary": "Quiz checkpoint after the DP block.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 59,
+      "step_type": "mock",
+      "ref_id": "mixed",
+      "title": "Mastery mock",
+      "summary": "Timed mixed assessment across everything above.",
+      "reading_links": []
+    }
+  ]
+}

@@ -143,5 +143,7 @@ class PathStep(Base):
     )  # visualizer | problem | quiz | mock
     ref_id: Mapped[str] = mapped_column(String, nullable=False)
     title: Mapped[str | None] = mapped_column(String, nullable=True)
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reading_links_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
 
     path: Mapped["LearningPath"] = relationship("LearningPath", back_populates="steps")

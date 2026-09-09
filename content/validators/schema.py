@@ -145,6 +145,8 @@ class PathStepSchema(BaseModel):
     step_type: Literal["visualizer", "problem", "quiz", "mock"]
     ref_id: str = Field(..., min_length=1)
     title: str | None = None
+    summary: str | None = Field(default=None, min_length=10)
+    reading_links: list[str] = Field(default_factory=list)
 
 
 class LearningPathSchema(BaseModel):
@@ -156,3 +158,10 @@ class LearningPathSchema(BaseModel):
     ordinal: int = Field(..., ge=1)
     is_published: bool = True
     steps: list[PathStepSchema] = Field(..., min_length=1)
+
+    @model_validator(mode="after")
+    def validate_path_refs(self) -> "LearningPathSchema":
+        ordinals = [s.ordinal for s in self.steps]
+        if sorted(ordinals) != list(range(1, len(ordinals) + 1)):
+            raise ValueError(f"Step ordinals must be 1..N contiguous. Got: {ordinals}")
+        return self

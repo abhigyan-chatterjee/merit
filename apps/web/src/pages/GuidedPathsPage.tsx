@@ -13,7 +13,21 @@ const PATH_ICONS: Record<string, React.ComponentType<any>> = {
   Cpu
 };
 
-function usePathProgress(pathId: string): { done: number; total: number; pct: number } {
+function isStepDone(
+  step: { type: string; id: string },
+  state: { progress: Record<string, string>; quizzes: Record<string, number>; visitedVisualizers: string[] }
+): boolean {
+  if (step.type === 'problem') {
+    return state.progress[step.id] === 'Done';
+  } else if (step.type === 'quiz') {
+    return (state.quizzes[step.id] ?? 0) >= 70;
+  } else if (step.type === 'visualizer') {
+    return state.visitedVisualizers?.includes(step.id) ?? false;
+  }
+  return false;
+}
+
+export function usePathProgress(pathId: string): { done: number; total: number; pct: number } {
   const { state } = useProgress();
   let done = 0;
   let total = 0;
@@ -21,15 +35,7 @@ function usePathProgress(pathId: string): { done: number; total: number; pct: nu
   if (path) {
     for (const step of path.steps) {
       total++;
-      if (step.type === 'problem') {
-        if (state.progress[step.id] === 'Done') done++;
-      } else if (step.type === 'quiz') {
-        if ((state.quizzes[step.id] ?? 0) >= 70) done++;
-      }
-      // visualizers are counted by simply having been stepped-through via lastVisited
-      else if (step.type === 'visualizer' && state.lastVisited?.path === `/visualizers/${step.id}`) {
-        done++;
-      }
+      if (isStepDone(step, state)) done++;
     }
   }
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -42,7 +48,7 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
   const { done, total, pct } = usePathProgress(path.id);
   const preview = path.steps.slice(0, 3).map((s) => resolveStep(s).title);
   const complete = pct === 100;
-  const recommended = path.id === 'foundations';
+  const recommended = path.id === 'foundation';
 
   return (
     <Reveal delay={index * 0.05}>

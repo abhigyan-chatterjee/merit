@@ -381,6 +381,10 @@ def list_paths(
                         "step_type": s.step_type,
                         "ref_id": s.ref_id,
                         "title": s.title,
+                        "summary": s.summary,
+                        "reading_links": json.loads(s.reading_links_json)
+                        if s.reading_links_json
+                        else [],
                     }
                     for s in sorted(p.steps, key=lambda st: st.ordinal)
                 ],
@@ -483,6 +487,10 @@ def get_path(
                 "step_type": s.step_type,
                 "ref_id": s.ref_id,
                 "title": s.title,
+                "summary": s.summary,
+                "reading_links": json.loads(s.reading_links_json)
+                if s.reading_links_json
+                else [],
                 "completed": is_completed,
             }
         )

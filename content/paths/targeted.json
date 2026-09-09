@@ -1,0 +1,331 @@
+{
+  "slug": "targeted",
+  "title": "Targeted",
+  "blurb": "Lean placement track: highest-ROI problems sequenced so each question links to the previous and next. Original ordering and statements throughout.",
+  "icon": "Cpu",
+  "track": "placement",
+  "ordinal": 2,
+  "is_published": true,
+  "steps": [
+    {
+      "ordinal": 1,
+      "step_type": "problem",
+      "ref_id": "two-sum",
+      "title": "Two Sum",
+      "summary": "Start of the hashing chain: complement lookup in one pass.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 2,
+      "step_type": "problem",
+      "ref_id": "contains-duplicate",
+      "title": "Contains Duplicate",
+      "summary": "Same set idea, simplified to duplicate detection.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 3,
+      "step_type": "problem",
+      "ref_id": "valid-anagram",
+      "title": "Valid Anagram",
+      "summary": "Frequency maps instead of membership sets.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 4,
+      "step_type": "problem",
+      "ref_id": "subarray-sum-equals-k",
+      "title": "Subarray Sum Equals K",
+      "summary": "Prefix sums plus a hash map: count earlier prefixes equal to sum minus k.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 5,
+      "step_type": "problem",
+      "ref_id": "product-of-array-except-self",
+      "title": "Product of Array Except Self",
+      "summary": "Prefix and suffix passes without division.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 6,
+      "step_type": "problem",
+      "ref_id": "best-time-to-buy-and-sell-stock",
+      "title": "Best Time to Buy and Sell Stock",
+      "summary": "One-pass minimum tracking: the greedy cousin of the prefix idea.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 7,
+      "step_type": "problem",
+      "ref_id": "longest-consecutive-sequence",
+      "title": "Longest Consecutive Sequence",
+      "summary": "Set streaks in O(n): only count from streak starts.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 8,
+      "step_type": "problem",
+      "ref_id": "container-with-most-water",
+      "title": "Container With Most Water",
+      "summary": "Converging pointers: move the shorter wall inward.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 9,
+      "step_type": "problem",
+      "ref_id": "valid-palindrome",
+      "title": "Valid Palindrome",
+      "summary": "Same converging pattern on characters with cleanup first.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 10,
+      "step_type": "problem",
+      "ref_id": "longest-substring-without-repeating",
+      "title": "Longest Substring Without Repeating Characters",
+      "summary": "From fixed ends to a sliding window with a membership set.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 11,
+      "step_type": "problem",
+      "ref_id": "merge-intervals",
+      "title": "Merge Intervals",
+      "summary": "Sort by start, then sweep and merge overlaps in one pass.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 12,
+      "step_type": "problem",
+      "ref_id": "spiral-matrix",
+      "title": "Spiral Matrix",
+      "summary": "Boundary shrinking: peel the matrix layer by layer.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 13,
+      "step_type": "problem",
+      "ref_id": "decode-string",
+      "title": "Decode String",
+      "summary": "Stack unwinding for nested repeats.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 14,
+      "step_type": "problem",
+      "ref_id": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "summary": "Same stack discipline applied to bracket matching.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 15,
+      "step_type": "problem",
+      "ref_id": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "summary": "Pointer rewiring fundamentals.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 16,
+      "step_type": "problem",
+      "ref_id": "middle-of-the-linked-list",
+      "title": "Middle of the Linked List",
+      "summary": "Fast and slow pointers locate the middle in one pass.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 17,
+      "step_type": "problem",
+      "ref_id": "linked-list-cycle",
+      "title": "Linked List Cycle",
+      "summary": "Same two-speed walk proves a cycle exists.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 18,
+      "step_type": "problem",
+      "ref_id": "merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "summary": "Two-pointer merge across two sorted inputs.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 19,
+      "step_type": "problem",
+      "ref_id": "add-two-numbers",
+      "title": "Add Two Numbers",
+      "summary": "Digit-by-digit addition with carry, reusing the merge walk.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 20,
+      "step_type": "problem",
+      "ref_id": "maximum-depth-of-binary-tree",
+      "title": "Maximum Depth of Binary Tree",
+      "summary": "Postorder depth recursion on level-order arrays.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 21,
+      "step_type": "problem",
+      "ref_id": "diameter-of-binary-tree",
+      "title": "Diameter of Binary Tree",
+      "summary": "Track the best through-path while returning heights.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 22,
+      "step_type": "problem",
+      "ref_id": "invert-binary-tree",
+      "title": "Invert Binary Tree",
+      "summary": "Swap children level by level.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 23,
+      "step_type": "problem",
+      "ref_id": "validate-binary-search-tree",
+      "title": "Validate Binary Search Tree",
+      "summary": "Range bounds passed down instead of local checks.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 24,
+      "step_type": "problem",
+      "ref_id": "kth-smallest-element-in-a-bst",
+      "title": "Kth Smallest Element in a BST",
+      "summary": "Inorder traversal yields sorted order; pick index k minus one.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 25,
+      "step_type": "problem",
+      "ref_id": "lowest-common-ancestor-of-a-binary-tree",
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "summary": "Compare root-to-node paths; last shared value wins.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 26,
+      "step_type": "problem",
+      "ref_id": "longest-common-prefix",
+      "title": "Longest Common Prefix",
+      "summary": "Character-column scan, the trie idea without the structure.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 27,
+      "step_type": "problem",
+      "ref_id": "find-if-path-exists-in-graph",
+      "title": "Find if Path Exists in Graph",
+      "summary": "BFS connectivity on an adjacency list.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 28,
+      "step_type": "problem",
+      "ref_id": "number-of-islands",
+      "title": "Number of Islands",
+      "summary": "Flood fill each landmass once via grid DFS.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 29,
+      "step_type": "problem",
+      "ref_id": "flood-fill",
+      "title": "Flood Fill",
+      "summary": "Same fill from a given start pixel and color.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 30,
+      "step_type": "problem",
+      "ref_id": "course-schedule",
+      "title": "Course Schedule",
+      "summary": "Cycle detection decides whether a topological order exists.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 31,
+      "step_type": "problem",
+      "ref_id": "course-schedule-ii",
+      "title": "Course Schedule II",
+      "summary": "Emit the actual Kahn order instead of just a yes/no.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 32,
+      "step_type": "problem",
+      "ref_id": "climbing-stairs",
+      "title": "Climbing Stairs",
+      "summary": "Fibonacci recurrence: ways(n) equals ways(n-1) plus ways(n-2).",
+      "reading_links": []
+    },
+    {
+      "ordinal": 33,
+      "step_type": "problem",
+      "ref_id": "house-robber",
+      "title": "House Robber",
+      "summary": "Include-or-skip choice at each index extends the recurrence.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 34,
+      "step_type": "problem",
+      "ref_id": "maximum-subarray",
+      "title": "Maximum Subarray",
+      "summary": "Kadane: extend or restart the running sum at each index.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 35,
+      "step_type": "problem",
+      "ref_id": "coin-change",
+      "title": "Coin Change",
+      "summary": "Unbounded knapsack tabulation over amounts.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 36,
+      "step_type": "problem",
+      "ref_id": "longest-increasing-subsequence",
+      "title": "Longest Increasing Subsequence",
+      "summary": "Quadratic DP over earlier smaller elements; patience piles reach n log n.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 37,
+      "step_type": "problem",
+      "ref_id": "unique-paths",
+      "title": "Unique Paths",
+      "summary": "2D grid DP: each cell sums its top and left neighbors.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 38,
+      "step_type": "problem",
+      "ref_id": "roman-to-integer",
+      "title": "Roman to Integer",
+      "summary": "Subtractive peek: subtract when a smaller value precedes a larger one.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 39,
+      "step_type": "quiz",
+      "ref_id": "dynamic-programming",
+      "title": "Targeted DP check",
+      "summary": "Mixed recurrence questions over the DP block above.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 40,
+      "step_type": "mock",
+      "ref_id": "mixed",
+      "title": "Targeted placement mock",
+      "summary": "Timed mixed assessment across the whole targeted sequence.",
+      "reading_links": []
+    }
+  ]
+}

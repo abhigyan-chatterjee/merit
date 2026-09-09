@@ -1,0 +1,155 @@
+{
+  "slug": "foundation",
+  "title": "Foundation",
+  "blurb": "Absolute-beginner track: basic data structures and algorithms with visualizers, short summaries, and further reading.",
+  "icon": "LayoutGrid",
+  "track": "foundational",
+  "ordinal": 1,
+  "is_published": true,
+  "steps": [
+    {
+      "ordinal": 1,
+      "step_type": "visualizer",
+      "ref_id": "array",
+      "title": "Arrays: indexed storage",
+      "summary": "Arrays store items side by side so any index reads in O(1). Inserting or deleting in the middle shifts everything after it, which costs O(n).",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Array_data_structure",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "step_type": "problem",
+      "ref_id": "two-sum",
+      "title": "Two Sum",
+      "summary": "First hashing pattern: trade one pass plus a lookup table for the naive pair check.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 3,
+      "step_type": "problem",
+      "ref_id": "contains-duplicate",
+      "title": "Contains Duplicate",
+      "summary": "Same set-membership idea as Two Sum, reduced to a yes/no duplicate check.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 4,
+      "step_type": "visualizer",
+      "ref_id": "sorting",
+      "title": "Sorting basics",
+      "summary": "Sorting arranges data so binary search and two-pointer scans work. Watch how many comparisons each method needs.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Sorting_algorithm",
+        "https://visualgo.net/en/sorting"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "step_type": "visualizer",
+      "ref_id": "searching",
+      "title": "Binary search step-through",
+      "summary": "On sorted data, halving the search range each step finds any item in O(log n).",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Binary_search"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "step_type": "problem",
+      "ref_id": "valid-palindrome",
+      "title": "Valid Palindrome",
+      "summary": "Converging two pointers: compare the ends and walk inward.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 7,
+      "step_type": "problem",
+      "ref_id": "longest-substring-without-repeating",
+      "title": "Longest Substring Without Repeating Characters",
+      "summary": "Variable sliding window: stretch the right edge, shrink from the left on duplicates.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 8,
+      "step_type": "visualizer",
+      "ref_id": "linked-list",
+      "title": "Singly linked list",
+      "summary": "Nodes linked by pointers: O(1) inserts at a known spot, O(n) access by index.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Linked_list"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "step_type": "problem",
+      "ref_id": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "summary": "Rewire each node's pointer to its predecessor in one pass.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 10,
+      "step_type": "visualizer",
+      "ref_id": "stack",
+      "title": "LIFO stack",
+      "summary": "Last-in first-out: pushes and pops cost O(1) and power bracket matching and undo histories.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "step_type": "problem",
+      "ref_id": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "summary": "Push opening brackets, match closers off the top of the stack.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 12,
+      "step_type": "visualizer",
+      "ref_id": "hashmap",
+      "title": "Hash map buckets",
+      "summary": "Keys hash to buckets for average O(1) put and get; collisions chain inside a bucket.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Hash_table"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "step_type": "problem",
+      "ref_id": "valid-anagram",
+      "title": "Valid Anagram",
+      "summary": "Count characters with a frequency map, then compare the counts.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 14,
+      "step_type": "visualizer",
+      "ref_id": "binary-tree",
+      "title": "Tree traversals",
+      "summary": "Inorder, preorder, and postorder each visit every node once; order decides what problems they fit.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Tree_traversal"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "step_type": "problem",
+      "ref_id": "maximum-depth-of-binary-tree",
+      "title": "Maximum Depth of Binary Tree",
+      "summary": "Postorder depth: one plus the deeper of the two child depths.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 16,
+      "step_type": "quiz",
+      "ref_id": "arrays-hashing",
+      "title": "Foundation check",
+      "summary": "Mixed beginner questions across the structures above.",
+      "reading_links": []
+    }
+  ]
+}

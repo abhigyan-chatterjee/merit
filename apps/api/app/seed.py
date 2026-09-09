@@ -185,10 +185,37 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
                     step_type=step["step_type"],
                     ref_id=step["ref_id"],
                     title=step.get("title"),
+                    summary=step.get("summary"),
+                    reading_links_json=json.dumps(step.get("reading_links", [])),
                 )
                 db.add(p_step)
 
             count += 1
+        else:
+            # Re-sync steps on re-seed (path replacement across scope changes).
+            for old_step in db.scalars(
+                select(PathStep).where(PathStep.path_slug == slug)
+            ).all():
+                db.delete(old_step)
+            db.flush()
+            existing.title = data["title"]
+            existing.blurb = data["blurb"]
+            existing.icon = data["icon"]
+            existing.track = data["track"]
+            existing.ordinal = data["ordinal"]
+            existing.is_published = 1 if data.get("is_published", True) else 0
+            for step in data.get("steps", []):
+                db.add(
+                    PathStep(
+                        path_slug=slug,
+                        ordinal=step["ordinal"],
+                        step_type=step["step_type"],
+                        ref_id=step["ref_id"],
+                        title=step.get("title"),
+                        summary=step.get("summary"),
+                        reading_links_json=json.dumps(step.get("reading_links", [])),
+                    )
+                )
 
     db.commit()
     return count
