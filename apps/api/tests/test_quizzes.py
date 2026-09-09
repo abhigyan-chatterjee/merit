@@ -141,13 +141,26 @@ def test_retry_wrong_questions():
     assert retry_qids == {questions[2]["id"], questions[3]["id"]}
 
 
+def test_generate_unknown_topic_returns_404():
+    client = TestClient(app)
+    register_and_login(client, "quiz_user_4@algovista.org", "Quiz User 4")
+
+    # No silent widening: unknown/empty topics must 404, never serve off-topic questions.
+    resp = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["no-such-topic-xyz"], "count": 3},
+    )
+    assert resp.status_code == 404
+    assert resp.json()["detail"]["code"] == "NO_QUESTIONS_FOR_TOPICS"
+
+
 def test_quiz_attempt_user_isolation():
     client_a = TestClient(app)
     register_and_login(client_a, "isolation_quiz_a@algovista.org", "User A")
 
     gen_resp = client_a.post(
         "/api/v1/quizzes/generate",
-        json={"topics": ["complexity"], "count": 3},
+        json={"topics": ["sorting"], "count": 3},
     )
     attempt_id_a = gen_resp.json()["attempt_id"]
 

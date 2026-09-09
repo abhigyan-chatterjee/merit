@@ -145,6 +145,10 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
             )
             db.add(question)
             count += 1
+        else:
+            # Backfill topic on existing rows (taxonomy migration).
+            if existing.topic != data["topic"]:
+                existing.topic = data["topic"]
 
     db.commit()
     return count

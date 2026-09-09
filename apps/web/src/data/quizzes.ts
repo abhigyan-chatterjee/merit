@@ -7,7 +7,7 @@ export interface QuizQuestion {
 }
 
 export const QUIZZES: Record<string, QuizQuestion[]> = {
-  arrays: [
+  'arrays-hashing': [
     {
       id: 'arr-q1',
       question: 'What is the time complexity of accessing an element by index in a contiguous static array?',
@@ -248,7 +248,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
       explanation: 'Each outer loop invocation of DFS visits one entire connected component.'
     }
   ],
-  dp: [
+  'dynamic-programming': [
     {
       id: 'dp-q1',
       question: 'What two fundamental properties must a problem exhibit to be solved effectively via Dynamic Programming?',
@@ -431,6 +431,113 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
       correctIndex: 0,
       explanation: 'Each row only depends on the previous row and itself, so a single 1D array updated left-to-right suffices.'
     }
+  ],
+  sorting: [
+    {
+      id: 'sort-q1',
+      question: 'Which sorting algorithm is guaranteed O(n log n) in the worst-case and sorts in-place with O(1) auxiliary memory?',
+      options: ['Heap Sort', 'Merge Sort', 'Quick Sort', 'Counting Sort'],
+      correctIndex: 0,
+      explanation: 'Heap Sort builds a binary heap in-place in O(n) time and performs n extractions in O(n log n) with O(1) extra space.'
+    },
+    {
+      id: 'sort-q2',
+      question: 'In standard binary search on an array of length n, what is the maximum number of comparisons performed?',
+      options: ['⌊log₂ n⌋ + 1', 'n / 2', 'n', 'log₁₀ n'],
+      correctIndex: 0,
+      explanation: 'Binary search halves the search space at each iteration, giving logarithmic depth ⌊log₂ n⌋ + 1.'
+    },
+    {
+      id: 'sort-q3',
+      question: 'Which sorting algorithm has linear O(n + k) time complexity when keys are integers in range [0, k]?',
+      options: ['Counting Sort', 'Merge Sort', 'Quick Sort', 'Bubble Sort'],
+      correctIndex: 0,
+      explanation: 'Counting Sort tallies frequencies of keys in range [0, k] in O(n + k) without comparison-based sorting bounds.'
+    }
+  ],
+  'data-structures': [
+    {
+      id: 'ds-q1',
+      question: 'What is the amortized time complexity of inserting into a dynamic array (like std::vector or ArrayList)?',
+      options: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'],
+      correctIndex: 0,
+      explanation: 'Doubling array capacity when full ensures the cost of reallocations averages out to O(1) per insertion amortized.'
+    },
+    {
+      id: 'ds-q2',
+      question: 'In a circular queue implemented using an array of size capacity, how is the next rear position calculated?',
+      options: ['(rear + 1) % capacity', 'rear + 1', 'rear % capacity', '(rear - 1) % capacity'],
+      correctIndex: 0,
+      explanation: 'Modulo arithmetic wraps the index around from capacity-1 back to 0.'
+    },
+    {
+      id: 'ds-q3',
+      question: 'Which data structure allows O(1) amortized insertion, deletion, and minimum element lookup?',
+      options: ['Min-Heap', 'Hash Table with min pointer', 'Self-balancing BST', 'Monotonic Queue / Stack'],
+      correctIndex: 3,
+      explanation: 'A monotonic deque maintains elements in monotonic order, yielding amortized O(1) operations.'
+    }
+  ],
+  'cs-fundamentals': [
+    {
+      id: 'cs-q1',
+      question: 'In database systems, what does the ACID property "Isolation" guarantee?',
+      options: [
+        'Concurrent transactions execute without interfering with one another as if sequential',
+        'Transactions survive hardware crashes permanently',
+        'All or nothing execution of transaction statements',
+        'Database integrity constraints are never violated'
+      ],
+      correctIndex: 0,
+      explanation: 'Isolation ensures concurrent transaction execution produces the same outcome as some serial schedule.'
+    },
+    {
+      id: 'cs-q2',
+      question: 'In OS memory management, what is Belady\'s Anomaly?',
+      options: [
+        'Increasing page frames results in more page faults under FIFO replacement',
+        'CPU thrashing due to lack of page table entries',
+        'LRU performance degrading below optimal replacement',
+        'Deadlock caused by circular page references'
+      ],
+      correctIndex: 0,
+      explanation: 'Belady\'s Anomaly is the phenomenon where allocating more physical frames increases the number of page faults under FIFO.'
+    },
+    {
+      id: 'cs-q3',
+      question: 'How many usable host IP addresses are available in an IPv4 subnet with a /27 CIDR mask?',
+      options: ['30', '32', '62', '14'],
+      correctIndex: 0,
+      explanation: 'A /27 subnet leaves 32 - 27 = 5 host bits. 2^5 = 32 total addresses minus 2 (network and broadcast) = 30 usable hosts.'
+    }
+  ],
+  'bit-manipulation': [
+    {
+      id: 'bit-q1',
+      question: 'What operation does the expression n & (n - 1) perform on a non-zero integer n?',
+      options: [
+        'Clears the lowest (rightmost) set bit',
+        'Isolates the lowest set bit',
+        'Inverts all bits',
+        'Checks if n is odd'
+      ],
+      correctIndex: 0,
+      explanation: 'n & (n - 1) clears the rightmost 1-bit, forming the basis of Brian Kernighan\'s popcount algorithm.'
+    },
+    {
+      id: 'bit-q2',
+      question: 'How can you isolate the lowest set bit of an integer n in two\'s complement representation?',
+      options: ['n & (-n)', 'n | (-n)', 'n ^ (n - 1)', '~n & 1'],
+      correctIndex: 0,
+      explanation: 'In two\'s complement, -n is ~n + 1. Performing n & (-n) masks out all bits except the lowest set bit.'
+    },
+    {
+      id: 'bit-q3',
+      question: 'What is the result of evaluating x ^ x for any integer x?',
+      options: ['0', 'x', '1', '-1'],
+      correctIndex: 0,
+      explanation: 'XORing any number with itself produces 0 since every matching bit pair yields 0.'
+    }
   ]
 };
 
@@ -441,9 +548,13 @@ export interface QuizTopicMeta {
 }
 
 export const QUIZ_TOPICS: QuizTopicMeta[] = [
-  { id: 'arrays', title: 'Arrays & Pointers', description: 'Indexing, two pointers, and complexity of core array patterns.' },
-  { id: 'trees', title: 'Trees & BST', description: 'Traversals, heaps, and binary search tree invariants.' },
-  { id: 'graphs', title: 'Graphs & Traversals', description: 'BFS, DFS, topological sort, and connectivity.' },
-  { id: 'dp', title: 'Dynamic Programming', description: 'Optimal substructure, memoization, and tabulation.' },
-  { id: 'mixed', title: 'Mixed Mastery', description: 'A cross-topic assessment drawn from the whole curriculum.' }
+  { id: 'arrays-hashing', title: 'Arrays & Hashing', description: 'Indexing, frequency maps, and subarray bounds.' },
+  { id: 'trees', title: 'Trees & BST', description: 'Traversals, binary search trees, and heap invariants.' },
+  { id: 'graphs', title: 'Graphs & Traversals', description: 'BFS, DFS, Dijkstra, topological sort, and connectivity.' },
+  { id: 'dynamic-programming', title: 'Dynamic Programming', description: 'Optimal substructure, memoization, and tabulation recurrence.' },
+  { id: 'sorting', title: 'Sorting & Searching', description: 'Binary search invariants, in-place sorts, and comparison bounds.' },
+  { id: 'data-structures', title: 'Stacks, Queues & Heaps', description: 'Amortized structures, circular queues, and priority queues.' },
+  { id: 'cs-fundamentals', title: 'CS Fundamentals', description: 'Operating systems, memory management, networks, and DBMS.' },
+  { id: 'bit-manipulation', title: 'Bit Manipulation', description: 'Bitwise masks, popcounts, and bit tricks.' },
+  { id: 'mixed', title: 'Mixed Mastery', description: 'Adaptive placement assessment drawn across all 830+ verified items.' }
 ];

@@ -1,14 +1,19 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { QUIZZES, QUIZ_TOPICS } from '../data/quizzes';
 import { QuizEngine } from '../components/QuizEngine';
 import { useProgress } from '../store/ProgressContext';
-import { BrainCircuit, Shuffle } from 'lucide-react';
+import { BrainCircuit } from 'lucide-react';
 import { NotFound } from '../components/NotFound';
+import { LessonNav } from '../components/LessonNav';
 
 export const QuizPage: React.FC = () => {
-  const { topic = 'arrays' } = useParams<{ topic: string }>();
+  const { topic = 'mixed' } = useParams<{ topic: string }>();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isMock = searchParams.get('mock') === 'true';
   const { saveQuizScore } = useProgress();
+
 
   const currentTopic = QUIZ_TOPICS.find((t) => t.id === topic);
   if (!currentTopic) {
@@ -25,6 +30,9 @@ export const QuizPage: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+      {/* Guided Path Lesson Navigation */}
+      <LessonNav currentType="quiz" currentId={currentTopic.id} />
+
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
         <span className="text-mint">assessment</span>
@@ -43,38 +51,38 @@ export const QuizPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Topic switcher */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-muted mr-1">
+      {/* Topic selector (compact dropdown, defaults to Mixed) */}
+      <div className="flex flex-wrap items-center gap-2">
+        <label
+          htmlFor="quiz-topic"
+          className="text-[10px] font-mono uppercase tracking-[0.16em] text-muted"
+        >
           Topic
-        </span>
-        {QUIZ_TOPICS.map((qt) => {
-          const active = qt.id === currentTopic.id;
-          const isMixed = qt.id === 'mixed';
-          return (
-            <Link
-              key={qt.id}
-              to={`/quiz/${qt.id}`}
-              aria-current={active ? 'page' : undefined}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border ${
-                active
-                  ? 'bg-violet text-canvas border-violet font-semibold'
-                  : 'bg-surface text-muted border-line hover:text-ink hover:border-steel'
-              }`}
-            >
-              {isMixed && <Shuffle className="w-3 h-3" />}
+        </label>
+        <select
+          id="quiz-topic"
+          value={currentTopic.id}
+          onChange={(e) => navigate(`/quiz/${e.target.value}`)}
+          className="px-3 py-2 rounded-lg bg-surface border border-line text-xs font-mono text-ink hover:border-steel cursor-pointer focus:outline-none focus:border-violet"
+        >
+          {QUIZ_TOPICS.map((qt) => (
+            <option key={qt.id} value={qt.id}>
               {qt.title}
-            </Link>
-          );
-        })}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Interactive Quiz Engine */}
       <QuizEngine
+        key={currentTopic.id}
         topicTitle={currentTopic.title}
+        topicId={currentTopic.id}
         questions={questions}
+        isMock={isMock}
         onComplete={(pct) => saveQuizScore(currentTopic.id, pct)}
       />
     </div>
   );
 };
+
