@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-dbms-transactions-8",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which isolation level guarantees full serializability?",
+  "options": [
+    "Read uncommitted",
+    "Serializable",
+    "Read committed",
+    "Repeatable read"
+  ],
+  "correct_index": 1,
+  "explanation": "Serializable executes as if transactions ran one after another.",
+  "source": "generated",
+  "generator_key": "core_cs.dbms-transactions",
+  "content_hash": "ca4da152a83067e07b0792e0f8603b69bcd064f33c968523ddeebd6f1a6e3e2f",
+  "review_status": "verified"
+}

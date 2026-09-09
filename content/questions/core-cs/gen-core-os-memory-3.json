@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-os-memory-3",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In demand paging, what happens on a page fault for a valid but not-resident page?",
+  "options": [
+    "OS loads the page from disk, updates the page table, restarts the instruction",
+    "The process is always killed",
+    "The TLB is disabled permanently",
+    "The disk is reformatted"
+  ],
+  "correct_index": 0,
+  "explanation": "A valid fault triggers page-in and instruction retry.",
+  "source": "generated",
+  "generator_key": "core_cs.os-memory",
+  "content_hash": "4534c6f3c2d088ad770121cd4359e6caf1e06a56238c42573e0ca7c1b5c8124f",
+  "review_status": "verified"
+}

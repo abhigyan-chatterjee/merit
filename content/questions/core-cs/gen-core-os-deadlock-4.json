@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-os-deadlock-4",
+  "topic": "core-cs",
+  "subtopic": "os-deadlock",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which condition is NOT one of Coffman's four deadlock conditions?",
+  "options": [
+    "Mutual exclusion",
+    "Aging",
+    "Hold and wait",
+    "Circular wait"
+  ],
+  "correct_index": 1,
+  "explanation": "Aging prevents starvation; it is not a deadlock condition.",
+  "source": "generated",
+  "generator_key": "core_cs.os-deadlock",
+  "content_hash": "e70ec8c459292a6fa85c871e0936e5a7f74b46b05e708ee15fa8c3be4651f71d",
+  "review_status": "verified"
+}

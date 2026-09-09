@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-design-keys-17",
+  "topic": "core-cs",
+  "subtopic": "design-keys",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How should a URL shortener generate collision-free short keys at scale?",
+  "options": [
+    "Client timestamp only",
+    "Random 2-char strings",
+    "Counter or Snowflake ID encoded in base62",
+    "MD5 of the full URL truncated to 2 chars"
+  ],
+  "correct_index": 2,
+  "explanation": "Monotonic unique IDs in base62 stay short and unique.",
+  "source": "generated",
+  "generator_key": "core_cs.design-keys",
+  "content_hash": "58b31a2744cc0f6e3a08094c40b5315b6fe22aa846d894fab0bd6a33fc70c1e3",
+  "review_status": "verified"
+}

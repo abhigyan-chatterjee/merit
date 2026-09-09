@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-cn-application-12",
+  "topic": "core-cs",
+  "subtopic": "cn-application",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What does DNS resolve?",
+  "options": [
+    "MAC to IP",
+    "Ports to processes",
+    "URLs to checksums",
+    "Hostnames to IP addresses"
+  ],
+  "correct_index": 3,
+  "explanation": "DNS maps names like example.com to addresses.",
+  "source": "generated",
+  "generator_key": "core_cs.cn-application",
+  "content_hash": "1126416018b3d11a5b27a10a6dfedb72a5d1037355e6bbe2678f01763d28fd2d",
+  "review_status": "verified"
+}

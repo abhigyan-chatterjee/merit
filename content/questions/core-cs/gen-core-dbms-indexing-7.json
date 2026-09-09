@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-dbms-indexing-7",
+  "topic": "core-cs",
+  "subtopic": "dbms-indexing",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a B+ tree index, where is the actual row data stored?",
+  "options": [
+    "In the root only",
+    "In every internal node",
+    "Only in the leaf nodes, linked in key order",
+    "Nowhere; B+ trees store hashes"
+  ],
+  "correct_index": 2,
+  "explanation": "Internal nodes hold separators; leaves hold ordered records.",
+  "source": "generated",
+  "generator_key": "core_cs.dbms-indexing",
+  "content_hash": "f008fc7b951e8ee2cb8a2b16225ab1d7a1a8dac9d107493035d2bd5830d1cb73",
+  "review_status": "verified"
+}

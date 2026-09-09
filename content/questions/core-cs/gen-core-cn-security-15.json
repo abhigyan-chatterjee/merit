@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-cn-security-15",
+  "topic": "core-cs",
+  "subtopic": "cn-security",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does a TCP SYN flood attack exhaust?",
+  "options": [
+    "DNS cache",
+    "TLS certificates",
+    "The server's half-open connection backlog",
+    "BGP routes"
+  ],
+  "correct_index": 2,
+  "explanation": "Unanswered SYNs fill the backlog queue.",
+  "source": "generated",
+  "generator_key": "core_cs.cn-security",
+  "content_hash": "e5fc67990054fee6fdc3d7e9192fe2a6cd4c10afeaded84e15c82f882f6eeed2",
+  "review_status": "verified"
+}

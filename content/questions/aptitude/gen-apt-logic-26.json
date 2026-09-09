@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-logic-26",
+  "topic": "aptitude",
+  "subtopic": "logical-reasoning",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A is B's brother. B is C's mother. What is A to C?",
+  "options": [
+    "Brother",
+    "Grandfather",
+    "Maternal uncle",
+    "Father"
+  ],
+  "correct_index": 2,
+  "explanation": "A is the brother of C's mother, hence maternal uncle.",
+  "source": "generated",
+  "generator_key": "aptitude.logic",
+  "content_hash": "7f180099ac98801145b07fe810b23ad63dcf2346e3012bd8f9e134b5a03b9a47",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-misc-28",
+  "topic": "aptitude",
+  "subtopic": "ratios-averages",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A:B = 2:3 and B:C = 4:5. A:C?",
+  "options": [
+    "8:9",
+    "8:15",
+    "6:5",
+    "2:5"
+  ],
+  "correct_index": 1,
+  "explanation": "A:C = (2*4):(3*5) = 8:15.",
+  "source": "generated",
+  "generator_key": "aptitude.misc",
+  "content_hash": "2c375ad97b54c60024189fb8ab443f8c587a03f43767560149104a1c56377405",
+  "review_status": "verified"
+}

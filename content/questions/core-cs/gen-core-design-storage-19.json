@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-design-storage-19",
+  "topic": "core-cs",
+  "subtopic": "design-storage",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which database fits a social graph with deep traversals?",
+  "options": [
+    "Time-series DB",
+    "Key-value cache only",
+    "Graph database (e.g. Neo4j)",
+    "Flat CSV files"
+  ],
+  "correct_index": 2,
+  "explanation": "Graph stores model multi-hop relationships natively.",
+  "source": "generated",
+  "generator_key": "core_cs.design-storage",
+  "content_hash": "9b612b3dcdb14e14e04bca58db8b4543e79fa206457055cde5f62ca163764b21",
+  "review_status": "verified"
+}

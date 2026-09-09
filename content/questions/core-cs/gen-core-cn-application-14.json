@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-cn-application-14",
+  "topic": "core-cs",
+  "subtopic": "cn-application",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which HTTP method is idempotent and safe for retrieval?",
+  "options": [
+    "GET",
+    "CONNECT",
+    "PATCH",
+    "POST"
+  ],
+  "correct_index": 0,
+  "explanation": "GET must not change server state and repeats safely.",
+  "source": "generated",
+  "generator_key": "core_cs.cn-application",
+  "content_hash": "649baf9c2bb71bdde28d24eb6ab2fa106f6829dabeb750d7554ba3f432931d4d",
+  "review_status": "verified"
+}

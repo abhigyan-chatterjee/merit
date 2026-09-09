@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-series-20",
+  "topic": "aptitude",
+  "subtopic": "number-series",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the next term: 2, 3, 5, 7, 11, ?",
+  "options": [
+    "15",
+    "12",
+    "13",
+    "14"
+  ],
+  "correct_index": 2,
+  "explanation": "Prime numbers in order.",
+  "source": "generated",
+  "generator_key": "aptitude.series",
+  "content_hash": "0b13f24c98fe4e44ee052498d080489c17a133197fbe5b40e484b7ea475b7c0e",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-dbms-normalization-6",
+  "topic": "core-cs",
+  "subtopic": "dbms-normalization",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which normal form removes all transitive dependencies on the primary key?",
+  "options": [
+    "Second Normal Form",
+    "BCNF only",
+    "First Normal Form",
+    "Third Normal Form (3NF)"
+  ],
+  "correct_index": 3,
+  "explanation": "3NF requires every non-key attribute to depend directly on the key.",
+  "source": "generated",
+  "generator_key": "core_cs.dbms-normalization",
+  "content_hash": "8c1c1253e88ba16da89e0fee9153976753a2fcc8c08f5271f2cf56ee9eb6e4d9",
+  "review_status": "verified"
+}

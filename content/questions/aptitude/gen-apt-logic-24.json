@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-logic-24",
+  "topic": "aptitude",
+  "subtopic": "logical-reasoning",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Pointing to a photo, Ram says 'She is the daughter of my grandfather's only son'. Who is she?",
+  "options": [
+    "Ram's cousin",
+    "Ram's sister",
+    "Ram's mother",
+    "Ram's aunt"
+  ],
+  "correct_index": 1,
+  "explanation": "Grandfather's only son is Ram's father; his daughter is Ram's sister.",
+  "source": "generated",
+  "generator_key": "aptitude.logic",
+  "content_hash": "40b826dcd9d4a9b4c1197fba327478aae3c2bb56147477f8e25bc139e156814e",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-misc-29",
+  "topic": "aptitude",
+  "subtopic": "ratios-averages",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A mixture has milk:water 5:1. After adding 6L water, ratio is 5:2. Original milk?",
+  "options": [
+    "30 litres",
+    "24 litres",
+    "36 litres",
+    "25 litres"
+  ],
+  "correct_index": 0,
+  "explanation": "Milk unchanged: 5x milk, water x+6=2x gives x=6, milk=30L.",
+  "source": "generated",
+  "generator_key": "aptitude.misc",
+  "content_hash": "0c25248c7a3d95b0f3af874fe3373e07bf95eb0669ac93de64327767664f9051",
+  "review_status": "verified"
+}

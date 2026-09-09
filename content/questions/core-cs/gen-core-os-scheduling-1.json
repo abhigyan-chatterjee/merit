@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-os-scheduling-1",
+  "topic": "core-cs",
+  "subtopic": "os-scheduling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which scheduling algorithm can cause starvation of long processes under heavy short-job load?",
+  "options": [
+    "Multilevel Feedback with aging",
+    "Round Robin with large quantum",
+    "Shortest Job First (non-preemptive)",
+    "First Come First Served"
+  ],
+  "correct_index": 2,
+  "explanation": "SJF always prefers short jobs; without aging, long jobs can wait indefinitely.",
+  "source": "generated",
+  "generator_key": "core_cs.os-scheduling",
+  "content_hash": "aed7b19b4fecf3065c00d449acbba983db85085fdf55ad05087f990d4ccab758",
+  "review_status": "verified"
+}

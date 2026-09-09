@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-design-scaling-18",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Where should rate limiting live for a public API gateway?",
+  "options": [
+    "Inside the database trigger",
+    "Only in batch jobs",
+    "In each browser tab",
+    "At the edge/gateway with a token-bucket per key"
+  ],
+  "correct_index": 3,
+  "explanation": "Edge enforcement protects all backends uniformly.",
+  "source": "generated",
+  "generator_key": "core_cs.design-scaling",
+  "content_hash": "81cfa8339144fba16d9480731b4759799f6f522f2d9587ba65e91e0391bdd8db",
+  "review_status": "verified"
+}

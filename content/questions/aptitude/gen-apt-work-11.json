@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-work-11",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 10 days, B in 15 days. Together, how long?",
+  "options": [
+    "10 days",
+    "6.0 days",
+    "12.5 days",
+    "11 days"
+  ],
+  "correct_index": 1,
+  "explanation": "Combined rate 1/10 + 1/15 per day gives 6.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.work",
+  "content_hash": "60440db1cac3f8489bf201a693fd2c86eb4d4816e69350144e03d081a1b69e5f",
+  "review_status": "verified"
+}

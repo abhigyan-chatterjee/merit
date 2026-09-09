@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-dbms-constraints-9",
+  "topic": "core-cs",
+  "subtopic": "dbms-constraints",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What does a foreign key constraint enforce?",
+  "options": [
+    "Referential integrity to a parent table's key",
+    "Uniqueness within one table",
+    "Non-null storage format",
+    "Index compression"
+  ],
+  "correct_index": 0,
+  "explanation": "Foreign keys require matching parent rows.",
+  "source": "generated",
+  "generator_key": "core_cs.dbms-constraints",
+  "content_hash": "a0c377f4c26305cd5bb50aaca5a8d45ac54a4358fa08711588527352efd1c885",
+  "review_status": "verified"
+}

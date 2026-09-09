@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-os-sync-2",
+  "topic": "core-cs",
+  "subtopic": "os-sync",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What does a counting semaphore initialized to N directly control?",
+  "options": [
+    "Exactly one thread total",
+    "Deadlock freedom",
+    "Up to N concurrent accesses to a resource pool",
+    "CPU affinity"
+  ],
+  "correct_index": 2,
+  "explanation": "The semaphore value tracks N identical resource units.",
+  "source": "generated",
+  "generator_key": "core_cs.os-sync",
+  "content_hash": "feac680f6ba9e6acdb99b63f28895c5c4f86feb9c3f349bb65c87059cb9e5e59",
+  "review_status": "verified"
+}

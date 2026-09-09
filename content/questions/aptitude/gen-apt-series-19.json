@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-series-19",
+  "topic": "aptitude",
+  "subtopic": "number-series",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the next term: 1, 4, 9, 16, 25, ?",
+  "options": [
+    "37",
+    "36",
+    "38",
+    "35"
+  ],
+  "correct_index": 1,
+  "explanation": "Perfect squares n^2.",
+  "source": "generated",
+  "generator_key": "aptitude.series",
+  "content_hash": "e437d4872109c73bda7206df7fad2fe249fe27269d0a123860dc4344028dc84b",
+  "review_status": "verified"
+}

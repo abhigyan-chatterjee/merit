@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-logic-23",
+  "topic": "aptitude",
+  "subtopic": "logical-reasoning",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A man walks 3 km north, then 4 km east. How far is he from the start?",
+  "options": [
+    "5 km",
+    "4 km",
+    "7 km",
+    "6 km"
+  ],
+  "correct_index": 0,
+  "explanation": "3-4-5 right triangle by Pythagoras.",
+  "source": "generated",
+  "generator_key": "aptitude.logic",
+  "content_hash": "1a528ebb249830591adc522f0b493ec52978a5d550f9220961ecea9b6f721e79",
+  "review_status": "verified"
+}

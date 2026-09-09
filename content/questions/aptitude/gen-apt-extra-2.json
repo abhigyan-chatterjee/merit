@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-extra-2",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Pipe A fills in 4 h, pipe B empties in 6 h. Both open, empty tank fills in?",
+  "options": [
+    "24 hours",
+    "12 hours",
+    "10 hours",
+    "5 hours"
+  ],
+  "correct_index": 1,
+  "explanation": "Net rate 1/4 - 1/6 = 1/12 per hour.",
+  "source": "generated",
+  "generator_key": "aptitude.extra",
+  "content_hash": "98adb0e3df68f6762696e7a923a218c23e349fe654d506efcda8fffe510614de",
+  "review_status": "verified"
+}

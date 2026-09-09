@@ -9,8 +9,10 @@ _repo_root = Path(__file__).resolve().parent.parent.parent
 if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
 
+from content.generators.aptitude import generate_aptitude_questions
 from content.generators.arrays_strings import generate_array_string_questions
 from content.generators.bit_manipulation import generate_bit_manipulation_questions
+from content.generators.core_cs import generate_core_questions
 from content.generators.cs_fundamentals import generate_cs_fundamentals_questions
 from content.generators.ds_operations import generate_ds_questions
 from content.generators.dynamic_programming import generate_dp_questions
@@ -22,10 +24,8 @@ from content.generators.tree_traversals import generate_tree_questions
 
 def generate_all(target_dir: Path) -> int:
     target_dir.mkdir(parents=True, exist_ok=True)
-    # Clean up any previously generated question files to prevent stale ID duplicates
-    for old_file in target_dir.glob("*/*.json"):
-        if old_file.name.startswith("gen-"):
-            old_file.unlink()
+    # NOTE: never delete existing files here. Question files are verified
+    # artifacts; regeneration must be additive (new banks) or explicit.
 
     all_questions = []
 
@@ -55,6 +55,12 @@ def generate_all(target_dir: Path) -> int:
 
     print("Generating Bit Manipulation questions...")
     all_questions.extend(generate_bit_manipulation_questions(count=100, seed=109))
+
+    print("Generating Aptitude questions...")
+    all_questions.extend(generate_aptitude_questions(count=100, seed=201))
+
+    print("Generating Core CS questions...")
+    all_questions.extend(generate_core_questions(count=100, seed=202))
 
     seen_hashes = set()
     written_count = 0

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-dbms-recovery-10",
+  "topic": "core-cs",
+  "subtopic": "dbms-recovery",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Why does a database use write-ahead logging (WAL)?",
+  "options": [
+    "To shard tables",
+    "To compress backups",
+    "To speed up SELECT parsing",
+    "To guarantee durability by persisting intent before applying changes"
+  ],
+  "correct_index": 3,
+  "explanation": "WAL records changes durably first, so crashes can replay.",
+  "source": "generated",
+  "generator_key": "core_cs.dbms-recovery",
+  "content_hash": "8fc379856d5a445fa6bccb5070f9f0cd9ef09a32fbfa5aea7eef6d0b984850d8",
+  "review_status": "verified"
+}

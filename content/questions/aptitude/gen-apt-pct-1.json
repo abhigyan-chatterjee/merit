@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-pct-1",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A shopkeeper marks goods 40% above cost and gives a 10% discount. Net profit? Give only the number %.",
+  "options": [
+    "52 %",
+    "36 %",
+    "26 %",
+    "31 %"
+  ],
+  "correct_index": 2,
+  "explanation": "Direct percentage arithmetic gives 26 %.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "9223c4f394587290e887107dc1ce0e4267b09bfb3b1f5b133807e58869c68336",
+  "review_status": "verified"
+}

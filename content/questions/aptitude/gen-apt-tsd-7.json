@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-tsd-7",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Two stations are 200 km apart. Trains leave toward each other at 30 km/h and 50 km/h. After how long do they meet?",
+  "options": [
+    "150 minutes",
+    "180 minutes",
+    "160 minutes",
+    "140 minutes"
+  ],
+  "correct_index": 0,
+  "explanation": "Relative speed 80 km/h over 200 km gives 150 minutes.",
+  "source": "generated",
+  "generator_key": "aptitude.tsd",
+  "content_hash": "070359088f7a72d20d39eba0620f2ccb71d71bcbc8c154eedb0747687991830a",
+  "review_status": "verified"
+}

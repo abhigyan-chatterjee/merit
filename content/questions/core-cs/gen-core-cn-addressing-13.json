@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-cn-addressing-13",
+  "topic": "core-cs",
+  "subtopic": "cn-addressing",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In CIDR, what does the prefix length /24 leave for hosts?",
+  "options": [
+    "16 host bits",
+    "24 host bits",
+    "8 host bits (254 usable)",
+    "No hosts"
+  ],
+  "correct_index": 2,
+  "explanation": "32 - 24 = 8 host bits; minus network and broadcast = 254.",
+  "source": "generated",
+  "generator_key": "core_cs.cn-addressing",
+  "content_hash": "f4117f42dd7a4d872b7b5db093855ac63c8b6f5da806cb31ff132fdc8ca36515",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-logic-25",
+  "topic": "aptitude",
+  "subtopic": "logical-reasoning",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If SOME pens are books and ALL books are chairs, which follows?",
+  "options": [
+    "All pens are chairs",
+    "No pen is a chair",
+    "All chairs are pens",
+    "Some pens are chairs"
+  ],
+  "correct_index": 3,
+  "explanation": "The pens that are books inherit book properties, including being chairs.",
+  "source": "generated",
+  "generator_key": "aptitude.logic",
+  "content_hash": "b0d00e848fd9a0698188c1ea7dead0c8f34ba625567ff7aa4945ebab08f7b676",
+  "review_status": "verified"
+}

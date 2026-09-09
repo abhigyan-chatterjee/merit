@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-series-17",
+  "topic": "aptitude",
+  "subtopic": "number-series",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the next term: 1, 1, 2, 3, 5, 8, ?",
+  "options": [
+    "15",
+    "13",
+    "12",
+    "14"
+  ],
+  "correct_index": 1,
+  "explanation": "Fibonacci: each term sums the previous two.",
+  "source": "generated",
+  "generator_key": "aptitude.series",
+  "content_hash": "7111fc7d0d0063ca5827e268144b0df285e40a8b5e749236048fdbe8fed20980",
+  "review_status": "verified"
+}

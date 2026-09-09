@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-pct-5",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A value 30% of X equals 60. X? Give only the number.",
+  "options": [
+    "200",
+    "205",
+    "400",
+    "210"
+  ],
+  "correct_index": 0,
+  "explanation": "Direct percentage arithmetic gives 200.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "a024492a990177e5b025ea3798f43a0dfe3b8e5bb7cac3c1b3629d48fd5cb8fc",
+  "review_status": "verified"
+}

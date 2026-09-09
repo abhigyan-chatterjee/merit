@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-work-14",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 6 days, B in 12 days. Together, how long?",
+  "options": [
+    "7 days",
+    "6 days",
+    "4.0 days",
+    "9.0 days"
+  ],
+  "correct_index": 2,
+  "explanation": "Combined rate 1/6 + 1/12 per day gives 4.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.work",
+  "content_hash": "00e3817f0575631ec164b3c508fde4c0eccec998da23167b474602cbe4cf7358",
+  "review_status": "verified"
+}

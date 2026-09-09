@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-extra-1",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A train 120 m long crosses a pole in 6 s. Speed in km/h?",
+  "options": [
+    "48 km/h",
+    "60 km/h",
+    "72 km/h",
+    "80 km/h"
+  ],
+  "correct_index": 2,
+  "explanation": "120/6 = 20 m/s = 72 km/h.",
+  "source": "generated",
+  "generator_key": "aptitude.extra",
+  "content_hash": "3514bbe39468b7f9208ae33bc1c5090a1d1586bb27fd2a69165a99b5a328701b",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-design-api-20",
+  "topic": "core-cs",
+  "subtopic": "design-api",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What makes an API design RESTful for a resource collection?",
+  "options": [
+    "Stateful sessions with RPC verbs",
+    "Single POST endpoint for everything",
+    "XML-only payloads",
+    "Stateless verbs on nouns with status codes and pagination"
+  ],
+  "correct_index": 3,
+  "explanation": "Resources plus uniform verbs plus statelessness define REST.",
+  "source": "generated",
+  "generator_key": "core_cs.design-api",
+  "content_hash": "3538c763879f3ce59adf0589b45f27d1a9e93fa167c928d05607b2ffc0be1312",
+  "review_status": "verified"
+}

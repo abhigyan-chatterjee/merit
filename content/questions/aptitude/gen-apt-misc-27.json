@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-misc-27",
+  "topic": "aptitude",
+  "subtopic": "ratios-averages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "The average of 5 consecutive even numbers starting at 10 is?",
+  "options": [
+    "15",
+    "14",
+    "16",
+    "12"
+  ],
+  "correct_index": 1,
+  "explanation": "Mean of symmetric sequence equals the middle term 14.",
+  "source": "generated",
+  "generator_key": "aptitude.misc",
+  "content_hash": "0b79b7a261e118bae8f3893c3b7d25a9ab7ed77d7b1b667a063339231f7a1982",
+  "review_status": "verified"
+}

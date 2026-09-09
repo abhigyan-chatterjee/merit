@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-extra-4",
+  "topic": "aptitude",
+  "subtopic": "coding-decoding",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If TODAY is coded as UQEBZ (each letter +1), how is WATER coded?",
+  "options": [
+    "XBUFR",
+    "WZUFS",
+    "XBUFS",
+    "VBSFQ"
+  ],
+  "correct_index": 2,
+  "explanation": "Shift every letter forward by one.",
+  "source": "generated",
+  "generator_key": "aptitude.extra",
+  "content_hash": "778765a99c48b6e9ac4b5ae43004045cc16cf0436afb2c3e47a467b7001f6490",
+  "review_status": "verified"
+}

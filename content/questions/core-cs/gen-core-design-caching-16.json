@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-design-caching-16",
+  "topic": "core-cs",
+  "subtopic": "design-caching",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "For a read-heavy feed, which cache strategy keeps hot timelines fast?",
+  "options": [
+    "Cache-aside with TTL plus write-through on post",
+    "Write-behind without TTL",
+    "Client-side only cache",
+    "No cache at all"
+  ],
+  "correct_index": 0,
+  "explanation": "Hot reads hit memory; TTL bounds staleness; writes refresh entries.",
+  "source": "generated",
+  "generator_key": "core_cs.design-caching",
+  "content_hash": "751558c75e1f65f14a0b4ead02a16716a3dec5b3689f0e01f99a6456c71dd192",
+  "review_status": "verified"
+}

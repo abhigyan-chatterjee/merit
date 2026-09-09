@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-work-15",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 20 days, B in 30 days. Together, how long?",
+  "options": [
+    "12.0 days",
+    "20 days",
+    "21 days",
+    "25.0 days"
+  ],
+  "correct_index": 0,
+  "explanation": "Combined rate 1/20 + 1/30 per day gives 12.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.work",
+  "content_hash": "80e19408bc131979b35069f2830499e5130f3882dc86225386b7a46b35535aea",
+  "review_status": "verified"
+}

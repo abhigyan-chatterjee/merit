@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-pct-4",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If A's salary is 25% more than B's, B's is what % less than A's? Give only the number %.",
+  "options": [
+    "15 %",
+    "40 %",
+    "25 %",
+    "20 %"
+  ],
+  "correct_index": 3,
+  "explanation": "Direct percentage arithmetic gives 20 %.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "5d7d3c022b253e9fb903bae15068c7cf73b7af5cbb73a82f3cadf1a7fd029250",
+  "review_status": "verified"
+}

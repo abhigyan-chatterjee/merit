@@ -57,15 +57,17 @@ describe('Exams catalog', () => {
     });
   }
 
-  it('lists every targeted exam with question count and duration', async () => {
+  it('lists every targeted exam with MCQ + coding counts and duration', async () => {
     mockGuestFetch();
     renderExams();
     for (const exam of TARGETED_EXAMS) {
       expect(await screen.findByText(exam.title)).toBeInTheDocument();
     }
-    expect(screen.getByText('Intermediate DSA')).toBeInTheDocument();
-    expect(screen.getByText('Arrays & HashMaps')).toBeInTheDocument();
-    expect(screen.getByText('Dynamic Programming')).toBeInTheDocument();
+    expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
+    expect(screen.getByText('Aptitude')).toBeInTheDocument();
+    expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
+    // 20+2 format on every card
+    expect(screen.getAllByText(/20 MCQs \+ 2 coding/i).length).toBeGreaterThanOrEqual(5);
   });
 
   it('routes an exam card to its timed detail page', async () => {
@@ -74,6 +76,17 @@ describe('Exams catalog', () => {
     await screen.findByText('Intermediate DSA');
     fireEvent.click(screen.getAllByText('Start exam')[0]);
     expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(await screen.findByText(/2 coding questions/i)).toBeInTheDocument();
+  });
+
+  it('shows the coding section after starting the exam', async () => {
+    mockGuestFetch();
+    renderExams('/exams/foundational-dsa');
+    await screen.findByText(/Foundational DSA/);
+    fireEvent.click(screen.getByText(/Start timed exam/i));
+    expect(await screen.findByText(/Coding questions \(2\)/i)).toBeInTheDocument();
+    expect(await screen.findByText('Two Sum')).toBeInTheDocument();
+    expect(await screen.findByText('Valid Parentheses')).toBeInTheDocument();
   });
 
   it('samples a targeted exam topic set from the server bank', async () => {
