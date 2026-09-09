@@ -77,17 +77,45 @@ describe('Exams catalog', () => {
     await screen.findByText('Intermediate DSA');
     fireEvent.click(screen.getAllByText('Start exam')[0]);
     expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
-    expect(await screen.findByText(/coding questions/i)).toBeInTheDocument();
+    expect(await screen.findAllByText(/coding questions/i)).not.toHaveLength(0);
   });
 
   it('shows no coding section for the MCQ-only aptitude exam', async () => {
-    mockGuestFetch();
+    // Authed so the MCQ engine actually loads; aptitude must still render zero coding items.
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-apt',
+      email: 'apt@test.com',
+      display_name: 'Apt User',
+      displayName: 'Apt User',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-apt-1',
+      questions: [
+        {
+          id: 'q-apt-1',
+          topic: 'aptitude',
+          subtopic: null,
+          difficulty: 'Easy',
+          prompt: 'Aptitude sample question?',
+          options: ['A', 'B', 'C', 'D'],
+        },
+      ],
+      total: 1,
+    });
     renderExams('/exams/aptitude');
     await screen.findByText(/Aptitude/);
     expect(screen.getByText('20 MCQs')).toBeInTheDocument();
     expect(screen.queryByText(/\+ 2 coding/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByText(/Start timed exam/i));
-    await screen.findByText(/Placement Mock Examination|Mastery Quiz/i);
+    expect(
+      await screen.findByText((_content, el) => {
+        if (!el || el.tagName !== 'H3') return false;
+        return (el.textContent ?? '').includes('Aptitude sample question?');
+      })
+    ).toBeInTheDocument();
     expect(screen.queryByText(/Coding questions/i)).not.toBeInTheDocument();
   });
 

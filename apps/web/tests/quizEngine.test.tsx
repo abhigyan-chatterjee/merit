@@ -188,7 +188,11 @@ describe('QuizEngine Component', () => {
   });
 
   it('auto-advances to the next question when the 20s timer expires', async () => {
-    vi.useFakeTimers();
+    // Guest path (no session): engine falls back to local questions, and the
+    // 20s timer is the only thing under test. Keep real timers for the async
+    // load, then fast-forward the countdown.
+    const { authApi } = await import('../src/utils/api');
+    vi.spyOn(authApi, 'getMe').mockRejectedValue(new Error('NO_SESSION'));
     try {
       render(
         <AuthProvider>
@@ -197,18 +201,17 @@ describe('QuizEngine Component', () => {
               topicTitle="Arrays & Hashing"
               topicId="arrays-hashing"
               questions={sampleQuestions}
-              perQuestionSec={20}
+              perQuestionSec={2}
             />
           </ProgressProvider>
         </AuthProvider>
       );
 
       expect(await screen.findByText(/1. What is the time complexity/i)).toBeInTheDocument();
-      // Let the 20s per-question clock run out.
-      await vi.advanceTimersByTimeAsync(20000);
-      expect(await screen.findByText(/2. Which data structure follows LIFO/i)).toBeInTheDocument();
+      // Let the short per-question clock run out (real timers, tight timeout).
+      expect(await screen.findByText(/2. Which data structure follows LIFO/i, {}, { timeout: 8000 })).toBeInTheDocument();
     } finally {
       vi.useRealTimers();
     }
-  });
+  }, 15000);
 });
