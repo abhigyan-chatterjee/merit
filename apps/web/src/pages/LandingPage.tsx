@@ -15,6 +15,10 @@ import {
 import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
 import { Reveal } from '../components/ui/Reveal';
+import { useAuth } from '../store/AuthContext';
+import { PROBLEMS } from '../data/problems';
+import { VISUALIZERS } from '../data/curriculum';
+import { LEARNING_PATHS } from '../data/learningPaths';
 
 const PATTERN_TAGS = [
   'Two Pointers', 'Sliding Window', "Kadane's Algorithm", 'Prefix Sums', 'Fast & Slow Pointers',
@@ -70,6 +74,7 @@ const useLiveSortDemo = (enabled: boolean) => {
 
 export const LandingPage: React.FC = () => {
   const reduce = useReducedMotion();
+  const { user } = useAuth();
   const { arr, pair, sortedFrom, comparisons } = useLiveSortDemo(!reduce);
 
   return (
@@ -100,18 +105,28 @@ export const LandingPage: React.FC = () => {
             </h1>
 
             <p className="text-sm sm:text-base text-muted max-w-xl leading-relaxed">
-              Twelve step-debuggable workbenches, thirty sandboxed problems and a learning path that
-              adapts to how you're doing — all in one place.
+              One end-to-end place to watch algorithms run, solve problems with
+              instant verification, and check yourself with quizzes and exams.
             </p>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/learn"
-                className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-sm hover:brightness-110 transition"
-              >
-                Start a guided path
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
-              </Link>
+              {user ? (
+                <Link
+                  to="/dashboard"
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-sm hover:brightness-110 transition"
+                >
+                  Go to your dashboard
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+                </Link>
+              ) : (
+                <Link
+                  to="/learn"
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-mint text-canvas font-semibold text-sm hover:brightness-110 transition"
+                >
+                  Start a guided path
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+                </Link>
+              )}
 
               <Link
                 to="/visualizers/sorting"
@@ -204,13 +219,91 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ============ STATS ============ */}
+      {/* ============ QUICK START (right under hero: one tap to begin) ============ */}
+      <section className="max-w-7xl mx-auto px-4 pt-10 space-y-5">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Quick start
+          </span>
+          <span className="flex-1 h-px bg-line" />
+          <span className="text-[11px] text-muted">One tap to begin</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {[
+            {
+              to: '/learn/foundations',
+              title: 'Start the Foundations path',
+              hint: '8 steps · recommended first',
+              Icon: Route,
+              tone: 'text-mint',
+              accent: true
+            },
+            {
+              to: '/visualizers/sorting',
+              title: 'Watch an algorithm run',
+              hint: 'Step through sorting',
+              Icon: Layers,
+              tone: 'text-violet'
+            },
+            {
+              to: '/problems/arrays',
+              title: 'Solve a problem',
+              hint: 'Arrays & pointers',
+              Icon: Code2,
+              tone: 'text-amber'
+            },
+            {
+              to: '/quiz/mixed',
+              title: 'Test yourself',
+              hint: '10-question mixed quiz',
+              Icon: BrainCircuit,
+              tone: 'text-violet'
+            },
+            {
+              to: '/dashboard',
+              title: 'Open dashboard',
+              hint: 'Your progress at a glance',
+              Icon: LayoutDashboard,
+              tone: 'text-ink'
+            }
+          ].map((t) => (
+            <Link
+              key={t.to}
+              to={t.to}
+              className={`group relative flex items-start gap-3 p-4 rounded-xl border bg-surface transition-colors duration-200 min-h-[88px] ${
+                t.accent ? 'border-mint/50 hover:border-mint' : 'border-line hover:border-steel'
+              }`}
+            >
+              <div
+                className={`w-9 h-9 rounded-lg border border-line bg-canvas grid place-items-center shrink-0 ${t.tone}`}
+              >
+                <t.Icon className="w-4 h-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-ink group-hover:text-mint transition-colors leading-tight">
+                  {t.title}
+                </div>
+                <div className="text-[11px] text-muted mt-0.5 leading-snug">{t.hint}</div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted/0 group-hover:text-mint group-hover:opacity-100 opacity-0 -translate-x-1 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+              {t.accent && (
+                <span className="absolute -top-2 left-3 px-1.5 py-0.5 rounded bg-mint text-canvas text-[9px] font-mono uppercase tracking-widest">
+                  Start here
+                </span>
+              )}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ============ STATS (live counts from the actual content bundle) ============ */}
       <section className="max-w-7xl mx-auto px-4 py-14">
         <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-l border-line">
           {[
-            { n: '12', l: 'Interactive workbenches', c: 'text-mint' },
-            { n: '30', l: 'Practical problems', c: 'text-violet' },
-            { n: '4', l: 'Guided learning paths', c: 'text-amber' }
+            { n: String(VISUALIZERS.length), l: 'Interactive workbenches', c: 'text-mint' },
+            { n: String(PROBLEMS.length), l: 'Practical problems', c: 'text-violet' },
+            { n: String(LEARNING_PATHS.length), l: 'Guided learning paths', c: 'text-amber' }
           ].map((s, i) => (
             <Reveal key={s.l} delay={i * 0.05}>
               <div className="relative flex items-center gap-4 border-r border-b border-line p-6 group hover:bg-surface transition-colors duration-200">
@@ -302,8 +395,8 @@ export const LandingPage: React.FC = () => {
             },
             {
               n: '03',
-              t: 'Lock it in',
-              d: 'Timed complexity quizzes with instant explanations and a retry-wrong-only loop until it sticks.',
+              t: 'Check it stuck',
+              d: 'Timed quizzes with instant explanations and a retry-wrong-only loop until the pattern holds.',
               c: 'text-amber'
             }
           ].map((s, i) => (
@@ -318,84 +411,6 @@ export const LandingPage: React.FC = () => {
                 <p className="text-xs text-muted leading-relaxed max-w-xs">{s.d}</p>
               </div>
             </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ============ QUICK START ============ */}
-      <section className="max-w-7xl mx-auto px-4 space-y-5">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-            Quick start
-          </span>
-          <span className="flex-1 h-px bg-line" />
-          <span className="text-[11px] text-muted">One tap to begin</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {[
-            {
-              to: '/learn/foundations',
-              title: 'Start the Foundations path',
-              hint: '8 steps · recommended first',
-              Icon: Route,
-              tone: 'text-mint',
-              accent: true
-            },
-            {
-              to: '/visualizers/sorting',
-              title: 'Watch an algorithm run',
-              hint: 'Step through sorting',
-              Icon: Layers,
-              tone: 'text-violet'
-            },
-            {
-              to: '/problems/arrays',
-              title: 'Solve a problem',
-              hint: 'Arrays & pointers',
-              Icon: Code2,
-              tone: 'text-amber'
-            },
-            {
-              to: '/quiz/mixed',
-              title: 'Test yourself',
-              hint: '10-question mixed quiz',
-              Icon: BrainCircuit,
-              tone: 'text-violet'
-            },
-            {
-              to: '/dashboard',
-              title: 'Open dashboard',
-              hint: 'Your progress at a glance',
-              Icon: LayoutDashboard,
-              tone: 'text-ink'
-            }
-          ].map((t) => (
-            <Link
-              key={t.to}
-              to={t.to}
-              className={`group relative flex items-start gap-3 p-4 rounded-xl border bg-surface transition-colors duration-200 min-h-[88px] ${
-                t.accent ? 'border-mint/50 hover:border-mint' : 'border-line hover:border-steel'
-              }`}
-            >
-              <div
-                className={`w-9 h-9 rounded-lg border border-line bg-canvas grid place-items-center shrink-0 ${t.tone}`}
-              >
-                <t.Icon className="w-4 h-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold text-ink group-hover:text-mint transition-colors leading-tight">
-                  {t.title}
-                </div>
-                <div className="text-[11px] text-muted mt-0.5 leading-snug">{t.hint}</div>
-              </div>
-              <ArrowRight className="w-4 h-4 text-muted/0 group-hover:text-mint group-hover:opacity-100 opacity-0 -translate-x-1 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-              {t.accent && (
-                <span className="absolute -top-2 left-3 px-1.5 py-0.5 rounded bg-mint text-canvas text-[9px] font-mono uppercase tracking-widest">
-                  Start here
-                </span>
-              )}
-            </Link>
           ))}
         </div>
       </section>

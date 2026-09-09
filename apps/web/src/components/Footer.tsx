@@ -53,6 +53,26 @@ export const Footer: React.FC = () => {
           <p className="text-xs text-muted leading-relaxed max-w-xs">
             Step through the execution, not the explanation.
           </p>
+          <p className="text-xs text-muted leading-relaxed max-w-xs">
+            Built by{' '}
+            <a
+              href="https://nullbit.in"
+              target="_blank"
+              rel="noreferrer"
+              className="text-ink hover:text-mint transition-colors"
+            >
+              Abhigyan Chatterjee
+            </a>{' '}
+            ·{' '}
+            <a
+              href="https://github.com/abhigyan-chatterjee"
+              target="_blank"
+              rel="noreferrer"
+              className="text-ink hover:text-mint transition-colors"
+            >
+              GitHub
+            </a>
+          </p>
         </div>
 
         {COLUMNS.map((col) => (
@@ -78,7 +98,7 @@ export const Footer: React.FC = () => {
 
       <div className="border-t border-line">
         <div className="max-w-7xl mx-auto px-4 h-12 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-muted">
-          <span>ALGOVISTA — built with React, TypeScript &amp; Tailwind.</span>
+          <span>ALGOVISTA — practice that shows its work.</span>
           <span>Algorithms, visualised.</span>
         </div>
       </div>
