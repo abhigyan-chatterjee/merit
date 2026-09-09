@@ -12,11 +12,10 @@ import {
   X,
   CornerDownLeft,
   Route,
-  LogIn,
-  LogOut,
-  User as UserIcon
+  LogIn
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { UserDropdown } from './UserDropdown';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
 import { PROBLEMS } from '../data/problems';
@@ -27,7 +26,7 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentStreak } = useProgress();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -179,31 +178,7 @@ export const Navbar: React.FC = () => {
 
             {user ? (
               <div className="flex items-center gap-1.5 pl-1 border-l border-line">
-                {user.role === 'admin' && (
-                  <Link
-                    to="/admin"
-                    title="Admin Console"
-                    className="px-2 py-1 rounded-lg border border-violet/40 bg-violet/10 text-xs font-mono text-violet hover:bg-violet/20 transition"
-                  >
-                    Admin
-                  </Link>
-                )}
-                <div
-                  title={`Signed in as ${user.displayName} (${user.email})`}
-                  className="flex items-center gap-1.5 px-2 py-1 rounded-lg border border-line bg-surface text-xs font-mono text-ink"
-                >
-                  <UserIcon className="w-3.5 h-3.5 text-mint" />
-                  <span className="max-w-[80px] sm:max-w-[120px] truncate">{user.displayName}</span>
-                </div>
-
-                <button
-                  onClick={() => logout()}
-                  title="Sign out"
-                  aria-label="Sign out"
-                  className="p-1.5 rounded-lg border border-line bg-surface text-muted hover:border-rose/50 hover:text-rose transition cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
+                <UserDropdown />
               </div>
             ) : (
               <Link

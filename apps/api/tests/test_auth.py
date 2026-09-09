@@ -137,3 +137,77 @@ def test_export_and_delete_account(client: TestClient):
     # Now /me should be 401
     me_resp = client.get("/api/v1/auth/me", cookies=cookies)
     assert me_resp.status_code == 401
+
+
+def test_update_profile_display_name(client: TestClient):
+    reg = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "profile@example.com",
+            "display_name": "Old Name",
+            "password": "Password123456",
+        },
+    )
+    assert reg.status_code == 201
+    resp = client.patch("/api/v1/auth/me", json={"display_name": "New Name"})
+    assert resp.status_code == 200
+    assert resp.json()["display_name"] == "New Name"
+
+
+def test_change_email_requires_current_password(client: TestClient):
+    client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "emailchg@example.com",
+            "display_name": "Email Chg",
+            "password": "Password123456",
+        },
+    )
+    bad = client.post(
+        "/api/v1/auth/email",
+        json={"new_email": "newemail@example.com", "current_password": "WrongPassword1"},
+    )
+    assert bad.status_code == 401
+    assert bad.json()["detail"]["code"] == "INVALID_PASSWORD"
+
+    ok = client.post(
+        "/api/v1/auth/email",
+        json={"new_email": "newemail@example.com", "current_password": "Password123456"},
+    )
+    assert ok.status_code == 200
+    assert ok.json()["email"] == "newemail@example.com"
+
+
+def test_change_password_flow(client: TestClient):
+    client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "pwchg@example.com",
+            "display_name": "Pw Chg",
+            "password": "Password123456",
+        },
+    )
+    bad = client.post(
+        "/api/v1/auth/password",
+        json={"current_password": "WrongPassword1", "new_password": "NewPassword123456"},
+    )
+    assert bad.status_code == 401
+
+    ok = client.post(
+        "/api/v1/auth/password",
+        json={"current_password": "Password123456", "new_password": "NewPassword123456"},
+    )
+    assert ok.status_code == 200
+
+    # Old password no longer works; new one does
+    client.post("/api/v1/auth/logout")
+    old_login = client.post(
+        "/api/v1/auth/login",
+        json={"email": "pwchg@example.com", "password": "Password123456"},
+    )
+    assert old_login.status_code == 401
+    new_login = client.post(
+        "/api/v1/auth/login",
+        json={"email": "pwchg@example.com", "password": "NewPassword123456"},
+    )
+    assert new_login.status_code == 200

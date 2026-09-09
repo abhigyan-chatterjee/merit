@@ -9,7 +9,10 @@ from app.db import get_db
 from app.models.user import RefreshToken, User, utcnow_iso
 from app.schemas.auth import (
     AuthMessageResponse,
+    EmailChange,
     LoginRequest,
+    PasswordChange,
+    ProfileUpdate,
     RegisterRequest,
     UserResponse,
 )
@@ -254,6 +257,61 @@ def get_me(user: User = Depends(get_current_user)):
     return user
 
 
+@router.patch("/me", response_model=UserResponse)
+def update_profile(
+    req: ProfileUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if req.display_name:
+        user.display_name = req.display_name
+        db.commit()
+        db.refresh(user)
+    return user
+
+
+@router.post("/email", response_model=UserResponse)
+def change_email(
+    req: EmailChange,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_password(req.current_password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"code": "INVALID_PASSWORD", "message": "Current password is incorrect."},
+        )
+    existing = db.scalar(select(User).where(User.email == req.new_email))
+    if existing and existing.id != user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "EMAIL_EXISTS",
+                "message": "An account with this email already exists.",
+            },
+        )
+    user.email = req.new_email
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.post("/password", response_model=AuthMessageResponse)
+def change_password(
+    req: PasswordChange,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_password(req.current_password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"code": "INVALID_PASSWORD", "message": "Current password is incorrect."},
+        )
+    user.password_hash = hash_password(req.new_password)
+    db.commit()
+    return {"message": "Password changed successfully."}
+
+
 @router.delete("/account", response_model=AuthMessageResponse)
 def delete_account(
     response: Response,
@@ -272,7 +330,34 @@ def export_user_data(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    # Dumps everything the user owns in JSON (Privacy rights)
+    from app.models.progress import (
+        ActivityDay,
+        Bookmark,
+        Note,
+        ProblemProgress,
+        VisualizerCompletion,
+    )
+    from app.models.quiz import QuizAttempt
+    from app.models.submission import Submission
+
+    problems = db.scalars(
+        select(ProblemProgress).where(ProblemProgress.user_id == user.id)
+    ).all()
+    notes = db.scalars(select(Note).where(Note.user_id == user.id)).all()
+    bookmarks = db.scalars(select(Bookmark).where(Bookmark.user_id == user.id)).all()
+    activities = db.scalars(
+        select(ActivityDay).where(ActivityDay.user_id == user.id)
+    ).all()
+    visualizers = db.scalars(
+        select(VisualizerCompletion).where(VisualizerCompletion.user_id == user.id)
+    ).all()
+    submissions = db.scalars(
+        select(Submission).where(Submission.user_id == user.id)
+    ).all()
+    quizzes = db.scalars(
+        select(QuizAttempt).where(QuizAttempt.user_id == user.id)
+    ).all()
+
     return {
         "user": {
             "id": user.id,
@@ -282,6 +367,50 @@ def export_user_data(
             "created_at": user.created_at,
             "last_login_at": user.last_login_at,
         },
+        "problem_progress": [
+            {"problem_slug": p.problem_slug, "status": p.status, "updated_at": p.updated_at}
+            for p in problems
+        ],
+        "notes": [
+            {"problem_slug": n.problem_slug, "text": n.text, "updated_at": n.updated_at}
+            for n in notes
+        ],
+        "bookmarks": [
+            {"item_type": b.item_type, "item_id": b.item_id, "created_at": b.created_at}
+            for b in bookmarks
+        ],
+        "activity_days": {a.day: a.action_count for a in activities},
+        "visualizer_completions": [
+            {
+                "visualizer_id": v.visualizer_id,
+                "visits": v.visits,
+                "first_completed_at": v.first_completed_at,
+            }
+            for v in visualizers
+        ],
+        "submissions": [
+            {
+                "id": s.id,
+                "problem_slug": s.problem_slug,
+                "language": s.language,
+                "verdict": s.verdict,
+                "runtime_ms": s.runtime_ms,
+                "created_at": s.created_at,
+            }
+            for s in submissions
+        ],
+        "quiz_attempts": [
+            {
+                "id": q.id,
+                "total": q.total,
+                "correct": q.correct,
+                "score_pct": q.score_pct,
+                "duration_sec": q.duration_sec,
+                "created_at": q.created_at,
+            }
+            for q in quizzes
+        ],
         "sessions_count": len(user.refresh_tokens),
         "exported_at": utcnow_iso(),
     }
+

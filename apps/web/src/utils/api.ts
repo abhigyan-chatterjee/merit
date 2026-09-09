@@ -171,6 +171,29 @@ export const authApi = {
     });
   },
 
+  async updateProfile(displayName: string): Promise<UserProfile> {
+    const res = await apiRequest<Record<string, unknown>>("/api/v1/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ display_name: displayName }),
+    });
+    return normalizeUser(res);
+  },
+
+  async changeEmail(newEmail: string, currentPassword: string): Promise<UserProfile> {
+    const res = await apiRequest<Record<string, unknown>>("/api/v1/auth/email", {
+      method: "POST",
+      body: JSON.stringify({ new_email: newEmail, current_password: currentPassword }),
+    });
+    return normalizeUser(res);
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await apiRequest("/api/v1/auth/password", {
+      method: "POST",
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    });
+  },
+
   async exportData(): Promise<Record<string, unknown>> {
     return await apiRequest<Record<string, unknown>>("/api/v1/auth/export", {
       method: "GET",

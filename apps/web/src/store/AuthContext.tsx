@@ -7,7 +7,10 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  refreshUser: () => Promise<UserProfile | null>;
+  updateProfile: (displayName: string) => Promise<void>;
+  changeEmail: (newEmail: string, currentPassword: string) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   deleteAccount: () => Promise<void>;
 }
 
@@ -17,12 +20,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const refreshUser = useCallback(async () => {
+  const refreshUser = useCallback(async (): Promise<UserProfile | null> => {
     try {
       const profile = await authApi.getMe();
       setUser(profile);
+      return profile;
     } catch {
       setUser(null);
+      return null;
     } finally {
       setIsLoading(false);
     }
@@ -55,6 +60,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const updateProfile = async (displayName: string) => {
+    const profile = await authApi.updateProfile(displayName);
+    setUser(profile);
+  };
+
+  const changeEmail = async (newEmail: string, currentPassword: string) => {
+    const profile = await authApi.changeEmail(newEmail, currentPassword);
+    setUser(profile);
+  };
+
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    await authApi.changePassword(currentPassword, newPassword);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -64,6 +83,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         refreshUser,
+        updateProfile,
+        changeEmail,
+        changePassword,
         deleteAccount,
       }}
     >
@@ -81,7 +103,10 @@ export const useAuth = (): AuthContextType => {
       login: async () => {},
       register: async () => {},
       logout: async () => {},
-      refreshUser: async () => {},
+      refreshUser: async () => null,
+      updateProfile: async () => {},
+      changeEmail: async () => {},
+      changePassword: async () => {},
       deleteAccount: async () => {},
     };
   }

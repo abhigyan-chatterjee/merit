@@ -40,5 +40,32 @@ class UserResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ProfileUpdate(BaseModel):
+    display_name: str | None = Field(None, min_length=2, max_length=50)
+
+    @field_validator("display_name")
+    @classmethod
+    def clean_name(cls, v: str | None) -> str | None:
+        return v.strip() if v else v
+
+
+class EmailChange(BaseModel):
+    new_email: str
+    current_password: str = Field(..., min_length=1)
+
+    @field_validator("new_email")
+    @classmethod
+    def validate_email(cls, v: str) -> str:
+        clean = v.strip().lower()
+        if not EMAIL_REGEX.match(clean):
+            raise ValueError("Invalid email address format")
+        return clean
+
+
+class PasswordChange(BaseModel):
+    current_password: str = Field(..., min_length=1)
+    new_password: str = Field(..., min_length=10)
+
+
 class AuthMessageResponse(BaseModel):
     message: str

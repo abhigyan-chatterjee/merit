@@ -17,6 +17,7 @@ import {
   JudgeResponse,
   SubmissionItem,
   TestCaseResult,
+  progressApi,
 } from "../utils/api";
 import { useAuth } from "../store/AuthContext";
 
@@ -36,8 +37,16 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   onAllPassed,
 }) => {
   const { user } = useAuth();
-  const [language, setLanguage] = useState<"javascript" | "python">("javascript");
+  const [language, setLanguage] = useState<"javascript" | "python">(() => {
+    try {
+      const saved = window.localStorage.getItem('algovista_lang_v1');
+      return saved === 'python' ? 'python' : 'javascript';
+    } catch {
+      return 'javascript';
+    }
+  });
   const [code, setCode] = useState(starterCode);
+  const [editedCode, setEditedCode] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [activeView, setActiveView] = useState<"results" | "submissions">("results");
   const [results, setResults] = useState<TestCaseResult[] | null>(null);
@@ -48,11 +57,33 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
 
-  // Update default starter code when switching languages
+  // Update default starter code when switching languages. The user's own
+  // edits are never clobbered: once edited, Reset restores the skeleton.
   const handleLanguageChange = (lang: "javascript" | "python") => {
     setLanguage(lang);
+    try {
+      window.localStorage.setItem('algovista_lang_v1', lang);
+    } catch {
+      // private mode: ignore
+    }
+    if (user) {
+      progressApi.saveSettings({ preferred_language: lang }).catch(() => {});
+    }
+    if (editedCode !== null) return;
     if (lang === "python") {
-      setCode(`def ${functionName}(*args):\n    # Write Python solution here\n    pass\n`);
+      setCode(`def ${functionName}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`);
+    } else {
+      setCode(starterCode);
+    }
+    setResults(null);
+    setVerdict(null);
+    setCompileError(null);
+  };
+
+  const handleReset = () => {
+    setEditedCode(null);
+    if (language === "python") {
+      setCode(`def ${functionName}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`);
     } else {
       setCode(starterCode);
     }
@@ -74,6 +105,19 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   useEffect(() => {
     fetchSubmissions();
   }, [fetchSubmissions]);
+
+  // Server preferred language wins on login; local choice persists for guests.
+  useEffect(() => {
+    if (!user) return;
+    progressApi
+      .getSettings()
+      .then((s) => {
+        if (s.preferred_language === 'python' || s.preferred_language === 'javascript') {
+          setLanguage(s.preferred_language);
+        }
+      })
+      .catch(() => {});
+  }, [user]);
 
   const handleRunSamples = async () => {
     setIsRunning(true);
@@ -175,7 +219,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => handleLanguageChange(language)}
+            onClick={handleReset}
             title="Reset to starter code"
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface border border-line text-xs font-mono text-muted hover:text-ink cursor-pointer transition"
           >
@@ -211,7 +255,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       <div className="p-0 bg-canvas">
         <textarea
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => {
+            setCode(e.target.value);
+            setEditedCode(e.target.value);
+          }}
           rows={12}
           spellCheck={false}
           aria-label="Code Editor"
