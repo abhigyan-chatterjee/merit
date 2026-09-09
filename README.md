@@ -1,146 +1,177 @@
-# ALGOVISTA — Interactive Data Structures & Algorithms Visual Learning Platform
+# ALGOVISTA — Interactive Data Structures & Algorithms Practice Platform
 
-ALGOVISTA is a 100% client-side interactive Data Structures & Algorithms visual learning platform built with **Vite + React 19 + TypeScript + Tailwind CSS + Framer Motion + Recharts**. All user state (progress tracking, quiz scores, GitHub-style daily streak heatmap, problem notes, bookmarks, and theme preferences) persists natively in `localStorage`.
+ALGOVISTA is a placement-grade, full-stack Data Structures & Algorithms visual practice platform built with a high-performance **React 19 + TypeScript + Tailwind 4** frontend (`apps/web`), a **FastAPI + SQLAlchemy 2.0 + Alembic** backend (`apps/api`) with **SQLite WAL / PostgreSQL** persistence, and a **self-hosted Piston judge** for sandboxed multi-language code execution.
 
 ---
 
 ## ✨ Features & Architecture
 
-1. **12 Interactive 60FPS Visualizers (`/visualizers/:id`)**:
-   - **Sorting Algorithms**: Bubble, Selection, Insertion, Merge, and Quick Sort with real-time Comparison & Swap counters, Array Size slider (`N = 5..50`), Speed slider (`0.25x..2.0x`), and step-by-step playback.
-   - **Graph BFS/DFS Explorer**: Click-to-add vertices and edges on an interactive SVG stage, step through Breadth-First Queue or Depth-First Stack traversals with active pseudocode line highlighting.
-   - **Binary Tree / BST / Heap**: Node insertion with animated Inorder, Preorder, and Postorder traversals.
-   - **Linear & Hashing Structures**: Static/Dynamic Arrays, Singly Linked List, LIFO Stack, FIFO Queue, Separate Chaining HashMap, Binary Search, and Recursion Call Stack Tree.
+1. **12 Dedicated Interactive Visualizers (`/visualizers/:id`)**:
+   - **Sorting**: Bubble, Selection, Insertion, Merge, Quick sort with step-by-step frame recording, comparison/swap counters, array size and speed controls.
+   - **Graph Explorer**: BFS and DFS exploration with click-to-add nodes in scaled SVG coordinates (`viewBox 0 0 420 350`) and queue/stack state.
+   - **Binary Tree / BST / Heap**: Real node-based BST maintaining BST invariants, binary heap with animated sift-up/sift-down and min/max toggle.
+   - **Linear & Hashing Data Structures**: Static/Dynamic Array (two-pointer scans), Singly Linked List, LIFO Stack, FIFO Circular Queue, Separate Chaining HashMap with bucket collision resolution, Searching (Binary vs Linear stepper), and Recursion Tree (branching call stack frames & memoization).
 
-2. **30 Browser-Runnable Coding Problems (`/problems/:topic/:slug`)**:
-   - 5 curated Easy/Medium problems across each of 6 core topics (`Arrays`, `Strings`, `Linked Lists`, `Trees`, `Graphs`, `Dynamic Programming`).
-   - **Sandboxed Browser CodeRunner**: Evaluates JavaScript solutions in-browser via `new Function()` against 3 test cases with instant Pass/Fail assertions and execution time.
-   - **Progressive Hints & Reference Solutions**: 3 collapsible hints per problem plus Brute Force vs Optimal Big-O solution tabs.
-   - **Personal Notes**: Markdown-ready revision notes saved per problem slug directly to `localStorage`.
+2. **Sandboxed Code Judge (`/problems/:topic/:slug`)**:
+   - Replaces in-browser `new Function()` with a sandboxed **Piston** code judge execution service.
+   - Multi-language support: JavaScript, Python, C++, and Java.
+   - Sample test execution (`POST /api/v1/judge/run`) and comprehensive submission judging (`POST /api/v1/judge/submit`) with verdicts (AC, WA, TLE, RE, CE).
+   - Rate-limited, 64KB size bounded, and strict 60s wall clock timeouts.
+   - **42 verified coding problems** across 18 categories (arrays-hashing 7, trees 7, graphs 6, dynamic-programming 6, linked-lists 5, two-pointers 4, stack 2, math-matrices 2, sliding-windows/trie/intervals 1 each), each sequenced with prev/next links and JS+Python starters, seeded from `content/problems/` and mirrored to the guest-mode static bundle via `content/generators/sync_problems_ts.py`.
 
-3. **Mastery Quizzes (`/quiz/:topic`)**:
-   - 10-question timed MCQ quizzes per topic (Arrays, Trees, Graphs, DP) plus a cross-topic **Mixed Mastery** quiz (`/quiz/mixed`).
-   - Instant algorithmic explanation on submit and a **Retry Wrong-Only** mode.
+3. **Placement-Grade Verified Question Bank (885 Items)**:
+   - Automated mathematical and algorithmic oracles in `content/generators/` generating questions across all core domains.
+   - Zero hand-typed expectations: all test case expected outputs are computed and verified by running reference solutions in the sandboxed judge.
+   - Coverage across 14 banks: arrays-hashing, binary-search, bit-manipulation, data-structures, dynamic-programming, graphs, heap, linked-lists, sliding-windows, sorting, stack, trees, plus aptitude (quant/logic) and core-cs (OS, DBMS, networks, design).
 
-4. **Guided Learning Paths (`/learn`, `/learn/:id`)**:
-   - Four structured paths (Foundations, Pointers & Strings, Data Structures, Graphs & DP) that mix workbenches, problems and quizzes in a recommended order with a lock-step progress rail and a "next step" shortcut.
+4. **Adaptive Quiz & Timed Mock Exam Engine (`/quiz/:topic`)**:
+   - Compact topic dropdown defaulting to Mixed; topic change reloads questions (no silent fallback to unrelated topics).
+   - Server-side question sampling (`POST /api/v1/quizzes/generate`) with a 50-exposure no-repeat window and 40% Easy / 40% Med / 20% Hard difficulty balancing.
+   - **Zero Answer Leakage**: Client receives only prompts and options; `correct_index` and `explanation` are sealed until post-submission server grading.
+   - **Retry Wrong-Only**: Server creates snapshots to retry only missed questions without client manipulation.
+   - **Quiz timing**: 20s hard auto-advance per MCQ; exams use their own countdown instead.
+   - **Exams are 20 MCQs + 2 coding**: 7 types (Foundational, Intermediate, Sorting+Searching, DP+Greedy, Trees+Graphs, Aptitude, 3-hour Full Placement Mock) with judge-graded coding sections.
 
----
+5. **Learning Paths v2 (`/learn`, `/learn/:id`)**:
+   - 3 structured tracks: Foundation (beginners, summaries + further reading per topic), Targeted (lean high-ROI placement sequence), Mastery (everything verified).
+   - Server-resolved step completion: problems done via Judge AC, quizzes passed at >= 70%, visualizers tracked via visit logs.
 
-## 🗂 Folder Structure
+6. **Spaced Repetition & Weak-Area Detection**:
+   - Rolling per-topic accuracy tracking over recent quiz attempts and submission WA rates.
+   - Spaced repetition revision queue (1d / 3d / 7d intervals) surfaced on the user's dashboard.
 
-```
-src/
-├── App.tsx                       # Root application container
-├── main.tsx                      # Entry point
-├── routes.tsx                    # All 7 client-side routes
-├── store/
-│   └── ProgressContext.tsx       # Global localStorage state & actions
-├── hooks/
-│   ├── useLocalStorage.ts        # Type-safe storage sync hook
-│   └── useStreak.ts              # Consecutive daily streak calculator
-├── components/
-│   ├── Navbar.tsx                # Top nav + ⌘K instant search + mobile tab bar
-│   ├── ThemeToggle.tsx           # Dark/Light mode switcher
-│   ├── ProgressRing.tsx          # Circular SVG progress gauge
-│   ├── StreakHeatmap.tsx         # GitHub-style 16-week contribution grid
-│   ├── VisualizerCanvas.tsx      # Interactive SVG stage wrapper
-│   ├── ControlBar.tsx            # Play/Pause/Step/Reset/Randomize bar
-│   ├── SpeedControl.tsx          # 0.25x - 2.0x speed slider
-│   ├── PseudoCodePanel.tsx       # Line-highlighted pseudocode + operation log
-│   ├── ComplexityBadge.tsx       # Time/Space Big-O pill
-│   ├── ProblemTable.tsx          # Instant search, filter, and sort table
-│   ├── CodeRunner.tsx            # Browser sandboxed JS test runner
-│   ├── QuizEngine.tsx            # 10-question MCQ quiz with timer
-│   ├── EmptyState.tsx            # Empty filter state
-│   └── Footer.tsx                # Footer navigation
-├── visualizers/
-│   ├── SortingVisualizer.tsx     # Bubble/Selection/Insertion/Merge/Quick
-│   ├── GraphVisualizer.tsx       # Click-to-edit BFS/DFS graph canvas
-│   ├── TreeVisualizer.tsx        # Binary Tree / BST / Heap traversals
-│   └── LinearVisualizer.tsx      # Array/LinkedList/Stack/Queue/HashMap
-    ├── pages/
-    │   ├── LandingPage.tsx           # Hero with live sorting mini-demo
-    │   ├── DashboardPage.tsx         # Streak heatmap, progress ring, Recharts
-    │   ├── VisualizersListPage.tsx   # 12 visualizer cards grid
-    │   ├── VisualizerDetailPage.tsx  # Universal workbench host
-    │   ├── GuidedPathsPage.tsx       # Learning paths browser
-    │   ├── GuidedPathDetailPage.tsx  # Lock-step path with next-step CTA
-    │   ├── ProblemListPage.tsx       # Topic problem table
-    │   ├── ProblemDetailPage.tsx     # Problem detail + CodeRunner + Notes
-    │   └── QuizPage.tsx              # Topic + mixed quiz host
-    └── data/
-        ├── curriculum.ts             # Topics & 12 visualizers metadata
-        ├── problems.ts               # 30 problems with test cases & solutions
-        ├── quizzes.ts                # 10 Qs per topic + mixed MCQ quizzes
-        ├── learningPaths.ts          # 4 guided learning paths
-        └── pseudocode.ts             # Algorithm pseudocode lines
-```
+7. **Multi-User Security & Privacy**:
+   - Argon2id password hashing + rotating JWT refresh tokens in `HttpOnly; SameSite=Lax; Secure` cookies.
+   - Server-side user data isolation: all queries filter strictly on `Table.user_id == current_user.id`.
+   - Compact account menu (profile, email, password, preferred JS/Python language, logout) at `/profile`.
+   - Permanent daily goals and language preference persist server-side (`PUT /api/v1/progress/settings`).
+   - GDPR/CCPA compliance: `GET /api/v1/auth/export` produces a full data dump; `DELETE /api/v1/auth/account` cascades and purges all records.
+
+8. **Admin Control Console (`/admin`)**:
+   - Role-based authorization (`role='admin'`); students receive HTTP 403 Forbidden.
+   - Content review queue for drafts, topic x difficulty coverage matrix, aggregate metrics, and audit trail (`admin_audit_log`).
 
 ---
 
-## 💾 LocalStorage Schema (`algovista_store_v1`)
+## 🗂 Repository Layout
 
-```json
-{
-  "progress": {
-    "two-sum": "Done",
-    "maximum-subarray": "Doing"
-  },
-  "quizzes": {
-    "arrays": 90,
-    "trees": 80,
-    "graphs": 60,
-    "dp": 50
-  },
-  "streak": ["2026-03-20", "2026-03-21", "2026-03-22"],
-  "notes": {
-    "two-sum": "Store seen[nums[i]] = i in Map for O(1) complement lookup."
-  },
-  "bookmarks": ["sorting", "two-sum"],
-  "dailyGoalDone": {
-    "2026-03-22": true
-  },
-  "lastVisited": {
-    "type": "visualizer",
-    "title": "Sorting Algorithms",
-    "path": "/visualizers/sorting",
-    "subtitle": "Interactive Big-O & Step Debugger"
-  }
-}
+```
+algovista/
+├── apps/
+│   ├── web/                     # React 19 + Vite + TypeScript frontend
+│   │   ├── src/
+│   │   │   ├── components/      # UI components, QuizEngine, CodeRunner, Navbar
+│   │   │   ├── visualizers/     # 12 dedicated visualizer engines
+│   │   │   ├── pages/           # Dashboard, Visualizers, Problems, Quizzes, Paths, Admin
+│   │   │   ├── store/           # AuthContext, ProgressContext (API + local fallback)
+│   │   │   └── utils/           # api.ts client SDK
+│   │   ├── tests/               # Vitest component & unit tests
+│   │   └── nginx.conf           # SPA fallback & API reverse proxy configuration
+│   └── api/                     # FastAPI + SQLAlchemy 2.0 backend
+│       ├── app/
+│       │   ├── models/          # User, Problem, Question, QuizAttempt, Submission
+│       │   ├── schemas/         # Pydantic request/response schemas
+│       │   ├── routers/         # auth, progress, judge, content, quizzes, admin
+│       │   ├── services/        # judge, sampler, streak, session_cleanup
+│       │   ├── security.py      # Argon2id, JWT cookies, get_current_user
+│       │   └── seed.py          # Database seeder
+│       ├── alembic/             # Database migrations
+│       └── tests/               # Pytest test suite, authz isolation matrix
+├── content/
+│   ├── problems/                # 42 verified problem specs with reference solutions
+│   ├── questions/               # Curated question items
+│   ├── paths/                   # Learning path definitions
+│   ├── catalog/                 # Canonical DSA catalog built from scraped CSVs (metadata only)
+│   ├── generators/              # build_catalog, sync_problems_ts + programmatic question generators with oracles
+│   └── validators/              # verify_problems, verify_questions, coverage_report
+├── docs/
+│   ├── launch-checklist.md      # Launch readiness audit & verification gates
+│   └── backup_drill.sh          # WAL checkpoint & encrypted backup drill
+├── docker-compose.yml           # Single-node deployment: Piston + API + Web
+└── .github/workflows/ci.yml     # GitHub Actions CI matrix (SQLite + PostgreSQL)
 ```
 
 ---
 
-## 🚀 Deployment & SPA Fallback (D12)
+## 🚀 Running Locally
 
-Because Algovista uses HTML5 client-side routing (`BrowserRouter`), static hosts must rewrite non-asset requests to `/index.html`:
+### 1. Prerequisites
+- Node.js >= 20
+- Python >= 3.12 (with `uv` or standard venv)
+- Docker (optional, for Piston judge)
 
-### Vercel
-Configured in `apps/web/vercel.json`:
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
+### 2. Frontend (`apps/web`)
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+Runs at `http://localhost:5173`.
+
+### 3. Backend (`apps/api`)
+```bash
+cd apps/api
+uv venv && uv pip install -e ".[dev]"
+# Or: python3 -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+
+# Apply migrations and seed verified content
+alembic upgrade head
+python3 -m app.seed
+
+# Run API server
+uvicorn app.main:app --reload --port 8000
+```
+API runs at `http://localhost:8000` with Swagger docs at `http://localhost:8000/api/docs`.
+
+### 4. Sandboxed Judge (Piston)
+```bash
+docker run -d --name piston -p 2000:2000 ghcr.io/engineer-man/piston:latest
 ```
 
-### Netlify / Cloudflare Pages
-Configured in `apps/web/public/_redirects`:
-```
-/*    /index.html   200
-```
+---
 
-### Nginx
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /var/www/algovista/apps/web/dist;
-    index index.html;
+## 🐳 Production Deployment with Docker Compose
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
+A complete turn-key stack (Web Nginx + FastAPI + Piston Judge) can be started with a single command:
+
+```bash
+docker compose up -d
 ```
 
+- **Frontend with SPA Fallback**: Port `80`
+- **FastAPI API**: Port `8000` (proxied under `/api/`)
+- **Piston Sandbox**: Port `2000` (internal network)
+
+---
+
+## 📚 DSA Catalog & Content Pipeline
+
+Scraped title/company/topic metadata lives outside the repo at `/mnt/code/dsa_database/final/`
+and is canonicalized (never imported verbatim) into `content/catalog/`:
+
+```bash
+# 1. Rebuild canonical catalog (3,997 entries from 4,418 scraped rows)
+python3 content/generators/build_catalog.py
+
+# 2. Verify all problems through the real judge + questions + coverage
+python3 content/validators/run_all.py
+
+# 3. Re-sync guest-mode static bundle after adding/editing problems
+python3 content/generators/sync_problems_ts.py
+```
+
+Rules: scraped rows supply titles, company frequency, topics and difficulty only.
+Statements, hints, starter code, test cases and solutions are always authored fresh
+(original content only) and every reference solution must reach AC in the judge
+before the problem ships. `content/catalog/BUILD_REPORT.txt` lists the top
+company-weighted candidates for the next authoring batch.
+
+---
+
+## 🔒 Data Privacy & Retention Policy
+
+1. **Guest Mode**: All visualizers and problem reading are accessible without an account. Unauthenticated progress is stored locally in the browser's `localStorage` and validated against a strict Zod schema (`algovista_store_v1`).
+2. **Account Sync & Merge**: Upon first registration or login, local progress is imported and merged using a **max-wins** strategy (Done > Doing > Todo; union of active streak days).
+3. **Multi-User Isolation**: User IDs are never trusted from client inputs. All database operations filter strictly by the authenticated JWT session cookie.
+4. **Account Purge & Export**: Users retain full control over their data via `GET /api/v1/auth/export` and `DELETE /api/v1/auth/account`.
+5. **Session Cleanup**: Expired refresh tokens and revoked sessions are automatically pruned.
