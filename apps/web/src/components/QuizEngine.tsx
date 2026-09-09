@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   CheckCircle2,
   XCircle,
@@ -73,6 +73,10 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(perQuestionSec ?? 0);
   // Echo of the topics the server actually sampled from (debuggability).
   const [servedTopics, setServedTopics] = useState<string[] | null>(null);
+  // Monotonic run token: only the latest loadQuiz invocation may commit
+  // state. Prevents StrictMode double-mounts and user/context races from
+  // creating two attempts or flashing an error over good questions.
+  const loadRunRef = useRef(0);
 
 
   // Server results map: question_id -> result details
@@ -95,8 +99,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // Initialize or fetch quiz. Runs once on mount with a refresh-first
   // auth check: `user` from context may still be null on first paint even
   // when a session cookie exists, so resolve the session here instead of
-  // depending on possibly-stale context state.
+  // depending on possibly-stale context state. A run token guards against
+  // double-invocation (e.g. StrictMode remounts) creating two attempts.
   const loadQuiz = useCallback(async () => {
+    const runToken = ++loadRunRef.current;
+    const isStale = () => runToken !== loadRunRef.current;
     setIsLoading(true);
     setLoadError(null);
     setSelectedAnswers({});
@@ -121,6 +128,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           activeUser = null;
         }
       }
+      if (isStale()) return;
       if (activeUser) {
         const topics =
           examTopics && examTopics.length > 0
@@ -129,13 +137,31 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             ? ['arrays-hashing', 'trees', 'graphs', 'dynamic-programming']
             : [topicId];
         const count = examCount ?? (isMock ? 20 : 10);
-        const res = await quizApi.generateQuiz(
-          topics,
-          count,
-          examDifficulty,
-          isMock,
-          durationLimitSec
-        );
+        let res;
+        try {
+          res = await quizApi.generateQuiz(
+            topics,
+            count,
+            examDifficulty,
+            isMock,
+            durationLimitSec
+          );
+        } catch (genErr: unknown) {
+          // A definite "no questions for these topics" is authoritative:
+          // surface it instead of silently showing unrelated questions.
+          const genCode = (genErr as { code?: string })?.code;
+          if (genCode === 'NO_QUESTIONS_FOR_TOPICS') {
+            if (isStale()) return;
+            setAttemptId(null);
+            setServedTopics(null);
+            setActiveQuestions([]);
+            setLoadError(`No verified questions for topic${topics.length > 1 ? 's' : ''}: ${topics.join(', ')}.`);
+            setIsLoading(false);
+            return;
+          }
+          throw genErr;
+        }
+        if (isStale()) return;
         if (res.questions && res.questions.length > 0) {
           setAttemptId(res.attempt_id);
           if (res.duration_sec) {
@@ -156,6 +182,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         }
       }
     } catch (err: unknown) {
+      if (isStale()) return;
       if (err instanceof Error && err.message === 'NO_SESSION') {
         // fall through to local bank below
       } else {
@@ -163,6 +190,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       }
     }
 
+    if (isStale()) return;
     // Fallback: local questions are already scoped per topic by QuizPage
     // (QUIZZES[currentTopic.id]), so render them as-is. The key={topicId}
     // remount plus the loadQuiz deps above guarantee a topic switch reloads.

@@ -50,10 +50,12 @@ export const ExamDetailPage: React.FC = () => {
               <ListChecks className="w-3.5 h-3.5 text-mint" />
               {exam.questionCount} MCQs
             </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Code2 className="w-3.5 h-3.5 text-violet" />
-              {exam.coding.length} coding
-            </span>
+            {exam.coding.length > 0 && (
+              <span className="inline-flex items-center gap-1.5">
+                <Code2 className="w-3.5 h-3.5 text-violet" />
+                {exam.coding.length} coding
+              </span>
+            )}
             <span className="inline-flex items-center gap-1.5">
               <Timer className="w-3.5 h-3.5 text-amber" />
               {Math.round(exam.durationSec / 60)} min limit · auto-submits
@@ -73,7 +75,8 @@ export const ExamDetailPage: React.FC = () => {
         <div className="p-6 rounded-xl border border-line bg-surface space-y-4 text-center">
           <p className="text-sm text-ink font-semibold">Ready when you are.</p>
           <p className="text-xs text-muted max-w-lg mx-auto">
-            {exam.questionCount} MCQs · {exam.coding.length} coding questions ·{' '}
+            {exam.questionCount} MCQs
+            {exam.coding.length > 0 && ` · ${exam.coding.length} coding questions`} ·{' '}
             {Math.round(exam.durationSec / 60)}-minute countdown · unanswered questions count as
             wrong. The timer auto-submits at zero.
           </p>
@@ -88,8 +91,13 @@ export const ExamDetailPage: React.FC = () => {
         <div className="space-y-10">
           {(mcqPct !== null || Object.keys(codingPassed).length > 0) && (
             <div className="p-4 rounded-xl border border-mint/40 bg-mint/5 text-xs font-mono text-ink">
-              MCQ score: {mcqPct ?? '—'}% · Coding accepted:{' '}
-              {Object.values(codingPassed).filter(Boolean).length}/{exam.coding.length}
+              MCQ score: {mcqPct ?? '—'}%
+              {exam.coding.length > 0 && (
+                <>
+                  {' '}· Coding accepted:{' '}
+                  {Object.values(codingPassed).filter(Boolean).length}/{exam.coding.length}
+                </>
+              )}
             </div>
           )}
           <QuizEngine
@@ -107,10 +115,12 @@ export const ExamDetailPage: React.FC = () => {
               saveQuizScore(`exam:${exam.id}`, pct);
             }}
           />
-          <ExamCodingSection
-            coding={exam.coding}
-            onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
-          />
+          {exam.coding.length > 0 && (
+            <ExamCodingSection
+              coding={exam.coding}
+              onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
+            />
+          )}
         </div>
       )}
     </div>

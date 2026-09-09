@@ -86,14 +86,11 @@ export const TARGETED_EXAMS: TargetedExam[] = [
   {
     id: 'aptitude',
     title: 'Aptitude',
-    description: 'Quant, logical reasoning and verbal for screening rounds. 20 MCQs plus 2 coding questions.',
+    description: 'Quant, logical reasoning and verbal for screening rounds. 20 MCQs in one sitting.',
     topics: ['aptitude'],
     questionCount: 20,
-    coding: [
-      { slug: 'subarray-sum-equals-k', title: 'Subarray Sum Equals K' },
-      { slug: 'roman-to-integer', title: 'Roman to Integer' },
-    ],
-    durationSec: 2700,
+    coding: [],
+    durationSec: 1800,
     level: 'Beginner',
   },
   {

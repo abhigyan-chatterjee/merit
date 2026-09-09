@@ -365,7 +365,8 @@ export const DashboardPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <Panel label="Solved per topic" className="lg:col-span-7">
-            <div className="h-60 w-full -ml-2">
+            <div className="h-72 w-full overflow-x-auto">
+              <div className="h-full min-w-[640px] -ml-2">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
                   <CartesianGrid stroke="var(--c-line)" vertical={false} />
@@ -376,9 +377,9 @@ export const DashboardPage: React.FC = () => {
                     tickLine={false}
                     axisLine={{ stroke: 'var(--c-line)' }}
                     interval={0}
-                    angle={-12}
+                    angle={-32}
                     textAnchor="end"
-                    height={46}
+                    height={72}
                   />
                   <YAxis
                     stroke="var(--c-muted)"
@@ -410,11 +411,12 @@ export const DashboardPage: React.FC = () => {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+              </div>
             </div>
           </Panel>
 
           <Panel label="Modules" className="lg:col-span-5" flush>
-            <div className="divide-y divide-line">
+            <div className="divide-y divide-line max-h-[420px] overflow-y-auto">
               {TOPICS.map((t) => {
                 const total = PROBLEMS.filter((p) => p.topic === t.slug).length;
                 const solved = PROBLEMS.filter(

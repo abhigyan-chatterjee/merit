@@ -48,7 +48,7 @@ export const ExamsPage: React.FC = () => {
               <div className="flex items-center gap-4 text-[11px] font-mono text-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <ListChecks className="w-3.5 h-3.5 text-mint" />
-                  {exam.questionCount} MCQs + {exam.coding.length} coding
+                  {exam.questionCount} MCQs{exam.coding.length > 0 && ` + ${exam.coding.length} coding`}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Timer className="w-3.5 h-3.5 text-amber" />

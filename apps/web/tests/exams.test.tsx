@@ -66,8 +66,9 @@ describe('Exams catalog', () => {
     expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
     expect(screen.getByText('Aptitude')).toBeInTheDocument();
     expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
-    // 20+2 format on every card
+    // 20+2 format on coding exams; aptitude is MCQ-only
     expect(screen.getAllByText(/20 MCQs \+ 2 coding/i).length).toBeGreaterThanOrEqual(5);
+    expect(screen.getByText('20 MCQs')).toBeInTheDocument();
   });
 
   it('routes an exam card to its timed detail page', async () => {
@@ -76,7 +77,18 @@ describe('Exams catalog', () => {
     await screen.findByText('Intermediate DSA');
     fireEvent.click(screen.getAllByText('Start exam')[0]);
     expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
-    expect(await screen.findByText(/2 coding questions/i)).toBeInTheDocument();
+    expect(await screen.findByText(/coding questions/i)).toBeInTheDocument();
+  });
+
+  it('shows no coding section for the MCQ-only aptitude exam', async () => {
+    mockGuestFetch();
+    renderExams('/exams/aptitude');
+    await screen.findByText(/Aptitude/);
+    expect(screen.getByText('20 MCQs')).toBeInTheDocument();
+    expect(screen.queryByText(/\+ 2 coding/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Start timed exam/i));
+    await screen.findByText(/Placement Mock Examination|Mastery Quiz/i);
+    expect(screen.queryByText(/Coding questions/i)).not.toBeInTheDocument();
   });
 
   it('shows the coding section after starting the exam', async () => {

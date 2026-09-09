@@ -27,12 +27,17 @@ const PATTERN_TAGS = [
 ];
 
 /* --- Live bubble-sort demo that actually runs the algorithm --- */
+const BUBBLE_SEED = [52, 31, 88, 24, 95, 46, 71, 18, 63, 39, 80, 57];
+
 const useLiveSortDemo = (enabled: boolean) => {
-  const [arr, setArr] = useState<number[]>([52, 31, 88, 24, 95, 46, 71, 18, 63, 39, 80, 57]);
-  const cursor = useRef({ i: 0, j: 0 });
+  const [arr, setArr] = useState<number[]>(BUBBLE_SEED);
+  // Single cursor object: pass p, inner index i, and completion flag.
+  const cursor = useRef({ pass: 0, i: 0, done: false, swaps: 0 });
   const [pair, setPair] = useState<[number, number]>([0, 1]);
   const [passes, setPasses] = useState(0);
   const [comparisons, setComparisons] = useState(0);
+  const [swaps, setSwaps] = useState(0);
+  const [sorted, setSorted] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
@@ -40,42 +45,53 @@ const useLiveSortDemo = (enabled: boolean) => {
       setArr((prev) => {
         const next = [...prev];
         const n = next.length;
-        const { i, j } = cursor.current;
+        const c = cursor.current;
 
-        if (i >= n - 1) {
-          cursor.current = { i: 0, j: 0 };
+        // Pause on the fully sorted array, then restart from a pass-0 shuffle.
+        if (c.done) {
+          cursor.current = { pass: 0, i: 0, done: false, swaps: 0 };
           setPasses(0);
-          return next
-            .map((v) => ({ v, k: Math.random() }))
-            .sort((a, b) => a.k - b.k)
-            .map((o) => o.v);
+          setSwaps(0);
+          setSorted(false);
+          // Deterministic rotate keeps the demo honest: a visibly unsorted start.
+          const k = 5;
+          return [...next.slice(k), ...next.slice(0, k)];
         }
 
-        if (j >= n - 1 - i) {
-          cursor.current = { i: i + 1, j: 0 };
-          setPasses(i + 1);
+        // End of this pass: either finished (no swaps all pass) or next pass.
+        if (c.i >= n - 1 - c.pass) {
+          if (c.swaps === 0) {
+            cursor.current = { ...c, done: true };
+            setSorted(true);
+            return next;
+          }
+          cursor.current = { pass: c.pass + 1, i: 0, done: false, swaps: 0 };
+          setPasses(c.pass + 1);
           return next;
         }
 
-        setPair([j, j + 1]);
-        setComparisons((c) => c + 1);
-        if (next[j] > next[j + 1]) {
-          [next[j], next[j + 1]] = [next[j + 1], next[j]];
+        setPair([c.i, c.i + 1]);
+        setComparisons((x) => x + 1);
+        if (next[c.i] > next[c.i + 1]) {
+          [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
+          cursor.current = { ...c, i: c.i + 1, swaps: c.swaps + 1 };
+          setSwaps((x) => x + 1);
+        } else {
+          cursor.current = { ...c, i: c.i + 1 };
         }
-        cursor.current = { i, j: j + 1 };
         return next;
       });
-    }, 150);
+    }, 220);
     return () => clearInterval(id);
   }, [enabled]);
 
-  return { arr, pair, sortedFrom: arr.length - passes, comparisons };
+  return { arr, pair, sortedFrom: sorted ? 0 : arr.length - passes - 1, comparisons, swaps, sorted };
 };
 
 export const LandingPage: React.FC = () => {
   const reduce = useReducedMotion();
   const { user } = useAuth();
-  const { arr, pair, sortedFrom, comparisons } = useLiveSortDemo(!reduce);
+  const { arr, pair, sortedFrom, comparisons, swaps, sorted } = useLiveSortDemo(!reduce);
 
   return (
     <div className="pb-10">
@@ -190,7 +206,7 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div className="py-2.5">
                   <div className="text-sm font-mono font-bold text-amber tnum">
-                    [{pair[0]},{pair[1]}]
+                    {sorted ? 'done' : `[${pair[0]},${pair[1]}] · ${swaps} swaps`}
                   </div>
                   <div className="text-[10px] font-mono uppercase tracking-widest text-muted">cursor</div>
                 </div>
@@ -232,7 +248,7 @@ export const LandingPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {[
             {
-              to: '/learn/foundations',
+              to: '/learn/foundation',
               title: 'Start the Foundations path',
               hint: '8 steps · recommended first',
               Icon: Route,
