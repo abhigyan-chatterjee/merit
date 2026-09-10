@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # 1. Sandboxed Judge Execution Service
+  piston:
+    image: ghcr.io/engineer-man/piston:latest
+    container_name: algovista-piston
+    restart: unless-stopped
+    ports:
+      - "2000:2000"
+    tmpfs:
+      - /tmp:exec,mode=1777
+    networks:
+      - algovista-net
+
+  # 2. FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: algovista-api
+    restart: unless-stopped
+    depends_on:
+      - piston
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:////data/algovista.db
+      - SECRET_KEY=change_this_to_a_secure_random_key_in_production_32chars!
+      - PISTON_URL=http://piston:2000
+      - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
+    volumes:
+      - algovista-data:/data
+    networks:
+      - algovista-net
+
+  # 3. Static Web Frontend with Nginx & SPA Fallback
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: algovista-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - algovista-net
+
+volumes:
+  algovista-data:
+
+networks:
+  algovista-net:
+    driver: bridge

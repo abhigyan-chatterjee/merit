@@ -1,0 +1,96 @@
+The product scope will be extended now. Follow my guide. below, I am mentioning the tabs that need to be there, in the order that they should be ( order can be changed ONLY IF it makes more sense to have the changed order from a learning perspective). For each tab, I will tell what needs to be added OR changed. You will build on the current prototype we have.
+
+1. Landing Page: The landing page is filled with marketing filler which looks like AI slop. Here is the some of the feedback recieved on the landing page:
+    a. "1. The copy is slightly too polished/generic
+        Stuff like:
+        "Stop memorising algorithms. Watch them run."
+        "Step through the execution, not the explanation."
+        "Lock it in"
+        "Guided learning paths"
+
+        This is good marketing copy, but there's a slight AI/product-designer vocabulary flavour to it.
+        Not a dealbreaker whatsoever. Just don't overdo it.
+
+        2. Some numbers feel suspiciously demo-ish
+        For example:
+        830+ verified items
+        12 interactive workbenches
+        30 practical problems
+        If those numbers aren't genuinely backed by substantial data, they will hurt you more than help you.
+        A recruiter who clicks around and discovers 30 problems, 12 visualizers and a bunch of placeholder content will immediately think:
+        "Ah, polished demo."
+        If they're real, fine."
+    b. "Not “slop,” but there are cues:
+        Very uniform card/grid treatment. Almost everything is a dark rectangular panel with a thin blue border, rounded corners, and occasional corner brackets. It is polished, but a little mechanically consistent.
+        The “developer terminal” aesthetic is over-applied. Small monospace labels, numbered sections, all-caps headings, tags such as VERIFIED BANK, START HERE, GUIDED, etc. look stylish, but can feel like a design prompt’s idea of a technical learning tool.
+        Some copy sounds generic or inflated.
+        “830+ verified items”
+        “server-side grading”
+        “managed sequence”
+        “one coherent route to mastery”
+        Those are fine if true, but they read a little like generated product copy unless backed by real detail.
+        Too much empty space on several screens. The Paths, Exams, Quiz, and Problem screens are clean but somewhat under-filled vertically. This can make a project look like it optimized for screenshots rather than dense real-world use.
+        The UI has more visual personality than content personality. Right now it resembles a highly polished DSA-workbench concept. The differentiator needs to be more obvious: why use Algovista rather than LeetCode, NeetCode, AlgoMonster, VisuAlgo, etc.?"
+
+In my opinion, the landing page is not bad at all. But, it has too much of selling filler. We do not need so much. We just need to say why this app; This app because it's a entire end to end DSA practice tool, which is unlike other apps present. If you can, make minor changes to it.
+Things that need to be added or changed:
+    a. The footer - "ALGOVISTA — built with React, TypeScript & Tailwind." is not required. The User does not need to know the tech stack used.
+    b. Add my details: My Github: https://github.com/abhigyan-chatterjee , My name: Abhigyan Chatterjee, My site / portfolio: https://nullbit.in
+    c. The quickstart is right near the bottom of the page, The quickstart needs to be close to the top so that the users can start with one click
+    d. The "Start a guided path" button needs to be convrted to a "Go to your dashboard" button if the user is logged in.
+The name algovista is not upto my liking, put a pin on about changing the name later
+
+2. Dashboard: Extremely solid base. Few changes:
+    a. The daily goal field is taking up a lot of space, which is not required at all. Instead, convert the daily goal field into a button beside the reset button, which when clicked will open a dropdown where you can select or add daily goal. Also, there should be an option where the user(logged in) can add a permanent daily goal.
+    b. The resume session part needs to be at the top, where the daily goal is now. Below resume; Due today for revision. Below that, Assessment. Below assessment, consistency, curriculum completion (Curriculum refers to the path the user is on), and weakest topics in the same line. Below them,  Coverage by module, below that, Guided paths
+    c. When the user is logged in, It should show "Welcome {UserName}" in the dashboard
+
+3. Paths: 3 Paths:
+    a. Foundation: Covers the basic data structures such as Arrays, Linked Lists, Hashes etc. Also covers basic algorithms such as sorting, two pointers, sliding windows etc. It's assuming that it's for absolute             beginners. For topics, Only visualisation is not enough. There needs to be a basic summary, and links to further detailed reading materials
+    b. Targetted: Specially targetted towards placements. Take each category, and slim out the questions such that the total number of questions are between 100-200. Here, the questions have to target the most relevant , highest ROI topics, Example: Merge Sort, Graphs, Greedy Placement, Path finding, Travelling Salesman etc.  ( CATEOGORIES ARE MENTIONED FURTHER DOWN, IN THE INSTRUCTION FOR THE PROBLEMS TAB). A curriculum which, is lean, but , covers the most important topics. A guided path, in the style of Neetcode 150, striver's A-Z DSA Cheat Sheet etc. THE CONTENT CAN NOT BE THE EXACT SAME. THE CONTENT NEEDS TO BE MEANINGFULLY DIFFERENT TO
+    AVOID PLAGARISM.
+    c. Mastery: For those aiming to master DSA. contains everything.
+
+4. Problems: For the scrapped data, we CAN NOT assume that each question is relevant or important enough. We have to make a lean curriculum. Here are the clear categories that the entire question bank (NOT THE LEAN PATH) will have to fall in:
+    a. Arrays and Hashing
+    b. Two Pointers
+    c. Sliding Windows
+    d. Stack
+    e. Linked Lists
+    f. Binary Search
+    g. Trees
+    h. Heap
+    i. Backtracking
+    j. Graphs
+    k. Dynamic Programming (Both 1D and 2D)
+    l. Greedy Algorithm
+    m. Trie
+    n. Intervals
+    o. Math oriented (Matrices and stuff)
+    p. Bit Manipulation.
+    q. Sorting
+    r. Data Structures
+Each of these categories, as well as the questions in them, are to be arranged in such an order that makes each question having some kind of link to the previous and the next one. For example, 2Sum will be followed by 3Sum as these are similar questions . Each question will have a difficulty tagged in them ( Easy | Medium | Hard). For the MVP , we will only support Python and JS. For the future, C++, Java and Go support maybe added
+
+5. Visualisers: I am happy with what it is. I can not think of any changes, If you have any meaningful idea, you might suggest them.
+
+6. Quizzes: The current way to select the Topic is very ugly and bloated. Make it a dropdown, with the default value being Mixed. Also , the quizzes are absolutely fucking broken. I click on Arrays and Pointers, I get BST questions. I click on stacks, the same question is there. When the topic is changed, there is no update to the quizz. Needs to be fixed. Also the quizzes need to be timed, 20 seconds for each MCQ.  FIX THE QUIZZES
+
+7. Exams: Currently exams have only MCQ questions. Have you ever seen any SWE recruitment exam having only MCQs? Exams should have MCQs yes, but for 20 MCQs , there also needs to be 2 coding questions. Here are the exams you need to have there
+    a. Foundational DSA
+    b. Intermediate DSA
+    c. HIGh ROI topics separetly like Sorting + Searching , DP + Greedy, Trees and Graphs etc.
+    d. Aptitude: Very important.
+    e. Full placement mock: 3 hours, Aptitude, Core( OS , DBMS, System Design Etc), Coding.
+
+
+Other changes:
+User: There needs to be User dropdown. Where the user can manage his profile, email , password, logout, prefered language etc.
+
+
+What you need to do:
+
+1. Go through my prompts, then break it down to fine, small steps. Do NOT try to attempt steps which are larger than you can manage. IF YOU FEEL LIKE YOU ARE LOSING THE PLOT OR ARE DERAILED, STOP, RECOLLECT YOURSELF, CHECK THE PLAN, CHECK YOUR PROGRESS, THINK AND THEN PROCEED
+2. Go through the steps one by one, testing each step and confirming they work before moving on to the next step.
+3. If any step goes wrong, DO NOT PROCEED. Fix the issues, test the solutions, only continue when you are confident that it is okay
+4. If you have any suggesttions about this plan, discuss them with me before writing the plan. Once we agree on the plan, You will write down the plan in a file WHICH YOU MAY NOT DESTROY and proceed once i tell you to.
