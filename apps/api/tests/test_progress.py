@@ -1,4 +1,10 @@
+from datetime import UTC, datetime, timedelta
+
 from fastapi.testclient import TestClient
+
+TODAY = datetime.now(UTC).strftime("%Y-%m-%d")
+YESTERDAY = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
+
 
 
 def register_user(client: TestClient, email: str, name: str = "Test User") -> str:
@@ -36,7 +42,7 @@ def test_problem_progress_lifecycle(client: TestClient):
     # Update to Doing
     res = client.put(
         "/api/v1/progress/problems/two-sum",
-        json={"status": "Doing", "local_date": "2026-09-07"},
+        json={"status": "Doing", "local_date": TODAY},
     )
     assert res.status_code == 200
     assert res.json()["status"] == "Doing"
@@ -44,7 +50,7 @@ def test_problem_progress_lifecycle(client: TestClient):
     # Update to Done
     res = client.put(
         "/api/v1/progress/problems/two-sum",
-        json={"status": "Done", "local_date": "2026-09-07"},
+        json={"status": "Done", "local_date": TODAY},
     )
     assert res.status_code == 200
     assert res.json()["status"] == "Done"
@@ -53,7 +59,7 @@ def test_problem_progress_lifecycle(client: TestClient):
     summary = client.get("/api/v1/progress/summary").json()
     assert summary["solved_count"] == 1
     assert summary["progress"]["two-sum"] == "Done"
-    assert "2026-09-07" in summary["activity_days"]
+    assert TODAY in summary["activity_days"]
 
 
 def test_notes_and_bookmarks(client: TestClient):
@@ -67,7 +73,7 @@ def test_notes_and_bookmarks(client: TestClient):
     # Save note
     res = client.put(
         "/api/v1/progress/notes/two-sum",
-        json={"text": "Use hashmap for O(n) lookup.", "local_date": "2026-09-07"},
+        json={"text": "Use hashmap for O(n) lookup.", "local_date": TODAY},
     )
     assert res.status_code == 200
     assert res.json()["text"] == "Use hashmap for O(n) lookup."
@@ -118,7 +124,7 @@ def test_import_local_max_wins(client: TestClient):
             "notes": {
                 "two-sum": "Imported note text.",
             },
-            "activity_days": ["2026-09-06", "2026-09-07"],
+            "activity_days": [YESTERDAY, TODAY],
             "visited_visualizers": ["sorting", "bst"],
         },
     )

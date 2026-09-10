@@ -2,7 +2,7 @@ import json
 from typing import Any
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -351,10 +351,15 @@ def get_progress_summary(
                 if len(revision_due) >= 5:
                     break
 
+    total_problems = (
+        db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "verified"))
+        or 0
+    )
+
     return ProgressSummaryResponse(
         solved_count=solved_count,
         doing_count=doing_count,
-        total_problems=30,
+        total_problems=total_problems,
         current_streak=streak,
         activity_days=act_map,
         progress=progress_map,

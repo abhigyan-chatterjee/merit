@@ -57,14 +57,14 @@ describe('Route Validation & 404 Handling (D5)', () => {
   });
 
   it('renders NotFound for mismatching problem slug and topic', async () => {
-    // two-sum belongs to 'arrays', not 'graphs'
+    // two-sum belongs to 'arrays-hashing', not 'graphs'
     renderWithRouter('/problems/graphs/two-sum');
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();
   });
 
   it('renders NotFound for unknown problem slug', async () => {
-    renderWithRouter('/problems/arrays/not-a-real-problem');
+    renderWithRouter('/problems/arrays-hashing/not-a-real-problem');
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();
   });
@@ -87,7 +87,7 @@ describe('Route Validation & 404 Handling (D5)', () => {
   });
 
   it('renders real problem when topic and slug match', async () => {
-    renderWithRouter('/problems/arrays/two-sum');
+    renderWithRouter('/problems/arrays-hashing/two-sum');
     await waitFor(() => {
       expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
     });

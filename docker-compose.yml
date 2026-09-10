@@ -25,7 +25,7 @@ services:
     environment:
       - ENVIRONMENT=production
       - DATABASE_URL=sqlite:////data/algovista.db
-      - SECRET_KEY=change_this_to_a_secure_random_key_in_production_32chars!
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
       - PISTON_URL=http://piston:2000
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
     volumes:

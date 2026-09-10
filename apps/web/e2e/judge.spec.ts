@@ -19,7 +19,7 @@ test.describe('Judge Sandboxed Execution and Submission', () => {
     await page.waitForURL('**/dashboard');
 
     // Go to Two Sum
-    await page.goto('/problems/arrays/two-sum');
+    await page.goto('/problems/arrays-hashing/two-sum');
     await expect(page.getByRole('heading', { name: 'Two Sum' })).toBeVisible();
 
     // The starter code for two-sum in content is already correct!

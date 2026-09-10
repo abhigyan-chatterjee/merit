@@ -1,19 +1,24 @@
-from collections.abc import Generator
+import os
 
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.pool import StaticPool
+# Set a test-only SECRET_KEY before any app modules or settings are imported.
+os.environ["SECRET_KEY"] = "test_only_jwt_secret_key_algovista_testing_minimum_32_chars"
 
-from app.db import Base, get_db
-from app.main import app as fastapi_app
-from app.seed import _resolve_content_dir as _content_dir
-import app.models.content  # noqa: F401 (register all tables on Base.metadata)
-import app.models.progress  # noqa: F401
-import app.models.quiz  # noqa: F401
-import app.models.submission  # noqa: F401
-import app.models.user  # noqa: F401
+from collections.abc import Generator  # noqa: E402
+
+import pytest  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+from sqlalchemy import create_engine  # noqa: E402
+from sqlalchemy.orm import Session, sessionmaker  # noqa: E402
+from sqlalchemy.pool import StaticPool  # noqa: E402
+
+import app.models.content  # noqa: E402, F401 (register all tables on Base.metadata)
+import app.models.progress  # noqa: E402, F401
+import app.models.quiz  # noqa: E402, F401
+import app.models.submission  # noqa: E402, F401
+import app.models.user  # noqa: E402, F401
+from app.db import Base, get_db  # noqa: E402
+from app.main import app as fastapi_app  # noqa: E402
+from app.seed import _resolve_content_dir as _content_dir  # noqa: E402
 
 app = fastapi_app
 
@@ -37,7 +42,7 @@ def setup_database():
 
     original_bind = app_db.SessionLocal.kw.get("bind")
     app_db.SessionLocal.configure(bind=test_engine)
-    from app.seed import seed_problems, seed_questions, seed_paths
+    from app.seed import seed_paths, seed_problems, seed_questions
 
     with app_db.SessionLocal() as db:
         seed_problems(db, _content_dir("problems"))

@@ -175,7 +175,7 @@ describe('Exams catalog', () => {
         return (el.textContent ?? '').replace(/\s+/g, ' ').includes('Exam DP question?');
       })
     ).toBeInTheDocument();
-    expect(genSpy).toHaveBeenCalledWith(['dynamic-programming'], 10, undefined, true, 1200);
+    expect(genSpy).toHaveBeenCalledWith(['dynamic-programming'], 10, undefined, true, 1200, undefined);
   });
 
   it('shows the empty-bank state to guests without hitting the server', async () => {

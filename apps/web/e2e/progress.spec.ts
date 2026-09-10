@@ -19,7 +19,7 @@ test.describe('Progress Sync and Guest Import', () => {
     await page.waitForURL('**/dashboard');
 
     // Visit two-sum problem detail page
-    await page.goto('/problems/arrays/two-sum');
+    await page.goto('/problems/arrays-hashing/two-sum');
     await expect(page.getByRole('heading', { name: 'Two Sum' })).toBeVisible();
 
     // Toggle status to "Done"
