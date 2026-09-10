@@ -194,6 +194,8 @@ def import_scraped(limit: int | None = None, topic: str | None = None) -> dict:
         if entry.get("difficulty") not in KNOWN_DIFFICULTIES:
             stats["skipped_unknown"] += 1
             continue
+        if entry.get("algo_topic") is None:
+            continue
         if topic and entry.get("algo_topic") != topic:
             stats["skipped_topic"] += 1
             continue

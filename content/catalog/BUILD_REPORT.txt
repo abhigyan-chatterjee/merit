@@ -6,9 +6,36 @@ Merged dup groups (exact-title missed): 421
 Supplement-only titles folded in: 219
 
 DIFFICULTY: Medium=1803, Easy=815, Hard=774, Unknown=605
-ALGO TOPICS: arrays-hashing=1241, sliding-windows=730, dynamic-programming=612, graphs=332, trees=290, data-structures=222, math-matrices=143, linked-lists=132, stack=91, bit-manipulation=68, greedy=35, backtracking=32, sorting=27, binary-search=26, heap=9, trie=6, two-pointers=1
+ALGO TOPICS: arrays-hashing=811, dynamic-programming=466, binary-search=246, bit-manipulation=245, trees=238, two-pointers=237, stack=222, greedy=220, data-structures=200, sliding-windows=186, uncategorized=185, graphs=165, heap=162, math-matrices=125, backtracking=105, linked-lists=98, trie=46, sorting=39, intervals=1
 Already in content/problems: 41
 New candidates: 3956
+Uncategorized entries (no mapped raw topic): 185
+Intervals heuristic matches: 44
+
+TOPIC DISTRIBUTION (Primary algo_topic vs Multi-label algo_topics):
+  Category               | Primary (algo_topic) | Multi-label (algo_topics)
+  -----------------------+----------------------+--------------------------
+  arrays-hashing         |                  811 |                      2350
+  two-pointers           |                  237 |                       237
+  sliding-windows        |                  186 |                       953
+  stack                  |                  222 |                       239
+  linked-lists           |                   98 |                       132
+  binary-search          |                  246 |                       319
+  trees                  |                  238 |                       301
+  heap                   |                  162 |                       215
+  backtracking           |                  105 |                       301
+  graphs                 |                  165 |                       543
+  dynamic-programming    |                  466 |                       706
+  greedy                 |                  220 |                       453
+  trie                   |                   46 |                        59
+  intervals              |                    1 |                        44
+  math-matrices          |                  125 |                       899
+  bit-manipulation       |                  245 |                       299
+  sorting                |                   39 |                       623
+  data-structures        |                  200 |                       584
+  uncategorized          |                  185 |                         0
+  -----------------------+----------------------+--------------------------
+  TOTAL                  |                 3997 |                      9257
 
 TOP 25 COMPANIES (individual, cleaned):
    2339  Google
@@ -38,23 +65,240 @@ TOP 25 COMPANIES (individual, cleaned):
      96  Snowflake
 
 TOP 20 CANDIDATES (by company count, not yet in Algovista):
-   74 cos | dynamic-programming | Medium  | Longest Palindromic Substring [longest-palindromic-substring]
-   73 cos | dynamic-programming | Hard    | Trapping Rain Water [trapping-rain-water]
-   49 cos | linked-lists | Hard    | Merge K Sorted Lists [merge-k-sorted-lists]
-   44 cos | arrays-hashing | Hard    | Median of Two Sorted Arrays [median-of-two-sorted-arrays]
-   43 cos | data-structures | Hard    | Find Median from Data Stream [find-median-from-data-stream]
-   43 cos | arrays-hashing | Medium  | Koko Eating Bananas [koko-eating-bananas]
-   41 cos | arrays-hashing | Medium  | Kth Largest Element in an Array [kth-largest-element-in-an-array]
-   41 cos | arrays-hashing | Medium  | Meeting Rooms II [meeting-rooms-ii]
-   39 cos | arrays-hashing | Easy    | Move Zeroes [move-zeroes]
-   38 cos | graphs      | Hard    | Word Ladder [word-ladder]
-   37 cos | arrays-hashing | Medium  | Insert Delete GetRandom O(1) [insert-delete-getrandom-o-1]
-   37 cos | sliding-windows | Medium  | Letter Combinations of a Phone Number [letter-combinations-of-a-phone-number]
-   37 cos | stack       | Medium  | Min Stack [min-stack]
-   37 cos | arrays-hashing | Medium  | Sort Colors [sort-colors]
-   37 cos | sliding-windows | Medium  | String Compression [string-compression]
-   37 cos | graphs      | Medium  | Word Search [word-search]
+   74 cos | two-pointers        | Medium  | Longest Palindromic Substring [longest-palindromic-substring]
+   73 cos | two-pointers        | Hard    | Trapping Rain Water [trapping-rain-water]
+   49 cos | linked-lists        | Hard    | Merge K Sorted Lists [merge-k-sorted-lists]
+   44 cos | binary-search       | Hard    | Median of Two Sorted Arrays [median-of-two-sorted-arrays]
+   43 cos | two-pointers        | Hard    | Find Median from Data Stream [find-median-from-data-stream]
+   43 cos | binary-search       | Medium  | Koko Eating Bananas [koko-eating-bananas]
+   41 cos | heap                | Medium  | Kth Largest Element in an Array [kth-largest-element-in-an-array]
+   41 cos | two-pointers        | Medium  | Meeting Rooms II [meeting-rooms-ii]
+   39 cos | two-pointers        | Easy    | Move Zeroes [move-zeroes]
+   38 cos | graphs              | Hard    | Word Ladder [word-ladder]
+   37 cos | arrays-hashing      | Medium  | Insert Delete GetRandom O(1) [insert-delete-getrandom-o-1]
+   37 cos | backtracking        | Medium  | Letter Combinations of a Phone Number [letter-combinations-of-a-phone-number]
+   37 cos | stack               | Medium  | Min Stack [min-stack]
+   37 cos | two-pointers        | Medium  | Sort Colors [sort-colors]
+   37 cos | two-pointers        | Medium  | String Compression [string-compression]
+   37 cos | backtracking        | Medium  | Word Search [word-search]
    36 cos | dynamic-programming | Hard    | Minimum Window Substring [minimum-window-substring]
-   35 cos | stack       | Medium  | Asteroid Collision [asteroid-collision]
-   35 cos | dynamic-programming | Medium  | Generate Parentheses [generate-parentheses]
-   35 cos | sliding-windows | Hard    | Text Justification [text-justification]
+   35 cos | stack               | Medium  | Asteroid Collision [asteroid-collision]
+   35 cos | stack               | Medium  | Generate Parentheses [generate-parentheses]
+   35 cos | arrays-hashing      | Hard    | Text Justification [text-justification]
+
+TOP 30 CANDIDATES — INDIA-WEIGHTED (not yet in Algovista):
+   27 cos | two-pointers        | Hard    | Trapping Rain Water [trapping-rain-water]
+   25 cos | two-pointers        | Medium  | Longest Palindromic Substring [longest-palindromic-substring]
+   22 cos | binary-search       | Hard    | Median of Two Sorted Arrays [median-of-two-sorted-arrays]
+   22 cos | stack               | Medium  | Asteroid Collision [asteroid-collision]
+   20 cos | heap                | Medium  | Kth Largest Element in an Array [kth-largest-element-in-an-array]
+   18 cos | binary-search       | Medium  | Koko Eating Bananas [koko-eating-bananas]
+   18 cos | two-pointers        | Easy    | Move Zeroes [move-zeroes]
+   18 cos | arrays-hashing      | Hard    | First Missing Positive [first-missing-positive]
+   17 cos | two-pointers        | Medium  | Sort Colors [sort-colors]
+   17 cos | stack               | Medium  | Generate Parentheses [generate-parentheses]
+   16 cos | dynamic-programming | Hard    | Minimum Window Substring [minimum-window-substring]
+   16 cos | two-pointers        | Easy    | Merge Sorted Array [merge-sorted-array]
+   16 cos | dynamic-programming | Medium  | Jump Game [jump-game]
+   16 cos | two-pointers        | Medium  | Next Permutation [next-permutation]
+   16 cos | sliding-windows     | Easy    | Palindrome Number [palindrome-number]
+   16 cos | greedy              | Medium  | Gas Station [gas-station]
+   16 cos | sorting             | Easy    | Majority Element [majority-element]
+   16 cos | two-pointers        | Easy    | Remove Duplicates from Sorted Array [remove-duplicates-from-sorted-array]
+   15 cos | backtracking        | Medium  | Letter Combinations of a Phone Number [letter-combinations-of-a-phone-number]
+   15 cos | stack               | Medium  | Daily Temperatures [daily-temperatures]
+   15 cos | greedy              | Hard    | Candy [candy]
+   14 cos | two-pointers        | Hard    | Find Median from Data Stream [find-median-from-data-stream]
+   14 cos | stack               | Medium  | Min Stack [min-stack]
+   14 cos | arrays-hashing      | Medium  | Rotate Image [rotate-image]
+   14 cos | stack               | Hard    | Largest Rectangle in Histogram [largest-rectangle-in-histogram]
+   14 cos | two-pointers        | Medium  | Rotate Array [rotate-array]
+   14 cos | stack               | Easy    | First Unique Character in a String [first-unique-character-in-a-string]
+   14 cos | dynamic-programming | Medium  | Maximum Product Subarray [maximum-product-subarray]
+   13 cos | linked-lists        | Hard    | Merge K Sorted Lists [merge-k-sorted-lists]
+   13 cos | backtracking        | Medium  | Word Search [word-search]
+
+STARVED CATEGORY QUEUE (Hard unbuilt candidates, India-weighted):
+  [arrays-hashing]:
+     18 cos | First Missing Positive [first-missing-positive]
+      8 cos | Bus Routes [bus-routes]
+      8 cos | Subarrays with K Different Integers [subarrays-with-k-different-integers]
+      7 cos | Max Points on a Line [max-points-on-a-line]
+      6 cos | Text Justification [text-justification]
+      5 cos | Shortest Path in a Grid with Obstacles Elimination [shortest-path-in-a-grid-with-obstacles-elimination]
+      4 cos | Shortest Distance from All Buildings [shortest-distance-from-all-buildings]
+      4 cos | Insert Delete GetRandom O(1) - Duplicates allowed [insert-delete-getrandom-o-1-duplicates-allowed]
+      4 cos | Substring with Concatenation of All Words [substring-with-concatenation-of-all-words]
+      4 cos | Count the Number of Infection Sequences [count-the-number-of-infection-sequences]
+  [two-pointers]:
+     27 cos | Trapping Rain Water [trapping-rain-water]
+     14 cos | Find Median from Data Stream [find-median-from-data-stream]
+      6 cos | Create Maximum Number [create-maximum-number]
+      5 cos | Partition Array Into Two Arrays to Minimize Sum Difference [partition-array-into-two-arrays-to-minimize-sum-difference]
+      4 cos | Last Substring in Lexicographical Order [last-substring-in-lexicographical-order]
+      4 cos | Find K-th Smallest Pair Distance [find-k-th-smallest-pair-distance]
+      4 cos | Minimum Number of Moves to Make Palindrome [minimum-number-of-moves-to-make-palindrome]
+      3 cos | Maximum Number of Non-overlapping Palindrome Substrings [maximum-number-of-non-overlapping-palindrome-substrings]
+      3 cos | Maximum Number of Points From Grid Queries [maximum-number-of-points-from-grid-queries]
+      3 cos | Maximum Number of Tasks You Can Assign [maximum-number-of-tasks-you-can-assign]
+  [sliding-windows]:
+      5 cos | Shortest Palindrome [shortest-palindrome]
+      5 cos | Find the Closest Palindrome [find-the-closest-palindrome]
+      3 cos | Valid Number [valid-number]
+      3 cos | Longest Duplicate Substring [longest-duplicate-substring]
+      3 cos | Longest Happy Prefix [longest-happy-prefix]
+      3 cos | Lexicographically Smallest Generated String [lexicographically-smallest-generated-string]
+      3 cos | Process String with Special Operations II [process-string-with-special-operations-ii]
+      2 cos | Split Message Based on Limit [split-message-based-on-limit]
+      2 cos | Stream of Characters [stream-of-characters]
+      1 cos | Count Prefix and Suffix Pairs II [count-prefix-and-suffix-pairs-ii]
+  [stack]:
+     14 cos | Largest Rectangle in Histogram [largest-rectangle-in-histogram]
+     13 cos | Longest Valid Parentheses [longest-valid-parentheses]
+     10 cos | Maximal Rectangle [maximal-rectangle]
+      9 cos | Basic Calculator [basic-calculator]
+      8 cos | Count Subarrays With Fixed Bounds [count-subarrays-with-fixed-bounds]
+      7 cos | Number of Visible People in a Queue [number-of-visible-people-in-a-queue]
+      7 cos | Minimum Number of Increments on Subarrays to Form a Target Array [minimum-number-of-increments-on-subarrays-to-form-a-target-array]
+      6 cos | Sliding Window Maximum [sliding-window-maximum]
+      6 cos | Maximum Frequency Stack [maximum-frequency-stack]
+      5 cos | Shortest Subarray with Sum at Least K [shortest-subarray-with-sum-at-least-k]
+  [linked-lists]:
+     13 cos | Merge K Sorted Lists [merge-k-sorted-lists]
+     11 cos | Reverse Nodes in k-Group [reverse-nodes-in-k-group]
+      9 cos | LFU Cache [lfu-cache]
+      4 cos | All O`one Data Structure [all-o-one-data-structure]
+      3 cos | Design Skiplist [design-skiplist]
+      3 cos | Minimum Pair Removal to Sort Array II [minimum-pair-removal-to-sort-array-ii]
+  [binary-search]:
+     22 cos | Median of Two Sorted Arrays [median-of-two-sorted-arrays]
+     12 cos | Split Array Largest Sum [split-array-largest-sum]
+     10 cos | Maximum Profit in Job Scheduling [maximum-profit-in-job-scheduling]
+      8 cos | Russian Doll Envelopes [russian-doll-envelopes]
+      6 cos | Minimum Number of Operations to Make Array Continuous [minimum-number-of-operations-to-make-array-continuous]
+      5 cos | Swim in Rising Water [swim-in-rising-water]
+      4 cos | Block Placement Queries [block-placement-queries]
+      4 cos | Reverse Pairs [reverse-pairs]
+      4 cos | Number of Flowers in Full Bloom [number-of-flowers-in-full-bloom]
+      4 cos | Count of Smaller Numbers After Self [count-of-smaller-numbers-after-self]
+  [trees]:
+     11 cos | Binary Tree Maximum Path Sum [binary-tree-maximum-path-sum]
+      8 cos | Serialize and Deserialize Binary Tree [serialize-and-deserialize-binary-tree]
+      8 cos | Binary Tree Cameras [binary-tree-cameras]
+      8 cos | Vertical Order Traversal of a Binary Tree [vertical-order-traversal-of-a-binary-tree]
+      7 cos | Collect Coins in a Tree [collect-coins-in-a-tree]
+      5 cos | Sum of Distances in Tree [sum-of-distances-in-tree]
+      4 cos | Serialize and Deserialize N-ary Tree [serialize-and-deserialize-n-ary-tree]
+      4 cos | Maximum Number of K-Divisible Components [maximum-number-of-k-divisible-components]
+      3 cos | Recover a Tree From Preorder Traversal [recover-a-tree-from-preorder-traversal]
+      3 cos | Longest Path With Different Adjacent Characters [longest-path-with-different-adjacent-characters]
+  [heap]:
+      9 cos | Reconstruct Itinerary [reconstruct-itinerary]
+      8 cos | Meeting Rooms III [meeting-rooms-iii]
+      7 cos | Trapping Rain Water II [trapping-rain-water-ii]
+      6 cos | The Skyline Problem [the-skyline-problem]
+      6 cos | Smallest Range Covering Elements from K Lists [smallest-range-covering-elements-from-k-lists]
+      6 cos | Minimum Number of Refueling Stops [minimum-number-of-refueling-stops]
+      5 cos | Put Marbles in Bags [put-marbles-in-bags]
+      5 cos | Minimum Difference in Sums After Removal of Elements [minimum-difference-in-sums-after-removal-of-elements]
+      4 cos | Design Search Autocomplete System [design-search-autocomplete-system]
+      4 cos | IPO [ipo]
+  [backtracking]:
+     11 cos | N-Queens [n-queens]
+     10 cos | Regular Expression Matching [regular-expression-matching]
+      9 cos | Integer to English Words [integer-to-english-words]
+      8 cos | Wildcard Matching [wildcard-matching]
+      7 cos | Sudoku Solver [sudoku-solver]
+      5 cos | Split Array With Same Average [split-array-with-same-average]
+      4 cos | N-Queens II [n-queens-ii]
+      4 cos | Remove Invalid Parentheses [remove-invalid-parentheses]
+      4 cos | Consecutive Numbers Sum [consecutive-numbers-sum]
+      4 cos | Number of Digit One [number-of-digit-one]
+  [graphs]:
+     12 cos | Word Ladder [word-ladder]
+      8 cos | Longest Increasing Path in a Matrix [longest-increasing-path-in-a-matrix]
+      6 cos | Longest Cycle in a Graph [longest-cycle-in-a-graph]
+      5 cos | Making A Large Island [making-a-large-island]
+      5 cos | Word Ladder II [word-ladder-ii]
+      5 cos | Critical Connections in a Network [critical-connections-in-a-network]
+      5 cos | Minimize Malware Spread [minimize-malware-spread]
+      5 cos | Sliding Puzzle [sliding-puzzle]
+      5 cos | Divide Nodes Into the Maximum Number of Groups [divide-nodes-into-the-maximum-number-of-groups]
+      4 cos | Alien Dictionary [alien-dictionary]
+  [dynamic-programming]:
+     16 cos | Minimum Window Substring [minimum-window-substring]
+     10 cos | Burst Balloons [burst-balloons]
+      9 cos | Minimum Number of Taps to Open to Water a Garden [minimum-number-of-taps-to-open-to-water-a-garden]
+      8 cos | Minimum Edge Reversals So Every Node Is Reachable [minimum-edge-reversals-so-every-node-is-reachable]
+      7 cos | Frog Jump [frog-jump]
+      7 cos | Cherry Pickup [cherry-pickup]
+      7 cos | Distinct Subsequences [distinct-subsequences]
+      7 cos | Dungeon Game [dungeon-game]
+      7 cos | Minimum Insertion Steps to Make a String Palindrome [minimum-insertion-steps-to-make-a-string-palindrome]
+      6 cos | Count Palindromic Subsequences [count-palindromic-subsequences]
+  [greedy]:
+     15 cos | Candy [candy]
+      4 cos | Rearranging Fruits [rearranging-fruits]
+      4 cos | Minimum Initial Energy to Finish Tasks [minimum-initial-energy-to-finish-tasks]
+      3 cos | Set Intersection Size At Least Two [set-intersection-size-at-least-two]
+      3 cos | Minimum Adjacent Swaps for K Consecutive Ones [minimum-adjacent-swaps-for-k-consecutive-ones]
+      3 cos | Patching Array [patching-array]
+      2 cos | Minimum Replacements to Sort the Array [minimum-replacements-to-sort-the-array]
+      2 cos | Lexicographically Smallest Beautiful String [lexicographically-smallest-beautiful-string]
+      2 cos | Minimum Number of Operations to Make Arrays Similar [minimum-number-of-operations-to-make-arrays-similar]
+      2 cos | Minimum Total Cost to Make Arrays Unequal [minimum-total-cost-to-make-arrays-unequal]
+  [trie]:
+      5 cos | Word Search II [word-search-ii]
+      5 cos | Word Break II [word-break-ii]
+      5 cos | Design In-Memory File System [design-in-memory-file-system]
+      4 cos | Palindrome Pairs [palindrome-pairs]
+      4 cos | K-th Smallest in Lexicographical Order [k-th-smallest-in-lexicographical-order]
+      4 cos | Delete Duplicate Folders in System [delete-duplicate-folders-in-system]
+      3 cos | Minimum Cost to Convert String II [minimum-cost-to-convert-string-ii]
+      2 cos | Word Abbreviation [word-abbreviation]
+      2 cos | Encrypt and Decrypt Strings [encrypt-and-decrypt-strings]
+      2 cos | Longest Common Suffix Queries [longest-common-suffix-queries]
+  [intervals]:
+    (none)
+  [math-matrices]:
+      4 cos | Reaching Points [reaching-points]
+      3 cos | Count the Number of Arrays with K Matching Adjacent Elements [count-the-number-of-arrays-with-k-matching-adjacent-elements]
+      2 cos | Fancy Sequence [fancy-sequence]
+      2 cos | Manhattan Distances of All Arrangements of Pieces [manhattan-distances-of-all-arrangements-of-pieces]
+      1 cos | Distribute Candies Among Children III [distribute-candies-among-children-iii]
+      1 cos | Check if Point Is Reachable [check-if-point-is-reachable]
+      0 cos | Abbreviating the Product of a Range [abbreviating-the-product-of-a-range]
+      0 cos | Find Median Given Frequency of Numbers [find-median-given-frequency-of-numbers]
+      0 cos | Minimum Moves to Reach Target in Grid [minimum-moves-to-reach-target-in-grid]
+      0 cos | Remove 9 [remove-9]
+  [bit-manipulation]:
+      6 cos | Optimal Account Balancing [optimal-account-balancing]
+      5 cos | Shortest Path to Get All Keys [shortest-path-to-get-all-keys]
+      4 cos | Count Paths That Can Form a Palindrome in a Tree [count-paths-that-can-form-a-palindrome-in-a-tree]
+      4 cos | Trips and Users [trips-and-users]
+      3 cos | Find Minimum Time to Finish All Jobs [find-minimum-time-to-finish-all-jobs]
+      3 cos | Minimum Score After Removals on a Tree [minimum-score-after-removals-on-a-tree]
+      3 cos | Shortest Path Visiting All Nodes [shortest-path-visiting-all-nodes]
+      2 cos | Minimum One Bit Operations to Make Integers Zero [minimum-one-bit-operations-to-make-integers-zero]
+      2 cos | Find the K-th Character in String Game II [find-the-k-th-character-in-string-game-ii]
+      2 cos | Maximum Good People Based on Statements [maximum-good-people-based-on-statements]
+  [sorting]:
+      6 cos | Special Binary String [special-binary-string]
+      2 cos | Range Module [range-module]
+      2 cos | Count Integers in Intervals [count-integers-in-intervals]
+      2 cos | Count Subarrays With Majority Element II [count-subarrays-with-majority-element-ii]
+      2 cos | Longest Balanced Subarray II [longest-balanced-subarray-ii]
+      2 cos | XOR After Range Multiplication Queries II [xor-after-range-multiplication-queries-ii]
+      1 cos | Minimum Cost to Partition a Binary String [minimum-cost-to-partition-a-binary-string]
+      0 cos | Number of Ships in a Rectangle [number-of-ships-in-a-rectangle]
+  [data-structures]:
+      5 cos | Department Top Three Salaries [department-top-three-salaries]
+      3 cos | Human Traffic of Stadium [human-traffic-of-stadium]
+      2 cos | Median Employee Salary [median-employee-salary]
+      2 cos | Viewers Turned Streamers [viewers-turned-streamers]
+      1 cos | Market Analysis II [market-analysis-ii]
+      1 cos | Report Contiguous Dates [report-contiguous-dates]
+      1 cos | Analyze Organization Hierarchy [analyze-organization-hierarchy]
+      1 cos | Customers With Strictly Increasing Purchases [customers-with-strictly-increasing-purchases]
+      1 cos | Find Cumulative Salary of an Employee [find-cumulative-salary-of-an-employee]
+      1 cos | Find the Subtasks That Did Not Execute [find-the-subtasks-that-did-not-execute]

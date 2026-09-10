@@ -51,7 +51,7 @@ SUPPLEMENT_CSV = SCRAPE_DIR / "dsa_questions_final.csv"
 CATALOG_DIR = REPO_ROOT / "content" / "catalog"
 
 from content.taxonomy import (
-    CATEGORY_SLUGS as ALGOVISTA_TOPICS,  # noqa: F401 (re-export)
+    CATEGORY_SLUGS as ALGOVISTA_TOPICS,
 )
 
 COMPANY_BLOCKLIST = {"multiple companies", "unknown", ""}
@@ -249,19 +249,194 @@ RAW_TOPIC_MAP: dict[str, str] = {
     "Interactive": "data-structures",
 }
 
-_PRIORITY = {
-    "linked-lists": 0, "trees": 1, "graphs": 2, "dynamic-programming": 3,
-    "sliding-windows": 4, "stack": 5, "trie": 6,
+CATEGORY_ORDER: dict[str, int] = {slug: i for i, slug in enumerate(ALGOVISTA_TOPICS)}
+
+TIER_2_LABELS: set[str] = {
+    "Trees",
+    "DP on Trees",
+    "Lowest Common Ancestor",
+    "Cartesian Tree",
+    "Binary Lifting",
+    "Inorder Traversal",
+    "Splay Tree",
+    "Treap",
+    "K-D Tree",
+    "Dynamic Programming",
+    "Recursion & Backtracking",
+    "Backtracking",
+    "Greedy",
+    "Divide & Conquer",
+    "Recursion",
 }
 
+TIER_3_LABELS: set[str] = {
+    "DFS",
+    "BFS",
+    "Graphs",
+    "Graphs (DFS)",
+    "Graphs (BFS)",
+    "Graph Theory",
+    "Sliding Window",
+    "Strings",
+    "String",
+    "Arrays",
+    "Array",
+    "Hashing",
+    "Math",
+    "Matrix",
+    "Prefix Sum",
+    "Counting",
+    "Sets",
+    "Sorting",
+    "Quicksort",
+    "Bubble Sort",
+    "Merge Sort",
+    "Timsort",
+    "Tournament Sort",
+    "Ordered Sets",
+    "Simulation",
+    "Design",
+    "Database",
+    "SQL",
+    "Pandas",
+    "JavaScript",
+    "Interactive",
+    "Concurrency",
+    "Enumeration",
+    "Dsa",
+    "Coding",
+    "General DSA",
+    "Combinatorics",
+    "Geometry",
+    "Linear Algebra",
+    "Probability",
+    "Probability and Statistics",
+    "Brute-Force Search",
+}
 
-def map_topic(raw_topics: list[str]) -> tuple[str, dict[str, str]]:
-    """Map raw topics to one category by priority; unmapped -> arrays-hashing."""
-    mapped = {RAW_TOPIC_MAP[t]: t for t in raw_topics if t in RAW_TOPIC_MAP}
-    if not mapped:
-        return "arrays-hashing", {}
-    best = min(mapped, key=lambda k: _PRIORITY.get(k, 99))
-    return best, {k: v for k, v in mapped.items() if k != best}
+INTERVAL_PATTERNS: tuple[str, ...] = (
+    "interval",
+    "meeting rooms",
+    "my calendar",
+    "non-overlapping",
+    "car pool",
+    "video stitching",
+    "minimum number of arrows",
+    "remove covered",
+    "erase overlap",
+    "insert interval",
+    "merge intervals",
+    "data stream as disjoint",
+)
+
+INDIA_HIRING_COMPANIES: set[str] = {
+    "TCS",
+    "Infosys",
+    "Wipro",
+    "Cognizant",
+    "Capgemini",
+    "Accenture",
+    "HCL",
+    "Tech Mahindra",
+    "Zoho",
+    "Flipkart",
+    "Paytm",
+    "Swiggy",
+    "Zomato",
+    "Ola",
+    "PhonePe",
+    "Razorpay",
+    "Freshworks",
+    "Myntra",
+    "MakeMyTrip",
+    "Nagarro",
+    "Deloitte",
+    "JPMorgan",
+    "Morgan Stanley",
+    "Goldman Sachs",
+    "DE Shaw",
+    "Juspay",
+    "Media.net",
+    "Dream11",
+    "Gameskraft",
+    "CRED",
+    "Groww",
+    "Meesho",
+    "Uber",
+    "Amazon",
+    "Microsoft",
+    "Google",
+    "Adobe",
+    "Salesforce",
+    "Oracle",
+    "IBM",
+    "Walmart Labs",
+    "Nvidia",
+    "VMware",
+    "SAP",
+    "Arcesium",
+    "Darwinbox",
+    "Trilogy",
+    "Sprinklr",
+    "Zeta",
+}
+
+_INDIA_HIRING_LOWER: set[str] = {c.lower() for c in INDIA_HIRING_COMPANIES}
+
+
+def matches_intervals(title: str) -> bool:
+    """Case-insensitive pattern matching for interval-themed problems."""
+    t = (title or "").lower()
+    return any(p in t for p in INTERVAL_PATTERNS)
+
+
+def get_tier(label: str) -> int:
+    """Return specificity tier: 1 (concrete structure/named algo), 2 (structural), 3 (generic)."""
+    if label in TIER_3_LABELS:
+        return 3
+    if label in TIER_2_LABELS:
+        return 2
+    return 1
+
+
+def map_topic(raw_topics: list[str], title: str = "") -> tuple[str | None, list[str]]:
+    """Map raw topics to primary canonical category and multi-label list.
+
+    Primary category is determined by specificity tier (Tier 1 > Tier 2 > Tier 3),
+    tie-broken deterministically by (tier, canonical category order, label text).
+    If no raw topics map, returns None and empty list (or intervals if title matches).
+    """
+    mapped_topics = [t for t in raw_topics if t in RAW_TOPIC_MAP]
+    matched_cats = {RAW_TOPIC_MAP[t] for t in mapped_topics}
+
+    is_interval = matches_intervals(title) if title else False
+    if is_interval:
+        matched_cats.add("intervals")
+
+    if not matched_cats:
+        return None, []
+
+    if mapped_topics:
+        best_t = min(
+            mapped_topics,
+            key=lambda t: (get_tier(t), CATEGORY_ORDER[RAW_TOPIC_MAP[t]], t),
+        )
+        primary = RAW_TOPIC_MAP[best_t]
+    elif is_interval:
+        primary = "intervals"
+    else:
+        primary = None
+
+    return primary, sorted(matched_cats)
+
+
+def india_company_count(entry: dict) -> int:
+    """Number of entry companies intersecting INDIA_HIRING_COMPANIES."""
+    return sum(
+        1
+        for c in entry.get("companies", [])
+        if c in INDIA_HIRING_COMPANIES or c.lower() in _INDIA_HIRING_LOWER
+    )
 
 
 def read_csv(path: Path) -> list[dict]:
@@ -330,12 +505,13 @@ def build() -> dict:
             slug = f"{base_slug}-{i}"
             i += 1
         slug_seen.add(slug)
-        algo_topic, _ = map_topic(entry["topics_raw"])
+        algo_topic, algo_topics = map_topic(entry["topics_raw"], entry["title"])
         entry["slug"] = slug
         entry["algo_topic"] = algo_topic
+        entry["algo_topics"] = algo_topics
         entry["pattern"] = next(
             (t for t in entry["topics_raw"] if t not in ("Arrays", "Dsa", "Coding")),
-            (entry["topics_raw"][0] if entry["topics_raw"] else algo_topic),
+            (entry["topics_raw"][0] if entry["topics_raw"] else (algo_topic or "")),
         )
         entry["already_in_algovista"] = slug in existing_slugs
         entry["merged_rows"] = len(rows)
@@ -344,8 +520,11 @@ def build() -> dict:
     catalog.sort(key=lambda e: (-e["company_count"], e["title"].lower()))
 
     company_freq = Counter(c for e in catalog for c in e["companies"])
-    topic_freq = Counter(e["algo_topic"] for e in catalog)
+    topic_freq = Counter(e["algo_topic"] or "uncategorized" for e in catalog)
+    multi_topic_freq = Counter(t for e in catalog for t in e["algo_topics"])
     diff_freq = Counter(e["difficulty"] for e in catalog)
+
+    intervals_matched = [e for e in catalog if matches_intervals(e["title"])]
 
     with open(CATALOG_DIR / "catalog.json", "w", encoding="utf-8") as f:
         json.dump(catalog, f, indent=1, ensure_ascii=False)
@@ -371,6 +550,23 @@ def build() -> dict:
         "ALGO TOPICS: " + ", ".join(f"{k}={v}" for k, v in topic_freq.most_common()),
         f"Already in content/problems: {sum(1 for e in catalog if e['already_in_algovista'])}",
         f"New candidates: {sum(1 for e in catalog if not e['already_in_algovista'])}",
+        f"Uncategorized entries (no mapped raw topic): {topic_freq.get('uncategorized', 0)}",
+        f"Intervals heuristic matches: {len(intervals_matched)}",
+        "",
+        "TOPIC DISTRIBUTION (Primary algo_topic vs Multi-label algo_topics):",
+        f"  {'Category':22s} | {'Primary (algo_topic)':20s} | {'Multi-label (algo_topics)':25s}",
+        f"  {'-' * 22}-+-{'-' * 20}-+-{'-' * 25}",
+    ]
+    for cat_slug in ALGOVISTA_TOPICS:
+        p_count = topic_freq.get(cat_slug, 0)
+        m_count = multi_topic_freq.get(cat_slug, 0)
+        report.append(f"  {cat_slug:22s} | {p_count:20d} | {m_count:25d}")
+    uncat_count = topic_freq.get("uncategorized", 0)
+    report.append(f"  {'uncategorized':22s} | {uncat_count:20d} | {0:25d}")
+    report.append(f"  {'-' * 22}-+-{'-' * 20}-+-{'-' * 25}")
+    report.append(f"  {'TOTAL':22s} | {len(catalog):20d} | {sum(multi_topic_freq.values()):25d}")
+
+    report += [
         "",
         "TOP 25 COMPANIES (individual, cleaned):",
     ]
@@ -384,12 +580,50 @@ def build() -> dict:
         if e["already_in_algovista"]:
             continue
         report.append(
-            f"  {e['company_count']:3d} cos | {e['algo_topic']:11s} | {e['difficulty']:7s} | "
+            f"  {e['company_count']:3d} cos | {(e['algo_topic'] or 'uncategorized'):19s} | {e['difficulty']:7s} | "
             f"{e['title']} [{e['slug']}]"
         )
         shown += 1
         if shown >= 20:
             break
+
+    report += [
+        "",
+        "TOP 30 CANDIDATES — INDIA-WEIGHTED (not yet in Algovista):",
+    ]
+    unbuilt_india = [e for e in catalog if not e["already_in_algovista"]]
+    unbuilt_india.sort(
+        key=lambda e: (-india_company_count(e), -e["company_count"], e["title"].lower())
+    )
+    for e in unbuilt_india[:30]:
+        in_count = india_company_count(e)
+        report.append(
+            f"  {in_count:3d} cos | {(e['algo_topic'] or 'uncategorized'):19s} | {e['difficulty']:7s} | "
+            f"{e['title']} [{e['slug']}]"
+        )
+
+    report += [
+        "",
+        "STARVED CATEGORY QUEUE (Hard unbuilt candidates, India-weighted):",
+    ]
+    hard_unbuilt = [
+        e for e in catalog if not e["already_in_algovista"] and e["difficulty"] == "Hard"
+    ]
+    for cat_slug in ALGOVISTA_TOPICS:
+        cat_candidates = [e for e in hard_unbuilt if e["algo_topic"] == cat_slug]
+        cat_candidates.sort(
+            key=lambda e: (-india_company_count(e), -e["company_count"], e["title"].lower())
+        )
+        report.append(f"  [{cat_slug}]:")
+        if not cat_candidates:
+            report.append("    (none)")
+        else:
+            for e in cat_candidates[:10]:
+                in_count = india_company_count(e)
+                report.append(
+                    f"    {in_count:3d} cos | {e['title']} [{e['slug']}]"
+                )
+
     report_text = "\n".join(report) + "\n"
     with open(CATALOG_DIR / "BUILD_REPORT.txt", "w", encoding="utf-8") as f:
         f.write(report_text)
