@@ -148,7 +148,7 @@ export const LinearVisualizer: React.FC<LinearVisualizerProps> = ({ id }) => {
                         {bucketLabel}
                       </span>
                       <div
-                        className={`w-16 h-16 rounded-xl border-2 flex flex-col items-center justify-center font-mono transition-all duration-200 ${
+                        className={`w-16 h-16 rounded-xl border-2 flex flex-col items-center justify-center font-mono transition-colors duration-150 ${
                           isActive
                             ? 'border-mint bg-mint/20 text-mint scale-110'
                             : 'border-line bg-surface text-ink'

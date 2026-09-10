@@ -38,6 +38,8 @@ interface QuizEngineProps {
   examTopics?: string[];
   examCount?: number;
   examDifficulty?: string;
+  /** Per-section quotas, e.g. [["aptitude", 30], ["core-cs", 30]]. Sizes hold per topic. */
+  examTopicPlan?: [string, number][];
   /** Quizzes: 20s hard per-question timer. Exams use their own countdown. */
   perQuestionSec?: number | null;
   onComplete?: (scorePercentage: number) => void;
@@ -55,6 +57,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   examTopics,
   examCount,
   examDifficulty,
+  examTopicPlan,
   perQuestionSec = QUIZ_PER_QUESTION_SEC,
   onComplete,
 }) => {
@@ -144,7 +147,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             count,
             examDifficulty,
             isMock,
-            durationLimitSec
+            durationLimitSec,
+            examTopicPlan
           );
         } catch (genErr: unknown) {
           // A definite "no questions for these topics" is authoritative:
@@ -210,7 +214,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       setLoadError('No questions available for this topic yet.');
     }
     setIsLoading(false);
-  }, [user, topicId, isMock, durationLimitSec, examTopics, examCount, examDifficulty, perQuestionSec, questions, refreshUser]);
+  }, [user, topicId, isMock, durationLimitSec, examTopics, examCount, examDifficulty, examTopicPlan, perQuestionSec, questions, refreshUser]);
 
   useEffect(() => {
     loadQuiz();
@@ -480,6 +484,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             {currentQ?.difficulty && (
               <span className="ml-2 font-mono text-[10px] uppercase text-muted/80">
                 • {currentQ.difficulty}
+              </span>
+            )}
+            {currentQ?.topic && (
+              <span className="ml-2 font-mono text-[10px] uppercase text-violet/90">
+                • {currentQ.topic}
               </span>
             )}
             {servedTopics && servedTopics.length > 0 && (

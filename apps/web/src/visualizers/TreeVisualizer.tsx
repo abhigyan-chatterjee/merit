@@ -428,7 +428,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
                 }
 
                 return (
-                  <g key={node.id} className="transition-all duration-200">
+                  <g key={node.id} className="transition-colors duration-150">
                     <circle
                       cx={node.x}
                       cy={node.y}
@@ -456,7 +456,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{currentFrame.log}</span>
           </div>
         </div>
@@ -464,14 +464,35 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
         {/* Pseudo-code panel */}
         <div className="lg:col-span-4">
           <PseudoCodePanel
-            codeLines={
+            title={
               variant === 'heap'
-                ? PSEUDOCODE_MAP.heap || ['procedure HeapOp():', '  // Invariant preserved']
+                ? PSEUDOCODE_MAP.heap.title
                 : variant === 'bst'
-                ? PSEUDOCODE_MAP.bst || ['procedure BST():', '  // BST Invariant: Left < Root <= Right']
-                : PSEUDOCODE_MAP['binary-tree'] || ['procedure Traverse(node):', '  // DFS traversal']
+                ? PSEUDOCODE_MAP.bst.title
+                : PSEUDOCODE_MAP['binary-tree'].title
+            }
+            lines={
+              variant === 'heap'
+                ? PSEUDOCODE_MAP.heap.lines
+                : variant === 'bst'
+                ? PSEUDOCODE_MAP.bst.lines
+                : PSEUDOCODE_MAP['binary-tree'].lines
             }
             activeLine={currentFrame.activeLine}
+            timeComplexity={
+              variant === 'heap'
+                ? PSEUDOCODE_MAP.heap.timeComplexity
+                : variant === 'bst'
+                ? PSEUDOCODE_MAP.bst.timeComplexity
+                : PSEUDOCODE_MAP['binary-tree'].timeComplexity
+            }
+            spaceComplexity={
+              variant === 'heap'
+                ? PSEUDOCODE_MAP.heap.spaceComplexity
+                : variant === 'bst'
+                ? PSEUDOCODE_MAP.bst.spaceComplexity
+                : PSEUDOCODE_MAP['binary-tree'].spaceComplexity
+            }
           />
         </div>
       </div>

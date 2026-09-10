@@ -154,6 +154,32 @@ def test_generate_unknown_topic_returns_404():
     assert resp.json()["detail"]["code"] == "NO_QUESTIONS_FOR_TOPICS"
 
 
+def test_generate_topic_plan_section_sizes():
+    client = TestClient(app)
+    register_and_login(client, "quiz_user_plan@algovista.org", "Quiz User Plan")
+
+    # Placement-mock shape: per-section quotas hold even across uneven pools.
+    resp = client.post(
+        "/api/v1/quizzes/generate",
+        json={
+            "topics": ["aptitude", "core-cs", "arrays-hashing", "dynamic-programming"],
+            "count": 80,
+            "is_mock": True,
+            "topic_plan": [["aptitude", 30], ["core-cs", 20], ["arrays-hashing", 15], ["dynamic-programming", 15]],
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["total"] == 80
+    from collections import Counter
+
+    got = Counter(q["topic"] for q in data["questions"])
+    assert got["aptitude"] == 30
+    assert got["core-cs"] == 20
+    assert got["arrays-hashing"] == 15
+    assert got["dynamic-programming"] == 15
+
+
 def test_quiz_attempt_user_isolation():
     client_a = TestClient(app)
     register_and_login(client_a, "isolation_quiz_a@algovista.org", "User A")

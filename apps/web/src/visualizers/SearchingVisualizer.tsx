@@ -108,6 +108,7 @@ export const SearchingVisualizer: React.FC = () => {
       binaryMid: bMid,
       binaryHigh: bHigh,
       binaryDone: true,
+      binarySteps: bSteps,
       activeLine: 5,
       log: `Completed! Binary search finished in ${bSteps} steps (O(log n)). Linear search took ${linSteps} steps (O(n)).`,
     });
@@ -235,7 +236,7 @@ export const SearchingVisualizer: React.FC = () => {
                           {isCurrent && <span className="text-rose-400">SCAN</span>}
                         </div>
                         <div
-                          className={`w-11 h-11 sm:w-12 sm:h-12 rounded-lg border font-mono font-bold flex items-center justify-center text-xs transition-all ${
+                          className={`w-11 h-11 sm:w-12 sm:h-12 rounded-lg border font-mono font-bold flex items-center justify-center text-xs transition-colors duration-150 ${
                             isFound
                               ? 'bg-mint text-canvas border-mint scale-105'
                               : isCurrent
@@ -278,7 +279,7 @@ export const SearchingVisualizer: React.FC = () => {
                           ) : null}
                         </div>
                         <div
-                          className={`w-11 h-11 sm:w-12 sm:h-12 rounded-lg border font-mono font-bold flex items-center justify-center text-xs transition-all ${
+                          className={`w-11 h-11 sm:w-12 sm:h-12 rounded-lg border font-mono font-bold flex items-center justify-center text-xs transition-colors duration-150 ${
                             isFound
                               ? 'bg-mint text-canvas border-mint scale-105 shadow'
                               : isMid
@@ -301,7 +302,7 @@ export const SearchingVisualizer: React.FC = () => {
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{curr.log}</span>
           </div>
         </div>

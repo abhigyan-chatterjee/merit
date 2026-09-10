@@ -40,6 +40,7 @@ def generate_quiz(
         difficulty=request.difficulty,
         is_mock=request.is_mock,
         duration_limit_sec=request.duration_sec,
+        topic_plan=[tuple(p) for p in request.topic_plan] if request.topic_plan else None,
     )
 
     if not questions:

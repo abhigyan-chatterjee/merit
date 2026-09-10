@@ -107,6 +107,7 @@ export const ExamDetailPage: React.FC = () => {
             examTopics={exam.topics}
             examCount={exam.questionCount}
             examDifficulty={exam.difficulty}
+            examTopicPlan={exam.topicPlan}
             isMock
             perQuestionSec={null}
             durationLimitSec={exam.durationSec}

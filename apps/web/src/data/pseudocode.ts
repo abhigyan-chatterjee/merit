@@ -127,6 +127,42 @@ export const PSEUDOCODE_MAP: Record<string, PseudoCodeBlock> = {
     timeComplexity: 'O(n)',
     spaceComplexity: 'O(h)'
   },
+  'binary-tree': {
+    title: 'Binary Tree Traversal (Recursive)',
+    lines: [
+      'function traverse(node):',
+      '  if node == null: return',
+      '  traverse(node.left)    // Left Subtree',
+      '  visit(node.val)        // Process Node',
+      '  traverse(node.right)   // Right Subtree'
+    ],
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(h)'
+  },
+  bst: {
+    title: 'Binary Search Tree (BST)',
+    lines: [
+      'function insert(root, val):',
+      '  if root == null: return new Node(val)',
+      '  if val < root.val: root.left = insert(root.left, val)',
+      '  else: root.right = insert(root.right, val)  // BST: Left < Root <= Right',
+      '  return root'
+    ],
+    timeComplexity: 'O(log n) avg, O(n) worst',
+    spaceComplexity: 'O(h)'
+  },
+  heap: {
+    title: 'Binary Heap (sift-up / sift-down)',
+    lines: [
+      'function insert(heap, val):',
+      '  heap.append(val); siftUp(heap, last)      // Restore heap invariant',
+      'function extractRoot(heap):',
+      '  swap(heap[0], heap[last]); pop()',
+      '  siftDown(heap, 0)                          // Restore heap invariant'
+    ],
+    timeComplexity: 'O(log n)',
+    spaceComplexity: 'O(1)'
+  },
   linear: {
     title: 'Data Structure Operation',
     lines: [

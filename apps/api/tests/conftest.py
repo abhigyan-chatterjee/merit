@@ -7,7 +7,15 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
-from app.main import app
+from app.main import app as fastapi_app
+from app.seed import _resolve_content_dir as _content_dir
+import app.models.content  # noqa: F401 (register all tables on Base.metadata)
+import app.models.progress  # noqa: F401
+import app.models.quiz  # noqa: F401
+import app.models.submission  # noqa: F401
+import app.models.user  # noqa: F401
+
+app = fastapi_app
 
 # Shared in-memory SQLite engine for tests
 test_engine = create_engine(
@@ -21,7 +29,23 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
     Base.metadata.create_all(bind=test_engine)
+    # Seed once against the TEST engine. Module fixtures call seed_all(db)
+    # with the app's SessionLocal (bound to dev DATABASE_URL), so rebind it
+    # here for the whole test session; per-test transactions still roll back
+    # mutations via the db_session fixture.
+    from app import db as app_db
+
+    original_bind = app_db.SessionLocal.kw.get("bind")
+    app_db.SessionLocal.configure(bind=test_engine)
+    from app.seed import seed_problems, seed_questions, seed_paths
+
+    with app_db.SessionLocal() as db:
+        seed_problems(db, _content_dir("problems"))
+        seed_questions(db, _content_dir("questions"))
+        seed_paths(db, _content_dir("paths"))
+        db.commit()
     yield
+    app_db.SessionLocal.configure(bind=original_bind)
     Base.metadata.drop_all(bind=test_engine)
 
 

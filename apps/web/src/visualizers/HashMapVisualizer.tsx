@@ -347,7 +347,7 @@ export const HashMapVisualizer: React.FC = () => {
                   <div key={bIdx} className="flex items-center gap-3">
                     {/* Bucket Slot */}
                     <div
-                      className={`w-24 px-2 py-2 rounded-xl border font-mono flex items-center justify-between text-xs transition-all duration-200 ${
+                      className={`w-24 px-2 py-2 rounded-xl border font-mono flex items-center justify-between text-xs transition-colors duration-150 ${
                         isBucketActive
                           ? 'bg-amber text-canvas border-amber shadow-lg font-bold'
                           : 'bg-surface border-line text-muted'
@@ -370,7 +370,7 @@ export const HashMapVisualizer: React.FC = () => {
                           return (
                             <React.Fragment key={eIdx}>
                               <div
-                                className={`px-3 py-1.5 rounded-lg border font-mono text-xs flex items-center gap-1.5 transition-all duration-200 ${
+                                className={`px-3 py-1.5 rounded-lg border font-mono text-xs flex items-center gap-1.5 transition-colors duration-150 ${
                                   isEntryActive
                                     ? 'bg-amber text-canvas border-amber scale-105 shadow'
                                     : 'bg-mint/15 border-mint text-ink'
@@ -396,7 +396,7 @@ export const HashMapVisualizer: React.FC = () => {
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{curr.log}</span>
           </div>
         </div>

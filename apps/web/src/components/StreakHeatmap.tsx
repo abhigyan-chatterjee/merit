@@ -77,16 +77,16 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
         </div>
       </div>
 
-      <div className="p-4 overflow-x-auto">
-        <div className="min-w-[560px]">
+      <div className="flex justify-center p-4">
+        <div>
           {/* month axis */}
-          <div className="flex gap-[3px] ml-8 mb-1.5 relative h-3 overflow-hidden">
+          <div className="flex gap-[3px] ml-8 mb-1.5 h-3">
             {weeks.map((_, i) => {
               const mark = monthMarks.find((m) => m.col === i);
               return (
-                <div key={i} className="w-3 shrink-0 relative">
+                <div key={i} className="w-3 shrink-0">
                   {mark && (
-                    <span className="absolute left-0 top-0 text-[9px] font-mono text-muted whitespace-nowrap">
+                    <span className="text-[9px] font-mono text-muted whitespace-nowrap">
                       {mark.label}
                     </span>
                   )}

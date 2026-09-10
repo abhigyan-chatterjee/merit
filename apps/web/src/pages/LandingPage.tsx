@@ -21,71 +21,95 @@ import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
 
 const PATTERN_TAGS = [
-  'Two Pointers', 'Sliding Window', "Kadane's Algorithm", 'Prefix Sums', 'Fast & Slow Pointers',
-  'Binary Search', 'Lomuto Partition', 'Merge Intervals', 'Monotonic Stack', 'Topological Sort',
-  'Union-Find', 'Flood Fill', 'Memoization', 'Tabulation', 'Sift-Down Heapify', 'Backtracking'
+  'Arrays & Hashing', 'Two Pointers', 'Sliding Windows', 'Stack', 'Linked Lists',
+  'Binary Search', 'Trees', 'Heap', 'Backtracking', 'Graphs',
+  'Dynamic Programming', 'Greedy', 'Trie', 'Intervals', 'Math & Matrices',
+  'Bit Manipulation', 'Sorting', 'Data Structures', 'Aptitude', 'Core CS'
 ];
 
-/* --- Live bubble-sort demo that actually runs the algorithm --- */
+/* --- Live bubble-sort demo that actually runs to completion ---
+   Single-pass engine: each tick performs exactly one adjacent compare
+   (and swap if needed), advancing a real (pass, i) cursor. No reshuffle,
+   no random restart: it sorts the fixed seed to fully ascending, holds the
+   sorted state one beat so the eye can register it, then restarts. */
 const BUBBLE_SEED = [52, 31, 88, 24, 95, 46, 71, 18, 63, 39, 80, 57];
 
 const useLiveSortDemo = (enabled: boolean) => {
   const [arr, setArr] = useState<number[]>(BUBBLE_SEED);
-  // Single cursor object: pass p, inner index i, and completion flag.
-  const cursor = useRef({ pass: 0, i: 0, done: false, swaps: 0 });
+  const cursor = useRef({ pass: 0, i: 0, holdSorted: 0 });
   const [pair, setPair] = useState<[number, number]>([0, 1]);
-  const [passes, setPasses] = useState(0);
+  const [, setPasses] = useState(0);
   const [comparisons, setComparisons] = useState(0);
   const [swaps, setSwaps] = useState(0);
   const [sorted, setSorted] = useState(false);
+  // Largest index that bubble sort has proven final. Everything at or past
+  // it is fully sorted, so the mint highlight can only ever grow rightward.
+  const [sortedFrom, setSortedFrom] = useState(BUBBLE_SEED.length);
 
   useEffect(() => {
     if (!enabled) return;
     const id = setInterval(() => {
-      setArr((prev) => {
-        const next = [...prev];
-        const n = next.length;
-        const c = cursor.current;
+      const n = BUBBLE_SEED.length;
+      const c = cursor.current;
 
-        // Pause on the fully sorted array, then restart from a pass-0 shuffle.
-        if (c.done) {
-          cursor.current = { pass: 0, i: 0, done: false, swaps: 0 };
+      // Hold the completed array one beat, then restart from the seed.
+      if (c.holdSorted > 0) {
+        c.holdSorted -= 1;
+        if (c.holdSorted === 0) {
+          cursor.current = { pass: 0, i: 0, holdSorted: 0 };
+          setArr(BUBBLE_SEED);
+          setPair([0, 1]);
           setPasses(0);
           setSwaps(0);
           setSorted(false);
-          // Deterministic rotate keeps the demo honest: a visibly unsorted start.
-          const k = 5;
-          return [...next.slice(k), ...next.slice(0, k)];
+          setSortedFrom(n);
         }
+        return;
+      }
 
-        // End of this pass: either finished (no swaps all pass) or next pass.
-        if (c.i >= n - 1 - c.pass) {
-          if (c.swaps === 0) {
-            cursor.current = { ...c, done: true };
-            setSorted(true);
-            return next;
-          }
-          cursor.current = { pass: c.pass + 1, i: 0, done: false, swaps: 0 };
-          setPasses(c.pass + 1);
-          return next;
-        }
-
-        setPair([c.i, c.i + 1]);
-        setComparisons((x) => x + 1);
-        if (next[c.i] > next[c.i + 1]) {
+      setArr((prev) => {
+        const next = [...prev];
+        const limit = n - 1 - c.pass;
+        if (c.i < limit && next[c.i] > next[c.i + 1]) {
           [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
-          cursor.current = { ...c, i: c.i + 1, swaps: c.swaps + 1 };
-          setSwaps((x) => x + 1);
-        } else {
-          cursor.current = { ...c, i: c.i + 1 };
         }
         return next;
       });
+      setPair([c.i, Math.min(c.i + 1, n - 1)]);
+      setComparisons((x) => x + 1);
+
+      setArr((prev) => {
+        const next = [...prev];
+        if (c.i + 1 < next.length && next[c.i] > next[c.i + 1]) {
+          [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
+          setSwaps((x) => x + 1);
+        }
+        return next;
+      });
+
+      // Advance the cursor deterministically regardless of batching.
+      const advanced = c.i + 1;
+      const finishedPass = advanced >= n - 1 - c.pass;
+      if (finishedPass) {
+        const nextPass = c.pass + 1;
+        setPasses(nextPass);
+        // The element just bubbled to position n-1-pass is final.
+        setSortedFrom(n - 1 - c.pass);
+        if (nextPass >= n - 1) {
+          cursor.current = { pass: 0, i: 0, holdSorted: 4 };
+          setSorted(true);
+          setSortedFrom(0);
+        } else {
+          cursor.current = { pass: nextPass, i: 0, holdSorted: 0 };
+        }
+      } else {
+        cursor.current = { pass: c.pass, i: advanced, holdSorted: 0 };
+      }
     }, 220);
     return () => clearInterval(id);
   }, [enabled]);
 
-  return { arr, pair, sortedFrom: sorted ? 0 : arr.length - passes - 1, comparisons, swaps, sorted };
+  return { arr, pair, sortedFrom, comparisons, swaps, sorted };
 };
 
 export const LandingPage: React.FC = () => {

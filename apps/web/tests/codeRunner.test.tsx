@@ -34,7 +34,7 @@ describe('CodeRunner Component (Phase 4)', () => {
     expect(select).toHaveValue('python');
 
     const textarea = screen.getByLabelText(/Code Editor/i);
-    expect(textarea).toHaveValue('def solve(*args):\n    # Write Python solution here\n    pass\n');
+    expect(textarea).toHaveValue('def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n');
   });
 
   it('runs samples and displays Accepted badge on AC', async () => {

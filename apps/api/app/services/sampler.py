@@ -19,8 +19,15 @@ def sample_questions(
     difficulty: str | None = None,
     is_mock: bool = False,
     duration_limit_sec: int | None = None,
+    topic_plan: Sequence[tuple[str, int]] | None = None,
 ) -> tuple[str, list[Question], str | None]:
-    """Samples verified questions with recent exposure exclusion and difficulty weighting."""
+    """Samples verified questions with recent exposure exclusion and difficulty weighting.
+
+    When ``topic_plan`` is given (e.g. the placement mock's 30/30/20 split),
+    each (topic, count) pair is sampled independently so section sizes hold
+    even when pools differ wildly in size. Otherwise the legacy behaviour
+    applies: one pool across all topics with 40/40/20 difficulty weighting.
+    """
 
     # 1. Fetch recent exposures (last 50)
     recent_exp_query = (
@@ -44,51 +51,54 @@ def sample_questions(
     # can report "no questions for this topic" instead of serving BST
     # questions for an Arrays quiz.
 
-    # 3. Exclude recently exposed questions if possible
-    fresh_pool = [q for q in all_candidates if q.id not in recent_exposed_ids]
+    def pick_from(pool: list[Question], n: int) -> list[Question]:
+        """Difficulty-weighted pick (40/40/20) from one pool, exposure-aware."""
+        fresh = [q for q in pool if q.id not in recent_exposed_ids]
+        chosen = fresh[:]
+        if len(chosen) < n:
+            relaxed = [q for q in pool if q.id in recent_exposed_ids]
+            random.shuffle(relaxed)
+            chosen = fresh + relaxed[: (n - len(fresh))]
+        if difficulty:
+            random.shuffle(chosen)
+            return chosen[:n]
+        easy = [q for q in chosen if q.difficulty == "Easy"]
+        med = [q for q in chosen if q.difficulty == "Medium"]
+        hard = [q for q in chosen if q.difficulty == "Hard"]
+        for bucket in (easy, med, hard):
+            random.shuffle(bucket)
+        t_easy = max(1, int(n * 0.4))
+        t_med = max(1, int(n * 0.4))
+        t_hard = n - t_easy - t_med
+        picked = easy[:t_easy] + med[:t_med] + hard[:t_hard]
+        if len(picked) < n:
+            rest = [q for q in chosen if q not in picked]
+            random.shuffle(rest)
+            picked += rest[: (n - len(picked))]
+        if len(picked) < n:
+            rest = [q for q in pool if q not in picked]
+            random.shuffle(rest)
+            picked += rest[: (n - len(picked))]
+        return picked[:n]
 
-    if len(fresh_pool) >= count:
-        chosen_pool = fresh_pool
-    else:
-        # Relax exposures if pool is too small, prioritizing freshest first
-        needed = count - len(fresh_pool)
-        relaxed = [q for q in all_candidates if q.id in recent_exposed_ids]
-        random.shuffle(relaxed)
-        chosen_pool = fresh_pool + relaxed[:needed]
-
-    # 4. Difficulty weighting if difficulty wasn't specified (approx 40% Easy, 40% Med, 20% Hard)
-    if not difficulty:
-        easy_pool = [q for q in chosen_pool if q.difficulty == "Easy"]
-        med_pool = [q for q in chosen_pool if q.difficulty == "Medium"]
-        hard_pool = [q for q in chosen_pool if q.difficulty == "Hard"]
-
-        target_easy = max(1, int(count * 0.4))
-        target_med = max(1, int(count * 0.4))
-        target_hard = count - target_easy - target_med
-
-        random.shuffle(easy_pool)
-        random.shuffle(med_pool)
-        random.shuffle(hard_pool)
-
+    if topic_plan:
+        # Per-section sampling: each topic contributes its own quota.
         sampled: list[Question] = []
-        sampled.extend(easy_pool[:target_easy])
-        sampled.extend(med_pool[:target_med])
-        sampled.extend(hard_pool[:target_hard])
-
-        # Fill any deficit from remainder
-        if len(sampled) < count:
-            remaining = [q for q in chosen_pool if q not in sampled]
-            random.shuffle(remaining)
-            sampled.extend(remaining[: (count - len(sampled))])
+        for plan_topic, plan_count in topic_plan:
+            pool_q = base_query.where(Question.topic == plan_topic)
+            if difficulty:
+                pool_q = pool_q.where(Question.difficulty == difficulty)
+            pool = db.scalars(pool_q).all()
+            if not pool:
+                pool = db.scalars(
+                    select(Question).where(
+                        Question.review_status == "verified",
+                        Question.topic == plan_topic,
+                    )
+                ).all()
+            sampled.extend(pick_from(pool, plan_count))
     else:
-        random.shuffle(chosen_pool)
-        sampled = chosen_pool[:count]
-
-    # If still fewer than count, take whatever candidates exist
-    if len(sampled) < count:
-        remaining = [q for q in all_candidates if q not in sampled]
-        random.shuffle(remaining)
-        sampled.extend(remaining[: (count - len(sampled))])
+        sampled = pick_from(all_candidates, count)
 
     # 5. Create attempt shell with server-side snapshot of question IDs
     attempt_id = str(uuid.uuid4())

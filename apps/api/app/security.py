@@ -126,6 +126,25 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     return user
 
 
+def get_optional_current_user(
+    request: Request, db: Session = Depends(get_db)
+) -> User | None:
+    token = request.cookies.get("av_access")
+    if not token:
+        return None
+    try:
+        payload = decode_access_token(token)
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+        user = db.get(User, user_id)
+        if not user or user.is_active != 1:
+            return None
+        return user
+    except Exception:
+        return None
+
+
 def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != "admin":
         raise HTTPException(
@@ -133,3 +152,4 @@ def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
             detail={"code": "FORBIDDEN", "message": "Admin privileges required"},
         )
     return current_user
+

@@ -340,7 +340,7 @@ export const LinkedListVisualizer: React.FC = () => {
 
                         {/* Node Container (Data | Next) */}
                         <div
-                          className={`flex rounded-xl border overflow-hidden font-mono transition-all duration-200 ${
+                          className={`flex rounded-xl border overflow-hidden font-mono transition-colors duration-150 ${
                             isActive
                               ? 'border-amber shadow-lg scale-105'
                               : 'border-line bg-surface'
@@ -383,7 +383,7 @@ export const LinkedListVisualizer: React.FC = () => {
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{curr.log}</span>
           </div>
         </div>

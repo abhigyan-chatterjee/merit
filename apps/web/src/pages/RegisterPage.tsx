@@ -56,7 +56,7 @@ export const RegisterPage: React.FC = () => {
       <div className="w-full max-w-md space-y-6">
         <Reveal>
           <div className="text-center space-y-2">
-            <SectionLabel label="New Student Registration" />
+            <SectionLabel title="New Student Registration" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
               Create an ALGOVISTA Account
             </h1>

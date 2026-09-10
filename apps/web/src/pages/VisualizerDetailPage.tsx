@@ -15,6 +15,7 @@ import { RecursionTreeVisualizer } from '../visualizers/RecursionTreeVisualizer'
 import { LinearVisualizer } from '../visualizers/LinearVisualizer';
 import { useProgress } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
+import { LessonNav } from '../components/LessonNav';
 
 export const VisualizerDetailPage: React.FC = () => {
   const { id = 'sorting' } = useParams<{ id: string }>();
@@ -79,6 +80,9 @@ export const VisualizerDetailPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-5">
+      {/* Guided Path Lesson Navigation */}
+      <LessonNav currentType="visualizer" currentId={currentItem.id} />
+
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
         <Link to="/visualizers" className="hover:text-mint transition-colors">

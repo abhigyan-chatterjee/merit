@@ -8,6 +8,8 @@ export interface ResolvedStep {
   title: string;
   subtitle: string;
   link: string;
+  summary?: string;
+  readingLinks?: string[];
 }
 
 /**
@@ -15,13 +17,18 @@ export interface ResolvedStep {
  * subtitle, and the route to open it.
  */
 export function resolveStep(step: PathStep): ResolvedStep {
+  const guides = {
+    summary: step.summary,
+    readingLinks: step.readingLinks,
+  };
   if (step.type === 'visualizer') {
     const viz = VISUALIZERS.find((v) => v.id === step.id);
     return {
       step,
       title: step.title ?? viz?.title ?? step.id,
       subtitle: viz ? `${viz.category} · avg ${viz.timeComplexity.avg}` : 'Interactive workbench',
-      link: `/visualizers/${step.id}`
+      link: `/visualizers/${step.id}`,
+      ...guides,
     };
   }
 
@@ -31,7 +38,8 @@ export function resolveStep(step: PathStep): ResolvedStep {
       step,
       title: problem?.title ?? step.id,
       subtitle: problem ? `${problem.difficulty} · ${problem.pattern}` : 'Coding problem',
-      link: problem ? `/problems/${problem.topic}/${problem.slug}` : '/problems/arrays-hashing'
+      link: problem ? `/problems/${problem.topic}/${problem.slug}` : '/problems/arrays-hashing',
+      ...guides,
     };
   }
 
@@ -41,6 +49,7 @@ export function resolveStep(step: PathStep): ResolvedStep {
     step,
     title: step.title ?? quizTopic?.title ?? 'Quiz',
     subtitle: quizTopic ? `${QUIZZES[quizTopic.id]?.length ?? 10} questions` : '10 questions',
-    link: `/quiz/${step.id}`
+    link: `/quiz/${step.id}`,
+    ...guides,
   };
 }

@@ -47,7 +47,7 @@ export const LoginPage: React.FC = () => {
       <div className="w-full max-w-md space-y-6">
         <Reveal>
           <div className="text-center space-y-2">
-            <SectionLabel label="Account Authentication" />
+            <SectionLabel title="Account Authentication" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
               Sign in to ALGOVISTA
             </h1>

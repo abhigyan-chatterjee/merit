@@ -6,10 +6,13 @@ from pydantic import BaseModel, Field
 
 class QuizGenerateRequest(BaseModel):
     topics: list[str] = Field(default_factory=lambda: ["arrays-hashing", "trees", "graphs", "dynamic-programming"])
-    count: int = Field(default=10, ge=1, le=50)
+    count: int = Field(default=10, ge=1, le=200)
     difficulty: str | None = None
     is_mock: bool = False
     duration_sec: int | None = None
+    # Optional per-section quotas, e.g. [["aptitude", 30], ["core-cs", 30]].
+    # Sizes hold per topic instead of collapsing into one pool.
+    topic_plan: list[tuple[str, int]] | None = None
 
 
 class QuizQuestionItem(BaseModel):

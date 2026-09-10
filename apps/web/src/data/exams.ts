@@ -10,6 +10,8 @@ export interface TargetedExam {
   /** backend quiz topics to sample from */
   topics: string[];
   questionCount: number;
+  /** Per-section MCQ quotas; sizes hold per topic. Omit = one blended pool. */
+  topicPlan?: [string, number][];
   /** judge-graded coding questions bundled with the MCQ set */
   coding: ExamCoding[];
   durationSec: number;
@@ -96,12 +98,20 @@ export const TARGETED_EXAMS: TargetedExam[] = [
   {
     id: 'full-mock',
     title: 'Full Placement Mock',
-    description: '3-hour simulation: aptitude, core CS (OS, DBMS, networks, design) and coding. 20 MCQs plus 2 coding questions.',
+    description: '3-hour simulation in 3 sections: aptitude screening (30), core CS — OS, DBMS, networks, design (20) — then DSA + coding (20 + 4).',
     topics: ['aptitude', 'core-cs', 'arrays-hashing', 'dynamic-programming'],
-    questionCount: 20,
+    questionCount: 80,
+    topicPlan: [
+      ['aptitude', 30],
+      ['core-cs', 20],
+      ['arrays-hashing', 15],
+      ['dynamic-programming', 15],
+    ],
     coding: [
       { slug: 'merge-intervals', title: 'Merge Intervals' },
       { slug: 'course-schedule-ii', title: 'Course Schedule II' },
+      { slug: 'longest-consecutive-sequence', title: 'Longest Consecutive Sequence' },
+      { slug: 'coin-change', title: 'Coin Change' },
     ],
     durationSec: 10800,
     level: 'Advanced',

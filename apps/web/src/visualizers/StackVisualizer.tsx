@@ -242,7 +242,7 @@ export const StackVisualizer: React.FC = () => {
                     return (
                       <div
                         key={idx}
-                        className={`w-full py-2.5 px-3 rounded-lg border font-mono font-bold flex items-center justify-between text-xs transition-all duration-200 ${
+                        className={`w-full py-2.5 px-3 rounded-lg border font-mono font-bold flex items-center justify-between text-xs transition-colors duration-150 ${
                           isActive
                             ? 'bg-amber text-canvas border-amber shadow-lg scale-102'
                             : isTop
@@ -272,7 +272,7 @@ export const StackVisualizer: React.FC = () => {
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{curr.log}</span>
           </div>
         </div>

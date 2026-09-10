@@ -423,7 +423,8 @@ export const quizApi = {
     count: number = 10,
     difficulty?: string,
     isMock: boolean = false,
-    durationSec?: number
+    durationSec?: number,
+    topicPlan?: [string, number][]
   ): Promise<QuizGenerateResponse> {
     return await apiRequest<QuizGenerateResponse>("/api/v1/quizzes/generate", {
       method: "POST",
@@ -433,6 +434,7 @@ export const quizApi = {
         difficulty,
         is_mock: isMock,
         duration_sec: durationSec,
+        topic_plan: topicPlan ?? null,
       }),
     });
   },

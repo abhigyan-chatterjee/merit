@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { TOPICS } from '../data/curriculum';
 import { ProblemTable } from '../components/ProblemTable';
@@ -7,7 +7,8 @@ import { Code2, BrainCircuit } from 'lucide-react';
 import { useProgress } from '../store/ProgressContext';
 
 export const ProblemListPage: React.FC = () => {
-  const { topic = 'arrays' } = useParams<{ topic: string }>();
+  const { topic = 'arrays-hashing' } = useParams<{ topic: string }>();
+  const navigate = useNavigate();
   const { state } = useProgress();
 
   const currentTopic = TOPICS.find((t) => t.slug === topic) || TOPICS[0];
@@ -16,24 +17,29 @@ export const ProblemListPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-      {/* Topic Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 pb-4 border-b border-line">
-        {TOPICS.map((t) => {
-          const active = t.slug === currentTopic.slug;
-          return (
-            <Link
-              key={t.slug}
-              to={`/problems/${t.slug}`}
-              className={`px-3.5 py-2 rounded-lg text-xs font-mono font-semibold transition ${
-                active
-                  ? 'bg-mint text-canvas'
-                  : 'bg-surface text-muted border border-line hover:text-ink'
-              }`}
-            >
-              {t.title.split('&')[0].trim()}
-            </Link>
-          );
-        })}
+      {/* Topic selector (compact dropdown) */}
+      <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-line">
+        <label
+          htmlFor="problem-topic"
+          className="text-[10px] font-mono uppercase tracking-[0.16em] text-muted"
+        >
+          Topic
+        </label>
+        <select
+          id="problem-topic"
+          value={currentTopic.slug}
+          onChange={(e) => navigate(`/problems/${e.target.value}`)}
+          className="px-3 py-2 rounded-lg bg-surface border border-line text-xs font-mono text-ink hover:border-steel cursor-pointer focus:outline-none focus:border-mint"
+        >
+          {TOPICS.map((t) => (
+            <option key={t.slug} value={t.slug}>
+              {t.title}
+            </option>
+          ))}
+        </select>
+        <span className="text-[11px] font-mono text-muted ml-auto tnum">
+          {doneCount} / {topicProblems.length} solved
+        </span>
       </div>
 
       {/* Header Info & Topic Quiz Shortcut */}

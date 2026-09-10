@@ -1,30 +1,38 @@
 import React from 'react';
-import { Play, Pause, SkipForward, RotateCcw, Shuffle } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, RotateCcw, Shuffle } from 'lucide-react';
 import { SpeedControl } from './SpeedControl';
 
 interface ControlBarProps {
   isPlaying: boolean;
   onPlayPause: () => void;
-  onStep: () => void;
+  onStep?: () => void;
+  onStepForward?: () => void;
+  onStepBack?: () => void;
   onReset: () => void;
   onRandomize: () => void;
   speed: number;
   onSpeedChange: (speed: number) => void;
   disabledStep?: boolean;
+  disabledBack?: boolean;
 }
 
 export const ControlBar: React.FC<ControlBarProps> = ({
   isPlaying,
   onPlayPause,
   onStep,
+  onStepForward,
+  onStepBack,
   onReset,
   onRandomize,
   speed,
   onSpeedChange,
-  disabledStep = false
+  disabledStep = false,
+  disabledBack = false
 }) => {
   const ghostBtn =
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-muted hover:text-ink hover:border-steel disabled:opacity-35 disabled:pointer-events-none transition cursor-pointer';
+
+  const stepForward = onStepForward ?? onStep;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-xl border border-line bg-surface">
@@ -50,9 +58,21 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           {isPlaying ? 'Pause' : 'Play'}
         </button>
 
+        {onStepBack && (
+          <button
+            onClick={onStepBack}
+            disabled={isPlaying || disabledBack}
+            aria-label="Step back one frame"
+            className={ghostBtn}
+          >
+            <SkipBack className="w-3.5 h-3.5 text-violet" />
+            Back
+          </button>
+        )}
+
         <button
-          onClick={onStep}
-          disabled={isPlaying || disabledStep}
+          onClick={stepForward}
+          disabled={isPlaying || disabledStep || !stepForward}
           aria-label="Step forward one frame"
           className={ghostBtn}
         >

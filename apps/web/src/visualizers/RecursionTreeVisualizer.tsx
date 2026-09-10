@@ -354,7 +354,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
                     }
 
                     return (
-                      <g key={node.id} className="transition-all duration-200">
+                      <g key={node.id} className="transition-colors duration-150">
                         <rect
                           x={node.x - 26}
                           y={node.y - 14}
@@ -407,7 +407,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
 
           {/* Activity Log */}
           <div className="p-3 bg-surface/40 border border-line rounded-xl font-mono text-xs text-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-mint animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-mint" />
             <span>{curr.log}</span>
           </div>
         </div>
