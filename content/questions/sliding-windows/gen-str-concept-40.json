@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "What is the worst-case time complexity of the Knuth-Morris-Pratt (KMP) string matching algorithm for text of length N and pattern of length M?",
   "options": [
-    "O(N\u00b2)",
-    "O(N * M)",
     "O(N log M)",
-    "O(N + M)"
+    "O(N + M)",
+    "O(N\u00b2)",
+    "O(N * M)"
   ],
-  "correct_index": 3,
+  "correct_index": 1,
   "explanation": "KMP precomputes the Longest Prefix Suffix (LPS) table in O(M) time and scans the text in O(N) time without backtracking, achieving O(N + M) total worst-case time.",
   "source": "generated",
   "generator_key": "arrays_strings.concepts",

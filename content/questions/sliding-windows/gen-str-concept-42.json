@@ -6,13 +6,13 @@
   "qtype": "mcq",
   "prompt": "What data structure allows querying the Longest Common Prefix (LCP) and finding all occurrences of any substring in a text of length N in O(M) time after O(N) construction?",
   "options": [
-    "Suffix Tree or Suffix Automaton",
     "Disjoint Set Union",
     "Adjacency Matrix",
-    "Binary Search Tree"
+    "Binary Search Tree",
+    "Suffix Tree or Suffix Automaton"
   ],
-  "correct_index": 0,
-  "explanation": "A Suffix Tree exposes all substrings as root-to-node paths, enabling linear-time pattern search and LCP queries.",
+  "correct_index": 3,
+  "explanation": "A Suffix Tree or Suffix Automaton exposes all substrings as root-to-node paths, enabling linear-time pattern search and LCP queries.",
   "source": "generated",
   "generator_key": "arrays_strings.concepts",
   "content_hash": "a0905aab3920b7a745a694915da9578fa891fa20b7e604a28b0efc57faef98ef",

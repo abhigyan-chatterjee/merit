@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "Using a sliding window of fixed size `k = 3`, what is the **maximum subarray sum** over all contiguous subarrays of size 3 in array `[2, 1, 5, 1, 3, 2]`?",
   "options": [
-    "12",
-    "7",
+    "15",
     "9",
+    "11",
     "4"
   ],
-  "correct_index": 2,
+  "correct_index": 1,
   "explanation": "By maintaining a sliding window of size 3 and updating sum in O(1) time per shift, the maximum window sum is 9.",
   "source": "generated",
   "generator_key": "arrays_strings.sliding_window",

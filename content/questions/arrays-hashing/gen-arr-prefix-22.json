@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Given array `[2, 4, 6, 8, 10, 12]`, what is the range sum of elements from index 2 to 4 inclusive (`nums[2..4]`) computed in O(1) time using a precomputed prefix sum array?",
   "options": [
-    "29",
-    "21",
-    "26",
+    "27",
+    "34",
+    "19",
     "24"
   ],
   "correct_index": 3,

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Given array `[15, 25, 35, 45]`, what is the range sum of elements from index 0 to 2 inclusive (`nums[0..2]`) computed in O(1) time using a precomputed prefix sum array?",
   "options": [
-    "85",
+    "78",
     "75",
     "80",
-    "72"
+    "85"
   ],
   "correct_index": 1,
   "explanation": "Using prefix sums P[i], RangeSum(L, R) = P[R] - (P[L-1] if L > 0 else 0) = 75.",

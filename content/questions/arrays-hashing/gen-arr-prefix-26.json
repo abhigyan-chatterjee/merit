@@ -7,7 +7,7 @@
   "prompt": "Given array `[8, 16, 24, 32, 40]`, what is the range sum of elements from index 2 to 4 inclusive (`nums[2..4]`) computed in O(1) time using a precomputed prefix sum array?",
   "options": [
     "101",
-    "106",
+    "99",
     "96",
     "93"
   ],

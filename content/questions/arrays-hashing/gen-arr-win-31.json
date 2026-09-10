@@ -7,11 +7,11 @@
   "prompt": "Using a sliding window of fixed size `k = 2`, what is the **maximum subarray sum** over all contiguous subarrays of size 2 in array `[100, 200, 300, 400]`?",
   "options": [
     "703",
-    "700",
     "695",
-    "698"
+    "700",
+    "702"
   ],
-  "correct_index": 1,
+  "correct_index": 2,
   "explanation": "By maintaining a sliding window of size 2 and updating sum in O(1) time per shift, the maximum window sum is 700.",
   "source": "generated",
   "generator_key": "arrays_strings.sliding_window",

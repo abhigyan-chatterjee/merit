@@ -7,8 +7,8 @@
   "prompt": "Given array `nums = [2, 3, 4, 1, 5]` and window size `k = 2`, what is the maximum sum of any contiguous subarray of length 2 computed using a fixed-size sliding window?",
   "options": [
     "7",
-    "14",
-    "11",
+    "5",
+    "3",
     "9"
   ],
   "correct_index": 0,

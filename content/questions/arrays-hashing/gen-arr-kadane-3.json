@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "Using Kadane's algorithm, what is the maximum subarray sum in the integer array:\n`[5, 4, -1, 7, 8]`?",
   "options": [
-    "21",
-    "25",
+    "27",
     "19",
-    "23"
+    "23",
+    "25"
   ],
-  "correct_index": 3,
+  "correct_index": 2,
   "explanation": "Kadane's algorithm maintains `currMax = max(x, currMax + x)`. The maximum contiguous subarray sum is 23.",
   "source": "generated",
   "generator_key": "arrays_strings.kadane",

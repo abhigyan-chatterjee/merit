@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "Given strings `s = \"a\"` and `t = \"aa\"`, a variable sliding window with two pointers finds the minimum window substring of `s` containing all characters in `t`. What is the length of this minimum window substring (or 0 if no valid window exists)?",
   "options": [
-    "4",
     "0",
+    "2",
     "1",
-    "2"
+    "3"
   ],
-  "correct_index": 1,
+  "correct_index": 0,
   "explanation": "String `s` does not contain the required character frequencies of `t`, so no valid window exists (length is 0).",
   "source": "generated",
   "generator_key": "sliding_windows.min_window_substring",

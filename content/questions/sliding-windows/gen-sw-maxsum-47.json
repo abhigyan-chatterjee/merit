@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "Given array `nums = [100, 200, 300, 400]` and window size `k = 2`, what is the maximum sum of any contiguous subarray of length 2 computed using a fixed-size sliding window?",
   "options": [
+    "702",
+    "698",
     "700",
-    "696",
-    "704",
-    "702"
+    "696"
   ],
-  "correct_index": 0,
+  "correct_index": 2,
   "explanation": "Maintaining a sliding window of size 2 and updating the sum in O(1) time per step finds the maximum subarray sum of 700.",
   "source": "generated",
   "generator_key": "sliding_windows.max_sum_fixed",
