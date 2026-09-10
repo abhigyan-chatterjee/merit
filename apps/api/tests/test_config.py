@@ -24,3 +24,13 @@ def test_production_rejects_placeholder_secret(monkeypatch):
 
     with pytest.raises(RuntimeError, match="production mode"):
         Settings(secret_key="replace_with_a_secure_random_key_here", environment="production")
+
+
+def test_sqlite_relative_url_normalized_to_apps_api():
+    settings = Settings(
+        secret_key="test_secret_for_config_validation_32chars",
+        database_url="sqlite:///./algovista.db",
+    )
+    assert settings.database_url.startswith("sqlite:////")
+    assert settings.database_url.endswith("apps/api/algovista.db")
+

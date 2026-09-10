@@ -77,5 +77,22 @@ class Settings(BaseSettings):
 
         return values
 
+    @model_validator(mode="after")
+    def normalize_sqlite_url(self) -> "Settings":
+        if (
+            self.database_url.startswith("sqlite:///")
+            and not self.database_url.startswith("sqlite:////")
+            and ":memory:" not in self.database_url
+        ):
+            from pathlib import Path
+
+            rel_path = self.database_url[len("sqlite:///") :]
+            if rel_path.startswith("./"):
+                rel_path = rel_path[2:]
+            api_dir = Path(__file__).resolve().parent.parent
+            abs_db_path = (api_dir / rel_path).resolve()
+            self.database_url = f"sqlite:///{abs_db_path}"
+        return self
+
 
 settings = Settings()
