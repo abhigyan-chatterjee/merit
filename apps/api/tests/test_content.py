@@ -1,11 +1,13 @@
 """Tests for content endpoints (problems, questions, paths, visualizers)."""
 
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
-from app.seed import seed_all
 from app.db import SessionLocal
+from app.main import app
+from app.seed import _resolve_content_dir, seed_all
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -32,9 +34,20 @@ def test_list_problems_and_filter():
     resp = client.get("/api/v1/problems?limit=100")
     assert resp.status_code == 200
     problems = resp.json()
-    assert len(problems) >= 30
+
+    problems_dir = _resolve_content_dir("problems")
+    verified_files_count = 0
+    for file_path in problems_dir.glob("*.json"):
+        with open(file_path, encoding="utf-8") as f:
+            data = json.load(f)
+        status = data.get("reviewStatus") or data.get("review_status") or "verified"
+        if status != "draft":
+            verified_files_count += 1
+
+    assert len(problems) == verified_files_count
     slugs = {p["slug"] for p in problems}
-    assert "two-sum" in slugs or "scrap-3sum" in slugs
+    assert "two-sum" in slugs
+    assert not any(s.startswith("scrap-") for s in slugs)
 
     # Filter by topic
     resp_arr = client.get("/api/v1/problems?topic=arrays-hashing")

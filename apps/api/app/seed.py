@@ -38,11 +38,44 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     if not content_dir.exists():
         return 0
 
-    count = 0
+    # Pass 1: Read problem files, skip drafts entirely, and gather verified problems.
+    # Note on field inconsistency: question files use snake_case 'review_status',
+    # while problem files use camelCase 'reviewStatus'. We accept both spellings,
+    # defaulting to 'verified' when absent (verified problem files carry no status field).
+    valid_problems: list[dict] = []
+    verified_slugs: set[str] = set()
+
     for file_path in sorted(content_dir.glob("*.json")):
         with open(file_path, encoding="utf-8") as f:
             data = json.load(f)
 
+        status = data.get("reviewStatus") or data.get("review_status") or "verified"
+        if status == "draft":
+            continue
+
+        verified_slugs.add(data["slug"])
+        valid_problems.append(data)
+
+    # Pass 2: Purge stale draft rows on re-seed.
+    # If a Problem row exists in the DB whose content file is a draft (or whose file
+    # no longer exists), delete it and its dependent rows (test cases, solutions).
+    existing_problems = db.scalars(select(Problem)).all()
+    for prob in existing_problems:
+        if prob.slug not in verified_slugs:
+            for tc in db.scalars(
+                select(ProblemTestCase).where(ProblemTestCase.problem_slug == prob.slug)
+            ).all():
+                db.delete(tc)
+            for sol in db.scalars(
+                select(ProblemSolution).where(ProblemSolution.problem_slug == prob.slug)
+            ).all():
+                db.delete(sol)
+            db.delete(prob)
+    db.flush()
+
+    # Pass 3: Ingest or backfill verified problems.
+    count = 0
+    for data in valid_problems:
         slug = data["slug"]
         existing = db.scalar(select(Problem).where(Problem.slug == slug))
 
@@ -53,6 +86,8 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                 "javascript": starter_dict,
                 "python": f"def {fn_name}(*args):\n    # TODO: Implement solution\n    pass\n",
             }
+
+        status = data.get("reviewStatus") or data.get("review_status") or "verified"
 
         if not existing:
             problem = Problem(
@@ -71,16 +106,8 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                 sequence=data.get("sequence"),
                 prev_slug=data.get("prevSlug"),
                 next_slug=data.get("nextSlug"),
-                review_status="verified",
+                review_status=status,
             )
-        else:
-            # Backfill sequence links + topic on existing rows (taxonomy migration).
-            existing.topic = data["topic"]
-            existing.sequence = data.get("sequence")
-            existing.prev_slug = data.get("prevSlug")
-            existing.next_slug = data.get("nextSlug")
-
-        if not existing:
             db.add(problem)
             db.flush()
 
@@ -107,6 +134,13 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                 db.add(solution)
 
             count += 1
+        else:
+            # Backfill sequence links + topic on existing rows (taxonomy migration).
+            existing.topic = data["topic"]
+            existing.sequence = data.get("sequence")
+            existing.prev_slug = data.get("prevSlug")
+            existing.next_slug = data.get("nextSlug")
+            existing.review_status = status
 
     db.commit()
     return count
