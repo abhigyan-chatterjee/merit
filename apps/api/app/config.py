@@ -39,29 +39,41 @@ class Settings(BaseSettings):
         elif hasattr(values, "secret_key"):
             secret = values.secret_key
 
-        if not secret or not str(secret).strip():
-            raise RuntimeError(
-                "CRITICAL SECURITY CONFIGURATION ERROR: SECRET_KEY is missing or empty.\n"
-                "A cryptographically secure SECRET_KEY must be configured via environment "
-                "variable or in apps/api/.env.\n\n"
-                "To generate a secure key, run:\n"
-                '    python3 -c "import secrets; print(secrets.token_urlsafe(48))"\n\n'
-                "Then export SECRET_KEY in your environment or place it in apps/api/.env:\n"
-                "    SECRET_KEY=<generated_key>\n"
-            )
+        env_mode = "development"
+        if isinstance(values, dict):
+            env_mode = values.get("environment", "development")
+        elif hasattr(values, "environment"):
+            env_mode = getattr(values, "environment", "development")
 
-        cleaned_secret = str(secret).strip()
-        if cleaned_secret in INSECURE_SECRET_KEYS:
-            raise RuntimeError(
-                "CRITICAL SECURITY CONFIGURATION ERROR: SECRET_KEY is set to an insecure "
-                f"placeholder ({cleaned_secret!r}).\n"
-                "A cryptographically secure SECRET_KEY must be configured via environment "
-                "variable or in apps/api/.env.\n\n"
-                "To generate a secure key, run:\n"
-                '    python3 -c "import secrets; print(secrets.token_urlsafe(48))"\n\n'
-                "Then export SECRET_KEY in your environment or place it in apps/api/.env:\n"
-                "    SECRET_KEY=<generated_key>\n"
+        is_insecure = (
+            not secret
+            or not str(secret).strip()
+            or str(secret).strip() in INSECURE_SECRET_KEYS
+        )
+
+        if is_insecure:
+            if str(env_mode).lower() == "production":
+                raise RuntimeError(
+                    "CRITICAL SECURITY CONFIGURATION ERROR: In production mode, SECRET_KEY "
+                    "must be configured via environment variable with a secure value.\n"
+                    "Generate a secure key:\n"
+                    '    python3 -c "import secrets; print(secrets.token_urlsafe(48))"\n'
+                )
+
+            # In development, auto-generate a secure random secret so local dev works smoothly
+            import secrets
+            dev_key = secrets.token_urlsafe(48)
+            import warnings
+            warnings.warn(
+                "SECRET_KEY not set or using placeholder; generated a temporary development key. "
+                "Set SECRET_KEY in apps/api/.env for persistent sessions.",
+                UserWarning,
+                stacklevel=2,
             )
+            if isinstance(values, dict):
+                values["secret_key"] = dev_key
+            else:
+                values.secret_key = dev_key
 
         return values
 
