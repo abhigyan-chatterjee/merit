@@ -1,6 +1,7 @@
 """Bit manipulation question generator with exact programmatic bitwise oracles."""
 
 import random
+
 from content.generators.base import GeneratedQuestion, make_question
 
 
@@ -58,7 +59,7 @@ def generate_bit_manipulation_questions(count: int = 100, seed: int = 50) -> lis
             id_str=f"gen-bit-lowest-{q_idx}",
             topic="bit-manipulation",
             subtopic="bit-tricks",
-            difficulty="Medium",
+            difficulty="Hard",
             prompt=prompt_low,
             correct_answer=ans_low,
             distractors=distractors_low,

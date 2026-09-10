@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-pfx-4",
+  "topic": "trie",
+  "subtopic": "prefix-queries",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A standard Trie is populated with the word list: `['flow', 'flower', 'flight', 'flat', 'fleet', 'fly']`. How many words in the Trie have the prefix `\"fl\"`?",
+  "options": [
+    "6",
+    "5",
+    "4",
+    "7"
+  ],
+  "correct_index": 0,
+  "explanation": "Traversing the Trie down the characters of prefix 'fl' reaches a node whose subtree contains exactly 6 marked terminal word nodes.",
+  "source": "generated",
+  "generator_key": "trie.prefix_count",
+  "content_hash": "76b30d4ffe07bb9ffe38aae6a8a8fe2c1ef50cbed680e89a3e03463f3c5379da",
+  "review_status": "verified"
+}

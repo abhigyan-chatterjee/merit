@@ -69,7 +69,7 @@ def generate_aptitude_questions(count: int = 100, seed: int = 201) -> list[Gener
                 id_str=f"gen-apt-tsd-{q_idx}",
                 topic="aptitude",
                 subtopic="time-speed-distance",
-                difficulty="Medium",  # type: ignore[arg-type]
+                difficulty="Hard",  # type: ignore[arg-type]
                 prompt=(
                     f"Two stations are {d1 + d2} km apart. Trains leave toward each other at "
                     f"{s1} km/h and {s2} km/h. After how long do they meet?"
@@ -209,5 +209,29 @@ def generate_aptitude_questions(count: int = 100, seed: int = 201) -> list[Gener
             )
         )
         q_idx += 1
+
+    # 7. Extra Aptitude Cases (aptitude.extra)
+    extra_cases = [
+        ("A train 120 m long crosses a pole in 6 s. Speed in km/h?", "72 km/h", ["48 km/h", "60 km/h", "80 km/h"], "120/6 = 20 m/s = 72 km/h.", "Easy", "time-speed-distance", 1),
+        ("Pipe A fills in 4 h, pipe B empties in 6 h. Both open, empty tank fills in?", "12 hours", ["24 hours", "10 hours", "5 hours"], "Net rate 1/4 - 1/6 = 1/12 per hour.", "Medium", "time-work", 2),
+        ("Find the odd one out: 2, 3, 5, 9, 11", "9", ["2", "3", "5", "7"], "All except 9 are prime numbers.", "Easy", "number-series", 3),
+        ("If TODAY is coded as UQEBZ (each letter +1), how is WATER coded?", "XBUFS", ["XBVFT", "WAUFS", "XATFS"], "Each letter shifted +1: W->X, A->B, T->U, E->F, R->S.", "Medium", "coding-decoding", 4),
+        ("Statements: No cats are dogs. Some dogs are pets. Conclusion?", "Some pets are not cats", ["All pets are cats", "No pets are cats", "All dogs are cats"], "The pets that are dogs cannot be cats, so some pets are not cats.", "Medium", "syllogisms", 5),
+    ]
+    for prompt, ans, distractors, exp, diff, sub, ex_idx in extra_cases:
+        questions.append(
+            make_question(
+                id_str=f"gen-apt-extra-{ex_idx}",
+                topic="aptitude",
+                subtopic=sub,
+                difficulty=diff,  # type: ignore[arg-type]
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="aptitude.extra",
+                rng=rng,
+            )
+        )
 
     return questions[:count]

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Find the next term: 2, 6, 12, 20, 30, ?",
   "options": [
+    "41",
     "44",
-    "43",
     "42",
-    "41"
+    "43"
   ],
   "correct_index": 2,
   "explanation": "Differences 4, 6, 8, 10, 12 (n(n+1) pattern).",

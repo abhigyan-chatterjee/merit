@@ -7,9 +7,9 @@
   "prompt": "What does a foreign key constraint enforce?",
   "options": [
     "Referential integrity to a parent table's key",
-    "Uniqueness within one table",
+    "Index compression",
     "Non-null storage format",
-    "Index compression"
+    "Uniqueness within one table"
   ],
   "correct_index": 0,
   "explanation": "Foreign keys require matching parent rows.",

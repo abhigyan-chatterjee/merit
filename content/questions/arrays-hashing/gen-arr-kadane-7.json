@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "Using Kadane's algorithm, what is the maximum subarray sum in the integer array:\n`[3, -1, 2, -1, -2, 4]`?",
   "options": [
-    "11",
     "7",
+    "3",
     "1",
     "5"
   ],

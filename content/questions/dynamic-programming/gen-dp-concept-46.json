@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the difference between Top-Down Memoization and Bottom-Up Tabulation in Dynamic Programming?",
   "options": [
-    "Bottom-Up cannot handle 2D state spaces",
+    "Top-Down uses less time complexity than Bottom-Up",
     "Top-Down uses recursion with caching; Bottom-Up iteratively fills a table in topological dependency order",
     "Memoization never uses extra memory",
-    "Top-Down uses less time complexity than Bottom-Up"
+    "Bottom-Up cannot handle 2D state spaces"
   ],
   "correct_index": 1,
   "explanation": "Top-Down executes recursively on demand and saves computed subproblems in a cache. Bottom-Up starts from base cases and fills an array/table iteratively without recursion overhead.",

@@ -8,8 +8,8 @@
   "options": [
     "10",
     "8",
-    "6",
-    "12"
+    "12",
+    "14"
   ],
   "correct_index": 1,
   "explanation": "Applying Dijkstra's algorithm from source 1 greedily relaxes edges. The shortest distance to 5 is 8.",

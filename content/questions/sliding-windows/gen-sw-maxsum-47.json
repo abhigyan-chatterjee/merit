@@ -1,0 +1,20 @@
+{
+  "id": "gen-sw-maxsum-47",
+  "topic": "sliding-windows",
+  "subtopic": "fixed-window-max-sum",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given array `nums = [100, 200, 300, 400]` and window size `k = 2`, what is the maximum sum of any contiguous subarray of length 2 computed using a fixed-size sliding window?",
+  "options": [
+    "700",
+    "696",
+    "704",
+    "702"
+  ],
+  "correct_index": 0,
+  "explanation": "Maintaining a sliding window of size 2 and updating the sum in O(1) time per step finds the maximum subarray sum of 700.",
+  "source": "generated",
+  "generator_key": "sliding_windows.max_sum_fixed",
+  "content_hash": "a7d950725e528f15153516946c0bdbaff098f3d0dd7be36b0f59c0ae43275d6f",
+  "review_status": "verified"
+}

@@ -7,9 +7,9 @@
   "prompt": "Which of the following comparison-based sorting algorithms is guaranteed to be STABLE and runs in O(n log n) worst-case time?",
   "options": [
     "Heap Sort",
-    "Quick Sort",
+    "Selection Sort",
     "Merge Sort",
-    "Selection Sort"
+    "Quick Sort"
   ],
   "correct_index": 2,
   "explanation": "Merge Sort stably maintains relative order of duplicate elements and guarantees O(n log n) time across best, average, and worst cases.",

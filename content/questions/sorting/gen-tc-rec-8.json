@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 2T(n-1) + O(1) with base case T(1) = O(1)?",
   "options": [
+    "O(n!)",
     "O(n\u00b2)",
     "O(n log n)",
-    "O(n)",
     "O(2^n)"
   ],
   "correct_index": 3,

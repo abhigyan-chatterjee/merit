@@ -7,8 +7,8 @@
   "prompt": "What data structure allows querying the Longest Common Prefix (LCP) and finding all occurrences of any substring in a text of length N in O(M) time after O(N) construction?",
   "options": [
     "Suffix Tree or Suffix Automaton",
-    "Adjacency Matrix",
     "Disjoint Set Union",
+    "Adjacency Matrix",
     "Binary Search Tree"
   ],
   "correct_index": 0,

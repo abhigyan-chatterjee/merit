@@ -8,8 +8,8 @@
   "options": [
     "OS loads the page from disk, updates the page table, restarts the instruction",
     "The process is always killed",
-    "The TLB is disabled permanently",
-    "The disk is reformatted"
+    "The disk is reformatted",
+    "The TLB is disabled permanently"
   ],
   "correct_index": 0,
   "explanation": "A valid fault triggers page-in and instruction retry.",

@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Determine the worst-case asymptotic time complexity of the following code snippet with respect to input n:\n\n```text\nfor i from 1 to n:\n    for j from 1 to n with j *= 2:\n        sum += 1\n```",
   "options": [
-    "O(n\u00b2 log n)",
-    "O(n)",
     "O(n\u00b2)",
+    "O(n)",
+    "O(n\u00b2 log n)",
     "O(n log n)"
   ],
   "correct_index": 3,

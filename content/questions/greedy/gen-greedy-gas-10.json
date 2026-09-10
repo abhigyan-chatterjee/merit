@@ -1,0 +1,20 @@
+{
+  "id": "gen-greedy-gas-10",
+  "topic": "greedy",
+  "subtopic": "gas-station",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "There are 3 circular gas stations with `gas = [2, 3, 4]` and travel costs `cost = [3, 4, 3]`. What is the unique starting gas station index (0-indexed) that allows completing the full circuit, or -1 if impossible?",
+  "options": [
+    "-1",
+    "2",
+    "1",
+    "0"
+  ],
+  "correct_index": 0,
+  "explanation": "Total gas (9) is strictly less than total cost (10), meaning completing the full circle is impossible (returns -1).",
+  "source": "generated",
+  "generator_key": "greedy.gas_station_start",
+  "content_hash": "29c7a0ee078a1cd5521a15f5ce856eddfd9e3b934f510f0fdfe7078d1cf63a82",
+  "review_status": "verified"
+}

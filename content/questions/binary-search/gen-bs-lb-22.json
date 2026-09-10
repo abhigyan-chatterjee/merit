@@ -1,0 +1,20 @@
+{
+  "id": "gen-bs-lb-22",
+  "topic": "binary-search",
+  "subtopic": "lower-bound",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the sorted array `arr = [2, 5, 7, 10, 14]` and `target = 8`, binary search finds the first index `i` (0-indexed) where `arr[i] >= target` (`lower_bound` / `bisect_left`). If all elements are strictly less than `target`, `len(arr)` is returned. What index is returned?",
+  "options": [
+    "5",
+    "4",
+    "3",
+    "2"
+  ],
+  "correct_index": 2,
+  "explanation": "The first element in `arr` greater than or equal to 8 occurs at index 3 (or index 5 if target exceeds all elements).",
+  "source": "generated",
+  "generator_key": "binary_search.lower_bound",
+  "content_hash": "6d77f9b5ab3a10e02be8dfe1682f24b21b8cbb9770cfcac8682f564b404ea725",
+  "review_status": "verified"
+}

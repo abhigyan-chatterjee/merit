@@ -1,0 +1,20 @@
+{
+  "id": "gen-greedy-coin-3",
+  "topic": "greedy",
+  "subtopic": "canonical-coin-change",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In a canonical currency system with denominations `[25, 10, 5, 1]` cents, what is the minimum number of coins needed to make `99` cents using a greedy approach?",
+  "options": [
+    "7",
+    "8",
+    "12",
+    "9"
+  ],
+  "correct_index": 3,
+  "explanation": "Greedily picking largest coins first: 3x25c, 2x10c, 0x5c, and 4x1c totals 9 coins.",
+  "source": "generated",
+  "generator_key": "greedy.coin_change_greedy",
+  "content_hash": "5102d3551f6a084745f27c5c28bacf2c4b8358ad528d0adee9d5dbffdc4fa6ec",
+  "review_status": "verified"
+}

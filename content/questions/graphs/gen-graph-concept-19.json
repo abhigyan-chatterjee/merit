@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the worst-case space complexity of Kosaraju's algorithm for finding Strongly Connected Components in a directed graph?",
   "options": [
+    "O(log V)",
     "O(V\u00b2)",
-    "O(V * E)",
     "O(V + E)",
-    "O(log V)"
+    "O(V * E)"
   ],
   "correct_index": 2,
   "explanation": "Kosaraju's algorithm creates a transposed graph of size O(V + E) and performs two DFS passes, each requiring O(V) stack space and O(V) visited tracking.",

@@ -8,8 +8,8 @@
   "options": [
     "Bucket Sort",
     "Counting Sort",
-    "Radix Sort",
-    "Shell Sort"
+    "Shell Sort",
+    "Radix Sort"
   ],
   "correct_index": 1,
   "explanation": "Counting Sort tallies frequencies of keys in range [0..k] and computes prefix sums in O(n + k) time and space.",

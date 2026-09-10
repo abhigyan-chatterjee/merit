@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which algorithmic technique finds the shortest path between all pairs of vertices in a weighted graph with possible negative edges (no negative cycles) in O(V\u00b3) time?",
   "options": [
-    "Dijkstra with Fibonacci heaps",
+    "Johnson's algorithm",
     "Floyd-Warshall algorithm",
     "Bellman-Ford repeated V times",
-    "Johnson's algorithm"
+    "Dijkstra with Fibonacci heaps"
   ],
   "correct_index": 1,
   "explanation": "Floyd-Warshall is a dynamic programming algorithm using recurrence `dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])` with three nested loops over V vertices, running in O(V\u00b3) time.",

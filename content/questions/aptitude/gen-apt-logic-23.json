@@ -7,9 +7,9 @@
   "prompt": "A man walks 3 km north, then 4 km east. How far is he from the start?",
   "options": [
     "5 km",
-    "4 km",
     "7 km",
-    "6 km"
+    "6 km",
+    "4 km"
   ],
   "correct_index": 0,
   "explanation": "3-4-5 right triangle by Pythagoras.",

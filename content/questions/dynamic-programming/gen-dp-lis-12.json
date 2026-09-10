@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Given the integer sequence `[2, 4, 3, 5, 1, 7, 6, 9, 8]`, what is the length of the Longest Strictly Increasing Subsequence (LIS)?",
   "options": [
-    "4",
-    "8",
     "7",
+    "6",
+    "8",
     "5"
   ],
   "correct_index": 3,

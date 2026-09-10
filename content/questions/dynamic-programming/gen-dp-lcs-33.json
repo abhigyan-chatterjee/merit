@@ -8,8 +8,8 @@
   "options": [
     "1",
     "0",
-    "3",
-    "2"
+    "2",
+    "3"
   ],
   "correct_index": 1,
   "explanation": "Standard 2D DP matrix comparison between 'abc' and 'def' yields an LCS length of 0.",

@@ -1,18 +1,18 @@
 {
   "id": "gen-apt-extra-5",
   "topic": "aptitude",
-  "subtopic": "logical-reasoning",
+  "subtopic": "syllogisms",
   "difficulty": "Medium",
   "qtype": "mcq",
   "prompt": "Statements: No cats are dogs. Some dogs are pets. Conclusion?",
   "options": [
     "All pets are cats",
-    "No pets are dogs",
-    "All cats are pets",
+    "All dogs are cats",
+    "No pets are cats",
     "Some pets are not cats"
   ],
   "correct_index": 3,
-  "explanation": "The dogs that are pets cannot be cats.",
+  "explanation": "The pets that are dogs cannot be cats, so some pets are not cats.",
   "source": "generated",
   "generator_key": "aptitude.extra",
   "content_hash": "4f16334f937863e55122c9d141d908f0a8f7f6c2726bffbcfebe041c849bcc3b",

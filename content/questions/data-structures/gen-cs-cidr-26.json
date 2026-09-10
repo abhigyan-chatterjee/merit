@@ -7,9 +7,9 @@
   "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/26`?",
   "options": [
     "62",
-    "66",
-    "63",
-    "58"
+    "58",
+    "126",
+    "63"
   ],
   "correct_index": 0,
   "explanation": "A /26 subnet has 32 - 26 = 6 host bits, yielding 2^6 = 64 total addresses. Subtracting 2 (network and broadcast) yields 62 usable host IPs.",

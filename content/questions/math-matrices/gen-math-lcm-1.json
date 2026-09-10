@@ -1,0 +1,20 @@
+{
+  "id": "gen-math-lcm-1",
+  "topic": "math-matrices",
+  "subtopic": "number-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using the Euclidean algorithm for greatest common divisor `gcd(a, b)` and the relation `lcm(a, b) = (a * b) // gcd(a, b)`, what is the Least Common Multiple (LCM) of `12` and `18`?",
+  "options": [
+    "36",
+    "24",
+    "72",
+    "6"
+  ],
+  "correct_index": 0,
+  "explanation": "gcd(12, 18) = 6. Applying the identity lcm(12, 18) = (12 * 18) // 6 = 36.",
+  "source": "generated",
+  "generator_key": "math_matrices.gcd_lcm",
+  "content_hash": "edf992c120f1a976faf32ee432a85fffde3417d38ffeb4f6713672cd3d0ac09d",
+  "review_status": "verified"
+}

@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "An initially empty LIFO stack undergoes the following sequence of operations:\n`push(11) -> push(22) -> push(33) -> pop() -> push(44)`\n\nWhat value is currently at the top of the stack?",
   "options": [
-    "22",
     "33",
+    "22",
     "44",
     "11"
   ],

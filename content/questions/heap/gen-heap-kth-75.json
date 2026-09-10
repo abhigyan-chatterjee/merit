@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-kth-75",
+  "topic": "heap",
+  "subtopic": "kth-largest-element",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the unsorted array `nums = [7, 10, 4, 3, 20, 15]` and `k = 3`, a min-heap of size `k` is maintained while scanning through the array to find the k-th largest element. What is the value of the 3-th largest element in `nums`?",
+  "options": [
+    "7",
+    "15",
+    "10",
+    "20"
+  ],
+  "correct_index": 2,
+  "explanation": "Maintaining a min-heap of size 3 retains the 3 largest elements seen so far; the root of the heap gives the 3-th largest value, which is 10.",
+  "source": "generated",
+  "generator_key": "heap.kth_largest",
+  "content_hash": "7e7fd198159b7130eac92f1b9fe3e87da1209c2e4eeae07ecefec4a2dbb5cbbb",
+  "review_status": "verified"
+}

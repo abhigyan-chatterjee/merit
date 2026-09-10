@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Keys `[145, 95, 195, 70, 120, 170, 220]` are inserted into an initially empty Binary Search Tree. How many internal nodes (non-leaf nodes with at least one child) exist in the resulting tree?",
   "options": [
-    "4",
+    "5",
     "3",
-    "2",
-    "6"
+    "6",
+    "2"
   ],
   "correct_index": 1,
   "explanation": "With 7 total nodes and 4 leaves, the number of internal nodes is 7 - 4 = 3.",

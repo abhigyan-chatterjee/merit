@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Keys `[210, 160, 260, 135, 185, 235, 285]` are inserted into an initially empty Binary Search Tree. How many leaf nodes (nodes with no left or right children) exist in the resulting tree?",
   "options": [
-    "6",
-    "3",
     "5",
+    "3",
+    "6",
     "4"
   ],
   "correct_index": 3,

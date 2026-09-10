@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "In an Operating System virtual memory system with `3` physical page frames initially empty, the page reference stream is:\n`[1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]`\n\nUsing the First-In First-Out (FIFO) page replacement algorithm, how many total page faults occur?",
   "options": [
-    "8",
+    "12",
     "9",
     "10",
-    "12"
+    "11"
   ],
   "correct_index": 1,
   "explanation": "Tracking FIFO queue eviction on misses results in 9 page faults.",

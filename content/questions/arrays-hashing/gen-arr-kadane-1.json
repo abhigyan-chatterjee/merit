@@ -8,8 +8,8 @@
   "options": [
     "6",
     "12",
-    "2",
-    "8"
+    "10",
+    "2"
   ],
   "correct_index": 0,
   "explanation": "Kadane's algorithm maintains `currMax = max(x, currMax + x)`. The maximum contiguous subarray sum is 6.",

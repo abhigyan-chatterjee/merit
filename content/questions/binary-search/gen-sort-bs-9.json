@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Binary search with integer division `mid = (low + high) // 2` searches for target `21` in the sorted array:\n`[7, 14, 21, 28, 35, 42, 49, 56, 63, 70]`\n\nWhat is the exact sequence of indices checked at `mid` until finding the target?",
   "options": [
-    "3, 0, 1",
+    "2, 0, 0",
     "6, 3, 4",
     "4, 1, 2",
-    "5, 2, 3"
+    "3, 0, 1"
   ],
   "correct_index": 2,
   "explanation": "Tracing standard binary search: low and high intervals update, checking index sequence [4, 1, 2] where arr[2] == 21.",

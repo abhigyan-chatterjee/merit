@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What does a TCP SYN flood attack exhaust?",
   "options": [
-    "DNS cache",
+    "BGP routes",
     "TLS certificates",
     "The server's half-open connection backlog",
-    "BGP routes"
+    "DNS cache"
   ],
   "correct_index": 2,
   "explanation": "Unanswered SYNs fill the backlog queue.",

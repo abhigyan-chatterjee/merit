@@ -7,8 +7,8 @@
   "prompt": "What is the result of applying XOR between any integer x and itself (`x ^ x`)?",
   "options": [
     "x",
-    "1",
     "-1",
+    "1",
     "0"
   ],
   "correct_index": 3,

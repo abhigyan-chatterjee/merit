@@ -2,12 +2,12 @@
   "id": "gen-core-design-scaling-18",
   "topic": "core-cs",
   "subtopic": "design-scaling",
-  "difficulty": "Medium",
+  "difficulty": "Hard",
   "qtype": "mcq",
   "prompt": "Where should rate limiting live for a public API gateway?",
   "options": [
-    "Inside the database trigger",
     "Only in batch jobs",
+    "Inside the database trigger",
     "In each browser tab",
     "At the edge/gateway with a token-bucket per key"
   ],

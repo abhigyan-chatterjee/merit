@@ -1,0 +1,20 @@
+{
+  "id": "gen-bs-koko-26",
+  "topic": "binary-search",
+  "subtopic": "binary-search-answer-space",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "There are piles of bananas `piles = [30, 11, 23, 4, 20]` and guards return in `h = 5` hours. Koko eats at a speed of `k` bananas/hour (taking `ceil(pile / k)` hours per pile). Using binary search on the answer space `[1, max(piles)]`, what is the minimum integer eating speed `k` to eat all bananas within `5` hours?",
+  "options": [
+    "31",
+    "32",
+    "29",
+    "30"
+  ],
+  "correct_index": 3,
+  "explanation": "Binary searching the answer space [1..30] checks whether the sum of ceiling hours is <= 5. The minimum feasible integer speed is 30 bananas/hour.",
+  "source": "generated",
+  "generator_key": "binary_search.koko_eating_bananas",
+  "content_hash": "1175a129f01961fdad63fb6ddac34b0bc0227d6746ae4a6aea16a4d28e60c7b2",
+  "review_status": "verified"
+}

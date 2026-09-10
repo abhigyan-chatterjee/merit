@@ -1,0 +1,20 @@
+{
+  "id": "gen-inv-rooms-6",
+  "topic": "intervals",
+  "subtopic": "meeting-rooms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given meeting time intervals `intervals = [[7, 10], [2, 4]]` where `intervals[i] = [start, end]`, what is the minimum number of conference rooms required so no two overlapping meetings share a room?",
+  "options": [
+    "2",
+    "3",
+    "1",
+    "4"
+  ],
+  "correct_index": 2,
+  "explanation": "The minimum number of rooms equals the maximum number of concurrent overlapping meetings at any point in time. A sweep-line or min-heap on end times determines that 1 room(s) are needed.",
+  "source": "generated",
+  "generator_key": "intervals.min_meeting_rooms",
+  "content_hash": "e6ede9eef08733f3a9ece7ff57d0af4818a46896d74ddf93d5189af105db7a45",
+  "review_status": "verified"
+}

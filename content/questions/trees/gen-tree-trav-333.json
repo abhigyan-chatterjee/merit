@@ -7,9 +7,9 @@
   "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[125, 75, 175, 50, 100, 150, 200]`\n\nWhat is the exact **Level-order** traversal sequence of this tree?",
   "options": [
     "125, 75, 175, 50, 100, 150, 200",
-    "50, 100, 75, 150, 200, 175, 125",
     "50, 75, 100, 125, 150, 175, 200",
-    "125, 75, 50, 100, 175, 150, 200"
+    "125, 75, 50, 100, 175, 150, 200",
+    "50, 100, 75, 150, 200, 175, 125"
   ],
   "correct_index": 0,
   "explanation": "Level-order traversal (BFS) processes nodes level-by-level from top to bottom, left to right: [125, 75, 175, 50, 100, 150, 200].",

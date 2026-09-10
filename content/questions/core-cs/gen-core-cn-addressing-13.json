@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "In CIDR, what does the prefix length /24 leave for hosts?",
   "options": [
-    "16 host bits",
     "24 host bits",
+    "16 host bits",
     "8 host bits (254 usable)",
     "No hosts"
   ],

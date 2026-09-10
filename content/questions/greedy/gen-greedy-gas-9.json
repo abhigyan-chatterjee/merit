@@ -1,0 +1,20 @@
+{
+  "id": "gen-greedy-gas-9",
+  "topic": "greedy",
+  "subtopic": "gas-station",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "There are 5 circular gas stations with `gas = [1, 2, 3, 4, 5]` and travel costs `cost = [3, 4, 5, 1, 2]`. What is the unique starting gas station index (0-indexed) that allows completing the full circuit, or -1 if impossible?",
+  "options": [
+    "0",
+    "3",
+    "2",
+    "-1"
+  ],
+  "correct_index": 1,
+  "explanation": "Total gas (15) >= total cost (15), guaranteeing a solution exists. Starting at index 3 maintains a non-negative fuel balance across all stations.",
+  "source": "generated",
+  "generator_key": "greedy.gas_station_start",
+  "content_hash": "d30916ce84172c0b2af7ddcf68e24296a8e6e194fd23d9d31e8ff896d4754d65",
+  "review_status": "verified"
+}

@@ -7,8 +7,8 @@
   "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/29`?",
   "options": [
     "7",
-    "14",
-    "10",
+    "8",
+    "2",
     "6"
   ],
   "correct_index": 3,

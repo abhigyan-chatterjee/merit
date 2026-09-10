@@ -6,13 +6,13 @@
   "qtype": "mcq",
   "prompt": "Find the odd one out: 2, 3, 5, 9, 11",
   "options": [
-    "5",
-    "11",
     "2",
+    "7",
+    "3",
     "9"
   ],
   "correct_index": 3,
-  "explanation": "9 is composite; the rest are prime.",
+  "explanation": "All except 9 are prime numbers.",
   "source": "generated",
   "generator_key": "aptitude.extra",
   "content_hash": "927eef00cafe7b53d47d04a55737a3c9ea4fc934edfcbecc68ed7f5dc2067e25",

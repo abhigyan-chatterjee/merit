@@ -60,7 +60,7 @@ def make_question(
 ) -> GeneratedQuestion:
     """Build a validated GeneratedQuestion with shuffled options and computed hash."""
     clean_correct = correct_answer.strip()
-    clean_distractors = list({d.strip() for d in distractors if d.strip() != clean_correct})
+    clean_distractors = sorted({d.strip() for d in distractors if d.strip() != clean_correct})
     if len(clean_distractors) < 3:
         raise ValueError(f"Need at least 3 distinct distractors for question {id_str}. Got: {distractors}")
 

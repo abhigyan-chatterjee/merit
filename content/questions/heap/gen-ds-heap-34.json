@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Elements `[50, 30, 20, 15, 10, 8, 16]` are placed into an array and converted into a Min-Heap using Floyd's bottom-up buildHeap algorithm. Which array representation satisfies the min-heap parent-child invariant `A[i] <= A[2i+1]` and `A[i] <= A[2i+2]`?",
   "options": [
-    "[50, 30, 20, 16, 15, 10, 8]",
-    "[30, 20, 15, 10, 8, 16, 50]",
+    "[16, 8, 10, 15, 20, 30, 50]",
+    "[16, 50, 30, 20, 15, 10, 8]",
     "[8, 10, 16, 15, 30, 20, 50]",
-    "[16, 8, 10, 15, 20, 30, 50]"
+    "[30, 20, 15, 10, 8, 16, 50]"
   ],
   "correct_index": 2,
   "explanation": "A valid binary min-heap must satisfy A[i] <= children for every parent. Bottom-up heapify rearranges `[50, 30, 20, 15, 10, 8, 16]` to `[8, 10, 16, 15, 30, 20, 50]`.",

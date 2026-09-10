@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-pfx-3",
+  "topic": "trie",
+  "subtopic": "prefix-queries",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A standard Trie is populated with the word list: `['code', 'coder', 'coding', 'codec', 'data', 'date']`. How many words in the Trie have the prefix `\"cod\"`?",
+  "options": [
+    "6",
+    "4",
+    "5",
+    "2"
+  ],
+  "correct_index": 1,
+  "explanation": "Traversing the Trie down the characters of prefix 'cod' reaches a node whose subtree contains exactly 4 marked terminal word nodes.",
+  "source": "generated",
+  "generator_key": "trie.prefix_count",
+  "content_hash": "dfd13c08158a27fdc4e3c732bab06c0f8095286680d8c5d1c3a08bc31a84bf68",
+  "review_status": "verified"
+}

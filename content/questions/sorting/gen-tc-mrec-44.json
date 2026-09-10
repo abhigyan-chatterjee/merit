@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Solve the asymptotic recurrence relation for an algorithm with base case T(1) = O(1):\n`T(n) = 9T(n/3) + O(n)`",
   "options": [
-    "O(n log n)",
+    "O(n\u00b3)",
     "O(n\u00b2)",
-    "O(n)",
-    "O(n\u00b3)"
+    "O(n log n)",
+    "O(n)"
   ],
   "correct_index": 1,
   "explanation": "Case 1: a=9, b=3, log\u2083 9 = 2. f(n) = O(n\u00b9), so \u0398(n\u00b2).",

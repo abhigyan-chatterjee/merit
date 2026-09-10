@@ -7,8 +7,8 @@
   "prompt": "Analyze the time complexity of the following algorithm on input n:\n\n```text\nfor i from 1 to n:\n    j = 1\n    while j <= n:\n        j *= 8\n```",
   "options": [
     "O(log n)",
-    "O(n * 8)",
     "O(n\u00b2)",
+    "O(n\u00b2 log n)",
     "O(n log n)"
   ],
   "correct_index": 3,

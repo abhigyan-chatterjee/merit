@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "If A's salary is 25% more than B's, B's is what % less than A's? Give only the number %.",
   "options": [
+    "30 %",
     "15 %",
-    "40 %",
     "25 %",
     "20 %"
   ],

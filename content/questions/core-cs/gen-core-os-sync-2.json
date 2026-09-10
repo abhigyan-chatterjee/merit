@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What does a counting semaphore initialized to N directly control?",
   "options": [
-    "Exactly one thread total",
     "Deadlock freedom",
+    "CPU affinity",
     "Up to N concurrent accesses to a resource pool",
-    "CPU affinity"
+    "Exactly one thread total"
   ],
   "correct_index": 2,
   "explanation": "The semaphore value tracks N identical resource units.",

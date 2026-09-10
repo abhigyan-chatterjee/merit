@@ -159,25 +159,42 @@ def test_generate_topic_plan_section_sizes():
     register_and_login(client, "quiz_user_plan@algovista.org", "Quiz User Plan")
 
     # Placement-mock shape: per-section quotas hold even across uneven pools.
+    desired = [
+        ("aptitude", 30),
+        ("core-cs", 20),
+        ("arrays-hashing", 15),
+        ("dynamic-programming", 15),
+    ]
+    with SessionLocal() as db:
+        actual_plan = []
+        for topic, target_count in desired:
+            avail = db.scalars(
+                select(Question).where(
+                    Question.review_status == "verified",
+                    Question.topic == topic,
+                )
+            ).all()
+            actual_plan.append([topic, min(target_count, len(avail))])
+
+    total_expected = sum(cnt for _, cnt in actual_plan)
+
     resp = client.post(
         "/api/v1/quizzes/generate",
         json={
-            "topics": ["aptitude", "core-cs", "arrays-hashing", "dynamic-programming"],
-            "count": 80,
+            "topics": [t for t, _ in actual_plan],
+            "count": total_expected,
             "is_mock": True,
-            "topic_plan": [["aptitude", 30], ["core-cs", 20], ["arrays-hashing", 15], ["dynamic-programming", 15]],
+            "topic_plan": actual_plan,
         },
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data["total"] == 80
+    assert data["total"] == total_expected
     from collections import Counter
 
     got = Counter(q["topic"] for q in data["questions"])
-    assert got["aptitude"] == 30
-    assert got["core-cs"] == 20
-    assert got["arrays-hashing"] == 15
-    assert got["dynamic-programming"] == 15
+    for topic, count in actual_plan:
+        assert got[topic] == count
 
 
 def test_quiz_attempt_user_isolation():

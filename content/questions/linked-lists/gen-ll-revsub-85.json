@@ -1,0 +1,20 @@
+{
+  "id": "gen-ll-revsub-85",
+  "topic": "linked-lists",
+  "subtopic": "reverse-sublist",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given the head of a singly linked list containing 1-indexed node values `1, 2, ..., 5`, the sublist from position `2` to `4` (inclusive) is reversed in-place in a single pass. What is the resulting sequence of node values in the list?",
+  "options": [
+    "[1, 4, 3, 2, 5]",
+    "[1, 2, 3, 4, 5]",
+    "[5, 1, 2, 3, 4]",
+    "[2, 3, 4, 5, 1]"
+  ],
+  "correct_index": 0,
+  "explanation": "Reversing only nodes between position 2 and 4 reconnects the predecessor and successor, producing the order [1, 4, 3, 2, 5].",
+  "source": "generated",
+  "generator_key": "linked_lists.reverse_sublist",
+  "content_hash": "55762b2fdfd94f3e606a879e6da02863b3d22e9dc6a0e83a31fc6cd56cc5dc2c",
+  "review_status": "verified"
+}

@@ -2,13 +2,13 @@
   "id": "gen-cs-os-lru-7",
   "topic": "data-structures",
   "subtopic": "virtual-memory",
-  "difficulty": "Medium",
+  "difficulty": "Hard",
   "qtype": "mcq",
   "prompt": "In an Operating System virtual memory system with `4` physical page frames initially empty, the page reference stream is:\n`[1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6]`\n\nUsing the Least Recently Used (LRU) page replacement algorithm, how many total page faults occur?",
   "options": [
     "10",
-    "9",
     "13",
+    "9",
     "11"
   ],
   "correct_index": 0,

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "How many usable host IP addresses are available in an IPv4 subnet with CIDR prefix /26?",
   "options": [
-    "30",
+    "64",
     "126",
     "62",
-    "64"
+    "30"
   ],
   "correct_index": 2,
   "explanation": "A /26 subnet leaves 32 - 26 = 6 host bits. 2^6 = 64 total addresses. Subtracting 2 (network address and broadcast address) yields 62 usable host addresses.",

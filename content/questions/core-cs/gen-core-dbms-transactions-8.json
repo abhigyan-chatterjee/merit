@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which isolation level guarantees full serializability?",
   "options": [
-    "Read uncommitted",
-    "Serializable",
     "Read committed",
-    "Repeatable read"
+    "Serializable",
+    "Repeatable read",
+    "Read uncommitted"
   ],
   "correct_index": 1,
   "explanation": "Serializable executes as if transactions ran one after another.",

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 8T(n/2) + O(n\u00b2) with base case T(1) = O(1)?",
   "options": [
+    "O(n log n)",
     "O(n\u00b2)",
-    "O(2^n)",
     "O(n\u00b3)",
-    "O(n\u2074)"
+    "O(2^n)"
   ],
   "correct_index": 2,
   "explanation": "Case 1 of Master Theorem: a=8, b=2, log_2(8)=3. Since f(n)=O(n\u00b2), T(n) = \u0398(n\u00b3).",

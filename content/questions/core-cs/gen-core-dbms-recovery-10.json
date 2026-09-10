@@ -7,8 +7,8 @@
   "prompt": "Why does a database use write-ahead logging (WAL)?",
   "options": [
     "To shard tables",
-    "To compress backups",
     "To speed up SELECT parsing",
+    "To compress backups",
     "To guarantee durability by persisting intent before applying changes"
   ],
   "correct_index": 3,

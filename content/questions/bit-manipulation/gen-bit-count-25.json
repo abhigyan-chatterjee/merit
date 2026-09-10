@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "How many set bits (1s in binary representation) are in the integer `100` (`0b1100100`)? This can be computed in O(k) iterations using Brian Kernighan's algorithm `n = n & (n - 1)`.",
   "options": [
-    "2",
-    "4",
+    "6",
     "5",
+    "4",
     "3"
   ],
   "correct_index": 3,

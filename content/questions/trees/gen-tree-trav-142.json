@@ -7,9 +7,9 @@
   "prompt": "A Binary Search Tree (BST) is constructed by sequentially inserting the following keys into an initially empty tree:\n`[16, 8, 24, 4, 12, 20, 28, 2]`\n\nWhat is the exact **Preorder** traversal sequence of this tree?",
   "options": [
     "2, 4, 12, 8, 20, 28, 24, 16",
-    "16, 8, 24, 4, 12, 20, 28, 2",
+    "2, 4, 8, 12, 16, 20, 24, 28",
     "16, 8, 4, 2, 12, 24, 20, 28",
-    "2, 4, 8, 12, 16, 20, 24, 28"
+    "16, 8, 24, 4, 12, 20, 28, 2"
   ],
   "correct_index": 2,
   "explanation": "Preorder traversal visits Root -> Left Subtree -> Right Subtree. Root 16 is visited first, recursively followed by its left and right descendants: [16, 8, 4, 2, 12, 24, 20, 28].",

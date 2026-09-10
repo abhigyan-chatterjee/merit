@@ -1,0 +1,20 @@
+{
+  "id": "gen-2ptr-rain-11",
+  "topic": "two-pointers",
+  "subtopic": "trapping-rain-water",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given the elevation map bar heights `height = [3, 0, 2, 0, 4]` where width of each bar is 1, two converging pointers track `left_max` and `right_max` to compute trapped water. How many total units of rain water are trapped after raining?",
+  "options": [
+    "9",
+    "10",
+    "8",
+    "7"
+  ],
+  "correct_index": 3,
+  "explanation": "At each position, water trapped is bounded by min(left_max, right_max) - height[i]. Summing across all bars yields exactly 7 units of trapped rain water.",
+  "source": "generated",
+  "generator_key": "two_pointers.trapping_rain_water",
+  "content_hash": "b4a79ee17be13942dce0bdf4c6b83d89873b563db5af220f6b6e62cdbfd8edac",
+  "review_status": "verified"
+}

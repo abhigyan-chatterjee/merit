@@ -6,12 +6,12 @@
   "qtype": "mcq",
   "prompt": "A train 120 m long crosses a pole in 6 s. Speed in km/h?",
   "options": [
-    "48 km/h",
-    "60 km/h",
     "72 km/h",
-    "80 km/h"
+    "48 km/h",
+    "80 km/h",
+    "60 km/h"
   ],
-  "correct_index": 2,
+  "correct_index": 0,
   "explanation": "120/6 = 20 m/s = 72 km/h.",
   "source": "generated",
   "generator_key": "aptitude.extra",

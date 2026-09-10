@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "In a B+ tree index, where is the actual row data stored?",
   "options": [
-    "In the root only",
+    "Nowhere; B+ trees store hashes",
     "In every internal node",
     "Only in the leaf nodes, linked in key order",
-    "Nowhere; B+ trees store hashes"
+    "In the root only"
   ],
   "correct_index": 2,
   "explanation": "Internal nodes hold separators; leaves hold ordered records.",

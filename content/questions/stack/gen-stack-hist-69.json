@@ -1,0 +1,20 @@
+{
+  "id": "gen-stack-hist-69",
+  "topic": "stack",
+  "subtopic": "monotonic-stack-histogram",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given an array of histogram bar heights `heights = [2, 1, 5, 6, 2, 3]` (where width of each bar is 1), a monotonic increasing stack is used to find the maximum rectangular area in O(N) time. What is the area of the largest rectangle in the histogram?",
+  "options": [
+    "16",
+    "8",
+    "14",
+    "10"
+  ],
+  "correct_index": 3,
+  "explanation": "Using a monotonic increasing stack to determine left and right smaller boundaries for each bar, the maximum rectangle area formed is 10.",
+  "source": "generated",
+  "generator_key": "stack.largest_rectangle_histogram",
+  "content_hash": "f3ce623aaf4a63642c26a002287e33d29caa404ea6ed4dc0e96308d1f7e811fb",
+  "review_status": "verified"
+}

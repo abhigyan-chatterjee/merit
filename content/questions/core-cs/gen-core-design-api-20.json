@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "What makes an API design RESTful for a resource collection?",
   "options": [
-    "Stateful sessions with RPC verbs",
-    "Single POST endpoint for everything",
     "XML-only payloads",
+    "Single POST endpoint for everything",
+    "Stateful sessions with RPC verbs",
     "Stateless verbs on nouns with status codes and pagination"
   ],
   "correct_index": 3,

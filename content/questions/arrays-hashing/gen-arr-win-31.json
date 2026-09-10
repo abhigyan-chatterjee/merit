@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Using a sliding window of fixed size `k = 2`, what is the **maximum subarray sum** over all contiguous subarrays of size 2 in array `[100, 200, 300, 400]`?",
   "options": [
-    "695",
+    "703",
     "700",
-    "706",
+    "695",
     "698"
   ],
   "correct_index": 1,

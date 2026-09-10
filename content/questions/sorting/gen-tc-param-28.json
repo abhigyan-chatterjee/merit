@@ -7,8 +7,8 @@
   "prompt": "Analyze the worst-case time complexity of the following algorithm on input n:\n\n```text\ni = 1\nwhile i <= n:\n    i *= 4\n```",
   "options": [
     "O(log n)",
+    "O(1)",
     "O(n)",
-    "O(n / 4)",
     "O(\u221an)"
   ],
   "correct_index": 0,

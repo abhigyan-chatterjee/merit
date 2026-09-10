@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-pfx-2",
+  "topic": "trie",
+  "subtopic": "prefix-queries",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A standard Trie is populated with the word list: `['car', 'cart', 'carpet', 'care', 'carbon', 'dog']`. How many words in the Trie have the prefix `\"car\"`?",
+  "options": [
+    "4",
+    "5",
+    "7",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "Traversing the Trie down the characters of prefix 'car' reaches a node whose subtree contains exactly 5 marked terminal word nodes.",
+  "source": "generated",
+  "generator_key": "trie.prefix_count",
+  "content_hash": "6f37fe5fe38f522ca8cee3785297020f043930f7999fd10d241218a90b63053e",
+  "review_status": "verified"
+}

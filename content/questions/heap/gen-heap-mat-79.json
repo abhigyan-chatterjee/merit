@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-mat-79",
+  "topic": "heap",
+  "subtopic": "kth-smallest-matrix",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given an `n x n` matrix `matrix = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]` where each row and column is sorted in ascending order, a min-heap of row heads is used to extract elements in order. What is the value of the `4`-th smallest element in the matrix?",
+  "options": [
+    "4",
+    "6",
+    "7",
+    "2"
+  ],
+  "correct_index": 0,
+  "explanation": "Using a min-heap initialized with the first element of each row and popping k times (pushing the next element in the same row) finds the 4-th smallest value 4.",
+  "source": "generated",
+  "generator_key": "heap.kth_smallest_matrix",
+  "content_hash": "20b3f49b14a274daa492612eba94cb6b04f314bb6760591680c45d992704d9ce",
+  "review_status": "verified"
+}

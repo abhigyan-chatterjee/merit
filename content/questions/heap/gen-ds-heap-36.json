@@ -7,9 +7,9 @@
   "prompt": "Elements `[100, 70, 60, 50, 40, 30, 20]` are placed into an array and converted into a Min-Heap using Floyd's bottom-up buildHeap algorithm. Which array representation satisfies the min-heap parent-child invariant `A[i] <= A[2i+1]` and `A[i] <= A[2i+2]`?",
   "options": [
     "[20, 40, 30, 50, 70, 100, 60]",
-    "[20, 100, 70, 60, 50, 40, 30]",
     "[20, 30, 40, 50, 60, 70, 100]",
-    "[70, 60, 50, 40, 30, 20, 100]"
+    "[20, 100, 70, 60, 50, 40, 30]",
+    "[100, 70, 60, 50, 40, 30, 20]"
   ],
   "correct_index": 0,
   "explanation": "A valid binary min-heap must satisfy A[i] <= children for every parent. Bottom-up heapify rearranges `[100, 70, 60, 50, 40, 30, 20]` to `[20, 40, 30, 50, 70, 100, 60]`.",

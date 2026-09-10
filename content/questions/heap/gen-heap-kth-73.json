@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-kth-73",
+  "topic": "heap",
+  "subtopic": "kth-largest-element",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the unsorted array `nums = [3, 2, 1, 5, 6, 4]` and `k = 2`, a min-heap of size `k` is maintained while scanning through the array to find the k-th largest element. What is the value of the 2-th largest element in `nums`?",
+  "options": [
+    "5",
+    "2",
+    "1",
+    "3"
+  ],
+  "correct_index": 0,
+  "explanation": "Maintaining a min-heap of size 2 retains the 2 largest elements seen so far; the root of the heap gives the 2-th largest value, which is 5.",
+  "source": "generated",
+  "generator_key": "heap.kth_largest",
+  "content_hash": "1631a6de73d1c5415a86560ccf417ffb4121be100efa8a226a4a0054b36ccbe1",
+  "review_status": "verified"
+}

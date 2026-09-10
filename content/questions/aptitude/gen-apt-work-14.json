@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "A finishes a job in 6 days, B in 12 days. Together, how long?",
   "options": [
+    "9.0 days",
     "7 days",
-    "6 days",
     "4.0 days",
-    "9.0 days"
+    "6 days"
   ],
   "correct_index": 2,
   "explanation": "Combined rate 1/6 + 1/12 per day gives 4.0 days.",

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Find the next term: 5, 11, 23, 47, ?",
   "options": [
-    "96",
+    "94",
     "97",
     "95",
-    "94"
+    "96"
   ],
   "correct_index": 2,
   "explanation": "Each term is 2x + 1.",

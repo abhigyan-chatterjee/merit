@@ -8,8 +8,8 @@
   "options": [
     "O(N * W) pseudo-polynomial time",
     "O(N\u00b2 + W) linear time",
-    "O(2^N) exponential time",
-    "O(N log W) strictly polynomial"
+    "O(N log W) strictly polynomial",
+    "O(2^N) exponential time"
   ],
   "correct_index": 0,
   "explanation": "The DP table requires filling N * W cells, with O(1) work per cell. Because runtime is proportional to the numeric value of W rather than the input bit-length log(W), it is classified as pseudo-polynomial.",

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the time complexity of searching for a word of length L in a standard Trie containing N total words of average length M?",
   "options": [
-    "O(M * log N)",
+    "O(log N)",
     "O(N * L)",
     "O(L)",
-    "O(log N)"
+    "O(M * log N)"
   ],
   "correct_index": 2,
   "explanation": "Trie lookup checks one edge per character of the query string. Finding or failing a word of length L takes exactly O(L) time, completely independent of the number of words N stored in the Trie.",

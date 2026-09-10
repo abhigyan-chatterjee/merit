@@ -2,12 +2,12 @@
   "id": "gen-bit-lowest-14",
   "topic": "bit-manipulation",
   "subtopic": "bit-tricks",
-  "difficulty": "Medium",
+  "difficulty": "Hard",
   "qtype": "mcq",
   "prompt": "What is the result of evaluating the bitwise expression `n & (-n)` when `n = 53`? (This expression isolates the lowest set bit using two's complement arithmetic).",
   "options": [
-    "2",
     "4",
+    "3",
     "0",
     "1"
   ],

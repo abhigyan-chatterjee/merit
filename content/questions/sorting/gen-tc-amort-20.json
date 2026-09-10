@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "Regarding computational complexity analysis: What is the auxiliary space complexity of Breadth-First Search on a balanced binary tree of n nodes?. Which of the following correctly characterizes the complexity?",
   "options": [
-    "O(1)",
     "O(log n)",
+    "O(1)",
     "O(n log n)",
     "O(n)"
   ],

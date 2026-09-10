@@ -8,8 +8,8 @@
   "options": [
     "4, 1, 2",
     "6, 3, 4",
-    "2, 0, 0",
-    "5, 2, 3"
+    "5, 2, 3",
+    "3, 0, 1"
   ],
   "correct_index": 0,
   "explanation": "Tracing standard binary search: low and high intervals update, checking index sequence [4, 1, 2] where arr[2] == 13.",

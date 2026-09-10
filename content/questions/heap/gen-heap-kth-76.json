@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-kth-76",
+  "topic": "heap",
+  "subtopic": "kth-largest-element",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the unsorted array `nums = [12, 3, 5, 7, 19]` and `k = 1`, a min-heap of size `k` is maintained while scanning through the array to find the k-th largest element. What is the value of the 1-th largest element in `nums`?",
+  "options": [
+    "12",
+    "5",
+    "7",
+    "19"
+  ],
+  "correct_index": 3,
+  "explanation": "Maintaining a min-heap of size 1 retains the 1 largest elements seen so far; the root of the heap gives the 1-th largest value, which is 19.",
+  "source": "generated",
+  "generator_key": "heap.kth_largest",
+  "content_hash": "e5c071fdb6354b1f9a9aca4e110f591c62b2b077519ecce454fcae7fbb125bab",
+  "review_status": "verified"
+}

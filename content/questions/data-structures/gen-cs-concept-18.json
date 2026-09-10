@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What packet sequence constitutes the standard TCP 3-Way Handshake connection establishment?",
   "options": [
-    "ACK -> SYN -> SYN-ACK",
     "SYN -> ACK -> DATA",
+    "FIN -> FIN-ACK -> ACK",
     "SYN -> SYN-ACK -> ACK",
-    "FIN -> FIN-ACK -> ACK"
+    "ACK -> SYN -> SYN-ACK"
   ],
   "correct_index": 2,
   "explanation": "Client sends SYN; Server responds with SYN-ACK; Client sends ACK acknowledging the server's sequence number, establishing the TCP connection.",

@@ -8,8 +8,8 @@
   "options": [
     "4",
     "3",
-    "6",
-    "5"
+    "5",
+    "6"
   ],
   "correct_index": 0,
   "explanation": "Integer 23 has binary representation 0b10111, containing exactly 4 set bit(s).",

@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Given array `[15, 25, 35, 45]`, what is the range sum of elements from index 0 to 2 inclusive (`nums[0..2]`) computed in O(1) time using a precomputed prefix sum array?",
   "options": [
-    "90",
-    "75",
     "85",
+    "75",
+    "80",
     "72"
   ],
   "correct_index": 1,

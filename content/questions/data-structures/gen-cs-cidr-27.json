@@ -6,7 +6,7 @@
   "qtype": "mcq",
   "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/27`?",
   "options": [
-    "26",
+    "62",
     "31",
     "30",
     "32"

@@ -7,9 +7,9 @@
   "prompt": "For a read-heavy feed, which cache strategy keeps hot timelines fast?",
   "options": [
     "Cache-aside with TTL plus write-through on post",
-    "Write-behind without TTL",
     "Client-side only cache",
-    "No cache at all"
+    "No cache at all",
+    "Write-behind without TTL"
   ],
   "correct_index": 0,
   "explanation": "Hot reads hit memory; TTL bounds staleness; writes refresh entries.",

@@ -1,0 +1,20 @@
+{
+  "id": "gen-math-lcm-4",
+  "topic": "math-matrices",
+  "subtopic": "number-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using the Euclidean algorithm for greatest common divisor `gcd(a, b)` and the relation `lcm(a, b) = (a * b) // gcd(a, b)`, what is the Least Common Multiple (LCM) of `24` and `36`?",
+  "options": [
+    "84",
+    "12",
+    "60",
+    "72"
+  ],
+  "correct_index": 3,
+  "explanation": "gcd(24, 36) = 12. Applying the identity lcm(24, 36) = (24 * 36) // 12 = 72.",
+  "source": "generated",
+  "generator_key": "math_matrices.gcd_lcm",
+  "content_hash": "cee7ad814d9f276ac2b18ab8df2e1fa50bf02f8ca87fce36ca52d7739d078f8e",
+  "review_status": "verified"
+}

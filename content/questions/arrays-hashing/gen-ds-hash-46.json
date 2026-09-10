@@ -8,8 +8,8 @@
   "options": [
     "1",
     "0",
-    "2",
-    "3"
+    "3",
+    "2"
   ],
   "correct_index": 0,
   "explanation": "Key 26 has initial hash 26 % 7 = 5. Due to prior collisions, it requires 4 probe(s) and lands in slot 1.",

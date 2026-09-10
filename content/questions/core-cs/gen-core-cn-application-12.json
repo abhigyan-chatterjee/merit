@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "What does DNS resolve?",
   "options": [
-    "MAC to IP",
     "Ports to processes",
+    "MAC to IP",
     "URLs to checksums",
     "Hostnames to IP addresses"
   ],

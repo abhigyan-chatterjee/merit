@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-nodes-6",
+  "topic": "trie",
+  "subtopic": "trie-structure",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "The following list of words is inserted into an initially empty Trie:\n`['to', 'tea', 'ted', 'ten', 'a', 'inn']`\n\nIncluding the empty root node, what is the total number of distinct nodes in the resulting Trie?",
+  "options": [
+    "16",
+    "13",
+    "11",
+    "12"
+  ],
+  "correct_index": 2,
+  "explanation": "Shared common prefixes reuse existing nodes along the path. Counting the root node plus every distinct prefix character path produces exactly 11 nodes.",
+  "source": "generated",
+  "generator_key": "trie.node_count",
+  "content_hash": "4f9784063366c1d19485b489bba66944f1f6fe0752b360380b3782c110e0392b",
+  "review_status": "verified"
+}

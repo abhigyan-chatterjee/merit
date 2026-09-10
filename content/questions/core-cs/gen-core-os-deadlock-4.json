@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which condition is NOT one of Coffman's four deadlock conditions?",
   "options": [
-    "Mutual exclusion",
-    "Aging",
     "Hold and wait",
-    "Circular wait"
+    "Aging",
+    "Circular wait",
+    "Mutual exclusion"
   ],
   "correct_index": 1,
   "explanation": "Aging prevents starvation; it is not a deadlock condition.",

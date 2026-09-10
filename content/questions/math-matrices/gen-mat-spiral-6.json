@@ -1,0 +1,20 @@
+{
+  "id": "gen-mat-spiral-6",
+  "topic": "math-matrices",
+  "subtopic": "spiral-matrix",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the matrix `matrix = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]`, elements are traversed in clockwise spiral order starting from the top-left cell `(0, 0)`. What is the value of the 0-indexed element at position `11` in this spiral sequence?",
+  "options": [
+    "8",
+    "6",
+    "9",
+    "7"
+  ],
+  "correct_index": 3,
+  "explanation": "Traversing matrix boundaries in top -> right -> bottom -> left sequence reaches value 7 at 0-indexed step 11.",
+  "source": "generated",
+  "generator_key": "math_matrices.matrix_spiral_order",
+  "content_hash": "99287f3d1a6be18e1721f67d13cf016797c18805e3755f5d661330a2600edd49",
+  "review_status": "verified"
+}

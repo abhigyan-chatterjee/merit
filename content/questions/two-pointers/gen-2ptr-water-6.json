@@ -1,0 +1,20 @@
+{
+  "id": "gen-2ptr-water-6",
+  "topic": "two-pointers",
+  "subtopic": "container-with-most-water",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the array of vertical line heights `height = [4, 3, 2, 1, 4]`, a two-pointer approach starts at the two ends and moves the pointer pointing to the shorter line inward. What is the maximum container area of water that can be trapped?",
+  "options": [
+    "18",
+    "11",
+    "8",
+    "16"
+  ],
+  "correct_index": 3,
+  "explanation": "The maximum area is computed by min(h[i], h[j]) * (j - i). By greedily shifting the shorter boundary inward, the global maximum area achieved is 16.",
+  "source": "generated",
+  "generator_key": "two_pointers.container_water",
+  "content_hash": "234f036820c673cd663f369cdd29f8972354f8c73938fb6f2e81014b4be08ea5",
+  "review_status": "verified"
+}

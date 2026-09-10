@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Given the integer sequence `[100, 22, 9, 33, 21, 50, 41, 60, 80]`, what is the length of the Longest Strictly Increasing Subsequence (LIS)?",
   "options": [
-    "6",
+    "4",
     "5",
-    "8",
-    "4"
+    "6",
+    "7"
   ],
   "correct_index": 1,
   "explanation": "By dynamic programming or patience sorting, the longest strictly increasing subsequence in `[100, 22, 9, 33, 21, 50, 41, 60, 80]` has length 5.",

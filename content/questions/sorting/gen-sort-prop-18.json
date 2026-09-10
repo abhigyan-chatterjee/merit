@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Why is Heap Sort typically not preferred for cache-sensitive performance compared to Quick Sort, despite having O(n log n) worst-case guarantee?",
   "options": [
-    "Heap Sort requires O(n\u00b2) operations on average",
-    "Heap Sort makes non-contiguous parent-child jumps in memory, causing frequent CPU cache misses",
     "Heap Sort is not in-place",
-    "Heap Sort uses O(n) auxiliary memory"
+    "Heap Sort makes non-contiguous parent-child jumps in memory, causing frequent CPU cache misses",
+    "Heap Sort uses O(n) auxiliary memory",
+    "Heap Sort requires O(n\u00b2) operations on average"
   ],
   "correct_index": 1,
   "explanation": "Heap navigation hops between index i and 2i+1, which rapidly breaks cache locality on modern processor hierarchies. Quick Sort exhibits excellent contiguous sequential spatial locality.",

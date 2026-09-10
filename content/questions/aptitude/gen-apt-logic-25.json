@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "If SOME pens are books and ALL books are chairs, which follows?",
   "options": [
-    "All pens are chairs",
-    "No pen is a chair",
     "All chairs are pens",
+    "No pen is a chair",
+    "All pens are chairs",
     "Some pens are chairs"
   ],
   "correct_index": 3,

@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "What is the worst-case time complexity of the Knuth-Morris-Pratt (KMP) string matching algorithm for text of length N and pattern of length M?",
   "options": [
-    "O(N log M)",
     "O(N\u00b2)",
     "O(N * M)",
+    "O(N log M)",
     "O(N + M)"
   ],
   "correct_index": 3,

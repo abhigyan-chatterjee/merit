@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-xor-12",
+  "topic": "trie",
+  "subtopic": "binary-trie-xor",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given the integer array `nums = [4, 6, 7]`, a bitwise 0/1 binary Trie is constructed to query the maximum possible bitwise XOR value (`nums[i] ^ nums[j]`) in O(32 * N) time. What is the maximum XOR value attainable between any pair of elements?",
+  "options": [
+    "3",
+    "7",
+    "0",
+    "5"
+  ],
+  "correct_index": 0,
+  "explanation": "By storing numbers in a bitwise binary Trie and greedily traversing opposite bits (1 vs 0) from most significant bit to least significant bit, the maximum XOR value found is 3.",
+  "source": "generated",
+  "generator_key": "trie.max_xor_pair",
+  "content_hash": "5607fc421d1394f73f4c0559d9c22c8cee27483fae181ae6fdde37841d539a82",
+  "review_status": "verified"
+}

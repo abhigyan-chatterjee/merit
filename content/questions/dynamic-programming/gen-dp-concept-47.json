@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "How can the space complexity of the standard Fibonacci calculation or 1D DP `dp[i] = dp[i-1] + dp[i-2]` be optimized from O(n) to O(1)?",
   "options": [
-    "By using binary search memoization",
-    "By maintaining only two previous state variables instead of a full array",
     "By storing values in a min-heap",
+    "By maintaining only two previous state variables instead of a full array",
+    "By using binary search memoization",
     "By hashing every fourth index"
   ],
   "correct_index": 1,

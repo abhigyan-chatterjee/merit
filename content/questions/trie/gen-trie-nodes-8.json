@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-nodes-8",
+  "topic": "trie",
+  "subtopic": "trie-structure",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "The following list of words is inserted into an initially empty Trie:\n`['he', 'she', 'his', 'her']`\n\nIncluding the empty root node, what is the total number of distinct nodes in the resulting Trie?",
+  "options": [
+    "10",
+    "9",
+    "11",
+    "7"
+  ],
+  "correct_index": 1,
+  "explanation": "Shared common prefixes reuse existing nodes along the path. Counting the root node plus every distinct prefix character path produces exactly 9 nodes.",
+  "source": "generated",
+  "generator_key": "trie.node_count",
+  "content_hash": "977749f9038bf0b2758781f7c41ed58d78ef8f8acd8d1c41c1764f177c707e80",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-trie-pfx-1",
+  "topic": "trie",
+  "subtopic": "prefix-queries",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A standard Trie is populated with the word list: `['apple', 'app', 'apricot', 'banana', 'band', 'bandwidth']`. How many words in the Trie have the prefix `\"ban\"`?",
+  "options": [
+    "1",
+    "2",
+    "5",
+    "3"
+  ],
+  "correct_index": 3,
+  "explanation": "Traversing the Trie down the characters of prefix 'ban' reaches a node whose subtree contains exactly 3 marked terminal word nodes.",
+  "source": "generated",
+  "generator_key": "trie.prefix_count",
+  "content_hash": "4722a9122478522d8949a577a98eab68f8778e925a8b3017066508a0ddec23bb",
+  "review_status": "verified"
+}

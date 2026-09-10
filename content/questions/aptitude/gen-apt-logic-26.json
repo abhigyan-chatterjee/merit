@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "A is B's brother. B is C's mother. What is A to C?",
   "options": [
-    "Brother",
+    "Father",
     "Grandfather",
     "Maternal uncle",
-    "Father"
+    "Brother"
   ],
   "correct_index": 2,
   "explanation": "A is the brother of C's mother, hence maternal uncle.",

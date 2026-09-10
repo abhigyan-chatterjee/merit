@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which database fits a social graph with deep traversals?",
   "options": [
-    "Time-series DB",
     "Key-value cache only",
+    "Flat CSV files",
     "Graph database (e.g. Neo4j)",
-    "Flat CSV files"
+    "Time-series DB"
   ],
   "correct_index": 2,
   "explanation": "Graph stores model multi-hop relationships natively.",

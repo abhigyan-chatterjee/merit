@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "A shopkeeper marks goods 40% above cost and gives a 10% discount. Net profit? Give only the number %.",
   "options": [
-    "52 %",
     "36 %",
+    "21 %",
     "26 %",
     "31 %"
   ],

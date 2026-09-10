@@ -1,0 +1,20 @@
+{
+  "id": "gen-back-gold-11",
+  "topic": "backtracking",
+  "subtopic": "path-with-max-gold",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "In a gold mine represented by grid `grid = [[1, 2, 3], [0, 0, 4], [7, 6, 5]]`, each cell has gold (0 is empty/wall). From any gold-containing cell, a miner moves up, down, left, or right, collecting gold without ever visiting the same cell twice. What is the maximum amount of gold the miner can collect?",
+  "options": [
+    "31",
+    "28",
+    "24",
+    "25"
+  ],
+  "correct_index": 1,
+  "explanation": "Using DFS backtracking starting from every non-zero cell and unmarking visited cells on return, the optimal path yields 28 total gold.",
+  "source": "generated",
+  "generator_key": "backtracking.path_with_max_gold",
+  "content_hash": "f0cc9af5e7e7d5a5665942e6f94cd9e2a9f8388f438b90899a76be571bfc57f9",
+  "review_status": "verified"
+}

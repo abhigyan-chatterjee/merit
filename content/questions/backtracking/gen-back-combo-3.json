@@ -1,0 +1,20 @@
+{
+  "id": "gen-back-combo-3",
+  "topic": "backtracking",
+  "subtopic": "combination-sum",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given distinct positive integers `candidates = [2]` and `target = 1`, backtracking searches for all unique combinations where numbers sum to `target` (each candidate may be chosen unlimited times). How many distinct combinations exist?",
+  "options": [
+    "2",
+    "3",
+    "1",
+    "0"
+  ],
+  "correct_index": 3,
+  "explanation": "Exploring combinations recursively with DFS and candidate pruning yields exactly 0 unique valid combination(s) that sum to 1.",
+  "source": "generated",
+  "generator_key": "backtracking.combination_sum",
+  "content_hash": "03d9e8261ffc7da1664153b104fc2a64438798bcbe43bb56d3d2220f2cdc535a",
+  "review_status": "verified"
+}

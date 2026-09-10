@@ -7,7 +7,7 @@
   "prompt": "A number increased by 20% then decreased by 20%. Net change? Give only the number %.",
   "options": [
     "-4 %",
-    "-8 %",
+    "-9 %",
     "1 %",
     "6 %"
   ],

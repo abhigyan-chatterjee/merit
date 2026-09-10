@@ -2,13 +2,13 @@
   "id": "gen-bit-lowest-4",
   "topic": "bit-manipulation",
   "subtopic": "bit-tricks",
-  "difficulty": "Medium",
+  "difficulty": "Hard",
   "qtype": "mcq",
   "prompt": "What is the result of evaluating the bitwise expression `n & (-n)` when `n = 7`? (This expression isolates the lowest set bit using two's complement arithmetic).",
   "options": [
-    "4",
     "3",
     "2",
+    "4",
     "1"
   ],
   "correct_index": 3,

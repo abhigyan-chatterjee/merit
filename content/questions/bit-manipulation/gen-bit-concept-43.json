@@ -7,9 +7,9 @@
   "prompt": "Given an array where every element appears twice except for one unique element, how can the unique element be found in O(n) time and O(1) space?",
   "options": [
     "Compute the cumulative XOR sum of all elements in the array",
-    "Compute the sum of array elements minus n",
+    "Insert all elements into a balanced BST",
     "Sort the array with QuickSort",
-    "Insert all elements into a balanced BST"
+    "Compute the sum of array elements minus n"
   ],
   "correct_index": 0,
   "explanation": "Because XOR is commutative and associative, and x ^ x = 0, all paired numbers cancel each other out to 0, leaving 0 ^ unique = unique.",

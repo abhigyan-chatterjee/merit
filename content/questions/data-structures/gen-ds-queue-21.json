@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "A circular queue is implemented using a 0-indexed array of capacity 8. Currently, `front = 4` and it contains 4 elements. If 3 `dequeue()` operations are performed, followed by 1 `enqueue()` operations, what will be the new index of `front` in the array?",
   "options": [
-    "1",
-    "7",
     "0",
+    "7",
+    "1",
     "6"
   ],
   "correct_index": 1,

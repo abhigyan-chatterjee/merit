@@ -1,0 +1,20 @@
+{
+  "id": "gen-sw-maxsum-45",
+  "topic": "sliding-windows",
+  "subtopic": "fixed-window-max-sum",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given array `nums = [2, 3, 4, 1, 5]` and window size `k = 2`, what is the maximum sum of any contiguous subarray of length 2 computed using a fixed-size sliding window?",
+  "options": [
+    "7",
+    "14",
+    "11",
+    "9"
+  ],
+  "correct_index": 0,
+  "explanation": "Maintaining a sliding window of size 2 and updating the sum in O(1) time per step finds the maximum subarray sum of 7.",
+  "source": "generated",
+  "generator_key": "sliding_windows.max_sum_fixed",
+  "content_hash": "b2b6f64560b5a9c137fcc4476d2fdb016d0250b9a08642e3a6283ad8e9524be4",
+  "review_status": "verified"
+}

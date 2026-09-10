@@ -7,9 +7,9 @@
   "prompt": "A value 30% of X equals 60. X? Give only the number.",
   "options": [
     "200",
-    "205",
     "400",
-    "210"
+    "210",
+    "205"
   ],
   "correct_index": 0,
   "explanation": "Direct percentage arithmetic gives 200.",

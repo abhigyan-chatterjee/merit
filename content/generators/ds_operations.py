@@ -2,7 +2,69 @@
 
 import heapq
 import random
+
 from content.generators.base import GeneratedQuestion, make_question
+
+
+def eval_rpn_oracle(tokens: list[str]) -> int:
+    stk: list[int] = []
+    for tok in tokens:
+        if tok in "+-*/":
+            b = stk.pop()
+            a = stk.pop()
+            if tok == "+":
+                stk.append(a + b)
+            elif tok == "-":
+                stk.append(a - b)
+            elif tok == "*":
+                stk.append(a * b)
+            elif tok == "/":
+                stk.append(int(a / b))
+        else:
+            stk.append(int(tok))
+    return stk[0]
+
+
+def largest_rectangle_histogram_oracle(heights: list[int]) -> int:
+    stk: list[int] = []
+    max_area = 0
+    h = heights + [0]
+    for i, x in enumerate(h):
+        while stk and h[stk[-1]] >= x:
+            top_h = h[stk.pop()]
+            w = i if not stk else i - stk[-1] - 1
+            max_area = max(max_area, top_h * w)
+        stk.append(i)
+    return max_area
+
+
+def kth_smallest_matrix_oracle(mat: list[list[int]], k: int) -> int:
+    h: list[tuple[int, int, int]] = []
+    n = len(mat)
+    for r in range(min(n, k)):
+        heapq.heappush(h, (mat[r][0], r, 0))
+    val = -1
+    for _ in range(k):
+        val, r, c = heapq.heappop(h)
+        if c + 1 < len(mat[r]):
+            heapq.heappush(h, (mat[r][c + 1], r, c + 1))
+    return val
+
+
+def floyd_meeting_oracle(n: int, pos: int) -> int:
+    succ = list(range(1, n)) + [pos]
+    slow = succ[0]
+    fast = succ[succ[0]]
+    while slow != fast:
+        slow = succ[slow]
+        fast = succ[succ[fast]]
+    return slow
+
+
+def reverse_sublist_oracle(n: int, left: int, right: int) -> list[int]:
+    vals = list(range(1, n + 1))
+    vals[left - 1 : right] = reversed(vals[left - 1 : right])
+    return vals
 
 
 def generate_ds_questions(count: int = 140, seed: int = 44) -> list[GeneratedQuestion]:
@@ -72,8 +134,6 @@ def generate_ds_questions(count: int = 140, seed: int = 44) -> list[GeneratedQue
 
     for cap, front, initial_cnt, deq, enq in queue_configs:
         final_front = (front + deq) % cap
-        final_cnt = initial_cnt - deq + enq
-        final_rear = (front + initial_cnt - deq + enq - 1) % cap
 
         prompt = (
             f"A circular queue is implemented using a 0-indexed array of capacity {cap}. "
@@ -239,6 +299,237 @@ def generate_ds_questions(count: int = 140, seed: int = 44) -> list[GeneratedQue
             rng=rng,
         )
         questions.append(q)
+        q_idx += 1
+
+    # 6. Stack Postfix Evaluation (stack.postfix_evaluation, Medium, 4 instances)
+    rpn_cases = [
+        ["2", "1", "+", "3", "*"],
+        ["4", "13", "5", "/", "+"],
+        ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"],
+        ["5", "3", "2", "*", "+", "4", "-"],
+    ]
+    for tokens in rpn_cases:
+        ans_val = eval_rpn_oracle(tokens)
+        ans = str(ans_val)
+        cand = [ans_val + 3, ans_val - 3, ans_val + 5, ans_val * 2 if ans_val != 0 else 4, max(1, ans_val - 2)]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"Evaluate the arithmetic expression in Reverse Polish Notation (postfix notation) using an operand stack:\n"
+            f"`{tokens}`\n\n"
+            f"All operations follow standard integer arithmetic. What is the final evaluated result?"
+        )
+        exp = (
+            f"Evaluating in postfix order using an operand stack processes operands and operators from left to right, "
+            f"yielding the final result {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-stack-rpn-{q_idx}",
+                topic="stack",
+                subtopic="postfix-evaluation",
+                difficulty="Medium",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="stack.postfix_evaluation",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 7. Stack Largest Rectangle in Histogram (stack.largest_rectangle_histogram, Hard, 4 instances)
+    hist_cases = [
+        [2, 1, 5, 6, 2, 3],
+        [2, 4],
+        [6, 2, 5, 4, 5, 1, 6],
+        [3, 3, 3, 3, 3],
+    ]
+    for heights in hist_cases:
+        ans_val = largest_rectangle_histogram_oracle(heights)
+        ans = str(ans_val)
+        cand = [ans_val + 2, max(1, ans_val - 2), ans_val + 4, max(1, ans_val - 4), ans_val + 6]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"Given an array of histogram bar heights `heights = {heights}` (where width of each bar is 1), "
+            f"a monotonic increasing stack is used to find the maximum rectangular area in O(N) time. "
+            f"What is the area of the largest rectangle in the histogram?"
+        )
+        exp = (
+            f"Using a monotonic increasing stack to determine left and right smaller boundaries for each bar, "
+            f"the maximum rectangle area formed is {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-stack-hist-{q_idx}",
+                topic="stack",
+                subtopic="monotonic-stack-histogram",
+                difficulty="Hard",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="stack.largest_rectangle_histogram",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 8. Heap Kth Largest Element (heap.kth_largest, Medium, 4 instances)
+    kth_cases = [
+        ([3, 2, 1, 5, 6, 4], 2),
+        ([3, 2, 3, 1, 2, 4, 5, 5, 6], 4),
+        ([7, 10, 4, 3, 20, 15], 3),
+        ([12, 3, 5, 7, 19], 1),
+    ]
+    for nums, k in kth_cases:
+        ans_val = sorted(nums, reverse=True)[k - 1]
+        ans = str(ans_val)
+        sorted_unique = sorted(set(nums), reverse=True)
+        cand = [str(x) for x in sorted_unique if x != ans_val] + [str(ans_val + 1), str(ans_val - 1)]
+        distractors = [d for d in dict.fromkeys(cand) if d != ans]
+        prompt = (
+            f"Given the unsorted array `nums = {nums}` and `k = {k}`, "
+            f"a min-heap of size `k` is maintained while scanning through the array to find the k-th largest element. "
+            f"What is the value of the {k}-th largest element in `nums`?"
+        )
+        exp = (
+            f"Maintaining a min-heap of size {k} retains the {k} largest elements seen so far; "
+            f"the root of the heap gives the {k}-th largest value, which is {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-heap-kth-{q_idx}",
+                topic="heap",
+                subtopic="kth-largest-element",
+                difficulty="Medium",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="heap.kth_largest",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 9. Heap Kth Smallest in Sorted Matrix (heap.kth_smallest_matrix, Hard, 4 instances)
+    matrix_k_cases = [
+        ([[1, 5, 9], [10, 11, 13], [12, 13, 15]], 8),
+        ([[1, 2, 3], [4, 5, 6], [7, 8, 9]], 5),
+        ([[1, 4, 7], [2, 5, 8], [3, 6, 9]], 4),
+        ([[2, 6, 8], [3, 7, 10], [5, 8, 11]], 6),
+    ]
+    for mat, k in matrix_k_cases:
+        ans_val = kth_smallest_matrix_oracle(mat, k)
+        ans = str(ans_val)
+        cand = [ans_val + 1, ans_val - 1, ans_val + 2, ans_val - 2, ans_val + 3]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"Given an `n x n` matrix `matrix = {mat}` where each row and column is sorted in ascending order, "
+            f"a min-heap of row heads is used to extract elements in order. "
+            f"What is the value of the `{k}`-th smallest element in the matrix?"
+        )
+        exp = (
+            f"Using a min-heap initialized with the first element of each row and popping k times "
+            f"(pushing the next element in the same row) finds the {k}-th smallest value {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-heap-mat-{q_idx}",
+                topic="heap",
+                subtopic="kth-smallest-matrix",
+                difficulty="Hard",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="heap.kth_smallest_matrix",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 10. Linked List Cycle Meeting Node (linked_lists.cycle_meeting_index, Medium, 4 instances)
+    cycle_cases = [
+        (4, 1),
+        (5, 2),
+        (6, 0),
+        (4, 2),
+    ]
+    for n_nodes, pos in cycle_cases:
+        ans_val = floyd_meeting_oracle(n_nodes, pos)
+        ans = str(ans_val)
+        cand = [str(i) for i in range(n_nodes)]
+        distractors = [d for d in dict.fromkeys(cand) if d != ans]
+        prompt = (
+            f"A singly linked list has {n_nodes} nodes with 0-indexed values `0, 1, ..., {n_nodes - 1}`. "
+            f"The tail node (`{n_nodes - 1}`) connects back to node `{pos}`, forming a cycle. "
+            f"Floyd's Tortoise and Hare algorithm starts both `slow` (speed 1) and `fast` (speed 2) at node `0`. "
+            f"At which node value do `slow` and `fast` first collide?"
+        )
+        exp = (
+            f"Simulating pointer movements step-by-step, slow and fast pointers first meet inside the cycle "
+            f"at node {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-ll-meet-{q_idx}",
+                topic="linked-lists",
+                subtopic="cycle-detection",
+                difficulty="Medium",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="linked_lists.cycle_meeting_index",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 11. Linked List Reverse Sublist (linked_lists.reverse_sublist, Hard, 4 instances)
+    sublist_cases = [
+        (5, 2, 4),
+        (4, 1, 3),
+        (6, 3, 5),
+        (5, 1, 5),
+    ]
+    for n_nodes, left, right in sublist_cases:
+        res = reverse_sublist_oracle(n_nodes, left, right)
+        ans = str(res)
+        cand = [
+            str(list(range(1, n_nodes + 1))),  # unreversed
+            str(list(reversed(range(1, n_nodes + 1)))),  # fully reversed
+            str(list(range(2, n_nodes + 1)) + [1]),  # cyclic shift
+            str([n_nodes] + list(range(1, n_nodes))),  # cyclic shift right
+            str(reverse_sublist_oracle(n_nodes, max(1, left - 1), right)),  # off-by-one left
+            str(reverse_sublist_oracle(n_nodes, left, min(n_nodes, right + 1))),  # off-by-one right
+        ]
+        distractors = [d for d in dict.fromkeys(cand) if d != ans]
+        prompt = (
+            f"Given the head of a singly linked list containing 1-indexed node values `1, 2, ..., {n_nodes}`, "
+            f"the sublist from position `{left}` to `{right}` (inclusive) is reversed in-place in a single pass. "
+            f"What is the resulting sequence of node values in the list?"
+        )
+        exp = (
+            f"Reversing only nodes between position {left} and {right} reconnects the predecessor and successor, "
+            f"producing the order {res}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-ll-revsub-{q_idx}",
+                topic="linked-lists",
+                subtopic="reverse-sublist",
+                difficulty="Hard",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="linked_lists.reverse_sublist",
+                rng=rng,
+            )
+        )
         q_idx += 1
 
     return questions[:count]

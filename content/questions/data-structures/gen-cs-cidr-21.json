@@ -7,9 +7,9 @@
   "prompt": "In an IPv4 network, how many **usable host** IP addresses can be assigned to client devices within a subnet configured with CIDR prefix `/20`?",
   "options": [
     "4094",
-    "4090",
+    "4098",
     "4096",
-    "4095"
+    "4090"
   ],
   "correct_index": 0,
   "explanation": "A /20 subnet has 32 - 20 = 12 host bits, yielding 2^12 = 4096 total addresses. Subtracting 2 (network and broadcast) yields 4094 usable host IPs.",

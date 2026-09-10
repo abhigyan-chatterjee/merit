@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Consider a directed graph with weighted edges:\n```text\n  P -> (Q, w=3), (R, w=8)\n  Q -> (R, w=2), (S, w=6)\n  R -> (S, w=3)\n  S -> \n```\nUsing Dijkstra's algorithm, what is the length of the shortest path from vertex `P` to vertex `S`?",
   "options": [
-    "6",
+    "12",
     "10",
-    "14",
+    "6",
     "8"
   ],
   "correct_index": 3,

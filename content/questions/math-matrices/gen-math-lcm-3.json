@@ -1,0 +1,20 @@
+{
+  "id": "gen-math-lcm-3",
+  "topic": "math-matrices",
+  "subtopic": "number-theory",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Using the Euclidean algorithm for greatest common divisor `gcd(a, b)` and the relation `lcm(a, b) = (a * b) // gcd(a, b)`, what is the Least Common Multiple (LCM) of `14` and `35`?",
+  "options": [
+    "58",
+    "82",
+    "70",
+    "490"
+  ],
+  "correct_index": 2,
+  "explanation": "gcd(14, 35) = 7. Applying the identity lcm(14, 35) = (14 * 35) // 7 = 70.",
+  "source": "generated",
+  "generator_key": "math_matrices.gcd_lcm",
+  "content_hash": "67975a42ca76ec8d3e773fa9befab25905ba2f0e2745181fbc7790bd49579a71",
+  "review_status": "verified"
+}

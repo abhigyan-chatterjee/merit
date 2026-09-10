@@ -1,0 +1,20 @@
+{
+  "id": "gen-inv-insert-12",
+  "topic": "intervals",
+  "subtopic": "insert-interval",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given sorted non-overlapping intervals `intervals = [[1, 5]]` and `newInterval = [0, 3]`, insert `newInterval` into `intervals` and merge all overlapping intervals. What is the resulting merged intervals list?",
+  "options": [
+    "[[0, 6]]",
+    "[[0, 3], [1, 5]]",
+    "[[0, 5]]",
+    "[[0, 4]]"
+  ],
+  "correct_index": 2,
+  "explanation": "Inserting [0, 3] merges with any overlapping existing intervals. The resulting clean non-overlapping list is [[0, 5]].",
+  "source": "generated",
+  "generator_key": "intervals.insert_interval",
+  "content_hash": "963c43cdd15b4ea2736d3ebee77b713e10244c5910e861a9c594daa654ed0a73",
+  "review_status": "verified"
+}

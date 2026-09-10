@@ -1,0 +1,20 @@
+{
+  "id": "gen-stack-rpn-66",
+  "topic": "stack",
+  "subtopic": "postfix-evaluation",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Evaluate the arithmetic expression in Reverse Polish Notation (postfix notation) using an operand stack:\n`['4', '13', '5', '/', '+']`\n\nAll operations follow standard integer arithmetic. What is the final evaluated result?",
+  "options": [
+    "12",
+    "9",
+    "3",
+    "6"
+  ],
+  "correct_index": 3,
+  "explanation": "Evaluating in postfix order using an operand stack processes operands and operators from left to right, yielding the final result 6.",
+  "source": "generated",
+  "generator_key": "stack.postfix_evaluation",
+  "content_hash": "a5b15ef1147f17cece3b3457f48134838b5b844037be9f3397fe5ccf8ca652cd",
+  "review_status": "verified"
+}

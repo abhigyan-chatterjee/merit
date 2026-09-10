@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"HORSE\"` and `\"ROS\"`?",
   "options": [
-    "5",
     "3",
+    "4",
     "2",
     "1"
   ],

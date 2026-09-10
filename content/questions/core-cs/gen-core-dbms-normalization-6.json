@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Which normal form removes all transitive dependencies on the primary key?",
   "options": [
-    "Second Normal Form",
     "BCNF only",
     "First Normal Form",
+    "Second Normal Form",
     "Third Normal Form (3NF)"
   ],
   "correct_index": 3,

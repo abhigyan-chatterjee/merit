@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Regarding computational complexity analysis: What is the maximum auxiliary stack space consumed by Depth-First Search on a balanced binary tree of n nodes?. Which of the following correctly characterizes the complexity?",
   "options": [
-    "O(n)",
-    "O(log n)",
     "O(1)",
+    "O(log n)",
+    "O(n)",
     "O(\u221an)"
   ],
   "correct_index": 1,

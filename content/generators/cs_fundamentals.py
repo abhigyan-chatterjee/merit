@@ -61,7 +61,7 @@ def generate_cs_fundamentals_questions(count: int = 140, seed: int = 48) -> list
             id_str=f"gen-cs-os-lru-{q_idx}",
             topic="data-structures",
             subtopic="virtual-memory",
-            difficulty="Medium",
+            difficulty="Hard",
             prompt=prompt,
             correct_answer=ans,
             distractors=distractors,

@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Keys `[84, 42, 126, 21, 63, 105, 147]` are inserted into an initially empty Binary Search Tree. How many internal nodes (non-leaf nodes with at least one child) exist in the resulting tree?",
   "options": [
-    "5",
-    "2",
     "4",
+    "6",
+    "5",
     "3"
   ],
   "correct_index": 3,

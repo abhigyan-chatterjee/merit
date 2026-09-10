@@ -7,9 +7,9 @@
   "prompt": "Which HTTP method is idempotent and safe for retrieval?",
   "options": [
     "GET",
+    "POST",
     "CONNECT",
-    "PATCH",
-    "POST"
+    "PATCH"
   ],
   "correct_index": 0,
   "explanation": "GET must not change server state and repeats safely.",

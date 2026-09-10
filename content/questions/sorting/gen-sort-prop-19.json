@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the theoretical lower bound on the number of comparisons required for any comparison-based sorting algorithm on n items?",
   "options": [
-    "\u03a9(n)",
+    "\u03a9(n\u00b2)",
     "\u03a9(n log n)",
-    "\u03a9(log n)",
-    "\u03a9(n\u00b2)"
+    "\u03a9(n)",
+    "\u03a9(log n)"
   ],
   "correct_index": 1,
   "explanation": "Any comparison sort can be modeled as a decision tree with n! leaf nodes. The height of a binary tree with n! leaves is at least log\u2082(n!) = \u0398(n log n) comparisons.",

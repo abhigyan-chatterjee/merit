@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Regarding computational complexity analysis: Finding the connected component of a node in Disjoint Set Union (DSU) with both Path Compression and Union by Rank. Which of the following correctly characterizes the complexity?",
   "options": [
-    "O(1) strictly",
-    "O(log n) amortized",
     "O(log* n) strictly",
+    "O(log n) amortized",
+    "O(1) strictly",
     "O(\u03b1(n)) amortized, where \u03b1 is the inverse Ackermann function"
   ],
   "correct_index": 3,

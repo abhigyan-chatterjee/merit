@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "In the Rabin-Karp string matching algorithm, what technique enables O(1) computation of the hash of the next substring window?",
   "options": [
+    "Huffman frequency tree",
     "Cryptographic SHA-256",
     "Suffix automaton",
-    "Huffman frequency tree",
     "Rolling hash (Rabin fingerprint)"
   ],
   "correct_index": 3,

@@ -1,0 +1,20 @@
+{
+  "id": "gen-sw-minwin-49",
+  "topic": "sliding-windows",
+  "subtopic": "minimum-window-substring",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given strings `s = \"a\"` and `t = \"a\"`, a variable sliding window with two pointers finds the minimum window substring of `s` containing all characters in `t`. What is the length of this minimum window substring (or 0 if no valid window exists)?",
+  "options": [
+    "3",
+    "0",
+    "1",
+    "2"
+  ],
+  "correct_index": 2,
+  "explanation": "Expanding the right pointer to satisfy all characters and shrinking the left pointer to minimize window width achieves a minimum window length of 1.",
+  "source": "generated",
+  "generator_key": "sliding_windows.min_window_substring",
+  "content_hash": "29e1c6f360b33cb49dd77eb9f06164669728762897cb6a32e91e6afe3ecb1cc9",
+  "review_status": "verified"
+}

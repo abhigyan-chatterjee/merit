@@ -1,0 +1,20 @@
+{
+  "id": "gen-mat-det-11",
+  "topic": "math-matrices",
+  "subtopic": "matrix-determinant",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What is the determinant `det(A)` of the following 3x3 square matrix `A`?\n`[3, 1, 2]`\n`[1, 4, 5]`\n`[2, 3, 1]`\n",
+  "options": [
+    "-32",
+    "0",
+    "-34",
+    "-30"
+  ],
+  "correct_index": 2,
+  "explanation": "Using Laplace expansion along the first row: det(A) = a(ei - fh) - b(di - fg) + c(dh - eg), which evaluates to exactly -34.",
+  "source": "generated",
+  "generator_key": "math_matrices.matrix_determinant_3x3",
+  "content_hash": "6f11106bb94566df230058e013095e1907ae31e06f6bfe222c76726a01a1bdd2",
+  "review_status": "verified"
+}

@@ -7,9 +7,9 @@
   "prompt": "What is the length of the Longest Common Subsequence (LCS) between strings `\"HELLO\"` and `\"WORLD\"`?",
   "options": [
     "1",
-    "4",
     "3",
-    "2"
+    "2",
+    "4"
   ],
   "correct_index": 0,
   "explanation": "Standard 2D DP matrix comparison between 'HELLO' and 'WORLD' yields an LCS length of 1.",

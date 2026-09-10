@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-mat-78",
+  "topic": "heap",
+  "subtopic": "kth-smallest-matrix",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Given an `n x n` matrix `matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]` where each row and column is sorted in ascending order, a min-heap of row heads is used to extract elements in order. What is the value of the `5`-th smallest element in the matrix?",
+  "options": [
+    "5",
+    "7",
+    "3",
+    "8"
+  ],
+  "correct_index": 0,
+  "explanation": "Using a min-heap initialized with the first element of each row and popping k times (pushing the next element in the same row) finds the 5-th smallest value 5.",
+  "source": "generated",
+  "generator_key": "heap.kth_smallest_matrix",
+  "content_hash": "d250c6062a11f1a23d0066d9d319dfcb6ac45e78ba7a481a777a25b6a5b278af",
+  "review_status": "verified"
+}

@@ -1,6 +1,6 @@
-"""Arrays and strings algorithmic question generator with prefix sums, two pointers, and Kadane oracles."""
-
 import random
+from collections import Counter
+
 from content.generators.base import GeneratedQuestion, make_question
 
 
@@ -15,6 +15,41 @@ def kadane_oracle(nums: list[int]) -> int:
 
 def prefix_sum_oracle(nums: list[int], left: int, right: int) -> int:
     return sum(nums[left : right + 1])
+
+
+def max_sum_fixed_oracle(nums: list[int], k: int) -> int:
+    """Maximum sum of contiguous subarray of length k."""
+    curr = sum(nums[:k])
+    max_s = curr
+    for i in range(k, len(nums)):
+        curr += nums[i] - nums[i - k]
+        max_s = max(max_s, curr)
+    return max_s
+
+
+def min_window_substring_oracle(s: str, t: str) -> int:
+    """Minimum window substring length containing all characters of t, or 0."""
+    if not s or not t:
+        return 0
+    t_count = Counter(t)
+    required = len(t_count)
+    l = 0
+    formed = 0
+    window_counts: dict[str, int] = {}
+    min_len = float("inf")
+    for r in range(len(s)):
+        char = s[r]
+        window_counts[char] = window_counts.get(char, 0) + 1
+        if char in t_count and window_counts[char] == t_count[char]:
+            formed += 1
+        while l <= r and formed == required:
+            min_len = min(min_len, r - l + 1)
+            left_char = s[l]
+            window_counts[left_char] -= 1
+            if left_char in t_count and window_counts[left_char] < t_count[left_char]:
+                formed -= 1
+            l += 1
+    return 0 if min_len == float("inf") else int(min_len)
 
 
 def generate_array_string_questions(count: int = 150, seed: int = 49) -> list[GeneratedQuestion]:
@@ -170,6 +205,85 @@ def generate_array_string_questions(count: int = 150, seed: int = 49) -> list[Ge
             rng=rng,
         )
         questions.append(q)
+        q_idx += 1
+
+    # 5. Fixed Sliding Window Maximum Subarray Sum (sliding_windows.max_sum_fixed, Easy, 4 instances)
+    fixed_cases = [
+        ([2, 1, 5, 1, 3, 2], 3),
+        ([2, 3, 4, 1, 5], 2),
+        ([1, 4, 2, 10, 23, 3, 1, 0, 20], 4),
+        ([100, 200, 300, 400], 2),
+    ]
+    for nums, k in fixed_cases:
+        ans_val = max_sum_fixed_oracle(nums, k)
+        ans = str(ans_val)
+        cand = [ans_val + 2, max(1, ans_val - 2), ans_val + 4, max(1, ans_val - 4), ans_val + 7]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"Given array `nums = {nums}` and window size `k = {k}`, what is the maximum sum of "
+            f"any contiguous subarray of length {k} computed using a fixed-size sliding window?"
+        )
+        exp = (
+            f"Maintaining a sliding window of size {k} and updating the sum in O(1) time per step "
+            f"finds the maximum subarray sum of {ans_val}."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-sw-maxsum-{q_idx}",
+                topic="sliding-windows",
+                subtopic="fixed-window-max-sum",
+                difficulty="Easy",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="sliding_windows.max_sum_fixed",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 6. Variable Sliding Window Minimum Window Substring Length (sliding_windows.min_window_substring, Hard, 4 instances)
+    min_win_cases = [
+        ("ADOBECODEBANC", "ABC"),
+        ("a", "a"),
+        ("a", "aa"),
+        ("ABAACBAB", "ABC"),
+    ]
+    for s_str, t_str in min_win_cases:
+        ans_val = min_window_substring_oracle(s_str, t_str)
+        ans = str(ans_val)
+        cand = [ans_val + 1, max(0, ans_val - 1), ans_val + 2, max(0, ans_val - 2), len(t_str) + 2]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"Given strings `s = \"{s_str}\"` and `t = \"{t_str}\"`, a variable sliding window with two pointers "
+            f"finds the minimum window substring of `s` containing all characters in `t`. "
+            f"What is the length of this minimum window substring (or 0 if no valid window exists)?"
+        )
+        if ans_val == 0:
+            exp = (
+                "String `s` does not contain the required character frequencies of `t`, "
+                "so no valid window exists (length is 0)."
+            )
+        else:
+            exp = (
+                f"Expanding the right pointer to satisfy all characters and shrinking the left pointer "
+                f"to minimize window width achieves a minimum window length of {ans_val}."
+            )
+        questions.append(
+            make_question(
+                id_str=f"gen-sw-minwin-{q_idx}",
+                topic="sliding-windows",
+                subtopic="minimum-window-substring",
+                difficulty="Hard",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="sliding_windows.min_window_substring",
+                rng=rng,
+            )
+        )
         q_idx += 1
 
     return questions[:count]

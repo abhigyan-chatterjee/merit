@@ -42,7 +42,7 @@ def main() -> int:
 
     # 3. Coverage Matrix & Staged Target Report
     print("\n--- [3/3] CHECKING PLACEMENT CORPUS COVERAGE ---")
-    cov_code = generate_coverage_report(questions_dir, target_count=750)
+    cov_code = generate_coverage_report(questions_dir, target_designs=130)
     if cov_code != 0:
         print("\n❌ Coverage threshold NOT MET.")
         return cov_code

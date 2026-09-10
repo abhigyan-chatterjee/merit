@@ -8,8 +8,8 @@
   "options": [
     "3",
     "4",
-    "5",
-    "6"
+    "6",
+    "5"
   ],
   "correct_index": 1,
   "explanation": "Integer 15 has binary representation 0b1111, containing exactly 4 set bit(s).",

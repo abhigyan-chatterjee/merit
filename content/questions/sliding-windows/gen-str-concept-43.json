@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "How does the Boyer-Moore string matching algorithm achieve sublinear average-case time complexity?",
   "options": [
-    "By compressing the text using Huffman encoding",
-    "By scanning the pattern from right-to-left and applying the Bad Character and Good Suffix skip heuristics",
     "By sorting all characters in the text first",
-    "By hashing every character to 32 bits"
+    "By scanning the pattern from right-to-left and applying the Bad Character and Good Suffix skip heuristics",
+    "By hashing every character to 32 bits",
+    "By compressing the text using Huffman encoding"
   ],
   "correct_index": 1,
   "explanation": "Boyer-Moore matches characters backwards from the end of the pattern, allowing it to skip up to M characters at a time when a mismatch occurs.",

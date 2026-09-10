@@ -7,9 +7,9 @@
   "prompt": "In a 0/1 Knapsack problem with knapsack capacity 7, items with weights `[1, 2, 5, 6]` and corresponding values `[1, 6, 18, 22]` are available. What is the maximum total value that can fit within the capacity?",
   "options": [
     "24",
-    "32",
-    "29",
-    "22"
+    "27",
+    "22",
+    "29"
   ],
   "correct_index": 0,
   "explanation": "The optimal subset yields total value 24 without exceeding capacity 7.",

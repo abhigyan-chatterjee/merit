@@ -1,0 +1,20 @@
+{
+  "id": "gen-greedy-coin-1",
+  "topic": "greedy",
+  "subtopic": "canonical-coin-change",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In a canonical currency system with denominations `[25, 10, 5, 1]` cents, what is the minimum number of coins needed to make `67` cents using a greedy approach?",
+  "options": [
+    "5",
+    "9",
+    "6",
+    "8"
+  ],
+  "correct_index": 2,
+  "explanation": "Greedily picking largest coins first: 2x25c, 1x10c, 1x5c, and 2x1c totals 6 coins.",
+  "source": "generated",
+  "generator_key": "greedy.coin_change_greedy",
+  "content_hash": "08875868d52cf4f2a38213e34787b82cbd2c2eb3f4974d860c63812ac7bf488e",
+  "review_status": "verified"
+}

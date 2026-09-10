@@ -1,0 +1,20 @@
+{
+  "id": "gen-back-combo-1",
+  "topic": "backtracking",
+  "subtopic": "combination-sum",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given distinct positive integers `candidates = [2, 3, 6, 7]` and `target = 7`, backtracking searches for all unique combinations where numbers sum to `target` (each candidate may be chosen unlimited times). How many distinct combinations exist?",
+  "options": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "correct_index": 1,
+  "explanation": "Exploring combinations recursively with DFS and candidate pruning yields exactly 2 unique valid combination(s) that sum to 7.",
+  "source": "generated",
+  "generator_key": "backtracking.combination_sum",
+  "content_hash": "055b61be57681c8985f1ebb654a9c0776ffec1fd51ce1eba0e3827469d5caf87",
+  "review_status": "verified"
+}

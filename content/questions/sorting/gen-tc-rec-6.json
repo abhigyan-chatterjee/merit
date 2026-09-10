@@ -7,9 +7,9 @@
   "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = T(n-1) + O(1) with base case T(1) = O(1)?",
   "options": [
     "O(n)",
-    "O(1)",
+    "O(n\u00b2)",
     "O(2^n)",
-    "O(log n)"
+    "O(1)"
   ],
   "correct_index": 0,
   "explanation": "Unrolling the recurrence yields 1 + 1 + ... + 1 (n times) = \u0398(n).",

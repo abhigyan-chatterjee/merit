@@ -6,7 +6,7 @@
   "qtype": "mcq",
   "prompt": "Keys `[52, 26, 78, 13, 39, 65, 91]` are inserted into an initially empty Binary Search Tree. How many leaf nodes (nodes with no left or right children) exist in the resulting tree?",
   "options": [
-    "5",
+    "6",
     "4",
     "7",
     "3"

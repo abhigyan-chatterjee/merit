@@ -1,7 +1,31 @@
 """Sorting and searching algorithm generator with exact algorithmic trace oracles."""
 
+import bisect
+import math
 import random
+
 from content.generators.base import GeneratedQuestion, make_question
+
+
+def lower_bound_oracle(arr: list[int], target: int) -> int:
+    """First index i where arr[i] >= target (bisect_left)."""
+    return bisect.bisect_left(arr, target)
+
+
+def koko_eating_bananas_oracle(piles: list[int], h: int) -> int:
+    """Minimum integer eating speed k to eat all bananas within h hours."""
+    low = 1
+    high = max(piles)
+    ans = high
+    while low <= high:
+        mid = (low + high) // 2
+        hours = sum(math.ceil(p / mid) for p in piles)
+        if hours <= h:
+            ans = mid
+            high = mid - 1
+        else:
+            low = mid + 1
+    return ans
 
 
 def binary_search_trace(arr: list[int], target: int) -> tuple[int, list[int]]:
@@ -99,6 +123,89 @@ def generate_sorting_searching_questions(count: int = 120, seed: int = 47) -> li
             rng=rng,
         )
         questions.append(q)
+        q_idx += 1
+
+    # 3. Binary Search Lower Bound (binary_search.lower_bound, Medium, 4 instances)
+    lb_cases = [
+        ([1, 2, 4, 4, 5, 6, 8], 4),
+        ([2, 5, 7, 10, 14], 8),
+        ([3, 6, 9, 12], 15),
+        ([4, 8, 12, 16], 2),
+    ]
+    for arr, target in lb_cases:
+        ans_val = lower_bound_oracle(arr, target)
+        ans = str(ans_val)
+        cand = [
+            str(max(0, ans_val - 1)),
+            str(ans_val + 1),
+            str(max(0, ans_val - 2)),
+            str(ans_val + 2),
+            "-1",
+            str(len(arr)),
+            str(bisect.bisect_right(arr, target)),
+        ]
+        distractors = [d for d in dict.fromkeys(cand) if d != ans]
+        prompt = (
+            f"Given the sorted array `arr = {arr}` and `target = {target}`, binary search finds "
+            f"the first index `i` (0-indexed) where `arr[i] >= target` (`lower_bound` / `bisect_left`). "
+            f"If all elements are strictly less than `target`, `len(arr)` is returned. What index is returned?"
+        )
+        exp = (
+            f"The first element in `arr` greater than or equal to {target} occurs at index {ans_val} "
+            f"(or index {len(arr)} if target exceeds all elements)."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-bs-lb-{q_idx}",
+                topic="binary-search",
+                subtopic="lower-bound",
+                difficulty="Medium",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="binary_search.lower_bound",
+                rng=rng,
+            )
+        )
+        q_idx += 1
+
+    # 4. Binary Search Answer Space (binary_search.koko_eating_bananas, Hard, 4 instances)
+    koko_cases = [
+        ([3, 6, 7, 11], 8),
+        ([30, 11, 23, 4, 20], 5),
+        ([30, 11, 23, 4, 20], 6),
+        ([10, 10, 10, 10], 8),
+    ]
+    for piles, h in koko_cases:
+        ans_val = koko_eating_bananas_oracle(piles, h)
+        ans = str(ans_val)
+        cand = [ans_val + 1, max(1, ans_val - 1), ans_val + 2, max(1, ans_val - 2), max(piles)]
+        distractors = [str(d) for d in dict.fromkeys(cand) if str(d) != ans]
+        prompt = (
+            f"There are piles of bananas `piles = {piles}` and guards return in `h = {h}` hours. "
+            f"Koko eats at a speed of `k` bananas/hour (taking `ceil(pile / k)` hours per pile). "
+            f"Using binary search on the answer space `[1, max(piles)]`, what is the minimum integer "
+            f"eating speed `k` to eat all bananas within `{h}` hours?"
+        )
+        exp = (
+            f"Binary searching the answer space [1..{max(piles)}] checks whether the sum of ceiling hours "
+            f"is <= {h}. The minimum feasible integer speed is {ans_val} bananas/hour."
+        )
+        questions.append(
+            make_question(
+                id_str=f"gen-bs-koko-{q_idx}",
+                topic="binary-search",
+                subtopic="binary-search-answer-space",
+                difficulty="Hard",
+                prompt=prompt,
+                correct_answer=ans,
+                distractors=distractors,
+                explanation=exp,
+                generator_key="binary_search.koko_eating_bananas",
+                rng=rng,
+            )
+        )
         q_idx += 1
 
     return questions[:count]

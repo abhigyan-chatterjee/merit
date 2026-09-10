@@ -1,0 +1,20 @@
+{
+  "id": "gen-inv-merge-3",
+  "topic": "intervals",
+  "subtopic": "merge-intervals",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given the collection of intervals `intervals = [[1, 4], [2, 3], [5, 8], [6, 9], [11, 14]]`, all overlapping intervals are merged together. How many non-overlapping intervals remain after merging?",
+  "options": [
+    "2",
+    "5",
+    "6",
+    "3"
+  ],
+  "correct_index": 3,
+  "explanation": "Sorting by start times and collapsing overlapping ranges gives [[1, 4], [5, 9], [11, 14]], which contains exactly 3 non-overlapping interval(s).",
+  "source": "generated",
+  "generator_key": "intervals.merge_count",
+  "content_hash": "188955c088743acf33a75fbfd592dc49136540aea19143b9d05ab5a2d72f1571",
+  "review_status": "verified"
+}

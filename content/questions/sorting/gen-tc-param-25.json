@@ -8,8 +8,8 @@
   "options": [
     "O(\u221an)",
     "O(log n)",
-    "O(n)",
-    "O(1)"
+    "O(1)",
+    "O(n)"
   ],
   "correct_index": 1,
   "explanation": "Variable i starts at 1 and multiplies by 3 in each step, reaching n in \u230alog_3 n\u230b steps = \u0398(log n).",

@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "An initially empty LIFO stack undergoes the following sequence of operations:\n`push(5) -> push(15) -> push(25) -> pop() -> pop() -> push(35)`\n\nWhat value is currently at the top of the stack?",
   "options": [
-    "15",
+    "5",
     "35",
-    "25",
-    "5"
+    "15",
+    "25"
   ],
   "correct_index": 1,
   "explanation": "Simulating operations in LIFO order: Top of stack is 35.",

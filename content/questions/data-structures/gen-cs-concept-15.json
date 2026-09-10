@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which ACID transaction property guarantees that committed transaction changes survive system crashes or power failures?",
   "options": [
-    "Atomicity",
+    "Consistency",
     "Durability",
     "Isolation",
-    "Consistency"
+    "Atomicity"
   ],
   "correct_index": 1,
   "explanation": "Durability guarantees that once a transaction has committed, its updates are recorded in non-volatile storage (WAL/disk) and will not be lost even during a crash.",

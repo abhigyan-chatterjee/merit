@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "The average of 5 consecutive even numbers starting at 10 is?",
   "options": [
-    "15",
-    "14",
     "16",
+    "14",
+    "15",
     "12"
   ],
   "correct_index": 1,

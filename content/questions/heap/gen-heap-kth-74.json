@@ -1,0 +1,20 @@
+{
+  "id": "gen-heap-kth-74",
+  "topic": "heap",
+  "subtopic": "kth-largest-element",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given the unsorted array `nums = [3, 2, 3, 1, 2, 4, 5, 5, 6]` and `k = 4`, a min-heap of size `k` is maintained while scanning through the array to find the k-th largest element. What is the value of the 4-th largest element in `nums`?",
+  "options": [
+    "1",
+    "4",
+    "3",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "Maintaining a min-heap of size 4 retains the 4 largest elements seen so far; the root of the heap gives the 4-th largest value, which is 4.",
+  "source": "generated",
+  "generator_key": "heap.kth_largest",
+  "content_hash": "e8d7d002a8e90d3897a4940e1950422448e31c49bfa5c6c0af64623b644cd55c",
+  "review_status": "verified"
+}

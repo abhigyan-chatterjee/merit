@@ -7,8 +7,8 @@
   "prompt": "Why are B+ trees preferred over standard Binary Search Trees or Hash Indexes for relational database table indexing?",
   "options": [
     "B+ trees require O(1) time for all operations",
-    "B+ trees eliminate the need for write-ahead logging",
     "B+ trees use less memory than hash tables for point lookups",
+    "B+ trees eliminate the need for write-ahead logging",
     "B+ trees keep data in sorted leaf nodes linked sequentially, enabling efficient range scans and high-fanout shallow disk I/O"
   ],
   "correct_index": 3,

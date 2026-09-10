@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Which protocol reliably delivers an ordered byte stream between hosts?",
   "options": [
-    "ICMP",
+    "ARP",
     "TCP",
-    "UDP",
-    "ARP"
+    "ICMP",
+    "UDP"
   ],
   "correct_index": 1,
   "explanation": "TCP adds sequence numbers, ACKs, and retransmission over IP.",

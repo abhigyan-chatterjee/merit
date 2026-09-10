@@ -1,0 +1,20 @@
+{
+  "id": "gen-2ptr-twosum-3",
+  "topic": "two-pointers",
+  "subtopic": "two-sum-sorted",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Given the 1-indexed sorted array `numbers = [1, 3, 5, 9, 12]` and `target = 14`, two converging pointers are used to find two numbers that sum up to `target`. What are the 1-based indices `[index1, index2]` returned by this algorithm?",
+  "options": [
+    "[3, 4]",
+    "[2, 3]",
+    "[4, 5]",
+    "[4, 4]"
+  ],
+  "correct_index": 0,
+  "explanation": "Left pointer at index 3 (val 5) and right pointer at index 4 (val 9) sum to 5 + 9 = 14. Indices are 1-based.",
+  "source": "generated",
+  "generator_key": "two_pointers.two_sum_sorted",
+  "content_hash": "eb5965f9af4f9fafa1655fc232ed7ec63d24b08c9e9c182bc999b94cfe701d65",
+  "review_status": "verified"
+}

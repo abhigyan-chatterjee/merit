@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "What is the asymptotic time complexity of an algorithm whose execution satisfies the recurrence relation: T(n) = 2T(n/2) + O(n) with base case T(1) = O(1)?",
   "options": [
+    "O(n log\u00b2 n)",
     "O(n)",
-    "O(n\u00b2)",
     "O(n log n)",
-    "O(n log\u00b2 n)"
+    "O(n\u00b2)"
   ],
   "correct_index": 2,
   "explanation": "Case 2 of Master Theorem: a=2, b=2, log_b(a)=1, f(n)=\u0398(n^1). Hence T(n) = \u0398(n log n).",

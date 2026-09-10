@@ -8,8 +8,8 @@
   "options": [
     "O(n log n)",
     "O(n * 3)",
-    "O(n\u00b2)",
-    "O(n\u00b2 log n)"
+    "O(n\u00b2 log n)",
+    "O(n\u00b2)"
   ],
   "correct_index": 0,
   "explanation": "Outer loop runs n times. Inner loop multiplies j by 3 each step, running log_3(n) times. Asymptotic time is \u0398(n log n).",

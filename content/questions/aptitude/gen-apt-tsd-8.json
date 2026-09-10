@@ -2,14 +2,14 @@
   "id": "gen-apt-tsd-8",
   "topic": "aptitude",
   "subtopic": "time-speed-distance",
-  "difficulty": "Medium",
+  "difficulty": "Hard",
   "qtype": "mcq",
   "prompt": "Two stations are 120 km apart. Trains leave toward each other at 20 km/h and 40 km/h. After how long do they meet?",
   "options": [
-    "130 minutes",
+    "110 minutes",
     "120 minutes",
     "150 minutes",
-    "110 minutes"
+    "130 minutes"
   ],
   "correct_index": 1,
   "explanation": "Relative speed 60 km/h over 120 km gives 120 minutes.",

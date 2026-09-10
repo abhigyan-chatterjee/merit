@@ -7,8 +7,8 @@
   "prompt": "A hash table of size 11 uses open addressing with linear probing (hash function `h(k) = k mod 11`). Keys are inserted in the following order: `[5, 16, 27, 38, 49]`.\nAt which slot index in the table will key `49` be placed?",
   "options": [
     "8",
-    "10",
     "0",
+    "10",
     "9"
   ],
   "correct_index": 3,

@@ -7,9 +7,9 @@
   "prompt": "Given the integer sequence `[10, 22, 9, 33, 21, 50, 41, 60]`, what is the length of the Longest Strictly Increasing Subsequence (LIS)?",
   "options": [
     "5",
-    "8",
     "6",
-    "4"
+    "4",
+    "7"
   ],
   "correct_index": 0,
   "explanation": "By dynamic programming or patience sorting, the longest strictly increasing subsequence in `[10, 22, 9, 33, 21, 50, 41, 60]` has length 5.",

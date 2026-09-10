@@ -1,0 +1,20 @@
+{
+  "id": "gen-greedy-jump-7",
+  "topic": "greedy",
+  "subtopic": "jump-game",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Given array `nums = [1, 2, 1, 1, 1]` where `nums[i]` is the maximum jump length from index `i`, what is the minimum number of jumps needed to reach the last index (`4`)?",
+  "options": [
+    "4",
+    "3",
+    "5",
+    "1"
+  ],
+  "correct_index": 1,
+  "explanation": "Using BFS level-by-level greedy interval expansion, each jump extends to the farthest reachable boundary. Reaching index 4 requires at minimum 3 jump(s).",
+  "source": "generated",
+  "generator_key": "greedy.jump_game_min_jumps",
+  "content_hash": "e0ec948f565cef96c545927f4ebcc49d0f614437657281ea13010a5bfc695430",
+  "review_status": "verified"
+}

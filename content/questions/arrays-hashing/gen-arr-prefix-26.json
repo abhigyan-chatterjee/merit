@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "Given array `[8, 16, 24, 32, 40]`, what is the range sum of elements from index 2 to 4 inclusive (`nums[2..4]`) computed in O(1) time using a precomputed prefix sum array?",
   "options": [
-    "104",
     "101",
+    "106",
     "96",
-    "106"
+    "93"
   ],
   "correct_index": 2,
   "explanation": "Using prefix sums P[i], RangeSum(L, R) = P[R] - (P[L-1] if L > 0 else 0) = 96.",

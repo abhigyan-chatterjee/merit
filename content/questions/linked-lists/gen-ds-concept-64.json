@@ -7,8 +7,8 @@
   "prompt": "What is the primary motivation for using a Doubly Linked List over a Singly Linked List when implementing an LRU Cache?",
   "options": [
     "Faster cache lookups",
-    "Lower memory usage per node",
     "Simpler concurrency locks",
+    "Lower memory usage per node",
     "O(1) deletion of an arbitrary node given only its direct pointer"
   ],
   "correct_index": 3,

@@ -1,0 +1,20 @@
+{
+  "id": "gen-back-queens-6",
+  "topic": "backtracking",
+  "subtopic": "n-queens",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "The N-Queens puzzle requires placing 5 non-attacking queens on a 5 x 5 chessboard. Using backtracking with column and diagonal constraint sets, how many distinct valid queen configurations exist for N = 5?",
+  "options": [
+    "5",
+    "10",
+    "8",
+    "20"
+  ],
+  "correct_index": 1,
+  "explanation": "For an 5 x 5 board, row-by-row backtracking with pruning across columns and diagonals (row-col and row+col) finds exactly 10 distinct solution(s).",
+  "source": "generated",
+  "generator_key": "backtracking.n_queens_count",
+  "content_hash": "b50869eefdd982b80cb9a779e6639b1e3f44d66a5d678d2241be098af5efa5d2",
+  "review_status": "verified"
+}

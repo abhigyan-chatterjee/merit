@@ -6,10 +6,10 @@
   "qtype": "mcq",
   "prompt": "How should a URL shortener generate collision-free short keys at scale?",
   "options": [
+    "MD5 of the full URL truncated to 2 chars",
     "Client timestamp only",
-    "Random 2-char strings",
     "Counter or Snowflake ID encoded in base62",
-    "MD5 of the full URL truncated to 2 chars"
+    "Random 2-char strings"
   ],
   "correct_index": 2,
   "explanation": "Monotonic unique IDs in base62 stay short and unique.",

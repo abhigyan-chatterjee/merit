@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "Binary search with integer division `mid = (low + high) // 2` searches for target `39` in the sorted array:\n`[4, 9, 14, 19, 24, 29, 34, 39, 44]`\n\nWhat is the exact sequence of indices checked at `mid` until finding the target?",
   "options": [
-    "5, 7, 8",
-    "3, 5, 6",
     "6, 8, 9",
+    "5, 7, 8",
+    "2, 4, 5",
     "4, 6, 7"
   ],
   "correct_index": 3,

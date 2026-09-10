@@ -1,0 +1,20 @@
+{
+  "id": "gen-ll-meet-83",
+  "topic": "linked-lists",
+  "subtopic": "cycle-detection",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A singly linked list has 6 nodes with 0-indexed values `0, 1, ..., 5`. The tail node (`5`) connects back to node `0`, forming a cycle. Floyd's Tortoise and Hare algorithm starts both `slow` (speed 1) and `fast` (speed 2) at node `0`. At which node value do `slow` and `fast` first collide?",
+  "options": [
+    "5",
+    "0",
+    "4",
+    "2"
+  ],
+  "correct_index": 1,
+  "explanation": "Simulating pointer movements step-by-step, slow and fast pointers first meet inside the cycle at node 0.",
+  "source": "generated",
+  "generator_key": "linked_lists.cycle_meeting_index",
+  "content_hash": "a3fedb56b50832e381fdc61319073d1f62b288b425ab67fd10f1e031cf426d65",
+  "review_status": "verified"
+}

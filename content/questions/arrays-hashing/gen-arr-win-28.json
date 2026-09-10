@@ -6,8 +6,8 @@
   "qtype": "mcq",
   "prompt": "Using a sliding window of fixed size `k = 3`, what is the **maximum subarray sum** over all contiguous subarrays of size 3 in array `[2, 1, 5, 1, 3, 2]`?",
   "options": [
+    "12",
     "7",
-    "15",
     "9",
     "4"
   ],

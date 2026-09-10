@@ -1,6 +1,7 @@
 """Tree traversals and BST operations generator with programmatic tree traversal oracles."""
 
 import random
+
 from content.generators.base import GeneratedQuestion, make_question
 
 
@@ -230,7 +231,7 @@ def generate_tree_questions(count: int = 120, seed: int = 43) -> list[GeneratedQ
             id_str=f"gen-tree-height-{q_idx}",
             topic="trees",
             subtopic="tree-properties",
-            difficulty="Medium",
+            difficulty="Hard",
             prompt=prompt_h,
             correct_answer=height_ans,
             distractors=height_distractors,

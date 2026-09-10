@@ -6,9 +6,9 @@
   "qtype": "mcq",
   "prompt": "What is the time complexity of reversing the bits of a 32-bit integer using divide-and-conquer bit masks (swapping 16, 8, 4, 2, and 1-bit chunks)?",
   "options": [
-    "O(32)",
     "O(log 32)",
     "O(n)",
+    "O(32)",
     "O(1)"
   ],
   "correct_index": 3,

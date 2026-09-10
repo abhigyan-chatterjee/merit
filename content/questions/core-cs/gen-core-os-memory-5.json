@@ -7,9 +7,9 @@
   "prompt": "What is thrashing in virtual memory systems?",
   "options": [
     "Excessive paging where the CPU spends more time swapping than executing",
-    "Disk fragmentation",
+    "Cache coherence traffic",
     "Interrupt storms",
-    "Cache coherence traffic"
+    "Disk fragmentation"
   ],
   "correct_index": 0,
   "explanation": "Thrashing means the working set exceeds frames, so page faults dominate.",

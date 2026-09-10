@@ -22,8 +22,8 @@ ALGOVISTA is a placement-grade, full-stack Data Structures & Algorithms visual p
 
 3. **Verified Question Bank & Coverage**:
    - Programmatic generators and algorithmic oracles in `content/generators/` producing question items with verified schemas, unique hashes, and correct answer options.
-   - `python3 content/validators/run_all.py` verifies **42 problems** (100% AC against reference solutions) and **1,083 questions** across all topic directories.
-   - Placement corpus coverage matrix reports **885 verified questions** across 14 banks (346 Easy, 505 Medium, 34 Hard): aptitude (34), arrays-hashing (74), binary-search (15), bit-manipulation (44), core-cs (20), data-structures (45), dynamic-programming (58), graphs (29), heap (15), linked-lists (4), sliding-windows (4), sorting (56), stack (15), trees (472).
+   - `python3 content/validators/run_all.py` verifies **42 problems** (100% AC against reference solutions) and **539 questions** across all topic directories.
+   - Placement corpus coverage matrix reports **341 verified questions** across 20 banks (101 Easy, 167 Medium, 73 Hard): aptitude (27), arrays-hashing (36), backtracking (12), binary-search (12), bit-manipulation (12), core-cs (20), data-structures (20), dynamic-programming (26), graphs (18), greedy (12), heap (12), intervals (12), linked-lists (12), math-matrices (12), sliding-windows (12), sorting (24), stack (12), trees (26), trie (12), two-pointers (12).
 
 4. **Adaptive Quiz & Timed Mock Exam Engine (`/quiz/:topic`, `/exams`)**:
    - Compact topic selector defaulting to Mixed; switching topics triggers fresh question loading.
