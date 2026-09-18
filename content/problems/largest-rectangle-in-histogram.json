@@ -7,14 +7,19 @@
   "statement": "# Largest Rectangle in Histogram\n\nGiven an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
   "examples": [
     {
-      "input": "heights = [0]",
-      "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "heights = [31, 95, 71, 68, 33]",
+      "output": "204",
+      "explanation": "Bars at indices 1 to 3 have heights [95, 71, 68]. The minimum height across these 3 bars is 68, forming a rectangle of area 68 * 3 = 204."
     },
     {
-      "input": "heights = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "2400",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "heights = [47, 97, 20, 69, 99]",
+      "output": "138",
+      "explanation": "Bars at indices 3 and 4 have heights [69, 99] with minimum height 69, forming a rectangle of area 69 * 2 = 138."
+    },
+    {
+      "input": "heights = [97, 43, 13, 11, 48, 12, 45]",
+      "output": "97",
+      "explanation": "A single bar of height 97 at index 0 produces area 97 * 1 = 97, which is the largest rectangle possible."
     }
   ],
   "constraints": [
@@ -918,6 +923,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function largestRectangleArea(heights) {\n  const extended = heights.concat([0]);\n  const stack = [];\n  let best = 0;\n  for (let i = 0; i < extended.length; i++) {\n    while (stack.length > 0 && extended[i] < extended[stack[stack.length - 1]]) {\n      const top = stack.pop();\n      const height = extended[top];\n      const width = stack.length === 0 ? i : i - stack[stack.length - 1] - 1;\n      const area = height * width;\n      if (area > best) {\n        best = area;\n      }\n    }\n    stack.push(i);\n  }\n  return best;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def largestRectangleArea(heights: list[int]) -> int:\n    best = 0\n    n = len(heights)\n    for i in range(n):\n        min_height = heights[i]\n        for j in range(i, n):\n            if heights[j] < min_height:\n                min_height = heights[j]\n            area = min_height * (j - i + 1)\n            if area > best:\n                best = area\n    return best\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def largestRectangleArea(heights: list[int]) -> int:\n    extended = heights + [0]\n    stack = []\n    best = 0\n    for i in range(len(extended)):\n        while stack and extended[i] < extended[stack[-1]]:\n            top = stack.pop()\n            height = extended[top]\n            width = i if not stack else i - stack[-1] - 1\n            area = height * width\n            if area > best:\n                best = area\n        stack.append(i)\n    return best\n",
       "isReference": true
     }
   ]

@@ -9,12 +9,17 @@
     {
       "input": "path = \"/home/\"",
       "output": "\"/home\"",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "Trailing slashes are removed in the canonical path format."
     },
     {
       "input": "path = \"/../\"",
       "output": "\"/\"",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "Going up one level from the root directory '/' stays at the root."
+    },
+    {
+      "input": "path = \"/a/./b/../../c/\"",
+      "output": "\"/c\"",
+      "explanation": "'.' means current directory and '..' moves up one level. From '/a/b', going up twice returns to '/', then entering 'c' produces '/c'."
     }
   ],
   "constraints": [
@@ -398,6 +403,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function simplifyPath(path) {\n  const stack = [];\n  const parts = path.split('/');\n  for (let i = 0; i < parts.length; i++) {\n    const part = parts[i];\n    if (part === '' || part === '.') {\n      continue;\n    } else if (part === '..') {\n      if (stack.length > 0) {\n        stack.pop();\n      }\n    } else {\n      stack.push(part);\n    }\n  }\n  return '/' + stack.join('/');\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def simplifyPath(path: str) -> str:\n    parts = path.split('/')\n    while '..' in parts:\n        idx = parts.index('..')\n        del parts[idx]\n        for j in range(idx - 1, -1, -1):\n            if parts[j] != '' and parts[j] != '.' and parts[j] != '..':\n                del parts[j]\n                break\n    names = [p for p in parts if p != '' and p != '.' and p != '..']\n    return '/' + '/'.join(names)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def simplifyPath(path: str) -> str:\n    stack = []\n    parts = path.split('/')\n    for part in parts:\n        if part == '' or part == '.':\n            continue\n        elif part == '..':\n            if stack:\n                stack.pop()\n        else:\n            stack.append(part)\n    return '/' + '/'.join(stack)\n",
       "isReference": true
     }
   ]

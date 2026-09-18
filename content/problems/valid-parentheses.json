@@ -9,11 +9,18 @@
   "examples": [
     {
       "input": "s = \"()[]{}\"",
-      "output": "true"
+      "output": "true",
+      "explanation": "Every opening bracket is immediately closed by its matching type in the correct order."
     },
     {
       "input": "s = \"(]\"",
-      "output": "false"
+      "output": "false",
+      "explanation": "The closing square bracket ']' does not match the open parenthesis '('."
+    },
+    {
+      "input": "s = \"{[]}\"",
+      "output": "true",
+      "explanation": "The brackets are correctly nested: the inner bracket pair '[]' is closed before the outer '{' is closed."
     }
   ],
   "constraints": [
@@ -26,14 +33,32 @@
   ],
   "solutions": [
     {
-      "title": "Stack Bracket Matcher",
+      "title": "Brute Force",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(s) {\n  const stack = [], map = { ')': '(', '}': '{', ']': '[' };\n  for (const c of s) {\n    if (map[c]) {\n      if (stack.pop() !== map[c]) return false;\n    } else stack.push(c);\n  }\n  return stack.length === 0;\n}"
+      "code": "function solve(s) {\n  const stack = [], map = { ')': '(', '}': '{', ']': '[' };\n  for (const c of s) {\n    if (map[c]) {\n      if (stack.pop() !== map[c]) return false;\n    } else stack.push(c);\n  }\n  return stack.length === 0;\n}",
+      "language": "javascript",
+      "isReference": false
     },
     {
-      "title": "Expected Closing Stack",
+      "title": "Optimal",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(s) {\n  const stack = [];\n  for (const c of s) {\n    if (c === '(') stack.push(')');\n    else if (c === '{') stack.push('}');\n    else if (c === '[') stack.push(']');\n    else if (stack.pop() !== c) return false;\n  }\n  return stack.length === 0;\n}"
+      "code": "function solve(s) {\n  const stack = [];\n  for (const c of s) {\n    if (c === '(') stack.push(')');\n    else if (c === '{') stack.push('}');\n    else if (c === '[') stack.push(']');\n    else if (stack.pop() !== c) return false;\n  }\n  return stack.length === 0;\n}",
+      "language": "javascript",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def solve(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    for c in s:\n        if c in mapping:\n            if not stack or stack.pop() != mapping[c]:\n                return False\n        else:\n            stack.append(c)\n    return len(stack) == 0\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def solve(s: str) -> bool:\n    stack = []\n    for c in s:\n        if c == '(':\n            stack.append(')')\n        elif c == '{':\n            stack.append('}')\n        elif c == '[':\n            stack.append(']')\n        elif not stack or stack.pop() != c:\n            return False\n    return len(stack) == 0\n",
+      "isReference": true
     }
   ],
   "starterCode": {

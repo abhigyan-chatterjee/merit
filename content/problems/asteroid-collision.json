@@ -7,14 +7,19 @@
   "statement": "# Asteroid Collision\n\nYou are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
   "examples": [
     {
-      "input": "asteroids = [-1000]",
-      "output": "[-1000]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "asteroids = [648, -354]",
+      "output": "[648]",
+      "explanation": "Asteroid 648 moves right and -354 moves left. They collide; since 648 > 354, -354 explodes, leaving [648]."
     },
     {
-      "input": "asteroids = [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]",
-      "output": "[1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "asteroids = [763, -776]",
+      "output": "[-776]",
+      "explanation": "Asteroid 763 moves right and -776 moves left. Since 776 > 763, 763 explodes, leaving [-776]."
+    },
+    {
+      "input": "asteroids = [751, -524, 774]",
+      "output": "[751, 774]",
+      "explanation": "751 and -524 collide; 751 destroys -524. 774 also moves right, so no further collisions occur, resulting in [751, 774]."
     }
   ],
   "constraints": [
@@ -1316,6 +1321,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function asteroidCollision(asteroids) {\n  const stack = [];\n  for (let i = 0; i < asteroids.length; i++) {\n    const rock = asteroids[i];\n    let alive = true;\n    while (alive && rock < 0 && stack.length > 0 && stack[stack.length - 1] > 0) {\n      const top = stack[stack.length - 1];\n      if (top < -rock) {\n        stack.pop();\n      } else if (top === -rock) {\n        stack.pop();\n        alive = false;\n      } else {\n        alive = false;\n      }\n    }\n    if (alive) {\n      stack.push(rock);\n    }\n  }\n  return stack;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def asteroidCollision(asteroids: list[int]) -> list[int]:\n    rocks = list(asteroids)\n    collided = True\n    while collided:\n        collided = False\n        for i in range(len(rocks) - 1):\n            if rocks[i] > 0 and rocks[i + 1] < 0:\n                right_size = rocks[i]\n                left_size = -rocks[i + 1]\n                if right_size == left_size:\n                    del rocks[i:i + 2]\n                elif right_size > left_size:\n                    del rocks[i + 1]\n                else:\n                    del rocks[i]\n                collided = True\n                break\n    return rocks\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def asteroidCollision(asteroids: list[int]) -> list[int]:\n    stack = []\n    for rock in asteroids:\n        alive = True\n        while alive and rock < 0 and stack and stack[-1] > 0:\n            top = stack[-1]\n            if top < -rock:\n                stack.pop()\n            elif top == -rock:\n                stack.pop()\n                alive = False\n            else:\n                alive = False\n        if alive:\n            stack.append(rock)\n    return stack\n",
       "isReference": true
     }
   ]

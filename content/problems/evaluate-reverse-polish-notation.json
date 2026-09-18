@@ -9,12 +9,17 @@
     {
       "input": "tokens = [\"2\", \"1\", \"+\", \"3\", \"*\"]",
       "output": "9",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "((2 + 1) * 3) = (3 * 3) = 9."
     },
     {
       "input": "tokens = [\"4\", \"13\", \"5\", \"/\", \"+\"]",
       "output": "6",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "(4 + (13 / 5)) = 4 + 2 = 6, where 13 / 5 truncates toward zero to 2."
+    },
+    {
+      "input": "tokens = [\"-7\", \"3\", \"/\"]",
+      "output": "-2",
+      "explanation": "Division truncates toward zero: -7 / 3 = -2.333..., which truncates to -2."
     }
   ],
   "constraints": [
@@ -1115,6 +1120,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function evalRPN(tokens) {\n  const stack = [];\n  for (let i = 0; i < tokens.length; i++) {\n    const token = tokens[i];\n    if (token === '+' || token === '-' || token === '*' || token === '/') {\n      const b = stack.length > 0 ? stack.pop() : 0;\n      const a = stack.length > 0 ? stack.pop() : 0;\n      let value = 0;\n      if (token === '+') {\n        value = a + b;\n      } else if (token === '-') {\n        value = a - b;\n      } else if (token === '*') {\n        value = a * b;\n      } else {\n        value = Math.trunc(a / b);\n      }\n      stack.push(value);\n    } else {\n      stack.push(Number(token));\n    }\n  }\n  return stack.pop();\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def evalRPN(tokens: list[str]) -> int:\n    items = list(tokens)\n    def is_op(token: str) -> bool:\n        return token in ('+', '-', '*', '/')\n    while len(items) > 1:\n        op_idx = -1\n        for i, tok in enumerate(items):\n            if is_op(tok):\n                op_idx = i\n                break\n        if op_idx < 1:\n            break\n        a_raw = items[op_idx - 2]\n        b_raw = items[op_idx - 1]\n        try:\n            a = int(a_raw)\n            b = int(b_raw)\n        except (ValueError, TypeError):\n            return None\n        op = items[op_idx]\n        if op == '+':\n            value = a + b\n        elif op == '-':\n            value = a - b\n        elif op == '*':\n            value = a * b\n        else:\n            if b == 0:\n                return None\n            value = int(a / b)\n        items[op_idx - 2:op_idx + 1] = [str(value)]\n    if not items:\n        return 0\n    try:\n        return int(items[-1])\n    except ValueError:\n        return None\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def evalRPN(tokens: list[str]) -> int:\n    stack = []\n    for token in tokens:\n        if token in ('+', '-', '*', '/'):\n            b = stack.pop() if stack else 0\n            a = stack.pop() if stack else 0\n            if a is None or b is None:\n                stack.append(None)\n                continue\n            if token == '+':\n                value = a + b\n            elif token == '-':\n                value = a - b\n            elif token == '*':\n                value = a * b\n            else:\n                if b == 0:\n                    value = None\n                else:\n                    value = int(a / b)\n            stack.append(value)\n        else:\n            try:\n                stack.append(int(token))\n            except ValueError:\n                stack.append(None)\n    return stack.pop() if stack else 0\n",
       "isReference": true
     }
   ]

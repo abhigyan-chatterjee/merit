@@ -9,12 +9,12 @@
     {
       "input": "operations = [\"5\", \"2\", \"C\", \"D\", \"+\"]",
       "output": "30",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "\"5\" records 5; \"2\" records 2; \"C\" invalidates 2 (record: [5]); \"D\" records 2*5=10 (record: [5, 10]); \"+\" records 5+10=15 (record: [5, 10, 15]). Total is 5 + 10 + 15 = 30."
     },
     {
       "input": "operations = [\"5\", \"-2\", \"4\", \"C\", \"D\", \"9\", \"+\", \"+\"]",
       "output": "27",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "\"5\" -> [5]; \"-2\" -> [5, -2]; \"4\" -> [5, -2, 4]; \"C\" removes 4 -> [5, -2]; \"D\" records -4 -> [5, -2, -4]; \"9\" -> [5, -2, -4, 9]; \"+\" records -4+9=5 -> [5, -2, -4, 9, 5]; \"+\" records 9+5=14 -> [5, -2, -4, 9, 5, 14]. Total is 27."
     }
   ],
   "constraints": [
@@ -1126,6 +1126,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function calPoints(operations) {\n  const stack = [];\n  for (let i = 0; i < operations.length; i++) {\n    const op = operations[i];\n    switch (op) {\n      case 'C':\n        if (stack.length > 0) {\n          stack.pop();\n        }\n        break;\n      case 'D': {\n        const prev = stack.length > 0 ? stack[stack.length - 1] : 0;\n        stack.push(prev * 2);\n        break;\n      }\n      case '+': {\n        const a = stack.length > 0 ? stack[stack.length - 1] : 0;\n        const b = stack.length > 1 ? stack[stack.length - 2] : 0;\n        stack.push(a + b);\n        break;\n      }\n      default:\n        stack.push(Number(op));\n        break;\n    }\n  }\n  return stack.reduce((total, value) => total + value, 0);\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def calPoints(operations: list[str]) -> int:\n    record = []\n    for op in operations:\n        if op == 'C':\n            if len(record) > 0:\n                record.pop()\n        elif op == 'D':\n            prev = record[-1] if len(record) > 0 else 0\n            record.append(None if prev is None else prev * 2)\n        elif op == '+':\n            a = record[-1] if len(record) > 0 else 0\n            b = record[-2] if len(record) > 1 else 0\n            record.append(None if (a is None or b is None) else a + b)\n        else:\n            try:\n                record.append(int(op))\n            except ValueError:\n                record.append(None)\n    if any(x is None for x in record):\n        return None\n    total = 0\n    for val in record:\n        total += val\n    return total\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def calPoints(operations: list[str]) -> int:\n    stack = []\n    for op in operations:\n        if op == 'C':\n            if stack:\n                stack.pop()\n        elif op == 'D':\n            prev = stack[-1] if stack else 0\n            stack.append(None if prev is None else prev * 2)\n        elif op == '+':\n            a = stack[-1] if stack else 0\n            b = stack[-2] if len(stack) > 1 else 0\n            stack.append(None if (a is None or b is None) else a + b)\n        else:\n            try:\n                stack.append(int(op))\n            except ValueError:\n                stack.append(None)\n    if any(x is None for x in stack):\n        return None\n    return sum(stack)\n",
       "isReference": true
     }
   ]

@@ -9,12 +9,17 @@
     {
       "input": "s = \"3+2*2\"",
       "output": "7",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "Multiplication has higher precedence than addition: 2 * 2 = 4, then 3 + 4 = 7."
     },
     {
       "input": "s = \" 3/2 \"",
       "output": "1",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "Whitespace is ignored, and 3 / 2 evaluates to 1 after truncating toward zero."
+    },
+    {
+      "input": "s = \" 3+5 / 2 \"",
+      "output": "5",
+      "explanation": "Division takes precedence: 5 / 2 truncates to 2, then 3 + 2 = 5."
     }
   ],
   "constraints": [
@@ -406,6 +411,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function calculate(s) {\n  const stack = [];\n  let current = 0;\n  let building = false;\n  let op = '+';\n  function apply() {\n    if (!building) {\n      return;\n    }\n    if (op === '+') {\n      stack.push(current);\n    } else if (op === '-') {\n      stack.push(-current);\n    } else if (op === '*') {\n      const prev = stack.length > 0 ? stack.pop() : 0;\n      stack.push(prev * current);\n    } else {\n      const prev = stack.length > 0 ? stack.pop() : 0;\n      stack.push(Math.trunc(prev / current));\n    }\n    current = 0;\n    building = false;\n  }\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (ch >= '0' && ch <= '9') {\n      current = current * 10 + (ch.charCodeAt(0) - 48);\n      building = true;\n    } else if (ch === '+' || ch === '-' || ch === '*' || ch === '/') {\n      apply();\n      op = ch;\n    }\n  }\n  apply();\n  let total = 0;\n  for (let i = 0; i < stack.length; i++) {\n    total += stack[i];\n  }\n  return total;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def calculate(s: str) -> int:\n    import math\n    nums = []\n    ops = []\n    current = 0.0\n    building = False\n\n    def flush():\n        nonlocal current, building\n        if building:\n            nums.append(current)\n            current = 0.0\n            building = False\n\n    for ch in s:\n        if '0' <= ch <= '9':\n            current = float(current * 10.0 + (ord(ch) - 48))\n            building = True\n        elif ch in ('+', '-', '*', '/'):\n            flush()\n            ops.append(ch)\n    flush()\n\n    if not nums:\n        return 0\n\n    values = list(nums)\n    operators = list(ops)\n    if len(operators) == len(values):\n        values.insert(0, 0.0)\n\n    pos = 0\n    while pos < len(operators):\n        if operators[pos] in ('*', '/'):\n            a = values[pos]\n            b = values[pos + 1] if pos + 1 < len(values) else 0.0\n            result = a * b if operators[pos] == '*' else math.trunc(a / b)\n            values[pos:pos + 2] = [result]\n            del operators[pos]\n        else:\n            pos += 1\n\n    total = values[0]\n    for i in range(len(operators)):\n        next_val = values[i + 1] if i + 1 < len(values) else 0.0\n        total = total + next_val if operators[i] == '+' else total - next_val\n\n    if abs(total) > 9007199254740991:\n        return float(total)\n    return int(total)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def calculate(s: str) -> int:\n    import math\n    stack = []\n    current = 0.0\n    building = False\n    op = '+'\n\n    def apply():\n        nonlocal current, building, op\n        if not building:\n            return\n        if op == '+':\n            stack.append(current)\n        elif op == '-':\n            stack.append(-current)\n        elif op == '*':\n            prev = stack.pop() if stack else 0.0\n            stack.append(prev * current)\n        else:\n            prev = stack.pop() if stack else 0.0\n            stack.append(math.trunc(prev / current))\n        current = 0.0\n        building = False\n\n    for ch in s:\n        if '0' <= ch <= '9':\n            current = float(current * 10.0 + (ord(ch) - 48))\n            building = True\n        elif ch in ('+', '-', '*', '/'):\n            apply()\n            op = ch\n    apply()\n\n    total = sum(stack)\n    if abs(total) > 9007199254740991:\n        return float(total)\n    return int(total)\n",
       "isReference": true
     }
   ]

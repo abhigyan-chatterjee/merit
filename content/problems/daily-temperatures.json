@@ -7,14 +7,19 @@
   "statement": "# Daily Temperatures\n\nGiven an array `temperatures` where `temperatures[i]` is the temperature of day `i`, compute for every day how many days pass before a strictly warmer temperature occurs. When no future day is warmer, record `0` for that day.\n\nReturn an array of the same length holding one waiting time per day.\n\nConstraints: `1 <= temperatures.length <= 100` and `30 <= temperatures[i] <= 100`.\n",
   "examples": [
     {
-      "input": "temperatures = [30]",
-      "output": "[0]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "temperatures = [95, 60, 65]",
+      "output": "[0, 1, 0]",
+      "explanation": "Day 0 (95) has no future warmer day (0). Day 1 (60) sees warmer temperature 65 on day 2 (wait of 1 day). Day 2 (65) is the last day (0)."
     },
     {
-      "input": "temperatures = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "temperatures = [58, 30, 39, 37, 59, 38, 34, 72]",
+      "output": "[4, 1, 2, 1, 3, 2, 1, 0]",
+      "explanation": "For 58 at index 0, the next warmer temperature is 59 at index 4 (wait of 4 days). For 30 at index 1, the next warmer is 39 at index 2 (wait of 1 day)."
+    },
+    {
+      "input": "temperatures = [30]",
+      "output": "[0]",
+      "explanation": "With only one day in the record, no subsequent warmer day exists, so the wait is 0."
     }
   ],
   "constraints": [
@@ -1610,6 +1615,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function dailyTemperatures(temperatures) {\n  const n = temperatures.length;\n  const waits = new Array(n).fill(0);\n  const stack = [];\n  for (let i = 0; i < n; i++) {\n    while (stack.length > 0 && temperatures[i] > temperatures[stack[stack.length - 1]]) {\n      const prev = stack.pop();\n      waits[prev] = i - prev;\n    }\n    stack.push(i);\n  }\n  return waits;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def dailyTemperatures(temperatures: list[int]) -> list[int]:\n    n = len(temperatures)\n    waits = [0] * n\n    for i in range(n):\n        for j in range(i + 1, n):\n            if temperatures[j] > temperatures[i]:\n                waits[i] = j - i\n                break\n    return waits\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def dailyTemperatures(temperatures: list[int]) -> list[int]:\n    n = len(temperatures)\n    waits = [0] * n\n    stack = []\n    for i in range(n):\n        while stack and temperatures[i] > temperatures[stack[-1]]:\n            prev = stack.pop()\n            waits[prev] = i - prev\n        stack.append(i)\n    return waits\n",
       "isReference": true
     }
   ]

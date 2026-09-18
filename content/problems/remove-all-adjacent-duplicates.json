@@ -7,14 +7,19 @@
   "statement": "# Collapse Adjacent Duplicates\n\nGiven a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
   "examples": [
     {
-      "input": "s = \"b\"",
-      "output": "\"b\"",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "s = \"x22y0\"",
+      "output": "\"xy0\"",
+      "explanation": "The adjacent duplicate pair '22' is removed, leaving 'xy0' with no further duplicates."
     },
     {
-      "input": "s = \"yx\"",
-      "output": "\"yx\"",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "s = \"zbb0bzz\"",
+      "output": "\"z0b\"",
+      "explanation": "The adjacent duplicates 'bb' and 'zz' are removed, leaving 'z0b'."
+    },
+    {
+      "input": "s = \"zczzxybc2xc10y2\"",
+      "output": "\"zcxybc2xc10y2\"",
+      "explanation": "The duplicate pair 'zz' is deleted, leaving no further adjacent duplicates."
     }
   ],
   "constraints": [
@@ -230,6 +235,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function removeDuplicatesString(s) {\n  const stack = [];\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (stack.length > 0 && stack[stack.length - 1] === ch) {\n      stack.pop();\n    } else {\n      stack.push(ch);\n    }\n  }\n  return stack.join('');\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def removeDuplicatesString(s: str) -> str:\n    chars = list(s)\n    changed = True\n    while changed:\n        changed = False\n        for i in range(len(chars) - 1):\n            if chars[i] == chars[i + 1]:\n                del chars[i:i + 2]\n                changed = True\n                break\n    return \"\".join(chars)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def removeDuplicatesString(s: str) -> str:\n    stack = []\n    for ch in s:\n        if stack and stack[-1] == ch:\n            stack.pop()\n        else:\n            stack.append(ch)\n    return \"\".join(stack)\n",
       "isReference": true
     }
   ]
