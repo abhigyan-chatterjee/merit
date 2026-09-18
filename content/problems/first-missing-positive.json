@@ -9,12 +9,12 @@
     {
       "input": "nums = [-50]",
       "output": "1",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "The only element is -50, a negative number, so the smallest positive integer 1 is missing."
     },
     {
-      "input": "nums = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50]",
-      "output": "1",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [-9, 48, 49, -43, -21, -46, -10, 1, -16, -42, -23, 22, 41, -10, -23, 33, 13, 0, 32, 8, -32, -17]",
+      "output": "2",
+      "explanation": "The value 1 is present in the array, but 2 never appears, so the first missing positive is 2."
     }
   ],
   "constraints": [
@@ -22,8 +22,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "The smallest missing positive must be in the range [1, n+1]; can you use the array itself as a lookup table?",
+    "Place each value v at index v-1 when 1 <= v <= n by swapping, then the first index whose value doesn't match reveals the gap.",
+    "Use cyclic sort with the guard 'while 0 < arr[i] <= n and arr[arr[i]-1] != arr[i]' to avoid infinite loops on duplicates, then scan for arr[i] != i+1."
   ],
   "starterCode": {
     "javascript": "function firstMissingPositive(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -899,7 +900,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function firstMissingPositive(nums) {\n  let target = 1;\n  while (true) {\n    let found = false;\n    for (let i = 0; i < nums.length; i++) {\n      if (nums[i] === target) {\n        found = true;\n        break;\n      }\n    }\n    if (!found) return target;\n    target++;\n  }\n}",
       "isReference": false
@@ -910,6 +911,29 @@
       "language": "javascript",
       "code": "function firstMissingPositive(nums) {\n  const arr = nums.slice();\n  const n = arr.length;\n  for (let i = 0; i < n; i++) {\n    while (arr[i] > 0 && arr[i] <= n && arr[arr[i] - 1] !== arr[i]) {\n      const correct = arr[i] - 1;\n      const temp = arr[correct];\n      arr[correct] = arr[i];\n      arr[i] = temp;\n    }\n  }\n  for (let i = 0; i < n; i++) {\n    if (arr[i] !== i + 1) return i + 1;\n  }\n  return n + 1;\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n²) | Space: O(1)",
+      "language": "python",
+      "code": "def firstMissingPositive(nums):\n    target = 1\n    while True:\n        found = False\n        for i in range(len(nums)):\n            if nums[i] == target:\n                found = True\n                break\n        if not found:\n            return target\n        target += 1\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def firstMissingPositive(nums):\n    arr = list(nums)\n    n = len(arr)\n    for i in range(n):\n        while 0 < arr[i] <= n and arr[arr[i] - 1] != arr[i]:\n            correct = arr[i] - 1\n            arr[correct], arr[i] = arr[i], arr[correct]\n    for i in range(n):\n        if arr[i] != i + 1:\n            return i + 1\n    return n + 1\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach tests each target value 1, 2, 3, ... by scanning the entire array for its presence, giving O(n^2) in the worst case. The optimal approach uses cyclic sort: since the answer must lie in [1, n+1], place each value v (when 1 <= v <= n) at its home index v-1 by swapping, then scan left-to-right for the first position i where arr[i] != i+1.",
+    "why_optimal": "Each value is swapped into its correct position at most once, so the total number of swaps across all iterations is bounded by n. The placement phase plus the final scan is therefore O(n) with O(1) extra space. On 22 test cases, PAF measured the brute-force at 0.08 ms and the optimal at 0.14 ms—both fast on small inputs, but the quadratic brute degrades significantly as n grows.",
+    "pitfalls": "Not guarding against duplicate values causes infinite swaps: the condition arr[arr[i]-1] != arr[i] must check that the target position doesn't already hold the correct value. Values outside [1, n] must be skipped entirely or they produce out-of-bounds writes. Mutating the original input array without copying can have side effects for the caller."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sorting_algorithm",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
   ]
 }

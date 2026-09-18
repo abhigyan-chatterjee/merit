@@ -9,12 +9,17 @@
     {
       "input": "numbers = [-100, -100], target = -200",
       "output": "[1, 2]",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "The sorted array [-100, -100] sums to -200 at positions 1 and 2 (1-based indices), so the answer is [1, 2]."
     },
     {
-      "input": "numbers = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], target = 200",
-      "output": "[1, 24]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "numbers = [-50, 83, 66, 79, 39, 7, -44, 14, 50, -29, -99, 94, -60, 78, 8, -13, -29, -61, -45], target = 190",
+      "output": "[]",
+      "explanation": "No two elements in this array sum to 190, so the function correctly returns an empty array []."
+    },
+    {
+      "input": "numbers = [-72, -25, 11, -60, 16, -100, 84, 84, -33, 28, 95, -55], target = 59",
+      "output": "[6, 11]",
+      "explanation": "After sorting, the two-pointer scan converges inward from the extremes; the pair -25 (at position 6) and 84 (at position 11) sums to 59, the exact target."
     }
   ],
   "constraints": [
@@ -22,8 +27,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "After sorting, how can you narrow down a pair of elements summing to the target in O(n) instead of checking all pairs?",
+    "Start with the smallest and largest elements; if their sum is too small, increase the left pointer; if too large, decrease the right pointer.",
+    "Sort a copy of the array, set left=0 and right=n-1; while left<right, if arr[left]+arr[right]==target return [left+1, right+1], else move the appropriate pointer."
   ],
   "starterCode": {
     "javascript": "function twoSumSorted(numbers, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -935,7 +941,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function twoSumSorted(numbers, target) {\n  const arr = numbers.slice().sort((a, b) => a - b);\n  for (let i = 0; i < arr.length; i++) {\n    for (let j = arr.length - 1; j > i; j--) {\n      if (arr[i] + arr[j] === target) {\n        return [i + 1, j + 1];\n      }\n    }\n  }\n  return [];\n}",
       "isReference": false
@@ -946,6 +952,29 @@
       "language": "javascript",
       "code": "function twoSumSorted(numbers, target) {\n  const arr = numbers.slice().sort((a, b) => a - b);\n  let left = 0;\n  let right = arr.length - 1;\n  while (left < right) {\n    const sum = arr[left] + arr[right];\n    if (sum === target) {\n      return [left + 1, right + 1];\n    }\n    if (sum < target) {\n      left++;\n    } else {\n      right--;\n    }\n  }\n  return [];\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n²) | Space: O(n)",
+      "language": "python",
+      "code": "def twoSumSorted(numbers, target):\n    arr = sorted(numbers[:])\n    for i in range(len(arr)):\n        for j in range(len(arr) - 1, i, -1):\n            if arr[i] + arr[j] == target:\n                return [i + 1, j + 1]\n    return []\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def twoSumSorted(numbers, target):\n    arr = sorted(numbers[:])\n    left = 0\n    right = len(arr) - 1\n    while left < right:\n        s = arr[left] + arr[right]\n        if s == target:\n            return [left + 1, right + 1]\n        if s < target:\n            left += 1\n        else:\n            right -= 1\n    return []\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach sorts the array and uses nested loops to find the first pair (outermost indices) summing to the target, yielding O(n^2) time. The optimal approach sorts once and then uses the two-pointer technique: start with the smallest and largest elements; if the sum is too small, move the left pointer up; if too large, move the right pointer down.",
+    "why_optimal": "The two-pointer scan is O(n) after the O(n log n) sort, versus O(n^2) for nested loops. On 22 test cases, PAF measured the brute-force at 1.09 ms and the optimal at 0.27 ms—a 4.0x speedup that grows quadratically with input size.",
+    "pitfalls": "The two-pointer technique only works because the array is sorted beforehand. The first pair found is always the outermost (smallest left, largest right) because that's where the pointers start. Returning 0-based indices instead of 1-based. Returning a pair when no solution exists instead of an empty array."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Subset_sum_problem",
+    "https://en.wikipedia.org/wiki/Quicksort"
   ]
 }

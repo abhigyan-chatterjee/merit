@@ -9,12 +9,12 @@
     {
       "input": "nums = [-100]",
       "output": "[-100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "A single-element array has no duplicates to remove: the output is [-100]."
     },
     {
-      "input": "nums = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "[100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [-72, -94, 89, -30, -38, -43, -65, 88, -74, 73, 89, 39, -78, 51, 8, -92, -93, -77, -45, -41, 29]",
+      "output": "[-94, -93, -92, -78, -77, -74, -72, -65, -45, -43, -41, -38, -30, 8, 29, 39, 51, 73, 88, 89]",
+      "explanation": "After sorting [-72, -94, 89, -30, -38, -43, -65, 88, -74, 73, 89, ...] into ascending order, all 21 values are already unique, so the output is the full sorted list."
     }
   ],
   "constraints": [
@@ -22,8 +22,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "After sorting, all duplicates are adjacent; how can you compact unique values in a single left-to-right scan?",
+    "Use two pointers: a write pointer that advances only when the current value differs from the previous element.",
+    "Sort first, then iterate with a read pointer; if arr[read] != arr[read-1], write it at arr[write++] and return arr[:write]."
   ],
   "starterCode": {
     "javascript": "function removeDuplicates(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -1168,6 +1169,29 @@
       "language": "javascript",
       "code": "function removeDuplicates(nums) {\n  if (nums.length === 0) return [];\n  const arr = nums.slice().sort((a, b) => a - b);\n  let writeIdx = 1;\n  for (let readIdx = 1; readIdx < arr.length; readIdx++) {\n    if (arr[readIdx] !== arr[readIdx - 1]) {\n      arr[writeIdx++] = arr[readIdx];\n    }\n  }\n  return arr.slice(0, writeIdx);\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def removeDuplicates(nums):\n    arr = sorted(nums[:])\n    res = []\n    for i in range(len(arr)):\n        if i == 0 or arr[i] != arr[i - 1]:\n            res.append(arr[i])\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(1)",
+      "language": "python",
+      "code": "def removeDuplicates(nums):\n    if len(nums) == 0:\n        return []\n    arr = sorted(nums[:])\n    write_idx = 1\n    for read_idx in range(1, len(arr)):\n        if arr[read_idx] != arr[read_idx - 1]:\n            arr[write_idx] = arr[read_idx]\n            write_idx += 1\n    return arr[:write_idx]\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach sorts the array and builds a new list by skipping consecutive duplicates, yielding O(n log n) time and O(n) space. The optimal approach applies the same deduplication in-place with a write pointer that only advances when the current value differs from the previous one, achieving O(1) extra space.",
+    "why_optimal": "Both approaches sort first (O(n log n)), but the optimal avoids allocating a second array. On inputs where many duplicates collapse to few unique values (e.g., all-100 arrays), the write pointer barely moves, making the dedup pass nearly a single scan after sorting.",
+    "pitfalls": "Not sorting first means duplicates are not adjacent and won't be caught. Confusing the write pointer with the read pointer causes elements to be overwritten prematurely. Returning the full truncated array instead of just the unique elements slice causes mismatches."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sorting_algorithm",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
   ]
 }

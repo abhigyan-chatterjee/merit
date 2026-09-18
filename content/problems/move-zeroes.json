@@ -9,12 +9,12 @@
     {
       "input": "nums = [-100]",
       "output": "[-100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "A single-element array [-100] has no zeros, so nothing needs to move: the output is [-100]."
     },
     {
-      "input": "nums = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [0, 0, 0, -100, 0, 100, -100, -100, 0, 100, 0, 0, -100, -100, 0, -100, -100, -100, 0, -100, 0, -100, 100, -100, 0, -100, 0, 0, -100, 0, -100, 100, 0, 0, 0, 0, 100, 100, -100, 0, 0, 100, -100, 100, 100, -100, 0, 0, 100, 100, 100, -100, -100, 100, 0, 0, -100, -100, 0, -100, 0, 100, -100, 100, -100, -100, 100, 100, -100, 100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0, -100, -100, 100, -100, -100, 0, 0, -100, 100, 100, 0, -100, 0, 100, -100, 0, 0, 100, 0]",
+      "output": "[-100, 100, -100, -100, 100, -100, -100, -100, -100, -100, -100, -100, 100, -100, -100, -100, -100, 100, 100, 100, -100, 100, -100, 100, 100, -100, 100, 100, 100, -100, -100, 100, -100, -100, -100, 100, -100, 100, -100, -100, 100, 100, -100, 100, 100, -100, 100, -100, -100, 100, -100, -100, -100, 100, 100, -100, 100, -100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+      "explanation": "The stress array interleaves zeros and non-zeros throughout; the optimal solution compacts all non-zeros first and moves every zero to the tail."
     }
   ],
   "constraints": [
@@ -22,8 +22,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "Instead of shifting elements one position at a time, compact all non-zero values to the front in a single pass.",
+    "Use a write pointer that advances only when a non-zero value is found, then fill every position from the write pointer to the end with zeros.",
+    "Iterate with a read pointer over every element; when nums[read] != 0, assign nums[write++] = nums[read]. After the loop, set nums[write..n-1] to 0."
   ],
   "starterCode": {
     "javascript": "function moveZeroes(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -1590,6 +1591,29 @@
       "language": "javascript",
       "code": "function moveZeroes(nums) {\n  const res = nums.slice();\n  let insertPos = 0;\n  for (let i = 0; i < res.length; i++) {\n    if (res[i] !== 0) {\n      res[insertPos++] = res[i];\n    }\n  }\n  while (insertPos < res.length) {\n    res[insertPos++] = 0;\n  }\n  return res;\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def moveZeroes(nums):\n    non_zeros = []\n    zeros = 0\n    for i in range(len(nums)):\n        if nums[i] == 0:\n            zeros += 1\n        else:\n            non_zeros.append(nums[i])\n    for i in range(zeros):\n        non_zeros.append(0)\n    return non_zeros\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def moveZeroes(nums):\n    res = list(nums)\n    insert_pos = 0\n    for i in range(len(res)):\n        if res[i] != 0:\n            res[insert_pos] = res[i]\n            insert_pos += 1\n    while insert_pos < len(res):\n        res[insert_pos] = 0\n        insert_pos += 1\n    return res\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach partitions the array into non-zero elements and zeros, collecting them into a new list, yielding O(n) time and O(n) space. The optimal approach uses an in-place two-pointer technique: scan left to right with a read pointer, writing non-zero values to a write pointer, then fill the remaining positions with zeros.",
+    "why_optimal": "The two-pointer approach achieves the same O(n) time without allocating a second array, reducing space from O(n) to O(1). On 22 test cases, PAF measured both solutions at roughly the same runtime (0.13 ms), but the optimal avoids memory allocation entirely.",
+    "pitfalls": "Mutating the input array in-place when the platform expects a return value rather than side effects. Forgetting to fill trailing positions with zeros after the write pointer. Off-by-one errors when the array contains no zeros (the write pointer should reach the end without any zero-filling)."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Partition_(mathematics)",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
   ]
 }

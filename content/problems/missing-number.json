@@ -9,12 +9,12 @@
     {
       "input": "nums = [-100]",
       "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "The array [-100] has length 1, so n=1. The value 0 is absent from the range [0, 1], making 0 the missing number."
     },
     {
-      "input": "nums = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [-100, 100, -100, 0, 0, -100, 0, -100, -100, -100, 0, 0, -100, -100, -100, -100, 100, -100, 0, -100, 100, 0, 100, -100, 0, -100, 0, 0, 0, 100, -100, 100, 100, -100, -100, -100, 0, 100, 100, 100, 100, 100, 0, -100, 0, 0, 0, -100, -100, 100, 0, 100, -100, -100, -100, -100, 0, 100, -100, 100, -100, 100, 100, -100, -100, 100, 0, -100, -100, 0, 0, -100, -100, -100, -100, 100, 100, 100, -100, 100, -100, -100, 100, -100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 100, -100, -100, 100, -100, -100]",
+      "output": "1",
+      "explanation": "The stress array contains 0 and 100 among its 100 elements, but the integer 1 never appears, so 1 is the smallest missing number."
     }
   ],
   "constraints": [
@@ -22,8 +22,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "The missing number is in [0, n]; if every value v in [0, n) sat at index v, where would the gap appear?",
+    "Cyclic-sort: swap each arr[i] into position arr[i] when 0 <= arr[i] < n, then scan for the first i where arr[i] != i.",
+    "Guard each swap with arr[arr[i]] != arr[i] to prevent infinite loops on duplicates; the first mismatch index is your answer."
   ],
   "starterCode": {
     "javascript": "function missingNumber(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -899,7 +900,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function missingNumber(nums) {\n  for (let target = 0; target <= nums.length; target++) {\n    let found = false;\n    for (let i = 0; i < nums.length; i++) {\n      if (nums[i] === target) {\n        found = true;\n        break;\n      }\n    }\n    if (!found) return target;\n  }\n  return nums.length;\n}",
       "isReference": false
@@ -910,6 +911,29 @@
       "language": "javascript",
       "code": "function missingNumber(nums) {\n  const arr = nums.slice();\n  const n = arr.length;\n  for (let i = 0; i < n; i++) {\n    while (arr[i] >= 0 && arr[i] < n && arr[arr[i]] !== arr[i]) {\n      const dest = arr[i];\n      const temp = arr[dest];\n      arr[dest] = arr[i];\n      arr[i] = temp;\n    }\n  }\n  for (let i = 0; i < n; i++) {\n    if (arr[i] !== i) return i;\n  }\n  return n;\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n²) | Space: O(1)",
+      "language": "python",
+      "code": "def missingNumber(nums):\n    n = len(nums)\n    for target in range(n + 1):\n        found = False\n        for i in range(n):\n            if nums[i] == target:\n                found = True\n                break\n        if not found:\n            return target\n    return n\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def missingNumber(nums):\n    arr = list(nums)\n    n = len(arr)\n    for i in range(n):\n        while 0 <= arr[i] < n and arr[arr[i]] != arr[i]:\n            dest = arr[i]\n            arr[dest], arr[i] = arr[i], arr[dest]\n    for i in range(n):\n        if arr[i] != i:\n            return i\n    return n\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach checks each target from 0 to n by scanning the array for its presence, yielding O(n^2) time. The optimal approach uses cyclic sort: place each value v at index v (when 0 <= v < n) by swapping, then scan left-to-right for the first position i where arr[i] != i.",
+    "why_optimal": "Each value is swapped into its correct position at most once, so the total number of swaps is bounded by n. The placement phase plus the final scan is O(n) with O(1) extra space. On 22 test cases, PAF measured the brute-force at 0.09 ms and the optimal at 0.14 ms—both fast on small inputs, but the quadratic brute degrades significantly as n grows.",
+    "pitfalls": "Values equal to n are outside the placement range [0, n-1] and must be skipped. The while-loop guard must check arr[arr[i]] != arr[i] to avoid infinite swaps on duplicates. Not copying the input array mutates the original, which can cause issues for the caller."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sum_of_natural_numbers",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
   ]
 }

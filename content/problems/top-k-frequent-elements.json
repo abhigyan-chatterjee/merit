@@ -9,12 +9,12 @@
     {
       "input": "nums = [-100], k = 1",
       "output": "[-100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "A single-element array [-100] has one value with frequency 1; asking for the top 1 returns [-100]."
     },
     {
-      "input": "nums = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], k = 24",
-      "output": "[100]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [66, 79, 39, 7, -44, 14, 50, -29, -99, 94, -60, 78, 8, -13, -29, -61, -45, 95, -14, -74, -77, -3, -76], k = 1",
+      "output": "[-29]",
+      "explanation": "The array contains 23 values where -29 appears twice and every other value appears once; with k=1, the most frequent element -29 is returned."
     }
   ],
   "constraints": [
@@ -22,8 +22,9 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "After counting frequencies, can you avoid sorting all distinct values to get just the top k?",
+    "Use bucket sort: create an array of n+1 buckets where bucket[f] holds all values that appear f times.",
+    "Place each value in buckets[freq], then iterate f from n down to 1, sorting each non-empty bucket and appending values until res reaches size k."
   ],
   "starterCode": {
     "javascript": "function topKFrequent(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -1080,6 +1081,29 @@
       "language": "javascript",
       "code": "function topKFrequent(nums, k) {\n  const counts = new Map();\n  for (const x of nums) {\n    counts.set(x, (counts.get(x) || 0) + 1);\n  }\n  const buckets = Array.from({ length: nums.length + 1 }, () => []);\n  for (const [val, freq] of counts.entries()) {\n    buckets[freq].push(val);\n  }\n  const res = [];\n  for (let f = nums.length; f >= 1 && res.length < k; f--) {\n    if (buckets[f].length > 0) {\n      buckets[f].sort((a, b) => a - b);\n      for (const val of buckets[f]) {\n        res.push(val);\n        if (res.length === k) break;\n      }\n    }\n  }\n  return res;\n}",
       "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def topKFrequent(nums, k):\n    from collections import Counter\n    counts = Counter(nums)\n    entries = list(counts.items())\n    entries.sort(key=lambda x: (-x[1], x[0]))\n    return [x[0] for x in entries[:k]]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def topKFrequent(nums, k):\n    from collections import Counter\n    counts = Counter(nums)\n    n = len(nums)\n    buckets = [[] for _ in range(n + 1)]\n    for val, freq in counts.items():\n        buckets[freq].append(val)\n    res = []\n    for f in range(n, 0, -1):\n        if len(res) >= k:\n            break\n        if buckets[f]:\n            buckets[f].sort()\n            for val in buckets[f]:\n                res.append(val)\n                if len(res) == k:\n                    break\n    return res\n",
+      "isReference": true
     }
+  ],
+  "editorial": {
+    "approach": "The brute-force approach counts frequencies with a Counter, sorts all (value, frequency) pairs by frequency descending then value ascending, and returns the first k, yielding O(n log n) time. The optimal approach uses bucket sort: place each value into a bucket indexed by its frequency, then iterate from the highest frequency downward until k values are collected.",
+    "why_optimal": "Bucket sort avoids sorting all distinct values—when k is small, we stop early after scanning only the top buckets. On 22 test cases, PAF measured the brute-force at 0.43 ms and the optimal at 0.98 ms; the optimal's extra overhead (bucket array allocation) makes it slower than the brute on small inputs with few distinct values, but it scales better as n grows.",
+    "pitfalls": "Tie-breaking must sort values ascending within the same frequency bucket, or the output order won't match the expected result. The brute force uses (-frequency, value) as the sort key; the bucket approach must replicate this within each non-empty bucket. Forgetting to sort within buckets produces non-deterministic ordering."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Partial_sorting",
+    "https://en.wikipedia.org/wiki/Bucket_sort"
   ]
 }
