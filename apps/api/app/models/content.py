@@ -18,6 +18,8 @@ class Problem(Base):
     constraints_json: Mapped[str] = mapped_column(Text, nullable=False)  # JSON string
     hints: Mapped[str] = mapped_column(Text, nullable=False)  # JSON string
     starter_code: Mapped[str] = mapped_column(Text, nullable=False)  # JSON string {lang: code}
+    editorial_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reading_links_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     function_name: Mapped[str] = mapped_column(String, nullable=False)
     time_limit_ms: Mapped[int] = mapped_column(Integer, default=2000, nullable=False)
     sequence: Mapped[int | None] = mapped_column(Integer, nullable=True)

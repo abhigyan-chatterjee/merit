@@ -101,6 +101,12 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                 constraints_json=json.dumps(data.get("constraints", [])),
                 hints=json.dumps(data.get("hints", [])),
                 starter_code=json.dumps(starter_dict),
+                editorial_json=json.dumps(data["editorial"])
+                if data.get("editorial") is not None
+                else None,
+                reading_links_json=json.dumps(data["reading_links"])
+                if data.get("reading_links") is not None
+                else None,
                 function_name=data.get("functionName", "solve"),
                 time_limit_ms=data.get("timeLimitMs", 2000),
                 sequence=data.get("sequence"),
@@ -141,6 +147,10 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
             existing.prev_slug = data.get("prevSlug")
             existing.next_slug = data.get("nextSlug")
             existing.review_status = status
+            if data.get("editorial") is not None:
+                existing.editorial_json = json.dumps(data["editorial"])
+            if data.get("reading_links") is not None:
+                existing.reading_links_json = json.dumps(data["reading_links"])
 
     db.commit()
     return count

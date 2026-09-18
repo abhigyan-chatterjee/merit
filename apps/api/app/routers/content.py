@@ -179,6 +179,10 @@ def get_problem(
         "constraints": json.loads(problem.constraints_json) if problem.constraints_json else [],
         "hints": json.loads(problem.hints) if problem.hints else [],
         "starter_code": json.loads(problem.starter_code) if problem.starter_code else {},
+        "editorial": json.loads(problem.editorial_json) if problem.editorial_json else None,
+        "reading_links": json.loads(problem.reading_links_json)
+        if problem.reading_links_json
+        else [],
         "function_name": problem.function_name,
         "time_limit_ms": problem.time_limit_ms,
         "sequence": problem.sequence,

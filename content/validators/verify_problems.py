@@ -13,16 +13,73 @@ sys.path.insert(0, str(repo_root))
 from app.services.judge import execute_code
 from content.validators.schema import ProblemSchema
 
+EDITORIAL_KEYS = ("approach", "why_optimal", "pitfalls")
+
+
+def check_paf_gates(data: dict, name: str) -> list[str]:
+    """Enforce editorial/reading_links/hints gates on PAF-authored problems.
+
+    Problems carrying a ``pafVerification`` key are PAF-authored (new) and must
+    carry a 3-key editorial, 1-3 https reading links, and >=3 distinct hints.
+    Legacy problems without that key are grandfathered: they pass with a
+    printed warning only. PAF emissions predating the editorial schema carry
+    ``pafVerification`` but neither ``editorial`` nor ``reading_links`` keys;
+    those are grandfathered too so the existing bank stays green, while every
+    problem emitted by the current engine always carries both keys and is gated.
+    """
+    if "pafVerification" not in data:
+        slug = data.get("slug", "")
+        status = data.get("reviewStatus") or data.get("review_status") or "verified"
+        if status == "draft" or slug.startswith("scrap-"):
+            return []
+        print(f"  ! {name}: legacy problem, editorial gates skipped")
+        return []
+    if "editorial" not in data and "reading_links" not in data:
+        print(f"  ! {name}: legacy PAF emission, editorial gates skipped")
+        return []
+    errors: list[str] = []
+    editorial = data.get("editorial")
+    if not isinstance(editorial, dict):
+        errors.append(f"{name}: PAF problem missing 'editorial' with keys {list(EDITORIAL_KEYS)}")
+    else:
+        for key in EDITORIAL_KEYS:
+            value = editorial.get(key)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(
+                    f"{name}: PAF problem 'editorial.{key}' must be a non-empty string"
+                )
+    links = data.get("reading_links")
+    if not isinstance(links, list) or not 1 <= len(links) <= 3:
+        errors.append(
+            f"{name}: PAF problem 'reading_links' must have 1-3 entries"
+        )
+    elif any(not isinstance(link, str) or not link.startswith("https://") for link in links):
+        errors.append(
+            f"{name}: PAF problem 'reading_links' entries must be https URLs"
+        )
+    hints = data.get("hints")
+    if not isinstance(hints, list):
+        errors.append(f"{name}: PAF problem 'hints' must be a list with >=3 entries")
+    else:
+        cleaned = [hint.strip() for hint in hints if isinstance(hint, str) and hint.strip()]
+        if len(cleaned) < 3 or len(set(cleaned)) < 3:
+            errors.append(
+                f"{name}: PAF problem 'hints' must have >=3 distinct non-empty entries"
+            )
+    return errors
+
 
 async def verify_single_problem(path: Path) -> list[str]:
     errors: list[str] = []
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    errors.extend(check_paf_gates(data, path.name))
+
     try:
         problem = ProblemSchema(**data)
     except Exception as err:
-        return [f"Schema validation error in {path.name}: {err}"]
+        return errors + [f"Schema validation error in {path.name}: {err}"]
 
     # Find reference solution
     ref_solutions = [s for s in problem.solutions if s.is_reference]
