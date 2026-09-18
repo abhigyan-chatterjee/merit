@@ -1,0 +1,404 @@
+{
+  "slug": "simplify-path",
+  "title": "Canonical Unix Path",
+  "topic": "stack",
+  "difficulty": "Medium",
+  "pattern": "stack / Token parse",
+  "statement": "# Simplify Path\n\nGiven an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "path = \"/home/\"",
+      "output": "\"/home\"",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "path = \"/../\"",
+      "output": "\"/\"",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function simplifyPath(path: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Split the path on slashes and skip empty or single-dot segments.",
+    "Pop the stack on double dots when it is non-empty.",
+    "Join survivors with single slashes behind one leading slash."
+  ],
+  "editorial": {
+    "approach": "Split on slashes and keep real directory names on a stack, skipping dots and popping on double dots.",
+    "why_optimal": "One pass over the segments is linear in the path length with a stack bounded by the depth.",
+    "pitfalls": "Ignore empty segments from repeated slashes and never pop past the root."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Path_(computing)"
+  ],
+  "starterCode": {
+    "javascript": "function simplifyPath(path) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def simplifyPath(path):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "simplifyPath",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 42,
+    "bruteForceRuntimeMs": 0.16719500000001375,
+    "optimalRuntimeMs": 0.14731899999998888
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        "/home/"
+      ],
+      "expected": "/home",
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        "/../"
+      ],
+      "expected": "/",
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        "/home//foo/"
+      ],
+      "expected": "/home/foo",
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        "/a/./b/../../c/"
+      ],
+      "expected": "/c",
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        "/"
+      ],
+      "expected": "/",
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        "/abcxyz/012/"
+      ],
+      "expected": "/abcxyz/012",
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        "/abcxyz/def/"
+      ],
+      "expected": "/abcxyz/def",
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        "//0/"
+      ],
+      "expected": "/0",
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        "/2/."
+      ],
+      "expected": "/2",
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        "/ac0/xz/"
+      ],
+      "expected": "/ac0/xz",
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        "/a12/../2/"
+      ],
+      "expected": "/2",
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        "/a/bxb/zczz/"
+      ],
+      "expected": "/a/bxb/zczz",
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        "/2x/"
+      ],
+      "expected": "/2x",
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        "/./x/0yb/./x10"
+      ],
+      "expected": "/x/0yb/x10",
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        "/./."
+      ],
+      "expected": "/",
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        "/zxc2/b/././0/"
+      ],
+      "expected": "/zxc2/b/0",
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        "/./b/zby/ay2c/y"
+      ],
+      "expected": "/b/zby/ay2c/y",
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        "//./z/"
+      ],
+      "expected": "/z",
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        "//xax/b/2"
+      ],
+      "expected": "/xax/b/2",
+      "isSample": false
+    },
+    {
+      "label": "custom-21",
+      "input": [
+        "/y2/x2xy/121/../"
+      ],
+      "expected": "/y2/x2xy",
+      "isSample": false
+    },
+    {
+      "label": "custom-22",
+      "input": [
+        "//ab/x/../../y1/"
+      ],
+      "expected": "/y1",
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b"
+      ],
+      "expected": "/b",
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "yx"
+      ],
+      "expected": "/yx",
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cb2b0aab"
+      ],
+      "expected": "/cb2b0aab",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "x2a2x20"
+      ],
+      "expected": "/x2a2x20",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1yac0zyc"
+      ],
+      "expected": "/1yac0zyc",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "zbb0bzz"
+      ],
+      "expected": "/zbb0bzz",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ya12b0b2yzxbaxybxb0y"
+      ],
+      "expected": "/ya12b0b2yzxbaxybxb0y",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "zczzxybc2xc10y2"
+      ],
+      "expected": "/zczzxybc2xc10y2",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "zaxaz0yb"
+      ],
+      "expected": "/zaxaz0yb",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "zx101cy"
+      ],
+      "expected": "/zx101cy",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "x22y0"
+      ],
+      "expected": "/x22y0",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "0zxc21babcc0b0012y2"
+      ],
+      "expected": "/0zxc21babcc0b0012y2",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "2yzby0c1ay2c2by2xczc22"
+      ],
+      "expected": "/2yzby0c1ay2c2by2xczc22",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "z"
+      ],
+      "expected": "/z",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "abzyxaxbb1b2cc12"
+      ],
+      "expected": "/abzyxaxbb1b2cc12",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "y20x2x"
+      ],
+      "expected": "/y20x2x",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "y0z121bxxbza2xxabaxbazb"
+      ],
+      "expected": "/y0z121bxxbza2xxabaxbazb",
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+      ],
+      "expected": "/xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+      ],
+      "expected": "/2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+      ],
+      "expected": "/x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+      ],
+      "expected": "/zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function simplifyPath(path) {\n  const parts = path.split('/');\n  let idx = parts.indexOf('..');\n  while (idx !== -1) {\n    parts.splice(idx, 1);\n    for (let j = idx - 1; j >= 0; j--) {\n      if (parts[j] !== '' && parts[j] !== '.' && parts[j] !== '..') {\n        parts.splice(j, 1);\n        break;\n      }\n    }\n    idx = parts.indexOf('..');\n  }\n  const names = [];\n  for (let i = 0; i < parts.length; i++) {\n    if (parts[i] !== '' && parts[i] !== '.' && parts[i] !== '..') {\n      names.push(parts[i]);\n    }\n  }\n  return '/' + names.join('/');\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function simplifyPath(path) {\n  const stack = [];\n  const parts = path.split('/');\n  for (let i = 0; i < parts.length; i++) {\n    const part = parts[i];\n    if (part === '' || part === '.') {\n      continue;\n    } else if (part === '..') {\n      if (stack.length > 0) {\n        stack.pop();\n      }\n    } else {\n      stack.push(part);\n    }\n  }\n  return '/' + stack.join('/');\n}",
+      "isReference": true
+    }
+  ]
+}

@@ -1,0 +1,412 @@
+{
+  "slug": "basic-calculator-ii",
+  "title": "Arithmetic Without Parentheses",
+  "topic": "stack",
+  "difficulty": "Medium",
+  "pattern": "stack / Deferred ops",
+  "statement": "# Basic Calculator II\n\nGiven a string `s` holding an arithmetic expression with non-negative integers, the binary operators `+`, `-`, `*`, `/`, and optional spaces, evaluate it and return the integer result.\n\nMultiplication and division bind tighter than addition and subtraction; operators sharing a precedence level apply left to right. There are no parentheses. Division between integers truncates toward zero.\n\nConstraints: `1 <= s.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "s = \"3+2*2\"",
+      "output": "7",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s = \" 3/2 \"",
+      "output": "1",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function calculate(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Track the pending plus/minus sign while scanning numbers.",
+    "Resolve multiply and divide against the stack top immediately.",
+    "Sum the signed stack terms for the result."
+  ],
+  "editorial": {
+    "approach": "Parse numbers left to right, pushing signed terms and resolving multiply/divide immediately.",
+    "why_optimal": "One pass with constant stack depth per term keeps evaluation linear in the string length.",
+    "pitfalls": "Apply truncation toward zero on division and flush the final pending number."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Shunting-yard_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function calculate(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def calculate(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "calculate",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 43,
+    "bruteForceRuntimeMs": 0.32104500000001224,
+    "optimalRuntimeMs": 0.26150099999998844
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        "3+2*2"
+      ],
+      "expected": 7,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        " 3/2 "
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        " 3+5 / 2 "
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        "7"
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        "  14-3/2"
+      ],
+      "expected": 13,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        "100+200*3-50/2"
+      ],
+      "expected": 675,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        "0"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        " 81+95 "
+      ],
+      "expected": 176,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        " 94+76 "
+      ],
+      "expected": 170,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        "27+72-92"
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        " 28*1-90/44*20 "
+      ],
+      "expected": -12,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        " 13/13 "
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        " 33/69 "
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        "10*74-91+6"
+      ],
+      "expected": 655,
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        "10+49*59"
+      ],
+      "expected": 2901,
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        "47-86*90+78"
+      ],
+      "expected": -7615,
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        "31 / 49 * 82"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        "41-5"
+      ],
+      "expected": 36,
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        "8*28/51"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        " 18-32 * 96 / 75 "
+      ],
+      "expected": -22,
+      "isSample": false
+    },
+    {
+      "label": "custom-21",
+      "input": [
+        " 17+97+15-81-88 "
+      ],
+      "expected": -40,
+      "isSample": false
+    },
+    {
+      "label": "custom-22",
+      "input": [
+        "48 * 71+88+88 * 99"
+      ],
+      "expected": 12208,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "yx"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cb2b0aab"
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "x2a2x20"
+      ],
+      "expected": 2220,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1yac0zyc"
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "zbb0bzz"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ya12b0b2yzxbaxybxb0y"
+      ],
+      "expected": 12020,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "zczzxybc2xc10y2"
+      ],
+      "expected": 2102,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "zaxaz0yb"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "zx101cy"
+      ],
+      "expected": 101,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "x22y0"
+      ],
+      "expected": 220,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "0zxc21babcc0b0012y2"
+      ],
+      "expected": 21000122,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "2yzby0c1ay2c2by2xczc22"
+      ],
+      "expected": 20122222,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "z"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "abzyxaxbb1b2cc12"
+      ],
+      "expected": 1212,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "y20x2x"
+      ],
+      "expected": 202,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "y0z121bxxbza2xxabaxbazb"
+      ],
+      "expected": 1212,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+      ],
+      "expected": 1.211000010210112e+43,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+      ],
+      "expected": 2.2101202220200005e+37,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+      ],
+      "expected": 1.1121211001002116e+55,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+      ],
+      "expected": 1.2110020201010221e+39,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function calculate(s) {\n  const nums = [];\n  const ops = [];\n  let current = 0;\n  let building = false;\n  function flush() {\n    if (building) {\n      nums.push(current);\n      current = 0;\n      building = false;\n    }\n  }\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (ch >= '0' && ch <= '9') {\n      current = current * 10 + (ch.charCodeAt(0) - 48);\n      building = true;\n    } else if (ch === '+' || ch === '-' || ch === '*' || ch === '/') {\n      flush();\n      ops.push(ch);\n    }\n  }\n  flush();\n  if (nums.length === 0) {\n    return 0;\n  }\n  const values = nums.slice();\n  const operators = ops.slice();\n  if (operators.length === values.length) {\n    values.unshift(0);\n  }\n  let pos = 0;\n  while (pos < operators.length) {\n    if (operators[pos] === '*' || operators[pos] === '/') {\n      const a = values[pos];\n      const b = values[pos + 1] !== undefined ? values[pos + 1] : 0;\n      const result = operators[pos] === '*' ? a * b : Math.trunc(a / b);\n      values.splice(pos, 2, result);\n      operators.splice(pos, 1);\n    } else {\n      pos++;\n    }\n  }\n  let total = values[0];\n  for (let i = 0; i < operators.length; i++) {\n    const next = values[i + 1] !== undefined ? values[i + 1] : 0;\n    total = operators[i] === '+' ? total + next : total - next;\n  }\n  return total;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function calculate(s) {\n  const stack = [];\n  let current = 0;\n  let building = false;\n  let op = '+';\n  function apply() {\n    if (!building) {\n      return;\n    }\n    if (op === '+') {\n      stack.push(current);\n    } else if (op === '-') {\n      stack.push(-current);\n    } else if (op === '*') {\n      const prev = stack.length > 0 ? stack.pop() : 0;\n      stack.push(prev * current);\n    } else {\n      const prev = stack.length > 0 ? stack.pop() : 0;\n      stack.push(Math.trunc(prev / current));\n    }\n    current = 0;\n    building = false;\n  }\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (ch >= '0' && ch <= '9') {\n      current = current * 10 + (ch.charCodeAt(0) - 48);\n      building = true;\n    } else if (ch === '+' || ch === '-' || ch === '*' || ch === '/') {\n      apply();\n      op = ch;\n    }\n  }\n  apply();\n  let total = 0;\n  for (let i = 0; i < stack.length; i++) {\n    total += stack[i];\n  }\n  return total;\n}",
+      "isReference": true
+    }
+  ]
+}

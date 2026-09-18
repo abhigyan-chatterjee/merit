@@ -1,0 +1,236 @@
+{
+  "slug": "remove-all-adjacent-duplicates",
+  "title": "Collapse Adjacent Duplicates",
+  "topic": "stack",
+  "difficulty": "Easy",
+  "pattern": "stack / Collapse",
+  "statement": "# Collapse Adjacent Duplicates\n\nGiven a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "s = \"b\"",
+      "output": "\"b\"",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s = \"yx\"",
+      "output": "\"yx\"",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function removeDuplicatesString(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Push characters and pop when the top equals the new character.",
+    "A pop can expose a fresh equal pair with the next character.",
+    "The stack contents at the end spell the answer."
+  ],
+  "editorial": {
+    "approach": "Scan once, cancelling equal neighbours on a stack.",
+    "why_optimal": "Each character is pushed and popped at most once, so the single pass is linear with a stack bounded by the input.",
+    "pitfalls": "Compare strict equality only; do not normalise case for this task."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+  ],
+  "starterCode": {
+    "javascript": "function removeDuplicatesString(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def removeDuplicatesString(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "removeDuplicatesString",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.3238149999999962,
+    "optimalRuntimeMs": 0.19843500000001768
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b"
+      ],
+      "expected": "b",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "yx"
+      ],
+      "expected": "yx",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cb2b0aab"
+      ],
+      "expected": "cb2b0b",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "x2a2x20"
+      ],
+      "expected": "x2a2x20",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1yac0zyc"
+      ],
+      "expected": "1yac0zyc",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "zbb0bzz"
+      ],
+      "expected": "z0b",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ya12b0b2yzxbaxybxb0y"
+      ],
+      "expected": "ya12b0b2yzxbaxybxb0y",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "zczzxybc2xc10y2"
+      ],
+      "expected": "zcxybc2xc10y2",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "zaxaz0yb"
+      ],
+      "expected": "zaxaz0yb",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "zx101cy"
+      ],
+      "expected": "zx101cy",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "x22y0"
+      ],
+      "expected": "xy0",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "0zxc21babcc0b0012y2"
+      ],
+      "expected": "0zxc21bab0b12y2",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "2yzby0c1ay2c2by2xczc22"
+      ],
+      "expected": "2yzby0c1ay2c2by2xczc",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "z"
+      ],
+      "expected": "z",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "abzyxaxbb1b2cc12"
+      ],
+      "expected": "abzyxax1b212",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "y20x2x"
+      ],
+      "expected": "y20x2x",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "y0z121bxxbza2xxabaxbazb"
+      ],
+      "expected": "y0z121za2abaxbazb",
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+      ],
+      "expected": "xy1x2c1x10x0z1aba0zbx21c0cy1xb12ba2abxc0x0ac0a0y1y021cxyxa2az1ca2bcx0bxab02zyxzxy0cy1zba12x2yczbxzyc12y2a2ybcy",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+      ],
+      "expected": "2cxzxy21yab0yzcyc1202ac2az2c0cayzazbz20cx0acz0xycb0azyax0zybyz202zabycyab2b0xya0axz0y2y0z0y2cxcy02ay",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+      ],
+      "expected": "x0z1x21cby2zbxycx1b10x010xcab0xc21a2xb1c1z12021cyxy21xy1byxy2bx0cxbz210axa01azyx1xy01a0z0c1c2a0ab0c1cay0zx",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+      ],
+      "expected": "0y0yb1a2azxbacxc1bx1yzcbcybayxbxbybaz20zb2za01b0z1c0c2y20yzxby1x10za1zc1xzyz2a2xbx012x1abyx0xyz1z021yxbxzb2c",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function removeDuplicatesString(s) {\n  const chars = s.split('');\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i < chars.length - 1; i++) {\n      if (chars[i] === chars[i + 1]) {\n        chars.splice(i, 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return chars.join('');\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function removeDuplicatesString(s) {\n  const stack = [];\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (stack.length > 0 && stack[stack.length - 1] === ch) {\n      stack.pop();\n    } else {\n      stack.push(ch);\n    }\n  }\n  return stack.join('');\n}",
+      "isReference": true
+    }
+  ]
+}

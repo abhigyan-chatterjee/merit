@@ -1,0 +1,1132 @@
+{
+  "slug": "baseball-game",
+  "title": "Baseball Scorebook",
+  "topic": "stack",
+  "difficulty": "Easy",
+  "pattern": "stack / Record-ops",
+  "statement": "# Baseball Scorebook\n\nYou are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
+  "examples": [
+    {
+      "input": "operations = [\"5\", \"2\", \"C\", \"D\", \"+\"]",
+      "output": "30",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "operations = [\"5\", \"-2\", \"4\", \"C\", \"D\", \"9\", \"+\", \"+\"]",
+      "output": "27",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function calPoints(operations: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Keep live round scores on a stack.",
+    "Translate C to pop, D to double the top, and + to sum the top two.",
+    "Add every surviving round at the end."
+  ],
+  "editorial": {
+    "approach": "Replay the operations on a stack of live round scores.",
+    "why_optimal": "Each operation touches only the stack top, so the replay is linear in the number of operations.",
+    "pitfalls": "Pop only when the record is non-empty; the statement guarantees valid C/D/+ entries."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+  ],
+  "starterCode": {
+    "javascript": "function calPoints(operations) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def calPoints(operations):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "calPoints",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 34,
+    "bruteForceRuntimeMs": 0.2990310000000065,
+    "optimalRuntimeMs": 0.3076549999999827
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        [
+          "5",
+          "2",
+          "C",
+          "D",
+          "+"
+        ]
+      ],
+      "expected": 30,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        [
+          "5",
+          "-2",
+          "4",
+          "C",
+          "D",
+          "9",
+          "+",
+          "+"
+        ]
+      ],
+      "expected": 27,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        [
+          "5"
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        [
+          "3",
+          "C"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        [
+          "10",
+          "20",
+          "30"
+        ]
+      ],
+      "expected": 60,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        [
+          "1",
+          "C",
+          "2",
+          "D",
+          "+"
+        ]
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        [
+          "-29",
+          "-15",
+          "C",
+          "C",
+          "13",
+          "+",
+          "7",
+          "D",
+          "-29",
+          "-17",
+          "C",
+          "D"
+        ]
+      ],
+      "expected": -40,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        [
+          "5",
+          "C",
+          "-16",
+          "D",
+          "D",
+          "21",
+          "+",
+          "18"
+        ]
+      ],
+      "expected": -116,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        [
+          "14",
+          "D",
+          "-13",
+          "C",
+          "C",
+          "-24",
+          "-6",
+          "-8",
+          "+",
+          "8",
+          "21",
+          "16",
+          "D",
+          "D",
+          "29",
+          "D",
+          "5",
+          "23",
+          "+",
+          "D"
+        ]
+      ],
+      "expected": 302,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        [
+          "6",
+          "C",
+          "-28",
+          "C",
+          "-25"
+        ]
+      ],
+      "expected": -25,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        [
+          "25",
+          "-6",
+          "-1",
+          "+",
+          "+",
+          "-20",
+          "-8",
+          "C",
+          "+",
+          "14",
+          "+",
+          "+",
+          "8",
+          "+",
+          "C",
+          "D"
+        ]
+      ],
+      "expected": -21,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        [
+          "-20",
+          "D",
+          "D",
+          "29",
+          "+",
+          "+",
+          "D",
+          "C",
+          "+",
+          "23",
+          "+",
+          "+",
+          "-16",
+          "+",
+          "21",
+          "-5",
+          "-26",
+          "C",
+          "D",
+          "+",
+          "-17",
+          "+",
+          "D",
+          "D"
+        ]
+      ],
+      "expected": -620,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          "b"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          "yx",
+          "cb",
+          "2b",
+          "0a",
+          "bx",
+          "2a",
+          "x2",
+          "x1",
+          "ya",
+          "0z",
+          "cx",
+          "bb",
+          "bz",
+          "ya",
+          "12",
+          "0b",
+          "yz",
+          "xb",
+          "xy",
+          "xb",
+          "y1",
+          "zc",
+          "zx",
+          "yb"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          "c2xc10y2xzaxaz0ybxzx1",
+          "1cycx22y00zxc",
+          "1babcc0b0012y2ab2",
+          "zby0c1ay2",
+          "2by2xc",
+          "c22az1abzyxa",
+          "bb1b2cc1",
+          "cy20x2xy0z121bxxbz",
+          "2",
+          "xabaxbaz",
+          "2xy",
+          "1x2c1x10xbb0z001aba0zb",
+          "xx21c0cy",
+          "xb12ba2abxc011x",
+          "ac0a0y1y021cx",
+          "xa2azaa122",
+          "a2bcbb",
+          "x0bxab02zyxzxy0cy1zba1",
+          "bb2x2yczbxzyc12y2a2y",
+          "bcybb2cyyxzxy21yab0yaa"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          "yc120",
+          "abbc2az2c0cayzazxx",
+          "bz20cxcc0acz0xycb0a1xx",
+          "zyxxax0zybyz202",
+          "abycyab0zz0",
+          "2b0xya0a22xz0bzzby2y",
+          "0z0y2cx00cy02ayyx0z111",
+          "x21cby2zbxyxxcaax1b10x",
+          "010xcab0xc21a2xb1c122z1",
+          "2021c11yxy21xy1byxyz",
+          "2bccx0cxb00"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          "10ax00a01azy0022x1",
+          "y01a0z0c",
+          "c2a0ab0c1cay0zx",
+          "zz0y0yb1a2azxba",
+          "x",
+          "acxc1bx",
+          "yzcbcybay00xbxb",
+          "ybaz20zb2za01b0z1c0c2y2",
+          "10yzxby1x10za1zc",
+          "xzyzyy2a2xbx012x",
+          "111abyx0xyz122z02zz1yyy"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          "xzb2",
+          "cxx1y2ybxyxzcya2cyaa2yc",
+          "1bay111zcay1bb01baccy",
+          "xb2",
+          "x2011y0yabxxyb",
+          "xc2bca",
+          "11yaxyy1bxyx0b",
+          "xcycbacyy1b1y0y221"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          "a0z",
+          "yabxayac121yc01b1z0z",
+          "bcz01y02a1b",
+          "yzb02a210ax",
+          "z11axy2cy11baxcy2",
+          "2",
+          "bxb1bc1y2y011x",
+          "2c0x2cby0z2yayy",
+          "1c121zz2201zxx0x0az",
+          "100c1ac2zb1b21ac0cb1yz0b",
+          "20z12abxyxb",
+          "bb1cyaazayzz0c",
+          "20cccb0x",
+          "cx1y1ya1y2cb1zy0",
+          "y1yx01bx0zyya0yaa1yxzxx"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          "cbay1azcb",
+          "z0cxc2z22y",
+          "y1yzb1",
+          "cx0",
+          "zb0ay2b1zy0zbx1a2z",
+          "xb1y0bcaay1bbx2c01z2",
+          "c0b10yazx11xzb",
+          "z2za0yxb1bxaazxcxb2xxx",
+          "caycc2ycbac",
+          "z",
+          "zacyac02",
+          "b11z",
+          "b12xa2y1aa100b11b",
+          "zcb",
+          "y2z02",
+          "120bb2x01x",
+          "z100bz0zyzc1bb",
+          "b0b",
+          "zc2a22zb0z0ayyzb2xc1xbz2",
+          "byx022ayacyy"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          "acc0bcab2x00",
+          "zczyzbaccaby101",
+          "10yx2bz0by12yax0aaxy",
+          "cyyzba1",
+          "0cc02x22zb0a0a1bz000yb0a",
+          "c1zb0bx002b",
+          "yzxzcb2b22xzz",
+          "cxbcyxccbc111zzc1b11yyaz",
+          "by11aazybb2012a1x",
+          "12ca1bzb2ca",
+          "1122czzy"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          "zazbzb20yyczbc",
+          "y0cby20zc2b0",
+          "zazycxz1xxccbyb22",
+          "2azc0cccc1a0zx1y1x2xy1xz",
+          "11y0220cxcya1z2b2bybcy",
+          "2c0bx1za0a02zx0",
+          "zxa",
+          "bzccay1c11a",
+          "ayx",
+          "220by",
+          "ybax01bb",
+          "2a2xcy0azx0cb2zb",
+          "2222a01a0zyazbzxb"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          "zcaz2zc11ccb1ayxaxazy202",
+          "yaxyzazybz0010zc",
+          "1z2yb0b0c2yzbbzy",
+          "10c1z1az0y",
+          "ab0z2cac1acbxzz0ac1zz",
+          "bc2z0zyxbac1202",
+          "yy1x",
+          "y1xbcb1c1bzzb22yyccz",
+          "xbxcx1az2z12cbby0",
+          "1200bczb112zc2cc02ab2cy",
+          "czxz2y",
+          "yx2",
+          "cy2b2cccz",
+          "aabayx0a12yy1x0y1ba",
+          "1011xz",
+          "czzz0cz22bzx1by1xcba",
+          "00xczzxc12",
+          "1y1ab021xxzaay1",
+          "1y2ab0cyz0za0a2xz2yb"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          "12ybcb0zz2zcx202a",
+          "ac",
+          "z121c2czzc0yz2221y1azzb",
+          "ya1yxa1c20cxab",
+          "a1z0c0x",
+          "21ac2x2z120zc1",
+          "z2zy1xxy2yxyyx1z1z",
+          "yyb200zcyaybz1y1xx",
+          "y2ycbxxa2xxab0z1bc",
+          "2",
+          "011xyz",
+          "abx2ac0ca0",
+          "cyaaybzy1221c21y"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          "zc1y",
+          "cazyxc002zb0bcc1zxay0x1",
+          "zyayzxab1",
+          "c02ybyzxxc",
+          "c1z0212xxb212zbb",
+          "22",
+          "2ccz21b"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          "1b21a1c",
+          "01a21ya0yaxba0zb2",
+          "b1",
+          "y0",
+          "c0z010",
+          "b2czbc202cxaa",
+          "12020xx1zc",
+          "xba0axxbb",
+          "a1axa01x2xac2yxzzxyc",
+          "2x0yya2c021az02z00cy0c",
+          "1xxyc1a20022c0xyxz",
+          "b1zb2xay0abx2x1xzyaxx",
+          "b1xx0x2zy012zyyz211b1zxz",
+          "0axcay20ycx",
+          "x0x12zy111c",
+          "zcc21c2a2abaa0cxbcax21za",
+          "11aa220aa2y2ya20cbb2",
+          "xx2yz",
+          "0bz01xxyb",
+          "ab00021aacb10zb2axx1y",
+          "by",
+          "aczaxc0bycx02z0cb2"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          "ab0xbz0zay11",
+          "z200c0by",
+          "bbyc0c0z",
+          "bbay1zybcbc0",
+          "2220babz2bz0ay0",
+          "b2x2c0ccyyy1c",
+          "c0y",
+          "y1bzyx1x1bcya0",
+          "0z1z0cyzx1z",
+          "0zy1xz",
+          "y0zbx2c2a1x1y",
+          "b01cyxyc00b1102202az2bb",
+          "zca0z0ba",
+          "yx22",
+          "x1z012cza1by0bbczy",
+          "1x21z1b11zb",
+          "abazbcx2c2",
+          "z201x0",
+          "cc00ax100axxybb2czzx1",
+          "y12z",
+          "00bzz1cybczbxybczc20",
+          "c00c12c2c1yccz",
+          "aza1cx022101011",
+          "baxyay"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          "yc1122bby2z2a12x0b",
+          "xya1yzb1bxxz0ccxxaz2y2cz",
+          "yyy2bc0ayccxczx01cy001b",
+          "b02yz11zab1zb20x0x1yz",
+          "z2c1zaab1a",
+          "c11a",
+          "xcycybzybzca0y",
+          "x0bbax1bcx21aazb0c1bx0bb"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          "zyc0ccb2ac1",
+          "xc01xbbcb0z0",
+          "cxybx2yayx2",
+          "2x0yax10bx1b2azzc00z"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          "c1babayxaa02y2000b22cy",
+          "yb2",
+          "c2z0by0",
+          "xaxb0b1aycbacac1z22yczcy",
+          "baz0y2byb112za1czcybbx2a",
+          "ax",
+          "1z",
+          "cca20xzx0zybz",
+          "2acx",
+          "a0b1yyzb21azxyyx1",
+          "1x2xca0ax2za",
+          "a0ybx2x01ac",
+          "ybax20z1bb2c0ba0cxyyz0z",
+          "1yxbxcbcbc1",
+          "z0b2zx1y1ybbcya",
+          "zcbxz02",
+          "yy",
+          "a0122x"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          "1bcbaaxcx0zbybabx1cbzba1ac001a00czxcyy1caxy1021aby0c0x2x2a0z121z2z0ycazxaya12zxcbxxy2ax0zccxzzazcx12yc1abaxxa21azxczczaaccb2zbz0",
+          "bzyzcc01zc2zxc0yycca0aczxb1czbxzzcbz1ayxxbzybaa010c010z20b1xc1bayazybbzc0cb2bz1a0c0cabzxx022yyyxba021caza0by1xbaxcyb1by011yb20cz",
+          "zc1ay11yxyacbbz20x2a02021x1yb0a22cb1ccxxca0b0xcyzbb0202zy21a20b0ccbbby2z0y011acy0c0a0zxa1yzazyyy1bxcy1zy0bx1x012za2cby20c2acxxax",
+          "1azxyz120baxz11c12zzcybya0acxxxxy02aa1ccaxyyy00z1yx1y20ba2z2yyb1bzyzyyyxc2xa0zca1yy000axzx21z2yc2cyb1cy2czbxzxy0zzyy1b1ab1x2b02y",
+          "accxz01czcb1zczaa1yxcc1bc000010aa2xzaz2xaaxxzycb02ycbayy122z0cz1zxc0axxcxa2cbza0y2aabaab010b2y1cxay0b2yc0b2bybb1xxy2xz0yca21x1zx",
+          "abb1cb2bbyx1yy1abcayzz0bbaacczz1ybzzcb001y010cbcacb011c0zac11b01abyza2xz22b0x1z0c2aac211cb1zxzya2x200xb111b11zb1ab00a22aby22x1zz",
+          "x1z21z1bbxazzy22zbac1c0byxxb0x1xzb0ab112c1a2a2012cccb0z200xy0zy1cc02y2z2xxxyzcc22zbz2102y0a2ba0caaxycyycayx2az1b2x20x2ya000z2aay",
+          "1xz2xxy1cbcc2b0a0y2yccyaz1caczay12zbz2xc2b2c0220bzxxzzzyx212abz1xxaz0b0y2ya2z2211ayxz2bbc22abxx0bx20bca1zabbacy2bxy00100za0b2aba",
+          "bz2byyby100a1c2xc02ycyza22cbaa022byxzx02cccxyxbca212bybybx1zzcxbybxz11zyczz0cazxx0yzcz111zy12bcbyc2xybba2a0xa2y221cz0xyc122b0z2a",
+          "xc2c1ccc1zax1xbyzxax2z011aazb2yy2c00zb2y0x20zz11a2c1cxb2yxccczbx0zb111xc0axaccc2acacyc20aybx111cx0cc2ycz1bx00cbax220cbc1a22bb1c2",
+          "020za20x10zb0cy1xby20yxaa2b2a0xz0zbc0yy20zy0x0221cz221yyz0cbx1cbx20z2ac0abc10bbyxzba002yac11ax2yxa22xcazxacby0z00x2abb2y2zzyxx10",
+          "ayc02b2b2yzb2y2y101xz11a1byb0xxz0z22ayxyb0zb2c1zzxycx1xxxyxxxxzcbbb1a2a1zz1y1c2y0xca2012a2z0c1b21zaax0bzzyc2yxy1zzc10x0zz0y1ccxb",
+          "yx200xcc1ac01c22z1yy2a0bcaxy1b1zyzz22yza0bzx2cyzz211b0y1ccz00bbczxzzyy0y1z210ccacxybxc0bbb12aa02bbycb0yxxy1cc2caazz112y21c2c1022",
+          "z12xb1yz0ycyaa2czy12a11ya0yxa2zx0200xc00xyb0x2yy2y0xbccyb11y1xzaca2acbyyc1axbca1xz0y1z1azbcay0b21cxy0abx01xax1b2x10yzca22by1yxza",
+          "xbx0zacyb0xaa1czbxc1bzaazc2bc1xz2z1xa0zcya112y21xc2zz1y2cb2c1yy2z1a20cazxzb20x212cyz0zbb2baccaxb1xba012yazxbax1b1az20zay2abybx2b",
+          "x20xx2xc220bz10bcc202zc21zz2zz00zx2x02yz110aaya2cyayxxzay222cba1zccyzxxyyb0xbz1c1bya0bazz00bxa0ay2az2cz2xca012bx0y0cczb1a20yb020",
+          "cc12x10x22xxby0zbb00zzxzzaycz1c1axxzcbbaxcyazby11azx2xx22y21ca02aycayxya1ab0yzbay0x02bz12bcx212aax2yz10cazzzyx2yay0a2yxcz0cb02x0",
+          "c0yz12cxc2xcy2c0cczb22bczcaz00y1ycxbccayxxxazb1c21zc011ccxxa0ay0xxxbc11z1x00a0z022a2b11ax220a202axy10yy1c0ya2c11b2bc2c00z1ac1x1b",
+          "zcbbb1zb202c020aczcccca0yy1ycbcxaya1112a1xx1101bax2y2xaccazacayzbab0ccy2c1zabyzz0b02by1cbyz202xxab2b1y0zy2zc1211cxyxaba1bx00azz2",
+          "xaxyybyy22zabzz0acxzz11ac1c12z10a2yz22axzzbcyaz02c0cbyzay0b1xz1yx2ycbzaxb12a12cxz12yzcb2cxa102bayabz1ab2yayxzxxyy2z1byccyba22bx2",
+          "2zycyxcbyz21aca1ab0ab00c1zyzx2b1cb1b1y11xxcyz0czz11ab1bz11cyzc2b0bz2by2100xx2c10bzx00z2xcb1b1z2b1cy0bb0z1abxcacc12y01xxzyy0zba20",
+          "yaz2aa2zbyax00z00002xc1cx20z0cyccabac10cbc010c120210zxc0a1x2y02zaa1zb1bc2y12b2bx1b2yaz2a1121z0zyycayya1cayay1bc2byycyyyabcc1zcyx",
+          "c2azbcc100x1cxzaybac101y12x001yc20ay10z2ab2z0yzyyby01xx2zcz2aaba0b2b1zxyyxaabaxbbbc0cbcyy1b1y0zycbya00zayyc1b1x0c1bc20xb1ybabby1",
+          "1caa0ycz0a21100b2xa01b2zzy0abz2zb1yxc2a0xy0bz1b1xcaxax10b2y121aazaza0bx212cxbac1a1axcacayb1cbbb1xbx0z0zb2czxaczbbyc0cz2c1xacb0ca",
+          "baacby01cxcy210xcac1byz0a2xxb2bz22x1xyaxbc11ccaazyx0yz1aba2cca12bbx1z0xzxbzxbx0x0xb11a0cx1c0zc1xzyxzcaaycb110czxycc2xb021x11ya0x",
+          "z0xca0aa12a0201b11xb2a0xczyxba1yc1a11c0cz1ab0z2ay0y2xbza2zab0z1azzc2b2xczx2b1xxzzy20yabzz1122b122y1zbx1bb0cybbcybc1cx2ay02c1z01a",
+          "xbax2z0zz12211ycycyx1zyaczy1cc2yccccxbazc1yzcx2azzcz12c2yba01c1zca22zy1yc1zb1ac2bya0x1zbzax2xyxab21b20x1z2az0c0z0zayzzy12bx101yc",
+          "00cbcxy12zb0ba0y0c21cxc0y21ayy121xaacyy1by0c1xaby1bz10y1bz2aycacz1czcayz0zayy2b2xcbc2zzyyzb2zcac2yz10zcbxc2xx2222b01bbca1zyzc12z",
+          "yabxccxycxcb0bba10axba2a1byabyabbxxczabcyzzc2x2bba2xxyc2abx21zc1bcz00x2x0bzb1b2c1zy2abz1b0y1y1x20y0xb1zca1b012bbc00bcbzxzx0bx01y",
+          "y0z1012yc1bby11xcabab1ac0zcybb211xy112y2z22aa0b01z011aac2yc10cy01b122112c2a0y10zyzaaaczzaz0b0zz0zaxxxybbybzca2za1020ya1az00zb1bx",
+          "12zcyz0x1b2xyyay0xbbzyb210xzby2y02zx00y212ca2c1x1y20a2xz1cxcy00zbx0yycyx0xbcxaxy11200axcycayy2ca1aabzyb0zb0cxb2b22y1bxbzz0x0xcbc",
+          "y10ya12zbz201xycz1zyaaaxy20yzb2x10a0yybxyxc1z0ayb110z0bcy2bz02z1aac1ca0xyzbbcx2c0z11cyczyxb0zc00xaa2xb1xyca00ycbzcba2011bxxxyy10",
+          "0xxyx0c0cayyx1xz1ba1cz0x00ybb2aazx1zaay20y0zc2acyc21z1cbz20cybzac1yz0yyy2z0cz1c21axcaxca1yc10b1a1z2111bcbzbxycc2yxa2c0bx1bzayb0z",
+          "bzcab111yaza1zcxayzab20b0ycx0baxc00ycby10yczbz2x1101y0b0zc00ba2z1xc122by10b1yccyx20ya2ba2b200b1yzyb2ab1cc0ab0yz11yzcxcbyb02aa0ba",
+          "1101yz0ybccaxbaxax1cx02xby1c10abcc111a1xxy0azab0012ya10121xa2a0z2by01b1z10acyx1z1x2xz1cy00z1cxyb1ccxc1b01yxx2aazyzcc2abz0bxb2x1y",
+          "za2yc2ba11bbb2a2bcbxzcy121bczzcbx10ax1zy2cbyz0zxc20xc00012za1ca2bbzz0c0a0aca2y002yzzay2c01x21z0xyba2z0c22yxb22y2zcaa2yxy02bazy2z",
+          "ab1ya1zx2xzyyc02xbz2xz1bc00bba0c1x1bz20220y10110cc2c11c22bx11ac2zb0bbzya2cbzyzyy1acc0ayyxc1ab2zba01y1z01cc2111czb00x0z2a1ybcay2b",
+          "2bx2a2x12ab2cayxx1b2z0a1az0c0a2z0ybbb2cyccybcy0cazcaay0bzc0zy0baxxx1220byaz120b1a0xay2bx2cy01b2xcz2cx2021aa1ycaa1yy0zx2yac2byb0b",
+          "2y0x2zzy1yxzzx1zaca1aac02102bb2a1bz0z0cab1zx1axayzxbyxx1zay1xax0by21c2xcbcbcyx2yxa2y21a0az00yb211z2axay021za0xzbax0bxxczybba10az",
+          "xb1xzaz2xb1b1bbaa0zbca1ay0bba2ay00b0xa1010bza12zxbbabxc2yz011cxcaacy02zy2cc1yzyza2cax22a0zxxxbzx11zzy0zcb1a1xaxx1xx1z0x0cazabza2",
+          "cy1xzaaxxycxycz2xcxacybac0bzxy1xzzc20bbccxx20zz0xax2yczxayc21xb1bc202z121czz2111y0axxx1x0xy00czy2bcby12zxa12z01100z1zy0ac1xybzby",
+          "22byxbbbza2xzxzyyyxc2yayyz00a12c0xxx1x2211zbzx00x112azccya1zzx0002yzaaccz00x0b20x1bz1ybcb2ca1acxb0yxxy2b1az2acz00cbc201b0xcxy01c",
+          "yx21yxac1b0x2z111aby1zy0c0xc010cb0axcy2ybx102bzbb2z01cyx2a1ab10z0x0aaybcz111bb2x1c1yccabcyb20cbayc1zcxa2x1a2b0y1aaa0xxzxxba0aazx",
+          "bxbcca02bzz2xx200bxxbzzca0za0x1xbyzabx0y1b2cybz0czcz1bza102x2axabyx0xbacz1yxc0xax1zcyza20yaxzzxx2axx02zc1ab1bxacxcbc2xx2b01ycxx0",
+          "xyy1xy1bz00c11020c1a00by2c2cy01y1y021bzc1xcxaa2z1000z01yb0ab0cx0yz21za00xx1azacy1cyxcabb00b2x0c0yy220y0bbzcyx0yac1abb020y0cczccx",
+          "c2b1xcxacxy01bcbyb0bybzax11baayaabx2a02y11z0zzzzxz00azzba10cab2yxz1120xazazaz1x10bz01b0yxc22ac1by21c1b12xxxcbb0acz0yxy1bc21bzxbz",
+          "020xxybybbbzxbzcz0aya2x00zzc2xb0a21zcyx11cycazy2by1x1y0azcxxac10yca20z01z00b2yyx20bczay1cc11ycxxxazbc00cabz1cab2z0c0xabx01yc0b10",
+          "1zabbbb12xa1ybc010ycbzb2c0a02221b22bxbcca21zbacxcb2yabb2yz2c0axya2y21c1z2z22xbaxaxcyxc2xzyc0b2yy0c01by0c2xbyxz2c0cz00axbyb2b20bz",
+          "bzzycxyab0x0bbc2y1b2zy2ybacz0cz2201cya2ccc0yazx01c1z12yy02xyby0zbbbxbcaby21a02c1122b0axa02zx2a1c2xcbzc2za010czbzx2byy1yyxa0xy2a1",
+          "1aza1zyzbazc0zab01xb22c0b1acyx10zyz0c2yb11ccz0azxbxyac00zacx1yb0121cz020cbbaccz2axaz0a01yy1b0xc2cxybyx0x1b2cxcxbc0ayxc0axba002yx",
+          "z01a20aybyzyz0xzacaaazxy1yb0cy1zzybba2czzz2zxyx0bbcbaxx1bb2zy1x2cacx02y2zz1b0b1022acycyaax0122bc120200yxcacxa2122yyxyy2bcxa2xyac",
+          "cyaxx2bazzzb2yc0yzaazxycya2b0y2x1xzyx0c1x0zc1b1c1ccx1cyaycc0xbcb0x10b2cab00abaacxbycaab2zbxc11cyz1cxa2y2baab2yb20caxax00czyx0b1c",
+          "xbyzbzbzbacc02zc0cyyzby1zybacczc011bb0ycbzcc0zz1010zcx002122122x0b02xbxzaxaz21cbazzcy1c20xxxacbc0a0zabb1caczcbxba0cc1c2y10z1aybc",
+          "ac2ca0012y2yx0cyb20cx0ax0c2b11z00caz0xybbbzzaxyc2bbxayx2xaxyba1aazbyazy02xz0zcbz02b2ca01aycc1bbxxcc222z1czyz0a0xxbc1bacy2b1b1zcy",
+          "byzzbbc1y1y1cb1azy00c1z2zzb021yaax2acby0c0bx01bz1121bbcb00x0zbzz1x1by1a2c1cxza0az01xaxa0yycbcby0by102xycab0zycxz0112c0z0a2xbczza",
+          "1c1zb0y2a1c1baxx02c0xzxxazzayy2b1100zz202zbc10zc2c200y0ybbbba0b12b12ay0xx120bx1bz100azx2yyyy0xa0aaacz2zzc0x20x0a0c0c0z2c0xbc2b0y",
+          "czxbba0aca2b0ac1zcxxyx2x0yaybcabb1bbcyycbb1zx0b1a0b1bx00z1ccyacabzz12ac2ybxa2a22cxzbxazcxbcyy1xbz2y11020xycxy0bycx1010yzb00xzzb1",
+          "a2y0y2z0abcz0czxbxzzczbazazx1zx2b0yx2xb2yb00zzxxa11ay0bb1cz0xayaa1yc0a22azab1b0yyzz0b2z1a0y11bzbaxaacbz0xcbxz2aayabaybyz0ycc1bcz",
+          "01b22x11yz1xbyybz2xxbb1axax10x1bzx22zy1c2bcxz012x0xby0cybc1bbxa1cya121zyb2bz0xc0202za1yzba00xyx0cy2120baxbxbaayxb2byx000bxy1xcxz",
+          "yyabc21yxczbccz1ca10zacybcaz1a1x1baayx22ccbbyz11z2y1yz1azyz21by2ac0xcz1ax0zxbx0by212cyzz00yyxa2zb01zyba1c1c2y2cy1ybya1axyba1ya0z",
+          "aayczy22cbycx0byxa1zx000byyyc0zcxyc02xyyby12c00bc21z2z1z01001a2a0bcyx2zc2ya0c0a121abaybzby1zab2ax2c21cxcyya1xbbacb2bxxb1a210aby0",
+          "cx2y1b0caccxc22x11yyb1zy00b100cay1b0aya1azc11yacz22xz202bcczz1cyy0b101c22yczz0baacxbb11zxxbc00baybab1zaczb10c2xxy11yxxc02xbabxac",
+          "z02bzc21xx12zz2cb100bbc2ybb1xa2zaxyy0zbcyb2x22y0a2b1yaaz0yxzacx2zax1bazb0b21cyaba12xz01yxaaax20a21a00c002cb1bzzxz0axxbax02aaxaba",
+          "1cyazzxyc01bbby2x1zx1yz2yx2yz22baz01ybxc2xy2xbzcax11ba1ayy0ybay01a001axx0c02aya2zazyxaz00ab20y2102yc01xcayybx2yz0ayzyyabyzyc11a1",
+          "1az12x0aby2zb1cyyy1cxccaxbac21za2xayyaz2axzbb21b2bxxzz0b0ycazzz0z1yaczaycabxz22zx0ac0bbx2202b2a1221zyxyxzxzx1zbx10zbz22bz1x10xc2",
+          "0cyyzzbb002c1xc1acb0y21bca0acbc2200zc02xybzzbabz1010y1cc2bcaz10z1c2ybxy1za2220yz0zccax02yzbzycbyy11xcyybxycbx22caa22xa1azxy012c1",
+          "bb101ybcybzbxbzc2zy12bza0b2zx2aaxc0xxy1c1c1ycxb2xa0b12xca0y0xz12cyxy110z21ybxby01zx0bc1zbz0c110xayy2x0a2zyz00100yay1xzay10xc2xbz",
+          "2aa0bzz2ba2xz2xc20xyczz0x2xaaa2b201acyyaxxayb00cybbb20aa2cb0xyz02ayy1xby10y0bx02y1y22x0a10z2b1xa0x1z1byzcbb2cx1xbc012xa1y0yzcaz0",
+          "yx2121zxz1122bb0b0cac2bcx1ba01c21c200ayb0yy2zzccy2xz2y11xzcc21az0cc1bayxxb21zba1cbz2xzaxyy0yz0y22xbcbxycybc20zy1xcaxxbccc1azbac2",
+          "01zy2bx20001zy2z2bxcyc0211yb20zcaz1z0x2x0zcax1z2xayzbzy2ayay10ayyaa111c12bazacccb0ba1azb2yxazzcz2a00abx2cybc1ayx20cayy2zbz1b1bbb",
+          "bczacaxz1bxyxcya0ycycz0xxyxcyy1yb1zzz21ca0c2x0zyxz22yb2xyx1yab2c1c1zz0azbzac01zzbczyc12ca11001xyzz10yax2b00y0ac2cy2xcczabycz10c1",
+          "cxcyybcxx0bxc2za1czb120x101xb0czc0zy002bz1axcxzzz2a0bxc1xaxy0bz0c0cyy01ay0cc02b1bzb0aczc201a100ay0yb12z1z2zbc020bcazyx210a1yab11",
+          "azy0zya2ycyz0a1zyabza20xcb2bcc10yz1x21abzzacb02bzy00acyb0bxyy22xaz1x0ycy2a0cyya0xa0cyy1zbxxazxby10z2012azzzz1c11x2c0y0ab12zbx2zy",
+          "z11accz00ay21x02c0bb0xxbycc020zx0yzzbz2220x011y1cc0ya2z1cb0000xaxc2b0azxc1bza022xc1zxc1xzcybax11x1xc12bzcx1baa0210b0y2b2a11ay0az",
+          "210bbcybcz0zcx1xybzb11xyzy1z1yyacc2yaxzzyycy11ycccy0yxaxycayz2201czc2z2z01c21c10abzxyxxcybxz11a2xxza0bz2by222ba12xxycxx1cay2ybxb",
+          "2yaxxx11b2azbx1b1b1xb2x1ya0b1x1ay0y1cz212yyy2xzy22y1bc1az211ccb0yb1z2cxbxxy2yz21byxczcx0cccz210yxy1yzcyzzz1y000a0a0zc1yaxxyyzaz0",
+          "z22xx21ybbxcz11a01xy0abazy2z1yb1cbz0ccyx2b1xz2y22yacbzz1xcz1x1zzxyyacb0001a2a2za0a2z21yzbbb2b2c2b1xb0y11czbcz120a0ya0aaxz0cyxz21",
+          "xzcxcxycba2ac2zbzzxxxyc0yxxzac1b0a1x0a110xx0bbc22bcxb1zz0xxb2z1y2b1aa000bzzyb0yxb01ayzacxcac2cc1aaxyz0c0cc2cczbca1xy0zyzaaza1ac0",
+          "202ccbazxb0bb11021cay11ycz2zb11xcx2ccxbb0ybxxycyz122ycz0zca0axcacaxc0za11zx01x1y21by2zzcyz121bz2ybz0a2cbx1bb2yczy102b2c02xcxaxz2",
+          "c22a2z2x2czcbcxc20xya0y02011zcyaby2yxba0cc1cx0c00xxzbxyc0bcx1cyzab2y2b1x1yb21cbzya0yb10c1yx2bbzx100abyyy2z0yzbab1x1x0yb12020abbb",
+          "xz00az112a00axcazby0a1yzzzxy1az1ycx22z0zc1bzz2xzybb0z1c0xy1zz1zcczabxy22y22c0bxbb0ycz2z0c0bybzx1ax2cya1xxxx1xcayxa11022x0c200yzy",
+          "zzxz2zbczx2cb212zbxz2x1ya1110bca212az1cbzbyya10c0x1y2yzx20c2zaazbbb20cxxcca1bzbb00001czcbyzc0y1bcy0xxzbz1b2yaa2azbca2aaz0yazbcx1",
+          "2xzbczc1c2c1aa2byybzc2cb1xcz1201b2bzxzcx1x0aza1b2bz22202xyzc1xy0000b1a1bz210y1ya2axby2cza2aay0xz2a022c2zaxb1cxzbx1xaa0xbyaxzc0xz",
+          "accxy0yxy0a000yx1ya0a1cxbbbc1bc2zcy0y2yyybb0xb21xc2a11bbxa0cbbx0z1c1a2xxzaaczycz1xa00cy2bxcxz1a1bx2y2cc2zabb022aczzacbxa0aa0bxa2",
+          "a10y01x1yz11c12zxcyc0ycza0yca102x0czx00011101zzz0c2xxxxxz120zyx0c1b21y0axxz2c020c1ax0cyc0xc0z1xc1z2abbbaaazbzzxcxybzz11zcyyb2ccc",
+          "b20c221yxbc1bac0101caz1c1a1zzbzbccy0cbxzybz1a0czyx2y2a1zcaxyy10zay1bz2acaay0x100ay0zz200zczy2x1yyb1bz2bacbxbczbcxbbaazbc1zbbacxb",
+          "bba0xxab0z2x1x1c1ya1c2abcxyc2xbbxczxc0y02yx0yzx2ayycbab1za0b1abzzbyz1z1z1y1z2xxcaz011z0111cc00acz0c0za0cccxba01cyzxa10cy2yxx1100",
+          "1azbbz1ycx21x01ayczy0bc2yzzcz1ba1z0xxzxz1y2zzxczxxx11az2b0czb211yb10xycza1xxazz12cyz1z2xxbyax22yx00ayyxcyaa0bz1c102c1zby1yx1yccz",
+          "baz21zcz02a0z0czayza2ac1bbccb2cxbzzzb0zb102a200c2bx1cbyxxa2aax1aaxxcc2zz00a2y1a02baxaxx1azbz2c0xc2ayy2z20cxyzxzy0by1a120xcba0bxx",
+          "yxyz1axyx2ayaxczx10z10c112yxbbaaaayay10cbazxx0zby0ayabycy1xba1cabbx12yya1bcxb00aa1010caabyy1xyayxx1aa021xayzbz112czz22czz0c0z1zy",
+          "120z0byczz112caz2cz2ccx0b0b22a2bay2cxz1bzz2020xz0bx1cxa2b1cbyx0yx2bxaaaybxcbby1b0z0ayz0zxy01a1a1zzay102b0z1a0a1b1y2bbxb10zx1azy2",
+          "1x0baca21b2c1y02ayb21c1ycayz0bcbx11xa0c0aycxz1x1bbccca11z0a2z2b01ay020bbbyz102xcbacbcx12z2y1bc0b2axxcyc0aza2ab2y2ayczx1xx111xbc0",
+          "2bcc2cb12bcx0zxy0a0az0axz01xc120cx2y1b0a0b2bcazy0y1zy2zy12102c1zb1z22byyyy2xzzxxzyxz20yy0xcyxz22zx12cbyxxzc1zx01y12zcybyb020abxy",
+          "12y20xya01b100zbccbzaabyb22ycb0xaaabzyy0xxxy2zxca2zxc0x2acby1bbx0xx1ccxybaxy001xxbb011c00a2yx102zza1201xzcb0c0xxzz0yxyx01axb1a0z",
+          "0a1010b0yzxyzy1ccx22xa0zaxbcb2ayb2y1cyc0ycx0yc2bxbacy210cxaxbbbyc2b12zcc2cxazcy2a22a0cca1ccxzy1x1cbxcab0cay1210220212z0y20c21cax",
+          "zyb000yzaz1xax0c1cy0xcax1y1011zx1c0axcbyzaz100byz221a1bzzxy2cabc2yaa2x2za10z1zzyza2b1102a22bc0z1yccxb0y0xaayacx0x0c02yxabcay1bx1",
+          "1bb1zz1y22zz2c2yxxa01yz2y10ayybc2xxx1cb22z000zybxc1bza000c01azzbyx110x00xyxczcz0bbbbac201bcaa1cacyzzbacyzbabaaxc01byy2bycb1yc2b1",
+          "xya0zc11z2yy00xyzxx1ccababcb1ccbyzzx100b2yx1azc0xzbaay0c110z1cz0zcacy0b1zcacx21yxc0aazzzzab12xxcz2y202x0a12y21ayza0b101xzx1yyaxy",
+          "ya2xax1x0a0aby220a2ya1x22ybx02zc2xa0bzx1abcycyy0c0xczbyy22bbcbaxbycb1zb2212b1ybzbzc0x2yabbcczc22x1zaz00b20xcx1bx1210zzxaa1xazazz",
+          "az1bcb22bc1122zbazxy20yabaycy0cyz0b2zb1yy0aayzcbc2bzbbyzzbcxbxayy22b22y2yb0ay0bzyacbbab1a1z02byc2xbzccba1xcc2x0a2yx12xa0x0x2yzc0"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          "0yyxb0y1ab0xyccbxcaxxab0cxybaxba0bzx1ccbzz002y1xcx0zxx11y0aya01caa12yx0bycyyc0a12b1zyx1xy10yc1x1cax10x22cbyz2yby2y0abbxyyx22c12a",
+          "az20za1xcby0yyx0zb01xxzazz1x2z1x02abbcx0ax102bb21cxxxzbaya0by1xbzxbby2xa1y2ca1x0zbb2xya0zz12cabayxccxacxxxcy1a1xcabxzy0cbc10acza",
+          "c0bbcxbc0b0xcy222z1c2x10c1yzyxax0y021bbcax2b210ca2c2xcxa22bx22bz22byyz2cca01xcxb2c1b02bz1cyzaaaaaabzcbbx1b12zaaczz0b2yyycb2c21y1",
+          "bccy2az01a201aaaayx0zzbz2y2c00bx0cy2xzzazyc0a2a1a0xx021za2ccbayab0y2b22ayyc211x2x0x2b0yxcbc0yc2y0ycax0cz20xbyyb1a0y0czzyac0xzz2c",
+          "xab10y0yy222axbzx222cyzc1azayayxxxxzx2yzb0xcbbb121b2axxbx1xc0zxa0abb21z0b12022aacxaabz0b2c2ax0z11yyb0ax0zzcabybb2yb2yxx021zac0xc",
+          "cx2cbx1yzz0bbyayc220azazx1000a2bbc0aaxa2xz00ba0c1bzxbcxyzza022c0b1102cx2yyabxy2a21xzyx122c0axxzbabz1aa2zbyyca1yc000y21b2yc2z0xcz",
+          "bya2yxcxbcxyc002a0a21c0b10a1cxy2x2xzzx2c2ayaz0bc0za2c0z2c0yb200z0bxa210bcx2zzbyxy02cxy2yaac1xaa2000bab02xbbxzaab02aybybza10c2x10",
+          "cazxyya111y0ca1c00ccza2b110acbya022ybxxx1xbczzcxz0b12b1axcbbca0bx0x2zc112z0bxx1b2yyyaczac0y2ab0yyax1xyb012bc112ccbacb12cbxy20c2z",
+          "11x0x2xb2c2z0azx1a1200b11a01x02caza02cbccxzzcb0zaz21by0cb2cbcz01a22yx02y2accazax20y2ycyz22bbyz1221a1bzcx20101x2ca1y0bb112102c021",
+          "ccz2x1a2z2a0cxzayaz00z1aabcy2czzyyc2010xczycxc2y0xx2bz0cybzc2z1cz0cc0xxz2zbx2b20zza12y02zaz1yyxaxyb2bb11cax2zxyabzx0ybzy1bzzxbxc",
+          "x012bx01zaaycbybazc102b212ac1ayzcx222z0ccz200az20121yycc1z2zy2z0zzyc2cybb0zacaaacyzxxbxcbzzbxazz1a2x02cbyyy22001c1x011y0cacz2czy",
+          "b2xc2bcxbcxcayba0ab2x0y1cx21za2c102b1ccz11zyz2y1c0cazcb2102xb0a2c1b1cb1xx1xcazcccx0cb0zbyx22cxczzx2xz2yy0b111xc0yxazyy1bc11acc1b",
+          "azx121bx1zc22xccabcz0a2xcaay2112221zxz2zcx20aaxayyx0bzb1bzcxbacczabyx1y2xaxa01bx1bbc0accbxcb101cabbbb00bccaba1cz21xxxayx00zx2ac1",
+          "y2bcycbbya202czazccy0caxzz0baxzc1abx1bcyx0z2z2z0ycxaybcac1a0bzc1x21yaca1b00a0xccy2bzzycaxyaxabaz011z0ybz1zzy0cxy1bcy10aba2ab2bax",
+          "02xb10yb1c02a2a2bz1bcabza1bx2a01bxa1xzbayz2y1yx0cbxaa0cz22z100y1axb2azxx0c1y000cbzb2xc1aaay000byzabba111byaayx22byazxbzcay2ay102",
+          "xbx11b002yb00bcx1ya11yxxcz0cx2yb1abyc0cax1a212cbb0acayb2bxz221cbb1a22y2ab20yy2ccb1z22x12z1a2caay2a01z1bcx0by0bbc21yc022c101ayazx",
+          "byb0bz0a12xc1y22xz0zb10cya0y002xy0ay12ycb1ac2zb0cczx0y22ca2xy2022xa0cy01c21b0abbybxbxzcx0bxx10azcxayz22b0zaczyy1cybb0zaxyya00b11",
+          "b2cy22a22a012cbyb1y02bxzc00y202x021y20ybzzyzabbcca1zx0azbb1b0ax220x0zx0cb2yzza01aaaycy2ycay00y20010az0ycayz0z11z2a1yzxx2a0cxzy00",
+          "c0zyab0zzxaa0ccbccyc1011y0czb0abbcybbz2y220aa2ab120112cxbcz1ay1c0yc0bcbcax2yx1zx0z02a12zczy2cycb2x2zyzyaa0yyzy1zcxbbcxc1y21b110x",
+          "yc1cax220cb1za2ab0xayzxa0xz22cyxzxyaab2b0112y2b0zcyyyzyy0a2x2zb1x12bazxbc2122y20022cayz1c1by1cy0xab20ycycx2x1c2xxbcb21a0cxc22a2x",
+          "cbabacxcaab20100baa2210ba2byxz0byax2yzxb2a1y02cxzy0zbaaxa10cazyz01bzaa0000ybba0zybbxya12zb0y1a2az2x002xy2c020c01a2x20222b121bzaz",
+          "0cz1b10axcabc0z122c0ayb2azcb1zz2zb111ybc1y0cbb22cyb0c0yccc1z2b1ayzycb2zyz1az02caccz1aaab0xz0ya1cxcy1c2c2zyaab122ccy1xbc0b02za1ba",
+          "2abbzac1bbzc0bazx1acxaa1b0zaa1yb2y2zyxc2102x0zcyy1b0b2c1xy2bxbayzacz20xcb1yxz1y2xzc02a0y20a01x2xyy22x2yczx0y0c2azza11ya0z1zzbz0c",
+          "caa2zzba1yabxbbb120baczy10acca0zxzybcabcc1zzaac0abzbzxczy1za1ya1b1xc12azzaxbaa0yxyaxbayzcax0a2ybb2ybxzc2zzxzzcaz0baa01aa002ab201",
+          "yax12ycxxyyzxaa0110czzaxczab1x0zyc0cyb12ycaccxxyzbbaaa0azxa2202yxacbb001xcayz1z221zcbc0yc0axx0cac1zz2cby11aca1bbzcx2acx0cbcbz2b2",
+          "1azb0bb20x2zz22bz11cb022aazx12xb20c21c2yzyab2cc1caac2xy2cxccaybyy1yxc2bb0zxacacaxaycxcc11zcbxzxac2b0za0y0xaazx111z0b2xcbacb0b1y0",
+          "ac2xbayx2yb00ccbxb01a2az02z001a0x0cb20zzayyyya100xyxx0zay0c1xcc0c0bbycyx0cz2zycb22a21b0cxyb0yxx2zxcy1czaz2xxxyxaxbbz210azyz10y1z",
+          "0yzxzx0z1y0020b0xycbczyza2azy2bzc0czz00y1cbxa1ycxzbyc0byay2xxc0byzyxa10x1xbaa2b12zccbbz21b2yzcxzyc021yy1ab1xca20zcx111c00z0xx1ab",
+          "aazc12bazz2aaac1ccbycz1xb0ayxbx02b1caxbx0zzc20cac1xzczzxxccc1xx2cayz1xzxcx00b2za10ba21a2c01b2cx0aba1bc0bz2x22cb10y2y01xz1yccxxcc",
+          "2abyycz2cccz0a0czxza0x1xbb2ay01ybxa1zx2yb2zcabx0c0a2y0x1z0bzy1azzybcbzb0ybbzz0yab0xz121zca1acayc0cab1bcbcybxx001210a21xbc011xbcc",
+          "0a1z22120zxxyxbb0zyxa2zcxbcacbbzaz10yy1y1aaac0210yy2010y11yb0x0z0ayzaa0xzzx1xa0y0c11bbzc0xzxaz1aczzbc2c10x0yxbzy22z0zy00xyzyyxyy",
+          "yb0xxyy1yxy0ya22ccxaz20c1x22ybxcba1cacb1a1zy2zxy0zz1ccaxaayy0y0bcxaaczbcbx1z0z20xzz1a20bxbyz2yxyz00xbbx22zaxycx0ccaxxy1ycy0xbayx",
+          "10202aa2zcy0acb11yb1yxayxzacx2zacc2y00zc1zcxxc2cxacacz0bxxaxaxxy011bb01za10c1zzxacyzxabcx2y1cxaxycac2y1bab1cccyaza10y21b11zy0bcy",
+          "0z2x21c1cz2bcczaz002yy2cx1xx1bcbcbbab212axz20ab1a1yaxczbyzczb1bccc10yxx21ccazyccb0c0zy0xxa2xxyyy1ay2212zay1acaz02zbzx11yc00xcz0x",
+          "c111zcczca0b0z2bccazccybbz0xaczz0x0x1c0cyca00bzy2a2zbxxbx2aay2xcbbccbcbzy2bz2c020210yabb2zy22a0yycaa0c21121xz2z00y0yb0cxycbc0ccb",
+          "caybaycy2xby12bb11c0y2bc2xb2aax000acaaazxc2zx20xbazazcyx2x2az2c0caa1020c10xxc2x20xx10b2zb20c01bx02ybabxc2cxxcb22xzc1b21za0110ba0",
+          "zca22byxbc110b12bz02x2yz1cac00z020czbcz1xy2czzxy0a1yca1y1c00yb101a2a21y1y2zy0yb2x2yb01xy12zx022b0y2ayyzac20azcbac0c1a00y2aa2cy2y",
+          "2bxa222xaz1y22x1yb2z0xac1zaaaxaz00bzxaz0yb2yx12y01a21ab21c0aabx0zbaxyyyyca01yz020zcya0ccbzz01cz0cccbazxxy1ay1y10y2yzzx0zcbx2xza1",
+          "cyzzxbcaax0ccbb1xc11c0y22xz2zz2zccyczczb0b2z1zb1baza2azyby11yy1xzxzcy12yb1bzy1xyyxazx122axxb2x0bbxx2c0a2122c2bzc121xay20czbzcb1y",
+          "zxzx12ab2bz01xyy01b110c0byxx0cy00yzaaaba22z1xa2xzcbb202yycy0y22y1z1c2z1zz2c2baccb112bcy22x1b1az2yyzbyx01c202bbcxax22z02bbx12byza",
+          "cb11azzc200xxzbz22a1azxc0abbxbax2c1yczzbx0aa2z2b2bayzacyx1x0bz21x00c1bxz20xxzxaaz2z0bzy1xbz00x1czzbb0yx0ac2x11c1ac2000azxyc2b0yy",
+          "0bab1zxz2y0yazbax22ac1xayc10x0c2byyy1b2xzxa0a010yacc22y21yzzbxz21c1b1yxa022bb0yaxyx22b21x211z2xxx0y11aybxaabzx20ac2c0czycaybcxba",
+          "z11cayybaa1ybxcyzx2ba1ybccy21a21c0y0xcczb1yccyayxc0bb2aaxy020b0xa1ac201cacaazx00cbzx02aaz11zaab1xczaa1x1bxa1ccbbx20a21b01ccbayzy",
+          "0b1bc2b1a1yyx0acxyycczcb0aczcxybcayy11c0axc0zzbxc10b1y2acyzz2zb0acbbbz2bc020y20y12020cx10aa22yy1ya2x12bba1ycb0yaa02x0cxzxy2y20y1",
+          "2cbx20zy0ccacbcx1cazzaxxaaaa220xy01xbaa22bbyb0aab0cxc1x121a0a2zy2b201y0xaaa2yxx0bbx1bb2bzb2zyz2cycaxyabzxzxy00a1z0yyy001caba2cya",
+          "2b2ccx21yac0ca2z2b1yzc1xzx0ycxz1aaybcb2c2zb2b0bczzay0baa1cxay00aabc2x2c1babcxc0bzbcay2za100zxyy0aycc10xy0abbzxaz1xy1cyxz20b102cc",
+          "bc1c01a2000z0ccyb10212yy11bcaxzaa0b2y21yccxzyxyay002cbcbz0yzczyca0yybbb1x22b2c1xa0xyxzy22cb22y02a00yazbbacbczyxybcxab0ay20ax1cb2",
+          "aaxcaxb12abbyaaxy1bxb1b120ab0cza2yby12zzabbx1zxz2cba1c2212a1c1ax1b0b0a22b1ccx0y11b2x1zxa102bacy2a2zz12aacyyxcx0ccb0a002z1y01a01z",
+          "0bxzcbzab0yc0ba1axxza2ycyxb2xcy2y2bxaayb0bazxacbzb01z20y0xxzxy2bbazaby10yc120bz1x2zzbc2b11zbcxz12bzzyc0a1cx0acyy0zy011cazb1ba1xa",
+          "1bz0y12x1axb1zyx2ac1yby2z1c0acczy020c1c22ya100yca10xc1bxzx2010czcx2021a0ay220xcazzxyaza2c1x0bz10yazxz01a1211zzyc0bax2ycc1x0c1xca",
+          "ccc1bbb1z10b1b0cayc2zbyy202xazcb0axccac02abyc0y1ba02ab11axb0x1azaayxxc01cyy0xb1cy10x2a2xa0zyacz2zbxxc1c1c2bcb0xzay0ac0010zc1c2yz",
+          "1yza1a220ya01z0aca2abcaccbzyxayy2axcczxxxcacxzbaczzzabxzyzax0222yxxxxcyx0c0ca2az2xbcyybca1z0zcabcx10xb11yzycba0cybx1zbcc01bxb1zx",
+          "0c0y1zc20y0bca0b1xaac2yzcyaxcbbzxzzazbyxcbbyxa2111cy1czyccb22xyz2bcay211a010xxxc20zbzacz12y0ya2z2z22x2cz01c0ca2y01cczyxzzb0c2ccc",
+          "ab2cz0cy1c20xycabccxybycaa00c1ac00ayzaz0xcb1yaaxbabxxzx2cccy1bbx0aa0a2c11az0y0b0a10c0yx2zaazx1cxy0b10cxbxx0bayyb0ycxb0zyybx1c110",
+          "z10a0xyycay0b1zzb221ab1xcycacy2x1yyyb1cxyz0zx20y1aczy2zx0c02ay1cx20ybaazx2zz1ycb0yxzaax12by0ay10byx122yyx1a00b21z0y01c0x02bzyb2z",
+          "aac11cba2yza120ayxz00azaxx1y02xxa011xa01b2ccc001yba21220zx2za01x0xyc2210azzayccb1ay20b201a00xcab0ca1xc2b2c1b2c0zxx1b1a20yyc0ycax",
+          "2xbxzyabyz01a0cbz21xazy2cyx22yxacb12b012a00yxbz2ab0yc2bzax1ab1ac0ya1axa22a2b1c0c2c02cyy2zaa1c22zc1ybb02a0b0bc100ca2a2caxb1ac0xyy",
+          "xz0cyz21abcaycyczx0abcx1zxac2y10ax01acyx0zcyazzx0y2b21zyax0y22cbz11x2zy00cxcx0a00120ybczy1ccayc20cc0ca000b10cxz0c2xxz21022111cz0",
+          "ybxy2ca2yxbzx2xbcc0aaabyya10cbyxaybxybax21zc21ca20z0yccyazca2cxzxa100by20c2az02cab1zxa100b20z1cyayxy1ybczxbx1z0baa111xcb1zax0bca",
+          "zbx21xx1axycyyy1y2ay10a120cxzba10zbb1a2zb1xc2zbyz0xyab2z2azz2bbz1yy0zxb0a11aayaxayzyb2yax2ccb2ax00cax2z220ya122ac0zczb0y0xxxz0cx",
+          "x1yya22a01a221acabb2yxbbxc00bbz2y2z2azc0xcbb0ay1ccazx1a11yzyy1a2cxb1by0bzxy0100c0cxz0azxac0b2yacz121ax020aza0xa00x0azac2b0ya2bax",
+          "abcaxaczcayzcx1z1zxbc0aa20ac1z1yzyycazy2yyzx2bb2a2b20zz2xyyz00cczcb11az00ax0b0cy20a1ay1c00acxzbz2zabzxab1xb01bz0az21azccyybxxzy1",
+          "ya0yzxbz1az1bb2200y0x0z0b2xxz1y2102az1acx11b2yxabccaz01xxxc1xcx0yyac2czxc010cyc11xcx2zcacxcabyab0xxc2yycxy1b2ca1zzbzyzc0a1z0bx2x",
+          "aa0yxxcc0cc1111xxb02a00y1a1ax2zax0azzc2ycyba1yac1ya01z2c010cza0caax0x2z0y0by1yz1xb2x12yby20azzayxc00yxccxy0bcbc22bbzy2zxyaabc10c",
+          "x2y1yccz0121b222ccx1221az2yb02a0bxyz0y12y0az201y0x2xa1cx0ba2ac0b00cab0zzz120yz120zzz1zbcy10yaaa021z202cyazb00zyzbccyyyb21yacxx20",
+          "0a2xz1ab1ax0xayycx20acaza22xaybxya0b111cyzc2ybxz0y2ayza1xz01y2az1xyaz2ac0acyycaxbz2cz2ya1xycaxb111y201zzbyb20y2cxa22cz202yb0cxxc",
+          "az20yc101y2xb1xa00cxbzb2b122cyc0zzy02a0cxc1cx1b12accx1aa0zy21a2y11zyb101zzx2b22a1x12bzbz1a2yz20c02x2y2210x2aca10bcx0bcbazb22bc22",
+          "0b2ca1a00aba1cx1c2c02xxy20y1axza01z1202xxzz1a11xbcxbzzzaz1azcb21x2yyyayz22xbbyby1abcxzax021bz02ba1112acxyyz02yy01yax00yab0xcz1x1",
+          "xbz1z1cc1xb202xacbz2zycxxcyb0zb2zy2x00a1xyy01y0cbzz2yb1yb0b1azaccb2b02bybxyy10ay2x11yacc20yxxac0za0cb2x0011b0000bacz0xycacccxy2a",
+          "x102x01zab11bzcyy0byyacxxzb1y0z0yc0ab20x1c0xbz0zzcc110ybyaax2zaczzbxyyy201cc22xay1xxbyzy0bz1yxczbby1221zxbcayazyx1100b2xa2z2aab2",
+          "xbyxbzbbyx0120cba12b21ba02z0ycz1a02ac0xxbzycxa0aacxac20zzazccybbyca001abzbyzcab00xx2ccccyaazxcccaz0cababbxy2yxxbxxczc20bxcxyz0yz",
+          "xyc20yy10acy200xycazx011xy2zc1xz0bzc00zzby10czx2a00yby1zxx0zcy1y00zxzx20c2zxcyx01cybz1bc10x2xzyxy02z20xa0b02cy1x2b0bzx2bb02x1bax",
+          "1x1c0a1caby2012a2c0yxbcby0xy10czycc0yz0xxb1cyax0y2bbc00y1b01a02xxzxbab0bczab0xyabxxxyyx101xy2bya2ybab01xaby2bb0aybaaycac2200b02a",
+          "baxycbxy2zy2ycaxzxb0a1b1bx20abz1bb1bxcbyacy1ac22bybbc21yzc1bx012z10y0xbx2ba1yb0bycxcbzyabxbzxza00c0b02yzzczc1ybaczy1b12y22z00y2x",
+          "azbz01z0xzz2ycc1b1c00cz0zay0a1aabyybxa020cya21baa002ayb1c2ca10cx2bbzccxc2ccc2cya2y1zc2xzyaayba2y1bxzbbxzazxz1cc2ca0ybz12a12xac2a",
+          "aybyzxybzc2byy1201yc2acb22xa0xz12ax12bcbx1yx0azz2zz1zya2yca00ayzc220a0ba0z01xx1yz1ab0zc10bx02by2aczxa2yx10c0yyy11cza2ycxcycxy2aa",
+          "b1cybzzx0bz2zz1ya0c10acycz1axxxczyzcxbz2c20xayac00cb1cb1ycccayb012cbzxc00x1a0xczaxbxc2ay2zacca0babxxxzx11baaaacz0b0ccz0y1b2zzya1",
+          "cxayzxcxb0112byz0y1yx1abyzxbb11000zazc10bcac2bz12a0baccxbb0121a010xzxccx1b2zcbc02y2z0x1bbycyxaaax1zx2cxbxcy0z200xc12yb12x10zbzx2",
+          "abbya0zc00yc01xzbc1cyzzxx1z0z010y212y0ccyyzbay0cza0c0z02zbca0c101cxza1xyycbcby0zaccxy112ayz11czb2ya1axx2cby12cxx1cayzb0101a0x0xc",
+          "0xabbccaa2y2yc0y2xxx010a2c201bx0azyy0ca2z0yabxcyzbxzaabbzy0b1z2a2ax22ayybayayxbz002zbxzx2by2x1y1zz2axaab02z0y1b112yabac1b022x1b0",
+          "bz20020bb101z2xxc0b1azaz2xzxyz2bz0z1c2zxzxx2cyc00cb11z2abz2y0021xaxac2zxc1c1002xyzbzaczc2zy0bxa21xa21ca1x2c1111bb2yczc120xaaa1bc",
+          "acycxyy1xaz111b0b1b0z0z0010ya02xxyyaazccyc0zx1xccbbyxa1azy1x0abz1bbzabab0c0aa2ac0z2xy1z12xxzy22xz1bcby01by0x200yxcaxb1c00zc2cy02",
+          "yc1cyaaaca20aby0azba2zyxc1b0xaxxz0x0xabaaaa2xb212bay2ac2xzybz2caxayx100bx00c2a2bcc02bzy1y1azxbbaz2xxa01x12ycb2byc0x10zab0101b211",
+          "c22x0x022zab0c10ccc000122ax10b0zcc22a1yxz2bczz111c0z10ya2x2z2azabyb1b0z12xbcz0zb221bby20aazaacyyc2121z1axacxabbczab20a1yca0zcccx",
+          "0xb2a0caa1xacyc00cy1zx1yaz1byy0z01ya021xzyyzxyzby00220z2xy2xy2xz20c01x00y2zxca11z21a2yxc02xyyx0z2azayzazac2y01caa1xycxa11x1czyza",
+          "2ab0cz2zbzacayzac2byxzxbc1yxx1zxbbbcxzayc0zc1yc200czba2z1x2x2zzyzby0abxzbb1yzzzx1a0c1c2b01xx1y0bcbz1z0c0ybc0a2y2b210caa0xb0xaxzb",
+          "1ayzaz2cc01xbcxyx222ay2zbycaczx0yzac2cxbxyc1zz101cbbzyayyxb2xyx0zxbac11bbza0cb1c0zb1xc2b0cba21xccb2x0bz1x101bazc211a1yzbzxayyzaa",
+          "ac02x212axyzacz2010axayaxy01zyb2cx022babx2c1cbazbxxy0ab2yccabx22czxca2xb02b0x0ax2b1x0a12y101caaazcbyba1a1b0xy2za2zbcx1a2zbbbyyzy",
+          "01c0zz0bc101bx11b220c0xz0bc0012xazz1x1bx221yaccxy0byy00c10xxaybb10bycbzcy2xb020x0y1ay0z02021ax022xaay2x1x0xbzccbc1a0zxybaya0cbb2",
+          "cc2cy1b2xab2b10a1z122y1y1azccb1bby20z0z2b22ba0b1xz0xb0xbc1zz1c0b0y0x122bbx2a02cabxa1b01zxcb0xx0bxb12zyaayax1czyz2z2xz0x2bc1yxccz",
+          "b1ybcz2by10cbcx0ab20xyzybx2yzxbz0xaxa102za0yz21cya2cb11xzb002bbxx1x01a1cb1xyacycccyb2xa0xcx0zyab2byyycy2ycacyxzay10zbb20bz0yayby",
+          "zx2bx1azycyzba2c0bbaxz0zyccacx10000cczxx20bybb2xaxycycya00c2xy0xxy22xxyx1zb200ya20zycyx2c0c2zza1yxzazc22zy1ax00yzxzb10zay1b22xaa",
+          "zyc221xyy0020012y1a0b1a0aby1bbax2y1bz01z00zazb220ab01yycxyxz02zayzaz00x1zyacyc20b12cz1byaczax2z10c0y2b0x2yx02a0xz2zxababc120zbxa",
+          "2zc11z201ax0z0cax0xyyyxy020xxb2bcxxz10b1a1xb1yyz110c0c0x012za2211y1zyyxy2zczx11yax101021yayca101zby1zxybbz1xxaaaaya0z0z2cxyyzx2z",
+          "0zxzcxc00aaay1abbaxyz0bb20zbb2bz2x1y00byy110b2021ay10002cazcz0zza2bycxxacc10yazy1x20ccbyazbxb200ay1y1xx2by12zcy1yycaxzyybacx21xz",
+          "200y11ybxbxzb2xacz2zxy0z2bzx22zcb12zza2ybc20zz2b01zcx2xbxy2b2aax2by0xyccycbz1xabcb2zc1xybby0bxxbzzzxabzxaxayya112bba0z2yzz100xyz",
+          "b2cbc0yzca0ybba0b00baa2ccycb02c02ccb1z0c00ca2xy1baazxcz1cc21axccaa1y2z1cyx21bczbyzcaz2ac20a0ay2accya0zy1y10zaayb22z00yxab0zz0cx2",
+          "122210z0xbx0a0ccabbx20ay1y1bax2axzby2zx2cyybby1azxy1c2xzb01xazxc01a2y22020z0ccz2cc2c2ab2xcxzxa022z02y01012a0yz2x1yyz1zcbxzxb1zzz",
+          "c21y21ybby20c01zbb10yzxy0zzbz0yb0120xaaxz2cab0xabz1ccycc2y2xyc1002a2y0ab2ayaxxy2abzx1xz2001bzzyy0azxc0a01y0c1cazx0ybbc2z01c2zacb",
+          "zx2xa11zz2cbc0c0yxz012yy0a12a1zbb2b11zzbcyybyczxb0y2c2x2z1y110z0za1azzyyxyx0211bz0ccaya10xybzxz11baabbzy11xyyxby21cczz12z0ybxzy1"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          "b02zz1xzcxc2zzz2az1y1z2b00ac2ybx0cxxy1aya1by01by11xyb2zzza2x1yz0ab1ax0bab1zaab1a01ya120c2zzb0cbzx2010xzx01xzz20a1a1cc22xybxxzbxa",
+          "yxa1yc1yx00xz101by2axaa1xz0z2c0a2czc0x1ybc2200bbccxcbyczc0bb12czy0z1yy0zxczzyybb2b2zbx01x2azcax22bx102yb2y1by0ccaby2xxxzyabbc1c2",
+          "0axa210y11aa010b2x10cza101b0cb1cay22202ayb20xaxc0yz0y01ybb0azxa0ya1axyczb1ab2bz2bx02c01a1ycbzxbx0czc0accb0a221zy2acxxz2x2yxba0z1",
+          "zb1yzy0xzbacbyabc2xxbzz21axz1b11b1axaz021aybcy0azb0y2x2zxx102yb210110aa0yxyz1xb1xaxxcy01z1yzbay2y2ay1xb2bz0azyc1a1zy10bbba110y1z",
+          "z0z1c21cc0xy2zyaxa2y02z0a00c0bx2c021a1111z1ax0c0x11c1bba1xzbc20cca02cyxcxxxacxxyy0a0a0yxa0zcxz120zcybc2zx1aa0yy22zy21zxbb2ayczzy",
+          "2azx10yczza12022120acaxccbxb1abz200xc2121c21xbycyz0cb10yyb0axxc222a1aazbac21yzbcaccab1zyzyb0y21cbay00c1zabzc01yycax0a12zy2xxaz21",
+          "x2x02a0abyz1cxc01by2z2b1abzab011caczbcab2c2zcxxc1ayx1z2cbz2zzbb0x1byca1z1ybycy21x0c0czb22xbcy11x011cyyxyxzy121c0z1bz0yx2acaxy2ay",
+          "y10aaayab0z1x10cyc00cczycax0xabyabzc1xbb1cc0yby1z0aab2ycxxz2y1ycc2xz0011bzxacc0cy1x0zaaxcaaa0y10byyc121xzzyaycxb01ca01zyxxyx0ayz",
+          "czc212xz1xx2bxxa1xyzxxacx0ybccy1ya2zx1caxxzazb0acxczba1bzzz21ayayccyz0ybbczzbczx2a12bbxzazxyyb1bz1zz1b00xc2cy0xa0b0cb2z0xzcaa10b",
+          "aycaz202z011byxx0a2aababy0baxc12222b2xay0b0x22b0212zb2z0aza0z022c01c2aa1c1ca2by1cx1xz0ya12xa2xa012zbyzy2x01by01ya002201zb2z1bb0y",
+          "0azz0xyxb2a1xcaacz2z0zxx111xaxb0121bc0bzy21cabcyaczyzzaazya2a2x101x221cy0b0xaxyx2xaaabyxzcyxa1yb10zy00c21xzb20cczc1z0aaccxacxyaz",
+          "11bczbz2ayb2c2azb000a2bcxc122yy1a20x0bzc10z2yyycaccy2cy220xbx1x1byzaxbb2ac00bybx0a0bay1b2bbcz0cy1022xybaxybybxb2bb2byazbxczb1ayy",
+          "a2z0aya01by212xbaxbyz0yz1cc1z1ya1yaxx1yy21axxbx0ybc0yba0axc01zxb2az10xbaba20zy0bczx0a0yaay1y201y202y2y2b1ax0baa11ab11x1zyxxa12bb",
+          "1b0aayacbyyybzz01yxxx2y0zzcxb1axxzxaayc00zx0b11xb1xy0cy21cx2z20zxc1021bybxyxb101a0azz2b1xz1cbb0cza02xzy0y0x21abyzz1axxyc1b200czz",
+          "azac0aaabbabz0b0b1x2yy2bcbxaa22cx2y0a201cxxbayy2b11x0zz0bccb22cca0xb20yb10bxacx0yb0x02xzb010yaxcxbxczc2c01bc0x1yzcczc0yyy2yx0202",
+          "bbyxxa0ya2az211bzzza0c121aczbcay0x1cb0c00axcxz2yb2aczz11x1xz1zzbcy1ybbb1x01ax20cz010bbcz2ycxxaa2az0xa2ccy2c21xcba122xbc1x0zy2zcc",
+          "1cab1a2yc21yb0c10x0zbczzzbaazba2by2ycc0cxaax0a1ccxzac2xaxycyx1zxb0c2ab00xb00021yaxxayzyyba0b00y1aa2yyz2abzb10yc0c2acybbzaza00bxb",
+          "czzcxcc2az22x11yxzyay10czxzabbbzczz20c11222c0axb1y2axayz22a1b20byccxzzyzcazz01z11bbx12xayz10c1yzbb0a2z21abzccbxx020aa2xy10bc22xa",
+          "1y0bbx1c1bz0axx2122zc2z2202b2yx10xaaa1x1yyyz1yyyba10c0c0zyxy1zb0ayxz2x2za10z2z12x1z02b012yxya1xa1b110bxzaa122x0ccxx2zyaxx0zc2zac",
+          "bc0zxc1xzzby1cyaxccxy11by0zaxzzzz1acaa0b1ybx0yyzy10bcb2xbc1a0za10bccc2xaz0yy02zxayzzzzzac0xz0a1112yxxc10xay0aa2cx00c0accca1zza0b",
+          "a01abzbcaaxxyya101cb0cb2xxxbc0cbazxa1bcc0aa2cc2x11yc1azy2z1221c2ca0xcc2abc02ayy00z2zcy10a0a0y1cyzcz1x121y1122ya1ay0z111a0bc221c2",
+          "c02ac2c0b0yb1aazx1b20az0022axb00y1zbc12xbcyc2zxzyb0abb2y2a21ab1a201bzca11ba1yayxx02z101cy0bazbbaaa1ab12zacazaczy1cxcabac1z1y1zx0",
+          "1yyczc0ycayb0ybzx1yazbxx1x100102b0a2zz1b1yaz2y022byya2axz20cyaz1yyza20xcyzxzc1bbbba2zb2y0022zxcbxz0b2xa1xy2aacc0ycz1cazzy2c212bc",
+          "y1y2y1y0aycx1b12y1cby0b1c1z2ayzcc0102212211zyyz2y1ybxyabcx0az0c1zbxy0x2abcy2yy1x0z0bbz020ccxa1a0zy2azxb0acc1yxxax1c1b20cyy1z0xbb",
+          "bx2a12c212a00bzyz2z200xz0zyb2ac22czcbc2200azy02yc22c2y1azcaxbxc221bcxcax0020yc1120c02zc1c210axca2112xy1ba0c2xxyzz1xz0cxc11aayzxz",
+          "z1xac1xcc2z1aycyaczzzy02x11aybb0122bz0y01x20z0ayy2y01xxccbcy2zz211aa0cxyzyc0ya10a2zxabcaxx2abx21b0c2xxz02az2ba2abzxx1yxz01ac11c2",
+          "bz0z0z1yz1zzzzazzx0cb1by2zyb2xzczczca122cb0zbbcbyz1yyzcaxac10y1xa22cyaxzxcbcyyacx0xyaybcb2azcz1zaay1ybcxczy0ab2bbxyxy2z1bxx0c102",
+          "bc1xycbbcacbx2bxabyy2ac2a222b00yzcxbba2cbxxz02xb1cx001ayb1bax2bb21yazabxxcaxyyz0a1by210za11zcz1cxb0xb0ax12bbaz1ax0xa001aazy000xc",
+          "x1aa1bz2aa1bya20xxcxyxa0z21yy222xcx1za1cc2z2cz2zyzzbxb0axy2cx0122x21x0xcx2aayx0y1z2y00y201yb0x1bca0xb1zzc110abyz2ya2bbyybz1c2byx",
+          "0bb020bby0ax0bb2c0azzzy0zyc02x02yx11byaxyyzyzz00aaxabb0cc1cx201ycb1x02x2zaz1axyab0za2bbx0yaxy2y2yx11aa0c1zzbyczyy00zycb1z0c1zc2a",
+          "b0b1xyy1yzcxzb0x2xc0y21baab1a12bcyz10bxayy2ybycxzzc2xx1c21z012bxac0z0y11bbz22cb21a2yba1bb0bby0yy0bb2xa1zycy1x22zcx11y211aa122bcz",
+          "czbcb2a2cc01a000ac20zx2xz1b0y02cbaax1aa1ax12a2200xca1a2xy2yc01y210c0za1yyz0z1c010zyb2c2b1y11zaaxyzccac0c0xaxc0yzcz1xxaa1ya0xzb02",
+          "ccy101zbcz2x1aazx00xxc10xxycc2z0c2x1cx1cczxbaxx1aa2ycxyax1ayxxxxb22x2yz0bcz12ay1x1b2zb1002a0yzzyycbz12x1c0yazxc1x022zxyc22xax112",
+          "xbzaxcb2z0zzbacza00020a01xy101by20xc2zbax2zcyc10ccbzz0x1yx0xyzyax2zzy0z0zxb1a21xaacbac1x00xcz01xccxy21yxb00abbaay2200a1xc0yy12x1",
+          "zzyb10aax1b0yz2bayz1xy00yy1xx212azc2az00zb2x12y11b222x1yxyza02zx2a0czacxa20y0cyxyxzy20zcbcbz0ax21ba22axzy0y00ayax10y1y10bb0bccbz",
+          "x0zz202baaybz2xxxzc200abx2zzaacz1x2ababcyz1b2bz2a0bybx0zazzbbx021b201b1a2aycxc2za1b0bcxxcbxyzccayaax1b11z22z0c1y2a00bbc0caxa0zb0",
+          "1bcbb20ab2bbcxxxaczz21ca0cxbyz022ba0b02ayzazcbbcax0a2b0yb2ayy0a2b1bya2xy0zyyza0az2a0c1yz002x2za1ycybycayz110czx2y100bzxab0y1c20b",
+          "y02zac0c10bb00c200axy2cy0201ab0z0c11yacbz1cxbczcycxzcz0aa2z2y0b1cbzazcazxzxbxb2yz0azxycxccbabcyyxbybya212xyx112cyacbb02cxbx12b2b",
+          "aa0cyc0z120xzz211yzc0xy222cx1czyycczxzbb122c2azaxyzzx22c21cay101000a2c221yz21bca1zxbx02zxbzc0cba1ybyyxaba0byyzc0yz1yyxxb1bbzxxxy",
+          "1c01abaaxyxyy1z2z20b222b120acbzc1yx10x2c1yaxxbcccxzy2a1ay1xby2x021y111ya1ax000z0aa10cc2cbc2cbx202c12y1c0yxxxayz0ca000ay2zxbcxyyx",
+          "2y2bb2y0zbcycba0x12b1ay2x0y2bb0zzz2zycbx1xbx0x0z1c10102111zxz20bxyb1ybzx2a22yc01cxxa10bzaabbbxbzy2ayycx0y1cbyaba20b0y1aybz1x2a01",
+          "01x01ca0bacx1c0yxcaz201cyz1bzz1xc11abbzyb11xc0a02z022220ba2z1xz201yxx0yy1ac0xc1010z0yz2100yy1bzzxy1yzacyazx11ca2y20zxyzax1zy2a12",
+          "zx2xx2z0xcbx00y2aya1x1xaybza0xcyazbac0z2x210xxy01y0y00axxc1x1ybzcaybabac10a12bzb0y2y111x2xxa0byyxz1zy12xzazc0ac1a021z01a1b2bccx0",
+          "xbcx11yz2ybxx1021az2a1ba0zba0ya1a12x2y12y2xaxy2z1x0zyayyc1c2aaxb122x0yxb012z2yyya22zxaxca1z0azc0abzcxac00xxacxz0zyaxa1bzyac1xcab",
+          "zxb2zaaycxb2ca02cay2baxazy2y1x2z111x2cyzzx2bzb2c1cx2c0yczb2zczz1022bzzaxa2b0zyy210bzay22ybza2cyy0yaxza10zzzxzz22ba2cc11zy1111yzc",
+          "ybcx21cyx11aa1ayzzy2y01yb00cxz01bczzxzac101ya0ybcc1c10zxbyzbxyb1aazyzz2xyzzzz0cb02xxz1002a2zayba20ayxb1bzz12zcb1xx020axb0a2222za",
+          "azz2xbbbzxcac0yaaxxx0x1acax2212cb22x2yy12b0100xyca2xy2bcyc00y1yc0yyay12xc100x1z2b211yycy021byy0xzxbzz00ycxyac0a20y0002bb2cccxcy0",
+          "1ccax1xx12ya0bx201y2z12xayzz0z10z1202aazzbc010yyyx0xc1az0by0zxyycaaycb201y1bzcaxzbb2zaz0zbxxz2za2byxcc2100xc1aycxx2ba0a2b1aazccb",
+          "yz1y0zazc1acz0bbyxz2xaya11zbxa0baccb021yzx1by1xcayxbc1yxbc000z0acxx0b0zz2a0cy1zzzc01cax01ac1zbaaz021a0az1bbcb2b01xcxzxxxazy2yzb0",
+          "1a1yxcb2xacyc0y02zzbacaybbzy22azbaxxy0zxx0xxaz1zyx1aa2yb0yx11acb1ay1abczc2xx1b12z02b101zazb1xxabazzb02xxb1x0y1a2yya0zyzczxz1a10z",
+          "y0ca12z0cc1bc0ac0bb202abax0abya2b1aaxc10c2az21111aby1c02cbbz00y0a11xzz0bccazbxz0x1y2czaa1zb01y201xz2b2cb11y21y11xzz2yx2xz01bczca",
+          "xa0y0bc01bb0xxzxaxbx212xaz02c21zxxzzc0cacy21y12bbc2c0xyzb1xcccxb1120zaxy1zazz111b1yxbcyxyzxzx2bbz1zac1cay2ax0z1z0cyxxb0201a22zza",
+          "yxyybabayc11yxzycbab2b220bxcxz1zx2y2bbbz1axy1z0ab0yc0cyzzy0cacbxzy0ccxya1b1xyxy00azy1aa0ax2ba1zb0xzcbybcaccyb1z0b02az0yb2zybxxx0",
+          "zac2zbz0z2b1bz12cazcyccbbbycy2bybyabx2z0xbyc0zcabcab1yaca2yy022200zy2b2c1cbx01zb0yybzxcb2abbxa2zcxbz02cxyc2yaccy0c01bxcaczxycx20",
+          "a110aycx21001ya211cba1zcyaaxxazba1cy1czyc0zyb02xc10x2zcx2b2c2x0xc1202a1aycxz1xb2zxbb0cbxzxy1aza1a11za22yy0xz10200cbx2azzby2yzycc",
+          "zzbxxazbzyb0xzbba01yzbx0x0zazayb1x1ccxyc0121axcx2bc2b1b2xzy1zcbbc1z0x1xbbyxxba220cxa0zyaax2b2ax0y2zbaacb2cybya2b1ac2y0b02121xcby",
+          "1axcayxy1yxxyycba0zbaay0abaybxbxzzz1yca1ccxz01cb10b2221211011zbx211bcx2b2x1cay21xayzbyzz202b1xyb22a10yaxbz1z2zxb2zx0cazyyxxc1bzy",
+          "0x2z01aca1bzx12ycazzzzxzyya12011222ccbaa1cayay1bbcy0b1z12aybay2001b20yyc0cyy1ay201bbab211axxcz1ayyxa1xcy0021yaxayx2b112cy0cy1ay2",
+          "bxab20yxcxbyz0zb2bc1zb1aaxyx1yxcz01yazx0czbcxbbzybbbaca0a1bx0xaazccbyyc01xzx2ycz0bb0bzyyc0b2yzzx1z2c02cza2byyacxcxz2zxz2axzc22az",
+          "1za12b1xzyyczcy1111yyy0yxay0yaa0a022c0y20c1zzx11x2zy0abcbaya1czyzx0ab0axcy1a1c0czb1yxb0axczaxyx22yyc12zcx0b1y0yzyzz12bc1xb1yc1b2",
+          "ccyacxx0c10b10yayay0zzbbc20x2bbazacc2ca1yzzc2c1011ycxxzyxx1xc12x0cbzbaac0a11cbyxy200zx1bzz1xbazca22xb21xaza1xx11xbc1xyby2zac1za2",
+          "02aaa1cca21bcb2yzcxz0acxxbz21zb1z1axcxa222a0ayb1zacybxaa12201z21zz2zazbyzay1cx00y0c1c20zb2bycayx2yzay0cb10yxyxyb001ya12202z2z1yb",
+          "a001c0yb21x12zx11abcyxb0yz2cyx12ay1aya1x0zb21z0c0caxc1xz1bcz01cbcxaa2z12zbzxcycz00aa2az12x0axaxybx0zxc2z02y11a1a0aa1y0byxx1aayb1",
+          "yx021b0x210cbz11yazyz200b2cy21ybyc12zxbyb221c0xycbccxx2cbzaa1bxcayy2yz011bzyb100ayz02xbb0yz10110z1000y10a2zca2zc0yzzcb1zay2212c2",
+          "1c1zyycca0b2za0c21x20yaa01cy00xaxcbyxaxb2xxxabbb2ya0zy22zz21zzcyzc0bzbyx01yz12xzb12x21bxzz000xx2z20yb12cz0abb0cy0y10cx02yc02zb11",
+          "01abac1bazcax21cbcbzbayz0cyy0ccab0z00xxxza2cyxc0czx2byaxa1zz2ybycacy2yxza1yzaxxc2a1acyyayxbaa11b2cxzxc11x10zzy10b1c1z1xzzy2by1bc",
+          "00bzxxcyc1acbzabxyxxa0c12z2cy11xxbcax1bbc1zxzz1bycbb0cca0zbaayyx0yx0yyyxc0byccaa1cc102xzc12a212z1baxx2zxaaaaa0xcz2011zy0z20b1c2y",
+          "axyy0xxcy0z02ybzy0xzb1z1xzb2zb100zz0z0aaxx1zcc0y2ycbaccczbyzz1zx1cx100aybyc0yxac1a2bx1cc2cbaxzcyxcczaby0c2ya10zxa212xy101aa12cyy",
+          "000y2x0ayx202cza2zzcz0c1c00cxcz1c1xy02c1ay1cxxyy000bazby0b2a020c220221cyyyaxzb20z0bxyya22xxb2x2ab0xy10bcx11x2abccab0xb2zcaacxbzc",
+          "bxx0xbya2cbc1acxb201cabczaxb11z0aaabb10zxcyy2xyx21bzbzy1y0bb1a21ac1c2cayaax2a2xybcxcb0aazxcyb2xczc10czcacbxbb01zyc2xc01abb012bb0",
+          "20caczbzx20yc01xaccayb1zxayazxb2ybaza1zza2y2zc2y011ax12y011aa2xa10yyaz2xzzab1c1c11xc2cab2xcazbbcbxya0x02abazacya0zbb1y1bb1a0y2z1",
+          "0220xbcya1ayy2bx22babbyz010110bzcy0ab1acb10yzb11accx2ayzxy12c11czxcazc2y221xz21c1cxxz1acyax200x2y0y2yyc1x2xz0zcxb22010cc1xzxxya0",
+          "cab00xxyabycbz0xyzc0x0c220cxxz1ayyyzzbyxyycbbb1zyyyz1ycb22ycy0x2bzbcbb0y1cy0yc21cy1xzx21zbzxaa1zbyzb2xy1cxaz12cyzxba2bcy0yx120cy",
+          "aby0a000ba00x1ybcb21a0za0by1bzabbczacxb0aayac1c2202xcbca20by2ycza10012ycaabybyycy0a1x1cx20bzzc2zy1z10x12cxazz1112x010a1ybazxy2bz",
+          "yxaxz0ac2z2000a0xzy10a1zbcbab2yc0cc0yyb2acyzya2zxz0zxzcyx11za10zz1x1y2zczbccz2y01ab1zcc1cy0zcx01yacax2zya1aa2ybzbcyc0z1zx2zbx10x",
+          "cy0byc0caya2zca0xxy0bb2121x1c2c0zxx2aybb1b0axxxa2zyyb2yx00acaxbx122acbax0101111x0z10yzzyzaxy2bzyxzbbac0xzzxxa2cxxxbxzby2zza1ac0y",
+          "0c0a01ybzbyy210cb0y2xyc11xacya0z1czcacxz2x11bcz2c2y22byzb0zbyz0yy0yzcxaaybzcyc2012zzy1ab211zaby01ax01czac2aayb11a1xy0axb0bxya1cb",
+          "yz1zc1zyc2xc2012zbza0022bzz1bzz00b002yax0x0y0azzzb0bbxxz0xccyzb2cz00bcbc01y2012y2120xb0xazc1ayx0cczb0ycxabc1y0ab10xbb20x1a2zzx0a",
+          "ccxa0xz01xz11z0yc2ybayaaxc1xaxcy2c1y0xzcxz0bb22cax2a0z20cb2zxbbbc2b11ax0000x0y1c2bxc0z2yzaxx1acyax1zxzxbxcyzc1z01bzaxaz0212a1bc0",
+          "cyy2b2zc2x22cabzby1110ybx0b0z10zc2cc0bzyacy2yyxyz1100bx220zzaabzz012xcxzx0abybc1a00b2zx0a212a1cacaxx22bbca0010x1cax1xyy2x0z01a1b",
+          "az0z1yx011azy01xxb0yazy0221xaz2202baczxbcc00czy12aaz2ayaby0bz1aaabaa1x22zy01xy1yx0xa2ybxb2z01b2xcbxazyc2yczbbbaxzyaycybcz1axcx22",
+          "10100a0c2zbxyax12x21yyxa2b2x0xcx1ac00x2ca1bzy2b2zbxxbb120az11011bc22caxac21z1yaz2cxax0a01121bcy1c0zz1bx0y01yzbyzx1zcz1yy22czc0ab",
+          "zbbbz01xx2zbz10y01aza02a2x2xbxy0zac1z20axyz0xxx2cxyzcyz1azbzz12c0x22axcyc1b0b20c201y10cx1ax2zy121c02bxbccybcxc2a0czxyb2zyzzyb2cz",
+          "2xbyaaxz0xaxc2c01xzyay120z1b020cbxcza20c202z0yxy10a22cxacz21c2y01x0xb0xxa2y0ab1c0c2axx0ya2y1ybb0xyxaxbab00x00cc2yzzybya2z10cczbb",
+          "a2y20ba00aac0ay0ab1yzx2b0cyyba00122yz1xcb0zacycx2xzyya1bba1c2zacxaza001by2zxxxb1by1zzybc2cyccac22bzca2zcb102abc00czaza1xcybxyxax",
+          "czac1y0cx2x2yyax10zyxyc2z2axxa20yby20xca2zazay21bzazb2cx11cbaa1yyy1xbb1b1yaaxyz022y20z1x1yy000a1cx00ay1ybca2b2ax02x2czc2yayxxzb0",
+          "c0z11zc002y2axb0x012b1zcy2bxzx10yc2xxaxzxzc0a22zxc21xyabby1y1zy1x11aya012byz0z11x0baxyaz1x02ba2ayb1z0yxa1cb2211b0b0z21cx0xybbay2",
+          "1201bc0z1c2b2cbc1222zcyb0a2ybz2zzx1xayx10xb2zz01a1b0yy2byyaaaya1z0acxba0ya11c02cc22zyc1xyy1czb1x00zy1z212x1bazxcza011b2zx0ab1yxa",
+          "acz0aaybxb0011zc1a1bc11b10xza0yc1cayx22b1010cc1aczyxb0xbz2y0y1cz0ay012cax0a0bzzac0bxya1xbcca00100zyazxcycb0yxzxc20b12az2bx2az1xc",
+          "x01220yzzzc0bzba1azz1azcza2021yybcxz20cz20c0xz0aa0czzbzb11zbx12yzxbc1xyyz2ab10cbxy0b0y0bzc0zxcccy1a2baby2bc1b22ya2yx1y2bc02b1xaa",
+          "az22az2a2byaxxyaza2baz0xz20acbxbb00y0acbcy010yc2bcz2x0ca1y22yzbc0acaxxby0z0z1b00z12bxayzayx20yb0yza20czxccxa1cy210ybc0bxzz1yz20b",
+          "az2xxya2xzyyc122z22bca00z0xcz0c10ccx02xbc1zxyb2xzz12acc2ab11ba0cyzac0yy1xzxybyxbaxcxb2001a001y11cabbaya2x2yx12c0ab2111zxxycczxxc",
+          "ycz111c11yz1zacb22zcbby2y0ax0x2x02122ycay1z2xz2y11a0xc2zxcaczy0b01y0112b220x0bxzyzcbb2z1cxzaby1x110c0x20zy11b12ccaa2baabyc200a0c",
+          "bz1zzbya01ba2aayz21cycc1y00zcy2xazb1b1czbcxyxxzx01z1111xyc0z21zaxbay1bya11bc2a0ba1y0001y1cb1bcyxz002xaxczx0zczz2101xza12ba1c2xy1",
+          "y0bc0byx0xb0c1z0yyxazbz00xaa0x0cbazb0ya121ay2bbxzx1x0zc1cz20111azzy2a1bc0bzy2c1aacxxbxc02x1y0acbx022ybz11bcb2yczbz0b10zz2ccxzzc2",
+          "21a0xacc2cxxzc2121bzxz0y1c02y1y0yzza1c2xbab2za22a21z0yzaz2baz2aba22011yy10bx12200x0y0zxxxy11y0xx1cc0c2bbzacx1yx21xyzazcbyazay1c0",
+          "10cbyz11x00a2zb2b1y1x00zx122z21y2zz1bxb2yyy0b0xzcz1y111yx1cbcx2y211z0bb221zz12xccaaazazyzb1x0z2zyazbxyycy0c1bcxxxa0zxxzxz1z2a0c2",
+          "b0a2121z122c1x10xa11x2x000a112zzaayyza1c0caba1xcc0zc12czy0xazybz01bb11zx21cyz2b21a22ya1zzx2azx0z1c02xza1azbxa001cbc2bz02x21ac12z",
+          "12cbycybx1b1xa0xa2z2xa02y2x02b01cx200z0a011zzz1xzybaz11czayacz222ba2zz21cxz12yz1ca2acybaybza1yxb00a2b0bbzz00bxyay1zaaayz2ya2cc1a",
+          "a0yyxz0z2ax0x2x0y1ccyzz2b1a2xxzbycyy00xaaayzx2ay2201czbya0b1a21xb1a2b0022bxax2y0bc2bzab0yzy00cz1xbczx0bc10210ccz1y1yza2a21b1xxbz"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          "b0ayc0byy1b0zayybzc0yyz2c0yzybbx12ay210cax2x1x0zcyc10a1yby0yyac0bxzxyczzz0b2xc0cbx2ybzzbazyczc1zaz022a2y2ca1c1bc0xxyacx12bxc01c1",
+          "xc0c1101y0z22by0211ycyyxbx01z1c002yazx0012xcaxb0bxb11azxyax22xxxbzb2ab00y2acx0c2abx22zxbbzyx12bz1xybzba00a20cx0zay0ac0ccy12cczb2",
+          "c0bxza0cba2yabz11a0c2ba1zc0200za2x02b02cbya1x1xa21byxaxacaaz0c0a1acy1y2z1222cbxc1x2bzccxcc1czyabyx2y1zyxb220yzy12aa1cy0x002x1zzz",
+          "ayz2x21zaa11aaxb1cbbxz2ayxxxbz00yababy0abxxzca0cc0axb0yc00xxb0bya2cxbab1b1byz1yazbza2baaz01xzc0xzzb10xzcybxacc201ba00z0acycxz111",
+          "byaz1b1zxcc11zc0bz2122b02xb1bzbbbycybcy2yzy01xbx1b1yba00zyza2z1axyabb10b1a0bxabbc1x2xb2b1caxz10z0yaabbzyc0a12cybb0yxycybby1zy00c",
+          "2ccxa0ycbb02y0ax2zbzcxy00zcb1y0yzxxb0yza0azybbx1bxy0xba12a120z10ab22xaybzyy1y1xxyxz1x01ab02zczxb1zayax1abb2z021yazcazzaz1c2b2y1c",
+          "02a0xcyb0bbzya0c12a22a02xbbcb1zc2ccxxbcz011czax2z0b0c1bybxyc11xcxz1x1ycbycayca1x1ybz21byczazczxazz211x0yc1x1z1cx2b0bccbxzbbbxxab",
+          "1zxzacy0y2ybcxcccxca21x2z1ayxbx1a2z212x1cbxb02cc0a2ax1bzbxb12yy22x2ax1y1x2bbxx1ayy0cyzzya11aazxzz22cxy2bb2a2cx2zac2y112cz21zx1bz",
+          "ybzxxa1a0001a0xxbbb0bbzzxax1xbxyax11b1ax1xa0b2caayz2ca1cb0cy1ycy02y1xczza0zcazx01bca1caz12axzza2b02yyz0z12b1yycazyazbzz01yacab01",
+          "xaabxybyaz2a01abyy0zy2yaaaayaay0yzy102xy21zcz0ay2cy00cz10abx2a1zbb2bcb0zcza2bzzayxbza1b1yb0y110xbaxcxb101aczy0b02yyy00yz2cyyb2xc",
+          "bbx1cyy1c1zbyy2yaay0z2y0xcy2212a1x1010y1x12azxyczbb21b0c21y101000abbxzc0yczxb101a2z01zbaz0x01ayy111byaz11aczabzzyyya2z1zcz0x1yy2",
+          "zzz100xxzycazazxa1c11c2c10z221a2yc00ax002ac10yy2cyxzaa10b0zx1112ycy1b0ybb0x0za1czczab0bz012a12cxa1aa2bxxyacx1yxc0cyyb2ab0zbbcy0y",
+          "xbb2c21by0zzbbcaxxaz000ycxyx2x1zyc22y0x11xy2zaxac11cb1xb0czazzxc01cyy2x1c0211x22ybc201c211y120baya10c00zcybz1xb2acayayba1bbcyxx1",
+          "c0z12by0xzzabxzxbbabz2yz01xbx1aab1yxb1z0a1xacb1x1xx1ababyc0cb2ccyaa0bx20zy00aczbyxz2ay1bb2aayzabzxbbz0ac10xy1100azy2z0cz1zayccy0",
+          "a0y20b1zyb2c11bby22b0az2ab1zz1a2c0120zayyybyycyc01a22azabzbx120c02y1aycyb02byca102b1aa02byx0z1cx100bazyb1bzaa10ab1zb2aa112yc2yzz",
+          "0b2011a001cbcc2xybyxacbzc1cz12xx01ya2bcazyy1022abccz0ca2x0ba22acz1ab0ca0x1axzzzbzb010b00c0z20x0aczx021xcacczyza2a0ya121x21b2xyba",
+          "a00z2y2yxxaay0axz0a21a0yx1zayy1az2xay1ac12ac10yzbxaazab2z1zy1x22a2yc1ya0c2c2za1czzxcazc2zbzzabxzcy1bb1221zazbxb2yb2azbybcaa1yayz",
+          "z0xxc10c02y1x21xaczcxa0az0x0a1bcybx1xybcz2bx00yx0yx0zxbyzyz02bza2zby0xb21210xxacxaycxxx22xb0aczac1ayaayx20002y1a1c0ac1z1200x02az",
+          "1x2a22cxxa1ab2cy11a1zb20cba20x012c2b020aa0022bc1ayczc2y0z2a02b1ccyb11axba2a2xy2a2zyy212ay2xxy0z201c0acbxb2a000yaz1yxa212ax12czx1",
+          "c0221aybzz12bx1xbycb1z0cy1yyxxb12c1xaz100ca2ya12y0yabz11y00cb12z0zczzycyz2001cca1cc01ya0abzybx2c1x2022xxcx220cczy020c00baxz0z1y2",
+          "2yx1byc0c1xza0aabc00y0a0byabaab00zzyzyxaab12y0c1ycazccz221xa1xcb00z0ba1a20bb1bxyaczaa0ycc10yxyy0zc0zazxy11ybb0ac2zzx221zz21zcayb",
+          "zzc2cxab0yxaxc11yyyxxcyz1201yay11cy0y1c2xyba01baa12yyc2cxb0ycbc2c0z2z1acy2bazz1bz2yxyz0zbcxyxyya1a2a0xbxzyxz12yza1xbc2cbbbc0ycb2",
+          "zyy122x11a1aza1aza0c0xc10cyxc0z1ca12ay1a12x1211zcx0x0b2yzyyb2x2z1c2c0cab0zbzzc1y121bzzxxxb1xbxy1z0b0b10zacbaaac120yz21aazbczx2a0",
+          "bazx10xc21c1y0cc021zxbbzcyx21ca1z1xbyyyyb0yz0cyx2yac11bz1x02za1azb2czbbaxb201ca1zbyyz00b0010abzayxyabac0zz10y1z00z1xc11ybaza02za",
+          "cxxay0cby1a0b0zx1xazxyc2a12b0cxa0bza1ba00b0ax01azaybb1110xby01a0a21y0bcc2xa2122y11222cyx1z02020c1y2cxaa1bzy1zzabxx01cbbz012bya2c",
+          "cy0ybx1b0zaycxbz0x12bxbbzb2bx0aay1ay0yyyaz2bzbxyc12bbc02aa20a02byyb000bb11cyca01a2az2z2cyay11z1cyaaxaxbzb20b1z20ccyy10ybyz2xczba",
+          "ac0xxycc111a2zyc02cxzzyxyy2cbx2abbzz10ybzbx2zzxcx1za2x1xb1zczcxcyxycbxz10z0c2a1xxzaa0yzz2ay2cya12c20czz21cx1a0cz21x0a2azz2cc0cxb",
+          "1zabbzxc1axyby11z0220x1bx121a2azx2c22bccx0z1zx10yyzbcz0ccca2xy0yyc0bx2a1b20a0xyzba02x2ccb0c20ayc12z1bax0xaz0z0cza0ybcxzc222a2220",
+          "2bba1bycx0ax02a2z22yyyx1cbxc0110x2xbb2ayx2yxa11z02ycb2b2ab21y1cbxbbc0z1y0axacxbcb12b1aycxc1z222bb2zca0xayb0zc1c0b2bazxbaab1czbx0",
+          "ccx2abx1aca2byaby00bx0a11c1cayza2a0xzxxxzab0c0czbayy0b1xazbzbxxca01xacya1ybxz00zxxax0x2z1yxxbz2aaa2yb0c01zaby02xby0zaaxyzz2y0yca",
+          "2bacxcab0zb22a0ab1za1zbc011zay0b0cc2yx0z0221cacay21bax0zxy10ybyyc1b1yzxbyzzza2aaca0zy1xz0yc1cyx0baa2cyza2by0y1acx0a1yb1a0acczczz",
+          "bxyb10cc2azyb1zyab0x1az2y2c2b1xxx0ba2c0z0bca0y0y010y12z0cza2yzabyxcz1ac20bac2zzbyx2czzcaxc20zb2b2azc2xazxa01xa2xax22yab0110cbbaz",
+          "1b1az1yyzya0byx2101x2yxbzz010z1c0c0xc1xcyx1axbaz00zbybxyxa102xc2102b0azbb1acycx0x1yx1x2abxb2yxybxz1b02c0bbby10ca1xy121xzybyzz0y1",
+          "bb022zc00x1aa22yx2xaby2z12b0z0a22ayb2acyy0c22c0b1xy0a21x0xbyxb2bx1ccx2ayzaxa2xybb0y10yc1x202bxx1cc12b2bzzxcz22xacbx01b0axx2yb121",
+          "ac21ya1c0y22bazaxb012bc22x1x2zxa2cc12by0zxzx02cxca1cy20bbz0cxa012aby01abybc2ayy1bca2x0cy21y2z0cx1220b1xc110a0xzbx02a0z1yb02yx00x",
+          "x1z0b2yzxz11112zcyz2x0b22x1yy2cx0aycyyzacz01acb12cz22b0bax10xcyax2ayx1ybc02a20zzba20b1a12xxbxcyac1zyczab0z1zzz1y20xc2ba1az0azz1x",
+          "yba0aa00b0bzxb100acyyz01b2byxx01z1zzy0a02xyc0azxx22cy000a2b21z22aybyax0xy21yzbc0bx1accxayyxbcbxyzz1aa1cz0021cxa0x0z12x1bzbaybx01",
+          "101zxccy01x1b01zz1bcayzyac2yyx22c010ybx001y22020a2120xbyb2xzayayyy1yc1a1czyyzc120bazy1c21ya1zbxby0ax12c2axz02ba2z2111a1zabxxcz01",
+          "1y0xb11b20c00120b0xx20x2bxaxc0cy20yay00zy11azx0yyxyzybcb10ca2abc2xy2c2aacazx0zayz0200aabcxxbzcyaybz1z2yc1020bc11xxxxz0ycab2yyz10",
+          "b0cza0ybaxb2yb1xc0zcxy0zzy0bcax2y01c0yyab2c2byxzxzycz0c20a12bx2y1zbxya1yb2zaz2cyazzy0zbca0a0bbz1x1czxaxbz2y0yxyyc2azyaacxbza121x",
+          "zxaaxyxcc0cazzzz0c2y1z0z12xxxyxbazb222z1212c2az1c2x12xab220z2y0a1yz0cz01axc1b221z21za2aca1zcay0a1yxa0y2y11xcacyyya1xb1b2abbcax01",
+          "b0yc0b000y1ba1xzc1z0zca2xbxaab0b2xcbzcaa1yb00yxa20ayc2xb01cxcy0yy1ba0a0a01x1122cbyb2baa1ca2y12abb1az0y10z2z1z1axx01zy1bax12y20zc",
+          "a2ayzxxyxay2ca1aaac01zzy1zx0yb0x2czbb1cxaxz2cb1c0xxa2ay2a220bbcz2ayyxa0z11cbbc1b02ba2b100xzcbzc01x1bba1a02020y0yby1xzy02zx1yczcz",
+          "10211xzb00axcx1abyaza1bzb0xcxay11cz0bbzzxx2yb0ca0c22bz00axa2azb2xyxyx0xz02a211xy1cyyb010cb21yxa0y1ycxc02xy21aczb0c2a2yzy2c0c11xx",
+          "cz2bc2100xyayb1yy10zccy002zb0cb1zb1bxzc2yzy1azaaz1yz2a100y212ybx2xbc10a12xxzy2ccyzcy22b0axzxyb10zy0bybbbaby1xbc2xz2yy2abc11bc11b",
+          "02zxab1yy1ya2axa2cca0yb0z2yacx10yzc0z21c2acx20z0c0aa2az2ab222aaxaazx12c2021ccaxa1ba2b0ccx100cbzybzb2a1ac1ccyc20xz2xyc0x221yzzbac",
+          "xxzz22z1c2xy0x2b0bazz21zxac0byayb01zcac12byzy2bb2b1c2yz2y21yyaac0c220z2a1caa2az1ab1yxz1zcczzz02a2y0aabz2bcx0cycyy1aaczba01cyy0az",
+          "1cy211y10xa2xz1c2abaa0xy1yb2aycaccxaz1z1xx02c210z1zzzcz202z02za00y212c0y21bxaaaczzy0yzxxy12zcy2yy1aybyzaz0xx1a0zbb2b0bx21zzzycc2",
+          "xxcyb11bb2ab011yx0ay2a2zc1byx0y1yxy1022x20b0b2110yz2a2yxb0zcb1aazxbc0azz1yac2yzz210zzbc02bxa12x1xb2xzybcxyzcxcz2acyzz1bb0c1yxzby",
+          "c20xc1acxb1yac2ba0a10xyyxxy0ac0xxz0yb0c21aczcbzbyxzb1cx02zayy2zc0acxzy1ccyazzxa0bbxaayz2c1zcxya21az02xxzzz0x2z2b2c2yx1y202aazz1x",
+          "2a1c00ayayy1zab1zaz00zz2a0z201ccxcycayxaa0xbba01bx0xzbbycac20bccxc20byacyzyccyccyxacxcaaabxc12c2cyxza1bxzxcz0b10cy2y010ya211zx0b",
+          "a2xa1aa0xx0ac1xbz01c0b1x0ccyz2111x2cyx2cby0ccccc2xx2bx2zccxza0c1ayabyybcyzcccyz01a2xxzay0cxx1ybzxz2xx212zbazxayz21zza2cz1cxcxaa1",
+          "20b20y2y01y1zcby2xz0za20cc1aczczybbazz0cybc00102ayaz0y1axx0ycyzxca0zyxc0byxyax1bzcyxbabz02xazxbcczc0y1y121a010yyc20xa1a12bababcy",
+          "2az0ycbb21yaayybaa1cxbycayxa0yaybcba1ayxbazzaxbz2212za00a01zbyby2xzbz0azbyc11acbzx20bbzbbb0c1byxzxyba0b0zay1czzxba1x1bcca1cza2yz",
+          "cya220a0czxx0abaxbbyaa2bc1bcc221ybzyczyxyzac00yc1x2000y2bbazbcc1cyxa01112x0112ba1a2cya2xzbxxbz1ca2cx00b0cab1czbc00a200bba2yaxac1",
+          "1x0a20xxxza00010azza2aazaa2xa0cza2azz0yybybcyx0b0azaca10bb2by2x012yaxcb11ybb101zzaayx1zxbz1zccza2x20axax01y201z01zxzbzxy1yxc1a2b",
+          "a12aax12babaxca2cxyb0aa1z122zb00ba10yyyayxy0b0ccc11c0bazyac0ac2y0zzcb2z0220yxx1yzxb2acx2y210byyyxx1x0aa2z1zx1y10xb2xycaacyc12zcx",
+          "0bzbcb010a20aba00z212cycz0z2cx2zyayyzax20x2xy00a2byy20ac0zxc2xbzxa1a1bay2120abza2xxyzbc2cyzyb2xx122by1ycza1yx2caxzaa12011zzaazxz",
+          "0ax01xx0bycy1ybzb0xcz00by2cyx0y2zb12c1z11xa0by0ab1yb0yaaacz02xz0c12x21110zyacxy1byzbx1yac2c0z0zcx01z0c1zyzyaxy2x1zzzx0yccay1azyy",
+          "0z2xab210c1ayx22zc21bz2xyyxac1x2zyycyacy2ay02202a210xyc1cy11bbz121x12bz0b0cb1x01bx21xbyaxbb000b0cy022010cb2ccy1ccy10201a1b01by2z",
+          "cz12zcxzc2aaxybx1xyzycy1bbzz2ccb2bzb1ba1a0110xbxb0yzx2xx0yczzaxzxxcbabczy01zbyz11axb1az02cz2xcabyxzyz0x0122x020x0yyy2ba0xc01xca0",
+          "aycyccbbcy1yxza012cax21cbbcax2c2xabzazzy10b02a02axayaazy02abxbyxx0az1yxcbbbzyzcb1b0abx0yb10zcazy2x0aab02abbzx0a0yxyzxy1xcaa0abzx",
+          "xazxcz0cy2222ay1ay0y2zzzb0xcyaz1ybbxzxbax2b0011azcb2z202ayxycaa22cz2z12x2ax1ax11xbcaz220y2zxa1y212bxyazbyazab2bx0b1aaay2zybcxy2b",
+          "yzczzx0czz0byybc21abaxcbzcyb10bbby2xcya0zc0bcb00y2baabbcxxab010zz01xcx2x02ybyxyy0cc2a1yazx2azzayc2b02x0cz11cba21c1ybazbz12bzzzb2",
+          "zzc0yxzccb1xc2ycy21c2acacb1c0zbxycayz12bxbyz0czxaxacybxaabbxby0yycbyx112azzcc11ac0ay10121cz00ybbxza10y01c10xx02aa1bby1zazccabbc1",
+          "ycczxxcx2byxxb0b001yy01a1bb2zbbbz121cxax1bzz20ac0ycx0cyz22y0x1by121za2az1bb12yyyaac1y2ycyyx1x000ayy201bb22b0b2c11xy11y012yzc1xxb",
+          "22bz01zybxzyzz11a1a11ayzzxaab1xbybc1czcbc2z01cyazzzczb11y2z0zc0ycyx1yc2ccaccayba0y0a1c0zcaby210a01x1czaaxcbz0xcaza0za00bz22yyzcx",
+          "yybbaaca2010aya0cxcbzb1zb01c0az20zxbyxycca1ayxba11ccc21yz2x01yc20ab10121x22abbbxazccx2xzccx11zayy2a0xcyy202y0aybc0b0zzyc1xx1acby",
+          "0b0ay10bac0zyybayx11ac01azaxz0cx1cy0yz0ay2zbba0z0xcc01bbb12zbczc1cb0ycccczx2yb21z10b10z1ccyz22x00a12xxya2xx12x0bzc002002a2a1z0zx",
+          "aacc1zax0ay1ac2axx1bycbx1y1c1xcc02yzyc10cxx02xcya1c2bz2b0b2a2a22ayaxx0c1cyyzcc1zyc01xc1cccbzzxczab0xc1yzbb0zb0a20cyzbxx00az1zc00",
+          "y1bb2bxca1cxbb2y0zza0x02zb010zzb0010accx0yyzbyx1ayxycyb0c0xb111yycccbcycb1x2baxy1xb1zbacz2x2za2xxc1bayzxzbxz0xyxb1bb0xxzy1bzyxx2",
+          "zyb102cca02cyz2ac2yz1b20b2b0czyxbyzx0zbxx20bx01y0b0b0azyxx1a1x01bc1y1a0zxbcb12ya01c01cayb20cxbb0121z20y1yabczzxb1zzay0b0byx2yax1",
+          "01zyz10aybyczaz0x0ax2zzc22cxbxc012xyxz2zb110x2z20cczyx10x00c21bb1b0zxzzzxyza02z2cy20xa1c2zzyb1xyxbybycbzyya010cyc2z1yayazc11axzy",
+          "00xa111zbaa0zbya1cxy0bzaybb1a2cccaczbxaaczabby1y1cazzzcx12xay1z1yz02yyc0xxxx22y0zbaxy2xa2cybxab0a0yyaxzxyb11xxyxa1b2cb2cb0a0xcxb",
+          "012bba2acx22x01acz1zxz0yybbxzy1c20x0cyacx2ycaxb1zbyzaaaxz1c20xzxba01xxx2c10zxy2acy002cx2z2zzcababzyyy2y1ca1yazb21axccb11zaczy2xb",
+          "xcaybax1c2bac1cz1zzbc0x1aa10xxacczb10002cbc1y0cbxxyzz2cz0z0cbczayyby1zx10x12cz0y2z20y100zz11azb20za010yzbbzazcz021ayc0y01za2ay00",
+          "0x2c2zayb0c1zacacczcbcx2acyy0c10xzby21y1bzbczyz2x2zxxz2yb0zxzzcc21zbcaab2b1y1xbbby0xx0a2bazayz0b1yaaz1z2xyyzycbayca2yb2c20zya121",
+          "zzazybzbax1z11a10a0b0ybxzbc2y2x0zzz2c11a0cc0bz0ya0a2c10baacxzbcayz0bz1xyyx2z0xx1z2ybx2121ab22bbbxx1zcxxbyxcyb1a1bc1210xx21a2bxcc",
+          "a2ccayy2yxzb122b0yz1bayczaac2yccyb1ab2xbx11yxyaxaz1czb1xxxz2bx02ccabzc102zy0cbb01aa0ca2cbcya100yzx0ccbxzabbxyy02zacb2y2yzyy1czy1",
+          "ay1yycb1z0xyay0zbyyyy0z1y2byzczc2220y0za2xayxb12ycbxbx01zy2xx111c1bzyccybczax2xybcy1ccx1ca1yb1zx1aa0xcx2211xxzcba2z2x1zz2c0xcb2y",
+          "ba22z22b2bbyc2b12xyca0yxxzzxyxxy1b1cayaxcycyxaab1xb0xxcyxa21cyy12xa1bcbcz120bacyb2c1cyyzca10bzc2xbb112zb00zab2aazyyac110abcxb0cz",
+          "zbaaax002z1yx1x2y1b2yz2b0xacbcb2cx0x1czbbc2axbac0cx1aza01y2czccczy0zy10xb0byzzax0zxzycx1cy0010cc010b1y1ayzzccycaz0yczy12a0yx1b0a",
+          "xy21xbb0abz0zxzcbbzycyabzayx1a202a22xz2zz2x0yzy21z11yczycayx02c1z02y12za1201czxa2bz2a2012yzbbxcy01bc1zcx1baacz0xzb21z1azxcax0bxa",
+          "yy0yb1cybax01z2a0xc2yabb1bxax1a1b2y01a211x1xb0c1zc1y0abaa011yaa1ab2xcz00b2a0ba2zx1aa1aabacccbc02xazbabb2b0xyba01021babyybb0xc2cc",
+          "b0ycz20b01cbb1aczyy0zzacycb2czy2az1zzacycyc0xxzcxb1zy211bxcaca0bxcaxb20101yy2cc212a1xaay0xa00010c0ac0ybay1b0yzyz2yy0z11bx1bzxyc1",
+          "xc21xcc100zy2yc1yy0yzyaxaacbyx00zyzx22cxcxyzxxz002cc20z1zycax2abxx10bbz11abybbbz2b0cxbzxyc2bbz210zab0x1zaz1cbzba2baayyxaac11xca0",
+          "0yc10x2a2c0xc010xbbyxba1zx21bybyc0ycxa0y0byx2x2b01yc2zyaz2y1yx2y1zc21cyz122ccyzzyaycbaaby0bb112zyzxaz1200c0cxxzxaaczzxzcz0x11xbc",
+          "cyz21abxbbb1zb1xxz2x0cycbzbz0yyx2121b1bxzxz2bazy2cz0c1x0yxxb0bcac20212yc11zbzx01ca1za00bc2z02zyyb0yxxbbbz02zyac0cb2a0ax0xcxzb2zc",
+          "b0z0bxa1x21by2yzyyxaa1yz111yby0zb2xb0xxczxx0xaz1z1200a1acza1000a0za2zc0ba020zzxc0y1ybybcyayx02y2xz0aaab2ca21b0x22bxc1bb2x2b21cb0",
+          "ab2b1z10ab2a201zcc0cybzc2xc2b00zb11xbxb1yxbxzc10czzx10zbb2cz00zb0xb1c1bzy2x0c2bxybxzaxxy0a1y021z1yy0zyy2cb21x2cbczz2211yazaxbzbx",
+          "0za20z00x21yy11bxybczx2xyba0z1c100z0ca01axxx0111yyba2yx1bb2caaxyaxz2c1b1xcaxba000y0zb2y12211222yz21z11bbyb1y0ba0cxzba2xc12002022",
+          "caaxc0zaxazcybbyca10zbxxzcyz10ax0ba2yc1ayzx20210bc1010cbxzyz0byxbzx2xy2zxbcaa2zayaacyb1ax0ycx1xxbxycyby1b210cb11yccbab1c1y2cbzb1",
+          "a10xbxcyay0b0zb00c1byz1a0z2020cx12z11b1bcbxb101a1aacc10cyyzc12yxaax212a0y0zyb202y21yxcaxcc02021ax1zz12zyz10zxacy0yxa2bxcccz1zayb",
+          "c00yxzayzz1xbyc00ccy110ax2c2a1baacyz220yb1x01xxxx2xx21022x2022cz2b1x202b0zccxza1x121xzcb2a02y0axxycza201cc00c2ba10111201x1b2baz1",
+          "02xxazx1ya0cyc0baxxcy211x0zb22yb200bxcya0xz1cy10x2z1c02zaa1c2yx2z2aa200cyzazbyay21xz1zyxyzx0y0ba1111cccc0y0bzxxaac1ac1za1010x2az",
+          "yzx20ab02bca1zaaa0bzz2zxccyyzz0zcxccby2yybxzb10xxax2bz0za1az0zba0x0bbc21ya2bb1xa0x2cbyzc2120c2xac2yazcb2zaz0a2xbbc0ay2z20zy2b2yy",
+          "x20zy1bc1azy21y21az00cxaaz0ayy0bzabcxza00z00azaza2zz10z12x1xby1yx1caxzcb0abac10y1bycyxcbbbac00cx11x2bxxa2xbyzcx12axy0xxc21ycz0z0",
+          "002az2aaaz2zx2bz1zabzyx2z12b2a11yby22bzbyy00bzyb1baa0z0c00022zyzzx0x1100zzacxyycx2b0cc00y2yb20by0c22x0xz2azxxbzbxbxz0bb1ac12y1xy",
+          "1x1ccxb10b02ccz22z2yxbxz1ya21y1ya1x1c0b1z0z11a0b2xyyczbb2azyzzbcybzc20xy2yab0b1a0ybyyzxx1zcabz0by0b0ybz1xx102yabxyb12baa1bz1byzb",
+          "zbyzz2x21x02a1c00b2a2yx22b02y2c1cxaa1ay0yyzaxaa0ayzba2b21xxaac10xc1ccx1x0zayxc0azay1xzxzcc0zyxazx1xyzbxz0yc0a0aa21c1yazbyxb0ybbb"
+        ]
+      ],
+      "expected": null,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function calPoints(operations) {\n  const record = [];\n  for (let i = 0; i < operations.length; i++) {\n    const op = operations[i];\n    if (op === 'C') {\n      if (record.length > 0) {\n        record.splice(record.length - 1, 1);\n      }\n    } else if (op === 'D') {\n      const prev = record.length > 0 ? record[record.length - 1] : 0;\n      record.push(prev * 2);\n    } else if (op === '+') {\n      const a = record.length > 0 ? record[record.length - 1] : 0;\n      const b = record.length > 1 ? record[record.length - 2] : 0;\n      record.push(a + b);\n    } else {\n      record.push(Number(op));\n    }\n  }\n  let total = 0;\n  for (let i = 0; i < record.length; i++) {\n    total += record[i];\n  }\n  return total;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function calPoints(operations) {\n  const stack = [];\n  for (let i = 0; i < operations.length; i++) {\n    const op = operations[i];\n    switch (op) {\n      case 'C':\n        if (stack.length > 0) {\n          stack.pop();\n        }\n        break;\n      case 'D': {\n        const prev = stack.length > 0 ? stack[stack.length - 1] : 0;\n        stack.push(prev * 2);\n        break;\n      }\n      case '+': {\n        const a = stack.length > 0 ? stack[stack.length - 1] : 0;\n        const b = stack.length > 1 ? stack[stack.length - 2] : 0;\n        stack.push(a + b);\n        break;\n      }\n      default:\n        stack.push(Number(op));\n        break;\n    }\n  }\n  return stack.reduce((total, value) => total + value, 0);\n}",
+      "isReference": true
+    }
+  ]
+}
