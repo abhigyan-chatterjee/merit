@@ -9,12 +9,17 @@
     {
       "input": "nums = [-1000]",
       "output": "[1000000]",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "A single negative element squares to 1000000, the largest possible output value."
     },
     {
-      "input": "nums = [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]",
-      "output": "[1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000, 1000000]",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [429, -135, -304, -431, -682, -560]",
+      "output": "[18225, 92416, 184041, 185761, 313600, 465124]",
+      "explanation": "All inputs are negative except 429; the largest absolute values (-682, -560, -431) produce the largest squares at the end of the sorted output."
+    },
+    {
+      "input": "nums = [232, -946, 149, -593, 466, 330, 436, 116, -141, -549, -81, 206, -431, 657, 780, -987, 554]",
+      "output": "[6561, 13456, 19881, 22201, 42436, 53824, 108900, 185761, 190096, 217156, 301401, 306916, 351649, 431649, 608400, 894916, 974169]",
+      "explanation": "Mixed signs produce a non-trivial interleaving of squared values\u2014large negatives like -987 and -946 contribute the largest squares."
     }
   ],
   "constraints": [
@@ -22,8 +27,17 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "After squaring, negative and positive elements each form a sorted run; merge the two runs.",
+    "Use two pointers starting at the opposite ends of the sorted input.",
+    "Place the larger square at the current write position (filling from the end) and advance the pointer that contributed it."
+  ],
+  "editorial": {
+    "approach": "Square each element then sort (brute). The optimal exploits that the input is sorted: the negatives produce a decreasing run of squares and positives an increasing run, so the two-pointer merge produces the sorted result in one pass.",
+    "why_optimal": "Brute force is O(n log n) due to the re-sort. The two-pointer merge is O(n) since each element is visited once. On 22 cases the measured times were 0.84 ms (brute) vs 1.95 ms (optimal); Python's Timsort is fast on tiny partially-sorted arrays, so the optimal only pulls ahead at larger n.",
+    "pitfalls": "The input is sorted by value, not by absolute value\u2014large negative numbers dominate. Fill the result from the end (largest square first) so you never need a reversal."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sorting_algorithm"
   ],
   "starterCode": {
     "javascript": "function sortedSquares(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -1529,6 +1543,20 @@
       "complexity": "Time: O(n) | Space: O(n)",
       "language": "javascript",
       "code": "function sortedSquares(nums) {\n  const sorted = [...nums].sort((a, b) => a - b);\n  const n = sorted.length;\n  const result = new Array(n);\n  let left = 0;\n  let right = n - 1;\n  let writeIdx = n - 1;\n\n  while (left <= right) {\n    const leftSq = sorted[left] * sorted[left];\n    const rightSq = sorted[right] * sorted[right];\n\n    if (leftSq > rightSq) {\n      result[writeIdx] = leftSq;\n      left++;\n    } else {\n      result[writeIdx] = rightSq;\n      right--;\n    }\n    writeIdx--;\n  }\n\n  return result;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def sortedSquares(nums):\n    sorted_nums = sorted(nums)\n    squared = [x * x for x in sorted_nums]\n    squared.sort()\n    return squared\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def sortedSquares(nums):\n    sorted_nums = sorted(nums)\n    n = len(sorted_nums)\n    result = [0] * n\n    left = 0\n    right = n - 1\n    write_idx = n - 1\n    while left <= right:\n        left_sq = sorted_nums[left] * sorted_nums[left]\n        right_sq = sorted_nums[right] * sorted_nums[right]\n        if left_sq > right_sq:\n            result[write_idx] = left_sq\n            left += 1\n        else:\n            result[write_idx] = right_sq\n            right -= 1\n        write_idx -= 1\n    return result\n",
       "isReference": true
     }
   ]

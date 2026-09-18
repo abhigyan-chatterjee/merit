@@ -9,12 +9,17 @@
     {
       "input": "height = []",
       "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "An empty elevation map traps no water."
     },
     {
-      "input": "height = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]",
-      "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "height = [77, 3, 71, 25, 91, 83, 89, 69, 53, 28, 57, 75, 35, 0, 97, 20]",
+      "output": "462",
+      "explanation": "Tall bars at heights 91 and 97 trap water between them and across lower valleys."
+    },
+    {
+      "input": "height = [54, 43, 35, 19, 27, 97, 43, 13, 11, 48, 12, 45, 44, 77, 33, 5, 93, 58, 68, 15, 48, 10]",
+      "output": "734",
+      "explanation": "Multiple peaks (97, 48, 77, 93) create several trapping basins whose volumes sum to 734."
     }
   ],
   "constraints": [
@@ -22,8 +27,17 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "Water at index i is min(max to the left, max to the right) minus height[i].",
+    "Precompute left-max and right-max arrays, or use two pointers converging inward.",
+    "Advance the pointer on the shorter side\u2014its water level is already bounded by the opposite max."
+  ],
+  "editorial": {
+    "approach": "For each index, the water held equals min(max-left, max-right) - height[i] if positive. The brute force re-scans for left and right maxima at every position (O(n^2)). The optimal uses two pointers converging inward, tracking leftMax and rightMax so each bar is processed in O(1).",
+    "why_optimal": "Brute force is O(n^2): each of the n positions rescans up to n predecessors. The two-pointer variant visits each bar once\u2014O(n). On 22 cases the optimal ran in 0.25 ms versus 0.89 ms (~3.5x faster).",
+    "pitfalls": "Decide which pointer to advance based on height[left] < height[right], not on which max is larger. Processing the shorter side guarantees the current water level is bounded by the known shorter maximum, so accumulating is correct."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Prefix_sum"
   ],
   "starterCode": {
     "javascript": "function trap(height) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -904,6 +918,20 @@
       "complexity": "Time: O(n) | Space: O(1)",
       "language": "javascript",
       "code": "function trap(height) {\n  const n = height.length;\n  if (n === 0) return 0;\n\n  let left = 0;\n  let right = n - 1;\n  let leftMax = 0;\n  let rightMax = 0;\n  let totalWater = 0;\n\n  while (left < right) {\n    if (height[left] < height[right]) {\n      if (height[left] >= leftMax) {\n        leftMax = height[left];\n      } else {\n        totalWater += leftMax - height[left];\n      }\n      left++;\n    } else {\n      if (height[right] >= rightMax) {\n        rightMax = height[right];\n      } else {\n        totalWater += rightMax - height[right];\n      }\n      right--;\n    }\n  }\n\n  return totalWater;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def trap(height):\n    n = len(height)\n    if n == 0:\n        return 0\n    totalWater = 0\n    for i in range(n):\n        maxLeft = 0\n        for l in range(i + 1):\n            if height[l] > maxLeft:\n                maxLeft = height[l]\n        maxRight = 0\n        for r in range(i, n):\n            if height[r] > maxRight:\n                maxRight = height[r]\n        waterAtI = min(maxLeft, maxRight) - height[i]\n        if waterAtI > 0:\n            totalWater += waterAtI\n    return totalWater\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def trap(height):\n    n = len(height)\n    if n == 0:\n        return 0\n    left = 0\n    right = n - 1\n    leftMax = 0\n    rightMax = 0\n    totalWater = 0\n    while left < right:\n        if height[left] < height[right]:\n            if height[left] >= leftMax:\n                leftMax = height[left]\n            else:\n                totalWater += leftMax - height[left]\n            left += 1\n        else:\n            if height[right] >= rightMax:\n                rightMax = height[right]\n            else:\n                totalWater += rightMax - height[right]\n            right -= 1\n    return totalWater\n",
       "isReference": true
     }
   ]

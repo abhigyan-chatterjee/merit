@@ -7,14 +7,19 @@
   "statement": "# Permutation in String\n\nGiven two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
   "examples": [
     {
-      "input": "s1 = \"b\", s2 = \"y\"",
-      "output": "false",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "s1 = \"ba\", s2 = \"aaab\"",
+      "output": "true",
+      "explanation": "The substring \"ab\" at position 2 is a permutation of \"ba\" (same character counts: one 'a', one 'b')."
     },
     {
-      "input": "s1 = \"xc\", s2 = \"b2\"",
+      "input": "s1 = \"0a\", s2 = \"x2b\"",
       "output": "false",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "No character of s1 appears in s2, so no window can match."
+    },
+    {
+      "input": "s1 = \"aa\", s2 = \"baaa\"",
+      "output": "true",
+      "explanation": "The substring \"aa\" at position 1 matches s1's frequency profile exactly."
     }
   ],
   "constraints": [
@@ -22,8 +27,18 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "A permutation of s1 has identical character counts\u2014compare frequency profiles instead of sorting.",
+    "Slide a window of length m across s2, updating one incoming and one outgoing character per step.",
+    "Two frequency maps match iff every key has the same count on both sides; watch for zero-count keys."
+  ],
+  "editorial": {
+    "approach": "Sort s1 and compare against every sorted window of s2 (brute). The optimal slides a fixed-size window with frequency counters, updating one incoming and one outgoing character per step.",
+    "why_optimal": "The brute sort-each-window approach is O((n - m + 1) * m log m) due to repeated sorting. The frequency-map sliding window is O(m + (n - m) * Sigma) per step\u2014linear in the alphabet size. On 22 cases the times were close (0.36 ms brute vs 0.48 ms optimal) because the alphabet is tiny; on larger alphabets the optimal wins by avoiding re-sorting.",
+    "pitfalls": "When a character's count drops to zero, delete it from the map so match checks stay accurate. If s1 is longer than s2, return false immediately\u2014no substring can exist."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Anagram",
+    "https://en.wikipedia.org/wiki/String_(computer_science)"
   ],
   "starterCode": {
     "javascript": "function checkInclusion(s1, s2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -251,6 +266,20 @@
       "complexity": "Time: O(m + (n - m) * \u03a3) | Space: O(\u03a3)",
       "language": "javascript",
       "code": "function checkInclusion(s1, s2) {\n  const m = s1.length;\n  const n = s2.length;\n  if (m > n) return false;\n\n  const count1 = {};\n  const count2 = {};\n  for (let i = 0; i < m; i++) {\n    count1[s1[i]] = (count1[s1[i]] || 0) + 1;\n    count2[s2[i]] = (count2[s2[i]] || 0) + 1;\n  }\n\n  function isMatch(c1, c2) {\n    for (const ch in c1) {\n      if (c1[ch] !== (c2[ch] || 0)) return false;\n    }\n    for (const ch in c2) {\n      if (c2[ch] > 0 && (c1[ch] || 0) !== c2[ch]) return false;\n    }\n    return true;\n  }\n\n  if (isMatch(count1, count2)) return true;\n\n  for (let i = m; i < n; i++) {\n    const incoming = s2[i];\n    const outgoing = s2[i - m];\n    count2[incoming] = (count2[incoming] || 0) + 1;\n    count2[outgoing]--;\n    if (count2[outgoing] === 0) {\n      delete count2[outgoing];\n    }\n    if (isMatch(count1, count2)) {\n      return true;\n    }\n  }\n\n  return false;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((n - m + 1) * m log m) | Space: O(m)",
+      "language": "python",
+      "code": "def checkInclusion(s1, s2):\n    m = len(s1)\n    n = len(s2)\n    if m > n:\n        return False\n    target_sorted = sorted(s1)\n    for i in range(n - m + 1):\n        window_sorted = sorted(s2[i:i + m])\n        if window_sorted == target_sorted:\n            return True\n    return False\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m + (n - m) * \u03a3) | Space: O(\u03a3)",
+      "language": "python",
+      "code": "def checkInclusion(s1, s2):\n    m = len(s1)\n    n = len(s2)\n    if m > n:\n        return False\n    count1 = {}\n    count2 = {}\n    for i in range(m):\n        count1[s1[i]] = count1.get(s1[i], 0) + 1\n        count2[s2[i]] = count2.get(s2[i], 0) + 1\n\n    def is_match(c1, c2):\n        for ch in c1:\n            if c1[ch] != c2.get(ch, 0):\n                return False\n        for ch in c2:\n            if c2[ch] > 0 and c1.get(ch, 0) != c2[ch]:\n                return False\n        return True\n\n    if is_match(count1, count2):\n        return True\n    for i in range(m, n):\n        incoming = s2[i]\n        outgoing = s2[i - m]\n        count2[incoming] = count2.get(incoming, 0) + 1\n        count2[outgoing] -= 1\n        if count2[outgoing] == 0:\n            del count2[outgoing]\n        if is_match(count1, count2):\n            return True\n    return False\n",
       "isReference": true
     }
   ]

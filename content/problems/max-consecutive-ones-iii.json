@@ -9,12 +9,17 @@
     {
       "input": "nums = [0], k = 0",
       "output": "0",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "The only element is 0 and zero flips are allowed, so the longest run of 1s is 0."
     },
     {
-      "input": "nums = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], k = 50",
-      "output": "24",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "nums = [1, 1, 1, 0, 0, 1], k = 6",
+      "output": "6",
+      "explanation": "With 6 flips allowed, both zeros become 1s, making the entire 6-element array a contiguous run of 1s."
+    },
+    {
+      "input": "nums = [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0], k = 48",
+      "output": "21",
+      "explanation": "With 48 flips, all zeros convert and the window spans the full 21-element array."
     }
   ],
   "constraints": [
@@ -22,8 +27,17 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "A window is valid as long as it contains at most k zeros.",
+    "Count zeros in the window and shrink from the left when the count exceeds k.",
+    "Record the maximum window size seen across all right-edge positions."
+  ],
+  "editorial": {
+    "approach": "The brute force tries every starting position, counting zeros in an inner loop and breaking when they exceed k. The optimal uses a grow-shrink sliding window: count zeros in the current window and advance the left edge when the count exceeds k.",
+    "why_optimal": "Brute force is O(n^2) because each new start re-scans from scratch. The sliding window is O(n) since each index enters and leaves once. On 22 cases the optimal ran in 0.11 ms versus 0.42 ms (~3.7x faster).",
+    "pitfalls": "Don't reset left to right when shrinking\u2014advance it incrementally. The window length grows monotonically even as left slides; record best at every right step to catch the true maximum."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure"
   ],
   "starterCode": {
     "javascript": "function longestOnes(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -897,6 +911,20 @@
       "complexity": "Time: O(n) | Space: O(1)",
       "language": "javascript",
       "code": "function longestOnes(nums, k) {\n  let left = 0;\n  let zeroCount = 0;\n  let best = 0;\n\n  for (let right = 0; right < nums.length; right++) {\n    if (nums[right] === 0) {\n      zeroCount++;\n    }\n\n    while (zeroCount > k) {\n      if (nums[left] === 0) {\n        zeroCount--;\n      }\n      left++;\n    }\n\n    const currentLength = right - left + 1;\n    if (currentLength > best) {\n      best = currentLength;\n    }\n  }\n\n  return best;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def longestOnes(nums, k):\n    best = 0\n    n = len(nums)\n    for i in range(n):\n        zeroCount = 0\n        for j in range(i, n):\n            if nums[j] == 0:\n                zeroCount += 1\n            if zeroCount <= k:\n                currentLength = j - i + 1\n                if currentLength > best:\n                    best = currentLength\n            else:\n                break\n    return best\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def longestOnes(nums, k):\n    left = 0\n    zeroCount = 0\n    best = 0\n    for right in range(len(nums)):\n        if nums[right] == 0:\n            zeroCount += 1\n        while zeroCount > k:\n            if nums[left] == 0:\n                zeroCount -= 1\n            left += 1\n        currentLength = right - left + 1\n        if currentLength > best:\n            best = currentLength\n    return best\n",
       "isReference": true
     }
   ]

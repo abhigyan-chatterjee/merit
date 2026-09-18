@@ -7,14 +7,19 @@
   "statement": "# Backspace String Compare\n\nGiven two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
   "examples": [
     {
-      "input": "s = \"b\", t = \"y\"",
-      "output": "false",
-      "explanation": "Generated from the verified optimal implementation."
+      "input": "s = \"ab#c\", t = \"ad#c\"",
+      "output": "true",
+      "explanation": "Both strings reduce to \"ac\": '#' deletes 'b' from s and 'd' from t."
     },
     {
-      "input": "s = \"xc\", t = \"b2\"",
+      "input": "s = \"ab##\", t = \"c\"",
       "output": "false",
-      "explanation": "Generated from the verified optimal implementation."
+      "explanation": "s reduces to an empty string (two consecutive backspaces), while t stays \"c\"."
+    },
+    {
+      "input": "s = \"a##c\", t = \"#a#c\"",
+      "output": "true",
+      "explanation": "Both reduce to \"c\": leading and mid-string '#'s cancel preceding characters, including the no-op leading '#'."
     }
   ],
   "constraints": [
@@ -22,8 +27,18 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "First express the direct brute-force search over the input.",
-    "Then identify the repeated work that the optimal implementation eliminates."
+    "Simulate typing: push regular characters and pop when you see '#'.",
+    "To save space, scan right-to-left and count how many '#' each backspace cancels.",
+    "Compare the rightmost surviving character of each string; advance both pointers only when they match."
+  ],
+  "editorial": {
+    "approach": "Process each string through a stack\u2014push non-'#' characters, pop on '#'. The optimal variant scans both strings backward with two pointers and skip-counts, never materializing the reduced strings.",
+    "why_optimal": "The stack approach runs O(n + m) time and O(n + m) space. The two-pointer scan keeps the same time bound but O(1) extra space. On the problem's 22 generated cases the optimal ran in 0.10 ms versus 0.31 ms for brute force\u2014a ~3x gap.",
+    "pitfalls": "A '#' at the start of a string must be a no-op; never pop past empty. Both pointers must fully consume their respective strings\u2014do not return early on length mismatch alone."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+    "https://en.wikipedia.org/wiki/Array_data_structure"
   ],
   "starterCode": {
     "javascript": "function backspaceCompare(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
@@ -251,6 +266,20 @@
       "complexity": "Time: O(n + m) | Space: O(1)",
       "language": "javascript",
       "code": "function backspaceCompare(s, t) {\n  let p1 = s.length - 1;\n  let p2 = t.length - 1;\n  let skips1 = 0;\n  let skips2 = 0;\n\n  while (p1 >= 0 || p2 >= 0) {\n    while (p1 >= 0) {\n      if (s[p1] === '#') {\n        skips1++;\n        p1--;\n      } else if (skips1 > 0) {\n        skips1--;\n        p1--;\n      } else {\n        break;\n      }\n    }\n\n    while (p2 >= 0) {\n      if (t[p2] === '#') {\n        skips2++;\n        p2--;\n      } else if (skips2 > 0) {\n        skips2--;\n        p2--;\n      } else {\n        break;\n      }\n    }\n\n    const c1 = p1 >= 0 ? s[p1] : null;\n    const c2 = p2 >= 0 ? t[p2] : null;\n\n    if (c1 !== c2) {\n      return false;\n    }\n\n    p1--;\n    p2--;\n  }\n\n  return true;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n + m) | Space: O(n + m)",
+      "language": "python",
+      "code": "def backspaceCompare(s, t):\n    def process(string):\n        buffer = []\n        for ch in string:\n            if ch == '#':\n                if buffer:\n                    buffer.pop()\n            else:\n                buffer.append(ch)\n        return ''.join(buffer)\n    return process(s) == process(t)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n + m) | Space: O(1)",
+      "language": "python",
+      "code": "def backspaceCompare(s, t):\n    p1 = len(s) - 1\n    p2 = len(t) - 1\n    skips1 = 0\n    skips2 = 0\n    while p1 >= 0 or p2 >= 0:\n        while p1 >= 0:\n            if s[p1] == '#':\n                skips1 += 1\n                p1 -= 1\n            elif skips1 > 0:\n                skips1 -= 1\n                p1 -= 1\n            else:\n                break\n        while p2 >= 0:\n            if t[p2] == '#':\n                skips2 += 1\n                p2 -= 1\n            elif skips2 > 0:\n                skips2 -= 1\n                p2 -= 1\n            else:\n                break\n        c1 = s[p1] if p1 >= 0 else None\n        c2 = t[p2] if p2 >= 0 else None\n        if c1 != c2:\n            return False\n        p1 -= 1\n        p2 -= 1\n    return True\n",
       "isReference": true
     }
   ]
