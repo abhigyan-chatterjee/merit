@@ -1,0 +1,257 @@
+{
+  "slug": "backspace-string-compare",
+  "title": "Backspace String Compare",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "two-pointers / Reverse scan",
+  "statement": "# Backspace String Compare\n\nGiven two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
+  "examples": [
+    {
+      "input": "s = \"b\", t = \"y\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s = \"xc\", t = \"b2\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function backspaceCompare(s: string, t: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "First express the direct brute-force search over the input.",
+    "Then identify the repeated work that the optimal implementation eliminates."
+  ],
+  "starterCode": {
+    "javascript": "function backspaceCompare(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def backspaceCompare(s, t):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "backspaceCompare",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.31490300000000104,
+    "optimalRuntimeMs": 0.10431400000000579
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b",
+        "y"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xc",
+        "b2"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "0aa",
+        "xx2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "a2x20x1yac0zycxzbb0b",
+        "zya12b0b2yzx"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "baxybxb0y1zczzxybc2xc10",
+        "2xzaxaz0y"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "xzx",
+        "101cycx22y00zxc21babc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "c0b0012y2ab2yzby0c1ay",
+        "c2by2xczc22az1abz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "xaxbb1b2cc",
+        "12cy20x2xy0z121bxxbza2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "xabaxbaz",
+        "2xy"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "1x2c1x10xbb0z001aba0zb",
+        "xx21c0cy"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "xb12ba2abxc011x",
+        "ac0a0y1y021cx"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "xa2azaa122",
+        "a2bcbb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "x0bxab02zyxzxy0cy1zba1",
+        "bb2x2yczbxzyc12y2a2y"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "bcybb2cyyxzxy21yab0yaa",
+        "cyc1202abbc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "az2c0cayzazxxbz20c",
+        "cc0acz0x"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "cb0a1xx1z",
+        "xxax0zybyz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "202zabycyab0zz02b0xya",
+        "0a22xz0bzzby2y0z0y2cx00"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "cy02ayyx0z111x21cby2zb",
+        "yxxcaax1"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1",
+        "bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "ay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca011yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax",
+        "z11axy2cy11baxcy2a20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz0cx20cccb0"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2zxb1y0bcaay1bbx2c01z20c0b10yazx11xzbz",
+        "za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b11bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "2zbyx022ayacyyzzacc0bcab2x001zczyzbaccaby10110yx2bz0by12yax0aaxyxcyyzba10cc02x22zb0a0a1bz000yb0azc1zb0bx002b0yzxzcb2b22xzzcxbcyx",
+        "cbc111zzc1b11yyaz2by11aazybb2012a1xz12ca1bzb2cax1122czzy00zazbzb20yyczbczy0cby20zc2b02zazycxz1xxccbyb222azc0cccc1a0zx1y1x2xy1xz1"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n + m) | Space: O(n + m)",
+      "language": "javascript",
+      "code": "function backspaceCompare(s, t) {\n  function process(str) {\n    const buffer = [];\n    for (let i = 0; i < str.length; i++) {\n      if (str[i] === '#') {\n        if (buffer.length > 0) {\n          buffer.pop();\n        }\n      } else {\n        buffer.push(str[i]);\n      }\n    }\n    return buffer.join('');\n  }\n  return process(s) === process(t);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n + m) | Space: O(1)",
+      "language": "javascript",
+      "code": "function backspaceCompare(s, t) {\n  let p1 = s.length - 1;\n  let p2 = t.length - 1;\n  let skips1 = 0;\n  let skips2 = 0;\n\n  while (p1 >= 0 || p2 >= 0) {\n    while (p1 >= 0) {\n      if (s[p1] === '#') {\n        skips1++;\n        p1--;\n      } else if (skips1 > 0) {\n        skips1--;\n        p1--;\n      } else {\n        break;\n      }\n    }\n\n    while (p2 >= 0) {\n      if (t[p2] === '#') {\n        skips2++;\n        p2--;\n      } else if (skips2 > 0) {\n        skips2--;\n        p2--;\n      } else {\n        break;\n      }\n    }\n\n    const c1 = p1 >= 0 ? s[p1] : null;\n    const c2 = p2 >= 0 ? t[p2] : null;\n\n    if (c1 !== c2) {\n      return false;\n    }\n\n    p1--;\n    p2--;\n  }\n\n  return true;\n}",
+      "isReference": true
+    }
+  ]
+}

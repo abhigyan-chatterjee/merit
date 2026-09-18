@@ -1,0 +1,1323 @@
+{
+  "slug": "three-sum",
+  "title": "Three Sum",
+  "topic": "two-pointers",
+  "difficulty": "Medium",
+  "pattern": "two-pointers / Sort+scan",
+  "statement": "# Three Sum\n\nGiven an array of integers `nums`, find all unique triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.\n\nThe solution set must not contain duplicate triplets. Each individual triplet must be sorted in non-decreasing order, and the outer list of triplets must be sorted in lexicographical order.\n\nConstraints: `3 <= nums.length <= 50` and `-20 <= nums[i] <= 20`.\n",
+  "examples": [
+    {
+      "input": "nums = [-20, -20, -20]",
+      "output": "[]",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "nums = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]",
+      "output": "[]",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function threeSum(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "First express the direct brute-force search over the input.",
+    "Then identify the repeated work that the optimal implementation eliminates."
+  ],
+  "starterCode": {
+    "javascript": "function threeSum(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def threeSum(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "threeSum",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 16.717101,
+    "optimalRuntimeMs": 0.8529939999999989
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          -20,
+          -20,
+          -20
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -13,
+          -19,
+          -3,
+          -5,
+          -6,
+          -12,
+          -14,
+          14,
+          -15,
+          17,
+          7,
+          -18,
+          -19,
+          -15,
+          -7,
+          -6,
+          12,
+          18,
+          -19,
+          15,
+          -8,
+          14,
+          6
+        ]
+      ],
+      "expected": [
+        [
+          -19,
+          7,
+          12
+        ],
+        [
+          -18,
+          6,
+          12
+        ],
+        [
+          -15,
+          -3,
+          18
+        ],
+        [
+          -14,
+          -3,
+          17
+        ],
+        [
+          -13,
+          -5,
+          18
+        ],
+        [
+          -13,
+          6,
+          7
+        ],
+        [
+          -12,
+          -6,
+          18
+        ],
+        [
+          -12,
+          -5,
+          17
+        ],
+        [
+          -12,
+          -3,
+          15
+        ],
+        [
+          -8,
+          -7,
+          15
+        ],
+        [
+          -8,
+          -6,
+          14
+        ],
+        [
+          -7,
+          -5,
+          12
+        ],
+        [
+          -6,
+          -6,
+          12
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          8,
+          17,
+          -3,
+          -20,
+          -10,
+          7,
+          1,
+          -3,
+          -11,
+          -7
+        ]
+      ],
+      "expected": [
+        [
+          -10,
+          -7,
+          17
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          -14,
+          -15,
+          4,
+          -14,
+          2,
+          2,
+          18,
+          -4,
+          -18,
+          9,
+          14,
+          -13,
+          4
+        ]
+      ],
+      "expected": [
+        [
+          -18,
+          4,
+          14
+        ],
+        [
+          -14,
+          -4,
+          18
+        ],
+        [
+          -13,
+          4,
+          9
+        ],
+        [
+          -4,
+          2,
+          2
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          15,
+          -2,
+          20,
+          19,
+          3
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          -8,
+          -16,
+          -18,
+          -6,
+          -2,
+          -15,
+          -6,
+          -14,
+          4,
+          -3,
+          9,
+          20,
+          3,
+          -10,
+          3,
+          2,
+          -7,
+          -3,
+          -16,
+          18,
+          20
+        ]
+      ],
+      "expected": [
+        [
+          -18,
+          -2,
+          20
+        ],
+        [
+          -16,
+          -2,
+          18
+        ],
+        [
+          -15,
+          -3,
+          18
+        ],
+        [
+          -14,
+          -6,
+          20
+        ],
+        [
+          -10,
+          -8,
+          18
+        ],
+        [
+          -7,
+          -2,
+          9
+        ],
+        [
+          -7,
+          3,
+          4
+        ],
+        [
+          -6,
+          -3,
+          9
+        ],
+        [
+          -6,
+          2,
+          4
+        ],
+        [
+          -6,
+          3,
+          3
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          14,
+          -5,
+          -10,
+          9,
+          4,
+          -3,
+          20,
+          15
+        ]
+      ],
+      "expected": [
+        [
+          -10,
+          -5,
+          15
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          0,
+          -17,
+          -6,
+          -18,
+          0,
+          5,
+          -3,
+          -16,
+          -7,
+          16
+        ]
+      ],
+      "expected": [
+        [
+          -16,
+          0,
+          16
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -7,
+          11,
+          5,
+          9,
+          -11,
+          -4,
+          -12,
+          -5,
+          15,
+          14,
+          -4,
+          17,
+          7
+        ]
+      ],
+      "expected": [
+        [
+          -12,
+          -5,
+          17
+        ],
+        [
+          -12,
+          5,
+          7
+        ],
+        [
+          -11,
+          -4,
+          15
+        ],
+        [
+          -7,
+          -4,
+          11
+        ],
+        [
+          -5,
+          -4,
+          9
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          5,
+          3,
+          -6,
+          -12,
+          12,
+          11,
+          -15,
+          -17,
+          -13,
+          -11,
+          20,
+          -10,
+          7,
+          18,
+          -16,
+          4,
+          4,
+          18,
+          9,
+          13,
+          -4
+        ]
+      ],
+      "expected": [
+        [
+          -17,
+          4,
+          13
+        ],
+        [
+          -17,
+          5,
+          12
+        ],
+        [
+          -16,
+          -4,
+          20
+        ],
+        [
+          -16,
+          3,
+          13
+        ],
+        [
+          -16,
+          4,
+          12
+        ],
+        [
+          -16,
+          5,
+          11
+        ],
+        [
+          -16,
+          7,
+          9
+        ],
+        [
+          -15,
+          3,
+          12
+        ],
+        [
+          -15,
+          4,
+          11
+        ],
+        [
+          -13,
+          4,
+          9
+        ],
+        [
+          -12,
+          -6,
+          18
+        ],
+        [
+          -12,
+          3,
+          9
+        ],
+        [
+          -12,
+          5,
+          7
+        ],
+        [
+          -11,
+          4,
+          7
+        ],
+        [
+          -10,
+          3,
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -20,
+          -13,
+          14,
+          -3,
+          1,
+          -13,
+          -2,
+          7,
+          -10,
+          9,
+          -20,
+          -4,
+          12,
+          -9,
+          12,
+          -14,
+          20,
+          -1,
+          20,
+          12
+        ]
+      ],
+      "expected": [
+        [
+          -13,
+          -1,
+          14
+        ],
+        [
+          -13,
+          1,
+          12
+        ],
+        [
+          -10,
+          -4,
+          14
+        ],
+        [
+          -10,
+          -2,
+          12
+        ],
+        [
+          -10,
+          1,
+          9
+        ],
+        [
+          -9,
+          -3,
+          12
+        ],
+        [
+          -4,
+          -3,
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          -8,
+          -11,
+          3,
+          -10,
+          14,
+          13,
+          -20,
+          18,
+          0,
+          11,
+          -19,
+          -13,
+          3,
+          -1,
+          -5,
+          -17,
+          -5,
+          16,
+          -15,
+          -15,
+          11,
+          -16
+        ]
+      ],
+      "expected": [
+        [
+          -19,
+          3,
+          16
+        ],
+        [
+          -17,
+          -1,
+          18
+        ],
+        [
+          -17,
+          3,
+          14
+        ],
+        [
+          -16,
+          0,
+          16
+        ],
+        [
+          -16,
+          3,
+          13
+        ],
+        [
+          -15,
+          -1,
+          16
+        ],
+        [
+          -13,
+          -5,
+          18
+        ],
+        [
+          -13,
+          -1,
+          14
+        ],
+        [
+          -13,
+          0,
+          13
+        ],
+        [
+          -11,
+          -5,
+          16
+        ],
+        [
+          -11,
+          0,
+          11
+        ],
+        [
+          -10,
+          -8,
+          18
+        ],
+        [
+          -10,
+          -1,
+          11
+        ],
+        [
+          -8,
+          -5,
+          13
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -12,
+          -12,
+          10,
+          15,
+          -10,
+          -4,
+          13,
+          18,
+          7,
+          -7,
+          14,
+          -8,
+          -1,
+          5,
+          3,
+          8,
+          13,
+          8,
+          -13,
+          -5
+        ]
+      ],
+      "expected": [
+        [
+          -13,
+          -5,
+          18
+        ],
+        [
+          -13,
+          -1,
+          14
+        ],
+        [
+          -13,
+          3,
+          10
+        ],
+        [
+          -13,
+          5,
+          8
+        ],
+        [
+          -12,
+          -1,
+          13
+        ],
+        [
+          -12,
+          5,
+          7
+        ],
+        [
+          -10,
+          -8,
+          18
+        ],
+        [
+          -10,
+          -5,
+          15
+        ],
+        [
+          -10,
+          -4,
+          14
+        ],
+        [
+          -10,
+          3,
+          7
+        ],
+        [
+          -8,
+          -7,
+          15
+        ],
+        [
+          -8,
+          -5,
+          13
+        ],
+        [
+          -8,
+          3,
+          5
+        ],
+        [
+          -7,
+          -1,
+          8
+        ],
+        [
+          -4,
+          -1,
+          5
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -16,
+          1,
+          -19,
+          17,
+          15,
+          -6,
+          17,
+          -6,
+          -20,
+          -16
+        ]
+      ],
+      "expected": [
+        [
+          -16,
+          1,
+          15
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -17,
+          -6,
+          -16,
+          -18,
+          1,
+          -16,
+          12,
+          -5,
+          -3,
+          11,
+          -7,
+          14,
+          -12,
+          16,
+          16,
+          10,
+          -5,
+          10,
+          6,
+          -8,
+          -14,
+          -14,
+          7
+        ]
+      ],
+      "expected": [
+        [
+          -18,
+          6,
+          12
+        ],
+        [
+          -18,
+          7,
+          11
+        ],
+        [
+          -17,
+          1,
+          16
+        ],
+        [
+          -17,
+          6,
+          11
+        ],
+        [
+          -17,
+          7,
+          10
+        ],
+        [
+          -16,
+          6,
+          10
+        ],
+        [
+          -12,
+          1,
+          11
+        ],
+        [
+          -8,
+          -6,
+          14
+        ],
+        [
+          -8,
+          -3,
+          11
+        ],
+        [
+          -8,
+          1,
+          7
+        ],
+        [
+          -7,
+          -5,
+          12
+        ],
+        [
+          -7,
+          -3,
+          10
+        ],
+        [
+          -7,
+          1,
+          6
+        ],
+        [
+          -6,
+          -5,
+          11
+        ],
+        [
+          -5,
+          -5,
+          10
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          7,
+          6,
+          9,
+          -17,
+          -14,
+          -17,
+          5,
+          1,
+          -14,
+          -5,
+          -8,
+          -8,
+          14,
+          8
+        ]
+      ],
+      "expected": [
+        [
+          -17,
+          8,
+          9
+        ],
+        [
+          -14,
+          5,
+          9
+        ],
+        [
+          -14,
+          6,
+          8
+        ],
+        [
+          -8,
+          1,
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          7,
+          -9,
+          -3,
+          9,
+          -5,
+          -16,
+          8
+        ]
+      ],
+      "expected": [
+        [
+          -16,
+          7,
+          9
+        ],
+        [
+          -5,
+          -3,
+          8
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          0,
+          -20,
+          -20,
+          0,
+          0,
+          -20,
+          -20,
+          -20,
+          -20,
+          20,
+          20,
+          20,
+          -20,
+          20,
+          -20,
+          -20,
+          20,
+          -20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          0,
+          0,
+          0,
+          0,
+          0,
+          20,
+          -20,
+          -20,
+          20,
+          -20,
+          -20,
+          0,
+          0,
+          0,
+          -20,
+          0,
+          20,
+          -20,
+          -20,
+          0,
+          20,
+          0,
+          0,
+          -20,
+          -20,
+          0,
+          -20
+        ]
+      ],
+      "expected": [
+        [
+          -20,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          -20,
+          -20,
+          0,
+          -20,
+          0,
+          -20,
+          20,
+          -20,
+          0,
+          -20,
+          0,
+          0,
+          -20,
+          0,
+          -20,
+          20,
+          0,
+          0,
+          0,
+          0,
+          20,
+          20,
+          -20,
+          0,
+          0,
+          20,
+          -20,
+          20,
+          20,
+          -20,
+          0,
+          0,
+          20,
+          20,
+          20,
+          -20,
+          -20,
+          20,
+          0,
+          0,
+          -20,
+          -20,
+          0,
+          -20,
+          0,
+          20,
+          -20,
+          20,
+          -20,
+          -20
+        ]
+      ],
+      "expected": [
+        [
+          -20,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          20,
+          20,
+          -20,
+          20,
+          0,
+          0,
+          20,
+          0,
+          0,
+          0,
+          -20,
+          0,
+          0,
+          20,
+          0,
+          -20,
+          -20,
+          20,
+          -20,
+          -20,
+          0,
+          0,
+          -20,
+          20,
+          20,
+          0,
+          -20,
+          0,
+          20,
+          -20,
+          0,
+          0,
+          20,
+          0,
+          20,
+          20,
+          -20,
+          -20,
+          0,
+          20,
+          20,
+          -20,
+          -20,
+          20,
+          -20,
+          0,
+          20,
+          -20,
+          0,
+          20
+        ]
+      ],
+      "expected": [
+        [
+          -20,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          0,
+          0,
+          20,
+          0,
+          -20,
+          -20,
+          -20,
+          0,
+          -20,
+          0,
+          -20,
+          20,
+          0,
+          0,
+          -20,
+          20,
+          -20,
+          -20,
+          20,
+          20,
+          -20,
+          20,
+          -20,
+          0,
+          -20,
+          0,
+          -20,
+          20,
+          0,
+          20,
+          0,
+          0,
+          -20,
+          -20,
+          -20,
+          -20,
+          20,
+          -20,
+          -20,
+          0,
+          20,
+          20,
+          0,
+          0,
+          -20,
+          20,
+          -20,
+          0,
+          -20,
+          20
+        ]
+      ],
+      "expected": [
+        [
+          -20,
+          0,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b3) | Space: O(n)",
+      "language": "javascript",
+      "code": "function threeSum(nums) {\n  const n = nums.length;\n  const seen = new Set();\n  const result = [];\n\n  for (let i = 0; i < n; i++) {\n    for (let j = i + 1; j < n; j++) {\n      for (let k = j + 1; k < n; k++) {\n        if (nums[i] + nums[j] + nums[k] === 0) {\n          const triplet = [nums[i], nums[j], nums[k]].sort((a, b) => a - b);\n          const key = `${triplet[0]},${triplet[1]},${triplet[2]}`;\n          if (!seen.has(key)) {\n            seen.add(key);\n            result.push(triplet);\n          }\n        }\n      }\n    }\n  }\n\n  result.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);\n  return result;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function threeSum(nums) {\n  const sorted = [...nums].sort((a, b) => a - b);\n  const n = sorted.length;\n  const result = [];\n\n  for (let i = 0; i < n - 2; i++) {\n    if (i > 0 && sorted[i] === sorted[i - 1]) {\n      continue;\n    }\n    let left = i + 1;\n    let right = n - 1;\n\n    while (left < right) {\n      const sum = sorted[i] + sorted[left] + sorted[right];\n      if (sum === 0) {\n        result.push([sorted[i], sorted[left], sorted[right]]);\n        while (left < right && sorted[left] === sorted[left + 1]) {\n          left++;\n        }\n        while (left < right && sorted[right] === sorted[right - 1]) {\n          right--;\n        }\n        left++;\n        right--;\n      } else if (sum < 0) {\n        left++;\n      } else {\n        right--;\n      }\n    }\n  }\n\n  for (let i = 0; i < result.length; i++) {\n    result[i].sort((a, b) => a - b);\n  }\n  result.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);\n  return result;\n}",
+      "isReference": true
+    }
+  ]
+}

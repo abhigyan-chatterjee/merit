@@ -1,0 +1,227 @@
+{
+  "slug": "valid-palindrome-ii",
+  "title": "Valid Palindrome II",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "two-pointers / One deletion",
+  "statement": "# Valid Palindrome II\n\nGiven a string `s`, return `true` if `s` can be made a palindrome after deleting at most one character from it, or `false` otherwise.\n\nA sequence is a palindrome when it reads identically forwards and backwards.\n\nConstraints: `1 <= s.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "s = \"b\"",
+      "output": "true",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s = \"yx\"",
+      "output": "true",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function validPalindromeII(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "First express the direct brute-force search over the input.",
+    "Then identify the repeated work that the optimal implementation eliminates."
+  ],
+  "starterCode": {
+    "javascript": "function validPalindromeII(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def validPalindromeII(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "validPalindromeII",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 1.2038409999999828,
+    "optimalRuntimeMs": 0.7857650000000334
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "yx"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cb2b0aab"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "x2a2x20"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1yac0zyc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "zbb0bzz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ya12b0b2yzxbaxybxb0y"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "zczzxybc2xc10y2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "zaxaz0yb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "zx101cy"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "x22y0"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "0zxc21babcc0b0012y2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "2yzby0c1ay2c2by2xczc22"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "z"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "abzyxaxbb1b2cc12"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "y20x2x"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "y0z121bxxbza2xxabaxbazb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function validPalindromeII(s) {\n  function isPalindrome(str, left, right) {\n    while (left < right) {\n      if (str[left] !== str[right]) {\n        return false;\n      }\n      left++;\n      right--;\n    }\n    return true;\n  }\n\n  if (isPalindrome(s, 0, s.length - 1)) {\n    return true;\n  }\n\n  for (let i = 0; i < s.length; i++) {\n    const candidate = s.slice(0, i) + s.slice(i + 1);\n    if (isPalindrome(candidate, 0, candidate.length - 1)) {\n      return true;\n    }\n  }\n\n  return false;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function validPalindromeII(s) {\n  function checkRange(str, left, right) {\n    while (left < right) {\n      if (str[left] !== str[right]) {\n        return false;\n      }\n      left++;\n      right--;\n    }\n    return true;\n  }\n\n  let left = 0;\n  let right = s.length - 1;\n\n  while (left < right) {\n    if (s[left] !== s[right]) {\n      return (\n        checkRange(s, left + 1, right) ||\n        checkRange(s, left, right - 1)\n      );\n    }\n    left++;\n    right--;\n  }\n\n  return true;\n}",
+      "isReference": true
+    }
+  ]
+}

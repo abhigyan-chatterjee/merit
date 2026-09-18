@@ -1,0 +1,257 @@
+{
+  "slug": "permutation-in-string",
+  "title": "Permutation in String",
+  "topic": "sliding-windows",
+  "difficulty": "Medium",
+  "pattern": "sliding-window / Fixed window",
+  "statement": "# Permutation in String\n\nGiven two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "s1 = \"b\", s2 = \"y\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s1 = \"xc\", s2 = \"b2\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function checkInclusion(s1: string, s2: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "First express the direct brute-force search over the input.",
+    "Then identify the repeated work that the optimal implementation eliminates."
+  ],
+  "starterCode": {
+    "javascript": "function checkInclusion(s1, s2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def checkInclusion(s1, s2):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "checkInclusion",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.3575579999999938,
+    "optimalRuntimeMs": 0.47815700000000305
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b",
+        "y"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xc",
+        "b2"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "0aa",
+        "xx2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "a2x20x1yac0zycxzbb0b",
+        "zya12b0b2yzx"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "baxybxb0y1zczzxybc2xc10",
+        "2xzaxaz0y"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "xzx",
+        "101cycx22y00zxc21babc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "c0b0012y2ab2yzby0c1ay",
+        "c2by2xczc22az1abz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "xaxbb1b2cc",
+        "12cy20x2xy0z121bxxbza2"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "xabaxbaz",
+        "2xy"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "1x2c1x10xbb0z001aba0zb",
+        "xx21c0cy"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "xb12ba2abxc011x",
+        "ac0a0y1y021cx"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "xa2azaa122",
+        "a2bcbb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "x0bxab02zyxzxy0cy1zba1",
+        "bb2x2yczbxzyc12y2a2y"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "bcybb2cyyxzxy21yab0yaa",
+        "cyc1202abbc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "az2c0cayzazxxbz20c",
+        "cc0acz0x"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "cb0a1xx1z",
+        "xxax0zybyz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "202zabycyab0zz02b0xya",
+        "0a22xz0bzzby2y0z0y2cx00"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "cy02ayyx0z111x21cby2zb",
+        "yxxcaax1"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1",
+        "bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "ay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca011yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax",
+        "z11axy2cy11baxcy2a20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz0cx20cccb0"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2zxb1y0bcaay1bbx2c01z20c0b10yazx11xzbz",
+        "za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b11bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "2zbyx022ayacyyzzacc0bcab2x001zczyzbaccaby10110yx2bz0by12yax0aaxyxcyyzba10cc02x22zb0a0a1bz000yb0azc1zb0bx002b0yzxzcb2b22xzzcxbcyx",
+        "cbc111zzc1b11yyaz2by11aazybb2012a1xz12ca1bzb2cax1122czzy00zazbzb20yyczbczy0cby20zc2b02zazycxz1xxccbyb222azc0cccc1a0zx1y1x2xy1xz1"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((n - m + 1) * m log m) | Space: O(m)",
+      "language": "javascript",
+      "code": "function checkInclusion(s1, s2) {\n  const m = s1.length;\n  const n = s2.length;\n  if (m > n) return false;\n\n  const targetSorted = s1.split('').sort().join('');\n  for (let i = 0; i <= n - m; i++) {\n    const windowStr = s2.slice(i, i + m).split('').sort().join('');\n    if (windowStr === targetSorted) {\n      return true;\n    }\n  }\n  return false;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m + (n - m) * \u03a3) | Space: O(\u03a3)",
+      "language": "javascript",
+      "code": "function checkInclusion(s1, s2) {\n  const m = s1.length;\n  const n = s2.length;\n  if (m > n) return false;\n\n  const count1 = {};\n  const count2 = {};\n  for (let i = 0; i < m; i++) {\n    count1[s1[i]] = (count1[s1[i]] || 0) + 1;\n    count2[s2[i]] = (count2[s2[i]] || 0) + 1;\n  }\n\n  function isMatch(c1, c2) {\n    for (const ch in c1) {\n      if (c1[ch] !== (c2[ch] || 0)) return false;\n    }\n    for (const ch in c2) {\n      if (c2[ch] > 0 && (c1[ch] || 0) !== c2[ch]) return false;\n    }\n    return true;\n  }\n\n  if (isMatch(count1, count2)) return true;\n\n  for (let i = m; i < n; i++) {\n    const incoming = s2[i];\n    const outgoing = s2[i - m];\n    count2[incoming] = (count2[incoming] || 0) + 1;\n    count2[outgoing]--;\n    if (count2[outgoing] === 0) {\n      delete count2[outgoing];\n    }\n    if (isMatch(count1, count2)) {\n      return true;\n    }\n  }\n\n  return false;\n}",
+      "isReference": true
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "slug": "longest-repeating-character-replacement",
+  "title": "Longest Repeating Character Replacement",
+  "topic": "sliding-windows",
+  "difficulty": "Medium",
+  "pattern": "sliding-window / Frequency max",
+  "statement": "# Longest Repeating Character Replacement\n\nYou are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
+  "examples": [
+    {
+      "input": "s = \"b\", k = 0",
+      "output": "1",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "s = \"yx\", k = 50",
+      "output": "2",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function characterReplacement(s: string, k: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "First express the direct brute-force search over the input.",
+    "Then identify the repeated work that the optimal implementation eliminates."
+  ],
+  "starterCode": {
+    "javascript": "function characterReplacement(s, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def characterReplacement(s, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "characterReplacement",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 4.950000999999997,
+    "optimalRuntimeMs": 1.3869780000000098
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b",
+        0
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "yx",
+        50
+      ],
+      "expected": 2,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cb2b0aab",
+        13
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "2a2x20x1",
+        37
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "ac0zycxzb",
+        5
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "bzzya12b0b2yz",
+        36
+      ],
+      "expected": 13,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "baxybxb",
+        24
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "1zczzxybc",
+        34
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "xc10y2xzaxaz0ybxzx101cyc",
+        15
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "22y00zxc21babcc0b0012y2a",
+        43
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "b2yzby0c1ay2c2by2xczc22a",
+        38
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "1abzyxaxbb1",
+        4
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "cc12cy20x2xy0z121b",
+        15
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "bza2xxab",
+        45
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "axbazb2xy1x2c1x10xbb0",
+        22
+      ],
+      "expected": 21,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "01aba0zbxxx21c",
+        27
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "y1xb12",
+        6
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "2a",
+        5
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "c011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxb",
+        50
+      ],
+      "expected": 64,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "0cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1",
+        0
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "22z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz2",
+        50
+      ],
+      "expected": 67,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1bay111zcay1bb01baccybxb2",
+        50
+      ],
+      "expected": 63,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(\u03a3)",
+      "language": "javascript",
+      "code": "function characterReplacement(s, k) {\n  let maxLen = 0;\n  const n = s.length;\n\n  for (let i = 0; i < n; i++) {\n    const counts = {};\n    let maxFreq = 0;\n\n    for (let j = i; j < n; j++) {\n      const ch = s[j];\n      counts[ch] = (counts[ch] || 0) + 1;\n      if (counts[ch] > maxFreq) {\n        maxFreq = counts[ch];\n      }\n\n      const windowLen = j - i + 1;\n      if (windowLen - maxFreq <= k) {\n        if (windowLen > maxLen) {\n          maxLen = windowLen;\n        }\n      }\n    }\n  }\n\n  return maxLen;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(\u03a3)",
+      "language": "javascript",
+      "code": "function characterReplacement(s, k) {\n  const counts = {};\n  let left = 0;\n  let maxLen = 0;\n\n  for (let right = 0; right < s.length; right++) {\n    const ch = s[right];\n    counts[ch] = (counts[ch] || 0) + 1;\n\n    let maxFreq = 0;\n    for (const key in counts) {\n      if (counts[key] > maxFreq) {\n        maxFreq = counts[key];\n      }\n    }\n\n    while ((right - left + 1) - maxFreq > k) {\n      counts[s[left]]--;\n      left++;\n      maxFreq = 0;\n      for (const key in counts) {\n        if (counts[key] > maxFreq) {\n          maxFreq = counts[key];\n        }\n      }\n    }\n\n    const windowLen = right - left + 1;\n    if (windowLen > maxLen) {\n      maxLen = windowLen;\n    }\n  }\n\n  return maxLen;\n}",
+      "isReference": true
+    }
+  ]
+}
