@@ -20,6 +20,7 @@ import {
   progressApi,
 } from "../utils/api";
 import { useAuth } from "../store/AuthContext";
+import { AiTutor } from "./AiTutor";
 
 type EditorLang = "javascript" | "python";
 
@@ -287,7 +288,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   return (
-    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-hidden shadow-sm">
+    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-y-auto shadow-sm max-h-[calc(100vh-8rem)]">
       {/* Code Editor Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-b border-line bg-canvas">
         <div className="flex items-center gap-3">
@@ -318,28 +319,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             <span className="hidden sm:inline">Reset</span>
           </button>
 
-          <button
-            onClick={handleRunSamples}
-            disabled={isRunning || isSubmitting}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
-              isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
-            }`}
-          >
-            <Play className={`w-3.5 h-3.5 text-mint ${isRunning ? "animate-spin" : ""}`} />
-            <span>{isRunning ? "Testing…" : "Run Samples"}</span>
-          </button>
-
-          <button
-            onClick={handleSubmit}
-            disabled={isRunning || isSubmitting}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
-            }`}
-          >
-            <Send className={`w-3.5 h-3.5 ${isSubmitting ? "animate-spin" : ""}`} />
-            <span>{isSubmitting ? "Judging…" : "Submit"}</span>
-          </button>
         </div>
+      </div>
+
+      <div className="p-2 border-b border-line bg-surface">
+        <AiTutor problemSlug={problemSlug} code={code} />
       </div>
 
       {/* Code Area */}
@@ -359,7 +343,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       </div>
 
       {/* Results / Submissions Navigation Bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-line bg-canvas text-xs font-mono">
+      <nav
+        aria-label="Results navigation"
+        className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b border-line bg-canvas text-xs font-mono"
+      >
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveView("results")}
@@ -386,8 +373,30 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           </button>
         </div>
 
-        {activeView === "results" && renderVerdictBadge()}
-      </div>
+        <div className="flex items-center gap-2">
+          {activeView === "results" && renderVerdictBadge()}
+          <button
+            onClick={handleRunSamples}
+            disabled={isRunning || isSubmitting}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
+              isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
+            }`}
+          >
+            <Play className={`w-3.5 h-3.5 text-mint ${isRunning ? "animate-spin" : ""}`} />
+            <span>{isRunning ? "Testing…" : "Run Samples"}</span>
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isRunning || isSubmitting}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
+            }`}
+          >
+            <Send className={`w-3.5 h-3.5 ${isSubmitting ? "animate-spin" : ""}`} />
+            <span>{isSubmitting ? "Judging…" : "Submit"}</span>
+          </button>
+        </div>
+      </nav>
 
       {/* View Content */}
       <div className="p-4 bg-surface min-h-[160px]">

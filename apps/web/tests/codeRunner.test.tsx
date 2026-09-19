@@ -7,6 +7,7 @@ import { AuthProvider } from '../src/store/AuthContext';
 describe('CodeRunner Component (Phase 4)', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    window.localStorage.clear();
   });
 
   const mockTestCases = [
@@ -35,6 +36,27 @@ describe('CodeRunner Component (Phase 4)', () => {
 
     const textarea = screen.getByLabelText(/Code Editor/i);
     expect(textarea).toHaveValue('def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n');
+  });
+
+  it('places the tutor above the editor and actions in the results bar', () => {
+    render(
+      <AuthProvider>
+        <CodeRunner
+          problemSlug="two-sum"
+          starterCode="function solve() {}"
+          functionName="solve"
+          testCases={mockTestCases}
+        />
+      </AuthProvider>
+    );
+
+    const tutor = screen.getByRole('button', { name: /ask the tutor/i });
+    const editor = screen.getByLabelText(/Code Editor/i);
+    const resultsBar = screen.getByRole('navigation', { name: /results navigation/i });
+
+    expect(tutor.compareDocumentPosition(editor) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(resultsBar).toContainElement(screen.getByRole('button', { name: /Run Samples/i }));
+    expect(resultsBar).toContainElement(screen.getByRole('button', { name: /^Submit$/i }));
   });
 
   it('runs samples and displays Accepted badge on AC', async () => {
@@ -100,5 +122,52 @@ describe('CodeRunner Component (Phase 4)', () => {
       expect(onAllPassed).toHaveBeenCalled();
       expect(screen.getByText(/Accepted \(AC\)/i)).toBeVisible();
     });
+  });
+
+  it('swaps boilerplate on language change even after typing (per-language buffers)', () => {
+    render(
+      <AuthProvider>
+        <CodeRunner
+          problemSlug="two-sum"
+          starterCode="function solve() {}"
+          functionName="solve"
+          testCases={mockTestCases}
+        />
+      </AuthProvider>
+    );
+
+    const select = screen.getByLabelText(/Execution Language/i);
+    const textarea = screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement;
+
+    // User types in JS...
+    fireEvent.change(textarea, { target: { value: 'function solve() { return 42; }' } });
+    // ...switches to Python: must get the Python skeleton, not the JS text.
+    fireEvent.change(select, { target: { value: 'python' } });
+    expect(textarea).toHaveValue('def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n');
+    // ...types in Python, switches back: JS edits preserved, not reset.
+    fireEvent.change(textarea, { target: { value: 'def solve(*args):\n    return 42' } });
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    expect(textarea).toHaveValue('function solve() { return 42; }');
+  });
+
+  it('inserts two spaces on Tab instead of moving focus', () => {
+    render(
+      <AuthProvider>
+        <CodeRunner
+          problemSlug="two-sum"
+          starterCode="function solve() {}"
+          functionName="solve"
+          testCases={mockTestCases}
+        />
+      </AuthProvider>
+    );
+
+    const textarea = screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: 'line1\nline2' } });
+    textarea.setSelectionRange(6, 6); // start of second line
+    fireEvent.keyDown(textarea, { key: 'Tab', code: 'Tab', charCode: 9 });
+    expect((screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement).value).toBe(
+      'line1\n  line2'
+    );
   });
 });

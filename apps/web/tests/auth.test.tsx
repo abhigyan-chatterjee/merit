@@ -88,7 +88,7 @@ describe('Auth Integration and UI', () => {
     });
   });
 
-  it('validates password length on RegisterPage', async () => {
+  it('renders Clerk-only registration without a native password input', async () => {
     vi.spyOn(global, 'fetch').mockImplementation(async () => {
       return new Response(JSON.stringify({ error: { code: 'UNAUTHORIZED' } }), { status: 401 });
     });
@@ -101,21 +101,11 @@ describe('Auth Integration and UI', () => {
       </MemoryRouter>
     );
 
-    const nameInput = screen.getByLabelText(/Display Name/i);
-    const emailInput = screen.getByLabelText(/Email Address/i);
-    const passInput = screen.getByLabelText(/^Password/i);
-    const confirmInput = screen.getByLabelText(/Confirm Password/i);
-    const submitBtn = screen.getByRole('button', { name: /Create Account/i });
-
-    fireEvent.change(nameInput, { target: { value: 'Ada' } });
-    fireEvent.change(emailInput, { target: { value: 'ada@example.com' } });
-    fireEvent.change(passInput, { target: { value: 'short' } });
-    fireEvent.change(confirmInput, { target: { value: 'short' } });
-    fireEvent.click(submitBtn);
-
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent('Password must be at least 10 characters long.');
+      expect(screen.getByText(/Create a MERIT Account/i)).toBeInTheDocument();
     });
+    expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
+    expect(screen.getByRole('link', { name: /Sign in/i })).toBeInTheDocument();
   });
 
   it('renders Sign In in Navbar for guests', async () => {
@@ -138,7 +128,7 @@ describe('Auth Integration and UI', () => {
     });
   });
 
-  it('validates empty inputs on LoginPage', async () => {
+  it('renders Clerk-only login without a native password input', async () => {
     render(
       <MemoryRouter>
         <AuthProvider>
@@ -147,11 +137,10 @@ describe('Auth Integration and UI', () => {
       </MemoryRouter>
     );
 
-    const submitBtn = screen.getByRole('button', { name: /Sign In/i });
-    fireEvent.click(submitBtn);
-
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent('Please fill in both email and password.');
+      expect(screen.getByText(/Sign in to MERIT/i)).toBeInTheDocument();
     });
+    expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
+    expect(screen.getByRole('link', { name: /Register here/i })).toBeInTheDocument();
   });
 });

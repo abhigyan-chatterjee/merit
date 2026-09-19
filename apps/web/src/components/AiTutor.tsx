@@ -225,7 +225,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
                 API key
               </span>
               <input
-                type="password"
+                type="text"
                 aria-label="API key"
                 defaultValue={initialApiKey}
                 ref={keyInputRef}

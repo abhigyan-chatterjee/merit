@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Mail, Lock, Code2, Download, Trash2 } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Code2, Download, Trash2 } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 import { authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
@@ -8,7 +8,7 @@ import { NotFound } from '../components/NotFound';
 type Tab = 'profile' | 'language' | 'data' | 'danger';
 
 export const ProfilePage: React.FC = () => {
-  const { user, updateProfile, changeEmail, changePassword, deleteAccount } = useAuth();
+  const { user, updateProfile, deleteAccount } = useAuth();
   const [tab, setTab] = useState<Tab>(() => {
     const q = new URLSearchParams(window.location.search).get('tab');
     return q === 'data' || q === 'danger' || q === 'language' ? q : 'profile';
@@ -16,12 +16,6 @@ export const ProfilePage: React.FC = () => {
 
   const [name, setName] = useState('');
   const [nameMsg, setNameMsg] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [emailPw, setEmailPw] = useState('');
-  const [emailMsg, setEmailMsg] = useState<string | null>(null);
-  const [curPw, setCurPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [pwMsg, setPwMsg] = useState<string | null>(null);
   const [lang, setLang] = useState<'javascript' | 'python'>('javascript');
   const [langMsg, setLangMsg] = useState<string | null>(null);
   const [dataMsg, setDataMsg] = useState<string | null>(null);
@@ -30,7 +24,6 @@ export const ProfilePage: React.FC = () => {
   React.useEffect(() => {
     if (user) {
       setName(user.displayName || '');
-      setEmail(user.email || '');
     }
     progressApi
       .getSettings()
@@ -130,88 +123,6 @@ export const ProfilePage: React.FC = () => {
             {nameMsg && <p className="text-xs font-mono text-muted">{nameMsg}</p>}
           </section>
 
-          <section className="p-5 rounded-xl border border-line bg-surface space-y-3">
-            <h2 className="text-sm font-bold text-ink flex items-center gap-2">
-              <Mail className="w-4 h-4 text-mint" /> Email
-            </h2>
-            <form
-              className="space-y-2"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setEmailMsg(null);
-                try {
-                  await changeEmail(email.trim(), emailPw);
-                  setEmailPw('');
-                  setEmailMsg('Email updated.');
-                } catch (err) {
-                  setEmailMsg(err instanceof Error ? err.message : 'Could not update email.');
-                }
-              }}
-            >
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                aria-label="Email"
-                className="w-full px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink focus:outline-none focus:border-mint"
-              />
-              <input
-                value={emailPw}
-                onChange={(e) => setEmailPw(e.target.value)}
-                type="password"
-                placeholder="Current password (required)"
-                aria-label="Current password"
-                className="w-full px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink placeholder-muted/60 focus:outline-none focus:border-mint"
-              />
-              <button type="submit" className="px-4 py-2 rounded-lg bg-mint text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer">
-                Change email
-              </button>
-            </form>
-            {emailMsg && <p className="text-xs font-mono text-muted">{emailMsg}</p>}
-          </section>
-
-          <section className="p-5 rounded-xl border border-line bg-surface space-y-3">
-            <h2 className="text-sm font-bold text-ink flex items-center gap-2">
-              <Lock className="w-4 h-4 text-mint" /> Password
-            </h2>
-            <form
-              className="space-y-2"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setPwMsg(null);
-                try {
-                  await changePassword(curPw, newPw);
-                  setCurPw('');
-                  setNewPw('');
-                  setPwMsg('Password changed.');
-                } catch (err) {
-                  setPwMsg(err instanceof Error ? err.message : 'Could not change password.');
-                }
-              }}
-            >
-              <input
-                value={curPw}
-                onChange={(e) => setCurPw(e.target.value)}
-                type="password"
-                placeholder="Current password"
-                aria-label="Current password"
-                className="w-full px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink placeholder-muted/60 focus:outline-none focus:border-mint"
-              />
-              <input
-                value={newPw}
-                onChange={(e) => setNewPw(e.target.value)}
-                type="password"
-                placeholder="New password (min 10 characters)"
-                aria-label="New password"
-                minLength={10}
-                className="w-full px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink placeholder-muted/60 focus:outline-none focus:border-mint"
-              />
-              <button type="submit" className="px-4 py-2 rounded-lg bg-mint text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer">
-                Change password
-              </button>
-            </form>
-            {pwMsg && <p className="text-xs font-mono text-muted">{pwMsg}</p>}
-          </section>
         </div>
       )}
 
