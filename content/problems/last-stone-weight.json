@@ -1,0 +1,926 @@
+{
+  "slug": "last-stone-weight",
+  "title": "Last Stone Weight",
+  "topic": "heap",
+  "difficulty": "Easy",
+  "pattern": "heap / Max simulate",
+  "statement": "# Last Stone Weight\n\nA row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "stones = [2, 7, 4, 1, 8, 1]",
+      "output": "1",
+      "explanation": "Smash 8+7 -> 1 ([2,4,1,1,1]), then 4+2 -> 2 ([1,1,1,2]), then 2+1 -> 1 ([1,1,1]), then 1+1 -> 0 ([1]): one stone of weight 1 survives."
+    },
+    {
+      "input": "stones = [2, 2]",
+      "output": "0",
+      "explanation": "The equal pair destroys itself completely, leaving nothing: 0."
+    },
+    {
+      "input": "stones = [1]",
+      "output": "1",
+      "explanation": "A single stone never plays a round and keeps its weight 1."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function lastStoneWeight(stones: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Every round needs the two current maximums; the rest of the row is irrelevant.",
+    "A max-heap delivers the two heaviest stones without re-sorting the row.",
+    "Push the difference back only when the two weights differ."
+  ],
+  "editorial": {
+    "approach": "Repeatedly smash the two heaviest stones, returning any remainder to the row. A max-heap always exposes the two heaviest in logarithmic time.",
+    "why_optimal": "Heap extraction replaces the full re-sort of every round, cutting each round from linearithmic to logarithmic time. On 42 generated cases PAF measured the brute force at 0.47 ms and the optimal at 0.67 ms.",
+    "pitfalls": "Equal stones vanish without a remainder; only push y - x back when the weights differ. A single starting stone is already the answer."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_heap"
+  ],
+  "starterCode": {
+    "javascript": "function lastStoneWeight(stones) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def lastStoneWeight(stones):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "lastStoneWeight",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 42,
+    "bruteForceRuntimeMs": 0.46729600000000104,
+    "optimalRuntimeMs": 0.6655539999999824
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        [
+          2,
+          7,
+          4,
+          1,
+          8,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        [
+          2,
+          2
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        [
+          5,
+          5,
+          5
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        [
+          10,
+          10,
+          10,
+          10
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        [
+          1,
+          9
+        ]
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        [
+          8,
+          5,
+          4,
+          18
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        [
+          19,
+          14
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        [
+          7,
+          8
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        [
+          20,
+          1,
+          18,
+          7,
+          18,
+          14,
+          8,
+          15,
+          19
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        [
+          1,
+          6,
+          14,
+          11,
+          9
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        [
+          7,
+          11,
+          4
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        [
+          13,
+          4
+        ]
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        [
+          12,
+          20,
+          9,
+          2,
+          15,
+          18
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        [
+          13,
+          3
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        [
+          10,
+          20,
+          12,
+          19,
+          7,
+          3,
+          2,
+          8,
+          10
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        [
+          8,
+          4
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        [
+          9,
+          15,
+          12,
+          6,
+          12,
+          12,
+          7
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-21",
+      "input": [
+        [
+          3,
+          20,
+          6,
+          18,
+          8
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-22",
+      "input": [
+        [
+          15,
+          13,
+          9
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          15,
+          4,
+          95,
+          36,
+          32,
+          29,
+          18,
+          95,
+          14,
+          87,
+          95,
+          70,
+          12,
+          76,
+          55,
+          5,
+          4,
+          12,
+          28,
+          30,
+          65
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          4,
+          72,
+          26,
+          92,
+          84,
+          90,
+          70,
+          54,
+          29,
+          58,
+          76,
+          36,
+          1,
+          98,
+          21,
+          90,
+          55,
+          44,
+          36,
+          20
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          98,
+          44,
+          14,
+          12,
+          49,
+          13,
+          46
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          78,
+          34,
+          6,
+          94,
+          59,
+          69,
+          16,
+          49,
+          11,
+          71,
+          38,
+          81
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          47,
+          74,
+          25,
+          91,
+          9,
+          6,
+          85,
+          30,
+          99,
+          38,
+          11,
+          30,
+          13,
+          49,
+          36,
+          59,
+          82,
+          47,
+          21,
+          48
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          27,
+          86,
+          35,
+          90,
+          88,
+          83,
+          10,
+          78,
+          82,
+          22,
+          69,
+          94
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          21,
+          60,
+          49,
+          35,
+          82,
+          89,
+          72,
+          29
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          42,
+          99,
+          100,
+          8,
+          30,
+          5,
+          41,
+          52,
+          35,
+          9,
+          28,
+          73,
+          92,
+          41,
+          28,
+          84,
+          64,
+          51,
+          83,
+          59,
+          19,
+          34
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          32,
+          96,
+          72,
+          69,
+          34
+        ]
+      ],
+      "expected": 21,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          75,
+          55,
+          75,
+          52,
+          47,
+          29,
+          18,
+          66,
+          64,
+          12,
+          97,
+          7,
+          15,
+          20,
+          81,
+          21,
+          88,
+          55,
+          77,
+          9,
+          50,
+          49,
+          77,
+          60
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          33,
+          71,
+          2,
+          88,
+          93,
+          15,
+          88,
+          69,
+          97,
+          35,
+          99,
+          83,
+          44,
+          15,
+          38,
+          56,
+          21
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          1,
+          93,
+          93,
+          34,
+          65,
+          98,
+          23,
+          65,
+          14,
+          81,
+          39,
+          82,
+          65,
+          78,
+          26
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          48,
+          98,
+          21,
+          70,
+          100
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          1,
+          77,
+          42,
+          63,
+          3,
+          15,
+          47,
+          40,
+          31,
+          8,
+          31,
+          73,
+          11,
+          11,
+          94,
+          63,
+          9
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          99,
+          17,
+          17,
+          85,
+          61,
+          71,
+          22,
+          34,
+          68,
+          78,
+          55,
+          28,
+          70,
+          97,
+          94,
+          89,
+          26,
+          92
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          52,
+          86,
+          84,
+          48,
+          57,
+          67,
+          58,
+          16,
+          32,
+          29
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          1,
+          100,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          100,
+          1,
+          0,
+          1,
+          100,
+          0,
+          100,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          100
+        ]
+      ],
+      "expected": 86,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          1,
+          100,
+          100,
+          1,
+          1,
+          1,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          100,
+          0,
+          100,
+          1,
+          1,
+          1,
+          1,
+          0,
+          100,
+          1,
+          100
+        ]
+      ],
+      "expected": 88,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          1,
+          100,
+          100,
+          1,
+          1,
+          100,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          100,
+          100,
+          100,
+          1,
+          100,
+          1,
+          1,
+          100,
+          1,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0
+        ]
+      ],
+      "expected": 87,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0,
+          100,
+          1,
+          1,
+          100,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          100,
+          1,
+          1,
+          0,
+          100,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function lastStoneWeight(stones) {\n  let piles = stones.slice();\n  while (piles.length > 1) {\n    piles.sort((a, b) => a - b);\n    const y = piles.pop();\n    const x = piles.pop();\n    if (y !== x) piles.push(y - x);\n  }\n  return piles.length === 0 ? 0 : piles[0];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function lastStoneWeight(stones) {\n  const heap = [];\n  function push(v) {\n    heap.push(v);\n    let i = heap.length - 1;\n    while (i > 0) {\n      const p = (i - 1) >> 1;\n      if (heap[p] >= heap[i]) break;\n      const t = heap[p];\n      heap[p] = heap[i];\n      heap[i] = t;\n      i = p;\n    }\n  }\n  function pop() {\n    const top = heap[0];\n    const last = heap.pop();\n    if (heap.length > 0) {\n      heap[0] = last;\n      let i = 0;\n      while (true) {\n        const l = 2 * i + 1;\n        const r = 2 * i + 2;\n        let s = i;\n        if (l < heap.length && heap[l] > heap[s]) s = l;\n        if (r < heap.length && heap[r] > heap[s]) s = r;\n        if (s === i) break;\n        const t = heap[s];\n        heap[s] = heap[i];\n        heap[i] = t;\n        i = s;\n      }\n    }\n    return top;\n  }\n  for (const s of stones) push(s);\n  while (heap.length > 1) {\n    const y = pop();\n    const x = pop();\n    if (y !== x) push(y - x);\n  }\n  return heap.length === 0 ? 0 : heap[0];\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n^2 log n) | Space: O(n)",
+      "language": "python",
+      "code": "def lastStoneWeight(stones):\n    piles = list(stones)\n    while len(piles) > 1:\n        piles.sort()\n        y = piles.pop()\n        x = piles.pop()\n        if y != x:\n            piles.append(y - x)\n    return piles[0] if piles else 0\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def lastStoneWeight(stones):\n    import heapq\n    heap = [-s for s in stones]\n    heapq.heapify(heap)\n    while len(heap) > 1:\n        y = -heapq.heappop(heap)\n        x = -heapq.heappop(heap)\n        if y != x:\n            heapq.heappush(heap, -(y - x))\n    return -heap[0] if heap else 0\n",
+      "isReference": true
+    }
+  ]
+}

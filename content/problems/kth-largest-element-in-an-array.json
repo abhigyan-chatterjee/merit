@@ -1,0 +1,1099 @@
+{
+  "slug": "kth-largest-element-in-an-array",
+  "title": "Kth Largest Element in an Array",
+  "topic": "heap",
+  "difficulty": "Medium",
+  "pattern": "heap / Quickselect",
+  "statement": "# Kth Largest Element in an Array\n\nAn unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
+  "examples": [
+    {
+      "input": "nums = [3, 2, 1, 5, 6, 4], k = 2",
+      "output": "5",
+      "explanation": "Sorted descending the array reads [6, 5, 4, 3, 2, 1]; the element in position 2 is 5."
+    },
+    {
+      "input": "nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4",
+      "output": "4",
+      "explanation": "Sorted descending: [6, 5, 5, 4, 3, 3, 2, 2, 1]; duplicates count separately, so position 4 holds 4."
+    },
+    {
+      "input": "nums = [7, 7, 7, 7], k = 1",
+      "output": "7",
+      "explanation": "Every element is 7, so the maximum (k = 1) is trivially 7."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function findKthLargest(nums: number[], k: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Sorting answers the query; ask which ranked index the kth largest occupies.",
+    "A partition around a pivot tells you exactly which ranks fall left and right of it.",
+    "Recurse only into the side containing rank n - k and stop when the pivot settles there."
+  ],
+  "editorial": {
+    "approach": "The kth largest is the element at sorted index n - k. Quickselect partitions around a pivot and recurses only into the side holding that index, using a three-way split so duplicate values settle together.",
+    "why_optimal": "Partitioning discards a fraction of the array per round for linear average time with constant extra space, instead of sorting everything. On 44 generated cases PAF measured the brute force at 0.19 ms and the optimal at 0.24 ms.",
+    "pitfalls": "Translate k to the ascending index n - k before partitioning. A two-way partition degrades on heavy duplicates; the three-way split keeps equal values out of further rounds."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Quickselect"
+  ],
+  "starterCode": {
+    "javascript": "function findKthLargest(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def findKthLargest(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "findKthLargest",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 44,
+    "bruteForceRuntimeMs": 0.18914099999999223,
+    "optimalRuntimeMs": 0.24243199999999732
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        [
+          3,
+          2,
+          1,
+          5,
+          6,
+          4
+        ],
+        2
+      ],
+      "expected": 5,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        [
+          3,
+          2,
+          3,
+          1,
+          2,
+          4,
+          5,
+          5,
+          6
+        ],
+        4
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        [
+          1
+        ],
+        1
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        [
+          2,
+          2,
+          2
+        ],
+        2
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        [
+          5,
+          5,
+          4,
+          4,
+          3
+        ],
+        5
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        [
+          7,
+          7,
+          7,
+          7
+        ],
+        1
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        [
+          -7,
+          -10,
+          -2,
+          -3,
+          -3,
+          -6,
+          -7,
+          7,
+          -8,
+          8,
+          3
+        ],
+        1
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        [
+          -8
+        ],
+        1
+      ],
+      "expected": -8,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        [
+          6,
+          9,
+          -10,
+          7
+        ],
+        2
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        [
+          10,
+          7,
+          3,
+          -3,
+          4,
+          8,
+          -2,
+          -10,
+          -5,
+          3,
+          0,
+          -2
+        ],
+        3
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        [
+          0,
+          -7,
+          -8,
+          2
+        ],
+        1
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        [
+          1,
+          9,
+          -2,
+          -9,
+          4,
+          7
+        ],
+        1
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        [
+          -8,
+          7,
+          -1,
+          10,
+          9,
+          1,
+          8
+        ],
+        2
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        [
+          -8,
+          -9,
+          -3,
+          -1,
+          -8,
+          -3,
+          -7,
+          2,
+          -2,
+          4,
+          10,
+          1
+        ],
+        3
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        [
+          1,
+          -4,
+          -2,
+          10,
+          -8,
+          9
+        ],
+        6
+      ],
+      "expected": -8,
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        [
+          7,
+          -3,
+          -5
+        ],
+        2
+      ],
+      "expected": -3,
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        [
+          -2,
+          10,
+          7,
+          -3,
+          0,
+          -9,
+          -3
+        ],
+        7
+      ],
+      "expected": -9,
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        [
+          0
+        ],
+        1
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        [
+          -8,
+          -4,
+          8,
+          0,
+          -4
+        ],
+        4
+      ],
+      "expected": -4,
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        [
+          10,
+          4,
+          -6,
+          -2,
+          -6,
+          -3,
+          7
+        ],
+        5
+      ],
+      "expected": -3,
+      "isSample": false
+    },
+    {
+      "label": "custom-21",
+      "input": [
+        [
+          8,
+          3,
+          8,
+          2,
+          1
+        ],
+        2
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "custom-22",
+      "input": [
+        [
+          6,
+          5,
+          -8
+        ],
+        1
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          -100
+        ],
+        1
+      ],
+      "expected": -100,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        24
+      ],
+      "expected": 100,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41,
+          29
+        ],
+        21
+      ],
+      "expected": -94,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          43
+        ],
+        1
+      ],
+      "expected": 43,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60,
+          78,
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76
+        ],
+        1
+      ],
+      "expected": 95,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80,
+          41,
+          -25,
+          60
+        ],
+        12
+      ],
+      "expected": -89,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75
+        ],
+        1
+      ],
+      "expected": 97,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71,
+          -32
+        ],
+        9
+      ],
+      "expected": -59,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36,
+          86,
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42
+        ],
+        1
+      ],
+      "expected": 98,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83,
+          -20,
+          -46,
+          67,
+          27,
+          1
+        ],
+        11
+      ],
+      "expected": -84,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          -64,
+          -33,
+          -65,
+          -37,
+          90,
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44
+        ],
+        1
+      ],
+      "expected": 91,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52,
+          -84,
+          -2,
+          -3,
+          52,
+          19,
+          35
+        ],
+        1
+      ],
+      "expected": 93,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60,
+          16,
+          -100,
+          84
+        ],
+        18
+      ],
+      "expected": -100,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29
+        ],
+        9
+      ],
+      "expected": -73,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99,
+          35
+        ],
+        1
+      ],
+      "expected": 99,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24,
+          -83,
+          94,
+          36,
+          96,
+          -68,
+          -68
+        ],
+        20
+      ],
+      "expected": -96,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71
+        ],
+        16
+      ],
+      "expected": -58,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          12,
+          32,
+          15,
+          -70,
+          -37,
+          -43,
+          -84,
+          -14,
+          -95,
+          50,
+          41,
+          -42
+        ],
+        12
+      ],
+      "expected": -95,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          0
+        ],
+        50
+      ],
+      "expected": -100,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100
+        ],
+        1
+      ],
+      "expected": 100,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          -100,
+          0,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          100,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0
+        ],
+        1
+      ],
+      "expected": 100,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          100,
+          -100,
+          100,
+          0,
+          0,
+          100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          0,
+          100,
+          0,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          0,
+          100,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          -100,
+          -100,
+          100
+        ],
+        1
+      ],
+      "expected": 100,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function findKthLargest(nums, k) {\n  const sorted = nums.slice().sort((a, b) => a - b);\n  return sorted[sorted.length - k];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) average | Space: O(1)",
+      "language": "javascript",
+      "code": "function findKthLargest(nums, k) {\n  const arr = nums.slice();\n  const target = arr.length - k;\n  function swap(i, j) {\n    const t = arr[i];\n    arr[i] = arr[j];\n    arr[j] = t;\n  }\n  let lo = 0;\n  let hi = arr.length - 1;\n  while (lo < hi) {\n    const pivot = arr[(lo + hi) >> 1];\n    let i = lo;\n    let lt = lo;\n    let gt = hi;\n    while (i <= gt) {\n      if (arr[i] < pivot) {\n        swap(i, lt);\n        i++;\n        lt++;\n      } else if (arr[i] > pivot) {\n        swap(i, gt);\n        gt--;\n      } else {\n        i++;\n      }\n    }\n    if (target < lt) hi = lt - 1;\n    else if (target > gt) lo = gt + 1;\n    else return pivot;\n  }\n  return arr[lo];\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def findKthLargest(nums, k):\n    ordered = sorted(nums)\n    return ordered[len(ordered) - k]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) average | Space: O(1)",
+      "language": "python",
+      "code": "def findKthLargest(nums, k):\n    arr = list(nums)\n    target = len(arr) - k\n    lo, hi = 0, len(arr) - 1\n    while lo < hi:\n        pivot = arr[(lo + hi) // 2]\n        i, lt, gt = lo, lo, hi\n        while i <= gt:\n            if arr[i] < pivot:\n                arr[i], arr[lt] = arr[lt], arr[i]\n                i += 1\n                lt += 1\n            elif arr[i] > pivot:\n                arr[i], arr[gt] = arr[gt], arr[i]\n                gt -= 1\n            else:\n                i += 1\n        if target < lt:\n            hi = lt - 1\n        elif target > gt:\n            lo = gt + 1\n        else:\n            return pivot\n    return arr[lo]\n",
+      "isReference": true
+    }
+  ]
+}

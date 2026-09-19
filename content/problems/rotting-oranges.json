@@ -1,0 +1,1315 @@
+{
+  "slug": "rotting-oranges",
+  "title": "Rotting Oranges",
+  "topic": "graphs",
+  "difficulty": "Medium",
+  "pattern": "graphs / Multi-source BFS",
+  "statement": "# Rotting Oranges\n\nA crate of oranges is arranged in a rectangular grid `grid`. Each cell holds `0` for an empty slot, `1` for a fresh orange, or `2` for a rotten orange.\n\nEvery minute, each rotten orange spoils its four orthogonal neighbours (up, down, left, right) that currently hold a fresh orange. Empty slots never change and never transmit rot.\n\nReturn the number of minutes until no fresh orange remains. Return `-1` when at least one fresh orange can never rot, and `0` when there is nothing fresh to begin with.\n\nConstraints: `1 <= grid.length <= 8` and `0 <= grid[i] <= 2`.\n",
+  "examples": [
+    {
+      "input": "grid = [[2, 1, 1], [1, 1, 0], [0, 1, 1]]",
+      "output": "4",
+      "explanation": "Rot spreads from (0,0) one layer per minute: neighbours rot at minute 1, their neighbours at minute 2, and the last cell (2,2) rots at minute 4."
+    },
+    {
+      "input": "grid = [[2, 1, 1], [0, 1, 1], [1, 0, 1]]",
+      "output": "-1",
+      "explanation": "The fresh orange at (2,0) is sealed off by empty slots and can never be reached, so the answer is -1 despite all other oranges rotting."
+    },
+    {
+      "input": "grid = [[0, 2]]",
+      "output": "0",
+      "explanation": "No fresh orange exists, so zero minutes are needed even though a rotten orange is present."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function orangesRotting(grid: number[][])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "All rotten oranges spread simultaneously, so seed the queue with every one of them at time zero.",
+    "Process the queue one level per minute and count a minute only when fresh oranges rot during that level.",
+    "If fresh oranges remain after the queue drains, those oranges are unreachable: answer -1."
+  ],
+  "editorial": {
+    "approach": "Seed a queue with every rotten orange and expand level by level, spoiling fresh neighbours. Track the remaining fresh count and the number of levels processed.",
+    "why_optimal": "Multi-source BFS visits each cell once, dropping the repeated full-grid scans of the minute-by-minute simulation. On 35 generated cases PAF measured the brute force at 0.41 ms and the optimal at 0.44 ms.",
+    "pitfalls": "Return 0 immediately when no fresh orange exists, even if no rotten orange is present. Only count a minute when at least one orange actually rotted, and return -1 when fresh oranges remain but the queue is exhausted."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ],
+  "starterCode": {
+    "javascript": "function orangesRotting(grid) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def orangesRotting(grid):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "orangesRotting",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 35,
+    "bruteForceRuntimeMs": 0.41239299999999446,
+    "optimalRuntimeMs": 0.44298100000000673
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ]
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        [
+          [
+            0,
+            2
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        [
+          [
+            [
+              2,
+              0,
+              0
+            ],
+            [
+              2,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              2
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        [
+          [
+            [
+              0,
+              2,
+              2,
+              2
+            ],
+            [
+              0,
+              2,
+              1,
+              0
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        [
+          [
+            [
+              0,
+              2,
+              2,
+              2,
+              2
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        [
+          [
+            [
+              1
+            ],
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              1
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        [
+          [
+            [
+              0,
+              0,
+              2,
+              1
+            ],
+            [
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              1,
+              2
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        [
+          [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        [
+          [
+            [
+              2,
+              0,
+              1,
+              0,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              1,
+              2
+            ],
+            [
+              0,
+              2,
+              0,
+              0,
+              2
+            ]
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          [
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          [
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            0,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            2
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          [
+            2
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          [
+            2,
+            2,
+            2,
+            2
+          ],
+          [
+            1,
+            0,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            2
+          ],
+          [
+            1,
+            1,
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          [
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            2,
+            1
+          ],
+          [
+            2,
+            0,
+            1,
+            0
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          [
+            2,
+            2,
+            1,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            2,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            2,
+            1
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          [
+            0,
+            1,
+            1,
+            1
+          ],
+          [
+            2,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1,
+            1
+          ]
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          [
+            2,
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            2,
+            2,
+            2
+          ],
+          [
+            1,
+            2,
+            2,
+            1
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          [
+            1,
+            0,
+            0,
+            2,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2,
+            1,
+            2
+          ],
+          [
+            0,
+            1,
+            1,
+            2,
+            1,
+            2,
+            1
+          ],
+          [
+            2,
+            0,
+            2,
+            2,
+            0,
+            2,
+            2
+          ],
+          [
+            1,
+            2,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            2,
+            1,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            1,
+            2,
+            2,
+            2
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          [
+            0,
+            1,
+            0,
+            2
+          ],
+          [
+            2,
+            0,
+            2,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            2,
+            0,
+            1
+          ],
+          [
+            2,
+            2,
+            1
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          [
+            2,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            2
+          ],
+          [
+            2,
+            0,
+            2,
+            0,
+            0,
+            2,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          [
+            0,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            2,
+            2,
+            0,
+            2,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          [
+            0,
+            2,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            0,
+            2,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            2,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            2,
+            0,
+            0,
+            0
+          ]
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((R * C)\u00b2) | Space: O(R * C)",
+      "language": "javascript",
+      "code": "function orangesRotting(grid) {\n  const g = grid.map((row) => row.slice());\n  if (g.length === 0) return 0;\n  function freshCount() {\n    let total = 0;\n    for (let r = 0; r < g.length; r++) {\n      for (let c = 0; c < g[r].length; c++) {\n        if (g[r][c] === 1) total++;\n      }\n    }\n    return total;\n  }\n  if (freshCount() === 0) return 0;\n  let minutes = 0;\n  while (true) {\n    const toRot = [];\n    for (let r = 0; r < g.length; r++) {\n      for (let c = 0; c < g[r].length; c++) {\n        if (g[r][c] !== 1) continue;\n        const near =\n          (r > 0 && g[r - 1][c] === 2) ||\n          (r + 1 < g.length && g[r + 1][c] === 2) ||\n          (c > 0 && g[r][c - 1] === 2) ||\n          (c + 1 < g[r].length && g[r][c + 1] === 2);\n        if (near) toRot.push([r, c]);\n      }\n    }\n    if (toRot.length === 0) return -1;\n    for (const pair of toRot) g[pair[0]][pair[1]] = 2;\n    minutes++;\n    if (freshCount() === 0) return minutes;\n  }\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(R * C) | Space: O(R * C)",
+      "language": "javascript",
+      "code": "function orangesRotting(grid) {\n  const g = grid.map((row) => row.slice());\n  if (g.length === 0) return 0;\n  const queue = [];\n  let fresh = 0;\n  for (let r = 0; r < g.length; r++) {\n    for (let c = 0; c < g[r].length; c++) {\n      if (g[r][c] === 2) queue.push([r, c]);\n      else if (g[r][c] === 1) fresh++;\n    }\n  }\n  if (fresh === 0) return 0;\n  let minutes = 0;\n  let head = 0;\n  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];\n  while (head < queue.length && fresh > 0) {\n    const size = queue.length - head;\n    let rotted = false;\n    for (let i = 0; i < size; i++) {\n      const cell = queue[head++];\n      for (const d of dirs) {\n        const nr = cell[0] + d[0];\n        const nc = cell[1] + d[1];\n        if (nr >= 0 && nc >= 0 && nr < g.length && nc < g[nr].length && g[nr][nc] === 1) {\n          g[nr][nc] = 2;\n          fresh--;\n          queue.push([nr, nc]);\n          rotted = true;\n        }\n      }\n    }\n    if (rotted) minutes++;\n  }\n  return fresh === 0 ? minutes : -1;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((R * C)^2) | Space: O(R * C)",
+      "language": "python",
+      "code": "def orangesRotting(grid):\n    g = [row[:] for row in grid]\n    if not g:\n        return 0\n    def fresh_count():\n        return sum(1 for row in g for v in row if v == 1)\n    if fresh_count() == 0:\n        return 0\n    minutes = 0\n    while True:\n        to_rot = []\n        for r in range(len(g)):\n            for c in range(len(g[r])):\n                if g[r][c] != 1:\n                    continue\n                near = ((r > 0 and g[r-1][c] == 2) or (r + 1 < len(g) and g[r+1][c] == 2) or (c > 0 and g[r][c-1] == 2) or (c + 1 < len(g[r]) and g[r][c+1] == 2))\n                if near:\n                    to_rot.append((r, c))\n        if not to_rot:\n            return -1\n        for r, c in to_rot:\n            g[r][c] = 2\n        minutes += 1\n        if fresh_count() == 0:\n            return minutes\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(R * C) | Space: O(R * C)",
+      "language": "python",
+      "code": "def orangesRotting(grid):\n    g = [row[:] for row in grid]\n    if not g:\n        return 0\n    from collections import deque\n    queue = deque()\n    fresh = 0\n    for r in range(len(g)):\n        for c in range(len(g[r])):\n            if g[r][c] == 2:\n                queue.append((r, c))\n            elif g[r][c] == 1:\n                fresh += 1\n    if fresh == 0:\n        return 0\n    minutes = 0\n    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]\n    while queue and fresh > 0:\n        size = len(queue)\n        rotted = False\n        for _ in range(size):\n            r, c = queue.popleft()\n            for dr, dc in dirs:\n                nr, nc = r + dr, c + dc\n                if 0 <= nr < len(g) and 0 <= nc < len(g[nr]) and g[nr][nc] == 1:\n                    g[nr][nc] = 2\n                    fresh -= 1\n                    queue.append((nr, nc))\n                    rotted = True\n        if rotted:\n            minutes += 1\n    return minutes if fresh == 0 else -1\n",
+      "isReference": true
+    }
+  ]
+}

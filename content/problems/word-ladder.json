@@ -1,0 +1,942 @@
+{
+  "slug": "word-ladder",
+  "title": "Word Ladder",
+  "topic": "graphs",
+  "difficulty": "Hard",
+  "pattern": "graphs / BFS shortest",
+  "statement": "# Word Ladder\n\nA start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
+  "examples": [
+    {
+      "input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\", \"cog\"]",
+      "output": "5",
+      "explanation": "Shortest chain hit -> hot -> dot -> dog -> cog uses five words; each step changes exactly one letter and every intermediate word is in the dictionary."
+    },
+    {
+      "input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\"]",
+      "output": "0",
+      "explanation": "The target cog is absent from the dictionary, so no ladder exists and the answer is 0."
+    },
+    {
+      "input": "beginWord = \"a\", endWord = \"c\", wordList = [\"a\", \"b\", \"c\"]",
+      "output": "2",
+      "explanation": "The words a and c differ by one letter and both appear in the dictionary, giving the direct ladder a -> c of length 2."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function ladderLength(beginWord: string, endWord: string, wordList: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Each word is a node; draw an edge between words that differ in exactly one position.",
+    "BFS from the start word reaches words in order of ladder length, so the first arrival at the target is optimal.",
+    "Wildcard patterns like h*t group mutual neighbours without pairwise comparisons."
+  ],
+  "editorial": {
+    "approach": "Treat each dictionary word as a graph node with edges between words differing by one letter, then run BFS from the start word. The first visit to the target word gives the shortest ladder length.",
+    "why_optimal": "Grouping words by wildcard pattern finds every neighbour in constant time instead of comparing each word against the whole dictionary. On 44 generated cases PAF measured the brute force at 0.14 ms and the optimal at 0.17 ms.",
+    "pitfalls": "Return 0 before searching when the target word is missing from the dictionary. Words of a different length than the start word can never join the ladder and must be skipped."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ],
+  "starterCode": {
+    "javascript": "function ladderLength(beginWord, endWord, wordList) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def ladderLength(beginWord, endWord, wordList):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "ladderLength",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 44,
+    "bruteForceRuntimeMs": 0.1435200000000023,
+    "optimalRuntimeMs": 0.17431200000001112
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        "hit",
+        "cog",
+        [
+          "hit",
+          "cog"
+        ]
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        "hit",
+        "cog",
+        [
+          "hit",
+          "hot",
+          "dot",
+          "dog",
+          "cog"
+        ]
+      ],
+      "expected": 5,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        "hit",
+        "cog",
+        [
+          "hot",
+          "dot",
+          "dog",
+          "cog"
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        "a",
+        "c",
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        "hot",
+        "hot",
+        [
+          "hot",
+          "dot",
+          "dog"
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        "a",
+        "d",
+        [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        "a",
+        "e",
+        [
+          "a",
+          "b",
+          "e"
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        "e",
+        "e",
+        [
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        "abd",
+        "cbb",
+        [
+          "abd",
+          "caa",
+          "cbb",
+          "dac"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        "d",
+        "d",
+        [
+          "a",
+          "c",
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        "aa",
+        "ca",
+        [
+          "aa",
+          "ab",
+          "ad",
+          "bc",
+          "ca",
+          "cb",
+          "cc",
+          "cd"
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        "eb",
+        "ca",
+        [
+          "ca",
+          "ce",
+          "dd",
+          "eb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        "ac",
+        "cb",
+        [
+          "ac",
+          "be",
+          "ca",
+          "cb",
+          "dd"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        "cb",
+        "ed",
+        [
+          "cb",
+          "ce",
+          "ed",
+          "ee"
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        "bbe",
+        "eaa",
+        [
+          "aaa",
+          "bbd",
+          "bbe",
+          "ded",
+          "eaa",
+          "ead"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        "cac",
+        "bee",
+        [
+          "bda",
+          "bee",
+          "cac",
+          "ceb",
+          "eac",
+          "eeb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        "e",
+        "d",
+        [
+          "a",
+          "d",
+          "e"
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        "ab",
+        "ed",
+        [
+          "aa",
+          "ab",
+          "bd",
+          "da",
+          "eb",
+          "ed"
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        "eb",
+        "be",
+        [
+          "ab",
+          "ba",
+          "be",
+          "ca",
+          "cd",
+          "eb",
+          "ed"
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        "aa",
+        "ee",
+        [
+          "aa",
+          "ab",
+          "be",
+          "ca",
+          "cd",
+          "eb",
+          "ee"
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "custom-21",
+      "input": [
+        "bddb",
+        "aaad",
+        [
+          "aaad",
+          "adcd",
+          "bddb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "custom-22",
+      "input": [
+        "abb",
+        "ade",
+        [
+          "abb",
+          "ade",
+          "dbc",
+          "edb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        "b",
+        "y",
+        [
+          "x"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "b2",
+        "0a",
+        [
+          "bx",
+          "2a",
+          "x2",
+          "x1",
+          "ya",
+          "0z",
+          "cx",
+          "bb",
+          "bz",
+          "ya",
+          "12",
+          "0b",
+          "yz",
+          "xb",
+          "xy",
+          "xb",
+          "y1",
+          "zc",
+          "zx",
+          "yb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "c2xc10y2xzaxaz0ybxzx",
+        "101cycx22y00zxc21babc",
+        [
+          "0b0012y2ab2yzby0c1ay2c",
+          "by2xczc22az1abzyx",
+          "xb",
+          "1b2",
+          "c12cy",
+          "0x2xy0z121bxxbza2"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "xabaxbaz",
+        "2xy",
+        [
+          "2c1x10x",
+          "b0z0",
+          "1aba0zbxxx21c0",
+          "y1xb12",
+          "a2ab",
+          "c011x0ac",
+          "a0y1y021cxyxa",
+          "2azaa122ca2bcbbx0bx",
+          "ab02zyxzxy0cy1zba1b",
+          "2x2",
+          "czbxzyc12",
+          "y2a2ybcybb2cyyxzxy21yab",
+          "0yaazcyc1202abbc2az2c",
+          "cayzazxxbz20cx",
+          "c0acz0",
+          "xycb0a1xx1zyxxax0zybyz"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "202zabycyab0zz02b0xya",
+        "0a22xz0bzzby2y0z0y2cx00",
+        [
+          "y02ayyx0z111x21cby2z",
+          "xyx",
+          "caax1b1",
+          "x010xcab0xc21a",
+          "xb1c122z12021c11yx",
+          "y21xy1byxyzz2bccx0cxb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "0z210ax00a01az",
+        "0022x1xy01",
+        [
+          "z0c1c2a0ab0c1"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ay0zx1",
+        "z0y0yb1a2az",
+        [
+          "baaxxacxc1bx1yzcbcyba",
+          "00xbxbybaz",
+          "0zb2za01b0z1c0c2y2",
+          "10yzxby1x10za1zc",
+          "xzyzyy2a2xbx012x",
+          "111abyx0xyz122z02zz1yyy",
+          "bxzb2cxx",
+          "1y2ybxyxzcya2cyaa2yc1bay"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "11zcay1bb01baccy",
+        "xb2",
+        [
+          "x2011y0yabxxybcxc2bc",
+          "0",
+          "1yaxyy1bxyx0b2x",
+          "cycbacyy1b1y0y2211ba0",
+          "zyabxayac121yc01b1z0zzbc",
+          "01y02a1bzyz",
+          "02a2",
+          "0ax2z11axy2cy11",
+          "axcy",
+          "a20bxb1bc1y2y011x1",
+          "c0x2cby0z2yayy1c12",
+          "zz2201zxx0x0az10",
+          "c1ac2zb1b21ac",
+          "cb1yz0bz20z12a"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "bxyxb0bb1cyaazayzz0c",
+        "20cccb0x",
+        [
+          "cx1y1ya1y2cb1zy0y1y",
+          "01bx0zy",
+          "ya0yaa1yxzxxycbay1azcby",
+          "0cxc2z22ycy",
+          "yzb1bcx02zb0ay2b",
+          "zy0zbx1a2zxb1y0",
+          "caay",
+          "bbx2c01z20c0b10y",
+          "zx",
+          "1xzbz2za0yxb1bx",
+          "aazxcxb2xxxzcaycc2ycb",
+          "acazxzacyac02bb11z2b12",
+          "a2y1aa10",
+          "b11bbzcbcy2z02",
+          "120bb2x01x",
+          "z100bz0zyzc1bb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "b0b",
+        "zc2a22zb0z0ayyzb2xc1xbz2",
+        [
+          "yx02",
+          "2ayacyyzzacc0bcab2x0",
+          "1zczyzbaccaby1",
+          "0110yx2bz0by12yax0aaxy",
+          "cyyzba1",
+          "0cc02x22zb0a0a1bz000yb0a",
+          "c1zb0bx002b",
+          "yzxzcb2b22xzz",
+          "cxbcyxccbc111zzc1b11yyaz",
+          "by11aazybb2012a1x",
+          "12ca1bzb2ca",
+          "1122czzy"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "0zazbzb20yycz",
+        "czy",
+        [
+          "by20z",
+          "2b02z",
+          "z",
+          "cxz1xxccby",
+          "222a",
+          "zc0cccc1a0zx1y1x2xy1xz",
+          "11y0220cxcya1z2b2bybcy",
+          "2c0bx1za0a02zx0",
+          "zxa",
+          "bzccay1c11a",
+          "ayx",
+          "220by",
+          "ybax01bb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "2a2xcy0azx0cb2zb",
+        "2222a01a0zyazbzxb",
+        [
+          "zcaz2zc11ccb1ayxaxazy202",
+          "yaxyzazybz0010zc",
+          "1z2yb0b0c2yzbbzy",
+          "10c1z1az0y",
+          "ab0z2cac1acbxzz0ac1zz",
+          "bc2z0zyxbac1202",
+          "yy1x",
+          "y1xbcb1c1bzzb22yyccz",
+          "xbxcx1az2z12cbby0",
+          "1200bczb112zc2cc02ab2cy",
+          "czxz2y",
+          "yx2",
+          "cy2b2cccz",
+          "aabayx0a12yy1x0y1ba",
+          "1011xz",
+          "czzz0cz22bzx1by1xcba",
+          "00xczzxc12",
+          "1y1ab021xxzaay1",
+          "1y2ab0cyz0za0a2xz2yb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "212ybcb0zz2zc",
+        "202aaac",
+        [
+          "21c2czzc0yz2221y",
+          "azzb0ya1yxa1c20c",
+          "xabxa1z0c0x021ac2x2z12",
+          "zc12z2zy1xxy2",
+          "xyyx1z1z2y",
+          "b200zcyayb",
+          "1y1xx2y2ycbx",
+          "a2xxab0z",
+          "1bca2c011xyzyabx2ac0ca0",
+          "cyaaybzy1221c21y",
+          "bzc1yca"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "zyxc002zb0bcc1zxay0x1yzy",
+        "ayzxab1yc02ybyzxxc1",
+        [
+          "z0212xxb212zbba",
+          "2x2ccz21bx1b21a1c2",
+          "1a21ya0yaxba0z",
+          "b2ab1ay0cc0z0100b2czbc2",
+          "2cxaay12020xx"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "zcyxba0axxbba1a",
+        "a01x2xac",
+        [
+          "xzzxyc2x0y",
+          "a2c021az0",
+          "z00cy0c21xxyc1a20",
+          "22c0xyxzb1zb2x",
+          "y0",
+          "abx2x1xzyaxxb1xx0x2zy0",
+          "2zyyz211b1zxzz0",
+          "xc",
+          "y",
+          "0ycxzx0x12zy111czc",
+          "21c2a",
+          "abaa0cxbcax21za11",
+          "a",
+          "20aa2y2ya20cbb2cxx",
+          "2yzy0bz01xxybab00021",
+          "ac",
+          "10z"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "b2axx1yaby2aczaxc0b",
+        "cx02z0cb2z",
+        [
+          "0xbz",
+          "0zay11xz200c0byxbbyc"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "c0zzbbay1zybc",
+        "c01",
+        [
+          "20babz2bz0ay00b2x2",
+          "0ccyyy",
+          "cbc0y0y1bzyx1x1b",
+          "ya0z0",
+          "1z0cyzx1zc0",
+          "y1xz0y0zbx2",
+          "2a1x1y",
+          "b01cyxyc00b1102202az2bb",
+          "zca0z0ba",
+          "yx22",
+          "x1z012cza1by0bbczy",
+          "1x21z1b11zb",
+          "abazbcx2c2",
+          "z201x0",
+          "cc00ax100axxybb2czzx1",
+          "y12z",
+          "00bzz1cybczbxybczc20",
+          "c00c12c2c1yccz"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "aza1cx022101011",
+        "baxyay",
+        [
+          "yc1122bby2z2a12x0b",
+          "xya1yzb1bxxz0ccxxaz2y2cz",
+          "yyy2bc0ayccxczx01cy001b",
+          "b02yz11zab1zb20x0x1yz",
+          "z2c1zaab1a",
+          "c11a",
+          "xcycybzybzca0y",
+          "x0bbax1bcx21aazb0c1bx0bb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "zzyc0ccb2ac1zxc01xbbcb0z0zcxybx2yayx22x0yax10bx1b2azzc00z2c1babayxaa02y2000b22cybyb2xc2z0by0xaxb0b1aycbacac1z22yczcybaz0y2byb112",
+        "a1czcybbx2aaaxa1z0cca20xzx0zybzb2acx2a0b1yyzb21azxyyx1z1x2xca0ax2zaza0ybx2x01acybax20z1bb2c0ba0cxyyz0zz1yxbxcbcbc11z0b2zx1y1ybbc",
+        [
+          "yaxzcbxz02ayyca0122xb1bcbaaxcx0zbybabx1cbzba1ac001a00czxcyy1caxy1021aby0c0x2x2a0z121z2z0ycazxaya12zxcbxxy2ax0zccxzzazcx12yc1abax",
+          "xa21azxczczaaccb2zbz0bzyzcc01zc2zxc0yycca0aczxb1czbxzzcbz1ayxxbzybaa010c010z20b1xc1bayazybbzc0cb2bz1a0c0cabzxx022yyyxba021caza0b",
+          "1xbaxcyb1by011yb20cz0zc1ay11yxyacbbz20x2a02021x1yb0a22cb1ccxxca0b0xcyzbb0202zy21a20b0ccbbby2z0y011acy0c0a0zxa1yzazyyy1bxcy1zy0bx",
+          "x012za2cby20c2acxxaxa1azxyz120baxz11c12zzcybya0acxxxxy02aa1ccaxyyy00z1yx1y20ba2z2yyb1bzyzyyyxc2xa0zca1yy000axzx21z2yc2cyb1cy2czb",
+          "zxy0zzyy1b1ab1x2b02y0accxz01czcb1zczaa1yxcc1bc000010aa2xzaz2xaaxxzycb02ycbayy122z0cz1zxc0axxcxa2cbza0y2aabaab010b2y1cxay0b2yc0b2",
+          "bybb1xxy2xz0yca21x1zxaabb1cb2bbyx1yy1abcayzz0bbaacczz1ybzzcb001y010cbcacb011c0zac11b01abyza2xz22b0x1z0c2aac211cb1zxzya2x200xb111",
+          "11zb1ab00a22aby22x1zzax1z21z1bbxazzy22zbac1c0byxxb0x1xzb0ab112c1a2a2012cccb0z200xy0zy1cc02y2z2xxxyzcc22zbz2102y0a2ba0caaxycyycay",
+          "2az1b2x20x2ya000z2aayx1xz2xxy1cbcc2b0a0y2yccyaz1caczay12zbz2xc2b2c0220bzxxzzzyx212abz1xxaz0b0y2ya2z2211ayxz2bbc22abxx0bx20bca1za",
+          "bacy2bxy00100za0b2ababz2byyby100a1c2xc02ycyza22cbaa022byxzx02cccxyxbca212bybybx1zzcxbybxz11zyczz0cazxx0yzcz111zy12bcbyc2xybba2a0",
+          "xa2y221cz0xyc122b0z2axc2c1ccc1zax1xbyzxax2z011aazb2yy2c00zb2y0x20zz11a2c1cxb2yxccczbx0zb111xc0axaccc2acacyc20aybx111cx0cc2ycz1bx",
+          "0cbax220cbc1a22bb1c2a020za20x10zb0cy1xby20yxaa2b2a0xz0zbc0yy20zy0x0221cz221yyz0cbx1cbx20z2ac0abc10bbyxzba002yac11ax2yxa22xcazxac",
+          "y0z00x2abb2y2zzyxx10ayc02b2b2yzb2y2y101xz11a1byb0xxz0z22ayxyb0zb2c1zzxycx1xxxyxxxxzcbbb1a2a1zz1y1c2y0xca2012a2z0c1b21zaax0bzzyc2",
+          "xy1zzc10x0zz0y1ccxbyx200xcc1ac01c22z1yy2a0bcaxy1b1zyzz22yza0bzx2cyzz211b0y1ccz00bbczxzzyy0y1z210ccacxybxc0bbb12aa02bbycb0yxxy1cc",
+          "caazz112y21c2c1022yz12xb1yz0ycyaa2czy12a11ya0yxa2zx0200xc00xyb0x2yy2y0xbccyb11y1xzaca2acbyyc1axbca1xz0y1z1azbcay0b21cxy0abx01xax",
+          "b2x10yzca22by1yxzaxbx0zacyb0xaa1czbxc1bzaazc2bc1xz2z1xa0zcya112y21xc2zz1y2cb2c1yy2z1a20cazxzb20x212cyz0zbb2baccaxb1xba012yazxbax",
+          "1b1az20zay2abybx2bbx20xx2xc220bz10bcc202zc21zz2zz00zx2x02yz110aaya2cyayxxzay222cba1zccyzxxyyb0xbz1c1bya0bazz00bxa0ay2az2cz2xca01",
+          "2bx0y0cczb1a20yb020cc12x10x22xxby0zbb00zzxzzaycz1c1axxzcbbaxcyazby11azx2xx22y21ca02aycayxya1ab0yzbay0x02bz12bcx212aax2yz10cazzzy",
+          "2yay0a2yxcz0cb02x0xc0yz12cxc2xcy2c0cczb22bczcaz00y1ycxbccayxxxazb1c21zc011ccxxa0ay0xxxbc11z1x00a0z022a2b11ax220a202axy10yy1c0ya2",
+          "11b2bc2c00z1ac1x1byzcbbb1zb202c020aczcccca0yy1ycbcxaya1112a1xx1101bax2y2xaccazacayzbab0ccy2c1zabyzz0b02by1cbyz202xxab2b1y0zy2zc1",
+          "11cxyxaba1bx00azz2xaxyybyy22zabzz0acxzz11ac1c12z10a2yz22axzzbcyaz02c0cbyzay0b1xz1yx2ycbzaxb12a12cxz12yzcb2cxa102bayabz1ab2yayxzx"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "yy2z1byccyba22bx2z2zycyxcbyz21aca1ab0ab00c1zyzx2b1cb1b1y11xxcyz0czz11ab1bz11cyzc2b0bz2by2100xx2c10bzx00z2xcb1b1z2b1cy0bb0z1abxca",
+        "c12y01xxzyy0zba20cyaz2aa2zbyax00z00002xc1cx20z0cyccabac10cbc010c120210zxc0a1x2y02zaa1zb1bc2y12b2bx1b2yaz2a1121z0zyycayya1cayay1b",
+        [
+          "2byycyyyabcc1zcyx1c2azbcc100x1cxzaybac101y12x001yc20ay10z2ab2z0yzyyby01xx2zcz2aaba0b2b1zxyyxaabaxbbbc0cbcyy1b1y0zycbya00zayyc1b1",
+          "0c1bc20xb1ybabby1a1caa0ycz0a21100b2xa01b2zzy0abz2zb1yxc2a0xy0bz1b1xcaxax10b2y121aazaza0bx212cxbac1a1axcacayb1cbbb1xbx0z0zb2czxac",
+          "bbyc0cz2c1xacb0ca1baacby01cxcy210xcac1byz0a2xxb2bz22x1xyaxbc11ccaazyx0yz1aba2cca12bbx1z0xzxbzxbx0x0xb11a0cx1c0zc1xzyxzcaaycb110c",
+          "xycc2xb021x11ya0xxz0xca0aa12a0201b11xb2a0xczyxba1yc1a11c0cz1ab0z2ay0y2xbza2zab0z1azzc2b2xczx2b1xxzzy20yabzz1122b122y1zbx1bb0cybb",
+          "ybc1cx2ay02c1z01ayxbax2z0zz12211ycycyx1zyaczy1cc2yccccxbazc1yzcx2azzcz12c2yba01c1zca22zy1yc1zb1ac2bya0x1zbzax2xyxab21b20x1z2az0c",
+          "0z0zayzzy12bx101yc00cbcxy12zb0ba0y0c21cxc0y21ayy121xaacyy1by0c1xaby1bz10y1bz2aycacz1czcayz0zayy2b2xcbc2zzyyzb2zcac2yz10zcbxc2xx2",
+          "222b01bbca1zyzc12zcyabxccxycxcb0bba10axba2a1byabyabbxxczabcyzzc2x2bba2xxyc2abx21zc1bcz00x2x0bzb1b2c1zy2abz1b0y1y1x20y0xb1zca1b01",
+          "bbc00bcbzxzx0bx01yy0z1012yc1bby11xcabab1ac0zcybb211xy112y2z22aa0b01z011aac2yc10cy01b122112c2a0y10zyzaaaczzaz0b0zz0zaxxxybbybzca2",
+          "a1020ya1az00zb1bxz12zcyz0x1b2xyyay0xbbzyb210xzby2y02zx00y212ca2c1x1y20a2xz1cxcy00zbx0yycyx0xbcxaxy11200axcycayy2ca1aabzyb0zb0cxb",
+          "2b22y1bxbzz0x0xcbcxy10ya12zbz201xycz1zyaaaxy20yzb2x10a0yybxyxc1z0ayb110z0bcy2bz02z1aac1ca0xyzbbcx2c0z11cyczyxb0zc00xaa2xb1xyca00",
+          "ycbzcba2011bxxxyy10c0xxyx0c0cayyx1xz1ba1cz0x00ybb2aazx1zaay20y0zc2acyc21z1cbz20cybzac1yz0yyy2z0cz1c21axcaxca1yc10b1a1z2111bcbzbx",
+          "cc2yxa2c0bx1bzayb0zbzcab111yaza1zcxayzab20b0ycx0baxc00ycby10yczbz2x1101y0b0zc00ba2z1xc122by10b1yccyx20ya2ba2b200b1yzyb2ab1cc0ab0",
+          "yz11yzcxcbyb02aa0bac1101yz0ybccaxbaxax1cx02xby1c10abcc111a1xxy0azab0012ya10121xa2a0z2by01b1z10acyx1z1x2xz1cy00z1cxyb1ccxc1b01yxx",
+          "aazyzcc2abz0bxb2x1yzza2yc2ba11bbb2a2bcbxzcy121bczzcbx10ax1zy2cbyz0zxc20xc00012za1ca2bbzz0c0a0aca2y002yzzay2c01x21z0xyba2z0c22yxb",
+          "2y2zcaa2yxy02bazy2zbab1ya1zx2xzyyc02xbz2xz1bc00bba0c1x1bz20220y10110cc2c11c22bx11ac2zb0bbzya2cbzyzyy1acc0ayyxc1ab2zba01y1z01cc21",
+          "1czb00x0z2a1ybcay2b2bx2a2x12ab2cayxx1b2z0a1az0c0a2z0ybbb2cyccybcy0cazcaay0bzc0zy0baxxx1220byaz120b1a0xay2bx2cy01b2xcz2cx2021aa1y",
+          "caa1yy0zx2yac2byb0bc2y0x2zzy1yxzzx1zaca1aac02102bb2a1bz0z0cab1zx1axayzxbyxx1zay1xax0by21c2xcbcbcyx2yxa2y21a0az00yb211z2axay021za",
+          "xzbax0bxxczybba10azyxb1xzaz2xb1b1bbaa0zbca1ay0bba2ay00b0xa1010bza12zxbbabxc2yz011cxcaacy02zy2cc1yzyza2cax22a0zxxxbzx11zzy0zcb1a1",
+          "axx1xx1z0x0cazabza2bcy1xzaaxxycxycz2xcxacybac0bzxy1xzzc20bbccxx20zz0xax2yczxayc21xb1bc202z121czz2111y0axxx1x0xy00czy2bcby12zxa12",
+          "z01100z1zy0ac1xybzby222byxbbbza2xzxzyyyxc2yayyz00a12c0xxx1x2211zbzx00x112azccya1zzx0002yzaaccz00x0b20x1bz1ybcb2ca1acxb0yxxy2b1az"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "acz00cbc201b0xcxy01cyx21yxac1b0x2z111aby1zy0c0xc010cb0axcy2ybx102bzbb2z01cyx2a1ab10z0x0aaybcz111bb2x1c1yccabcyb20cbayc1zcxa2x1a2",
+        "b0y1aaa0xxzxxba0aazxbxbcca02bzz2xx200bxxbzzca0za0x1xbyzabx0y1b2cybz0czcz1bza102x2axabyx0xbacz1yxc0xax1zcyza20yaxzzxx2axx02zc1ab1",
+        [
+          "xacxcbc2xx2b01ycxx0cxyy1xy1bz00c11020c1a00by2c2cy01y1y021bzc1xcxaa2z1000z01yb0ab0cx0yz21za00xx1azacy1cyxcabb00b2x0c0yy220y0bbzcy",
+          "x0yac1abb020y0cczccx1c2b1xcxacxy01bcbyb0bybzax11baayaabx2a02y11z0zzzzxz00azzba10cab2yxz1120xazazaz1x10bz01b0yxc22ac1by21c1b12xxx",
+          "bb0acz0yxy1bc21bzxbz0020xxybybbbzxbzcz0aya2x00zzc2xb0a21zcyx11cycazy2by1x1y0azcxxac10yca20z01z00b2yyx20bczay1cc11ycxxxazbc00cabz",
+          "cab2z0c0xabx01yc0b10y1zabbbb12xa1ybc010ycbzb2c0a02221b22bxbcca21zbacxcb2yabb2yz2c0axya2y21c1z2z22xbaxaxcyxc2xzyc0b2yy0c01by0c2xb",
+          "yxz2c0cz00axbyb2b20bzbzzycxyab0x0bbc2y1b2zy2ybacz0cz2201cya2ccc0yazx01c1z12yy02xyby0zbbbxbcaby21a02c1122b0axa02zx2a1c2xcbzc2za01",
+          "czbzx2byy1yyxa0xy2a11aza1zyzbazc0zab01xb22c0b1acyx10zyz0c2yb11ccz0azxbxyac00zacx1yb0121cz020cbbaccz2axaz0a01yy1b0xc2cxybyx0x1b2c",
+          "cxbc0ayxc0axba002yxxz01a20aybyzyz0xzacaaazxy1yb0cy1zzybba2czzz2zxyx0bbcbaxx1bb2zy1x2cacx02y2zz1b0b1022acycyaax0122bc120200yxcacx",
+          "a2122yyxyy2bcxa2xyacycyaxx2bazzzb2yc0yzaazxycya2b0y2x1xzyx0c1x0zc1b1c1ccx1cyaycc0xbcb0x10b2cab00abaacxbycaab2zbxc11cyz1cxa2y2baa",
+          "2yb20caxax00czyx0b1cbxbyzbzbzbacc02zc0cyyzby1zybacczc011bb0ycbzcc0zz1010zcx002122122x0b02xbxzaxaz21cbazzcy1c20xxxacbc0a0zabb1cac",
+          "cbxba0cc1c2y10z1aybcaac2ca0012y2yx0cyb20cx0ax0c2b11z00caz0xybbbzzaxyc2bbxayx2xaxyba1aazbyazy02xz0zcbz02b2ca01aycc1bbxxcc222z1czy",
+          "0a0xxbc1bacy2b1b1zcycbyzzbbc1y1y1cb1azy00c1z2zzb021yaax2acby0c0bx01bz1121bbcb00x0zbzz1x1by1a2c1cxza0az01xaxa0yycbcby0by102xycab0",
+          "ycxz0112c0z0a2xbczzac1c1zb0y2a1c1baxx02c0xzxxazzayy2b1100zz202zbc10zc2c200y0ybbbba0b12b12ay0xx120bx1bz100azx2yyyy0xa0aaacz2zzc0x",
+          "0x0a0c0c0z2c0xbc2b0y2czxbba0aca2b0ac1zcxxyx2x0yaybcabb1bbcyycbb1zx0b1a0b1bx00z1ccyacabzz12ac2ybxa2a22cxzbxazcxbcyy1xbz2y11020xyc",
+          "y0bycx1010yzb00xzzb1ca2y0y2z0abcz0czxbxzzczbazazx1zx2b0yx2xb2yb00zzxxa11ay0bb1cz0xayaa1yc0a22azab1b0yyzz0b2z1a0y11bzbaxaacbz0xcb",
+          "z2aayabaybyz0ycc1bczc01b22x11yz1xbyybz2xxbb1axax10x1bzx22zy1c2bcxz012x0xby0cybc1bbxa1cya121zyb2bz0xc0202za1yzba00xyx0cy2120baxbx",
+          "aayxb2byx000bxy1xcxzyyabc21yxczbccz1ca10zacybcaz1a1x1baayx22ccbbyz11z2y1yz1azyz21by2ac0xcz1ax0zxbx0by212cyzz00yyxa2zb01zyba1c1c2",
+          "2cy1ybya1axyba1ya0zaayczy22cbycx0byxa1zx000byyyc0zcxyc02xyyby12c00bc21z2z1z01001a2a0bcyx2zc2ya0c0a121abaybzby1zab2ax2c21cxcyya1x",
+          "bacb2bxxb1a210aby01cx2y1b0caccxc22x11yyb1zy00b100cay1b0aya1azc11yacz22xz202bcczz1cyy0b101c22yczz0baacxbb11zxxbc00baybab1zaczb10c",
+          "2xxy11yxxc02xbabxacaz02bzc21xx12zz2cb100bbc2ybb1xa2zaxyy0zbcyb2x22y0a2b1yaaz0yxzacx2zax1bazb0b21cyaba12xz01yxaaax20a21a00c002cb1",
+          "zzxz0axxbax02aaxabac1cyazzxyc01bbby2x1zx1yz2yx2yz22baz01ybxc2xy2xbzcax11ba1ayy0ybay01a001axx0c02aya2zazyxaz00ab20y2102yc01xcayyb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "2yz0ayzyyabyzyc11a1a1az12x0aby2zb1cyyy1cxccaxbac21za2xayyaz2axzbb21b2bxxzz0b0ycazzz0z1yaczaycabxz22zx0ac0bbx2202b2a1221zyxyxzxzx",
+        "zbx10zbz22bz1x10xc2x0cyyzzbb002c1xc1acb0y21bca0acbc2200zc02xybzzbabz1010y1cc2bcaz10z1c2ybxy1za2220yz0zccax02yzbzycbyy11xcyybxycb",
+        [
+          "22caa22xa1azxy012c1ybb101ybcybzbxbzc2zy12bza0b2zx2aaxc0xxy1c1c1ycxb2xa0b12xca0y0xz12cyxy110z21ybxby01zx0bc1zbz0c110xayy2x0a2zyz0",
+          "100yay1xzay10xc2xbzc2aa0bzz2ba2xz2xc20xyczz0x2xaaa2b201acyyaxxayb00cybbb20aa2cb0xyz02ayy1xby10y0bx02y1y22x0a10z2b1xa0x1z1byzcbb2",
+          "x1xbc012xa1y0yzcaz0ayx2121zxz1122bb0b0cac2bcx1ba01c21c200ayb0yy2zzccy2xz2y11xzcc21az0cc1bayxxb21zba1cbz2xzaxyy0yz0y22xbcbxycybc2",
+          "0zy1xcaxxbccc1azbac2101zy2bx20001zy2z2bxcyc0211yb20zcaz1z0x2x0zcax1z2xayzbzy2ayay10ayyaa111c12bazacccb0ba1azb2yxazzcz2a00abx2cyb",
+          "1ayx20cayy2zbz1b1bbbcbczacaxz1bxyxcya0ycycz0xxyxcyy1yb1zzz21ca0c2x0zyxz22yb2xyx1yab2c1c1zz0azbzac01zzbczyc12ca11001xyzz10yax2b00",
+          "0ac2cy2xcczabycz10c1acxcyybcxx0bxc2za1czb120x101xb0czc0zy002bz1axcxzzz2a0bxc1xaxy0bz0c0cyy01ay0cc02b1bzb0aczc201a100ay0yb12z1z2z",
+          "c020bcazyx210a1yab11zazy0zya2ycyz0a1zyabza20xcb2bcc10yz1x21abzzacb02bzy00acyb0bxyy22xaz1x0ycy2a0cyya0xa0cyy1zbxxazxby10z2012azzz",
+          "1c11x2c0y0ab12zbx2zyyz11accz00ay21x02c0bb0xxbycc020zx0yzzbz2220x011y1cc0ya2z1cb0000xaxc2b0azxc1bza022xc1zxc1xzcybax11x1xc12bzcx1",
+          "baa0210b0y2b2a11ay0az0210bbcybcz0zcx1xybzb11xyzy1z1yyacc2yaxzzyycy11ycccy0yxaxycayz2201czc2z2z01c21c10abzxyxxcybxz11a2xxza0bz2by",
+          "22ba12xxycxx1cay2ybxbc2yaxxx11b2azbx1b1b1xb2x1ya0b1x1ay0y1cz212yyy2xzy22y1bc1az211ccb0yb1z2cxbxxy2yz21byxczcx0cccz210yxy1yzcyzzz",
+          "y000a0a0zc1yaxxyyzaz00z22xx21ybbxcz11a01xy0abazy2z1yb1cbz0ccyx2b1xz2y22yacbzz1xcz1x1zzxyyacb0001a2a2za0a2z21yzbbb2b2c2b1xb0y11cz",
+          "cz120a0ya0aaxz0cyxz21xzcxcxycba2ac2zbzzxxxyc0yxxzac1b0a1x0a110xx0bbc22bcxb1zz0xxb2z1y2b1aa000bzzyb0yxb01ayzacxcac2cc1aaxyz0c0cc2",
+          "czbca1xy0zyzaaza1ac0a202ccbazxb0bb11021cay11ycz2zb11xcx2ccxbb0ybxxycyz122ycz0zca0axcacaxc0za11zx01x1y21by2zzcyz121bz2ybz0a2cbx1b",
+          "2yczy102b2c02xcxaxz2c22a2z2x2czcbcxc20xya0y02011zcyaby2yxba0cc1cx0c00xxzbxyc0bcx1cyzab2y2b1x1yb21cbzya0yb10c1yx2bbzx100abyyy2z0y",
+          "bab1x1x0yb12020abbbbxz00az112a00axcazby0a1yzzzxy1az1ycx22z0zc1bzz2xzybb0z1c0xy1zz1zcczabxy22y22c0bxbb0ycz2z0c0bybzx1ax2cya1xxxx1",
+          "xcayxa11022x0c200yzy0zzxz2zbczx2cb212zbxz2x1ya1110bca212az1cbzbyya10c0x1y2yzx20c2zaazbbb20cxxcca1bzbb00001czcbyzc0y1bcy0xxzbz1b2",
+          "aa2azbca2aaz0yazbcx1c2xzbczc1c2c1aa2byybzc2cb1xcz1201b2bzxzcx1x0aza1b2bz22202xyzc1xy0000b1a1bz210y1ya2axby2cza2aay0xz2a022c2zaxb",
+          "cxzbx1xaa0xbyaxzc0xz0accxy0yxy0a000yx1ya0a1cxbbbc1bc2zcy0y2yyybb0xb21xc2a11bbxa0cbbx0z1c1a2xxzaaczycz1xa00cy2bxcxz1a1bx2y2cc2zab",
+          "b022aczzacbxa0aa0bxa2ba10y01x1yz11c12zxcyc0ycza0yca102x0czx00011101zzz0c2xxxxxz120zyx0c1b21y0axxz2c020c1ax0cyc0xc0z1xc1z2abbbaaa",
+          "bzzxcxybzz11zcyyb2ccc0b20c221yxbc1bac0101caz1c1a1zzbzbccy0cbxzybz1a0czyx2y2a1zcaxyy10zay1bz2acaay0x100ay0zz200zczy2x1yyb1bz2bacb"
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(N\u00b2 * L) | Space: O(N * L)",
+      "language": "javascript",
+      "code": "function ladderLength(beginWord, endWord, wordList) {\n  const dict = new Set(wordList);\n  if (!dict.has(endWord)) return 0;\n  if (beginWord === endWord) return 1;\n  function differsByOne(a, b) {\n    if (a.length !== b.length) return false;\n    let diff = 0;\n    for (let i = 0; i < a.length; i++) {\n      if (a[i] !== b[i]) {\n        diff++;\n        if (diff > 1) return false;\n      }\n    }\n    return diff === 1;\n  }\n  const queue = [beginWord];\n  const seen = new Set([beginWord]);\n  let steps = 1;\n  let head = 0;\n  while (head < queue.length) {\n    const size = queue.length - head;\n    for (let i = 0; i < size; i++) {\n      const word = queue[head++];\n      if (word === endWord) return steps;\n      for (const cand of wordList) {\n        if (!seen.has(cand) && differsByOne(word, cand)) {\n          seen.add(cand);\n          queue.push(cand);\n        }\n      }\n    }\n    steps++;\n  }\n  return 0;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(N * L) | Space: O(N * L)",
+      "language": "javascript",
+      "code": "function ladderLength(beginWord, endWord, wordList) {\n  const dict = new Set(wordList);\n  if (!dict.has(endWord)) return 0;\n  if (beginWord === endWord) return 1;\n  const buckets = new Map();\n  for (const word of dict) {\n    if (word.length !== beginWord.length) continue;\n    for (let i = 0; i < word.length; i++) {\n      const key = word.slice(0, i) + '*' + word.slice(i + 1);\n      if (!buckets.has(key)) buckets.set(key, []);\n      buckets.get(key).push(word);\n    }\n  }\n  const queue = [beginWord];\n  const seen = new Set([beginWord]);\n  let steps = 1;\n  let head = 0;\n  while (head < queue.length) {\n    const size = queue.length - head;\n    for (let i = 0; i < size; i++) {\n      const word = queue[head++];\n      if (word === endWord) return steps;\n      for (let j = 0; j < word.length; j++) {\n        const key = word.slice(0, j) + '*' + word.slice(j + 1);\n        const group = buckets.get(key) || [];\n        for (const next of group) {\n          if (!seen.has(next)) {\n            seen.add(next);\n            queue.push(next);\n          }\n        }\n      }\n    }\n    steps++;\n  }\n  return 0;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(N^2 * L) | Space: O(N * L)",
+      "language": "python",
+      "code": "def ladderLength(beginWord, endWord, wordList):\n    words = set(wordList)\n    if endWord not in words:\n        return 0\n    if beginWord == endWord:\n        return 1\n    from collections import deque\n    def differs(a, b):\n        if len(a) != len(b):\n            return False\n        return sum(1 for x, y in zip(a, b) if x != y) == 1\n    queue = deque([beginWord])\n    seen = {beginWord}\n    steps = 1\n    while queue:\n        for _ in range(len(queue)):\n            word = queue.popleft()\n            if word == endWord:\n                return steps\n            for cand in wordList:\n                if cand not in seen and differs(word, cand):\n                    seen.add(cand)\n                    queue.append(cand)\n        steps += 1\n    return 0\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(N * L) | Space: O(N * L)",
+      "language": "python",
+      "code": "def ladderLength(beginWord, endWord, wordList):\n    words = set(wordList)\n    if endWord not in words:\n        return 0\n    if beginWord == endWord:\n        return 1\n    from collections import defaultdict, deque\n    buckets = defaultdict(list)\n    for w in words:\n        if len(w) != len(beginWord):\n            continue\n        for i in range(len(w)):\n            buckets[w[:i] + '*' + w[i+1:]].append(w)\n    queue = deque([beginWord])\n    seen = {beginWord}\n    steps = 1\n    while queue:\n        for _ in range(len(queue)):\n            word = queue.popleft()\n            if word == endWord:\n                return steps\n            for i in range(len(word)):\n                for nxt in buckets.get(word[:i] + '*' + word[i+1:], []):\n                    if nxt not in seen:\n                        seen.add(nxt)\n                        queue.append(nxt)\n        steps += 1\n    return 0\n",
+      "isReference": true
+    }
+  ]
+}

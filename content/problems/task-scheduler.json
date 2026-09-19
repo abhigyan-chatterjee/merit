@@ -1,0 +1,1068 @@
+{
+  "slug": "task-scheduler",
+  "title": "Task Scheduler",
+  "topic": "heap",
+  "difficulty": "Medium",
+  "pattern": "heap / Frequency math",
+  "statement": "# Task Scheduler\n\nA list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
+  "examples": [
+    {
+      "input": "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 2",
+      "output": "8",
+      "explanation": "Each type appears 3 times: frame (3-1)*(2+1)+2 = 8 slots, e.g. A B idle A B idle A B."
+    },
+    {
+      "input": "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 0",
+      "output": "6",
+      "explanation": "With no cooldown every task runs back to back, so six tasks take six units."
+    },
+    {
+      "input": "tasks = [\"A\", \"A\", \"A\", \"A\", \"A\", \"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\"], n = 2",
+      "output": "16",
+      "explanation": "The frame needs (6-1)*3+1 = 16 slots and tasks fill them exactly: A can always be separated by the five other types plus idle-free packing across 16 units."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function leastInterval(tasks: string[], n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The most frequent task type determines the minimum possible schedule length.",
+    "Picture maxFreq - 1 blocks of width n + 1, each opened by one copy of the busiest task.",
+    "Types tied at the maximum each claim one extra slot in the final partial block."
+  ],
+  "editorial": {
+    "approach": "Count each task type. The most frequent type dictates the frame: maxFreq - 1 full blocks of width n + 1, plus one slot per type tied at maxFreq. The answer is that frame size or the task count, whichever is larger.",
+    "why_optimal": "Frequency counting answers in one pass instead of simulating every time unit and scanning all types per tick. On 42 generated cases PAF measured the brute force at 3.25 ms and the optimal at 0.26 ms.",
+    "pitfalls": "Every type tied at the maximum frequency contributes a final slot, not just one of them. When tasks are plentiful the frame fills completely and the answer is simply the task count."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Greedy_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function leastInterval(tasks, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def leastInterval(tasks, n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "leastInterval",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 42,
+    "bruteForceRuntimeMs": 3.2496650000000002,
+    "optimalRuntimeMs": 0.2628300000000223
+  },
+  "testCases": [
+    {
+      "label": "custom-01",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "B",
+          "B",
+          "B"
+        ],
+        2
+      ],
+      "expected": 8,
+      "isSample": true
+    },
+    {
+      "label": "custom-02",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "B",
+          "B",
+          "B"
+        ],
+        0
+      ],
+      "expected": 6,
+      "isSample": true
+    },
+    {
+      "label": "custom-03",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        2
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "custom-04",
+      "input": [
+        [
+          "A"
+        ],
+        3
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-05",
+      "input": [
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        5
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "custom-06",
+      "input": [
+        [
+          "A",
+          "A",
+          "B",
+          "B"
+        ],
+        1
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "custom-07",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        3
+      ],
+      "expected": 41,
+      "isSample": false
+    },
+    {
+      "label": "custom-08",
+      "input": [
+        [
+          "A",
+          "A",
+          "B",
+          "A"
+        ],
+        3
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "custom-09",
+      "input": [
+        [
+          "A",
+          "A",
+          "C",
+          "B",
+          "B",
+          "B",
+          "A",
+          "A"
+        ],
+        1
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "custom-10",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        1
+      ],
+      "expected": 11,
+      "isSample": false
+    },
+    {
+      "label": "custom-11",
+      "input": [
+        [
+          "A"
+        ],
+        2
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "custom-12",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        2
+      ],
+      "expected": 19,
+      "isSample": false
+    },
+    {
+      "label": "custom-13",
+      "input": [
+        [
+          "A",
+          "B"
+        ],
+        1
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "custom-14",
+      "input": [
+        [
+          "C",
+          "B",
+          "C",
+          "C",
+          "B"
+        ],
+        1
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "custom-15",
+      "input": [
+        [
+          "C",
+          "C",
+          "C",
+          "A",
+          "C",
+          "C",
+          "A",
+          "C",
+          "C",
+          "A",
+          "A"
+        ],
+        2
+      ],
+      "expected": 19,
+      "isSample": false
+    },
+    {
+      "label": "custom-16",
+      "input": [
+        [
+          "C",
+          "B",
+          "C",
+          "A",
+          "B",
+          "A",
+          "C",
+          "D"
+        ],
+        2
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "custom-17",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        3
+      ],
+      "expected": 17,
+      "isSample": false
+    },
+    {
+      "label": "custom-18",
+      "input": [
+        [
+          "B",
+          "C",
+          "B",
+          "B",
+          "C",
+          "D",
+          "D",
+          "C",
+          "B",
+          "B",
+          "D"
+        ],
+        3
+      ],
+      "expected": 17,
+      "isSample": false
+    },
+    {
+      "label": "custom-19",
+      "input": [
+        [
+          "A",
+          "A",
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        2
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "custom-20",
+      "input": [
+        [
+          "D",
+          "D",
+          "C",
+          "A",
+          "A",
+          "C",
+          "C",
+          "A",
+          "C"
+        ],
+        0
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          "b"
+        ],
+        0
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          "yx",
+          "cb",
+          "2b",
+          "0a",
+          "bx",
+          "2a",
+          "x2",
+          "x1",
+          "ya",
+          "0z",
+          "cx",
+          "bb",
+          "bz",
+          "ya",
+          "12",
+          "0b",
+          "yz",
+          "xb",
+          "xy",
+          "xb",
+          "y1",
+          "zc",
+          "zx",
+          "yb"
+        ],
+        20
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          "c2xc10y2xzaxaz0ybxzx1",
+          "1cycx22y00zxc",
+          "1babcc0b0012y2ab2",
+          "zby0c1ay2",
+          "2by2xc",
+          "c22az1abzyxa",
+          "bb1b2cc1",
+          "cy20x2xy0z121bxxbz",
+          "2",
+          "xabaxbaz",
+          "2xy",
+          "1x2c1x10xbb0z001aba0zb",
+          "xx21c0cy",
+          "xb12ba2abxc011x",
+          "ac0a0y1y021cx",
+          "xa2azaa122",
+          "a2bcbb",
+          "x0bxab02zyxzxy0cy1zba1",
+          "bb2x2yczbxzyc12y2a2y",
+          "bcybb2cyyxzxy21yab0yaa"
+        ],
+        10
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          "yc1202abbc2az2c0cayza",
+          "xxbz20cxcc0a",
+          "z0xycb",
+          "a1xx1zyxxax0z",
+          "byz202zab"
+        ],
+        8
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          "yab0zz02b0xya0a22xz",
+          "bzzby2y0z0y2cx",
+          "0cy02ayyx0z111",
+          "x21cby2zbxyxxcaax1b10x",
+          "010xcab0xc21a2xb1c122z1",
+          "2021c11yxy21xy1byxyz"
+        ],
+        10
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          "ccx",
+          "cxb00z210ax00",
+          "a01azy0022x1xy01a0z",
+          "0c1c2a0ab0c1cay0zx1zz0",
+          "0yb1a2azx",
+          "baaxxacxc1bx1yzcbcyba",
+          "00xbxbybaz",
+          "0zb2za01b0z1c0c2y2",
+          "10yzxby1x10za1zc",
+          "xzyzyy2a2xbx012x",
+          "111abyx0xyz122z02zz1yyy",
+          "bxzb2cxx",
+          "1y2ybxyxzcya2cyaa2yc1bay",
+          "11zcay1bb01baccy",
+          "xb2",
+          "x2011y0yabxxyb",
+          "xc2bca",
+          "11yaxyy1bxyx0b"
+        ],
+        17
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          "cycbacyy1b1y0y2211ba0",
+          "zyabxayac121yc01b1z0zzbc",
+          "01y02a1bzyz",
+          "02a2",
+          "0ax2z11axy2cy11",
+          "axcy",
+          "a20bxb1bc1y2y011x1",
+          "c0x2cby0z2yayy1c12"
+        ],
+        15
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          "2201zxx0x0a",
+          "100c1ac2zb1",
+          "21ac",
+          "cb1yz0bz20z12a",
+          "bxyxb0bb1cyaazayzz0c",
+          "20cccb0x",
+          "cx1y1ya1y2cb1zy0",
+          "y1yx01bx0zyya0yaa1yxzxx",
+          "ycbay1azcbyz0cxc2z22",
+          "cy1yzb1bc",
+          "02zb0ay2",
+          "1zy0"
+        ],
+        20
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          "x1a2",
+          "xb1y0bcaay1",
+          "bx2c",
+          "1z20c0b10yazx",
+          "1xzbz2za0yxb1bx",
+          "aazxcxb2xxxzcaycc2ycb",
+          "acazxzacyac02bb11z2b12",
+          "a2y1aa10",
+          "b11bbzcbcy2z02",
+          "120bb2x01x",
+          "z100bz0zyzc1bb",
+          "b0b"
+        ],
+        11
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          "a22zb0z0ayyzb2xc1x",
+          "z2zb",
+          "x022ayacy",
+          "yzzacc0bcab2x001zczyzba",
+          "caby1"
+        ],
+        13
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          "10yx2bz0by12yax0aaxy",
+          "cyyzba1",
+          "0cc02x22zb0a0a1bz000yb0a",
+          "c1zb0bx002b",
+          "yzxzcb2b22xzz",
+          "cxbcyxccbc111zzc1b11yyaz",
+          "by11aazybb2012a1x",
+          "12ca1bzb2ca",
+          "1122czzy",
+          "0zazbzb20yycz",
+          "czy",
+          "0cby20zc2b02zazycxz1x",
+          "ccbyb222",
+          "zc",
+          "0cccc1a0zx1y1x2xy1xz",
+          "11y0220cxcya1z2b2bybcy"
+        ],
+        14
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          "0bx1z",
+          "0",
+          "02",
+          "x0bzxazbzcca",
+          "1c11abayxc",
+          "20byxybax01bb12a2x",
+          "cy0azx0cb2zb22222a01a0z",
+          "azbzxbzca",
+          "2zc11ccb1ayx",
+          "xa",
+          "y2021yaxyza",
+          "zybz0010zc11z2yb0b0c2",
+          "zbbzyy10c1",
+          "1az0yab0z2ca",
+          "1acbx",
+          "zz0ac1zz1bc2z0zyxbac1",
+          "02byy1xy1xbcb1c1b"
+        ],
+        10
+      ],
+      "expected": 17,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          "b22yyccz2xbx",
+          "x1az2",
+          "z12cbby01200bczb112",
+          "c2cc02ab2cyc",
+          "zxz2yb",
+          "x2ycy2b2c",
+          "cczaabayx0a12yy1x0y",
+          "bac1011xzczzz0c",
+          "22bzx1by1xcb",
+          "y0",
+          "0xczzxc1211y1ab021xx",
+          "zaay11y2ab0cyz0za0a",
+          "2xz2yb0212ybcb0zz2z",
+          "x202a",
+          "ac",
+          "z121c2czzc0yz2221y1azzb",
+          "ya1yxa1c20cxab",
+          "a1z0c0x",
+          "21ac2x2z120zc1",
+          "z2zy1xxy2yxyyx1z1z",
+          "yyb200zcyaybz1y1xx",
+          "y2ycbxxa2xxab0z1bc"
+        ],
+        0
+      ],
+      "expected": 22,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          "011xyz",
+          "abx2ac0ca0",
+          "cyaaybzy1221c21y",
+          "bzc1yca",
+          "zyxc002zb0bcc1zxay0x1yzy",
+          "ayzxab1yc02ybyzxxc1",
+          "1z021",
+          "xxb212zbba22x2ccz2",
+          "bx1b21a1c201a21",
+          "ya0yaxba0zb2ab1ay0cc0z",
+          "100b2czbc202c",
+          "xaay12020xx1zcyxba0axxbb",
+          "a1axa01x2xac2yxzzxyc",
+          "2x0yya2c021az02z00cy0c",
+          "1xxyc1a20022c0xyxz",
+          "b1zb2xay0abx2x1xzyaxx",
+          "b1xx0x2zy012zyyz211b1zxz",
+          "0axcay20ycx"
+        ],
+        10
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          "x12zy111czcc2",
+          "c2a2abaa0cxbcax2",
+          "za11aa220aa2y2y",
+          "2",
+          "0cbb2cxx2yzy0bz01xxybab",
+          "0021aacb10zb2",
+          "xx",
+          "1yaby2aczaxc0bycx02z0cb"
+        ],
+        16
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          "ab0xbz0zay11",
+          "z200c0by",
+          "bbyc0c0z",
+          "bbay1zybcbc0",
+          "2220babz2bz0ay0",
+          "b2x2c0ccyyy1c",
+          "c0y",
+          "y1bzyx1x1bcya0",
+          "0z1z0cyzx1z",
+          "0zy1xz",
+          "y0zbx2c2a1x1y",
+          "b01cyxyc00b1102202az2bb",
+          "zca0z0ba",
+          "yx22",
+          "x1z012cza1by0bbczy",
+          "1x21z1b11zb",
+          "abazbcx2c2",
+          "z201x0",
+          "cc00ax100axxybb2czzx1",
+          "y12z",
+          "00bzz1cybczbxybczc20",
+          "c00c12c2c1yccz",
+          "aza1cx022101011",
+          "baxyay"
+        ],
+        7
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          "c1122bby2z",
+          "a12x0bxya1yzb1bxxz",
+          "0ccxxaz2y2czyyy2bc0aycc",
+          "czx01cy0",
+          "1bb02yz11zab1",
+          "zb20x0x1yzyz2c1zaab1a",
+          "c11a",
+          "xcycybzybzca0y",
+          "x0bbax1bcx21aazb0c1bx0bb",
+          "zzyc",
+          "ccb2ac1zxc01x",
+          "bcb",
+          "0z0zcxybx2yayx22x0y",
+          "ax10bx1b2azzc00z2c1ba",
+          "bayxaa02y2000b22cyb",
+          "b2xc2z0by0",
+          "xaxb0b1aycbacac1z22yczcy",
+          "baz0y2byb112za1czcybbx2a"
+        ],
+        1
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          "a1z0cca2"
+        ],
+        20
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          "xzx0zybzb2acx2a0b1yyzb21azxyyx1z1x2xca0ax2zaza0ybx2x01acybax20z1bb2c0ba0cxyyz0zz1yxbxcbcbc11z0b2zx1y1ybbcyaxzcbxz02ayyca0122xb1b",
+          "baaxcx0zbybabx1cbzba1ac001a00czxcyy1caxy1021aby0c0x2x2a0z121z2z0ycazxaya12zxcbxxy2ax0zccxzzazcx12yc1abaxxa21azxczczaaccb2zbz0bzy",
+          "cc01zc2zxc0yycca0aczxb1czbxzzcbz1ayxxbzybaa010c010z20b1xc1bayazybbzc0cb2bz1a0c0cabzxx022yyyxba021caza0by1xbaxcyb1by011yb20cz0zc1",
+          "y11yxyacbbz20x2a02021x1yb0a22cb1ccxxca0b0xcyzbb0202zy21a20b0ccbbby2z0y011acy0c0a0zxa1yzazyyy1bxcy1zy0bx1x012za2cby20c2acxxaxa1az",
+          "xyz120baxz11c12zzcybya0acxxxxy02aa1ccaxyyy00z1yx1y20ba2z2yyb1bzyzyyyxc2xa0zca1yy000axzx21z2yc2cyb1cy2czbxzxy0zzyy1b1ab1x2b02y0ac",
+          "xz01czcb1zczaa1yxcc1bc000010aa2xzaz2xaaxxzycb02ycbayy122z0cz1zxc0axxcxa2cbza0y2aabaab010b2y1cxay0b2yc0b2bybb1xxy2xz0yca21x1zxaab",
+          "1cb2bbyx1yy1abcayzz0bbaacczz1ybzzcb001y010cbcacb011c0zac11b01abyza2xz22b0x1z0c2aac211cb1zxzya2x200xb111b11zb1ab00a22aby22x1zzax1",
+          "21z1bbxazzy22zbac1c0byxxb0x1xzb0ab112c1a2a2012cccb0z200xy0zy1cc02y2z2xxxyzcc22zbz2102y0a2ba0caaxycyycayx2az1b2x20x2ya000z2aayx1x",
+          "z2xxy1cbcc2b0a0y2yccyaz1caczay12zbz2xc2b2c0220bzxxzzzyx212abz1xxaz0b0y2ya2z2211ayxz2bbc22abxx0bx20bca1zabbacy2bxy00100za0b2ababz",
+          "byyby100a1c2xc02ycyza22cbaa022byxzx02cccxyxbca212bybybx1zzcxbybxz11zyczz0cazxx0yzcz111zy12bcbyc2xybba2a0xa2y221cz0xyc122b0z2axc2",
+          "1ccc1zax1xbyzxax2z011aazb2yy2c00zb2y0x20zz11a2c1cxb2yxccczbx0zb111xc0axaccc2acacyc20aybx111cx0cc2ycz1bx00cbax220cbc1a22bb1c2a020",
+          "a20x10zb0cy1xby20yxaa2b2a0xz0zbc0yy20zy0x0221cz221yyz0cbx1cbx20z2ac0abc10bbyxzba002yac11ax2yxa22xcazxacby0z00x2abb2y2zzyxx10ayc0",
+          "b2b2yzb2y2y101xz11a1byb0xxz0z22ayxyb0zb2c1zzxycx1xxxyxxxxzcbbb1a2a1zz1y1c2y0xca2012a2z0c1b21zaax0bzzyc2yxy1zzc10x0zz0y1ccxbyx200",
+          "cc1ac01c22z1yy2a0bcaxy1b1zyzz22yza0bzx2cyzz211b0y1ccz00bbczxzzyy0y1z210ccacxybxc0bbb12aa02bbycb0yxxy1cc2caazz112y21c2c1022yz12xb",
+          "yz0ycyaa2czy12a11ya0yxa2zx0200xc00xyb0x2yy2y0xbccyb11y1xzaca2acbyyc1axbca1xz0y1z1azbcay0b21cxy0abx01xax1b2x10yzca22by1yxzaxbx0za",
+          "yb0xaa1czbxc1bzaazc2bc1xz2z1xa0zcya112y21xc2zz1y2cb2c1yy2z1a20cazxzb20x212cyz0zbb2baccaxb1xba012yazxbax1b1az20zay2abybx2bbx20xx2",
+          "xc220bz10bcc202zc21zz2zz00zx2x02yz110aaya2cyayxxzay222cba1zccyzxxyyb0xbz1c1bya0bazz00bxa0ay2az2cz2xca012bx0y0cczb1a20yb020cc12x1",
+          "x22xxby0zbb00zzxzzaycz1c1axxzcbbaxcyazby11azx2xx22y21ca02aycayxya1ab0yzbay0x02bz12bcx212aax2yz10cazzzyx2yay0a2yxcz0cb02x0xc0yz12",
+          "xc2xcy2c0cczb22bczcaz00y1ycxbccayxxxazb1c21zc011ccxxa0ay0xxxbc11z1x00a0z022a2b11ax220a202axy10yy1c0ya2c11b2bc2c00z1ac1x1byzcbbb1",
+          "zb202c020aczcccca0yy1ycbcxaya1112a1xx1101bax2y2xaccazacayzbab0ccy2c1zabyzz0b02by1cbyz202xxab2b1y0zy2zc1211cxyxaba1bx00azz2xaxyyb",
+          "y22zabzz0acxzz11ac1c12z10a2yz22axzzbcyaz02c0cbyzay0b1xz1yx2ycbzaxb12a12cxz12yzcb2cxa102bayabz1ab2yayxzxxyy2z1byccyba22bx2z2zycyx",
+          "byz21aca1ab0ab00c1zyzx2b1cb1b1y11xxcyz0czz11ab1bz11cyzc2b0bz2by2100xx2c10bzx00z2xcb1b1z2b1cy0bb0z1abxcacc12y01xxzyy0zba20cyaz2aa",
+          "2zbyax00z00002xc1cx20z0cyccabac10cbc010c120210zxc0a1x2y02zaa1zb1bc2y12b2bx1b2yaz2a1121z0zyycayya1cayay1bc2byycyyyabcc1zcyx1c2azb",
+          "c100x1cxzaybac101y12x001yc20ay10z2ab2z0yzyyby01xx2zcz2aaba0b2b1zxyyxaabaxbbbc0cbcyy1b1y0zycbya00zayyc1b1x0c1bc20xb1ybabby1a1caa0",
+          "cz0a21100b2xa01b2zzy0abz2zb1yxc2a0xy0bz1b1xcaxax10b2y121aazaza0bx212cxbac1a1axcacayb1cbbb1xbx0z0zb2czxaczbbyc0cz2c1xacb0ca1baacb",
+          "y01cxcy210xcac1byz0a2xxb2bz22x1xyaxbc11ccaazyx0yz1aba2cca12bbx1z0xzxbzxbx0x0xb11a0cx1c0zc1xzyxzcaaycb110czxycc2xb021x11ya0xxz0xc",
+          "a0aa12a0201b11xb2a0xczyxba1yc1a11c0cz1ab0z2ay0y2xbza2zab0z1azzc2b2xczx2b1xxzzy20yabzz1122b122y1zbx1bb0cybbcybc1cx2ay02c1z01ayxba",
+          "2z0zz12211ycycyx1zyaczy1cc2yccccxbazc1yzcx2azzcz12c2yba01c1zca22zy1yc1zb1ac2bya0x1zbzax2xyxab21b20x1z2az0c0z0zayzzy12bx101yc00cb",
+          "xy12zb0ba0y0c21cxc0y21ayy121xaacyy1by0c1xaby1bz10y1bz2aycacz1czcayz0zayy2b2xcbc2zzyyzb2zcac2yz10zcbxc2xx2222b01bbca1zyzc12zcyabx",
+          "cxycxcb0bba10axba2a1byabyabbxxczabcyzzc2x2bba2xxyc2abx21zc1bcz00x2x0bzb1b2c1zy2abz1b0y1y1x20y0xb1zca1b012bbc00bcbzxzx0bx01yy0z10",
+          "2yc1bby11xcabab1ac0zcybb211xy112y2z22aa0b01z011aac2yc10cy01b122112c2a0y10zyzaaaczzaz0b0zz0zaxxxybbybzca2za1020ya1az00zb1bxz12zcy",
+          "0x1b2xyyay0xbbzyb210xzby2y02zx00y212ca2c1x1y20a2xz1cxcy00zbx0yycyx0xbcxaxy11200axcycayy2ca1aabzyb0zb0cxb2b22y1bxbzz0x0xcbcxy10ya",
+          "2zbz201xycz1zyaaaxy20yzb2x10a0yybxyxc1z0ayb110z0bcy2bz02z1aac1ca0xyzbbcx2c0z11cyczyxb0zc00xaa2xb1xyca00ycbzcba2011bxxxyy10c0xxyx",
+          "c0cayyx1xz1ba1cz0x00ybb2aazx1zaay20y0zc2acyc21z1cbz20cybzac1yz0yyy2z0cz1c21axcaxca1yc10b1a1z2111bcbzbxycc2yxa2c0bx1bzayb0zbzcab1",
+          "11yaza1zcxayzab20b0ycx0baxc00ycby10yczbz2x1101y0b0zc00ba2z1xc122by10b1yccyx20ya2ba2b200b1yzyb2ab1cc0ab0yz11yzcxcbyb02aa0bac1101y",
+          "z0ybccaxbaxax1cx02xby1c10abcc111a1xxy0azab0012ya10121xa2a0z2by01b1z10acyx1z1x2xz1cy00z1cxyb1ccxc1b01yxx2aazyzcc2abz0bxb2x1yzza2y",
+          "2ba11bbb2a2bcbxzcy121bczzcbx10ax1zy2cbyz0zxc20xc00012za1ca2bbzz0c0a0aca2y002yzzay2c01x21z0xyba2z0c22yxb22y2zcaa2yxy02bazy2zbab1y",
+          "a1zx2xzyyc02xbz2xz1bc00bba0c1x1bz20220y10110cc2c11c22bx11ac2zb0bbzya2cbzyzyy1acc0ayyxc1ab2zba01y1z01cc2111czb00x0z2a1ybcay2b2bx2",
+          "a2x12ab2cayxx1b2z0a1az0c0a2z0ybbb2cyccybcy0cazcaay0bzc0zy0baxxx1220byaz120b1a0xay2bx2cy01b2xcz2cx2021aa1ycaa1yy0zx2yac2byb0bc2y0",
+          "2zzy1yxzzx1zaca1aac02102bb2a1bz0z0cab1zx1axayzxbyxx1zay1xax0by21c2xcbcbcyx2yxa2y21a0az00yb211z2axay021za0xzbax0bxxczybba10azyxb1",
+          "zaz2xb1b1bbaa0zbca1ay0bba2ay00b0xa1010bza12zxbbabxc2yz011cxcaacy02zy2cc1yzyza2cax22a0zxxxbzx11zzy0zcb1a1xaxx1xx1z0x0cazabza2bcy1",
+          "zaaxxycxycz2xcxacybac0bzxy1xzzc20bbccxx20zz0xax2yczxayc21xb1bc202z121czz2111y0axxx1x0xy00czy2bcby12zxa12z01100z1zy0ac1xybzby222b",
+          "xbbbza2xzxzyyyxc2yayyz00a12c0xxx1x2211zbzx00x112azccya1zzx0002yzaaccz00x0b20x1bz1ybcb2ca1acxb0yxxy2b1az2acz00cbc201b0xcxy01cyx21",
+          "xac1b0x2z111aby1zy0c0xc010cb0axcy2ybx102bzbb2z01cyx2a1ab10z0x0aaybcz111bb2x1c1yccabcyb20cbayc1zcxa2x1a2b0y1aaa0xxzxxba0aazxbxbcc",
+          "02bzz2xx200bxxbzzca0za0x1xbyzabx0y1b2cybz0czcz1bza102x2axabyx0xbacz1yxc0xax1zcyza20yaxzzxx2axx02zc1ab1bxacxcbc2xx2b01ycxx0cxyy1x",
+          "1bz00c11020c1a00by2c2cy01y1y021bzc1xcxaa2z1000z01yb0ab0cx0yz21za00xx1azacy1cyxcabb00b2x0c0yy220y0bbzcyx0yac1abb020y0cczccx1c2b1x",
+          "xacxy01bcbyb0bybzax11baayaabx2a02y11z0zzzzxz00azzba10cab2yxz1120xazazaz1x10bz01b0yxc22ac1by21c1b12xxxcbb0acz0yxy1bc21bzxbz0020xx",
+          "bybbbzxbzcz0aya2x00zzc2xb0a21zcyx11cycazy2by1x1y0azcxxac10yca20z01z00b2yyx20bczay1cc11ycxxxazbc00cabz1cab2z0c0xabx01yc0b10y1zabb",
+          "b12xa1ybc010ycbzb2c0a02221b22bxbcca21zbacxcb2yabb2yz2c0axya2y21c1z2z22xbaxaxcyxc2xzyc0b2yy0c01by0c2xbyxz2c0cz00axbyb2b20bzbzzycx",
+          "ab0x0bbc2y1b2zy2ybacz0cz2201cya2ccc0yazx01c1z12yy02xyby0zbbbxbcaby21a02c1122b0axa02zx2a1c2xcbzc2za010czbzx2byy1yyxa0xy2a11aza1zy"
+        ],
+        20
+      ],
+      "expected": 50,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          "azc0zab01xb22c0b1acyx10zyz0c2yb11ccz0azxbxyac00zacx1yb0121cz020cbbaccz2axaz0a01yy1b0xc2cxybyx0x1b2cxcxbc0ayxc0axba002yxxz01a20ay",
+          "yzyz0xzacaaazxy1yb0cy1zzybba2czzz2zxyx0bbcbaxx1bb2zy1x2cacx02y2zz1b0b1022acycyaax0122bc120200yxcacxa2122yyxyy2bcxa2xyacycyaxx2ba",
+          "zzzb2yc0yzaazxycya2b0y2x1xzyx0c1x0zc1b1c1ccx1cyaycc0xbcb0x10b2cab00abaacxbycaab2zbxc11cyz1cxa2y2baab2yb20caxax00czyx0b1cbxbyzbzb",
+          "bacc02zc0cyyzby1zybacczc011bb0ycbzcc0zz1010zcx002122122x0b02xbxzaxaz21cbazzcy1c20xxxacbc0a0zabb1caczcbxba0cc1c2y10z1aybcaac2ca00",
+          "12y2yx0cyb20cx0ax0c2b11z00caz0xybbbzzaxyc2bbxayx2xaxyba1aazbyazy02xz0zcbz02b2ca01aycc1bbxxcc222z1czyz0a0xxbc1bacy2b1b1zcycbyzzbb",
+          "1y1y1cb1azy00c1z2zzb021yaax2acby0c0bx01bz1121bbcb00x0zbzz1x1by1a2c1cxza0az01xaxa0yycbcby0by102xycab0zycxz0112c0z0a2xbczzac1c1zb0",
+          "2a1c1baxx02c0xzxxazzayy2b1100zz202zbc10zc2c200y0ybbbba0b12b12ay0xx120bx1bz100azx2yyyy0xa0aaacz2zzc0x20x0a0c0c0z2c0xbc2b0y2czxbba",
+          "aca2b0ac1zcxxyx2x0yaybcabb1bbcyycbb1zx0b1a0b1bx00z1ccyacabzz12ac2ybxa2a22cxzbxazcxbcyy1xbz2y11020xycxy0bycx1010yzb00xzzb1ca2y0y2",
+          "0abcz0czxbxzzczbazazx1zx2b0yx2xb2yb00zzxxa11ay0bb1cz0xayaa1yc0a22azab1b0yyzz0b2z1a0y11bzbaxaacbz0xcbxz2aayabaybyz0ycc1bczc01b22x",
+          "11yz1xbyybz2xxbb1axax10x1bzx22zy1c2bcxz012x0xby0cybc1bbxa1cya121zyb2bz0xc0202za1yzba00xyx0cy2120baxbxbaayxb2byx000bxy1xcxzyyabc2",
+          "1yxczbccz1ca10zacybcaz1a1x1baayx22ccbbyz11z2y1yz1azyz21by2ac0xcz1ax0zxbx0by212cyzz00yyxa2zb01zyba1c1c2y2cy1ybya1axyba1ya0zaayczy",
+          "2cbycx0byxa1zx000byyyc0zcxyc02xyyby12c00bc21z2z1z01001a2a0bcyx2zc2ya0c0a121abaybzby1zab2ax2c21cxcyya1xbbacb2bxxb1a210aby01cx2y1b",
+          "caccxc22x11yyb1zy00b100cay1b0aya1azc11yacz22xz202bcczz1cyy0b101c22yczz0baacxbb11zxxbc00baybab1zaczb10c2xxy11yxxc02xbabxacaz02bzc",
+          "21xx12zz2cb100bbc2ybb1xa2zaxyy0zbcyb2x22y0a2b1yaaz0yxzacx2zax1bazb0b21cyaba12xz01yxaaax20a21a00c002cb1bzzxz0axxbax02aaxabac1cyaz",
+          "xyc01bbby2x1zx1yz2yx2yz22baz01ybxc2xy2xbzcax11ba1ayy0ybay01a001axx0c02aya2zazyxaz00ab20y2102yc01xcayybx2yz0ayzyyabyzyc11a1a1az12",
+          "0aby2zb1cyyy1cxccaxbac21za2xayyaz2axzbb21b2bxxzz0b0ycazzz0z1yaczaycabxz22zx0ac0bbx2202b2a1221zyxyxzxzx1zbx10zbz22bz1x10xc2x0cyyz",
+          "bb002c1xc1acb0y21bca0acbc2200zc02xybzzbabz1010y1cc2bcaz10z1c2ybxy1za2220yz0zccax02yzbzycbyy11xcyybxycbx22caa22xa1azxy012c1ybb101",
+          "bcybzbxbzc2zy12bza0b2zx2aaxc0xxy1c1c1ycxb2xa0b12xca0y0xz12cyxy110z21ybxby01zx0bc1zbz0c110xayy2x0a2zyz00100yay1xzay10xc2xbzc2aa0b",
+          "zz2ba2xz2xc20xyczz0x2xaaa2b201acyyaxxayb00cybbb20aa2cb0xyz02ayy1xby10y0bx02y1y22x0a10z2b1xa0x1z1byzcbb2cx1xbc012xa1y0yzcaz0ayx21",
+          "1zxz1122bb0b0cac2bcx1ba01c21c200ayb0yy2zzccy2xz2y11xzcc21az0cc1bayxxb21zba1cbz2xzaxyy0yz0y22xbcbxycybc20zy1xcaxxbccc1azbac2101zy",
+          "bx20001zy2z2bxcyc0211yb20zcaz1z0x2x0zcax1z2xayzbzy2ayay10ayyaa111c12bazacccb0ba1azb2yxazzcz2a00abx2cybc1ayx20cayy2zbz1b1bbbcbcza",
+          "axz1bxyxcya0ycycz0xxyxcyy1yb1zzz21ca0c2x0zyxz22yb2xyx1yab2c1c1zz0azbzac01zzbczyc12ca11001xyzz10yax2b00y0ac2cy2xcczabycz10c1acxcy",
+          "bcxx0bxc2za1czb120x101xb0czc0zy002bz1axcxzzz2a0bxc1xaxy0bz0c0cyy01ay0cc02b1bzb0aczc201a100ay0yb12z1z2zbc020bcazyx210a1yab11zazy0",
+          "ya2ycyz0a1zyabza20xcb2bcc10yz1x21abzzacb02bzy00acyb0bxyy22xaz1x0ycy2a0cyya0xa0cyy1zbxxazxby10z2012azzzz1c11x2c0y0ab12zbx2zyyz11a",
+          "cz00ay21x02c0bb0xxbycc020zx0yzzbz2220x011y1cc0ya2z1cb0000xaxc2b0azxc1bza022xc1zxc1xzcybax11x1xc12bzcx1baa0210b0y2b2a11ay0az0210b",
+          "cybcz0zcx1xybzb11xyzy1z1yyacc2yaxzzyycy11ycccy0yxaxycayz2201czc2z2z01c21c10abzxyxxcybxz11a2xxza0bz2by222ba12xxycxx1cay2ybxbc2yax",
+          "x11b2azbx1b1b1xb2x1ya0b1x1ay0y1cz212yyy2xzy22y1bc1az211ccb0yb1z2cxbxxy2yz21byxczcx0cccz210yxy1yzcyzzz1y000a0a0zc1yaxxyyzaz00z22x",
+          "21ybbxcz11a01xy0abazy2z1yb1cbz0ccyx2b1xz2y22yacbzz1xcz1x1zzxyyacb0001a2a2za0a2z21yzbbb2b2c2b1xb0y11czbcz120a0ya0aaxz0cyxz21xzcxc",
+          "ycba2ac2zbzzxxxyc0yxxzac1b0a1x0a110xx0bbc22bcxb1zz0xxb2z1y2b1aa000bzzyb0yxb01ayzacxcac2cc1aaxyz0c0cc2cczbca1xy0zyzaaza1ac0a202cc",
+          "azxb0bb11021cay11ycz2zb11xcx2ccxbb0ybxxycyz122ycz0zca0axcacaxc0za11zx01x1y21by2zzcyz121bz2ybz0a2cbx1bb2yczy102b2c02xcxaxz2c22a2z",
+          "x2czcbcxc20xya0y02011zcyaby2yxba0cc1cx0c00xxzbxyc0bcx1cyzab2y2b1x1yb21cbzya0yb10c1yx2bbzx100abyyy2z0yzbab1x1x0yb12020abbbbxz00az",
+          "112a00axcazby0a1yzzzxy1az1ycx22z0zc1bzz2xzybb0z1c0xy1zz1zcczabxy22y22c0bxbb0ycz2z0c0bybzx1ax2cya1xxxx1xcayxa11022x0c200yzy0zzxz2",
+          "bczx2cb212zbxz2x1ya1110bca212az1cbzbyya10c0x1y2yzx20c2zaazbbb20cxxcca1bzbb00001czcbyzc0y1bcy0xxzbz1b2yaa2azbca2aaz0yazbcx1c2xzbc",
+          "zc1c2c1aa2byybzc2cb1xcz1201b2bzxzcx1x0aza1b2bz22202xyzc1xy0000b1a1bz210y1ya2axby2cza2aay0xz2a022c2zaxb1cxzbx1xaa0xbyaxzc0xz0accx",
+          "y0yxy0a000yx1ya0a1cxbbbc1bc2zcy0y2yyybb0xb21xc2a11bbxa0cbbx0z1c1a2xxzaaczycz1xa00cy2bxcxz1a1bx2y2cc2zabb022aczzacbxa0aa0bxa2ba10",
+          "01x1yz11c12zxcyc0ycza0yca102x0czx00011101zzz0c2xxxxxz120zyx0c1b21y0axxz2c020c1ax0cyc0xc0z1xc1z2abbbaaazbzzxcxybzz11zcyyb2ccc0b20",
+          "221yxbc1bac0101caz1c1a1zzbzbccy0cbxzybz1a0czyx2y2a1zcaxyy10zay1bz2acaay0x100ay0zz200zczy2x1yyb1bz2bacbxbczbcxbbaazbc1zbbacxbcbba",
+          "xxab0z2x1x1c1ya1c2abcxyc2xbbxczxc0y02yx0yzx2ayycbab1za0b1abzzbyz1z1z1y1z2xxcaz011z0111cc00acz0c0za0cccxba01cyzxa10cy2yxx1100c1az",
+          "bz1ycx21x01ayczy0bc2yzzcz1ba1z0xxzxz1y2zzxczxxx11az2b0czb211yb10xycza1xxazz12cyz1z2xxbyax22yx00ayyxcyaa0bz1c102c1zby1yx1ycczabaz",
+          "1zcz02a0z0czayza2ac1bbccb2cxbzzzb0zb102a200c2bx1cbyxxa2aax1aaxxcc2zz00a2y1a02baxaxx1azbz2c0xc2ayy2z20cxyzxzy0by1a120xcba0bxxyxyz",
+          "axyx2ayaxczx10z10c112yxbbaaaayay10cbazxx0zby0ayabycy1xba1cabbx12yya1bcxb00aa1010caabyy1xyayxx1aa021xayzbz112czz22czz0c0z1zyc120z",
+          "byczz112caz2cz2ccx0b0b22a2bay2cxz1bzz2020xz0bx1cxa2b1cbyx0yx2bxaaaybxcbby1b0z0ayz0zxy01a1a1zzay102b0z1a0a1b1y2bbxb10zx1azy21x0ba",
+          "ca21b2c1y02ayb21c1ycayz0bcbx11xa0c0aycxz1x1bbccca11z0a2z2b01ay020bbbyz102xcbacbcx12z2y1bc0b2axxcyc0aza2ab2y2ayczx1xx111xbc022bcc",
+          "cb12bcx0zxy0a0az0axz01xc120cx2y1b0a0b2bcazy0y1zy2zy12102c1zb1z22byyyy2xzzxxzyxz20yy0xcyxz22zx12cbyxxzc1zx01y12zcybyb020abxy112y2",
+          "0xya01b100zbccbzaabyb22ycb0xaaabzyy0xxxy2zxca2zxc0x2acby1bbx0xx1ccxybaxy001xxbb011c00a2yx102zza1201xzcb0c0xxzz0yxyx01axb1a0zz0a1",
+          "10b0yzxyzy1ccx22xa0zaxbcb2ayb2y1cyc0ycx0yc2bxbacy210cxaxbbbyc2b12zcc2cxazcy2a22a0cca1ccxzy1x1cbxcab0cay1210220212z0y20c21caxbzyb",
+          "000yzaz1xax0c1cy0xcax1y1011zx1c0axcbyzaz100byz221a1bzzxy2cabc2yaa2x2za10z1zzyza2b1102a22bc0z1yccxb0y0xaayacx0x0c02yxabcay1bx1c1b",
+          "1zz1y22zz2c2yxxa01yz2y10ayybc2xxx1cb22z000zybxc1bza000c01azzbyx110x00xyxczcz0bbbbac201bcaa1cacyzzbacyzbabaaxc01byy2bycb1yc2b1xya",
+          "zc11z2yy00xyzxx1ccababcb1ccbyzzx100b2yx1azc0xzbaay0c110z1cz0zcacy0b1zcacx21yxc0aazzzzab12xxcz2y202x0a12y21ayza0b101xzx1yyaxy0ya2",
+          "ax1x0a0aby220a2ya1x22ybx02zc2xa0bzx1abcycyy0c0xczbyy22bbcbaxbycb1zb2212b1ybzbzc0x2yabbcczc22x1zaz00b20xcx1bx1210zzxaa1xazazz0az1"
+        ],
+        0
+      ],
+      "expected": 50,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          "b22bc1122zbazxy20yabaycy0cyz0b2zb1yy0aayzcbc2bzbbyzzbcxbxayy22b22y2yb0ay0bzyacbbab1a1z02byc2xbzccba1xcc2x0a2yx12xa0x0x2yzc00yyxb",
+          "0y1ab0xyccbxcaxxab0cxybaxba0bzx1ccbzz002y1xcx0zxx11y0aya01caa12yx0bycyyc0a12b1zyx1xy10yc1x1cax10x22cbyz2yby2y0abbxyyx22c12acaz20",
+          "za1xcby0yyx0zb01xxzazz1x2z1x02abbcx0ax102bb21cxxxzbaya0by1xbzxbby2xa1y2ca1x0zbb2xya0zz12cabayxccxacxxxcy1a1xcabxzy0cbc10acza2c0b",
+          "cxbc0b0xcy222z1c2x10c1yzyxax0y021bbcax2b210ca2c2xcxa22bx22bz22byyz2cca01xcxb2c1b02bz1cyzaaaaaabzcbbx1b12zaaczz0b2yyycb2c21y12bcc",
+          "2az01a201aaaayx0zzbz2y2c00bx0cy2xzzazyc0a2a1a0xx021za2ccbayab0y2b22ayyc211x2x0x2b0yxcbc0yc2y0ycax0cz20xbyyb1a0y0czzyac0xzz2cyxab",
+          "0y0yy222axbzx222cyzc1azayayxxxxzx2yzb0xcbbb121b2axxbx1xc0zxa0abb21z0b12022aacxaabz0b2c2ax0z11yyb0ax0zzcabybb2yb2yxx021zac0xccx2c",
+          "x1yzz0bbyayc220azazx1000a2bbc0aaxa2xz00ba0c1bzxbcxyzza022c0b1102cx2yyabxy2a21xzyx122c0axxzbabz1aa2zbyyca1yc000y21b2yc2z0xczbya2y",
+          "xcxbcxyc002a0a21c0b10a1cxy2x2xzzx2c2ayaz0bc0za2c0z2c0yb200z0bxa210bcx2zzbyxy02cxy2yaac1xaa2000bab02xbbxzaab02aybybza10c2x10cazxy",
+          "a111y0ca1c00ccza2b110acbya022ybxxx1xbczzcxz0b12b1axcbbca0bx0x2zc112z0bxx1b2yyyaczac0y2ab0yyax1xyb012bc112ccbacb12cbxy20c2z11x0x2",
+          "b2c2z0azx1a1200b11a01x02caza02cbccxzzcb0zaz21by0cb2cbcz01a22yx02y2accazax20y2ycyz22bbyz1221a1bzcx20101x2ca1y0bb112102c021ccz2x1a",
+          "2z2a0cxzayaz00z1aabcy2czzyyc2010xczycxc2y0xx2bz0cybzc2z1cz0cc0xxz2zbx2b20zza12y02zaz1yyxaxyb2bb11cax2zxyabzx0ybzy1bzzxbxczx012bx",
+          "1zaaycbybazc102b212ac1ayzcx222z0ccz200az20121yycc1z2zy2z0zzyc2cybb0zacaaacyzxxbxcbzzbxazz1a2x02cbyyy22001c1x011y0cacz2czyxb2xc2b",
+          "cxbcxcayba0ab2x0y1cx21za2c102b1ccz11zyz2y1c0cazcb2102xb0a2c1b1cb1xx1xcazcccx0cb0zbyx22cxczzx2xz2yy0b111xc0yxazyy1bc11acc1bcazx12",
+          "bx1zc22xccabcz0a2xcaay2112221zxz2zcx20aaxayyx0bzb1bzcxbacczabyx1y2xaxa01bx1bbc0accbxcb101cabbbb00bccaba1cz21xxxayx00zx2ac1y2bcyc",
+          "bya202czazccy0caxzz0baxzc1abx1bcyx0z2z2z0ycxaybcac1a0bzc1x21yaca1b00a0xccy2bzzycaxyaxabaz011z0ybz1zzy0cxy1bcy10aba2ab2baxa02xb10",
+          "b1c02a2a2bz1bcabza1bx2a01bxa1xzbayz2y1yx0cbxaa0cz22z100y1axb2azxx0c1y000cbzb2xc1aaay000byzabba111byaayx22byazxbzcay2ay1021xbx11b",
+          "02yb00bcx1ya11yxxcz0cx2yb1abyc0cax1a212cbb0acayb2bxz221cbb1a22y2ab20yy2ccb1z22x12z1a2caay2a01z1bcx0by0bbc21yc022c101ayazxbyb0bz0",
+          "12xc1y22xz0zb10cya0y002xy0ay12ycb1ac2zb0cczx0y22ca2xy2022xa0cy01c21b0abbybxbxzcx0bxx10azcxayz22b0zaczyy1cybb0zaxyya00b11b2cy22a2",
+          "a012cbyb1y02bxzc00y202x021y20ybzzyzabbcca1zx0azbb1b0ax220x0zx0cb2yzza01aaaycy2ycay00y20010az0ycayz0z11z2a1yzxx2a0cxzy00cc0zyab0z",
+          "zxaa0ccbccyc1011y0czb0abbcybbz2y220aa2ab120112cxbcz1ay1c0yc0bcbcax2yx1zx0z02a12zczy2cycb2x2zyzyaa0yyzy1zcxbbcxc1y21b110xxyc1cax2",
+          "0cb1za2ab0xayzxa0xz22cyxzxyaab2b0112y2b0zcyyyzyy0a2x2zb1x12bazxbc2122y20022cayz1c1by1cy0xab20ycycx2x1c2xxbcb21a0cxc22a2xccbabacx",
+          "aab20100baa2210ba2byxz0byax2yzxb2a1y02cxzy0zbaaxa10cazyz01bzaa0000ybba0zybbxya12zb0y1a2az2x002xy2c020c01a2x20222b121bzaz0cz1b10a",
+          "xcabc0z122c0ayb2azcb1zz2zb111ybc1y0cbb22cyb0c0yccc1z2b1ayzycb2zyz1az02caccz1aaab0xz0ya1cxcy1c2c2zyaab122ccy1xbc0b02za1baz2abbzac",
+          "bbzc0bazx1acxaa1b0zaa1yb2y2zyxc2102x0zcyy1b0b2c1xy2bxbayzacz20xcb1yxz1y2xzc02a0y20a01x2xyy22x2yczx0y0c2azza11ya0z1zzbz0cxcaa2zzb",
+          "1yabxbbb120baczy10acca0zxzybcabcc1zzaac0abzbzxczy1za1ya1b1xc12azzaxbaa0yxyaxbayzcax0a2ybb2ybxzc2zzxzzcaz0baa01aa002ab2011yax12yc",
+          "xxyyzxaa0110czzaxczab1x0zyc0cyb12ycaccxxyzbbaaa0azxa2202yxacbb001xcayz1z221zcbc0yc0axx0cac1zz2cby11aca1bbzcx2acx0cbcbz2b21azb0bb",
+          "0x2zz22bz11cb022aazx12xb20c21c2yzyab2cc1caac2xy2cxccaybyy1yxc2bb0zxacacaxaycxcc11zcbxzxac2b0za0y0xaazx111z0b2xcbacb0b1y0ac2xbayx",
+          "2yb00ccbxb01a2az02z001a0x0cb20zzayyyya100xyxx0zay0c1xcc0c0bbycyx0cz2zycb22a21b0cxyb0yxx2zxcy1czaz2xxxyxaxbbz210azyz10y1z10yzxzx0",
+          "1y0020b0xycbczyza2azy2bzc0czz00y1cbxa1ycxzbyc0byay2xxc0byzyxa10x1xbaa2b12zccbbz21b2yzcxzyc021yy1ab1xca20zcx111c00z0xx1abyaazc12b",
+          "zz2aaac1ccbycz1xb0ayxbx02b1caxbx0zzc20cac1xzczzxxccc1xx2cayz1xzxcx00b2za10ba21a2c01b2cx0aba1bc0bz2x22cb10y2y01xz1yccxxccc2abyycz",
+          "cccz0a0czxza0x1xbb2ay01ybxa1zx2yb2zcabx0c0a2y0x1z0bzy1azzybcbzb0ybbzz0yab0xz121zca1acayc0cab1bcbcybxx001210a21xbc011xbcc10a1z221",
+          "20zxxyxbb0zyxa2zcxbcacbbzaz10yy1y1aaac0210yy2010y11yb0x0z0ayzaa0xzzx1xa0y0c11bbzc0xzxaz1aczzbc2c10x0yxbzy22z0zy00xyzyyxyybyb0xxy",
+          "1yxy0ya22ccxaz20c1x22ybxcba1cacb1a1zy2zxy0zz1ccaxaayy0y0bcxaaczbcbx1z0z20xzz1a20bxbyz2yxyz00xbbx22zaxycx0ccaxxy1ycy0xbayx10202aa",
+          "zcy0acb11yb1yxayxzacx2zacc2y00zc1zcxxc2cxacacz0bxxaxaxxy011bb01za10c1zzxacyzxabcx2y1cxaxycac2y1bab1cccyaza10y21b11zy0bcya0z2x21c",
+          "1cz2bcczaz002yy2cx1xx1bcbcbbab212axz20ab1a1yaxczbyzczb1bccc10yxx21ccazyccb0c0zy0xxa2xxyyy1ay2212zay1acaz02zbzx11yc00xcz0xyc111zc",
+          "zca0b0z2bccazccybbz0xaczz0x0x1c0cyca00bzy2a2zbxxbx2aay2xcbbccbcbzy2bz2c020210yabb2zy22a0yycaa0c21121xz2z00y0yb0cxycbc0ccbxcaybay",
+          "y2xby12bb11c0y2bc2xb2aax000acaaazxc2zx20xbazazcyx2x2az2c0caa1020c10xxc2x20xx10b2zb20c01bx02ybabxc2cxxcb22xzc1b21za0110ba0zca22by",
+          "bc110b12bz02x2yz1cac00z020czbcz1xy2czzxy0a1yca1y1c00yb101a2a21y1y2zy0yb2x2yb01xy12zx022b0y2ayyzac20azcbac0c1a00y2aa2cy2yz2bxa222",
+          "az1y22x1yb2z0xac1zaaaxaz00bzxaz0yb2yx12y01a21ab21c0aabx0zbaxyyyyca01yz020zcya0ccbzz01cz0cccbazxxy1ay1y10y2yzzx0zcbx2xza1bcyzzxbc",
+          "aax0ccbb1xc11c0y22xz2zz2zccyczczb0b2z1zb1baza2azyby11yy1xzxzcy12yb1bzy1xyyxazx122axxb2x0bbxx2c0a2122c2bzc121xay20czbzcb1y0zxzx12",
+          "b2bz01xyy01b110c0byxx0cy00yzaaaba22z1xa2xzcbb202yycy0y22y1z1c2z1zz2c2baccb112bcy22x1b1az2yyzbyx01c202bbcxax22z02bbx12byzaacb11az",
+          "c200xxzbz22a1azxc0abbxbax2c1yczzbx0aa2z2b2bayzacyx1x0bz21x00c1bxz20xxzxaaz2z0bzy1xbz00x1czzbb0yx0ac2x11c1ac2000azxyc2b0yyb0bab1z",
+          "xz2y0yazbax22ac1xayc10x0c2byyy1b2xzxa0a010yacc22y21yzzbxz21c1b1yxa022bb0yaxyx22b21x211z2xxx0y11aybxaabzx20ac2c0czycaybcxbaz11cay",
+          "baa1ybxcyzx2ba1ybccy21a21c0y0xcczb1yccyayxc0bb2aaxy020b0xa1ac201cacaazx00cbzx02aaz11zaab1xczaa1x1bxa1ccbbx20a21b01ccbayzy0b1bc2b",
+          "a1yyx0acxyycczcb0aczcxybcayy11c0axc0zzbxc10b1y2acyzz2zb0acbbbz2bc020y20y12020cx10aa22yy1ya2x12bba1ycb0yaa02x0cxzxy2y20y1a2cbx20z",
+          "0ccacbcx1cazzaxxaaaa220xy01xbaa22bbyb0aab0cxc1x121a0a2zy2b201y0xaaa2yxx0bbx1bb2bzb2zyz2cycaxyabzxzxy00a1z0yyy001caba2cyac2b2ccx2",
+          "yac0ca2z2b1yzc1xzx0ycxz1aaybcb2c2zb2b0bczzay0baa1cxay00aabc2x2c1babcxc0bzbcay2za100zxyy0aycc10xy0abbzxaz1xy1cyxz20b102cczbc1c01a",
+          "000z0ccyb10212yy11bcaxzaa0b2y21yccxzyxyay002cbcbz0yzczyca0yybbb1x22b2c1xa0xyxzy22cb22y02a00yazbbacbczyxybcxab0ay20ax1cb20aaxcaxb",
+          "12abbyaaxy1bxb1b120ab0cza2yby12zzabbx1zxz2cba1c2212a1c1ax1b0b0a22b1ccx0y11b2x1zxa102bacy2a2zz12aacyyxcx0ccb0a002z1y01a01zb0bxzcb",
+          "ab0yc0ba1axxza2ycyxb2xcy2y2bxaayb0bazxacbzb01z20y0xxzxy2bbazaby10yc120bz1x2zzbc2b11zbcxz12bzzyc0a1cx0acyy0zy011cazb1ba1xa21bz0y1"
+        ],
+        0
+      ],
+      "expected": 50,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          "x1axb1zyx2ac1yby2z1c0acczy020c1c22ya100yca10xc1bxzx2010czcx2021a0ay220xcazzxyaza2c1x0bz10yazxz01a1211zzyc0bax2ycc1x0c1xcaccc1bbb",
+          "z10b1b0cayc2zbyy202xazcb0axccac02abyc0y1ba02ab11axb0x1azaayxxc01cyy0xb1cy10x2a2xa0zyacz2zbxxc1c1c2bcb0xzay0ac0010zc1c2yzx1yza1a2",
+          "0ya01z0aca2abcaccbzyxayy2axcczxxxcacxzbaczzzabxzyzax0222yxxxxcyx0c0ca2az2xbcyybca1z0zcabcx10xb11yzycba0cybx1zbcc01bxb1zx0c0y1zc2",
+          "0y0bca0b1xaac2yzcyaxcbbzxzzazbyxcbbyxa2111cy1czyccb22xyz2bcay211a010xxxc20zbzacz12y0ya2z2z22x2cz01c0ca2y01cczyxzzb0c2ccczab2cz0c",
+          "1c20xycabccxybycaa00c1ac00ayzaz0xcb1yaaxbabxxzx2cccy1bbx0aa0a2c11az0y0b0a10c0yx2zaazx1cxy0b10cxbxx0bayyb0ycxb0zyybx1c1102z10a0xy",
+          "ycay0b1zzb221ab1xcycacy2x1yyyb1cxyz0zx20y1aczy2zx0c02ay1cx20ybaazx2zz1ycb0yxzaax12by0ay10byx122yyx1a00b21z0y01c0x02bzyb2z2aac11c",
+          "ba2yza120ayxz00azaxx1y02xxa011xa01b2ccc001yba21220zx2za01x0xyc2210azzayccb1ay20b201a00xcab0ca1xc2b2c1b2c0zxx1b1a20yyc0ycax2xbxzy",
+          "abyz01a0cbz21xazy2cyx22yxacb12b012a00yxbz2ab0yc2bzax1ab1ac0ya1axa22a2b1c0c2c02cyy2zaa1c22zc1ybb02a0b0bc100ca2a2caxb1ac0xyyyxz0cy",
+          "21abcaycyczx0abcx1zxac2y10ax01acyx0zcyazzx0y2b21zyax0y22cbz11x2zy00cxcx0a00120ybczy1ccayc20cc0ca000b10cxz0c2xxz21022111cz0aybxy2",
+          "a2yxbzx2xbcc0aaabyya10cbyxaybxybax21zc21ca20z0yccyazca2cxzxa100by20c2az02cab1zxa100b20z1cyayxy1ybczxbx1z0baa111xcb1zax0bcaczbx21",
+          "x1axycyyy1y2ay10a120cxzba10zbb1a2zb1xc2zbyz0xyab2z2azz2bbz1yy0zxb0a11aayaxayzyb2yax2ccb2ax00cax2z220ya122ac0zczb0y0xxxz0cxax1yya",
+          "2a01a221acabb2yxbbxc00bbz2y2z2azc0xcbb0ay1ccazx1a11yzyy1a2cxb1by0bzxy0100c0cxz0azxac0b2yacz121ax020aza0xa00x0azac2b0ya2baxabcaxa",
+          "zcayzcx1z1zxbc0aa20ac1z1yzyycazy2yyzx2bb2a2b20zz2xyyz00cczcb11az00ax0b0cy20a1ay1c00acxzbz2zabzxab1xb01bz0az21azccyybxxzy1ya0yzxb",
+          "z1az1bb2200y0x0z0b2xxz1y2102az1acx11b2yxabccaz01xxxc1xcx0yyac2czxc010cyc11xcx2zcacxcabyab0xxc2yycxy1b2ca1zzbzyzc0a1z0bx2xbaa0yxx",
+          "cc0cc1111xxb02a00y1a1ax2zax0azzc2ycyba1yac1ya01z2c010cza0caax0x2z0y0by1yz1xb2x12yby20azzayxc00yxccxy0bcbc22bbzy2zxyaabc10ccx2y1y",
+          "cz0121b222ccx1221az2yb02a0bxyz0y12y0az201y0x2xa1cx0ba2ac0b00cab0zzz120yz120zzz1zbcy10yaaa021z202cyazb00zyzbccyyyb21yacxx2020a2xz",
+          "ab1ax0xayycx20acaza22xaybxya0b111cyzc2ybxz0y2ayza1xz01y2az1xyaz2ac0acyycaxbz2cz2ya1xycaxb111y201zzbyb20y2cxa22cz202yb0cxxc0az20y",
+          "101y2xb1xa00cxbzb2b122cyc0zzy02a0cxc1cx1b12accx1aa0zy21a2y11zyb101zzx2b22a1x12bzbz1a2yz20c02x2y2210x2aca10bcx0bcbazb22bc220b2ca1",
+          "00aba1cx1c2c02xxy20y1axza01z1202xxzz1a11xbcxbzzzaz1azcb21x2yyyayz22xbbyby1abcxzax021bz02ba1112acxyyz02yy01yax00yab0xcz1x12xbz1z1",
+          "cc1xb202xacbz2zycxxcyb0zb2zy2x00a1xyy01y0cbzz2yb1yb0b1azaccb2b02bybxyy10ay2x11yacc20yxxac0za0cb2x0011b0000bacz0xycacccxy2abx102x",
+          "1zab11bzcyy0byyacxxzb1y0z0yc0ab20x1c0xbz0zzcc110ybyaax2zaczzbxyyy201cc22xay1xxbyzy0bz1yxczbby1221zxbcayazyx1100b2xa2z2aab21xbyxb",
+          "bbyx0120cba12b21ba02z0ycz1a02ac0xxbzycxa0aacxac20zzazccybbyca001abzbyzcab00xx2ccccyaazxcccaz0cababbxy2yxxbxxczc20bxcxyz0yzcxyc20",
+          "y10acy200xycazx011xy2zc1xz0bzc00zzby10czx2a00yby1zxx0zcy1y00zxzx20c2zxcyx01cybz1bc10x2xzyxy02z20xa0b02cy1x2b0bzx2bb02x1baxa1x1c0",
+          "1caby2012a2c0yxbcby0xy10czycc0yz0xxb1cyax0y2bbc00y1b01a02xxzxbab0bczab0xyabxxxyyx101xy2bya2ybab01xaby2bb0aybaaycac2200b02abaxycb",
+          "y2zy2ycaxzxb0a1b1bx20abz1bb1bxcbyacy1ac22bybbc21yzc1bx012z10y0xbx2ba1yb0bycxcbzyabxbzxza00c0b02yzzczc1ybaczy1b12y22z00y2xaazbz01",
+          "0xzz2ycc1b1c00cz0zay0a1aabyybxa020cya21baa002ayb1c2ca10cx2bbzccxc2ccc2cya2y1zc2xzyaayba2y1bxzbbxzazxz1cc2ca0ybz12a12xac2abaybyzx",
+          "bzc2byy1201yc2acb22xa0xz12ax12bcbx1yx0azz2zz1zya2yca00ayzc220a0ba0z01xx1yz1ab0zc10bx02by2aczxa2yx10c0yyy11cza2ycxcycxy2aayb1cybz",
+          "x0bz2zz1ya0c10acycz1axxxczyzcxbz2c20xayac00cb1cb1ycccayb012cbzxc00x1a0xczaxbxc2ay2zacca0babxxxzx11baaaacz0b0ccz0y1b2zzya1cxayzxc",
+          "xb0112byz0y1yx1abyzxbb11000zazc10bcac2bz12a0baccxbb0121a010xzxccx1b2zcbc02y2z0x1bbycyxaaax1zx2cxbxcy0z200xc12yb12x10zbzx2cabbya0",
+          "c00yc01xzbc1cyzzxx1z0z010y212y0ccyyzbay0cza0c0z02zbca0c101cxza1xyycbcby0zaccxy112ayz11czb2ya1axx2cby12cxx1cayzb0101a0x0xc20xabbc",
+          "aa2y2yc0y2xxx010a2c201bx0azyy0ca2z0yabxcyzbxzaabbzy0b1z2a2ax22ayybayayxbz002zbxzx2by2x1y1zz2axaab02z0y1b112yabac1b022x1b0bbz2002",
+          "bb101z2xxc0b1azaz2xzxyz2bz0z1c2zxzxx2cyc00cb11z2abz2y0021xaxac2zxc1c1002xyzbzaczc2zy0bxa21xa21ca1x2c1111bb2yczc120xaaa1bcbacycxy",
+          "y1xaz111b0b1b0z0z0010ya02xxyyaazccyc0zx1xccbbyxa1azy1x0abz1bbzabab0c0aa2ac0z2xy1z12xxzy22xz1bcby01by0x200yxcaxb1c00zc2cy02zyc1cy",
+          "aaca20aby0azba2zyxc1b0xaxxz0x0xabaaaa2xb212bay2ac2xzybz2caxayx100bx00c2a2bcc02bzy1y1azxbbaz2xxa01x12ycb2byc0x10zab0101b2110c22x0",
+          "022zab0c10ccc000122ax10b0zcc22a1yxz2bczz111c0z10ya2x2z2azabyb1b0z12xbcz0zb221bby20aazaacyyc2121z1axacxabbczab20a1yca0zcccxx0xb2a",
+          "caa1xacyc00cy1zx1yaz1byy0z01ya021xzyyzxyzby00220z2xy2xy2xz20c01x00y2zxca11z21a2yxc02xyyx0z2azayzazac2y01caa1xycxa11x1czyzax2ab0c",
+          "2zbzacayzac2byxzxbc1yxx1zxbbbcxzayc0zc1yc200czba2z1x2x2zzyzby0abxzbb1yzzzx1a0c1c2b01xx1y0bcbz1z0c0ybc0a2y2b210caa0xb0xaxzb01ayza",
+          "z2cc01xbcxyx222ay2zbycaczx0yzac2cxbxyc1zz101cbbzyayyxb2xyx0zxbac11bbza0cb1c0zb1xc2b0cba21xccb2x0bz1x101bazc211a1yzbzxayyzaacac02",
+          "212axyzacz2010axayaxy01zyb2cx022babx2c1cbazbxxy0ab2yccabx22czxca2xb02b0x0ax2b1x0a12y101caaazcbyba1a1b0xy2za2zbcx1a2zbbbyyzyz01c0",
+          "z0bc101bx11b220c0xz0bc0012xazz1x1bx221yaccxy0byy00c10xxaybb10bycbzcy2xb020x0y1ay0z02021ax022xaay2x1x0xbzccbc1a0zxybaya0cbb21cc2c",
+          "1b2xab2b10a1z122y1y1azccb1bby20z0z2b22ba0b1xz0xb0xbc1zz1c0b0y0x122bbx2a02cabxa1b01zxcb0xx0bxb12zyaayax1czyz2z2xz0x2bc1yxcczzb1yb",
+          "cz2by10cbcx0ab20xyzybx2yzxbz0xaxa102za0yz21cya2cb11xzb002bbxx1x01a1cb1xyacycccyb2xa0xcx0zyab2byyycy2ycacyxzay10zbb20bz0yayby1zx2",
+          "bx1azycyzba2c0bbaxz0zyccacx10000cczxx20bybb2xaxycycya00c2xy0xxy22xxyx1zb200ya20zycyx2c0c2zza1yxzazc22zy1ax00yzxzb10zay1b22xaazyc",
+          "21xyy0020012y1a0b1a0aby1bbax2y1bz01z00zazb220ab01yycxyxz02zayzaz00x1zyacyc20b12cz1byaczax2z10c0y2b0x2yx02a0xz2zxababc120zbxay2zc",
+          "11z201ax0z0cax0xyyyxy020xxb2bcxxz10b1a1xb1yyz110c0c0x012za2211y1zyyxy2zczx11yax101021yayca101zby1zxybbz1xxaaaaya0z0z2cxyyzx2z0zx",
+          "cxc00aaay1abbaxyz0bb20zbb2bz2x1y00byy110b2021ay10002cazcz0zza2bycxxacc10yazy1x20ccbyazbxb200ay1y1xx2by12zcy1yycaxzyybacx21xzb200",
+          "11ybxbxzb2xacz2zxy0z2bzx22zcb12zza2ybc20zz2b01zcx2xbxy2b2aax2by0xyccycbz1xabcb2zc1xybby0bxxbzzzxabzxaxayya112bba0z2yzz100xyzyb2c",
+          "bc0yzca0ybba0b00baa2ccycb02c02ccb1z0c00ca2xy1baazxcz1cc21axccaa1y2z1cyx21bczbyzcaz2ac20a0ay2accya0zy1y10zaayb22z00yxab0zz0cx2212",
+          "210z0xbx0a0ccabbx20ay1y1bax2axzby2zx2cyybby1azxy1c2xzb01xazxc01a2y22020z0ccz2cc2c2ab2xcxzxa022z02y01012a0yz2x1yyz1zcbxzxb1zzzc21",
+          "21ybby20c01zbb10yzxy0zzbz0yb0120xaaxz2cab0xabz1ccycc2y2xyc1002a2y0ab2ayaxxy2abzx1xz2001bzzyy0azxc0a01y0c1cazx0ybbc2z01c2zacbzzx2"
+        ],
+        0
+      ],
+      "expected": 50,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(T * U) | Space: O(U)",
+      "language": "javascript",
+      "code": "function leastInterval(tasks, n) {\n  const freq = new Map();\n  for (const t of tasks) freq.set(t, (freq.get(t) || 0) + 1);\n  const nextFree = new Map();\n  let time = 0;\n  let remaining = tasks.length;\n  while (remaining > 0) {\n    let best = null;\n    let bestCount = 0;\n    for (const entry of freq.entries()) {\n      const task = entry[0];\n      const count = entry[1];\n      if (count > 0 && (nextFree.get(task) || 0) <= time && count > bestCount) {\n        best = task;\n        bestCount = count;\n      }\n    }\n    if (best === null) {\n      time++;\n    } else {\n      freq.set(best, freq.get(best) - 1);\n      nextFree.set(best, time + n + 1);\n      remaining--;\n      time++;\n    }\n  }\n  return time;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(T) | Space: O(U)",
+      "language": "javascript",
+      "code": "function leastInterval(tasks, n) {\n  if (tasks.length === 0) return 0;\n  const freq = new Map();\n  for (const t of tasks) freq.set(t, (freq.get(t) || 0) + 1);\n  let maxFreq = 0;\n  let maxCount = 0;\n  for (const c of freq.values()) {\n    if (c > maxFreq) {\n      maxFreq = c;\n      maxCount = 1;\n    } else if (c === maxFreq) {\n      maxCount++;\n    }\n  }\n  const slots = (maxFreq - 1) * (n + 1) + maxCount;\n  return slots > tasks.length ? slots : tasks.length;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(T * U) | Space: O(U)",
+      "language": "python",
+      "code": "def leastInterval(tasks, n):\n    from collections import Counter\n    freq = Counter(tasks)\n    next_free = {}\n    time = 0\n    remaining = len(tasks)\n    while remaining > 0:\n        best = None\n        best_count = 0\n        for task, count in freq.items():\n            if count > 0 and next_free.get(task, 0) <= time and count > best_count:\n                best = task\n                best_count = count\n        if best is None:\n            time += 1\n        else:\n            freq[best] -= 1\n            next_free[best] = time + n + 1\n            remaining -= 1\n            time += 1\n    return time\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(T) | Space: O(U)",
+      "language": "python",
+      "code": "def leastInterval(tasks, n):\n    if not tasks:\n        return 0\n    from collections import Counter\n    freq = Counter(tasks)\n    max_freq = max(freq.values())\n    max_count = sum(1 for c in freq.values() if c == max_freq)\n    slots = (max_freq - 1) * (n + 1) + max_count\n    return slots if slots > len(tasks) else len(tasks)\n",
+      "isReference": true
+    }
+  ]
+}
