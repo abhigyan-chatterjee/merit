@@ -1,0 +1,755 @@
+{
+  "slug": "symmetric-tree",
+  "title": "Mirror Check",
+  "topic": "trees",
+  "difficulty": "Easy",
+  "pattern": "trees / Mirror compare",
+  "statement": "# Mirror Check\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "root = [1,2,2,3,4,4,3]",
+      "output": "true",
+      "explanation": "The two 2s match, the outer 3s match each other, and the inner 4s match each other."
+    },
+    {
+      "input": "root = [1,2,2,null,3,null,3]",
+      "output": "false",
+      "explanation": "The inner pair pits 3 against a hole: the left 2 has a right child while the right 2 has no left child."
+    },
+    {
+      "input": "root = [1,2,2,3,null,null,3]",
+      "output": "true",
+      "explanation": "The holes face each other on the inside while the two 3s face each other on the outside."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function isSymmetric(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Compare the left and right subtrees as mirror images.",
+    "Pair the outer children together and the inner children together.",
+    "A hole must face a hole; a value facing a hole breaks symmetry."
+  ],
+  "editorial": {
+    "approach": "Check the two subtrees as mirror images: values must match, outer index pairs recurse together and inner index pairs recurse together.",
+    "why_optimal": "Each index pair is visited once, so the check is linear in the array size with recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.27 ms and the optimal at 0.14 ms (about 1.9x faster).",
+    "pitfalls": "Missing children are significant \u2014 a value facing a hole breaks symmetry just as surely as two different values."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_tree"
+  ],
+  "starterCode": {
+    "javascript": "function isSymmetric(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def isSymmetric(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "isSymmetric",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 29,
+    "bruteForceRuntimeMs": 0.27407700000002677,
+    "optimalRuntimeMs": 0.14229100000000372
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          1,
+          2,
+          2,
+          3,
+          4,
+          4,
+          3
+        ]
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          1,
+          2,
+          2,
+          null,
+          3,
+          null,
+          3
+        ]
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          1,
+          2,
+          2,
+          3,
+          null,
+          null,
+          3
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        []
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          null
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          1,
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-05",
+      "input": [
+        [
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          3
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -100,
+          84,
+          84,
+          -33,
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -100,
+          53,
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          36
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          -68,
+          -68,
+          68,
+          21,
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function isSymmetric(root) {\n  function build(i) {\n    if (i >= root.length || root[i] === null) return null;\n    return { v: root[i], l: build(2 * i + 1), r: build(2 * i + 2) };\n  }\n  const tree = build(0);\n  if (tree === null) return true;\n  const stack = [[tree.l, tree.r]];\n  while (stack.length > 0) {\n    const pair = stack.pop();\n    const a = pair[0];\n    const b = pair[1];\n    if (a === null && b === null) continue;\n    if (a === null || b === null || a.v !== b.v) return false;\n    stack.push([a.l, b.r]);\n    stack.push([a.r, b.l]);\n  }\n  return true;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "javascript",
+      "code": "function isSymmetric(root) {\n  function mirror(l, r) {\n    const lv = l < root.length ? root[l] : null;\n    const rv = r < root.length ? root[r] : null;\n    if (lv === null && rv === null) return true;\n    if (lv === null || rv === null || lv !== rv) return false;\n    return mirror(2 * l + 1, 2 * r + 2) && mirror(2 * l + 2, 2 * r + 1);\n  }\n  if (root.length === 0 || root[0] === null) return true;\n  return mirror(1, 2);\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def isSymmetric(root: list) -> bool:\n    def build(i):\n        if i >= len(root) or root[i] is None:\n            return None\n        return (root[i], build(2 * i + 1), build(2 * i + 2))\n    tree = build(0)\n    if tree is None:\n        return True\n    stack = [(tree[1], tree[2])]\n    while stack:\n        a, b = stack.pop()\n        if a is None and b is None:\n            continue\n        if a is None or b is None or a[0] != b[0]:\n            return False\n        stack.append((a[1], b[2]))\n        stack.append((a[2], b[1]))\n    return True\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "python",
+      "code": "def isSymmetric(root: list) -> bool:\n    def mirror(l, r):\n        lv = root[l] if l < len(root) else None\n        rv = root[r] if r < len(root) else None\n        if lv is None and rv is None:\n            return True\n        if lv is None or rv is None or lv != rv:\n            return False\n        return mirror(2 * l + 1, 2 * r + 2) and mirror(2 * l + 2, 2 * r + 1)\n    if len(root) == 0 or root[0] is None:\n        return True\n    return mirror(1, 2)\n",
+      "isReference": true
+    }
+  ]
+}

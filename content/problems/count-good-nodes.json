@@ -1,0 +1,745 @@
+{
+  "slug": "count-good-nodes",
+  "title": "Record Nodes on Root Paths",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / Max-path",
+  "statement": "# Record Nodes on Root Paths\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA node earns the title of record node when its value is greater than or equal to every value on the path from the root down to (but excluding) itself. The root has no ancestors above it, so it always qualifies.\n\nReturn how many present nodes are record nodes.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "root = [3,1,4,3,null,1,5]",
+      "output": "4",
+      "explanation": "3 starts the record; 1 falls short of it; 4 sets a new record; the lower 3 ties the root's record and counts; 1 stays below 4; 5 tops everything."
+    },
+    {
+      "input": "root = [3,3,null,3]",
+      "output": "3",
+      "explanation": "Every node ties the ancestral best of 3, and ties qualify, so all three present nodes count."
+    },
+    {
+      "input": "root = [5,4,3]",
+      "output": "1",
+      "explanation": "Values shrink along every root path, so only the root itself ever leads."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function goodNodes(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Compare each node against the best value seen above it.",
+    "The root has no ancestors, so it always qualifies.",
+    "Carry the running maximum downward instead of recomputing each path."
+  ],
+  "editorial": {
+    "approach": "Walk down from the root carrying the largest value met so far; count a node when it matches or beats that record, then extend the record into its children.",
+    "why_optimal": "Each node is visited once with constant extra work, so the walk is linear in time with stack space bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 2.28 ms and the optimal at 0.16 ms (about 14.2x faster).",
+    "pitfalls": "Ties still count \u2014 only strictly smaller values fail. Skip null holes without counting them, and remember the root always qualifies."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_tree"
+  ],
+  "starterCode": {
+    "javascript": "function goodNodes(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def goodNodes(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "goodNodes",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 29,
+    "bruteForceRuntimeMs": 2.277319999999982,
+    "optimalRuntimeMs": 0.16257099999999625
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          3,
+          1,
+          4,
+          3,
+          null,
+          1,
+          5
+        ]
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          3,
+          3,
+          null,
+          3
+        ]
+      ],
+      "expected": 3,
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          5,
+          4,
+          3
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        []
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          null
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          7
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          5,
+          4,
+          null,
+          3
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-05",
+      "input": [
+        [
+          2,
+          2,
+          2,
+          2
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -100,
+          84,
+          84,
+          -33,
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -100,
+          53,
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          36
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          -68,
+          -68,
+          68,
+          21,
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "expected": 13,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "expected": 13,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
+      "language": "javascript",
+      "code": "function goodNodes(root) {\n  const present = [];\n  (function collect(i) {\n    if (i >= root.length || root[i] === null) return;\n    present.push(i);\n    collect(2 * i + 1);\n    collect(2 * i + 2);\n  })(0);\n  function pathTo(target) {\n    const path = [];\n    function dfs(i) {\n      if (i >= root.length || root[i] === null) return false;\n      path.push(root[i]);\n      if (i === target) return true;\n      if (dfs(2 * i + 1) || dfs(2 * i + 2)) return true;\n      path.pop();\n      return false;\n    }\n    dfs(0);\n    return path;\n  }\n  let count = 0;\n  for (const t of present) {\n    const path = pathTo(t);\n    const val = path[path.length - 1];\n    let ok = true;\n    for (let k = 0; k < path.length - 1; k++) {\n      if (path[k] > val) {\n        ok = false;\n        break;\n      }\n    }\n    if (ok) count++;\n  }\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "javascript",
+      "code": "function goodNodes(root) {\n  let count = 0;\n  (function dfs(i, best) {\n    if (i >= root.length || root[i] === null) return;\n    if (root[i] >= best) count++;\n    const next = Math.max(best, root[i]);\n    dfs(2 * i + 1, next);\n    dfs(2 * i + 2, next);\n  })(0, -Infinity);\n  return count;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
+      "language": "python",
+      "code": "def goodNodes(root: list) -> int:\n    present = []\n    def collect(i):\n        if i >= len(root) or root[i] is None:\n            return\n        present.append(i)\n        collect(2 * i + 1)\n        collect(2 * i + 2)\n    collect(0)\n    def path_to(target):\n        path = []\n        def dfs(i):\n            if i >= len(root) or root[i] is None:\n                return False\n            path.append(root[i])\n            if i == target:\n                return True\n            if dfs(2 * i + 1) or dfs(2 * i + 2):\n                return True\n            path.pop()\n            return False\n        dfs(0)\n        return path\n    count = 0\n    for t in present:\n        path = path_to(t)\n        if all(a <= path[-1] for a in path[:-1]):\n            count += 1\n    return count\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "python",
+      "code": "def goodNodes(root: list) -> int:\n    count = 0\n    def dfs(i, best):\n        nonlocal count\n        if i >= len(root) or root[i] is None:\n            return\n        if root[i] >= best:\n            count += 1\n        nxt = max(best, root[i])\n        dfs(2 * i + 1, nxt)\n        dfs(2 * i + 2, nxt)\n    dfs(0, float('-inf'))\n    return count\n",
+      "isReference": true
+    }
+  ]
+}

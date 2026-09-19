@@ -1,0 +1,1039 @@
+{
+  "slug": "construct-from-preorder-inorder",
+  "title": "Rebuild from Two Traversals",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / Partition",
+  "statement": "# Rebuild from Two Traversals\n\nYou are given the preorder and inorder traversals of one binary tree whose values are all distinct. In preorder the root of every subtree comes first, followed by its left subtree then its right subtree; in inorder the left subtree comes first, then the root, then the right subtree.\n\nRebuild the original tree and return it as a level-order array using the bank-standard heap encoding: the children of the entry at index `i` live at `2i+1` and `2i+2`, absent children are written as `null`, and trailing `null` entries are trimmed. Both inputs are non-empty and describe the same set of values.\n\nConstraints: `1 <= preorder.length <= 20`, `1 <= inorder.length <= 20`, `preorder.length == inorder.length`, `-100 <= preorder[i] <= 100`, and all values are unique.\n",
+  "examples": [
+    {
+      "input": "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]",
+      "output": "[3,9,20,null,null,15,7]",
+      "explanation": "3 is the root; 9 forms the left subtree; in the right subtree 20 is the root with 15 left and 7 right."
+    },
+    {
+      "input": "preorder = [1,2], inorder = [2,1]",
+      "output": "[1,2]",
+      "explanation": "The root 1 sits after 2 in inorder, so 2 is its left child."
+    },
+    {
+      "input": "preorder = [1,2,3], inorder = [3,2,1]",
+      "output": "[1,2,null,3]",
+      "explanation": "1 is the root, 2 is its left child, and 3 hangs left of 2 \u2014 a pure left chain."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function buildTree(preorder: number[], inorder: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The first unconsumed preorder value is always the current subtree root.",
+    "That root's inorder position splits the range into left and right parts.",
+    "A map from value to inorder index keeps every split constant time."
+  ],
+  "editorial": {
+    "approach": "Take the next preorder value as the subtree root, split inorder at its position into left and right ranges, and recurse \u2014 with a value-to-index map for constant splits.",
+    "why_optimal": "Each node is placed once and each inorder lookup is constant, so the rebuild is linear with stack space bounded by the height. On 24 PAF-verified cases the judge measured the brute force at 0.34 ms and the optimal at 0.42 ms on these small inputs; both scale linearly with input size.",
+    "pitfalls": "Consume preorder in strict order across the recursion; trim trailing nulls from the level-order output so equivalent trees serialize identically."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal"
+  ],
+  "starterCode": {
+    "javascript": "function buildTree(preorder, inorder) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def buildTree(preorder, inorder):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "buildTree",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 24,
+    "bruteForceRuntimeMs": 0.33764900000000253,
+    "optimalRuntimeMs": 0.41589100000000556
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          3,
+          9,
+          20,
+          15,
+          7
+        ],
+        [
+          9,
+          3,
+          15,
+          20,
+          7
+        ]
+      ],
+      "expected": [
+        3,
+        9,
+        20,
+        null,
+        null,
+        15,
+        7
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        null,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        [
+          7
+        ],
+        [
+          7
+        ]
+      ],
+      "expected": [
+        7
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          5,
+          4,
+          3
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        5,
+        4,
+        null,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        null,
+        2,
+        null,
+        null,
+        null,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-01",
+      "input": [
+        [
+          -2,
+          -16,
+          -22,
+          -9,
+          31,
+          21,
+          38,
+          37,
+          48,
+          49
+        ],
+        [
+          -22,
+          -16,
+          -9,
+          -2,
+          21,
+          31,
+          37,
+          38,
+          48,
+          49
+        ]
+      ],
+      "expected": [
+        -2,
+        -16,
+        31,
+        -22,
+        -9,
+        21,
+        38,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        37,
+        48,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        49
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-02",
+      "input": [
+        [
+          -21,
+          -46,
+          -10
+        ],
+        [
+          -46,
+          -21,
+          -10
+        ]
+      ],
+      "expected": [
+        -21,
+        -46,
+        -10
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-03",
+      "input": [
+        [
+          -16,
+          -42,
+          -23,
+          22,
+          -10,
+          13,
+          0,
+          41,
+          33
+        ],
+        [
+          -42,
+          -23,
+          -16,
+          -10,
+          0,
+          13,
+          22,
+          33,
+          41
+        ]
+      ],
+      "expected": [
+        -16,
+        -42,
+        22,
+        null,
+        -23,
+        -10,
+        41,
+        null,
+        null,
+        null,
+        null,
+        null,
+        13,
+        33,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-04",
+      "input": [
+        [
+          -32,
+          -33,
+          -17,
+          -19,
+          45,
+          21,
+          18,
+          4,
+          1,
+          24
+        ],
+        [
+          -33,
+          -32,
+          -19,
+          -17,
+          1,
+          4,
+          18,
+          21,
+          24,
+          45
+        ]
+      ],
+      "expected": [
+        -32,
+        -33,
+        -17,
+        null,
+        null,
+        -19,
+        45,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        21,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        18,
+        24,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        4,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-05",
+      "input": [
+        [
+          -22,
+          -33,
+          -39,
+          -44,
+          -36,
+          15,
+          13,
+          46
+        ],
+        [
+          -44,
+          -39,
+          -36,
+          -33,
+          -22,
+          13,
+          15,
+          46
+        ]
+      ],
+      "expected": [
+        -22,
+        -33,
+        15,
+        -39,
+        null,
+        13,
+        46,
+        -44,
+        -36
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-06",
+      "input": [
+        [
+          30,
+          -30,
+          4,
+          26,
+          37
+        ],
+        [
+          -30,
+          4,
+          26,
+          30,
+          37
+        ]
+      ],
+      "expected": [
+        30,
+        -30,
+        37,
+        null,
+        4,
+        null,
+        null,
+        null,
+        null,
+        null,
+        26
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-07",
+      "input": [
+        [
+          -1,
+          -2,
+          26,
+          9
+        ],
+        [
+          -2,
+          -1,
+          9,
+          26
+        ]
+      ],
+      "expected": [
+        -1,
+        -2,
+        26,
+        null,
+        null,
+        9
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-08",
+      "input": [
+        [
+          20,
+          -49,
+          -36,
+          18,
+          37,
+          42,
+          46
+        ],
+        [
+          -49,
+          -36,
+          18,
+          20,
+          37,
+          42,
+          46
+        ]
+      ],
+      "expected": [
+        20,
+        -49,
+        37,
+        null,
+        -36,
+        null,
+        42,
+        null,
+        null,
+        null,
+        18,
+        null,
+        null,
+        null,
+        46
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-09",
+      "input": [
+        [
+          48,
+          32,
+          -7,
+          -36,
+          -13,
+          -30,
+          5
+        ],
+        [
+          -36,
+          -30,
+          -13,
+          -7,
+          5,
+          32,
+          48
+        ]
+      ],
+      "expected": [
+        48,
+        32,
+        null,
+        -7,
+        null,
+        null,
+        null,
+        -36,
+        5,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        -13,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        -30
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-10",
+      "input": [
+        [
+          -50,
+          42,
+          -17,
+          -28,
+          -37,
+          14,
+          -12,
+          30,
+          31,
+          47
+        ],
+        [
+          -50,
+          -37,
+          -28,
+          -17,
+          -12,
+          14,
+          30,
+          31,
+          42,
+          47
+        ]
+      ],
+      "expected": [
+        -50,
+        null,
+        42,
+        null,
+        null,
+        -17,
+        47,
+        null,
+        null,
+        null,
+        null,
+        -28,
+        14,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        -37,
+        null,
+        -12,
+        30,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        31
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-11",
+      "input": [
+        [
+          -31,
+          -3,
+          -30,
+          47,
+          19,
+          49
+        ],
+        [
+          -31,
+          -30,
+          -3,
+          19,
+          47,
+          49
+        ]
+      ],
+      "expected": [
+        -31,
+        null,
+        -3,
+        null,
+        null,
+        -30,
+        47,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        19,
+        49
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-12",
+      "input": [
+        [
+          26,
+          -9,
+          12
+        ],
+        [
+          -9,
+          12,
+          26
+        ]
+      ],
+      "expected": [
+        26,
+        -9,
+        null,
+        null,
+        12
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-13",
+      "input": [
+        [
+          -36,
+          -4,
+          -11
+        ],
+        [
+          -36,
+          -11,
+          -4
+        ]
+      ],
+      "expected": [
+        -36,
+        null,
+        -4,
+        null,
+        null,
+        -11
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-14",
+      "input": [
+        [
+          -43,
+          -20,
+          -40,
+          22,
+          12,
+          43
+        ],
+        [
+          -43,
+          -40,
+          -20,
+          12,
+          22,
+          43
+        ]
+      ],
+      "expected": [
+        -43,
+        null,
+        -20,
+        null,
+        null,
+        -40,
+        22,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        12,
+        43
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-15",
+      "input": [
+        [
+          5,
+          4,
+          3,
+          2,
+          1
+        ],
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        5,
+        4,
+        null,
+        3,
+        null,
+        null,
+        null,
+        2,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-16",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        1,
+        null,
+        2,
+        null,
+        null,
+        null,
+        3,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        4,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-17",
+      "input": [
+        [
+          10,
+          5
+        ],
+        [
+          5,
+          10
+        ]
+      ],
+      "expected": [
+        10,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "custom-rand-18",
+      "input": [
+        [
+          10,
+          5
+        ],
+        [
+          10,
+          5
+        ]
+      ],
+      "expected": [
+        10,
+        null,
+        5
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function buildTree(preorder, inorder) {\n  function build(preL, preR, inL, inR) {\n    if (preL > preR) return null;\n    const value = preorder[preL];\n    let k = inL;\n    while (inorder[k] !== value) k++;\n    const leftSize = k - inL;\n    return {\n      v: value,\n      l: build(preL + 1, preL + leftSize, inL, k - 1),\n      r: build(preL + leftSize + 1, preR, k + 1, inR),\n    };\n  }\n  const tree = build(0, preorder.length - 1, 0, inorder.length - 1);\n  if (tree === null) return [];\n  const out = [];\n  const queue = [{ node: tree, i: 0 }];\n  while (queue.length > 0) {\n    const cur = queue.shift();\n    while (out.length <= cur.i) out.push(null);\n    out[cur.i] = cur.node.v;\n    if (cur.node.l !== null) queue.push({ node: cur.node.l, i: 2 * cur.i + 1 });\n    if (cur.node.r !== null) queue.push({ node: cur.node.r, i: 2 * cur.i + 2 });\n  }\n  while (out.length > 0 && out[out.length - 1] === null) out.pop();\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function buildTree(preorder, inorder) {\n  const pos = new Map();\n  for (let k = 0; k < inorder.length; k++) pos.set(inorder[k], k);\n  let cursor = 0;\n  function build(inL, inR) {\n    if (inL > inR) return null;\n    const value = preorder[cursor];\n    cursor++;\n    const k = pos.get(value);\n    const left = build(inL, k - 1);\n    const right = build(k + 1, inR);\n    return { v: value, l: left, r: right };\n  }\n  const tree = build(0, inorder.length - 1);\n  if (tree === null) return [];\n  const out = [];\n  const queue = [{ node: tree, i: 0 }];\n  while (queue.length > 0) {\n    const cur = queue.shift();\n    while (out.length <= cur.i) out.push(null);\n    out[cur.i] = cur.node.v;\n    if (cur.node.l !== null) queue.push({ node: cur.node.l, i: 2 * cur.i + 1 });\n    if (cur.node.r !== null) queue.push({ node: cur.node.r, i: 2 * cur.i + 2 });\n  }\n  while (out.length > 0 && out[out.length - 1] === null) out.pop();\n  return out;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def buildTree(preorder: list, inorder: list) -> list:\n    def build(pre_l, pre_r, in_l, in_r):\n        if pre_l > pre_r:\n            return None\n        value = preorder[pre_l]\n        k = in_l\n        while inorder[k] != value:\n            k += 1\n        left_size = k - in_l\n        return (\n            value,\n            build(pre_l + 1, pre_l + left_size, in_l, k - 1),\n            build(pre_l + left_size + 1, pre_r, k + 1, in_r),\n        )\n    def emit(tree):\n        if tree is None:\n            return []\n        out, queue = [], [(tree, 0)]\n        while queue:\n            node, i = queue.pop(0)\n            while len(out) <= i:\n                out.append(None)\n            out[i] = node[0]\n            if node[1] is not None:\n                queue.append((node[1], 2 * i + 1))\n            if node[2] is not None:\n                queue.append((node[2], 2 * i + 2))\n        while out and out[-1] is None:\n            out.pop()\n        return out\n    return emit(build(0, len(preorder) - 1, 0, len(inorder) - 1))\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def buildTree(preorder: list, inorder: list) -> list:\n    pos = {v: k for k, v in enumerate(inorder)}\n    cursor = 0\n    def build(in_l, in_r):\n        nonlocal cursor\n        if in_l > in_r:\n            return None\n        value = preorder[cursor]\n        cursor += 1\n        k = pos[value]\n        return (value, build(in_l, k - 1), build(k + 1, in_r))\n    def emit(tree):\n        if tree is None:\n            return []\n        out, queue = [], [(tree, 0)]\n        while queue:\n            node, i = queue.pop(0)\n            while len(out) <= i:\n                out.append(None)\n            out[i] = node[0]\n            if node[1] is not None:\n                queue.append((node[1], 2 * i + 1))\n            if node[2] is not None:\n                queue.append((node[2], 2 * i + 2))\n        while out and out[-1] is None:\n            out.pop()\n        return out\n    return emit(build(0, len(inorder) - 1))\n",
+      "isReference": true
+    }
+  ]
+}

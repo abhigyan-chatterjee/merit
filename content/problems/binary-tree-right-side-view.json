@@ -1,0 +1,883 @@
+{
+  "slug": "binary-tree-right-side-view",
+  "title": "Right Side View",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / Level last",
+  "statement": "# Right Side View\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "root = [1,2,3,null,5,null,4]",
+      "output": "[1,3,4]",
+      "explanation": "Depth 0 shows 1; at depth 1 the rightmost node is 3; at depth 2 the candidates are 5 and 4, so 4 wins."
+    },
+    {
+      "input": "root = [1,null,3]",
+      "output": "[1,3]",
+      "explanation": "The missing left child changes nothing on the right: 1 then 3 are visible."
+    },
+    {
+      "input": "root = [1,2,null,3]",
+      "output": "[1,2,3]",
+      "explanation": "A left-leaning chain hides nothing from the right, so every level's single node is visible."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function rightSideView(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The visible node at each depth is the rightmost one.",
+    "Visit right children before left children.",
+    "Keep the first value you meet at every new depth."
+  ],
+  "editorial": {
+    "approach": "Depth-first walk that always visits the right child before the left, recording the first node seen at each depth.",
+    "why_optimal": "Each node is visited once and only one value per depth is stored, so time is linear and extra space follows the height. On 29 PAF-verified cases the judge measured the brute force at 0.24 ms and the optimal at 0.14 ms (about 1.7x faster).",
+    "pitfalls": "Record a depth only the first time you reach it; later left-side arrivals at the same depth stay hidden."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ],
+  "starterCode": {
+    "javascript": "function rightSideView(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def rightSideView(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "rightSideView",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 29,
+    "bruteForceRuntimeMs": 0.23540099999999597,
+    "optimalRuntimeMs": 0.14246800000000448
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          null,
+          5,
+          null,
+          4
+        ]
+      ],
+      "expected": [
+        1,
+        3,
+        4
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          1,
+          null,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        3
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          1,
+          2,
+          null,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        []
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          null
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          5
+        ]
+      ],
+      "expected": [
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          3,
+          2,
+          null,
+          1
+        ]
+      ],
+      "expected": [
+        3,
+        2,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-05",
+      "input": [
+        [
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "expected": [
+        -72,
+        89,
+        -65,
+        8,
+        -41
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60
+        ]
+      ],
+      "expected": [
+        54,
+        43,
+        79,
+        94,
+        -60
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "expected": [
+        8,
+        -29,
+        -14,
+        -33,
+        -80
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3
+        ]
+      ],
+      "expected": [
+        -25,
+        58,
+        80,
+        -41,
+        -3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71
+        ]
+      ],
+      "expected": [
+        16,
+        -7,
+        -47,
+        71
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ]
+      ],
+      "expected": [
+        79,
+        65,
+        -57,
+        36
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "expected": [
+        -38,
+        18,
+        76,
+        -42,
+        83
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "expected": [
+        -46,
+        27,
+        -64,
+        -37
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "expected": [
+        43,
+        -33,
+        49,
+        93,
+        52
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected": [
+        -2,
+        -3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "expected": [
+        19,
+        -36,
+        84,
+        -13,
+        -60
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -100,
+          84,
+          84,
+          -33,
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "expected": [
+        -100,
+        84,
+        -55,
+        55
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99
+        ]
+      ],
+      "expected": [
+        -61,
+        95,
+        99
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -100,
+          53,
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24
+        ]
+      ],
+      "expected": [
+        -100,
+        -18,
+        -8,
+        87,
+        24
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          36
+        ]
+      ],
+      "expected": [
+        94,
+        36
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          -68,
+          -68,
+          68,
+          21,
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "expected": [
+        -68,
+        68,
+        -33,
+        76,
+        32
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": [
+        100,
+        -100,
+        -100,
+        0,
+        -100
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        100,
+        100,
+        -100
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "expected": [
+        0,
+        -100,
+        100,
+        0,
+        100
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": [
+        100,
+        100,
+        0,
+        0,
+        -100
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function rightSideView(root) {\n  const levels = [];\n  (function dfs(i, d) {\n    if (i >= root.length || root[i] === null) return;\n    if (!levels[d]) levels[d] = [];\n    levels[d].push(root[i]);\n    dfs(2 * i + 1, d + 1);\n    dfs(2 * i + 2, d + 1);\n  })(0, 0);\n  return levels.map((lv) => lv[lv.length - 1]);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "javascript",
+      "code": "function rightSideView(root) {\n  const view = [];\n  (function dfs(i, d) {\n    if (i >= root.length || root[i] === null) return;\n    if (d === view.length) view.push(root[i]);\n    dfs(2 * i + 2, d + 1);\n    dfs(2 * i + 1, d + 1);\n  })(0, 0);\n  return view;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def rightSideView(root: list) -> list:\n    levels = []\n    def dfs(i, d):\n        if i >= len(root) or root[i] is None:\n            return\n        while len(levels) <= d:\n            levels.append([])\n        levels[d].append(root[i])\n        dfs(2 * i + 1, d + 1)\n        dfs(2 * i + 2, d + 1)\n    dfs(0, 0)\n    return [lv[-1] for lv in levels]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "python",
+      "code": "def rightSideView(root: list) -> list:\n    view = []\n    def dfs(i, d):\n        if i >= len(root) or root[i] is None:\n            return\n        if d == len(view):\n            view.append(root[i])\n        dfs(2 * i + 2, d + 1)\n        dfs(2 * i + 1, d + 1)\n    dfs(0, 0)\n    return view\n",
+      "isReference": true
+    }
+  ]
+}

@@ -1,0 +1,729 @@
+{
+  "slug": "sum-root-to-leaf-numbers",
+  "title": "Root-to-Leaf Numbers",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / Path accumulate",
+  "statement": "# Root-to-Leaf Numbers\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
+  "examples": [
+    {
+      "input": "root = [1,2,3]",
+      "output": "25",
+      "explanation": "The paths spell 12 and 13, which sum to 25."
+    },
+    {
+      "input": "root = [4,9,0,5,1]",
+      "output": "1026",
+      "explanation": "The paths spell 495, 491, and 40; together they total 1026."
+    },
+    {
+      "input": "root = [1,0]",
+      "output": "10",
+      "explanation": "A single zero child still extends the path, spelling 10."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function sumNumbers(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Carry the prefix number downward, not upward.",
+    "Each step multiplies the prefix by 10 before adding the digit.",
+    "Add to the total only at leaves \u2014 nodes with no present children."
+  ],
+  "editorial": {
+    "approach": "Depth-first walk carrying the number built so far; each step multiplies by ten and adds the digit, adding the total at every leaf.",
+    "why_optimal": "Each node is visited once with constant extra work, so time is linear and stack space follows the height. On 28 PAF-verified cases the judge measured the brute force at 0.46 ms and the optimal at 0.16 ms (about 2.9x faster).",
+    "pitfalls": "Zeros are real digits that shift place values; a missing child ends a path but a zero child extends it."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal"
+  ],
+  "starterCode": {
+    "javascript": "function sumNumbers(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def sumNumbers(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "sumNumbers",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 28,
+    "bruteForceRuntimeMs": 0.4599860000000042,
+    "optimalRuntimeMs": 0.16267500000000723
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 25,
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          4,
+          9,
+          0,
+          5,
+          1
+        ]
+      ],
+      "expected": 1026,
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          1,
+          0
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        [
+          5
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          1,
+          null,
+          0
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          9,
+          0,
+          null,
+          0
+        ]
+      ],
+      "expected": 900,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9
+        ]
+      ],
+      "expected": 929988,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          1,
+          0,
+          4,
+          3,
+          3,
+          2,
+          1,
+          8,
+          1,
+          9,
+          6,
+          0,
+          0,
+          1,
+          3,
+          3,
+          8,
+          9,
+          0,
+          8,
+          3
+        ]
+      ],
+      "expected": 68891,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          8,
+          6,
+          3,
+          7,
+          9,
+          4,
+          0,
+          2,
+          6,
+          5,
+          4,
+          2,
+          3,
+          5,
+          1,
+          1,
+          6,
+          1,
+          5,
+          5,
+          9,
+          4,
+          0
+        ]
+      ],
+      "expected": 728062,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          7,
+          8,
+          1,
+          6,
+          1,
+          8,
+          4,
+          9,
+          5,
+          9,
+          3,
+          1,
+          0,
+          3,
+          4,
+          1,
+          3,
+          1,
+          6,
+          4,
+          7,
+          5,
+          2,
+          5
+        ]
+      ],
+      "expected": 720631,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          3,
+          4,
+          1,
+          9,
+          2,
+          8,
+          3,
+          2,
+          7,
+          6,
+          4,
+          8
+        ]
+      ],
+      "expected": 17340,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          5,
+          0,
+          3,
+          0,
+          5,
+          6,
+          4,
+          1
+        ]
+      ],
+      "expected": 6576,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          9,
+          5,
+          3,
+          7,
+          6,
+          7,
+          2
+        ]
+      ],
+      "expected": 3782,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          2,
+          3,
+          8,
+          8,
+          4,
+          9,
+          6,
+          9,
+          6
+        ]
+      ],
+      "expected": 5584,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          3,
+          2,
+          8,
+          7,
+          1,
+          0,
+          1,
+          2,
+          2,
+          6,
+          9,
+          1
+        ]
+      ],
+      "expected": 17161,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          6,
+          9,
+          7,
+          8,
+          4,
+          8,
+          0,
+          1,
+          8,
+          4,
+          5,
+          1,
+          4
+        ]
+      ],
+      "expected": 42093,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          2,
+          7,
+          0,
+          4,
+          8,
+          2,
+          8,
+          1,
+          4,
+          8,
+          9,
+          3,
+          2,
+          5
+        ]
+      ],
+      "expected": 17192,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          8,
+          8,
+          0,
+          9,
+          5,
+          7
+        ]
+      ],
+      "expected": 2581,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          4,
+          3,
+          0,
+          3,
+          9,
+          1,
+          1,
+          7,
+          1,
+          8,
+          2,
+          2
+        ]
+      ],
+      "expected": 21871,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          7,
+          8,
+          2,
+          4,
+          8,
+          9,
+          6,
+          3,
+          8,
+          3,
+          4,
+          6,
+          5,
+          7,
+          8,
+          7,
+          1,
+          3,
+          3,
+          1,
+          5,
+          0
+        ]
+      ],
+      "expected": 579466,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          8,
+          3,
+          9,
+          3,
+          0,
+          1,
+          0,
+          3,
+          1,
+          0,
+          5,
+          1,
+          8,
+          3,
+          4,
+          7,
+          3,
+          8,
+          2
+        ]
+      ],
+      "expected": 385541,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          9,
+          9,
+          7,
+          3,
+          7,
+          6,
+          3,
+          1,
+          1,
+          6,
+          5,
+          6,
+          6,
+          7,
+          0,
+          1,
+          0,
+          6,
+          5,
+          1,
+          3,
+          3,
+          3,
+          8
+        ]
+      ],
+      "expected": 923183,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          9,
+          0,
+          9,
+          0,
+          9,
+          9,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          9,
+          9,
+          0,
+          9,
+          0,
+          0,
+          9,
+          0,
+          9,
+          9,
+          9
+        ]
+      ],
+      "expected": 1420452,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          9,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 1422378,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          9,
+          9,
+          0,
+          0,
+          0,
+          9,
+          0,
+          9,
+          9,
+          0,
+          0
+        ]
+      ],
+      "expected": 3735,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          0,
+          9,
+          9,
+          9,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9,
+          0,
+          9,
+          0,
+          0,
+          9,
+          9,
+          0,
+          9,
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 141435,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b7h) | Space: O(n\u00b7h)",
+      "language": "javascript",
+      "code": "function sumNumbers(root) {\n  const paths = [];\n  (function build(i, cur) {\n    if (i >= root.length || root[i] === null) return;\n    const next = cur.concat([root[i]]);\n    const l = 2 * i + 1;\n    const r = 2 * i + 2;\n    const hasL = l < root.length && root[l] !== null;\n    const hasR = r < root.length && root[r] !== null;\n    if (!hasL && !hasR) {\n      paths.push(next);\n      return;\n    }\n    build(l, next);\n    build(r, next);\n  })(0, []);\n  let total = 0;\n  for (const digits of paths) {\n    let value = 0;\n    for (const d of digits) value = value * 10 + d;\n    total += value;\n  }\n  return total;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "javascript",
+      "code": "function sumNumbers(root) {\n  let total = 0;\n  (function dfs(i, cur) {\n    if (i >= root.length || root[i] === null) return;\n    const next = cur * 10 + root[i];\n    const l = 2 * i + 1;\n    const r = 2 * i + 2;\n    const hasL = l < root.length && root[l] !== null;\n    const hasR = r < root.length && root[r] !== null;\n    if (!hasL && !hasR) {\n      total += next;\n      return;\n    }\n    dfs(l, next);\n    dfs(r, next);\n  })(0, 0);\n  return total;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b7h) | Space: O(n\u00b7h)",
+      "language": "python",
+      "code": "def sumNumbers(root: list) -> int:\n    paths = []\n    def build(i, cur):\n        if i >= len(root) or root[i] is None:\n            return\n        nxt = cur + [root[i]]\n        l, r = 2 * i + 1, 2 * i + 2\n        has_l = l < len(root) and root[l] is not None\n        has_r = r < len(root) and root[r] is not None\n        if not has_l and not has_r:\n            paths.append(nxt)\n            return\n        build(l, nxt)\n        build(r, nxt)\n    build(0, [])\n    total = 0\n    for digits in paths:\n        value = 0\n        for d in digits:\n            value = value * 10 + d\n        total += value\n    return total\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "python",
+      "code": "def sumNumbers(root: list) -> int:\n    total = 0\n    def dfs(i, cur):\n        nonlocal total\n        if i >= len(root) or root[i] is None:\n            return\n        nxt = cur * 10 + root[i]\n        l, r = 2 * i + 1, 2 * i + 2\n        has_l = l < len(root) and root[l] is not None\n        has_r = r < len(root) and root[r] is not None\n        if not has_l and not has_r:\n            total += nxt\n            return\n        dfs(l, nxt)\n        dfs(r, nxt)\n    dfs(0, 0)\n    return total\n",
+      "isReference": true
+    }
+  ]
+}

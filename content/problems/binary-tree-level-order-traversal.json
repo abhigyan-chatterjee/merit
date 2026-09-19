@@ -1,0 +1,1380 @@
+{
+  "slug": "binary-tree-level-order-traversal",
+  "title": "Level Order Listing",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / BFS levels",
+  "statement": "# Level Order Listing\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "root = [3,9,20,null,null,15,7]",
+      "output": "[[3],[9,20],[15,7]]",
+      "explanation": "Depth 0 holds 3; depth 1 holds 9 and 20 left to right; depth 2 holds 15 and 7 under node 20."
+    },
+    {
+      "input": "root = [1]",
+      "output": "[[1]]",
+      "explanation": "A single node forms one level containing just itself."
+    },
+    {
+      "input": "root = [1,null,2]",
+      "output": "[[1],[2]]",
+      "explanation": "The null left hole is skipped, so 2 (the right child) stands alone on depth 1."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function levelOrder(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Handle levels one at a time, not nodes one at a time.",
+    "Only enqueue children that are actually present.",
+    "Collect each level's values before moving deeper."
+  ],
+  "editorial": {
+    "approach": "Breadth-first sweep: process one depth level at a time, queuing each node's present children for the next round.",
+    "why_optimal": "Every present node is enqueued and dequeued once, giving linear time with a queue bounded by the widest level. On 29 PAF-verified cases the judge measured the brute force at 0.61 ms and the optimal at 0.26 ms (about 2.3x faster).",
+    "pitfalls": "Skip null holes without emitting placeholders, and return an empty array for an empty tree."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ],
+  "starterCode": {
+    "javascript": "function levelOrder(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def levelOrder(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "levelOrder",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 29,
+    "bruteForceRuntimeMs": 0.6140310000000184,
+    "optimalRuntimeMs": 0.2644370000000045
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      ],
+      "expected": [
+        [
+          3
+        ],
+        [
+          9,
+          20
+        ],
+        [
+          15,
+          7
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          1,
+          null,
+          2
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        []
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          null
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          7
+        ]
+      ],
+      "expected": [
+        [
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          1,
+          2,
+          null,
+          3,
+          null,
+          null,
+          null,
+          4
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-05",
+      "input": [
+        [
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          3
+        ]
+      ],
+      "expected": [
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": [
+        [
+          100
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          100,
+          100,
+          100,
+          100
+        ],
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "expected": [
+        [
+          -72
+        ],
+        [
+          -94,
+          89
+        ],
+        [
+          -30,
+          -38,
+          -43,
+          -65
+        ],
+        [
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8
+        ],
+        [
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60
+        ]
+      ],
+      "expected": [
+        [
+          54
+        ],
+        [
+          -94,
+          43
+        ],
+        [
+          -50,
+          83,
+          66,
+          79
+        ],
+        [
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94
+        ],
+        [
+          -60
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "expected": [
+        [
+          8
+        ],
+        [
+          -13,
+          -29
+        ],
+        [
+          -61,
+          -45,
+          95,
+          -14
+        ],
+        [
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33
+        ],
+        [
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3
+        ]
+      ],
+      "expected": [
+        [
+          -25
+        ],
+        [
+          60,
+          58
+        ],
+        [
+          -8,
+          47,
+          -51,
+          80
+        ],
+        [
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41
+        ],
+        [
+          -75,
+          -3
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71
+        ]
+      ],
+      "expected": [
+        [
+          16
+        ],
+        [
+          62,
+          -7
+        ],
+        [
+          -59,
+          -6,
+          -10,
+          -47
+        ],
+        [
+          71
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ]
+      ],
+      "expected": [
+        [
+          79
+        ],
+        [
+          74,
+          65
+        ],
+        [
+          -82,
+          55,
+          62,
+          -57
+        ],
+        [
+          36
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "expected": [
+        [
+          -38
+        ],
+        [
+          -59,
+          18
+        ],
+        [
+          -3,
+          -31,
+          63,
+          76
+        ],
+        [
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42
+        ],
+        [
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "expected": [
+        [
+          -46
+        ],
+        [
+          67,
+          27
+        ],
+        [
+          1,
+          64,
+          17,
+          -64
+        ],
+        [
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "expected": [
+        [
+          43
+        ],
+        [
+          37,
+          -33
+        ],
+        [
+          91,
+          49,
+          9,
+          49
+        ],
+        [
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93
+        ],
+        [
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected": [
+        [
+          -2
+        ],
+        [
+          -3
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "expected": [
+        [
+          19
+        ],
+        [
+          35,
+          -36
+        ],
+        [
+          41,
+          -98,
+          74,
+          84
+        ],
+        [
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13
+        ],
+        [
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -100,
+          84,
+          84,
+          -33,
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "expected": [
+        [
+          -100
+        ],
+        [
+          84,
+          84
+        ],
+        [
+          -33,
+          28,
+          95,
+          -55
+        ],
+        [
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99
+        ]
+      ],
+      "expected": [
+        [
+          -61
+        ],
+        [
+          -5,
+          95
+        ],
+        [
+          -59,
+          38,
+          99
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -100,
+          53,
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24
+        ]
+      ],
+      "expected": [
+        [
+          -100
+        ],
+        [
+          53,
+          -18
+        ],
+        [
+          25,
+          -96,
+          -72,
+          -8
+        ],
+        [
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87
+        ],
+        [
+          24
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          36
+        ]
+      ],
+      "expected": [
+        [
+          94
+        ],
+        [
+          36
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          -68,
+          -68,
+          68,
+          21,
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "expected": [
+        [
+          -68
+        ],
+        [
+          -68,
+          68
+        ],
+        [
+          21,
+          40,
+          -58,
+          -33
+        ],
+        [
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76
+        ],
+        [
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": [
+        [
+          100
+        ],
+        [
+          -100,
+          -100
+        ],
+        [
+          -100,
+          -100,
+          100,
+          -100
+        ],
+        [
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0
+        ],
+        [
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "expected": [
+        [
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          100,
+          -100,
+          100,
+          100
+        ],
+        [
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100
+        ],
+        [
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "expected": [
+        [
+          0
+        ],
+        [
+          100,
+          -100
+        ],
+        [
+          100,
+          -100,
+          100,
+          100
+        ],
+        [
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0
+        ],
+        [
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": [
+        [
+          100
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0
+        ],
+        [
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function levelOrder(root) {\n  const pairs = [];\n  (function dfs(i, d) {\n    if (i >= root.length || root[i] === null) return;\n    pairs.push([d, root[i]]);\n    dfs(2 * i + 1, d + 1);\n    dfs(2 * i + 2, d + 1);\n  })(0, 0);\n  pairs.sort((a, b) => a[0] - b[0]);\n  const levels = [];\n  for (const [d, v] of pairs) {\n    if (!levels[d]) levels[d] = [];\n    levels[d].push(v);\n  }\n  return levels.filter((lv) => lv !== undefined);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(w)",
+      "language": "javascript",
+      "code": "function levelOrder(root) {\n  const levels = [];\n  if (root.length === 0 || root[0] === null) return levels;\n  let current = [0];\n  while (current.length > 0) {\n    const next = [];\n    const vals = [];\n    for (const i of current) {\n      vals.push(root[i]);\n      const l = 2 * i + 1;\n      const r = 2 * i + 2;\n      if (l < root.length && root[l] !== null) next.push(l);\n      if (r < root.length && root[r] !== null) next.push(r);\n    }\n    levels.push(vals);\n    current = next;\n  }\n  return levels;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def levelOrder(root: list) -> list:\n    pairs = []\n    def dfs(i, d):\n        if i >= len(root) or root[i] is None:\n            return\n        pairs.append((d, root[i]))\n        dfs(2 * i + 1, d + 1)\n        dfs(2 * i + 2, d + 1)\n    dfs(0, 0)\n    pairs.sort(key=lambda item: item[0])\n    levels = []\n    for d, v in pairs:\n        while len(levels) <= d:\n            levels.append([])\n        levels[d].append(v)\n    return [lv for lv in levels if lv]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(w)",
+      "language": "python",
+      "code": "def levelOrder(root: list) -> list:\n    levels = []\n    if len(root) == 0 or root[0] is None:\n        return levels\n    current = [0]\n    while current:\n        nxt, vals = [], []\n        for i in current:\n            vals.append(root[i])\n            l, r = 2 * i + 1, 2 * i + 2\n            if l < len(root) and root[l] is not None:\n                nxt.append(l)\n            if r < len(root) and root[r] is not None:\n                nxt.append(r)\n        levels.append(vals)\n        current = nxt\n    return levels\n",
+      "isReference": true
+    }
+  ]
+}

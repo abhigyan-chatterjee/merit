@@ -1,0 +1,753 @@
+{
+  "slug": "balanced-binary-tree",
+  "title": "Height-Balanced Check",
+  "topic": "trees",
+  "difficulty": "Medium",
+  "pattern": "trees / Height diff",
+  "statement": "# Height-Balanced Check\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree is height-balanced when, at every present node, the heights of its left and right subtrees differ by at most one. Height counts nodes along the longest downward path: a leaf has height 1 and an absent child has height 0. An empty tree counts as balanced.\n\nReturn `true` when every node passes this test, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "root = [3,9,20,null,null,15,7]",
+      "output": "true",
+      "explanation": "The left subtree has height 1 and the right has height 2, and every smaller subtree is even tighter."
+    },
+    {
+      "input": "root = [1,2,2,3,3,null,null,4,4]",
+      "output": "false",
+      "explanation": "The left subtree reaches height 3 through its double chain while the right subtree has height 1."
+    },
+    {
+      "input": "root = [2,1,3]",
+      "output": "true",
+      "explanation": "Both children are leaves, so every balance check passes with a difference of zero."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function isBalanced(root: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The height of an absent child is zero.",
+    "Every node must pass the at-most-one test, not just the root.",
+    "Bubble a failure upward immediately instead of measuring the rest."
+  ],
+  "editorial": {
+    "approach": "One post-order pass returns each subtree's height, carrying a failure flag upward the moment two sibling heights differ by more than one.",
+    "why_optimal": "Each node is measured once, so the pass is linear in time with recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.37 ms and the optimal at 0.34 ms (about 1.1x faster).",
+    "pitfalls": "A tall chain hidden deep inside still unbalances the tree \u2014 test every node, not just the root, and treat absent children as height zero."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_tree"
+  ],
+  "starterCode": {
+    "javascript": "function isBalanced(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def isBalanced(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "isBalanced",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 29,
+    "bruteForceRuntimeMs": 0.3722840000000076,
+    "optimalRuntimeMs": 0.3441020000000137
+  },
+  "testCases": [
+    {
+      "label": "example-01",
+      "input": [
+        [
+          3,
+          9,
+          20,
+          null,
+          null,
+          15,
+          7
+        ]
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "example-02",
+      "input": [
+        [
+          1,
+          2,
+          2,
+          3,
+          3,
+          null,
+          null,
+          4,
+          4
+        ]
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "example-03",
+      "input": [
+        [
+          2,
+          1,
+          3
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-01",
+      "input": [
+        []
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-02",
+      "input": [
+        [
+          null
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-03",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-04",
+      "input": [
+        [
+          3,
+          2,
+          null,
+          1
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "edge-sparse-05",
+      "input": [
+        [
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          3
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          -2,
+          -3
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          -100,
+          84,
+          84,
+          -33,
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29,
+          55
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -100,
+          53,
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          36
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          -68,
+          -68,
+          68,
+          21,
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71,
+          66,
+          -5,
+          12,
+          32
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          0,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b7h) | Space: O(h)",
+      "language": "javascript",
+      "code": "function isBalanced(root) {\n  function height(i) {\n    if (i >= root.length || root[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  function check(i) {\n    if (i >= root.length || root[i] === null) return true;\n    const l = height(2 * i + 1);\n    const r = height(2 * i + 2);\n    if (Math.abs(l - r) > 1) return false;\n    return check(2 * i + 1) && check(2 * i + 2);\n  }\n  return check(0);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "javascript",
+      "code": "function isBalanced(root) {\n  function probe(i) {\n    if (i >= root.length || root[i] === null) return 0;\n    const l = probe(2 * i + 1);\n    if (l === -1) return -1;\n    const r = probe(2 * i + 2);\n    if (r === -1) return -1;\n    if (Math.abs(l - r) > 1) return -1;\n    return 1 + Math.max(l, r);\n  }\n  return probe(0) !== -1;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b7h) | Space: O(h)",
+      "language": "python",
+      "code": "def isBalanced(root: list) -> bool:\n    def height(i):\n        if i >= len(root) or root[i] is None:\n            return 0\n        return 1 + max(height(2 * i + 1), height(2 * i + 2))\n    def check(i):\n        if i >= len(root) or root[i] is None:\n            return True\n        if abs(height(2 * i + 1) - height(2 * i + 2)) > 1:\n            return False\n        return check(2 * i + 1) and check(2 * i + 2)\n    return check(0)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(h)",
+      "language": "python",
+      "code": "def isBalanced(root: list) -> bool:\n    def probe(i):\n        if i >= len(root) or root[i] is None:\n            return 0\n        l = probe(2 * i + 1)\n        if l == -1:\n            return -1\n        r = probe(2 * i + 2)\n        if r == -1:\n            return -1\n        if abs(l - r) > 1:\n            return -1\n        return 1 + max(l, r)\n    return probe(0) != -1\n",
+      "isReference": true
+    }
+  ]
+}
