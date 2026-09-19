@@ -4,8 +4,13 @@ import { QUIZZES, QUIZ_TOPICS } from '../data/quizzes';
 import { QuizEngine } from '../components/QuizEngine';
 import { useProgress } from '../store/ProgressContext';
 import { BrainCircuit } from 'lucide-react';
-import { NotFound } from '../components/NotFound';
 import { LessonNav } from '../components/LessonNav';
+
+const prettifyTopic = (topic: string) =>
+  topic
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
 export const QuizPage: React.FC = () => {
   const { topic = 'mixed' } = useParams<{ topic: string }>();
@@ -15,17 +20,12 @@ export const QuizPage: React.FC = () => {
   const { saveQuizScore } = useProgress();
 
 
-  const currentTopic = QUIZ_TOPICS.find((t) => t.id === topic);
-  if (!currentTopic) {
-    return (
-      <NotFound
-        title="Quiz Not Found"
-        message={`We couldn't find a quiz for topic "${topic}". Please pick an assessment topic from our curriculum.`}
-        backTo="/dashboard"
-        backLabel="Dashboard"
-      />
-    );
-  }
+  const staticTopic = QUIZ_TOPICS.find((t) => t.id === topic);
+  const currentTopic = staticTopic ?? {
+    id: topic,
+    title: prettifyTopic(topic),
+    description: 'Targeted review drawn live from the verified question bank.',
+  };
   const questions = QUIZZES[currentTopic.id] || [];
 
   return (
@@ -80,9 +80,9 @@ export const QuizPage: React.FC = () => {
         topicId={currentTopic.id}
         questions={questions}
         isMock={isMock}
+        examTopics={staticTopic ? undefined : [topic]}
         onComplete={(pct) => saveQuizScore(currentTopic.id, pct)}
       />
     </div>
   );
 };
-
