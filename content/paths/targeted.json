@@ -383,6 +383,16 @@
     },
     {
       "ordinal": 46,
+      "step_type": "problem",
+      "ref_id": "single-number",
+      "title": "Single Number",
+      "summary": "Use XOR cancellation to isolate the value that appears once among paired integers.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Bitwise_operation"
+      ]
+    },
+    {
+      "ordinal": 47,
       "step_type": "quiz",
       "ref_id": "dynamic-programming",
       "title": "Targeted DP check",
@@ -390,7 +400,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 47,
+      "ordinal": 48,
       "step_type": "mock",
       "ref_id": "mixed",
       "title": "Targeted placement mock",

@@ -29037,5 +29037,8 @@
       "code": "def permute(nums: list[int]) -> list[list[int]]:\n    arr = list(nums)\n    res = []\n\n    def backtrack(start: int) -> None:\n        if start == len(arr):\n            res.append(list(arr))\n            return\n        for i in range(start, len(arr)):\n            arr[start], arr[i] = arr[i], arr[start]\n            backtrack(start + 1)\n            arr[start], arr[i] = arr[i], arr[start]\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "palindrome-partitioning",
+  "nextSlug": "subsets"
 }

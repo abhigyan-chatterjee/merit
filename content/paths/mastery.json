@@ -531,6 +531,16 @@
     },
     {
       "ordinal": 64,
+      "step_type": "problem",
+      "ref_id": "combination-sum",
+      "title": "Combination Sum",
+      "summary": "Backtracking after DP: choose, recurse, and undo while pruning combinations that exceed the target.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Backtracking"
+      ]
+    },
+    {
+      "ordinal": 65,
       "step_type": "quiz",
       "ref_id": "arrays-hashing",
       "title": "Arrays & hashing check",
@@ -538,7 +548,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 65,
+      "ordinal": 66,
       "step_type": "quiz",
       "ref_id": "trees",
       "title": "Trees check",
@@ -546,7 +556,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 66,
+      "ordinal": 67,
       "step_type": "quiz",
       "ref_id": "graphs",
       "title": "Graphs check",
@@ -554,7 +564,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 67,
+      "ordinal": 68,
       "step_type": "quiz",
       "ref_id": "dynamic-programming",
       "title": "DP check",
@@ -562,7 +572,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 68,
+      "ordinal": 69,
       "step_type": "mock",
       "ref_id": "mixed",
       "title": "Mastery mock",

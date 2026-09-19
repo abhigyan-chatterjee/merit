@@ -48,10 +48,10 @@ describe('Path progress consistency (/learn cards)', () => {
     );
 
     const { result } = renderHookForTest(() => usePathProgress('foundation'));
-    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4/20
+    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4/21
     expect(result.current.done).toBe(4);
-    expect(result.current.total).toBe(20);
-    expect(result.current.pct).toBe(20);
+    expect(result.current.total).toBe(21);
+    expect(result.current.pct).toBe(19);
   });
 
   it('renders one consistent percentage on the card (no 13% ghost)', () => {
@@ -76,11 +76,11 @@ describe('Path progress consistency (/learn cards)', () => {
 
     renderPage();
     const card = screen.getByText('Foundation').closest('a')!;
-    const pcts = within(card).getAllByText('20%');
+    const pcts = within(card).getAllByText('19%');
     expect(pcts.length).toBeGreaterThanOrEqual(1);
     const countLabel = within(card).getByText((_content, el) => {
       if (!el || el.children.length > 0) return false;
-      return (el.textContent ?? '').replace(/\s+/g, ' ').includes('4/20 complete');
+      return (el.textContent ?? '').replace(/\s+/g, ' ').includes('4/21 complete');
     });
     expect(countLabel).toBeInTheDocument();
   });

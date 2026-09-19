@@ -1806,5 +1806,8 @@
       "code": "def sortArray(nums: list[int]) -> list[int]:\n    arr = list(nums)\n    temp = [0] * len(arr)\n\n    def merge_sort(left: int, right: int) -> None:\n        if left >= right:\n            return\n        mid = (left + right) // 2\n        merge_sort(left, mid)\n        merge_sort(mid + 1, right)\n        i, j, k = left, mid + 1, left\n        while i <= mid and j <= right:\n            if arr[i] <= arr[j]:\n                temp[k] = arr[i]\n                i += 1\n            else:\n                temp[k] = arr[j]\n                j += 1\n            k += 1\n        while i <= mid:\n            temp[k] = arr[i]\n            i += 1\n            k += 1\n        while j <= right:\n            temp[k] = arr[j]\n            j += 1\n            k += 1\n        for p in range(left, right + 1):\n            arr[p] = temp[p]\n\n    merge_sort(0, len(arr) - 1)\n    return arr\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "largest-number",
+  "nextSlug": "wiggle-sort-ii-lite"
 }

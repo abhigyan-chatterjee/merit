@@ -1411,5 +1411,8 @@
       "code": "def letterCombinations(digits: str) -> list[str]:\n    if not digits:\n        return []\n    phone = {\n        \"2\": \"abc\", \"3\": \"def\", \"4\": \"ghi\", \"5\": \"jkl\",\n        \"6\": \"mno\", \"7\": \"pqrs\", \"8\": \"tuv\", \"9\": \"wxyz\"\n    }\n    res = []\n    path: list[str] = []\n\n    def backtrack(idx: int) -> None:\n        if idx == len(digits):\n            res.append(\"\".join(path))\n            return\n        for ch in phone.get(digits[idx], \"\"):\n            path.append(ch)\n            backtrack(idx + 1)\n            path.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "combination-sum",
+  "nextSlug": "palindrome-partitioning"
 }

@@ -276,5 +276,8 @@
       "code": "def hammingWeight(n: int) -> int:\n    count = 0\n    val = n & 0xFFFFFFFF\n    while val > 0:\n        val &= val - 1\n        count += 1\n    return count\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "power-of-two"
 }

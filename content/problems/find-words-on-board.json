@@ -488,5 +488,8 @@
       "code": "def findWords(board: list[list[str]], words: list[str]) -> list[str]:\n    root = {}\n    for word in words:\n        node = root\n        for ch in word:\n            node = node.setdefault(ch, {})\n        node[\"$\"] = word\n\n    m, n = len(board), len(board[0])\n    result = []\n\n    def dfs(r: int, c: int, parent: dict) -> None:\n        ch = board[r][c]\n        curr_node = parent.get(ch)\n        if not curr_node:\n            return\n        if \"$\" in curr_node:\n            result.append(curr_node.pop(\"$\"))\n        board[r][c] = \"#\"\n        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < m and 0 <= nc < n and board[nr][nc] != \"#\":\n                dfs(nr, nc, curr_node)\n        board[r][c] = ch\n\n    for i in range(m):\n        for j in range(n):\n            if board[i][j] in root:\n                dfs(i, j, root)\n\n    result.sort()\n    return result\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": null
 }

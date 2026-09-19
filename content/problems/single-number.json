@@ -562,5 +562,8 @@
       "code": "def singleNumber(nums: list[int]) -> int:\n    res = 0\n    for num in nums:\n        res ^= num\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "reverse-bits",
+  "nextSlug": "sum-of-two-integers"
 }

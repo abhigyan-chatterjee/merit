@@ -407,5 +407,8 @@
       "code": "def largestNumber(nums: list[int]) -> str:\n    from functools import cmp_to_key\n\n    strs = [str(x) for x in nums]\n\n    def cmp(a: str, b: str) -> int:\n        if a + b > b + a:\n            return -1\n        elif a + b < b + a:\n            return 1\n        return 0\n\n    strs.sort(key=cmp_to_key(cmp))\n    if strs[0] == \"0\":\n        return \"0\"\n    return \"\".join(strs)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "merge-sorted-array",
+  "nextSlug": "sort-an-array"
 }

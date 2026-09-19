@@ -47,6 +47,16 @@
     },
     {
       "ordinal": 5,
+      "step_type": "problem",
+      "ref_id": "sort-an-array",
+      "title": "Sort an Array",
+      "summary": "Practice sorting before binary search: order values in place with a predictable comparison strategy.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Sorting_algorithm"
+      ]
+    },
+    {
+      "ordinal": 6,
       "step_type": "visualizer",
       "ref_id": "searching",
       "title": "Binary search step-through",
@@ -56,7 +66,7 @@
       ]
     },
     {
-      "ordinal": 6,
+      "ordinal": 7,
       "step_type": "problem",
       "ref_id": "binary-search",
       "title": "Binary Search",
@@ -66,7 +76,7 @@
       ]
     },
     {
-      "ordinal": 7,
+      "ordinal": 8,
       "step_type": "problem",
       "ref_id": "valid-palindrome",
       "title": "Valid Palindrome",
@@ -74,7 +84,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 8,
+      "ordinal": 9,
       "step_type": "problem",
       "ref_id": "move-zeroes",
       "title": "Move Zeroes",
@@ -84,7 +94,7 @@
       ]
     },
     {
-      "ordinal": 9,
+      "ordinal": 10,
       "step_type": "problem",
       "ref_id": "longest-substring-without-repeating",
       "title": "Longest Substring Without Repeating Characters",
@@ -92,7 +102,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 10,
+      "ordinal": 11,
       "step_type": "visualizer",
       "ref_id": "linked-list",
       "title": "Singly linked list",
@@ -102,7 +112,7 @@
       ]
     },
     {
-      "ordinal": 11,
+      "ordinal": 12,
       "step_type": "problem",
       "ref_id": "reverse-linked-list",
       "title": "Reverse Linked List",
@@ -110,7 +120,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 12,
+      "ordinal": 13,
       "step_type": "problem",
       "ref_id": "linked-list-cycle",
       "title": "Linked List Cycle",
@@ -120,7 +130,7 @@
       ]
     },
     {
-      "ordinal": 13,
+      "ordinal": 14,
       "step_type": "visualizer",
       "ref_id": "stack",
       "title": "LIFO stack",
@@ -130,7 +140,7 @@
       ]
     },
     {
-      "ordinal": 14,
+      "ordinal": 15,
       "step_type": "problem",
       "ref_id": "valid-parentheses",
       "title": "Valid Parentheses",
@@ -138,7 +148,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 15,
+      "ordinal": 16,
       "step_type": "visualizer",
       "ref_id": "hashmap",
       "title": "Hash map buckets",
@@ -148,7 +158,7 @@
       ]
     },
     {
-      "ordinal": 16,
+      "ordinal": 17,
       "step_type": "problem",
       "ref_id": "valid-anagram",
       "title": "Valid Anagram",
@@ -156,7 +166,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 17,
+      "ordinal": 18,
       "step_type": "visualizer",
       "ref_id": "binary-tree",
       "title": "Tree traversals",
@@ -166,7 +176,7 @@
       ]
     },
     {
-      "ordinal": 18,
+      "ordinal": 19,
       "step_type": "problem",
       "ref_id": "maximum-depth-of-binary-tree",
       "title": "Maximum Depth of Binary Tree",
@@ -174,7 +184,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 19,
+      "ordinal": 20,
       "step_type": "problem",
       "ref_id": "same-tree",
       "title": "Same Tree",
@@ -184,7 +194,7 @@
       ]
     },
     {
-      "ordinal": 20,
+      "ordinal": 21,
       "step_type": "quiz",
       "ref_id": "arrays-hashing",
       "title": "Foundation check",

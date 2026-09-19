@@ -39,6 +39,7 @@ export const LEARNING_PATHS: LearningPath[] = [
       { type: 'problem', id: 'two-sum', title: 'Two Sum', summary: 'First hashing pattern: trade one pass plus a lookup table for the naive pair check.' },
       { type: 'problem', id: 'contains-duplicate', title: 'Contains Duplicate', summary: 'Same set-membership idea as Two Sum, reduced to a yes/no duplicate check.' },
       { type: 'visualizer', id: 'sorting', title: 'Sorting basics', summary: 'Sorting arranges data so binary search and two-pointer scans work. Watch how many comparisons each method needs.', readingLinks: ['https://en.wikipedia.org/wiki/Sorting_algorithm', 'https://visualgo.net/en/sorting'] },
+      { type: 'problem', id: 'sort-an-array', title: 'Sort an Array', summary: 'Practice sorting before binary search: order values in place with a predictable comparison strategy.', readingLinks: ['https://en.wikipedia.org/wiki/Sorting_algorithm'] },
       { type: 'visualizer', id: 'searching', title: 'Binary search step-through', summary: 'On sorted data, halving the search range each step finds any item in O(log n).', readingLinks: ['https://en.wikipedia.org/wiki/Binary_search'] },
       { type: 'problem', id: 'binary-search', title: 'Binary Search', summary: 'Classic halving invariant on a sorted array: test midpoint, discard half in O(log n).', readingLinks: ['https://en.wikipedia.org/wiki/Binary_search'] },
       { type: 'problem', id: 'valid-palindrome', title: 'Valid Palindrome', summary: 'Converging two pointers: compare the ends and walk inward.' },
@@ -108,6 +109,7 @@ export const LEARNING_PATHS: LearningPath[] = [
       { type: 'problem', id: 'unique-paths', title: 'Unique Paths', summary: '2D grid DP: paths to (r, c) = paths from top + paths from left.' },
       { type: 'problem', id: 'word-break', title: 'Word Break', summary: 'Boolean DP where dp[i] is true if a prefix s[0..i] can be segmented using words.', readingLinks: ['https://en.wikipedia.org/wiki/Dynamic_programming'] },
       { type: 'problem', id: 'roman-to-integer', title: 'Roman to Integer', summary: 'Right-to-left traversal: add if value >= prev, subtract otherwise.' },
+      { type: 'problem', id: 'single-number', title: 'Single Number', summary: 'Use XOR cancellation to isolate the value that appears once among paired integers.', readingLinks: ['https://en.wikipedia.org/wiki/Bitwise_operation'] },
       { type: 'quiz', id: 'dynamic-programming', title: 'Targeted DP check', summary: 'Recurrence relations, memoization bounds, and subproblem structure.' },
       { type: 'quiz', id: 'mixed', title: 'Targeted placement mock', summary: 'Timed mixed assessment across the whole targeted sequence.' },
     ]
@@ -181,6 +183,7 @@ export const LEARNING_PATHS: LearningPath[] = [
       { type: 'problem', id: 'longest-increasing-subsequence', title: 'Longest Increasing Subsequence', summary: 'Full dynamic-programming chain in category order.' },
       { type: 'problem', id: 'unique-paths', title: 'Unique Paths', summary: 'Full dynamic-programming chain in category order.' },
       { type: 'problem', id: 'edit-distance', title: 'Edit Distance', summary: '2D DP grid calculates minimum insertions, deletions, and replacements between two strings.', readingLinks: ['https://en.wikipedia.org/wiki/Levenshtein_distance'] },
+      { type: 'problem', id: 'combination-sum', title: 'Combination Sum', summary: 'Backtracking after DP: choose, recurse, and undo while pruning combinations that exceed the target.', readingLinks: ['https://en.wikipedia.org/wiki/Backtracking'] },
       { type: 'quiz', id: 'arrays-hashing', title: 'Arrays & hashing check', summary: 'Full category quiz for arrays and hashing.' },
       { type: 'quiz', id: 'trees', title: 'Trees check', summary: 'Full category quiz for binary trees and BSTs.' },
       { type: 'quiz', id: 'graphs', title: 'Graphs check', summary: 'Full category quiz for graph algorithms.' },

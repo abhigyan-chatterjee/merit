@@ -942,5 +942,8 @@
       "code": "def combinationSum(candidates: list[int], target: int) -> list[list[int]]:\n    arr = sorted(candidates)\n    res = []\n    current: list[int] = []\n\n    def backtrack(idx: int, remain: int) -> None:\n        if remain == 0:\n            res.append(list(current))\n            return\n        for i in range(idx, len(arr)):\n            if arr[i] > remain:\n                break\n            current.append(arr[i])\n            backtrack(i, remain - arr[i])\n            current.pop()\n\n    backtrack(0, target)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "letter-combinations-of-a-phone-number"
 }

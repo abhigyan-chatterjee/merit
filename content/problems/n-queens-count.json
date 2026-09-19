@@ -244,5 +244,8 @@
       "code": "def totalNQueens(n: int) -> int:\n    count = 0\n    all_mask = (1 << n) - 1\n\n    def solve(row: int, cols: int, diag1: int, diag2: int) -> None:\n        nonlocal count\n        if row == n:\n            count += 1\n            return\n        available = all_mask & ~(cols | diag1 | diag2)\n        while available:\n            bit = available & -available\n            available ^= bit\n            solve(row + 1, cols | bit, (diag1 | bit) << 1, (diag2 | bit) >> 1)\n\n    solve(0, 0, 0, 0)\n    return count\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 7,
+  "prevSlug": "word-search",
+  "nextSlug": null
 }

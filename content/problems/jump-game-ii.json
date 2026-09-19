@@ -1006,5 +1006,8 @@
       "code": "def jump(nums: list[int]) -> int:\n    n = len(nums)\n    if n <= 1:\n        return 0\n    jumps = 0\n    current_end = 0\n    farthest = 0\n    for i in range(n - 1):\n        farthest = max(farthest, i + nums[i])\n        if i == current_end:\n            jumps += 1\n            current_end = farthest\n            if current_end >= n - 1:\n                break\n    return jumps\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": null
 }

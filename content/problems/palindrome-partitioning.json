@@ -955,5 +955,8 @@
       "code": "def partition(s: str) -> list[list[str]]:\n    n = len(s)\n    is_pal = [[False] * n for _ in range(n)]\n    for i in range(n):\n        is_pal[i][i] = True\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            if s[i] == s[j]:\n                is_pal[i][j] = True if length == 2 else is_pal[i + 1][j - 1]\n\n    res = []\n    current: list[str] = []\n\n    def backtrack(start: int) -> None:\n        if start == n:\n            res.append(list(current))\n            return\n        for end in range(start, n):\n            if is_pal[start][end]:\n                current.append(s[start : end + 1])\n                backtrack(end + 1)\n                current.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "letter-combinations-of-a-phone-number",
+  "nextSlug": "permutations"
 }

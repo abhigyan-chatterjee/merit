@@ -326,5 +326,8 @@
       "code": "def myPow(x: float, n: int) -> float | int:\n    if n == 0:\n        return 1\n    exp = n\n    base = x\n    if exp < 0:\n        base = 1.0 / base\n        exp = -exp\n    res = 1.0\n    while exp > 0:\n        if exp % 2 == 1:\n            res *= base\n        base *= base\n        exp //= 2\n    res = round(res, 5)\n    return int(res) if res.is_integer() else res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": null
 }

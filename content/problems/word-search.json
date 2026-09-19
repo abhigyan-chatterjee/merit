@@ -520,5 +520,8 @@
       "code": "def exist(board: list[list[str]], word: str) -> bool:\n    m, n = len(board), len(board[0])\n    if len(word) > m * n:\n        return False\n    from collections import Counter\n    board_cnt = Counter(ch for row in board for ch in row)\n    word_cnt = Counter(word)\n    for ch, count in word_cnt.items():\n        if board_cnt[ch] < count:\n            return False\n    target = word\n    if board_cnt[word[0]] > board_cnt[word[-1]]:\n        target = word[::-1]\n\n    def dfs(r: int, c: int, k: int) -> bool:\n        if k == len(target):\n            return True\n        if r < 0 or r >= m or c < 0 or c >= n or board[r][c] != target[k]:\n            return False\n        saved = board[r][c]\n        board[r][c] = \"#\"\n        found = (\n            dfs(r + 1, c, k + 1)\n            or dfs(r - 1, c, k + 1)\n            or dfs(r, c + 1, k + 1)\n            or dfs(r, c - 1, k + 1)\n        )\n        board[r][c] = saved\n        return found\n\n    for i in range(m):\n        for j in range(n):\n            if board[i][j] == target[0] and dfs(i, j, 0):\n                return True\n    return False\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "subsets",
+  "nextSlug": "n-queens-count"
 }

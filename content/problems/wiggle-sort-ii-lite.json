@@ -830,5 +830,8 @@
       "code": "def wiggleSort(nums: list[int]) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    sorted_nums = sorted(nums)\n    mid = (n + 1) // 2\n    left = sorted_nums[:mid]\n    right = sorted_nums[mid:]\n    res = [0] * n\n    l, r = len(left) - 1, len(right) - 1\n    for i in range(n):\n        if i % 2 == 0:\n            res[i] = left[l]\n            l -= 1\n        else:\n            res[i] = right[r]\n            r -= 1\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "sort-an-array",
+  "nextSlug": null
 }

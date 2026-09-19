@@ -1315,5 +1315,8 @@
       "code": "def minMeetingRooms(intervals: list[list[int]]) -> int:\n    if not intervals:\n        return 0\n    starts = sorted(iv[0] for iv in intervals)\n    ends = sorted(iv[1] for iv in intervals)\n    s = e = rooms = max_rooms = 0\n    while s < len(starts):\n        if starts[s] < ends[e]:\n            rooms += 1\n            max_rooms = max(max_rooms, rooms)\n            s += 1\n        else:\n            rooms -= 1\n            e += 1\n    return max_rooms\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": null
 }

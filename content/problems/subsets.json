@@ -15987,5 +15987,8 @@
       "code": "def subsets(nums: list[int]) -> list[list[int]]:\n    arr = sorted(nums)\n    res = []\n    current: list[int] = []\n\n    def backtrack(idx: int) -> None:\n        if idx == len(arr):\n            res.append(list(current))\n            return\n        backtrack(idx + 1)\n        current.append(arr[idx])\n        backtrack(idx + 1)\n        current.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "permutations",
+  "nextSlug": "word-search"
 }

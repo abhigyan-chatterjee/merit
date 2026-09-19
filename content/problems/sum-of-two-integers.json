@@ -318,5 +318,8 @@
       "code": "def getSum(a: int, b: int) -> int:\n    mask = 0xFFFFFFFF\n    while (b & mask) != 0:\n        carry = (a & b) << 1\n        a = (a ^ b) & mask\n        b = carry & mask\n    return a if a <= 0x7FFFFFFF else ~(a ^ mask)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "single-number",
+  "nextSlug": null
 }
