@@ -182,6 +182,17 @@ export const AiTutor: React.FC<AiTutorProps> = ({
 
   const canChat = apiKey.trim().length > 0 && model.trim().length > 0;
 
+  // Copy-only provider presets for the base URL field (no logic beyond
+  // filling the text input): OpenAI default, Gemini via its
+  // OpenAI-compatible endpoint. Exactly two options.
+  const PRESETS = [
+    { label: "OpenAI", url: "https://api.openai.com/v1" },
+    {
+      label: "Gemini (OpenAI-compatible)",
+      url: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    },
+  ];
+
   return (
     <div className="rounded-xl border border-line bg-surface overflow-hidden">
       <button
@@ -200,6 +211,25 @@ export const AiTutor: React.FC<AiTutorProps> = ({
         <div className="p-4 pt-0 space-y-4 border-t border-line">
           {/* BYOK credentials */}
           <div className="space-y-2 pt-3">
+            <label className="block text-xs font-mono">
+              <span className="text-muted">Provider preset</span>
+              <select
+                aria-label="Provider preset"
+                value={
+                  PRESETS.some((p) => p.url === baseUrl)
+                    ? baseUrl
+                    : PRESETS[0].url
+                }
+                onChange={(e) => setBaseUrl(e.target.value)}
+                className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink focus:outline-none focus:border-violet cursor-pointer"
+              >
+                {PRESETS.map((p) => (
+                  <option key={p.url} value={p.url}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label className="block text-xs font-mono">
               <span className="text-muted">Provider base URL</span>
               <input
@@ -228,6 +258,10 @@ export const AiTutor: React.FC<AiTutorProps> = ({
                 className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder-muted focus:outline-none focus:border-violet"
               />
             </label>
+            <p className="text-[11px] font-mono text-muted">
+              No key? Get a free one at AI Studio (aistudio.google.com):
+              Gemini Flash has a free tier.
+            </p>
             <p className="text-[11px] font-mono text-muted">
               Your key stays on your device + provider: it is sent only to the
               provider above via our proxy and never stored on our servers.

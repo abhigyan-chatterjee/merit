@@ -200,3 +200,81 @@ curl -s -i -X POST $API/api/v1/auth/register \
   `sqlite:///./merit.db`); no code change needed either way.
 - Image builds need no extra step: `apps/api/Dockerfile` installs
   `pyproject.toml`, which now includes `psycopg[binary]`.
+
+## 5. 1GB VPS host hardening (shared Oracle VPS, 1 vCPU / 1GB RAM)
+
+No live deploy yet — the owner provisions the VPS later. Everything below
+is owner-run on deploy day, ready as written.
+
+### 5.1 Swap: 2GB swapfile (required — the box has only 1GB RAM)
+
+```bash
+sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h   # expect ~2.0G under Swap
+```
+
+### 5.2 `vm.overcommit` sanity
+
+Container limits (`mem_limit` in `docker-compose.yml`) only work if the
+kernel is allowed to account that memory. Check before `compose up`:
+
+```bash
+sysctl vm.overcommit_memory vm.overcommit_ratio
+# expect vm.overcommit_memory = 0 (heuristic) or 1 (always overcommit).
+# If it is 2 (strict), either set it back to 0:
+#   echo 'vm.overcommit_memory=0' | sudo tee /etc/sysctl.d/99-merit.conf && sudo sysctl --system
+# ...or keep 2 and size swap generously, since strict mode counts every
+# reservation against RAM+swap.
+```
+
+### 5.3 Log rotation (already in compose — do not duplicate elsewhere)
+
+Every service in `docker-compose.yml` carries:
+
+```yaml
+logging:
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+```
+
+That caps each container at ~30MB of logs. If `docker compose config`
+ever shows a service without it, re-add it — unbounded json logs are the
+usual way a 1GB disk/RAM box dies quietly.
+
+### 5.4 Piston slim runtimes (JavaScript + Python ONLY)
+
+Piston has **no env/config knob** for language selection — runtimes are
+packages installed under `/piston/packages` via the `ppman` CLI (or
+`POST /api/v2/packages`). The compose file therefore uses the stock
+`ghcr.io/engineer-man/piston:latest` image (**no Dockerfile change**) plus
+a `merit-piston-packages:/piston/packages` volume, and the owner installs
+exactly the two MVP runtimes once:
+
+```bash
+docker compose up -d piston
+# Longer first-pull/install here: downloads + unpacks both toolchains.
+docker compose exec piston cli/index.js ppman install python javascript
+curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
+# expect ONLY "python" and "javascript" — never java/c++ (out of MVP scope)
+```
+
+The volume keeps the packages across recreates, so the cost is paid once.
+`PISTON_MAX_CONCURRENT_JOBS=4` (set in compose) matches the single vCPU.
+
+### 5.5 Backup drill (pointer — procedure lives in the script)
+
+Do not duplicate the drill here. Run it as documented:
+
+```bash
+chmod +x docs/backup_drill.sh
+./docs/backup_drill.sh
+```
+
+See `docs/launch-checklist.md` §3.3 / §5 for where the drill fits in the
+deploy-day sequence.

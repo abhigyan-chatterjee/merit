@@ -1,15 +1,56 @@
 version: "3.8"
 
+# --- 1GB VPS memory budget (shared host) -------------------------------------
+# Host has 1024MB total AND already runs other apps, so the stack caps itself
+# well below that and leaves ~300MB+ headroom for the OS, Docker overhead,
+# and the host's existing apps. Limits are hard OOM-kill ceilings;
+# reservations are soft guarantees used for placement.
+#   piston: limit 300m / reserve 150m — Node API + python/node toolchains for
+#           the ONLY two runtimes (python, javascript); burst covers a few
+#           concurrent isolate jobs on 1 vCPU (see PISTON_MAX_CONCURRENT_JOBS).
+#   api:    limit 350m / reserve 200m — single uvicorn worker + SQLAlchemy;
+#           Argon2id hashing spikes per login, hence the higher reservation.
+#   web:    limit 64m  / reserve 32m  — static nginx serving a prebuilt
+#           bundle; RSS is essentially the nginx master + 1 worker.
+# Sum of limits = 714MB -> ~300MB headroom. Sum of reservations = 382MB.
+# -----------------------------------------------------------------------------
+
 services:
   # 1. Sandboxed Judge Execution Service
   piston:
     image: ghcr.io/engineer-man/piston:latest
     container_name: merit-piston
     restart: unless-stopped
+    mem_limit: 300m
+    mem_reservation: 150m
     ports:
       - "2000:2000"
     tmpfs:
       - /tmp:exec,mode=1777
+    environment:
+      # 1 vCPU box: cap concurrent isolate jobs so one quiz rush can't
+      # starve the API container of CPU.
+      - PISTON_MAX_CONCURRENT_JOBS=4
+    volumes:
+      # Slim-piston persistence: Piston selects runtimes ONLY via installed
+      # packages under /piston/packages (no env/config knob exists upstream).
+      # The owner installs exactly python + javascript once (see the ppman
+      # comment below and docs/prod.md §5); this volume keeps them across
+      # recreates so the first-pull/install cost is paid only once.
+      # No Dockerfile change needed: stock image + 2 packages.
+      - merit-piston-packages:/piston/packages
+      # First-time runtime install (owner runs ONCE on the VPS after
+      # `docker compose up -d piston`; downloads + unpacks the two
+      # toolchains, so expect a longer first pull/install of a few minutes):
+      #   docker compose exec piston cli/index.js ppman install python javascript
+      # Verify slim set afterwards:
+      #   curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
+      #   # expect ONLY "python" and "javascript"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - merit-net
 
@@ -20,6 +61,8 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: merit-api
     restart: unless-stopped
+    mem_limit: 350m
+    mem_reservation: 200m
     depends_on:
       - piston
     environment:
@@ -33,6 +76,11 @@ services:
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
     volumes:
       - merit-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - merit-net
 
@@ -43,15 +91,23 @@ services:
       dockerfile: apps/web/Dockerfile
     container_name: merit-web
     restart: unless-stopped
+    mem_limit: 64m
+    mem_reservation: 32m
     ports:
       - "80:80"
     depends_on:
       - api
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - merit-net
 
 volumes:
   merit-data:
+  merit-piston-packages:
 
 networks:
   merit-net:

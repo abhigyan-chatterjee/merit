@@ -90,3 +90,90 @@ This performs a safe SQLite WAL checkpoint (`PRAGMA wal_checkpoint(TRUNCATE)`), 
 ## 4. Launch Sign-Off
 All automated tests, static checks, and runtime requirements have been satisfied.
 Platform is ready for deployment.
+
+---
+
+## 5. Deploy-day runbook (owner executes on the 1GB VPS — no live deploy yet)
+
+Playwright e2e IS configured in this repo (`apps/web/playwright.config.ts`
++ `apps/web/e2e/*.spec.ts`), so the automated e2e step below stands. If it
+were absent, the manual smoke list alone would be the gate — do not build a
+new harness either way.
+
+### 5.1 VPS prep
+
+```bash
+# Docker + compose plugin, then host hardening (details: docs/prod.md §5)
+free -h                          # after: expect ~2G swap (swapfile)
+sysctl vm.overcommit_memory      # expect 0 or 1, never 2 without extra swap
+git clone <forge-url> /opt/merit && cd /opt/merit
+git checkout scope/extension
+```
+
+### 5.2 Env (never commit — all gitignored / exported)
+
+```bash
+export SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_urlsafe(48))')"
+export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'  # Neon pooled
+# Clerk (see docs/prod.md §1): CLERK_JWKS_URL (+ CLERK_AUDIENCE if used) in
+# apps/api/.env; VITE_CLERK_PUBLISHABLE_KEY + VITE_CLERK_JWT_TEMPLATE=merit
+# in apps/web/.env, then rebuild web.
+```
+
+### 5.3 Compose up (1GB budget: api 350m / piston 300m / web 64m + swap)
+
+```bash
+docker compose config   # must parse clean
+docker compose up -d --build
+docker compose ps
+# Slim piston to python + javascript ONLY (longer first install, paid once):
+docker compose exec piston cli/index.js ppman install python javascript
+curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
+# expect ONLY "python" and "javascript"
+```
+
+### 5.4 Migrate + seed (Neon is empty at cutover; idempotent re-runs)
+
+```bash
+cd /opt/merit/apps/api
+DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
+DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
+```
+
+### 5.5 Smoke (manual gate — every item must pass)
+
+- [ ] `curl -s https://<vps-host>/api/v1/health` → `{"status":"ok",...}`
+- [ ] Register via UI (or `POST /api/v1/auth/register`) → 201 + cookies
+- [ ] Clerk login (Google/GitHub) → linked/created, cookies issued
+- [ ] Solve one problem (Python AND JavaScript) → real verdict row
+- [ ] Generate + submit a quiz → graded, no answer leakage pre-submit
+- [ ] Start + submit a timed mock exam → score recorded
+- [ ] Tutor panel WITHOUT a key → mocked/offline path, no crash; with a
+      pasted key → preset selector shows OpenAI (default) + Gemini
+- [ ] Logout → cookies cleared, protected routes redirect to login
+
+### 5.6 Automated e2e (configured — run it)
+
+```bash
+cd /opt/merit/apps/web && npx playwright test
+# expect all specs green (smoke, auth, judge, progress)
+```
+
+### 5.7 Backup drill
+
+```bash
+chmod +x docs/backup_drill.sh && ./docs/backup_drill.sh
+# expect WAL checkpoint + snapshot + 0600 perms + restore verify
+```
+
+### 5.8 Reverse proxy: `merit.nullbit.in` (subdomain + TLS)
+
+- DNS: `merit.nullbit.in` → A record → VPS public IP (proxy host, not the
+  compose `web:80` directly if other apps share port 80/443).
+- Proxy (host nginx/Caddy) forwards `merit.nullbit.in` → `127.0.0.1:80`
+  (compose `web`), preserving `Host` + `X-Forwarded-*`; API same-origin
+  under `/api` so no extra CORS entry is needed.
+- TLS: terminate at the proxy (certbot/Caddy auto-TLS); `Secure` cookies
+  require HTTPS — plain-HTTP smoke is for localhost only.
+- If port 80 is taken by existing apps, bind compose web to
+  `127.0.0.1:<free-port>:80` and point the vhost at that port.
