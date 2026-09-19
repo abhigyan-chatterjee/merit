@@ -62,7 +62,6 @@ content/validators/verify_problems.py / verify_questions.py / coverage_report.py
 docs/prod.md                       # Clerk + prod handoff runbook
 docs/launch-checklist.md           # launch/hardening verification checklist
 docs/backup_drill.sh               # WAL checkpoint + backup drill
-docs/plans/                        # archived plan docs (kept, not served)
 ```
 
 Owner-only, untracked, never commit content from: `design ideas/` (owner screenshots).
@@ -100,7 +99,7 @@ Zero tolerance: all three gates green before and after every change.
 
 ## 5. Branch / commit conventions
 
-- Remote: `https://git.nullbit.in/abhi/Merit.git`. Work on `scope/extension`.
+- Remote: `https://git.nullbit.in/abhi/Algovista.git` (repo slug still Algovista; rename is product-only until owner renames the forge repo). Work on `scope/extension`.
 - Identity (strict):
   `git config user.name "Abhigyan Chatterjee"` /
   `git config user.email "abhi@nullbit.in"`
