@@ -6,6 +6,7 @@ import { ProgressProvider } from '../src/store/ProgressContext';
 import { ExamsPage } from '../src/pages/ExamsPage';
 import { ExamDetailPage } from '../src/pages/ExamDetailPage';
 import { QuizEngine } from '../src/components/QuizEngine';
+import { ExamCodingSection } from '../src/components/ExamCodingSection';
 import { Routes, Route } from 'react-router-dom';
 import { TARGETED_EXAMS } from '../src/data/exams';
 import * as apiModule from '../src/utils/api';
@@ -196,5 +197,13 @@ describe('Exams catalog', () => {
     expect(await screen.findAllByText(/No Questions Available/i)).not.toHaveLength(0);
     expect(screen.getByText(/Try Again/i)).toBeInTheDocument();
     expect(genSpy).not.toHaveBeenCalled();
+  });
+
+  it('exam coding item renders statement + examples inline', async () => {
+    renderEngine(<ExamCodingSection coding={[{ slug: 'two-sum', title: 'Two Sum' }]} onVerdict={() => {}} />);
+    // Full statement visible inline without clicking the "Open full statement" link.
+    expect(await screen.findByText(/Given an array of integers/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Example 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Open full statement/i)).toBeInTheDocument();
   });
 });

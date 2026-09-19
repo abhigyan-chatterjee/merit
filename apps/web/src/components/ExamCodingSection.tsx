@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { contentApi } from '../utils/api';
 import { CodeRunner } from '../components/CodeRunner';
-import { TestCase } from '../data/problems';
+import { ProblemExample, TestCase } from '../data/problems';
 
 interface ExamCodingState {
   slug: string;
   title: string;
+  statement: string;
+  examples: ProblemExample[];
+  constraints: string[];
   starterCode: string;
   functionName: string;
   testCases: TestCase[];
@@ -32,6 +35,9 @@ export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string
           next.push({
             slug: local.slug,
             title: local.title,
+            statement: local.statement,
+            examples: local.examples,
+            constraints: local.constraints,
             starterCode: local.starterCode,
             functionName: local.functionName,
             testCases: local.testCases,
@@ -45,6 +51,9 @@ export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string
           next.push({
             slug: remote.slug,
             title: remote.title,
+            statement: remote.statement ?? '',
+            examples: remote.examples ?? [],
+            constraints: remote.constraints ?? [],
             starterCode: sc,
             functionName: remote.function_name ?? 'solve',
             testCases: (remote.test_cases ?? []).map((t: { input: unknown[]; expected: unknown; label: string }) => ({
@@ -55,7 +64,7 @@ export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string
             passed: null,
           });
         } catch {
-          next.push({ slug: c.slug, title: c.title, starterCode: '', functionName: 'solve', testCases: [], passed: null });
+          next.push({ slug: c.slug, title: c.title, statement: '', examples: [], constraints: [], starterCode: '', functionName: 'solve', testCases: [], passed: null });
         }
       }
       if (active) {
@@ -104,6 +113,37 @@ export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string
             >
               Open full statement →
             </Link>
+          </div>
+          <div className="p-3 rounded-lg border border-line bg-surface space-y-3">
+            {item.statement && <p className="text-xs text-ink leading-relaxed">{item.statement}</p>}
+            {item.examples.length > 0 && (
+              <div className="space-y-2">
+                {item.examples.map((ex, idx) => (
+                  <div key={idx} className="p-2.5 rounded-lg bg-canvas border border-line font-mono text-[11px] space-y-1">
+                    <div className="text-muted font-semibold">Example {idx + 1}:</div>
+                    <div>
+                      <span className="text-muted">Input: </span>
+                      <span className="text-ink">{ex.input}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Output: </span>
+                      <span className="text-mint">{ex.output}</span>
+                    </div>
+                    {ex.explanation && <div className="text-muted text-[10px] pt-1">Explanation: {ex.explanation}</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+            {item.constraints.length > 0 && (
+              <div>
+                <h4 className="text-[10px] font-mono uppercase tracking-wider text-muted mb-1">Constraints:</h4>
+                <ul className="list-disc list-inside text-[11px] font-mono text-ink space-y-0.5">
+                  {item.constraints.map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
           {item.testCases.length > 0 ? (
             <CodeRunner
