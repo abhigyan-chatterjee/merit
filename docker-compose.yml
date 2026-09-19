@@ -1,5 +1,3 @@
-version: "3.8"
-
 # --- 1GB VPS memory budget (shared host) -------------------------------------
 # Host has 1024MB total AND already runs other apps, so the stack caps itself
 # well below that and leaves ~300MB+ headroom for the OS, Docker overhead,
@@ -22,10 +20,16 @@ services:
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     container_name: merit-piston
     restart: unless-stopped
+    # REQUIRED by Piston's entrypoint: it creates its isolate cgroup at boot
+    # (mkdir isolate under /sys/fs/cgroup) and runs jobs in namespaces.
+    # Without this the container crash-loops with "Read-only file system".
+    privileged: true
     mem_limit: 300m
     mem_reservation: 150m
-    ports:
-      - "2000:2000"
+    # No published ports: the API reaches piston:2000 over merit-net.
+    # Publishing the judge publicly would let anyone run code on your box.
+    expose:
+      - "2000"
     tmpfs:
       - /tmp:exec,mode=1777
     environment:
