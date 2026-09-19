@@ -4,10 +4,19 @@ import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from '../src/pages/DashboardPage';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { PROBLEMS } from '../src/data/problems';
+import { TOPICS } from '../src/data/curriculum';
 
 describe('DashboardPage Honest Initial State (D7)', () => {
   beforeEach(() => {
     window.localStorage.clear();
+  });
+
+  it('keeps the dashboard topic chart in placement-priority order', () => {
+    expect(TOPICS.slice(0, 3).map((topic) => topic.slug)).toEqual([
+      'arrays-hashing',
+      'two-pointers',
+      'sliding-windows',
+    ]);
   });
 
   it('renders fresh user dashboard with 0s and "Start your first problem" CTA', () => {

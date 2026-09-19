@@ -554,7 +554,7 @@ export const QUIZ_TOPICS: QuizTopicMeta[] = [
   { id: 'dynamic-programming', title: 'Dynamic Programming', description: 'Optimal substructure, memoization, and tabulation recurrence.' },
   { id: 'sorting', title: 'Sorting & Searching', description: 'Binary search invariants, in-place sorts, and comparison bounds.' },
   { id: 'data-structures', title: 'Stacks, Queues & Heaps', description: 'Amortized structures, circular queues, and priority queues.' },
-  { id: 'cs-fundamentals', title: 'CS Fundamentals', description: 'Operating systems, memory management, networks, and DBMS.' },
   { id: 'bit-manipulation', title: 'Bit Manipulation', description: 'Bitwise masks, popcounts, and bit tricks.' },
+  { id: 'cs-fundamentals', title: 'CS Fundamentals', description: 'Operating systems, memory management, networks, and DBMS.' },
   { id: 'mixed', title: 'Mixed Mastery', description: 'Adaptive placement assessment drawn across all 830+ verified items.' }
 ];

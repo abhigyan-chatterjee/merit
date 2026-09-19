@@ -57,18 +57,18 @@ export const TOPICS: TopicItem[] = [
     iconName: 'GitCommit'
   },
   {
-    slug: 'binary-search',
-    title: 'Binary Search',
-    description: 'Halving invariants on sorted arrays, rotated data, and answer spaces.',
-    problemCount: 0,
-    iconName: 'Search'
-  },
-  {
     slug: 'trees',
     title: 'Trees',
     description: 'DFS traversals, BST invariants, and path/diameter reasoning.',
     problemCount: 7,
     iconName: 'Network'
+  },
+  {
+    slug: 'binary-search',
+    title: 'Binary Search',
+    description: 'Halving invariants on sorted arrays, rotated data, and answer spaces.',
+    problemCount: 0,
+    iconName: 'Search'
   },
   {
     slug: 'heap',
@@ -78,18 +78,18 @@ export const TOPICS: TopicItem[] = [
     iconName: 'ChevronsUp'
   },
   {
-    slug: 'backtracking',
-    title: 'Backtracking',
-    description: 'Choice trees, pruning, permutations, and constraint search.',
-    problemCount: 0,
-    iconName: 'Split'
-  },
-  {
     slug: 'graphs',
     title: 'Graphs',
     description: 'BFS/DFS, connectivity, topological sort, and shortest paths.',
     problemCount: 6,
     iconName: 'Share2'
+  },
+  {
+    slug: 'intervals',
+    title: 'Intervals',
+    description: 'Merging, inserting, and scheduling overlapping ranges.',
+    problemCount: 1,
+    iconName: 'AlignHorizontalDistributeCenter'
   },
   {
     slug: 'dynamic-programming',
@@ -106,25 +106,11 @@ export const TOPICS: TopicItem[] = [
     iconName: 'Zap'
   },
   {
-    slug: 'trie',
-    title: 'Trie',
-    description: 'Prefix trees for word sets, autocomplete, and XOR queries.',
-    problemCount: 1,
-    iconName: 'ListTree'
-  },
-  {
-    slug: 'intervals',
-    title: 'Intervals',
-    description: 'Merging, inserting, and scheduling overlapping ranges.',
-    problemCount: 1,
-    iconName: 'AlignHorizontalDistributeCenter'
-  },
-  {
-    slug: 'math-matrices',
-    title: 'Math & Matrices',
-    description: 'Number theory, combinatorics, and matrix traversal/rotation.',
-    problemCount: 2,
-    iconName: 'Sigma'
+    slug: 'backtracking',
+    title: 'Backtracking',
+    description: 'Choice trees, pruning, permutations, and constraint search.',
+    problemCount: 0,
+    iconName: 'Split'
   },
   {
     slug: 'bit-manipulation',
@@ -139,6 +125,20 @@ export const TOPICS: TopicItem[] = [
     description: 'Comparison sorts, partitioning, and order statistics.',
     problemCount: 0,
     iconName: 'ArrowDownWideNarrow'
+  },
+  {
+    slug: 'math-matrices',
+    title: 'Math & Matrices',
+    description: 'Number theory, combinatorics, and matrix traversal/rotation.',
+    problemCount: 2,
+    iconName: 'Sigma'
+  },
+  {
+    slug: 'trie',
+    title: 'Trie',
+    description: 'Prefix trees for word sets, autocomplete, and XOR queries.',
+    problemCount: 1,
+    iconName: 'ListTree'
   },
   {
     slug: 'data-structures',

@@ -32,16 +32,16 @@ CATEGORIES: list[dict] = [
         "icon": "GitCommit",
     },
     {
-        "slug": "binary-search",
-        "title": "Binary Search",
-        "description": "Halving invariants on sorted arrays, rotated data, and answer spaces.",
-        "icon": "Search",
-    },
-    {
         "slug": "trees",
         "title": "Trees",
         "description": "DFS traversals, BST invariants, and path/diameter reasoning.",
         "icon": "Network",
+    },
+    {
+        "slug": "binary-search",
+        "title": "Binary Search",
+        "description": "Halving invariants on sorted arrays, rotated data, and answer spaces.",
+        "icon": "Search",
     },
     {
         "slug": "heap",
@@ -50,16 +50,16 @@ CATEGORIES: list[dict] = [
         "icon": "ChevronsUp",
     },
     {
-        "slug": "backtracking",
-        "title": "Backtracking",
-        "description": "Choice trees, pruning, permutations, and constraint search.",
-        "icon": "Split",
-    },
-    {
         "slug": "graphs",
         "title": "Graphs",
         "description": "BFS/DFS, connectivity, topological sort, and shortest paths.",
         "icon": "Share2",
+    },
+    {
+        "slug": "intervals",
+        "title": "Intervals",
+        "description": "Merging, inserting, and scheduling overlapping ranges.",
+        "icon": "AlignHorizontalDistributeCenter",
     },
     {
         "slug": "dynamic-programming",
@@ -74,22 +74,10 @@ CATEGORIES: list[dict] = [
         "icon": "Zap",
     },
     {
-        "slug": "trie",
-        "title": "Trie",
-        "description": "Prefix trees for word sets, autocomplete, and XOR queries.",
-        "icon": "ListTree",
-    },
-    {
-        "slug": "intervals",
-        "title": "Intervals",
-        "description": "Merging, inserting, and scheduling overlapping ranges.",
-        "icon": "AlignHorizontalDistributeCenter",
-    },
-    {
-        "slug": "math-matrices",
-        "title": "Math & Matrices",
-        "description": "Number theory, combinatorics, and matrix traversal/rotation.",
-        "icon": "Sigma",
+        "slug": "backtracking",
+        "title": "Backtracking",
+        "description": "Choice trees, pruning, permutations, and constraint search.",
+        "icon": "Split",
     },
     {
         "slug": "bit-manipulation",
@@ -102,6 +90,18 @@ CATEGORIES: list[dict] = [
         "title": "Sorting",
         "description": "Comparison sorts, partitioning, and order statistics.",
         "icon": "ArrowDownWideNarrow",
+    },
+    {
+        "slug": "math-matrices",
+        "title": "Math & Matrices",
+        "description": "Number theory, combinatorics, and matrix traversal/rotation.",
+        "icon": "Sigma",
+    },
+    {
+        "slug": "trie",
+        "title": "Trie",
+        "description": "Prefix trees for word sets, autocomplete, and XOR queries.",
+        "icon": "ListTree",
     },
     {
         "slug": "data-structures",
