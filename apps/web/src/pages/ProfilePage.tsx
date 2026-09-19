@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Code2, Download, Trash2 } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Code2, Download, Trash2, KeyRound, RefreshCw } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 import { authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
+import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
 
 type Tab = 'profile' | 'language' | 'data' | 'danger';
 
@@ -20,8 +21,12 @@ export const ProfilePage: React.FC = () => {
   const [langMsg, setLangMsg] = useState<string | null>(null);
   const [dataMsg, setDataMsg] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const tutor = useTutorKey();
+  const [models, setModels] = useState<string[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(false);
+  const [modelsError, setModelsError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setName(user.displayName || '');
     }
@@ -34,6 +39,53 @@ export const ProfilePage: React.FC = () => {
       })
       .catch(() => {});
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (window.location.hash === '#tutor') setTab('profile');
+  }, []);
+
+  const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === tutor.baseUrl) ?? TUTOR_PRESETS[0];
+  const loadCatalog = async (catalogId: string) => {
+    setModelsError(null);
+    try {
+      const list = await loadTutorCatalog(catalogId);
+      setModels(list);
+      if (list.length > 0 && !list.includes(tutor.model)) tutor.setModel(list[0]);
+    } catch (error) {
+      setModelsError(error instanceof Error ? error.message : 'Could not load the model catalog.');
+    }
+  };
+  const checkModels = async () => {
+    if (!tutor.apiKey.trim()) {
+      setModelsError('Add an API key before checking the provider.');
+      return;
+    }
+    setModelsLoading(true);
+    setModelsError(null);
+    try {
+      const response = await fetch('/api/v1/tutor/models', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ base_url: tutor.baseUrl, api_key: tutor.apiKey }),
+      });
+      if (!response.ok) throw new Error(`Could not load provider models (HTTP ${response.status}).`);
+      const data = (await response.json()) as { models?: unknown };
+      const list = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
+      setModels(list);
+      if (list.length > 0) tutor.setModel(list[0]);
+    } catch (error) {
+      setModelsError(error instanceof Error ? error.message : 'Could not load provider models.');
+    } finally {
+      setModelsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadCatalog(selectedPreset.catalogId);
+    // Load the catalog once for the currently selected provider.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!user) {
     return (
@@ -121,6 +173,45 @@ export const ProfilePage: React.FC = () => {
               </button>
             </form>
             {nameMsg && <p className="text-xs font-mono text-muted">{nameMsg}</p>}
+          </section>
+
+          <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-6">
+            <div>
+              <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
+              <p className="text-xs text-muted mt-1">Your key stays on this device and is sent only to the selected provider through the tutor proxy. It is never stored on our server.</p>
+            </div>
+            <label className="block text-xs font-mono">
+              <span className="text-muted">Provider preset</span>
+              <select aria-label="Provider preset" value={selectedPreset.id} onChange={(event) => {
+                const preset = TUTOR_PRESETS.find((item) => item.id === event.target.value) ?? TUTOR_PRESETS[0];
+                tutor.setBaseUrl(preset.baseUrl);
+                void loadCatalog(preset.catalogId);
+              }} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
+                {TUTOR_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
+              </select>
+            </label>
+            <label className="block text-xs font-mono">
+              <span className="text-muted">Provider base URL</span>
+              <input aria-label="Provider base URL" value={tutor.baseUrl} onChange={(event) => tutor.setBaseUrl(event.target.value)} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink" />
+            </label>
+            <label className="block text-xs font-mono">
+              <span className="text-muted flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5" /> API key</span>
+              <input type="password" aria-label="API key" value={tutor.apiKey} onChange={(event) => tutor.setApiKey(event.target.value)} placeholder="Paste your provider key" autoComplete="off" className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder-muted" />
+            </label>
+            <label className="flex items-center gap-2 text-xs font-mono text-muted cursor-pointer">
+              <input type="checkbox" aria-label="Remember on this device" checked={tutor.remember} onChange={(event) => tutor.setRemember(event.target.checked)} className="accent-mint" />
+              Remember on this device
+            </label>
+            <div className="flex flex-wrap items-end gap-2">
+              <label className="flex-1 min-w-40 block text-xs font-mono">
+                <span className="text-muted">Model</span>
+                <select aria-label="Model" value={tutor.model} onChange={(event) => tutor.setModel(event.target.value)} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
+                  {models.length === 0 ? <option value="">Loading catalog…</option> : models.map((item) => <option key={item} value={item}>{item}</option>)}
+                </select>
+              </label>
+              <button onClick={() => void checkModels()} disabled={modelsLoading || !tutor.apiKey.trim()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-xs font-mono text-ink hover:border-mint disabled:opacity-50 cursor-pointer"><RefreshCw className={`w-3.5 h-3.5 ${modelsLoading ? 'animate-spin' : ''}`} />{modelsLoading ? 'Checking…' : 'Check models'}</button>
+            </div>
+            {modelsError && <p role="alert" className="text-xs font-mono text-rose">{modelsError}</p>}
           </section>
 
         </div>

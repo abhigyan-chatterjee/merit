@@ -85,14 +85,17 @@ def _extract_model_ids(payload: object) -> list[str]:
 def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: int) -> str:
     if failed_attempts >= 3:
         policy = (
-            f"The student has already made {failed_attempts} failed submissions, "
-            "so you MAY now show a complete solution with code and a full explanation."
+            f"The student has made {failed_attempts} failed submissions. "
+            "Continue teaching rather than revealing the answer: give a step-by-step "
+            "derivation of the idea, invariant, complexity, and language-agnostic "
+            "pseudocode. Never provide a complete solution, reference solution, or "
+            "code block, even after repeated failure."
         )
     else:
         policy = (
-            "NEVER provide the full solution or complete code. "
-            "Teach with hint-first guidance: ask guiding questions and give "
-            "small incremental hints toward the next step only."
+            "Always teach before telling. Use Socratic questions and one small hint "
+            "at a time, never a complete solution or code block. Ask the student to "
+            "reason about the next step."
         )
     student_code = code if code else "(no code shared yet)"
     return (

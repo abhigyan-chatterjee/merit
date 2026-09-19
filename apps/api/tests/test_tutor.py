@@ -158,18 +158,18 @@ def test_chat_forwards_system_and_problem_context(client: TestClient, monkeypatc
     assert sent["json"]["model"] == "gpt-4o-mini"
     messages = sent["json"]["messages"]
     assert messages[0]["role"] == "system"
-    # System prompt carries problem context + student code + hint-first policy
+    # System prompt carries problem context + student code + teach-first policy
     assert "Two Sum" in messages[0]["content"]
     assert "Given an array of integers" in messages[0]["content"]
     assert code in messages[0]["content"]
-    assert "NEVER provide the full solution" in messages[0]["content"]
+    assert "never a complete solution or code block" in messages[0]["content"]
     assert messages[1] == {"role": "user", "content": question}
     # Key travels only in the Authorization header, never echoed back
     assert API_KEY not in res.text
     assert API_KEY not in str(sent["json"])
 
 
-def test_chat_reveals_solution_only_after_3_failed_attempts(
+def test_chat_stays_teach_first_after_repeated_failed_attempts(
     client: TestClient,
     monkeypatch,
 ):
@@ -189,10 +189,14 @@ def test_chat_reveals_solution_only_after_3_failed_attempts(
         "question": "Give me a nudge.",
     }
     assert client.post("/api/v1/tutor/chat", json=body).status_code == 200
-    assert "NEVER provide the full solution" in captured[0]["messages"][0]["content"]
+    assert "never a complete solution or code block" in captured[0]["messages"][0]["content"]
 
     assert client.post("/api/v1/tutor/chat", json={**body, "failed_attempts": 3}).status_code == 200
-    assert "MAY now show a complete solution" in captured[1]["messages"][0]["content"]
+    repeated_policy = captured[1]["messages"][0]["content"]
+    assert "step-by-step derivation" in repeated_policy
+    assert "Never provide a complete solution" in repeated_policy
+    assert "MAY now show a complete solution" not in repeated_policy
+    assert "```" not in repeated_policy
 
 
 def test_chat_upstream_500_maps_to_502(client: TestClient, monkeypatch):
