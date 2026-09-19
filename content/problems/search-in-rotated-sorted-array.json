@@ -1,0 +1,1076 @@
+{
+  "slug": "search-in-rotated-sorted-array",
+  "title": "Search in Rotated Sorted Array",
+  "topic": "binary-search",
+  "difficulty": "Medium",
+  "pattern": "binary-search / Half sorted",
+  "statement": "# Search in Rotated Sorted Array\n\nGiven an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
+  "examples": [
+    {
+      "input": "nums = [4, 5, 6, 7, 0, 1, 2], target = 0",
+      "output": "4",
+      "explanation": "Target 0 is located at index 4 in the rotated array."
+    },
+    {
+      "input": "nums = [4, 5, 6, 7, 0, 1, 2], target = 3",
+      "output": "-1",
+      "explanation": "Target 3 is not present in nums, so the function returns -1."
+    },
+    {
+      "input": "nums = [1], target = 0",
+      "output": "-1",
+      "explanation": "Single-element array where the element does not equal target."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function search(nums: number[], target: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Even after rotation, dividing the array at any midpoint leaves at least one half strictly sorted.",
+    "Check if nums[low] <= nums[mid] to determine whether the left half is normally sorted. If not, the right half must be sorted.",
+    "If the target lies within the boundaries of the sorted half, narrow your binary search there; otherwise, search the opposite half."
+  ],
+  "editorial": {
+    "approach": "In a rotated sorted array of distinct elements, at least one half of any subarray split by the midpoint is always strictly ordered. Identify the ordered half and check if target falls inside its range.",
+    "why_optimal": "Linear scanning inspects all n elements taking O(n) time, while modified binary search halves the search space at each iteration in O(log n) time and O(1) space. On the 32 verified test cases, optimal search ran in 0.12 ms versus 0.08 ms for brute force.",
+    "pitfalls": "Remember to check inclusive bounds (e.g. nums[low] <= target && target < nums[mid]) when confirming if target lies in the sorted half."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_search_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function search(nums, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def search(nums, target):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "search",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 32,
+    "bruteForceRuntimeMs": 0.07719299999999762,
+    "optimalRuntimeMs": 0.11895500000001036
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ],
+        0
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ],
+        3
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          1
+        ],
+        0
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          1
+        ],
+        1
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          1,
+          3
+        ],
+        3
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          3,
+          1
+        ],
+        1
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          3,
+          1
+        ],
+        3
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          3,
+          1
+        ],
+        2
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        1
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        5
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        3
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        6
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          5,
+          1,
+          2,
+          3,
+          4
+        ],
+        5
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          2,
+          3,
+          4,
+          5,
+          1
+        ],
+        1
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          -10,
+          -5,
+          0,
+          5,
+          10
+        ],
+        -5
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          -3,
+          -1,
+          5,
+          -8,
+          -6
+        ],
+        -8
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -475,
+          -470,
+          -468,
+          -411,
+          -405,
+          -396,
+          -386,
+          -358,
+          -277,
+          -272,
+          -262,
+          -250,
+          -219,
+          -68,
+          17,
+          58,
+          104,
+          116,
+          192,
+          254,
+          258,
+          259,
+          413
+        ],
+        413
+      ],
+      "expected": 22,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          -41,
+          58,
+          103,
+          214,
+          218,
+          277,
+          281,
+          325,
+          328,
+          390,
+          480,
+          -494,
+          -406,
+          -396,
+          -341,
+          -337,
+          -280,
+          -275,
+          -216,
+          -156,
+          -152,
+          -71,
+          -68
+        ],
+        -494
+      ],
+      "expected": 11,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          -373,
+          -304,
+          -230,
+          -200,
+          -130,
+          -113,
+          -30,
+          49,
+          65,
+          91,
+          133,
+          143,
+          221,
+          247,
+          326,
+          349,
+          382,
+          406,
+          444,
+          496,
+          -456,
+          -420
+        ],
+        49
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          -227,
+          -216,
+          -204,
+          -137,
+          -127,
+          -121,
+          -111,
+          -36,
+          46,
+          123,
+          150,
+          163,
+          186,
+          199,
+          218,
+          246,
+          354,
+          375,
+          387,
+          459,
+          -427,
+          -419,
+          -397,
+          -334,
+          -325,
+          -286,
+          -262
+        ],
+        186
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          70,
+          155,
+          201,
+          204,
+          286,
+          294,
+          363,
+          447,
+          -443,
+          -276,
+          -168
+        ],
+        46
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          397,
+          405,
+          435,
+          436,
+          465,
+          -433,
+          -284,
+          -283,
+          -226,
+          -178,
+          -95,
+          11,
+          80,
+          171,
+          235
+        ],
+        465
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          74,
+          98,
+          262,
+          264,
+          -248,
+          -231,
+          51
+        ],
+        217
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          -276,
+          5,
+          21,
+          142,
+          196,
+          273,
+          311,
+          381,
+          -452,
+          -407,
+          -388,
+          -359,
+          -344,
+          -337
+        ],
+        311
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          406,
+          465,
+          494,
+          -489,
+          -383,
+          -243,
+          -21,
+          41,
+          49,
+          66,
+          110,
+          196,
+          198,
+          238,
+          381
+        ],
+        110
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          495,
+          -497,
+          -386,
+          -339,
+          -231,
+          -200,
+          -55,
+          -36,
+          12,
+          236,
+          239,
+          396,
+          476
+        ],
+        -497
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        [
+          -481,
+          -386,
+          -344,
+          -335,
+          -297,
+          -255,
+          -195,
+          -186,
+          -169,
+          -129,
+          -118,
+          0,
+          19,
+          43,
+          52,
+          113,
+          123,
+          140,
+          154,
+          280,
+          297,
+          326,
+          351,
+          361,
+          399,
+          440,
+          444,
+          451,
+          476,
+          -500
+        ],
+        154
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        [
+          335,
+          -430,
+          -413,
+          -3,
+          249
+        ],
+        -338
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        [
+          -532,
+          -529,
+          -513,
+          -503,
+          -493,
+          -491,
+          -489,
+          -458,
+          -430,
+          -362,
+          -324,
+          -308,
+          -306,
+          -275,
+          -236,
+          -183,
+          -176,
+          -167,
+          -159,
+          -136,
+          -134,
+          -133,
+          -118,
+          -103,
+          -82,
+          -76,
+          -53,
+          -44,
+          -32,
+          -27,
+          -6,
+          52,
+          59,
+          80,
+          98,
+          104,
+          125,
+          134,
+          169,
+          180,
+          204,
+          205,
+          242,
+          292,
+          323,
+          330,
+          338,
+          349,
+          351,
+          370,
+          375,
+          379,
+          412,
+          449,
+          460,
+          481,
+          491,
+          493,
+          494,
+          546,
+          606,
+          639,
+          653,
+          760,
+          764,
+          769,
+          786,
+          790,
+          807,
+          842,
+          854,
+          902,
+          915,
+          939,
+          975,
+          -986,
+          -957,
+          -936,
+          -890,
+          -880,
+          -876,
+          -869,
+          -862,
+          -855,
+          -807,
+          -802,
+          -799,
+          -777,
+          -753,
+          -730,
+          -713,
+          -662,
+          -625,
+          -611,
+          -608,
+          -589,
+          -567,
+          -562,
+          -549,
+          -540
+        ],
+        9999
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        [
+          40,
+          70,
+          87,
+          107,
+          110,
+          127,
+          138,
+          157,
+          166,
+          185,
+          186,
+          195,
+          196,
+          217,
+          218,
+          268,
+          335,
+          346,
+          355,
+          371,
+          382,
+          426,
+          471,
+          496,
+          506,
+          531,
+          543,
+          604,
+          605,
+          607,
+          654,
+          712,
+          738,
+          743,
+          746,
+          753,
+          764,
+          765,
+          770,
+          823,
+          848,
+          882,
+          890,
+          897,
+          914,
+          928,
+          960,
+          967,
+          983,
+          984,
+          -996,
+          -970,
+          -919,
+          -898,
+          -897,
+          -884,
+          -883,
+          -881,
+          -880,
+          -876,
+          -861,
+          -860,
+          -846,
+          -836,
+          -833,
+          -809,
+          -800,
+          -755,
+          -683,
+          -678,
+          -663,
+          -660,
+          -620,
+          -612,
+          -582,
+          -563,
+          -555,
+          -519,
+          -516,
+          -496,
+          -466,
+          -457,
+          -416,
+          -393,
+          -358,
+          -353,
+          -224,
+          -201,
+          -179,
+          -174,
+          -168,
+          -142,
+          -134,
+          -93,
+          -69,
+          -24,
+          -15,
+          -6,
+          -4,
+          29
+        ],
+        -142
+      ],
+      "expected": 91,
+      "isSample": false
+    },
+    {
+      "label": "case-31",
+      "input": [
+        [
+          440,
+          445,
+          469,
+          518,
+          520,
+          539,
+          579,
+          652,
+          673,
+          698,
+          707,
+          732,
+          746,
+          798,
+          800,
+          804,
+          822,
+          854,
+          859,
+          902,
+          908,
+          911,
+          916,
+          922,
+          935,
+          -993,
+          -984,
+          -981,
+          -910,
+          -896,
+          -860,
+          -852,
+          -850,
+          -846,
+          -811,
+          -796,
+          -788,
+          -781,
+          -771,
+          -764,
+          -733,
+          -732,
+          -729,
+          -725,
+          -682,
+          -677,
+          -670,
+          -584,
+          -569,
+          -564,
+          -512,
+          -500,
+          -486,
+          -464,
+          -460,
+          -459,
+          -457,
+          -443,
+          -434,
+          -423,
+          -417,
+          -387,
+          -386,
+          -381,
+          -357,
+          -353,
+          -317,
+          -298,
+          -286,
+          -244,
+          -190,
+          -133,
+          -125,
+          -103,
+          -96,
+          -64,
+          -62,
+          0,
+          35,
+          36,
+          83,
+          101,
+          112,
+          129,
+          133,
+          135,
+          148,
+          153,
+          238,
+          252,
+          272,
+          298,
+          299,
+          304,
+          321,
+          339,
+          358,
+          367,
+          375,
+          407
+        ],
+        9999
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-32",
+      "input": [
+        [
+          999,
+          -952,
+          -950,
+          -927,
+          -921,
+          -919,
+          -915,
+          -858,
+          -790,
+          -779,
+          -739,
+          -697,
+          -695,
+          -684,
+          -674,
+          -668,
+          -638,
+          -633,
+          -605,
+          -592,
+          -570,
+          -545,
+          -544,
+          -534,
+          -516,
+          -492,
+          -489,
+          -454,
+          -430,
+          -429,
+          -375,
+          -369,
+          -328,
+          -320,
+          -284,
+          -281,
+          -276,
+          -268,
+          -254,
+          -244,
+          -217,
+          -184,
+          -182,
+          -168,
+          -157,
+          -156,
+          -120,
+          -58,
+          -37,
+          43,
+          117,
+          131,
+          146,
+          192,
+          271,
+          313,
+          351,
+          365,
+          371,
+          391,
+          396,
+          415,
+          436,
+          505,
+          508,
+          534,
+          583,
+          597,
+          602,
+          612,
+          628,
+          630,
+          638,
+          642,
+          660,
+          672,
+          680,
+          709,
+          758,
+          762,
+          769,
+          770,
+          784,
+          786,
+          791,
+          805,
+          808,
+          810,
+          840,
+          841,
+          851,
+          880,
+          893,
+          895,
+          904,
+          906,
+          910,
+          980,
+          991,
+          994
+        ],
+        9999
+      ],
+      "expected": -1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function search(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    if (nums[i] === target) return i;\n  }\n  return -1;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function search(nums, target) {\n  let low = 0;\n  let high = nums.length - 1;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    if (nums[mid] === target) return mid;\n    if (nums[low] <= nums[mid]) {\n      if (nums[low] <= target && target < nums[mid]) {\n        high = mid - 1;\n      } else {\n        low = mid + 1;\n      }\n    } else {\n      if (nums[mid] < target && target <= nums[high]) {\n        low = mid + 1;\n      } else {\n        high = mid - 1;\n      }\n    }\n  }\n  return -1;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def search(nums: list[int], target: int) -> int:\n    for i, num in enumerate(nums):\n        if num == target:\n            return i\n    return -1\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log n) | Space: O(1)",
+      "language": "python",
+      "code": "def search(nums: list[int], target: int) -> int:\n    low, high = 0, len(nums) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[low] <= nums[mid]:\n            if nums[low] <= target < nums[mid]:\n                high = mid - 1\n            else:\n                low = mid + 1\n        else:\n            if nums[mid] < target <= nums[high]:\n                low = mid + 1\n            else:\n                high = mid - 1\n    return -1\n",
+      "isReference": true
+    }
+  ]
+}

@@ -1,0 +1,1055 @@
+{
+  "slug": "find-minimum-in-rotated-sorted-array",
+  "title": "Find Minimum in Rotated Sorted Array",
+  "topic": "binary-search",
+  "difficulty": "Medium",
+  "pattern": "binary-search / Inflection",
+  "statement": "# Find Minimum in Rotated Sorted Array\n\nSuppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
+  "examples": [
+    {
+      "input": "nums = [3, 4, 5, 1, 2]",
+      "output": "1",
+      "explanation": "The original sorted array was [1, 2, 3, 4, 5] rotated 3 positions, giving minimum element 1."
+    },
+    {
+      "input": "nums = [4, 5, 6, 7, 0, 1, 2]",
+      "output": "0",
+      "explanation": "The inflection point contains 0 at index 4, which is the global minimum."
+    },
+    {
+      "input": "nums = [11, 13, 15, 17]",
+      "output": "11",
+      "explanation": "The array is completely unrotated (rotated 4 times), so the minimum is the first element."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function findMin(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Compare the middle element with the rightmost element nums[high].",
+    "If nums[mid] > nums[high], the inflection point (and thus the minimum) must lie strictly to the right of mid.",
+    "If nums[mid] <= nums[high], the minimum is either at mid or to its left; set high = mid."
+  ],
+  "editorial": {
+    "approach": "Binary search for the inflection point by comparing the midpoint with the rightmost boundary nums[high]. If nums[mid] > nums[high], the minimum must lie strictly to the right.",
+    "why_optimal": "Linear scanning requires O(n) comparisons, while binary search converges to the inflection point in O(log n) time and O(1) space. On the 30 verified test cases, the optimal search finished in 0.09 ms compared to 0.09 ms for brute force.",
+    "pitfalls": "Set high = mid (not mid - 1) when nums[mid] <= nums[high], because mid itself could be the minimum element."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_search_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function findMin(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def findMin(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "findMin",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 0.0862569999999927,
+    "optimalRuntimeMs": 0.0873200000000054
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          3,
+          4,
+          5,
+          1,
+          2
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          4,
+          5,
+          6,
+          7,
+          0,
+          1,
+          2
+        ]
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          11,
+          13,
+          15,
+          17
+        ]
+      ],
+      "expected": 11,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          2,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          5,
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          2,
+          3,
+          4,
+          5,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          10,
+          20,
+          30,
+          40,
+          50,
+          5
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          -5,
+          -3,
+          -1,
+          -10,
+          -8
+        ]
+      ],
+      "expected": -10,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          50,
+          60,
+          70,
+          80,
+          -100,
+          -50,
+          0
+        ]
+      ],
+      "expected": -100,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          409,
+          432,
+          585,
+          708,
+          716,
+          718,
+          -749,
+          -746,
+          -739,
+          -735,
+          -622,
+          -609,
+          -591,
+          -572,
+          -515,
+          -353,
+          -343,
+          -324,
+          -299,
+          -237,
+          64,
+          234,
+          316
+        ]
+      ],
+      "expected": -749,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          -349,
+          -231,
+          59,
+          119,
+          316,
+          406,
+          530,
+          636,
+          666
+        ]
+      ],
+      "expected": -349,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          140,
+          298,
+          330,
+          436,
+          487,
+          629,
+          694,
+          763,
+          -712,
+          -639,
+          -611,
+          -602,
+          -591,
+          -545,
+          -482,
+          -474,
+          -360,
+          -259,
+          -231,
+          -200,
+          -111,
+          -104,
+          -96,
+          -65,
+          -25,
+          -22,
+          65
+        ]
+      ],
+      "expected": -712,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          -467,
+          -407,
+          -371,
+          -334,
+          -324,
+          -254,
+          -231,
+          -208,
+          -73,
+          -60,
+          -53,
+          -42,
+          -22,
+          128,
+          382,
+          447,
+          500,
+          501,
+          527,
+          554,
+          572,
+          599,
+          637,
+          642,
+          783,
+          -707,
+          -658,
+          -654,
+          -637,
+          -594
+        ]
+      ],
+      "expected": -707,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -466,
+          -351,
+          -331,
+          -299,
+          -252,
+          -248,
+          -154,
+          -136,
+          -23,
+          21,
+          146,
+          340,
+          510,
+          602,
+          609,
+          693,
+          773,
+          789,
+          -735,
+          -686
+        ]
+      ],
+      "expected": -735,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          10,
+          139,
+          222,
+          361,
+          516,
+          542,
+          670,
+          -365,
+          -156
+        ]
+      ],
+      "expected": -365,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          303,
+          349,
+          395,
+          397,
+          725,
+          729,
+          -515,
+          -295,
+          -262,
+          17,
+          77
+        ]
+      ],
+      "expected": -515,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          210,
+          243,
+          485,
+          747,
+          -704,
+          -614,
+          -576,
+          -517,
+          -487,
+          -473
+        ]
+      ],
+      "expected": -704,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          -254,
+          -199,
+          -104,
+          -19,
+          -12,
+          90,
+          158,
+          283,
+          299,
+          333,
+          420,
+          512,
+          593,
+          596,
+          676,
+          737,
+          774,
+          -777,
+          -670,
+          -572,
+          -566,
+          -286
+        ]
+      ],
+      "expected": -777,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          -261,
+          -189,
+          -35,
+          225,
+          239,
+          447,
+          480,
+          508,
+          673,
+          678,
+          760,
+          761,
+          -794,
+          -583,
+          -487,
+          -435,
+          -393
+        ]
+      ],
+      "expected": -794,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          698,
+          757,
+          794,
+          -799,
+          -761,
+          -682,
+          -659,
+          -639,
+          -625,
+          -571,
+          -310,
+          -307,
+          -171,
+          -137,
+          -57,
+          195,
+          200,
+          286,
+          361,
+          426
+        ]
+      ],
+      "expected": -799,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          -258,
+          -162,
+          -36,
+          17,
+          66,
+          97,
+          124,
+          173,
+          259,
+          280,
+          304,
+          325,
+          442,
+          530,
+          551,
+          575,
+          612,
+          660,
+          694,
+          746,
+          -553,
+          -543,
+          -538,
+          -462,
+          -389,
+          -367,
+          -293
+        ]
+      ],
+      "expected": -553,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          404,
+          -757,
+          -329,
+          -108,
+          334
+        ]
+      ],
+      "expected": -757,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          -662,
+          -655,
+          -332,
+          -124,
+          252,
+          492,
+          649,
+          -786,
+          -736,
+          -680
+        ]
+      ],
+      "expected": -786,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        [
+          -970,
+          -897,
+          -890,
+          -881,
+          -880,
+          -876,
+          -846,
+          -809,
+          -807,
+          -802,
+          -800,
+          -799,
+          -777,
+          -730,
+          -713,
+          -683,
+          -663,
+          -660,
+          -625,
+          -612,
+          -611,
+          -608,
+          -563,
+          -562,
+          -555,
+          -516,
+          -503,
+          -491,
+          -489,
+          -457,
+          -430,
+          -416,
+          -393,
+          -306,
+          -275,
+          -224,
+          -201,
+          -179,
+          -176,
+          -168,
+          -167,
+          -159,
+          -136,
+          -134,
+          -133,
+          -118,
+          -93,
+          -82,
+          -69,
+          -53,
+          -44,
+          -32,
+          -15,
+          -6,
+          -4,
+          98,
+          104,
+          107,
+          127,
+          138,
+          169,
+          180,
+          186,
+          323,
+          335,
+          338,
+          349,
+          355,
+          370,
+          379,
+          426,
+          471,
+          481,
+          491,
+          493,
+          496,
+          543,
+          604,
+          605,
+          606,
+          607,
+          639,
+          653,
+          654,
+          712,
+          738,
+          753,
+          764,
+          769,
+          770,
+          790,
+          807,
+          848,
+          890,
+          897,
+          915,
+          960,
+          983,
+          984,
+          -996
+        ]
+      ],
+      "expected": -996,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        [
+          -386,
+          -381,
+          -358,
+          -357,
+          -353,
+          -286,
+          -244,
+          -190,
+          -174,
+          -142,
+          -103,
+          -64,
+          -62,
+          -24,
+          29,
+          36,
+          40,
+          70,
+          83,
+          87,
+          101,
+          110,
+          112,
+          135,
+          153,
+          157,
+          166,
+          185,
+          195,
+          196,
+          217,
+          218,
+          252,
+          268,
+          272,
+          321,
+          339,
+          346,
+          358,
+          367,
+          371,
+          375,
+          382,
+          440,
+          466,
+          506,
+          531,
+          539,
+          652,
+          673,
+          707,
+          743,
+          746,
+          765,
+          798,
+          800,
+          804,
+          823,
+          882,
+          902,
+          908,
+          911,
+          914,
+          916,
+          922,
+          928,
+          967,
+          -984,
+          -981,
+          -919,
+          -898,
+          -884,
+          -883,
+          -876,
+          -861,
+          -860,
+          -852,
+          -850,
+          -836,
+          -833,
+          -796,
+          -788,
+          -755,
+          -732,
+          -729,
+          -725,
+          -678,
+          -677,
+          -620,
+          -582,
+          -564,
+          -519,
+          -512,
+          -500,
+          -496,
+          -466,
+          -459,
+          -457,
+          -417,
+          -387
+        ]
+      ],
+      "expected": -984,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        [
+          469,
+          508,
+          518,
+          520,
+          534,
+          579,
+          597,
+          630,
+          638,
+          660,
+          698,
+          709,
+          732,
+          746,
+          762,
+          770,
+          791,
+          805,
+          808,
+          810,
+          822,
+          840,
+          841,
+          851,
+          854,
+          859,
+          895,
+          904,
+          910,
+          935,
+          991,
+          994,
+          999,
+          -993,
+          -981,
+          -950,
+          -927,
+          -919,
+          -915,
+          -910,
+          -896,
+          -846,
+          -811,
+          -790,
+          -781,
+          -771,
+          -764,
+          -739,
+          -733,
+          -697,
+          -695,
+          -684,
+          -682,
+          -670,
+          -668,
+          -638,
+          -633,
+          -584,
+          -570,
+          -569,
+          -516,
+          -489,
+          -486,
+          -464,
+          -460,
+          -443,
+          -434,
+          -423,
+          -369,
+          -317,
+          -298,
+          -276,
+          -268,
+          -254,
+          -244,
+          -168,
+          -156,
+          -133,
+          -125,
+          -120,
+          -96,
+          0,
+          35,
+          117,
+          129,
+          131,
+          133,
+          146,
+          148,
+          192,
+          238,
+          271,
+          298,
+          299,
+          304,
+          365,
+          396,
+          407,
+          415,
+          445
+        ]
+      ],
+      "expected": -993,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        [
+          987,
+          -997,
+          -952,
+          -944,
+          -922,
+          -921,
+          -910,
+          -858,
+          -857,
+          -779,
+          -778,
+          -764,
+          -674,
+          -635,
+          -611,
+          -605,
+          -597,
+          -592,
+          -545,
+          -544,
+          -534,
+          -492,
+          -479,
+          -466,
+          -457,
+          -454,
+          -430,
+          -429,
+          -375,
+          -358,
+          -328,
+          -324,
+          -322,
+          -320,
+          -293,
+          -284,
+          -281,
+          -255,
+          -217,
+          -212,
+          -184,
+          -182,
+          -157,
+          -117,
+          -111,
+          -107,
+          -58,
+          -37,
+          43,
+          47,
+          64,
+          98,
+          102,
+          180,
+          189,
+          221,
+          241,
+          276,
+          313,
+          351,
+          360,
+          371,
+          373,
+          391,
+          406,
+          436,
+          451,
+          473,
+          492,
+          505,
+          509,
+          519,
+          583,
+          602,
+          610,
+          612,
+          628,
+          642,
+          651,
+          660,
+          672,
+          680,
+          727,
+          758,
+          769,
+          770,
+          784,
+          786,
+          796,
+          842,
+          880,
+          885,
+          893,
+          895,
+          906,
+          923,
+          925,
+          943,
+          971,
+          980
+        ]
+      ],
+      "expected": -997,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function findMin(nums) {\n  let minVal = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    if (nums[i] < minVal) minVal = nums[i];\n  }\n  return minVal;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function findMin(nums) {\n  let low = 0;\n  let high = nums.length - 1;\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n    if (nums[mid] > nums[high]) {\n      low = mid + 1;\n    } else {\n      high = mid;\n    }\n  }\n  return nums[low];\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def findMin(nums: list[int]) -> int:\n    min_val = nums[0]\n    for x in nums:\n        if x < min_val:\n            min_val = x\n    return min_val\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log n) | Space: O(1)",
+      "language": "python",
+      "code": "def findMin(nums: list[int]) -> int:\n    low, high = 0, len(nums) - 1\n    while low < high:\n        mid = (low + high) // 2\n        if nums[mid] > nums[high]:\n            low = mid + 1\n        else:\n            high = mid\n    return nums[low]\n",
+      "isReference": true
+    }
+  ]
+}

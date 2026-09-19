@@ -1,0 +1,1016 @@
+{
+  "slug": "koko-eating-bananas",
+  "title": "Koko Eating Bananas",
+  "topic": "binary-search",
+  "difficulty": "Medium",
+  "pattern": "binary-search / Answer space",
+  "statement": "# Koko Eating Bananas\n\nKoko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
+  "examples": [
+    {
+      "input": "piles = [3, 6, 7, 11], h = 8",
+      "output": "4",
+      "explanation": "At eating speed 4, Koko requires 1 + 2 + 2 + 3 = 8 hours to finish all piles, which fits within the guard limit of 8 hours."
+    },
+    {
+      "input": "piles = [30, 11, 23, 4, 20], h = 5",
+      "output": "30",
+      "explanation": "Because h equals the number of piles (5), Koko has exactly 1 hour per pile, forcing her speed to match the largest pile size (30)."
+    },
+    {
+      "input": "piles = [30, 11, 23, 4, 20], h = 6",
+      "output": "23",
+      "explanation": "At speed 23, the hours required are 2 + 1 + 1 + 1 + 1 = 6 hours, satisfying the deadline."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function minEatingSpeed(piles: number[], h: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Notice the monotonicity: if Koko can finish all bananas at speed k, she can also finish at any speed greater than k.",
+    "The search space for speed k is bounded between 1 and the maximum pile size.",
+    "Use binary search on this answer range. For candidate speed mid, compute total hours needed by summing Math.ceil(pile / mid)."
+  ],
+  "editorial": {
+    "approach": "Binary search the answer space for eating speed k between 1 and the largest pile size. For each candidate speed, compute total hours required by summing ceiling division across all piles.",
+    "why_optimal": "Brute-force linear checking tests each speed sequentially taking O(m \u00b7 n) time, whereas binary search over the monotonic answer space runs in O(n log m) time and O(1) extra space. On the 30 verified test cases, the optimal implementation took 0.54 ms compared to 3.44 ms for brute force.",
+    "pitfalls": "Ensure integer ceiling division when calculating hours for each pile. Watch for off-by-one errors when updating search boundaries low and high."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_search_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function minEatingSpeed(piles, h) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def minEatingSpeed(piles, h):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "minEatingSpeed",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 3.435930999999993,
+    "optimalRuntimeMs": 0.5393599999999914
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          3,
+          6,
+          7,
+          11
+        ],
+        8
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          30,
+          11,
+          23,
+          4,
+          20
+        ],
+        5
+      ],
+      "expected": 30,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          30,
+          11,
+          23,
+          4,
+          20
+        ],
+        6
+      ],
+      "expected": 23,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          10
+        ],
+        3
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          1000
+        ],
+        1000
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          1,
+          1,
+          1,
+          1
+        ],
+        4
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          10,
+          10,
+          10
+        ],
+        100
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          100,
+          200,
+          300
+        ],
+        600
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          4,
+          11,
+          20,
+          23,
+          30
+        ],
+        27
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          500,
+          500,
+          500
+        ],
+        3
+      ],
+      "expected": 500,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        15
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          10,
+          20,
+          30,
+          40
+        ],
+        10
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          58,
+          13,
+          380,
+          141,
+          126,
+          115,
+          72,
+          378,
+          53,
+          347,
+          380,
+          457,
+          280,
+          45,
+          303,
+          217,
+          17,
+          16,
+          48,
+          112,
+          120,
+          259
+        ],
+        99
+      ],
+      "expected": 45,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          288,
+          102
+        ],
+        12
+      ],
+      "expected": 34,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          280,
+          215,
+          113,
+          230,
+          302,
+          143,
+          415,
+          446,
+          4,
+          389,
+          413,
+          82,
+          358,
+          217,
+          175,
+          143,
+          80,
+          111,
+          491,
+          391,
+          173,
+          53,
+          48,
+          195
+        ],
+        36
+      ],
+      "expected": 217,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          434,
+          177,
+          310,
+          136,
+          414,
+          23,
+          374,
+          236,
+          275,
+          64,
+          499,
+          473,
+          194
+        ],
+        23
+      ],
+      "expected": 217,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          151,
+          425,
+          322,
+          317,
+          454,
+          442,
+          186,
+          296,
+          99,
+          361,
+          36,
+          24,
+          339,
+          117,
+          396,
+          149,
+          41,
+          438,
+          120
+        ],
+        31
+      ],
+      "expected": 219,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          143,
+          233,
+          326,
+          428,
+          187,
+          84,
+          190,
+          182,
+          108,
+          344,
+          137,
+          360,
+          480,
+          350
+        ],
+        23
+      ],
+      "expected": 190,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          326,
+          88,
+          274,
+          374,
+          126,
+          84,
+          237,
+          195,
+          139,
+          474,
+          328,
+          353,
+          286,
+          113,
+          351,
+          167,
+          432,
+          394,
+          398,
+          29,
+          118
+        ],
+        126
+      ],
+      "expected": 46,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          413,
+          162,
+          206
+        ],
+        11
+      ],
+      "expected": 81,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          109,
+          468,
+          483,
+          291
+        ],
+        14
+      ],
+      "expected": 109,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          336,
+          256,
+          203,
+          453,
+          469,
+          330,
+          235,
+          74
+        ],
+        24
+      ],
+      "expected": 114,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          127,
+          382,
+          288,
+          276,
+          135,
+          383
+        ],
+        24
+      ],
+      "expected": 72,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          460,
+          299,
+          205,
+          186,
+          113,
+          71,
+          261,
+          253,
+          47,
+          387,
+          25,
+          441,
+          57,
+          79,
+          322
+        ],
+        35
+      ],
+      "expected": 113,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          217,
+          306,
+          33,
+          198,
+          196,
+          306,
+          240,
+          271,
+          129,
+          498,
+          284,
+          441,
+          483,
+          6,
+          349,
+          370,
+          59,
+          350,
+          454,
+          275,
+          385,
+          137,
+          394
+        ],
+        105
+      ],
+      "expected": 69,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          58,
+          151,
+          223,
+          81,
+          233,
+          2,
+          489,
+          370,
+          449,
+          369,
+          135,
+          498
+        ],
+        44
+      ],
+      "expected": 78,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        [
+          995,
+          845,
+          929,
+          827,
+          960,
+          876,
+          963,
+          929,
+          955,
+          850,
+          839,
+          895,
+          995,
+          841,
+          938,
+          999,
+          935,
+          800,
+          953,
+          882,
+          925,
+          804,
+          828,
+          892,
+          878,
+          861,
+          814,
+          861,
+          945,
+          820,
+          821,
+          987,
+          924,
+          817,
+          994,
+          936,
+          996,
+          832,
+          832,
+          968,
+          921,
+          940,
+          842,
+          867,
+          935,
+          955,
+          908,
+          854,
+          938,
+          993,
+          986,
+          976,
+          851,
+          982,
+          879,
+          902,
+          971,
+          966,
+          895,
+          912,
+          932,
+          915,
+          830,
+          863,
+          857,
+          816,
+          886,
+          805,
+          950,
+          941,
+          858,
+          950,
+          856,
+          801,
+          818,
+          981,
+          961,
+          815,
+          858,
+          817,
+          808,
+          884,
+          818,
+          931,
+          860,
+          871,
+          971,
+          924,
+          854,
+          938,
+          833,
+          985,
+          946,
+          947,
+          921,
+          862,
+          1000,
+          921,
+          904,
+          848
+        ],
+        100
+      ],
+      "expected": 1000,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        [
+          824,
+          824,
+          968,
+          910,
+          890,
+          908,
+          905,
+          919,
+          986,
+          813,
+          972,
+          967,
+          965,
+          825,
+          815,
+          903,
+          986,
+          886,
+          827,
+          863,
+          849,
+          848,
+          937,
+          914,
+          835,
+          908,
+          846,
+          871,
+          918,
+          863,
+          819,
+          913,
+          940,
+          825,
+          812,
+          966,
+          938,
+          803,
+          823,
+          992,
+          860,
+          842,
+          904,
+          924,
+          923,
+          854,
+          902,
+          815,
+          842,
+          897,
+          800,
+          899,
+          867,
+          1000,
+          1000,
+          916,
+          873,
+          908,
+          978,
+          987,
+          1000,
+          942,
+          969,
+          983,
+          924,
+          839,
+          848,
+          875,
+          855,
+          814,
+          948,
+          988,
+          938,
+          815,
+          991,
+          880,
+          814,
+          812,
+          949,
+          922,
+          928,
+          935,
+          840,
+          814,
+          930,
+          820,
+          847,
+          817,
+          952,
+          817,
+          972,
+          860,
+          903,
+          830,
+          945,
+          863,
+          948,
+          952,
+          810,
+          958
+        ],
+        150
+      ],
+      "expected": 902,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        [
+          84,
+          430,
+          674,
+          598,
+          579,
+          536,
+          324,
+          958,
+          268,
+          210,
+          686,
+          734,
+          322,
+          245,
+          272,
+          406,
+          135,
+          688,
+          661,
+          308,
+          469,
+          324,
+          952,
+          770,
+          959,
+          75,
+          10,
+          470,
+          637,
+          577,
+          103,
+          76,
+          551,
+          219,
+          519,
+          272,
+          136,
+          956,
+          358,
+          903,
+          71,
+          901,
+          251,
+          379,
+          292,
+          162,
+          449,
+          854,
+          557,
+          721,
+          310,
+          627,
+          827,
+          670,
+          542,
+          9,
+          684,
+          837,
+          568,
+          307,
+          955,
+          680,
+          107,
+          962,
+          900,
+          138,
+          271,
+          119,
+          912,
+          110,
+          761,
+          567,
+          160,
+          279,
+          289,
+          620,
+          216,
+          735,
+          352,
+          209,
+          704,
+          650,
+          874,
+          271,
+          518,
+          501,
+          258,
+          928,
+          930,
+          867,
+          53,
+          95,
+          650,
+          434,
+          850,
+          284,
+          46,
+          4,
+          342,
+          790
+        ],
+        250
+      ],
+      "expected": 241,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        [
+          134,
+          653,
+          269,
+          166,
+          760,
+          453,
+          565,
+          723,
+          438,
+          575,
+          10,
+          115,
+          78,
+          968,
+          905,
+          708,
+          926,
+          153,
+          559,
+          37,
+          855,
+          379,
+          597,
+          566,
+          152,
+          441,
+          131,
+          43,
+          316,
+          374,
+          921,
+          956,
+          816,
+          996,
+          882,
+          41,
+          921,
+          367,
+          216,
+          699,
+          256,
+          683,
+          106,
+          363,
+          799,
+          574,
+          906,
+          896,
+          417,
+          998,
+          636,
+          768,
+          159,
+          948,
+          953,
+          243,
+          886,
+          167,
+          1000,
+          820,
+          831,
+          182,
+          903,
+          423,
+          26,
+          184,
+          755,
+          947,
+          341,
+          802,
+          954,
+          422,
+          822,
+          686,
+          885,
+          753,
+          831,
+          255,
+          274,
+          164,
+          807,
+          719,
+          111,
+          392,
+          894,
+          40,
+          880,
+          482,
+          228,
+          205,
+          837,
+          941,
+          472,
+          359,
+          313,
+          841,
+          815,
+          893,
+          234,
+          229
+        ],
+        5000
+      ],
+      "expected": 12,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function minEatingSpeed(piles, h) {\n  let maxPile = 0;\n  for (let i = 0; i < piles.length; i++) {\n    if (piles[i] > maxPile) maxPile = piles[i];\n  }\n  for (let k = 1; k <= maxPile; k++) {\n    let hours = 0;\n    for (let i = 0; i < piles.length; i++) {\n      hours += Math.ceil(piles[i] / k);\n    }\n    if (hours <= h) return k;\n  }\n  return maxPile;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log m) | Space: O(1)",
+      "language": "javascript",
+      "code": "function minEatingSpeed(piles, h) {\n  let low = 1;\n  let high = 0;\n  for (let i = 0; i < piles.length; i++) {\n    if (piles[i] > high) high = piles[i];\n  }\n  let ans = high;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    let hours = 0;\n    for (let i = 0; i < piles.length; i++) {\n      hours += Math.ceil(piles[i] / mid);\n    }\n    if (hours <= h) {\n      ans = mid;\n      high = mid - 1;\n    } else {\n      low = mid + 1;\n    }\n  }\n  return ans;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "language": "python",
+      "code": "def minEatingSpeed(piles: list[int], h: int) -> int:\n    import math\n    max_pile = max(piles)\n    for k in range(1, max_pile + 1):\n        hours = sum(math.ceil(p / k) for p in piles)\n        if hours <= h:\n            return k\n    return max_pile\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log m) | Space: O(1)",
+      "language": "python",
+      "code": "def minEatingSpeed(piles: list[int], h: int) -> int:\n    import math\n    low, high = 1, max(piles)\n    ans = high\n    while low <= high:\n        mid = (low + high) // 2\n        hours = sum(math.ceil(p / mid) for p in piles)\n        if hours <= h:\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n    return ans\n",
+      "isReference": true
+    }
+  ]
+}
