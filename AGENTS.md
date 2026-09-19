@@ -1,180 +1,119 @@
-# AGENTS.md — Merit Engineering & Context Manual
+# AGENTS.md — Merit Engineering Rules
 
-> **Mandatory Read for Autonomous Agents (Codex, Antigravity, Claude Code, Hermes):**
-> Read this file completely before touching code or executing commands. It defines repository architecture, hard invariants, completed tickets, active branch topology, and canonical test gates.
+**Merit — Make the merit list.** Placement-grade DSA prep for Indian campus
+recruitment: 12 algorithm visualizers, a sandboxed code judge, adaptive
+quizzes + timed exams, guided learning paths, spaced revision.
 
----
-
-## 1. Project Overview & Vision
-
-**Merit** is a multi-user, placement-grade Data Structures & Algorithms (DSA) preparation platform tailored for Indian campus recruitment (MAANG, Tier-1 product firms, and mass recruiters).
-
-- **Frontend (`apps/web`)**: Vite + React 19 + TypeScript + Tailwind CSS 4. Monaco editor runner, algorithm visualizers (Trees, Graphs, Sorting, Dynamic Programming), guided paths, and dynamic quiz engine.
-- **Backend (`apps/api`)**: FastAPI + SQLAlchemy 2.0 (declarative) + Alembic + SQLite (WAL mode). Argon2id password hashing + JWT in `httpOnly` secure cookies. User isolation on every query.
-- **Content Engine (`content/`)**: Original, verified problem statements, test suites, reference solutions, and MCQ question generators. Unverified or scraped drafts are quarantined and never served.
+Read this file fully before touching code. Rules only — no history lessons.
 
 ---
 
-## 2. Active Git State & Remote Forge
+## 1. What it is
 
-- **Remote Forge**: `https://git.nullbit.in/abhi/Merit.git` (Private self-hosted Gitea).
-- **Active Feature Branch**: `scope/extension`.
-- **Commit Identity (STRICT)**:
-  ```bash
-  git config user.name "Abhigyan Chatterjee"
-  git config user.email "abhi@nullbit.in"
-  ```
-- **Credentials & Environment**:
-  - Forge auth tokens and secrets live in local configuration / environment (`~/.config/merit/forge.env`).
-  - **NEVER** commit secrets, passwords, or tokens to git.
-  - SQLite database files (`*.db*`), caches (`.ruff_cache`, `.pytest_cache`, `node_modules`), and `.env` are gitignored.
-
----
-
-## 3. Hard Architectural Invariants
-
-1. **Language Scope**:
-   - **Python and JavaScript ONLY** in the MVP.
-   - **Java and C++ are explicitly OUT of scope.** Do not add Java/C++ runners, boilerplate, or schema stubs.
-2. **Quality Over Bloat**:
-   - No synthetic template inflation.
-   - MCQ generator keys are hard-capped at **4 instances per design**.
-   - No question ships without passing QAF quality gates (variance, distractor sanity, uniform option distribution).
-3. **No Unverified Content**:
-   - Every coding problem must achieve **100% AC** (Accepted) against its reference solution in the execution judge (`content/validators/verify_problems.py`).
-   - Draft stubs (`content/problems/scrap-*.json`) have `reviewStatus: "draft"` and **must never be seeded or served**.
-4. **Strict User Isolation**:
-   - Client-provided user IDs are **never trusted**. All user-scoped database queries filter strictly on `Table.user_id == current_user.id`.
-5. **No False Passes / Test Cheating**:
-   - Never weaken assertions, widen thresholds, or mock out failures to simulate passes. Fix root causes.
-
----
-
-## 4. Work Completed (Recent Changelog)
-
-| Commit | Scope | Description |
+| Layer | Path | Stack |
 |---|---|---|
-| `8987a7a` | Ticket A | Fixed catalog topic classifier in `content/generators/build_catalog.py`: multi-label `algo_topics`, 3-tier specificity priority, and India-weighted candidate ranking. |
-| `8392aca` | Ticket C | Cleared plumbing debt: removed hardcoded JWT secret fallback in `config.py`, dynamic date windows in `test_progress.py`, dynamic problem count in `progress.py`, honest README. |
-| `421c2f7` | Ticket B | Deduplicated question bank: capped instances at 4, added 28 new distinct designs (+112 questions) in starved categories, raised Hard questions from 34 to 73, updated `coverage_report.py` gate to `distinct_designs >= 130`. |
-| `74f5593` | Ticket E | Fixed `seed_problems` in `apps/api/app/seed.py` to inspect `reviewStatus` / `review_status`, skipping and purging 200 `scrap-*` draft files from the live API. |
-| `2e665a4` | Ticket F | Introduced **Question Authoring Framework (QAF)** in `content/generators/qaf/`: declarative specs, random parameter oracles, distractor generators, and 6 quality gates in `verify_questions.py`. |
-| Working tree | Ticket G | Added **Problem Authoring Framework (PAF)** in `content/generators/paf/`: typed signature parsing, deterministic edge/random/stress inputs, real-judge cross-validation, runtime profiling, and verified JSON emission. |
-| `32aa70c` | Fix API | Added local development secret auto-fallback in `apps/api/app/config.py` (strict failure retained for production). |
-| `e5fc8cc` | Test API | Added unit test coverage in `tests/test_config.py` for secret fallback and production rejection. |
-| `5240cc5` | Fix API | Anchored SQLite `DATABASE_URL` path directly to `apps/api/merit.db` regardless of invocation CWD; added lifespan startup hook in `app/main.py` to auto-initialize schema and seed content. |
+| Web | `apps/web/` | Vite + React 19 + TypeScript + Tailwind CSS 4, Clerk `<SignIn/>`/`<SignUp/>` (only when `VITE_CLERK_PUBLISHABLE_KEY` is set), BYOK AI tutor panel (`AiTutor.tsx`) |
+| API | `apps/api/` | FastAPI + SQLAlchemy 2.0 + Alembic; SQLite dev (`apps/api/merit.db`), Neon Postgres prod (`postgresql://` passes through untouched in `app/config.py`); Argon2id + JWT in `httpOnly` cookies; Clerk link/verify in `app/services/clerk_oauth.py` |
+| Content | `content/` | 120 verified problems + 539 question items; QAF question generators, PAF problem framework, catalog classifier |
+| Judge | `apps/api/app/services/judge.py` | Subprocess-isolated sandbox, **Python and JavaScript only** |
 
 ---
 
-## 5. Repository Layout
+## 2. Hard invariants
+
+1. **Language scope: Python + JavaScript ONLY.** No Java/C++ runners, boilerplate, or schema stubs.
+2. **100% AC.** Every coding problem must pass its reference solution through the real judge (`content/validators/verify_problems.py`). No exceptions.
+3. **Scrap quarantine.** `content/problems/scrap-*.json` (200 drafts, `reviewStatus: "draft"`) are never seeded or served. `apps/api/app/seed.py` skips draft files and purges stale draft rows; both `reviewStatus` and `review_status` spellings are honored.
+4. **User isolation.** Never trust client-provided user IDs. Every user-scoped query filters on `Table.user_id == current_user.id`.
+5. **No false passes.** Never weaken assertions, widen thresholds, or mock failures to fake green. Fix root causes.
+6. **QAF caps.** MCQ generator keys capped at 4 instances per design; no question ships without passing `verify_questions.py` quality gates.
+7. **No secrets in git.** Tokens live in env/local config. `*.db*`, `.env`, caches, `node_modules` are gitignored.
+
+---
+
+## 3. Repo layout (real paths)
 
 ```text
-Merit/
-├── AGENTS.md                               # This file
-├── README.md                               # Project documentation
-├── merit.db                                # Root artifact (use apps/api/merit.db)
-├── apps/
-│   ├── api/                                # FastAPI backend
-│   │   ├── alembic/                        # Migration versions (184cc17df8ca -> 9e4a5c28d7f2)
-│   │   ├── app/
-│   │   │   ├── config.py                   # Pydantic BaseSettings, anchored DB URL, JWT secrets
-│   │   │   ├── db.py                       # SQLAlchemy engine & Base
-│   │   │   ├── main.py                     # FastAPI application, CORS, security headers, lifespan
-│   │   │   ├── models/                     # SQLAlchemy models (user, content, progress, quiz, submission)
-│   │   │   ├── routers/                    # API endpoints (auth, content, judge, progress, quizzes, admin)
-│   │   │   ├── schemas/                    # Pydantic request/response schemas
-│   │   │   ├── seed.py                     # Database seeder (problems, questions, paths, admin)
-│   │   │   └── services/                   # Business logic (judge, sampler, session_cleanup, streak)
-│   │   ├── tests/                          # 46 pytest unit & integration tests
-│   │   └── pyproject.toml                  # API Python package config
-│   └── web/                                # React 19 + TypeScript frontend
-│       ├── src/
-│       │   ├── components/                 # UI components, visualizers, CodeRunner
-│       │   ├── data/                       # Static curriculums, paths, pseudocode
-│       │   ├── pages/                      # Route pages (Landing, ProblemList, Visualizers, Quizzes)
-│       │   └── store/                      # React context & state (ProgressContext)
-│       └── tests/                          # 73 Vitest component & route tests
-└── content/                                # Problem & Question source of truth
-    ├── catalog/catalog.json                # 3,997 canonical deduplicated problems
-    ├── generators/
-    │   ├── qaf/                            # Question Authoring Framework (spec, oracles, distractors, engine)
-    │   ├── paf/                            # Problem Authoring Framework (spec, inputs, judge validation, emitter)
-    │   │   └── specs/                      # Declarative MCQ design specs
-    │   ├── arrays_strings.py               # Topic question generators (QAF-driven)
-    │   ├── generate_all.py                 # Master generator runner
-    │   └── build_catalog.py                # Catalog normalizer & topic classifier
-    ├── paths/                              # Learning path definitions (foundation, targeted, mastery)
-    ├── problems/                           # 42 verified problems + 200 draft stubs (scrap-*.json)
-    ├── questions/                          # 539 JSON questions across 20 topic directories
-    └── validators/                         # Gate verification scripts
-        ├── coverage_report.py              # Enforces distinct design thresholds (>= 130)
-        ├── run_all.py                      # Master test runner (problems + questions + coverage)
-        ├── verify_problems.py              # Executes reference solutions via Judge
-        └── verify_questions.py             # Enforces 6 QAF quality gates & option balance
+AGENTS.md / README.md              # the only two human docs at root
+apps/api/app/main.py               # FastAPI app, CORS, lifespan (auto schema init + seed)
+apps/api/app/config.py             # settings; SQLite path anchored to apps/api/merit.db
+apps/api/app/models/               # user, content, progress, quiz, submission
+apps/api/app/routers/              # auth, content, judge, progress, quizzes, admin, tutor
+apps/api/app/schemas/              # request/response schemas (incl. auth, tutor)
+apps/api/app/services/             # judge, sampler, streak, session_cleanup, clerk_oauth
+apps/api/alembic/                  # migrations (head: c4f1a2b3d4e5 Clerk OAuth)
+apps/api/tests/                    # pytest suite (test_auth[z], content, judge, quizzes,
+                                   # progress, admin, tutor, session_cleanup, config, pg_compat)
+apps/web/src/components/           # QuizEngine, CodeRunner, AiTutor, ClerkOAuth, visualizers…
+apps/web/src/pages/                # Landing, Dashboard, Problems, Quiz, Exams, Paths, Admin
+apps/web/src/data/                 # curriculum, quizzes, problems bundle, paths
+apps/web/src/store/                # AuthContext, ProgressContext
+apps/web/tests/                    # Vitest suite (17 files)
+content/problems/                  # 120 verified + 200 scrap-*.json drafts (quarantined)
+content/questions/                 # 539 items across ~20 topic dirs (341 verified active)
+content/paths/                     # foundation.json, targeted.json, mastery.json
+content/catalog/catalog.json       # canonical deduplicated catalog
+content/taxonomy.py                # 18-category taxonomy (single source of truth)
+content/generators/qaf/            # Question Authoring Framework
+content/generators/paf/            # Problem Authoring Framework
+content/generators/build_catalog.py# catalog normalizer + topic classifier
+content/validators/run_all.py      # master gate: problems + questions + coverage + path refs
+content/validators/verify_problems.py / verify_questions.py / coverage_report.py
+docs/prod.md                       # Clerk + prod handoff runbook
+docs/launch-checklist.md           # launch/hardening verification checklist
+docs/backup_drill.sh               # WAL checkpoint + backup drill
+docs/plans/                        # archived plan docs (kept, not served)
 ```
+
+Owner-only, untracked, never commit content from: `design ideas/` (owner screenshots).
 
 ---
 
-## 6. Standard Execution & Verification Commands
-
-All agents must run and verify these commands before and after proposing changes:
-
-### Python & API Environment
-The virtual environment is located at `apps/api/.venv`.
+## 4. Canonical gates — exact commands, expected counts
 
 ```bash
-# 1. Run all API tests (Must be 46 passed)
+# API: 67 passed
 cd apps/api && .venv/bin/python -m pytest -q --no-header
 
-# 2. Check API linting (Must be 0 errors)
-cd apps/api && .venv/bin/ruff check app/config.py app/main.py tests/test_config.py
-
-# 3. Start API dev server (Port 8000)
-cd apps/api && .venv/bin/uvicorn app.main:app --reload --port 8000
-
-# 4. Apply database migrations
-cd apps/api && .venv/bin/alembic upgrade head
-
-# 5. Re-seed database content
-cd apps/api && .venv/bin/python -m app.seed
-```
-
-### Web Frontend Environment
-
-```bash
-# 1. Run all Web unit/component tests (Must be 73 passed)
+# Web: 85 passed (17 files)
 cd apps/web && npx vitest run
 
-# 2. Build web bundle
-cd apps/web && npm run build
-
-# 3. Start web dev server
-cd apps/web && npm run dev
-```
-
-### Content Validation Suite (Zero tolerance for failures)
-
-```bash
-# Run the complete content verification suite:
-# - Checks 42 problems with 100% AC in judge
-# - Checks 539 questions against 6 QAF quality gates
-# - Checks distinct designs >= 130
+# Content: 120 problems 100% AC (200 drafts skipped) + 539 questions
+# (341 verified) + 136 distinct designs (>= 130) + path refs resolve
 python3 content/validators/run_all.py
 ```
 
+Supporting commands:
+
+```bash
+cd apps/api && .venv/bin/ruff check app tests        # lint, 0 errors
+cd apps/api && .venv/bin/alembic upgrade head        # migrations
+cd apps/api && .venv/bin/python -m app.seed          # re-seed verified content
+cd apps/api && .venv/bin/uvicorn app.main:app --reload --port 8000
+cd apps/web && npm run dev                            # http://localhost:5173
+cd apps/web && npm run build
+```
+
+Zero tolerance: all three gates green before and after every change.
+
 ---
 
-## 7. Current Bank & Pipeline Metrics
+## 5. Branch / commit conventions
 
-- **Verified Coding Problems**: Exactly **42 problems** (100% AC against reference solutions).
-- **Draft Problems**: 200 `scrap-*.json` stubs (quarantined on disk; skipped by seed).
-- **Verified Questions**: **341 active placement questions** (+ 198 draft items = 539 total).
-- **Distinct MCQ Designs**: **136 distinct designs** (86 generator templates + 50 curated items).
-- **Option Index Balance**: Bank-wide uniformity: A: 31.7%, B: 24.3%, C: 22.6%, D: 21.4%.
-- **Hard Questions**: 73 Hard questions (zero topic categories starved of Hard difficulty).
+- Remote: `https://git.nullbit.in/abhi/Merit.git`. Work on `scope/extension`.
+- Identity (strict):
+  `git config user.name "Abhigyan Chatterjee"` /
+  `git config user.email "abhi@nullbit.in"`
+- `git status` must show only intended files. Never stage secrets, `*.db*`, or owner screenshots.
+- **No push** unless the ticket explicitly says so.
 
 ---
 
-## 8. Next Immediate Focus: Learning-path alignment
+## 6. Ticket discipline
 
-Ticket G is implemented in `content/generators/paf/`. The next priority is to align learning paths (`content/paths/foundation.json`, `targeted.json`, `mastery.json`) to the verified problem set.
+- Touch only the ticket's target files. Docs tickets = docs only, no code.
+- Verify, don't trust: run the gate from §4 that covers your change and report
+  raw outputs (counts, failures). Re-read edited regions after every edit.
+- Root carries exactly two human docs (`AGENTS.md`, `README.md`). Plan traces
+  (`prompt.txt`, root date-stamped `.md`, `.hermes/plans/*.md`) are deleted on
+  sight; keep the `.hermes/` dir itself. `design ideas/` and `docs/` are kept.
