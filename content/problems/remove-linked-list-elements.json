@@ -1259,5 +1259,8 @@
       "code": "def removeElements(nums: list[int], val: int) -> list[int]:\n    return [x for x in nums if x != val]\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "copy-list-with-random-pointer"
 }

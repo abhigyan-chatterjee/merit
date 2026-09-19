@@ -2833,5 +2833,8 @@
       "code": "def copyRandomList(nodes: list[list[int]]) -> list[list[int]]:\n    return [[node[0], node[1]] for node in nodes]\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "remove-linked-list-elements",
+  "nextSlug": "odd-even-linked-list"
 }

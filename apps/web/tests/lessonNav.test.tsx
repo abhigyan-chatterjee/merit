@@ -59,7 +59,7 @@ describe('LessonNav & Unblocked Guided Path Flow', () => {
     // Should render LessonNav path back link and step indicator.
     // /visualizers/array matches several foundation steps; the first match wins.
     expect(await screen.findByText('Foundation')).toBeInTheDocument();
-    expect(screen.getByText(/Step \d+ of 16/)).toBeInTheDocument();
+    expect(screen.getByText(/Step \d+ of \d+/)).toBeInTheDocument();
     expect(screen.getByText(/Next:/i)).toBeInTheDocument();
   });
 
@@ -89,7 +89,7 @@ describe('LessonNav & Unblocked Guided Path Flow', () => {
   it('allows opening step dropdown in LessonNav and seeing curriculum', async () => {
     renderComponent(<VisualizerDetailPage />, '/visualizers/array?path=foundation&step=0');
 
-    const stepButton = await screen.findByRole('button', { name: /Step \d+ of 16/i });
+    const stepButton = await screen.findByRole('button', { name: /Step \d+ of \d+/i });
     expect(stepButton).toBeInTheDocument();
 
     fireEvent.click(stepButton);

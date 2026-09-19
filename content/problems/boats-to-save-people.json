@@ -953,5 +953,8 @@
       "code": "def numRescueBoats(people, limit):\n    sorted_people = sorted(people)\n    left = 0\n    right = len(sorted_people) - 1\n    boats = 0\n    while left <= right:\n        if left == right:\n            boats += 1\n            break\n        if sorted_people[left] + sorted_people[right] <= limit:\n            left += 1\n        right -= 1\n        boats += 1\n    return boats\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "valid-palindrome-ii",
+  "nextSlug": "three-sum"
 }

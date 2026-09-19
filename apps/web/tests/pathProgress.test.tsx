@@ -1,10 +1,14 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, test, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../src/store/AuthContext';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { GuidedPathsPage, usePathProgress } from '../src/pages/GuidedPathsPage';
 import { renderHookForTest } from './testUtils';
+import { PROBLEMS } from '../src/data/problems';
+import foundationPath from '../../../content/paths/foundation.json';
+import targetedPath from '../../../content/paths/targeted.json';
+import masteryPath from '../../../content/paths/mastery.json';
 
 function renderPage() {
   return render(
@@ -44,10 +48,10 @@ describe('Path progress consistency (/learn cards)', () => {
     );
 
     const { result } = renderHookForTest(() => usePathProgress('foundation'));
-    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4/16
+    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4/20
     expect(result.current.done).toBe(4);
-    expect(result.current.total).toBe(16);
-    expect(result.current.pct).toBe(25);
+    expect(result.current.total).toBe(20);
+    expect(result.current.pct).toBe(20);
   });
 
   it('renders one consistent percentage on the card (no 13% ghost)', () => {
@@ -72,14 +76,31 @@ describe('Path progress consistency (/learn cards)', () => {
 
     renderPage();
     const card = screen.getByText('Foundation').closest('a')!;
-    // 25% appears on multiple cards across paths, so scope to the card.
-    const pcts = within(card).getAllByText('25%');
+    const pcts = within(card).getAllByText('20%');
     expect(pcts.length).toBeGreaterThanOrEqual(1);
     const countLabel = within(card).getByText((_content, el) => {
       if (!el || el.children.length > 0) return false;
-      return (el.textContent ?? '').replace(/\s+/g, ' ').includes('4/16 complete');
+      return (el.textContent ?? '').replace(/\s+/g, ' ').includes('4/20 complete');
     });
     expect(countLabel).toBeInTheDocument();
+  });
+});
+
+describe('Path step resolution', () => {
+  test('every problem step resolves to a verified problem', () => {
+    const knownSlugs = new Set(PROBLEMS.map((p) => p.slug));
+    const pathJsons = [foundationPath, targetedPath, masteryPath];
+
+    for (const path of pathJsons) {
+      for (const step of path.steps) {
+        if (step.step_type === 'problem') {
+          expect(
+            knownSlugs.has(step.ref_id),
+            `Dangling step ref '${step.ref_id}' in path '${path.slug}'`
+          ).toBe(true);
+        }
+      }
+    }
   });
 });
 

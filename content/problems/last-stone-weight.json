@@ -922,5 +922,8 @@
       "code": "def lastStoneWeight(stones):\n    import heapq\n    heap = [-s for s in stones]\n    heapq.heapify(heap)\n    while len(heap) > 1:\n        y = -heapq.heappop(heap)\n        x = -heapq.heappop(heap)\n        if y != x:\n            heapq.heappush(heap, -(y - x))\n    return -heap[0] if heap else 0\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "kth-largest-element-in-an-array"
 }

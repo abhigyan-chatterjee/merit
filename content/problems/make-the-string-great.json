@@ -232,5 +232,8 @@
       "code": "function makeGood(s) {\n  const stack = [];\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    const top = stack[stack.length - 1];\n    if (stack.length > 0 && top !== ch && top.toLowerCase() === ch.toLowerCase()) {\n      stack.pop();\n    } else {\n      stack.push(ch);\n    }\n  }\n  return stack.join('');\n}",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "baseball-game",
+  "nextSlug": "next-greater-element-i"
 }

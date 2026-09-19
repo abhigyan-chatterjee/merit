@@ -282,5 +282,8 @@
       "code": "def checkInclusion(s1, s2):\n    m = len(s1)\n    n = len(s2)\n    if m > n:\n        return False\n    count1 = {}\n    count2 = {}\n    for i in range(m):\n        count1[s1[i]] = count1.get(s1[i], 0) + 1\n        count2[s2[i]] = count2.get(s2[i], 0) + 1\n\n    def is_match(c1, c2):\n        for ch in c1:\n            if c1[ch] != c2.get(ch, 0):\n                return False\n        for ch in c2:\n            if c2[ch] > 0 and c1.get(ch, 0) != c2[ch]:\n                return False\n        return True\n\n    if is_match(count1, count2):\n        return True\n    for i in range(m, n):\n        incoming = s2[i]\n        outgoing = s2[i - m]\n        count2[incoming] = count2.get(incoming, 0) + 1\n        count2[outgoing] -= 1\n        if count2[outgoing] == 0:\n            del count2[outgoing]\n        if is_match(count1, count2):\n            return True\n    return False\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "max-consecutive-ones-iii",
+  "nextSlug": "sliding-window-maximum"
 }

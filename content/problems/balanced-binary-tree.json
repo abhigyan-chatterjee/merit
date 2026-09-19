@@ -749,5 +749,8 @@
       "code": "def isBalanced(root: list) -> bool:\n    def probe(i):\n        if i >= len(root) or root[i] is None:\n            return 0\n        l = probe(2 * i + 1)\n        if l == -1:\n            return -1\n        r = probe(2 * i + 2)\n        if r == -1:\n            return -1\n        if abs(l - r) > 1:\n            return -1\n        return 1 + max(l, r)\n    return probe(0) != -1\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "symmetric-tree",
+  "nextSlug": "binary-tree-level-order-traversal"
 }

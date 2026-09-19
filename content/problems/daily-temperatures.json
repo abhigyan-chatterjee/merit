@@ -1631,5 +1631,8 @@
       "code": "def dailyTemperatures(temperatures: list[int]) -> list[int]:\n    n = len(temperatures)\n    waits = [0] * n\n    stack = []\n    for i in range(n):\n        while stack and temperatures[i] > temperatures[stack[-1]]:\n            prev = stack.pop()\n            waits[prev] = i - prev\n        stack.append(i)\n    return waits\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 7,
+  "prevSlug": "basic-calculator-ii",
+  "nextSlug": "evaluate-reverse-polish-notation"
 }

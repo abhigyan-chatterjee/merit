@@ -3824,12 +3824,15 @@
   ],
   "editorial": {
     "approach": "The brute-force approach counts set bits for each integer from 0 to n by repeatedly masking off the least significant bit, yielding O(n log n) time because each number has O(log n) bits. The optimal approach reuses already-computed values via dynamic programming: the popcount of i equals ans[i >> 1] (all bits except the last) plus the last bit (i & 1). Filling ans[1..n] iteratively builds the entire answer in a single pass.",
-    "why_optimal": "The DP recurrence eliminates the inner bit-counting loop, reducing time complexity from O(n log n) to O(n) with O(1) extra space (beyond the output array). On n=500, PAF measured the brute-force at 0.91 ms and the optimal at 0.26 ms—a 3.4x speedup that grows with larger n.",
+    "why_optimal": "The DP recurrence eliminates the inner bit-counting loop, reducing time complexity from O(n log n) to O(n) with O(1) extra space (beyond the output array). On n=500, PAF measured the brute-force at 0.91 ms and the optimal at 0.26 ms\u2014a 3.4x speedup that grows with larger n.",
     "pitfalls": "Starting the recurrence loop from i=0 instead of i=1 causes an unnecessary self-reference on the first element (harmless here because ans[0] is pre-zeroed, but confusing). Using the signed right-shift operator (>>) instead of unsigned (>>>) can produce incorrect results for negative indices, though constraints keep n non-negative. Forgetting to pre-allocate the result array to the correct length causes index errors."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Hamming_weight",
     "https://en.wikipedia.org/wiki/Bitwise_operation",
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators"
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "majority-element"
 }

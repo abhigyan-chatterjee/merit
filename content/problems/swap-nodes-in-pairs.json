@@ -1283,5 +1283,8 @@
       "code": "def swapPairs(nums: list[int]) -> list[int]:\n    res = list(nums)\n    for i in range(0, len(res) - 1, 2):\n        res[i], res[i + 1] = res[i + 1], res[i]\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 8,
+  "prevSlug": "rotate-list",
+  "nextSlug": "merge-k-sorted-lists"
 }

@@ -1157,5 +1157,8 @@
       "code": "def reverseBetween(nums: list[int], left: int, right: int) -> list[int]:\n    res = list(nums)\n    l = left - 1\n    r = right - 1\n    while l < r:\n        res[l], res[r] = res[r], res[l]\n        l += 1\n        r -= 1\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "reorder-list",
+  "nextSlug": "rotate-list"
 }

@@ -1142,5 +1142,8 @@
       "code": "def calPoints(operations: list[str]) -> int:\n    stack = []\n    for op in operations:\n        if op == 'C':\n            if stack:\n                stack.pop()\n        elif op == 'D':\n            prev = stack[-1] if stack else 0\n            stack.append(None if prev is None else prev * 2)\n        elif op == '+':\n            a = stack[-1] if stack else 0\n            b = stack[-2] if len(stack) > 1 else 0\n            stack.append(None if (a is None or b is None) else a + b)\n        else:\n            try:\n                stack.append(int(op))\n            except ValueError:\n                stack.append(None)\n    if any(x is None for x in stack):\n        return None\n    return sum(stack)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "make-the-string-great"
 }

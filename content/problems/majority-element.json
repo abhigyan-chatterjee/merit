@@ -4,7 +4,7 @@
   "topic": "arrays-hashing",
   "difficulty": "Easy",
   "pattern": "arrays-hashing / Boyer-Moore",
-  "statement": "# Majority Element\n\nGiven an integer array `nums` containing `n` elements, find and return the majority element.\n\nThe majority element is defined as the element that appears more than `⌊n / 2⌋` times in the array. When an input does not contain a strict majority element (> n/2 occurrences), the algorithm returns the candidate produced by majority voting cancellation.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+  "statement": "# Majority Element\n\nGiven an integer array `nums` containing `n` elements, find and return the majority element.\n\nThe majority element is defined as the element that appears more than `\u230an / 2\u230b` times in the array. When an input does not contain a strict majority element (> n/2 occurrences), the algorithm returns the candidate produced by majority voting cancellation.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
   "examples": [
     {
       "input": "nums = [-100]",
@@ -900,7 +900,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "javascript",
       "code": "function majorityElement(nums) {\n  for (let i = 0; i < nums.length; i++) {\n    let count = 0;\n    for (let j = 0; j < nums.length; j++) {\n      if (nums[j] === nums[i]) count++;\n    }\n    if (count > Math.floor(nums.length / 2)) return nums[i];\n  }\n  let candidate = nums[0], count = 0;\n  for (let i = 0; i < nums.length; i++) {\n    if (count === 0) candidate = nums[i];\n    count += (nums[i] === candidate) ? 1 : -1;\n  }\n  return candidate;\n}",
       "isReference": false
@@ -914,7 +914,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "python",
       "code": "def majorityElement(nums):\n    for i in range(len(nums)):\n        count = 0\n        for j in range(len(nums)):\n            if nums[j] == nums[i]:\n                count += 1\n        if count > len(nums) // 2:\n            return nums[i]\n    candidate = nums[0]\n    count = 0\n    for num in nums:\n        if count == 0:\n            candidate = num\n        count += 1 if num == candidate else -1\n    return candidate\n",
       "isReference": false
@@ -929,10 +929,13 @@
   ],
   "editorial": {
     "approach": "The brute-force approach counts occurrences of each element by scanning the entire array for every candidate, yielding O(n^2) time. The optimal approach uses the Boyer-Moore voting algorithm: maintain a running candidate and a counter that increments when the current element matches the candidate and decrements otherwise; when the counter hits zero, adopt the next element as the new candidate.",
-    "why_optimal": "Boyer-Moore makes a single pass with O(1) extra space, reducing time from O(n^2) to O(n). On 22 test cases, PAF measured the brute-force at 0.84 ms and the optimal at 0.11 ms—a 7.5x speedup with zero extra memory.",
+    "why_optimal": "Boyer-Moore makes a single pass with O(1) extra space, reducing time from O(n^2) to O(n). On 22 test cases, PAF measured the brute-force at 0.84 ms and the optimal at 0.11 ms\u2014a 7.5x speedup with zero extra memory.",
     "pitfalls": "The algorithm assumes a majority element exists; it produces a candidate but does not verify it independently. If the guarantee is removed, a second verification pass is needed. Initializing count to zero (instead of one) when setting the candidate can cause off-by-one errors in edge cases."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm"
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "counting-bits",
+  "nextSlug": "missing-number"
 }

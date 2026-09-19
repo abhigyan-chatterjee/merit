@@ -934,5 +934,8 @@
       "code": "def trap(height):\n    n = len(height)\n    if n == 0:\n        return 0\n    left = 0\n    right = n - 1\n    leftMax = 0\n    rightMax = 0\n    totalWater = 0\n    while left < right:\n        if height[left] < height[right]:\n            if height[left] >= leftMax:\n                leftMax = height[left]\n            else:\n                totalWater += leftMax - height[left]\n            left += 1\n        else:\n            if height[right] >= rightMax:\n                rightMax = height[right]\n            else:\n                totalWater += rightMax - height[right]\n            right -= 1\n    return totalWater\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "three-sum",
+  "nextSlug": null
 }

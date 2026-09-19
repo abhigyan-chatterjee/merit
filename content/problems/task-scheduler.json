@@ -1064,5 +1064,8 @@
       "code": "def leastInterval(tasks, n):\n    if not tasks:\n        return 0\n    from collections import Counter\n    freq = Counter(tasks)\n    max_freq = max(freq.values())\n    max_count = sum(1 for c in freq.values() if c == max_freq)\n    slots = (max_freq - 1) * (n + 1) + max_count\n    return slots if slots > len(tasks) else len(tasks)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "kth-largest-element-in-an-array",
+  "nextSlug": null
 }

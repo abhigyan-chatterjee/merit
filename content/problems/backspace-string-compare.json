@@ -282,5 +282,8 @@
       "code": "def backspaceCompare(s, t):\n    p1 = len(s) - 1\n    p2 = len(t) - 1\n    skips1 = 0\n    skips2 = 0\n    while p1 >= 0 or p2 >= 0:\n        while p1 >= 0:\n            if s[p1] == '#':\n                skips1 += 1\n                p1 -= 1\n            elif skips1 > 0:\n                skips1 -= 1\n                p1 -= 1\n            else:\n                break\n        while p2 >= 0:\n            if t[p2] == '#':\n                skips2 += 1\n                p2 -= 1\n            elif skips2 > 0:\n                skips2 -= 1\n                p2 -= 1\n            else:\n                break\n        c1 = s[p1] if p1 >= 0 else None\n        c2 = t[p2] if p2 >= 0 else None\n        if c1 != c2:\n            return False\n        p1 -= 1\n        p2 -= 1\n    return True\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "squares-of-sorted-array"
 }

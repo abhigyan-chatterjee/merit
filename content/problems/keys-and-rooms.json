@@ -3252,5 +3252,8 @@
       "code": "def canVisitAllRooms(rooms):\n    n = len(rooms)\n    seen = {0}\n    stack = [0]\n    while stack:\n        room = stack.pop()\n        for dest in rooms[room] if room < n else []:\n            if 0 <= dest < n and dest not in seen:\n                seen.add(dest)\n                stack.append(dest)\n    return len(seen) == n\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "all-paths-from-source-to-target"
 }

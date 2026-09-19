@@ -1502,5 +1502,8 @@
       "code": "def maxSlidingWindow(nums, k):\n    if len(nums) == 0 or k <= 0:\n        return []\n    result = []\n    deque = []\n    for i in range(len(nums)):\n        while deque and deque[0] < i - k + 1:\n            deque.pop(0)\n        while deque and nums[deque[-1]] <= nums[i]:\n            deque.pop()\n        deque.append(i)\n        if i >= k - 1:\n            result.append(nums[deque[0]])\n    return result\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "permutation-in-string",
+  "nextSlug": null
 }

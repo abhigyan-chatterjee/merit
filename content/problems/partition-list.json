@@ -1083,5 +1083,8 @@
       "code": "def partitionList(nums: list[int], x: int) -> list[int]:\n    less = [v for v in nums if v < x]\n    greater = [v for v in nums if v >= x]\n    return less + greater\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "odd-even-linked-list",
+  "nextSlug": "reorder-list"
 }

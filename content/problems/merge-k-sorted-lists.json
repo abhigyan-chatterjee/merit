@@ -3414,5 +3414,8 @@
       "code": "import heapq\n\ndef mergeKLists(lists: list[list[int]]) -> list[int]:\n    heap = []\n    for list_idx, sublist in enumerate(lists):\n        if sublist:\n            heapq.heappush(heap, (sublist[0], list_idx, 0))\n    result = []\n    while heap:\n        val, list_idx, elem_idx = heapq.heappop(heap)\n        result.append(val)\n        next_idx = elem_idx + 1\n        if next_idx < len(lists[list_idx]):\n            heapq.heappush(heap, (lists[list_idx][next_idx], list_idx, next_idx))\n    return result\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 9,
+  "prevSlug": "swap-nodes-in-pairs",
+  "nextSlug": "reverse-nodes-in-k-group"
 }

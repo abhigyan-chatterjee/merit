@@ -1136,5 +1136,8 @@
       "code": "def evalRPN(tokens: list[str]) -> int:\n    stack = []\n    for token in tokens:\n        if token in ('+', '-', '*', '/'):\n            b = stack.pop() if stack else 0\n            a = stack.pop() if stack else 0\n            if a is None or b is None:\n                stack.append(None)\n                continue\n            if token == '+':\n                value = a + b\n            elif token == '-':\n                value = a - b\n            elif token == '*':\n                value = a * b\n            else:\n                if b == 0:\n                    value = None\n                else:\n                    value = int(a / b)\n            stack.append(value)\n        else:\n            try:\n                stack.append(int(token))\n            except ValueError:\n                stack.append(None)\n    return stack.pop() if stack else 0\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 8,
+  "prevSlug": "daily-temperatures",
+  "nextSlug": "simplify-path"
 }

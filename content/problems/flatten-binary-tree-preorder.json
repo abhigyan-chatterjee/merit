@@ -1168,5 +1168,8 @@
       "code": "def flatten(root: list) -> list:\n    order = []\n    stack = []\n    if len(root) > 0 and root[0] is not None:\n        stack.append(0)\n    while stack:\n        i = stack.pop()\n        order.append(root[i])\n        l, r = 2 * i + 1, 2 * i + 2\n        if r < len(root) and root[r] is not None:\n            stack.append(r)\n        if l < len(root) and root[l] is not None:\n            stack.append(l)\n    return order\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 7,
+  "prevSlug": "count-good-nodes",
+  "nextSlug": "lowest-common-ancestor-bst"
 }

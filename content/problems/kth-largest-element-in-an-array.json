@@ -1095,5 +1095,8 @@
       "code": "def findKthLargest(nums, k):\n    arr = list(nums)\n    target = len(arr) - k\n    lo, hi = 0, len(arr) - 1\n    while lo < hi:\n        pivot = arr[(lo + hi) // 2]\n        i, lt, gt = lo, lo, hi\n        while i <= gt:\n            if arr[i] < pivot:\n                arr[i], arr[lt] = arr[lt], arr[i]\n                i += 1\n                lt += 1\n            elif arr[i] > pivot:\n                arr[i], arr[gt] = arr[gt], arr[i]\n                gt -= 1\n            else:\n                i += 1\n        if target < lt:\n            hi = lt - 1\n        elif target > gt:\n            lo = gt + 1\n        else:\n            return pivot\n    return arr[lo]\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "last-stone-weight",
+  "nextSlug": "task-scheduler"
 }

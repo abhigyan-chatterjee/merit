@@ -938,5 +938,8 @@
       "code": "def ladderLength(beginWord, endWord, wordList):\n    words = set(wordList)\n    if endWord not in words:\n        return 0\n    if beginWord == endWord:\n        return 1\n    from collections import defaultdict, deque\n    buckets = defaultdict(list)\n    for w in words:\n        if len(w) != len(beginWord):\n            continue\n        for i in range(len(w)):\n            buckets[w[:i] + '*' + w[i+1:]].append(w)\n    queue = deque([beginWord])\n    seen = {beginWord}\n    steps = 1\n    while queue:\n        for _ in range(len(queue)):\n            word = queue.popleft()\n            if word == endWord:\n                return steps\n            for i in range(len(word)):\n                for nxt in buckets.get(word[:i] + '*' + word[i+1:], []):\n                    if nxt not in seen:\n                        seen.add(nxt)\n                        queue.append(nxt)\n        steps += 1\n    return 0\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 7,
+  "prevSlug": "surrounded-regions",
+  "nextSlug": null
 }

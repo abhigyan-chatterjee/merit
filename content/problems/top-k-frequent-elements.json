@@ -1099,11 +1099,14 @@
   ],
   "editorial": {
     "approach": "The brute-force approach counts frequencies with a Counter, sorts all (value, frequency) pairs by frequency descending then value ascending, and returns the first k, yielding O(n log n) time. The optimal approach uses bucket sort: place each value into a bucket indexed by its frequency, then iterate from the highest frequency downward until k values are collected.",
-    "why_optimal": "Bucket sort avoids sorting all distinct values—when k is small, we stop early after scanning only the top buckets. On 22 test cases, PAF measured the brute-force at 0.43 ms and the optimal at 0.98 ms; the optimal's extra overhead (bucket array allocation) makes it slower than the brute on small inputs with few distinct values, but it scales better as n grows.",
+    "why_optimal": "Bucket sort avoids sorting all distinct values\u2014when k is small, we stop early after scanning only the top buckets. On 22 test cases, PAF measured the brute-force at 0.43 ms and the optimal at 0.98 ms; the optimal's extra overhead (bucket array allocation) makes it slower than the brute on small inputs with few distinct values, but it scales better as n grows.",
     "pitfalls": "Tie-breaking must sort values ascending within the same frequency bucket, or the output order won't match the expected result. The brute force uses (-frequency, value) as the sort key; the bucket approach must replicate this within each non-empty bucket. Forgetting to sort within buckets produces non-deterministic ordering."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Partial_sorting",
     "https://en.wikipedia.org/wiki/Bucket_sort"
-  ]
+  ],
+  "sequence": 9,
+  "prevSlug": "sort-colors",
+  "nextSlug": "first-missing-positive"
 }

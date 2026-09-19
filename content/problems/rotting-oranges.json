@@ -1311,5 +1311,8 @@
       "code": "def orangesRotting(grid):\n    g = [row[:] for row in grid]\n    if not g:\n        return 0\n    from collections import deque\n    queue = deque()\n    fresh = 0\n    for r in range(len(g)):\n        for c in range(len(g[r])):\n            if g[r][c] == 2:\n                queue.append((r, c))\n            elif g[r][c] == 1:\n                fresh += 1\n    if fresh == 0:\n        return 0\n    minutes = 0\n    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]\n    while queue and fresh > 0:\n        size = len(queue)\n        rotted = False\n        for _ in range(size):\n            r, c = queue.popleft()\n            for dr, dc in dirs:\n                nr, nc = r + dr, c + dc\n                if 0 <= nr < len(g) and 0 <= nc < len(g[nr]) and g[nr][nc] == 1:\n                    g[nr][nc] = 2\n                    fresh -= 1\n                    queue.append((nr, nc))\n                    rotted = True\n        if rotted:\n            minutes += 1\n    return minutes if fresh == 0 else -1\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "redundant-connection",
+  "nextSlug": "surrounded-regions"
 }

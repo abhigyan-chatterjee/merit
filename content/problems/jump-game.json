@@ -1034,5 +1034,8 @@
       "code": "def canJump(nums: list[int]) -> bool:\n    max_reach = 0\n    for i, jump in enumerate(nums):\n        if i > max_reach:\n            return False\n        if i + jump > max_reach:\n            max_reach = i + jump\n        if max_reach >= len(nums) - 1:\n            return True\n    return True\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "gas-station",
+  "nextSlug": null
 }

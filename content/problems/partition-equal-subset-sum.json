@@ -980,5 +980,8 @@
       "code": "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    if max(nums) > target:\n        return False\n    dp = [False] * (target + 1)\n    dp[0] = True\n    for num in nums:\n        for w in range(target, num - 1, -1):\n            if dp[w - num]:\n                dp[w] = True\n        if dp[target]:\n            return True\n    return dp[target]\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "maximum-product-subarray",
+  "nextSlug": "word-break"
 }

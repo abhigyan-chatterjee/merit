@@ -3304,5 +3304,8 @@
       "code": "def pacificAtlantic(heights):\n    if not heights or not heights[0]:\n        return []\n    R = len(heights)\n    def flow_from(starts):\n        seen = set(starts)\n        stack = list(starts)\n        while stack:\n            r, c = stack.pop()\n            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n                nr, nc = r + dr, c + dc\n                if 0 <= nr < R and 0 <= nc < len(heights[nr]):\n                    if (nr, nc) not in seen and heights[nr][nc] >= heights[r][c]:\n                        seen.add((nr, nc))\n                        stack.append((nr, nc))\n        return seen\n    pac_starts = [(r, 0) for r in range(R)] + [(0, c) for c in range(len(heights[0]))]\n    atl_starts = [(r, len(heights[r]) - 1) for r in range(R)] + [(R - 1, c) for c in range(len(heights[-1]))]\n    pac = flow_from(pac_starts)\n    atl = flow_from(atl_starts)\n    res = [[r, c] for r in range(R) for c in range(len(heights[r])) if (r, c) in pac and (r, c) in atl]\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "all-paths-from-source-to-target",
+  "nextSlug": "redundant-connection"
 }

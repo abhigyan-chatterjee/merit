@@ -941,7 +941,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function twoSumSorted(numbers, target) {\n  const arr = numbers.slice().sort((a, b) => a - b);\n  for (let i = 0; i < arr.length; i++) {\n    for (let j = arr.length - 1; j > i; j--) {\n      if (arr[i] + arr[j] === target) {\n        return [i + 1, j + 1];\n      }\n    }\n  }\n  return [];\n}",
       "isReference": false
@@ -955,7 +955,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def twoSumSorted(numbers, target):\n    arr = sorted(numbers[:])\n    for i in range(len(arr)):\n        for j in range(len(arr) - 1, i, -1):\n            if arr[i] + arr[j] == target:\n                return [i + 1, j + 1]\n    return []\n",
       "isReference": false
@@ -970,11 +970,14 @@
   ],
   "editorial": {
     "approach": "The brute-force approach sorts the array and uses nested loops to find the first pair (outermost indices) summing to the target, yielding O(n^2) time. The optimal approach sorts once and then uses the two-pointer technique: start with the smallest and largest elements; if the sum is too small, move the left pointer up; if too large, move the right pointer down.",
-    "why_optimal": "The two-pointer scan is O(n) after the O(n log n) sort, versus O(n^2) for nested loops. On 22 test cases, PAF measured the brute-force at 1.09 ms and the optimal at 0.27 ms—a 4.0x speedup that grows quadratically with input size.",
+    "why_optimal": "The two-pointer scan is O(n) after the O(n log n) sort, versus O(n^2) for nested loops. On 22 test cases, PAF measured the brute-force at 1.09 ms and the optimal at 0.27 ms\u2014a 4.0x speedup that grows quadratically with input size.",
     "pitfalls": "The two-pointer technique only works because the array is sorted beforehand. The first pair found is always the outermost (smallest left, largest right) because that's where the pointers start. Returning 0-based indices instead of 1-based. Returning a pair when no solution exists instead of an empty array."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Subset_sum_problem",
     "https://en.wikipedia.org/wiki/Quicksort"
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "remove-duplicates-sorted",
+  "nextSlug": "group-anagrams"
 }

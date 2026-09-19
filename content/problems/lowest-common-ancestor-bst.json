@@ -582,5 +582,8 @@
       "code": "def lowestCommonAncestor(root: list, p: int, q: int):\n    i = 0\n    while i < len(root) and root[i] is not None:\n        if p < root[i] and q < root[i]:\n            i = 2 * i + 1\n        elif p > root[i] and q > root[i]:\n            i = 2 * i + 2\n        else:\n            return root[i]\n    return None\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 8,
+  "prevSlug": "flatten-binary-tree-preorder",
+  "nextSlug": "sum-root-to-leaf-numbers"
 }

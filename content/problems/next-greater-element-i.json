@@ -1728,5 +1728,8 @@
       "code": "def nextGreaterElement(nums1: list[int], nums2: list[int]) -> list[int]:\n    next_by_index = [-1] * len(nums2)\n    stack = []\n    for i in range(len(nums2)):\n        while stack and nums2[i] > nums2[stack[-1]]:\n            next_by_index[stack.pop()] = nums2[i]\n        stack.append(i)\n    first_pos = {}\n    for i, num in enumerate(nums2):\n        if num not in first_pos:\n            first_pos[num] = i\n    answers = []\n    for num in nums1:\n        if num in first_pos:\n            answers.append(next_by_index[first_pos[num]])\n        else:\n            answers.append(-1)\n    return answers\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "make-the-string-great",
+  "nextSlug": "remove-all-adjacent-duplicates"
 }

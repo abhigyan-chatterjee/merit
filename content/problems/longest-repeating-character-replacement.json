@@ -281,5 +281,8 @@
       "code": "def characterReplacement(s, k):\n    counts = {}\n    left = 0\n    maxLen = 0\n    for right in range(len(s)):\n        ch = s[right]\n        counts[ch] = counts.get(ch, 0) + 1\n        maxFreq = 0\n        for key in counts:\n            if counts[key] > maxFreq:\n                maxFreq = counts[key]\n        while (right - left + 1) - maxFreq > k:\n            counts[s[left]] -= 1\n            left += 1\n            maxFreq = 0\n            for key in counts:\n                if counts[key] > maxFreq:\n                    maxFreq = counts[key]\n        windowLen = right - left + 1\n        if windowLen > maxLen:\n            maxLen = windowLen\n    return maxLen\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "max-consecutive-ones-iii"
 }

@@ -1012,5 +1012,8 @@
       "code": "def minEatingSpeed(piles: list[int], h: int) -> int:\n    import math\n    low, high = 1, max(piles)\n    ans = high\n    while low <= high:\n        mid = (low + high) // 2\n        hours = sum(math.ceil(p / mid) for p in piles)\n        if hours <= h:\n            ans = mid\n            high = mid - 1\n        else:\n            low = mid + 1\n    return ans\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "find-minimum-in-rotated-sorted-array",
+  "nextSlug": "search-a-2d-matrix"
 }

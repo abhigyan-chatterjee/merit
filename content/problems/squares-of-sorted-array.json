@@ -1559,5 +1559,8 @@
       "code": "def sortedSquares(nums):\n    sorted_nums = sorted(nums)\n    n = len(sorted_nums)\n    result = [0] * n\n    left = 0\n    right = n - 1\n    write_idx = n - 1\n    while left <= right:\n        left_sq = sorted_nums[left] * sorted_nums[left]\n        right_sq = sorted_nums[right] * sorted_nums[right]\n        if left_sq > right_sq:\n            result[write_idx] = left_sq\n            left += 1\n        else:\n            result[write_idx] = right_sq\n            right -= 1\n        write_idx -= 1\n    return result\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "backspace-string-compare",
+  "nextSlug": "valid-palindrome-ii"
 }

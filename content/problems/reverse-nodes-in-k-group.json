@@ -1155,5 +1155,8 @@
       "code": "def reverseKGroup(nums: list[int], k: int) -> list[int]:\n    if k <= 1 or len(nums) <= 1:\n        return list(nums)\n    res = list(nums)\n    n = len(res)\n    for start in range(0, n - k + 1, k):\n        left, right = start, start + k - 1\n        while left < right:\n            res[left], res[right] = res[right], res[left]\n            left += 1\n            right -= 1\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 10,
+  "prevSlug": "merge-k-sorted-lists",
+  "nextSlug": null
 }

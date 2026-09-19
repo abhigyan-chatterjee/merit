@@ -939,5 +939,8 @@
       "code": "def largestRectangleArea(heights: list[int]) -> int:\n    extended = heights + [0]\n    stack = []\n    best = 0\n    for i in range(len(extended)):\n        while stack and extended[i] < extended[stack[-1]]:\n            top = stack.pop()\n            height = extended[top]\n            width = i if not stack else i - stack[-1] - 1\n            area = height * width\n            if area > best:\n                best = area\n        stack.append(i)\n    return best\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 10,
+  "prevSlug": "simplify-path",
+  "nextSlug": null
 }

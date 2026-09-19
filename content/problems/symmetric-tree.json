@@ -751,5 +751,8 @@
       "code": "def isSymmetric(root: list) -> bool:\n    def mirror(l, r):\n        lv = root[l] if l < len(root) else None\n        rv = root[r] if r < len(root) else None\n        if lv is None and rv is None:\n            return True\n        if lv is None or rv is None or lv != rv:\n            return False\n        return mirror(2 * l + 1, 2 * r + 2) and mirror(2 * l + 2, 2 * r + 1)\n    if len(root) == 0 or root[0] is None:\n        return True\n    return mirror(1, 2)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "balanced-binary-tree"
 }

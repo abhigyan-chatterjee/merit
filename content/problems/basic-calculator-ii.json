@@ -427,5 +427,8 @@
       "code": "def calculate(s: str) -> int:\n    import math\n    stack = []\n    current = 0.0\n    building = False\n    op = '+'\n\n    def apply():\n        nonlocal current, building, op\n        if not building:\n            return\n        if op == '+':\n            stack.append(current)\n        elif op == '-':\n            stack.append(-current)\n        elif op == '*':\n            prev = stack.pop() if stack else 0.0\n            stack.append(prev * current)\n        else:\n            prev = stack.pop() if stack else 0.0\n            stack.append(math.trunc(prev / current))\n        current = 0.0\n        building = False\n\n    for ch in s:\n        if '0' <= ch <= '9':\n            current = float(current * 10.0 + (ord(ch) - 48))\n            building = True\n        elif ch in ('+', '-', '*', '/'):\n            apply()\n            op = ch\n    apply()\n\n    total = sum(stack)\n    if abs(total) > 9007199254740991:\n        return float(total)\n    return int(total)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "asteroid-collision",
+  "nextSlug": "daily-temperatures"
 }

@@ -3532,5 +3532,8 @@
       "code": "def allPathsSourceTarget(graph):\n    target = len(graph) - 1\n    res = []\n    path = [0]\n    def dfs(node):\n        if node == target:\n            res.append(list(path))\n            return\n        for nxt in sorted(graph[node] if node < len(graph) else []):\n            if nxt in path:\n                continue\n            path.append(nxt)\n            dfs(nxt)\n            path.pop()\n    dfs(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "keys-and-rooms",
+  "nextSlug": "pacific-atlantic-water-flow"
 }

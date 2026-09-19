@@ -1376,5 +1376,8 @@
       "code": "def levelOrder(root: list) -> list:\n    levels = []\n    if len(root) == 0 or root[0] is None:\n        return levels\n    current = [0]\n    while current:\n        nxt, vals = [], []\n        for i in current:\n            vals.append(root[i])\n            l, r = 2 * i + 1, 2 * i + 2\n            if l < len(root) and root[l] is not None:\n                nxt.append(l)\n            if r < len(root) and root[r] is not None:\n                nxt.append(r)\n        levels.append(vals)\n        current = nxt\n    return levels\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "balanced-binary-tree",
+  "nextSlug": "binary-tree-right-side-view"
 }

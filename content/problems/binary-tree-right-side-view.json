@@ -879,5 +879,8 @@
       "code": "def rightSideView(root: list) -> list:\n    view = []\n    def dfs(i, d):\n        if i >= len(root) or root[i] is None:\n            return\n        if d == len(view):\n            view.append(root[i])\n        dfs(2 * i + 2, d + 1)\n        dfs(2 * i + 1, d + 1)\n    dfs(0, 0)\n    return view\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "binary-tree-level-order-traversal",
+  "nextSlug": "construct-from-preorder-inorder"
 }

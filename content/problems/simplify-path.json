@@ -419,5 +419,8 @@
       "code": "def simplifyPath(path: str) -> str:\n    stack = []\n    parts = path.split('/')\n    for part in parts:\n        if part == '' or part == '.':\n            continue\n        elif part == '..':\n            if stack:\n                stack.pop()\n        else:\n            stack.append(part)\n    return '/' + '/'.join(stack)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 9,
+  "prevSlug": "evaluate-reverse-polish-notation",
+  "nextSlug": "largest-rectangle-in-histogram"
 }

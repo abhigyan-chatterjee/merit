@@ -1065,5 +1065,8 @@
       "code": "def rotateRight(nums: list[int], k: int) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    eff_k = k % n\n    if eff_k == 0:\n        return list(nums)\n    split_idx = n - eff_k\n    return nums[split_idx:] + nums[:split_idx]\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 7,
+  "prevSlug": "reverse-linked-list-ii",
+  "nextSlug": "swap-nodes-in-pairs"
 }

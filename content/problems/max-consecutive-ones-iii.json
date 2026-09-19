@@ -927,5 +927,8 @@
       "code": "def longestOnes(nums, k):\n    left = 0\n    zeroCount = 0\n    best = 0\n    for right in range(len(nums)):\n        if nums[right] == 0:\n            zeroCount += 1\n        while zeroCount > k:\n            if nums[left] == 0:\n                zeroCount -= 1\n            left += 1\n        currentLength = right - left + 1\n        if currentLength > best:\n            best = currentLength\n    return best\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 2,
+  "prevSlug": "longest-repeating-character-replacement",
+  "nextSlug": "permutation-in-string"
 }

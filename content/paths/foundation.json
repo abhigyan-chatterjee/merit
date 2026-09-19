@@ -58,13 +58,33 @@
     {
       "ordinal": 6,
       "step_type": "problem",
+      "ref_id": "binary-search",
+      "title": "Binary Search",
+      "summary": "Classic halving invariant on a sorted array: test midpoint, discard half in O(log n).",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Binary_search"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "step_type": "problem",
       "ref_id": "valid-palindrome",
       "title": "Valid Palindrome",
       "summary": "Converging two pointers: compare the ends and walk inward.",
       "reading_links": []
     },
     {
-      "ordinal": 7,
+      "ordinal": 8,
+      "step_type": "problem",
+      "ref_id": "move-zeroes",
+      "title": "Move Zeroes",
+      "summary": "Two pointers in-place: slow write pointer tracks zeros while fast pointer scans.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/In-place_algorithm"
+      ]
+    },
+    {
+      "ordinal": 9,
       "step_type": "problem",
       "ref_id": "longest-substring-without-repeating",
       "title": "Longest Substring Without Repeating Characters",
@@ -72,7 +92,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 8,
+      "ordinal": 10,
       "step_type": "visualizer",
       "ref_id": "linked-list",
       "title": "Singly linked list",
@@ -82,7 +102,7 @@
       ]
     },
     {
-      "ordinal": 9,
+      "ordinal": 11,
       "step_type": "problem",
       "ref_id": "reverse-linked-list",
       "title": "Reverse Linked List",
@@ -90,7 +110,17 @@
       "reading_links": []
     },
     {
-      "ordinal": 10,
+      "ordinal": 12,
+      "step_type": "problem",
+      "ref_id": "linked-list-cycle",
+      "title": "Linked List Cycle",
+      "summary": "Fast-slow pointer chase: detect cycles in O(n) time and O(1) space.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Cycle_detection"
+      ]
+    },
+    {
+      "ordinal": 13,
       "step_type": "visualizer",
       "ref_id": "stack",
       "title": "LIFO stack",
@@ -100,7 +130,7 @@
       ]
     },
     {
-      "ordinal": 11,
+      "ordinal": 14,
       "step_type": "problem",
       "ref_id": "valid-parentheses",
       "title": "Valid Parentheses",
@@ -108,7 +138,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 12,
+      "ordinal": 15,
       "step_type": "visualizer",
       "ref_id": "hashmap",
       "title": "Hash map buckets",
@@ -118,7 +148,7 @@
       ]
     },
     {
-      "ordinal": 13,
+      "ordinal": 16,
       "step_type": "problem",
       "ref_id": "valid-anagram",
       "title": "Valid Anagram",
@@ -126,7 +156,7 @@
       "reading_links": []
     },
     {
-      "ordinal": 14,
+      "ordinal": 17,
       "step_type": "visualizer",
       "ref_id": "binary-tree",
       "title": "Tree traversals",
@@ -136,7 +166,7 @@
       ]
     },
     {
-      "ordinal": 15,
+      "ordinal": 18,
       "step_type": "problem",
       "ref_id": "maximum-depth-of-binary-tree",
       "title": "Maximum Depth of Binary Tree",
@@ -144,7 +174,17 @@
       "reading_links": []
     },
     {
-      "ordinal": 16,
+      "ordinal": 19,
+      "step_type": "problem",
+      "ref_id": "same-tree",
+      "title": "Same Tree",
+      "summary": "Simultaneous recursive walk: structural and value equality across two trees.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Tree_traversal"
+      ]
+    },
+    {
+      "ordinal": 20,
       "step_type": "quiz",
       "ref_id": "arrays-hashing",
       "title": "Foundation check",

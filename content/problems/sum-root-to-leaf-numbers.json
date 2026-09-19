@@ -725,5 +725,8 @@
       "code": "def sumNumbers(root: list) -> int:\n    total = 0\n    def dfs(i, cur):\n        nonlocal total\n        if i >= len(root) or root[i] is None:\n            return\n        nxt = cur * 10 + root[i]\n        l, r = 2 * i + 1, 2 * i + 2\n        has_l = l < len(root) and root[l] is not None\n        has_r = r < len(root) and root[r] is not None\n        if not has_l and not has_r:\n            total += nxt\n            return\n        dfs(l, nxt)\n        dfs(r, nxt)\n    dfs(0, 0)\n    return total\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 9,
+  "prevSlug": "lowest-common-ancestor-bst",
+  "nextSlug": "binary-tree-maximum-path-sum"
 }

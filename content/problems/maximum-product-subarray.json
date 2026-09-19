@@ -992,5 +992,8 @@
       "code": "def maxProduct(nums: list[int]) -> int:\n    global_max = nums[0]\n    cur_max = nums[0]\n    cur_min = nums[0]\n    for i in range(1, len(nums)):\n        x = nums[i]\n        if x < 0:\n            cur_max, cur_min = cur_min, cur_max\n        cur_max = max(x, cur_max * x)\n        cur_min = min(x, cur_min * x)\n        if cur_max > global_max:\n            global_max = cur_max\n    return global_max\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "longest-palindromic-substring",
+  "nextSlug": "partition-equal-subset-sum"
 }

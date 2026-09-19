@@ -1035,5 +1035,8 @@
       "code": "def buildTree(preorder: list, inorder: list) -> list:\n    pos = {v: k for k, v in enumerate(inorder)}\n    cursor = 0\n    def build(in_l, in_r):\n        nonlocal cursor\n        if in_l > in_r:\n            return None\n        value = preorder[cursor]\n        cursor += 1\n        k = pos[value]\n        return (value, build(in_l, k - 1), build(k + 1, in_r))\n    def emit(tree):\n        if tree is None:\n            return []\n        out, queue = [], [(tree, 0)]\n        while queue:\n            node, i = queue.pop(0)\n            while len(out) <= i:\n                out.append(None)\n            out[i] = node[0]\n            if node[1] is not None:\n                queue.append((node[1], 2 * i + 1))\n            if node[2] is not None:\n                queue.append((node[2], 2 * i + 2))\n        while out and out[-1] is None:\n            out.pop()\n        return out\n    return emit(build(0, len(inorder) - 1))\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "binary-tree-right-side-view",
+  "nextSlug": "count-good-nodes"
 }

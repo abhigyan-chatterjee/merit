@@ -2572,5 +2572,8 @@
       "code": "def solve(board):\n    if not board:\n        return []\n    g = [row[:] for row in board]\n    stack = []\n    for r in range(len(g)):\n        for c in range(len(g[r])):\n            on_border = r == 0 or c == 0 or r == len(g) - 1 or c == len(g[r]) - 1\n            if on_border and g[r][c] == 'O':\n                g[r][c] = 'S'\n                stack.append((r, c))\n    dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]\n    while stack:\n        r, c = stack.pop()\n        for dr, dc in dirs:\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < len(g) and 0 <= nc < len(g[nr]) and g[nr][nc] == 'O':\n                g[nr][nc] = 'S'\n                stack.append((nr, nc))\n    for r in range(len(g)):\n        for c in range(len(g[r])):\n            g[r][c] = 'O' if g[r][c] == 'S' else 'X'\n    return g\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "rotting-oranges",
+  "nextSlug": "word-ladder"
 }

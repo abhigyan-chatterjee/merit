@@ -748,5 +748,8 @@
       "code": "def maxPathSum(root: list) -> int:\n    best = float('-inf')\n    def gain(i):\n        nonlocal best\n        if i >= len(root) or root[i] is None:\n            return 0\n        l = max(0, gain(2 * i + 1))\n        r = max(0, gain(2 * i + 2))\n        best = max(best, root[i] + l + r)\n        return root[i] + max(l, r)\n    gain(0)\n    return best\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 10,
+  "prevSlug": "sum-root-to-leaf-numbers",
+  "nextSlug": null
 }

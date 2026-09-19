@@ -251,5 +251,8 @@
       "code": "def removeDuplicatesString(s: str) -> str:\n    stack = []\n    for ch in s:\n        if stack and stack[-1] == ch:\n            stack.pop()\n        else:\n            stack.append(ch)\n    return \"\".join(stack)\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "next-greater-element-i",
+  "nextSlug": "asteroid-collision"
 }

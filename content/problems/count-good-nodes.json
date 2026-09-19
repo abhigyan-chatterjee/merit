@@ -741,5 +741,8 @@
       "code": "def goodNodes(root: list) -> int:\n    count = 0\n    def dfs(i, best):\n        nonlocal count\n        if i >= len(root) or root[i] is None:\n            return\n        if root[i] >= best:\n            count += 1\n        nxt = max(best, root[i])\n        dfs(2 * i + 1, nxt)\n        dfs(2 * i + 2, nxt)\n    dfs(0, float('-inf'))\n    return count\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 6,
+  "prevSlug": "construct-from-preorder-inorder",
+  "nextSlug": "flatten-binary-tree-preorder"
 }

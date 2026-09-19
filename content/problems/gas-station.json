@@ -1740,5 +1740,8 @@
       "code": "def canCompleteCircuit(gas: list[int], cost: list[int]) -> int:\n    total_surplus = 0\n    current_tank = 0\n    start_station = 0\n    for i in range(len(gas)):\n        net = gas[i] - cost[i]\n        total_surplus += net\n        current_tank += net\n        if current_tank < 0:\n            start_station = i + 1\n            current_tank = 0\n    return start_station if total_surplus >= 0 else -1\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "jump-game"
 }

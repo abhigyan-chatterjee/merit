@@ -1337,5 +1337,8 @@
       "code": "def asteroidCollision(asteroids: list[int]) -> list[int]:\n    stack = []\n    for rock in asteroids:\n        alive = True\n        while alive and rock < 0 and stack and stack[-1] > 0:\n            top = stack[-1]\n            if top < -rock:\n                stack.pop()\n            elif top == -rock:\n                stack.pop()\n                alive = False\n            else:\n                alive = False\n        if alive:\n            stack.append(rock)\n    return stack\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 5,
+  "prevSlug": "remove-all-adjacent-duplicates",
+  "nextSlug": "basic-calculator-ii"
 }

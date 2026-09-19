@@ -900,7 +900,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "javascript",
       "code": "function missingNumber(nums) {\n  for (let target = 0; target <= nums.length; target++) {\n    let found = false;\n    for (let i = 0; i < nums.length; i++) {\n      if (nums[i] === target) {\n        found = true;\n        break;\n      }\n    }\n    if (!found) return target;\n  }\n  return nums.length;\n}",
       "isReference": false
@@ -914,7 +914,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "python",
       "code": "def missingNumber(nums):\n    n = len(nums)\n    for target in range(n + 1):\n        found = False\n        for i in range(n):\n            if nums[i] == target:\n                found = True\n                break\n        if not found:\n            return target\n    return n\n",
       "isReference": false
@@ -929,11 +929,14 @@
   ],
   "editorial": {
     "approach": "The brute-force approach checks each target from 0 to n by scanning the array for its presence, yielding O(n^2) time. The optimal approach uses cyclic sort: place each value v at index v (when 0 <= v < n) by swapping, then scan left-to-right for the first position i where arr[i] != i.",
-    "why_optimal": "Each value is swapped into its correct position at most once, so the total number of swaps is bounded by n. The placement phase plus the final scan is O(n) with O(1) extra space. On 22 test cases, PAF measured the brute-force at 0.09 ms and the optimal at 0.14 ms—both fast on small inputs, but the quadratic brute degrades significantly as n grows.",
+    "why_optimal": "Each value is swapped into its correct position at most once, so the total number of swaps is bounded by n. The placement phase plus the final scan is O(n) with O(1) extra space. On 22 test cases, PAF measured the brute-force at 0.09 ms and the optimal at 0.14 ms\u2014both fast on small inputs, but the quadratic brute degrades significantly as n grows.",
     "pitfalls": "Values equal to n are outside the placement range [0, n-1] and must be skipped. The while-loop guard must check arr[arr[i]] != arr[i] to avoid infinite swaps on duplicates. Not copying the input array mutates the original, which can cause issues for the caller."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Sum_of_natural_numbers",
     "https://en.wikipedia.org/wiki/In-place_algorithm"
-  ]
+  ],
+  "sequence": 3,
+  "prevSlug": "majority-element",
+  "nextSlug": "move-zeroes"
 }

@@ -3551,5 +3551,8 @@
       "code": "def findRedundantConnection(edges):\n    max_node = 0\n    for e in edges:\n        u, v = e[0], e[1]\n        max_node = max(max_node, u, v)\n    parent = list(range(max_node + 1))\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    for e in edges:\n        u, v = e[0], e[1]\n        ru, rv = find(u), find(v)\n        if ru == rv:\n            return [u, v]\n        parent[ru] = rv\n    return []\n",
       "isReference": true
     }
-  ]
+  ],
+  "sequence": 4,
+  "prevSlug": "pacific-atlantic-water-flow",
+  "nextSlug": "rotting-oranges"
 }
