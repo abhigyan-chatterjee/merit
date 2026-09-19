@@ -11,6 +11,8 @@ import {
   FileText,
   Bookmark,
   CheckCircle2,
+  GraduationCap,
+  ExternalLink,
 } from 'lucide-react';
 import { useProgress, ProblemStatus } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
@@ -22,6 +24,7 @@ export const ProblemDetailPage: React.FC = () => {
 
   const problem = PROBLEMS.find((p) => p.slug === slug && p.topic === topic);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [editorialOpen, setEditorialOpen] = useState(false);
   const [activeSolutionTab, setActiveSolutionTab] = useState<number | null>(null);
   const [noteText, setNoteText] = useState(problem ? state.notes[problem.slug] || '' : '');
 
@@ -247,6 +250,64 @@ export const ProblemDetailPage: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Editorial Accordion (approach → why optimal → pitfalls) */}
+          {problem.editorial && (
+            <div className="rounded-xl border border-line bg-surface overflow-hidden">
+              <button
+                onClick={() => setEditorialOpen((o) => !o)}
+                className="w-full flex items-center justify-between p-4 text-xs font-mono font-semibold text-mint hover:bg-canvas/40 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  <h3 className="text-xs font-mono font-semibold">Editorial</h3>
+                </span>
+                {editorialOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+
+              {editorialOpen && (
+                <div className="p-4 pt-0 space-y-3 border-t border-line text-xs">
+                  <p className="text-ink leading-relaxed">{problem.editorial.approach}</p>
+                  <div className="p-2.5 rounded bg-mint/10 border border-mint/30 text-ink font-mono">
+                    <span className="text-mint font-bold mr-2">Why optimal:</span>
+                    {problem.editorial.why_optimal}
+                  </div>
+                  <div>
+                    <div className="text-muted font-semibold mb-1">Pitfalls:</div>
+                    <ul className="list-disc list-inside text-ink font-mono space-y-1">
+                      <li>{problem.editorial.pitfalls}</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Further reading (max 3 outbound links) */}
+          {problem.readingLinks && problem.readingLinks.length > 0 && (
+            <div className="p-4 rounded-xl border border-line bg-surface space-y-2">
+              <div>
+                <h3 className="text-xs font-mono font-semibold text-ink flex items-center gap-1.5">
+                  <ExternalLink className="w-4 h-4 text-mint" />
+                  Further reading
+                </h3>
+              </div>
+              <ul className="space-y-1.5">
+                {problem.readingLinks.slice(0, 3).map((url) => (
+                  <li key={url}>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-mono text-mint hover:underline break-all"
+                    >
+                      {url}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Personal Notes Box */}
           <div className="p-4 rounded-xl border border-line bg-surface space-y-2">

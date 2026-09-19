@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AppRoutes } from '../src/routes';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -69,11 +69,29 @@ describe('Route Validation & 404 Handling (D5)', () => {
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();
   });
 
-  it('renders NotFound for unknown quiz topic', async () => {
+  it('serves a live quiz instead of 404 for exam topics like aptitude (spaced-recall links)', async () => {
+    renderWithRouter('/quiz/aptitude');
+    await waitFor(
+      () => {
+        expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
+    // Guest with no static bank for aptitude: honest empty-state, never a 404.
+    expect(await screen.findByText('No Questions Available', {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Aptitude/i })).toBeInTheDocument();
+  }, 20000);
+
+  it('serves a live quiz instead of 404 for unknown quiz topic', async () => {
     renderWithRouter('/quiz/unknown-quantum-computing-topic');
-    expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
-    expect(screen.getByText(/Quiz Not Found/i)).toBeInTheDocument();
-  });
+    await waitFor(
+      () => {
+        expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
+    expect(await screen.findByText('No Questions Available', {}, { timeout: 10000 })).toBeInTheDocument();
+  }, 20000);
 
   it('renders NotFound for unknown guided path id', async () => {
     renderWithRouter('/learn/unknown-alien-path');
@@ -92,5 +110,30 @@ describe('Route Validation & 404 Handling (D5)', () => {
       expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
     });
     expect(screen.getAllByText('Two Sum').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders editorial + further reading on a PAF problem page', async () => {
+    // two-sum is legacy (no editorial); assert on a PAF problem instead.
+    renderWithRouter('/problems/stack/asteroid-collision');
+    await waitFor(() => {
+      expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Colliding Asteroids')).toBeInTheDocument();
+    // Editorial accordion header is always visible for PAF problems; body is collapsed.
+    expect(screen.getByRole('heading', { name: /Editorial/i })).toBeInTheDocument();
+    expect(screen.queryByText(/left-moving rock duel/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Editorial/i }));
+    expect(await screen.findByText(/left-moving rock duel/i)).toBeInTheDocument();
+    expect(screen.getByText(/pushed and popped at most once/i)).toBeInTheDocument();
+    // Further reading: at least one outbound link, max 3, safe attributes.
+    const readingHeading = screen.getByRole('heading', { name: /Further reading/i });
+    const section = readingHeading.closest('div')!.parentElement!;
+    const links = Array.from(section.querySelectorAll('a'));
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    expect(links.length).toBeLessThanOrEqual(3);
+    for (const link of links) {
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link.getAttribute('rel')).toMatch(/noreferrer/);
+    }
   });
 });

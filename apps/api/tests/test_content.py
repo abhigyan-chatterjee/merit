@@ -89,6 +89,20 @@ def test_problem_sequence_links():
     assert nxt.json().get("prev_slug") == "two-sum"
 
 
+def test_problem_includes_editorial_and_links():
+    client = TestClient(app)
+    resp = client.get("/api/v1/problems/asteroid-collision")
+    assert resp.status_code == 200
+    problem = resp.json()
+    assert problem["slug"] == "asteroid-collision"
+    editorial = problem.get("editorial")
+    assert editorial is not None
+    assert set(editorial.keys()) == {"approach", "why_optimal", "pitfalls"}
+    assert all(editorial[k] for k in ("approach", "why_optimal", "pitfalls"))
+    reading_links = problem.get("reading_links")
+    assert isinstance(reading_links, list) and len(reading_links) >= 1
+
+
 def test_get_problem_not_found():
     client = TestClient(app)
     resp = client.get("/api/v1/problems/non-existent-problem-xyz")
