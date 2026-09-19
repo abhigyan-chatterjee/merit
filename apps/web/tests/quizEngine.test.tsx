@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { QuizEngine } from '../src/components/QuizEngine';
+import { QUIZ_TOPICS, QUIZZES } from '../src/data/quizzes';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { AuthProvider } from '../src/store/AuthContext';
 import * as apiModule from '../src/utils/api';
@@ -26,6 +27,24 @@ describe('QuizEngine Component', () => {
   beforeEach(() => {
     window.localStorage.clear();
     vi.restoreAllMocks();
+  });
+
+  it.each(QUIZ_TOPICS)('renders 10 guest questions for $id', async ({ id, title }) => {
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle={title}
+            topicId={id}
+            questions={QUIZZES[id]}
+            perQuestionSec={null}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    expect(QUIZZES[id]).toHaveLength(10);
   });
 
   it('renders guest quiz with local questions correctly', async () => {
