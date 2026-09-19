@@ -1,0 +1,1069 @@
+{
+  "slug": "rotate-list",
+  "title": "Rotate List",
+  "topic": "linked-lists",
+  "difficulty": "Medium",
+  "pattern": "linked-list / Rotation",
+  "statement": "# Rotate List\n\nYou are given an integer array `nums` representing the sequence of values in a singly linked list, and a non-negative integer `k`.\n\nRotate the list to the right by `k` places. In each rotation step, the last element moves to the very front of the list, shifting all other elements one position to the right.\n\nReturn the list of values after applying the `k` rotations.\n\nConstraints: `0 <= nums.length <= 100`, `0 <= k <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+  "examples": [
+    {
+      "input": "nums = [1, 2, 3, 4, 5], k = 2",
+      "output": "[4, 5, 1, 2, 3]",
+      "explanation": "Rotating right by 2 shifts 5 and 4 to the front, followed by the remaining elements 1, 2, and 3."
+    },
+    {
+      "input": "nums = [0, 1, 2], k = 4",
+      "output": "[2, 0, 1]",
+      "explanation": "Here k = 4 exceeds length 3. The effective rotation is 4 % 3 = 1 step to the right, moving 2 to the front."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function rotateRight(nums: number[], k: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "When k is greater than or equal to the length of the list, rotating length times returns the list to its starting configuration.",
+    "Compute the effective shift as k % nums.length to avoid unnecessary full rotations.",
+    "The last effective_k elements become the prefix, and the preceding elements become the suffix."
+  ],
+  "editorial": {
+    "approach": "Compute effective rotations using modulo arithmetic k % n. Split the array at n - (k % n) and concatenate the two segments.",
+    "why_optimal": "Direct slice and concatenation runs in O(n) time, whereas repeatedly rotating one step at a time costs O(n \u00b7 (k mod n)). Measured PAF benchmark runtimes: Optimal 0.08ms vs Brute Force 0.27ms across 26 test cases.",
+    "pitfalls": "Handle division by zero when the input list is empty (nums.length === 0), and handle k % n === 0 where no movement is required."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Circular_buffer",
+    "https://visualgo.net/en/list"
+  ],
+  "starterCode": {
+    "javascript": "function rotateRight(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def rotateRight(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "rotateRight",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 26,
+    "bruteForceRuntimeMs": 0.27311699999998496,
+    "optimalRuntimeMs": 0.07964300000001856
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        2
+      ],
+      "expected": [
+        4,
+        5,
+        1,
+        2,
+        3
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          0,
+          1,
+          2
+        ],
+        4
+      ],
+      "expected": [
+        2,
+        0,
+        1
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [],
+        5
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [],
+        0
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          1
+        ],
+        0
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          1
+        ],
+        99
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          1,
+          2
+        ],
+        1
+      ],
+      "expected": [
+        2,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          1,
+          2
+        ],
+        2
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          1,
+          2
+        ],
+        3
+      ],
+      "expected": [
+        2,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        0
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        4
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        8
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          -94,
+          89,
+          -30,
+          -38
+        ],
+        14
+      ],
+      "expected": [
+        -30,
+        -38,
+        -94,
+        89
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          88,
+          -74,
+          73,
+          89,
+          39
+        ],
+        5
+      ],
+      "expected": [
+        88,
+        -74,
+        73,
+        89,
+        39
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41,
+          29,
+          54,
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50
+        ],
+        17
+      ],
+      "expected": [
+        -93,
+        -77,
+        -45,
+        -41,
+        29,
+        54,
+        -94,
+        43,
+        -50,
+        83,
+        66,
+        79,
+        39,
+        7,
+        -44,
+        14,
+        50,
+        8,
+        -92
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          94
+        ],
+        10
+      ],
+      "expected": [
+        94
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76,
+          -9,
+          -12,
+          54,
+          -33
+        ],
+        2
+      ],
+      "expected": [
+        54,
+        -33,
+        -13,
+        -29,
+        -61,
+        -45,
+        95,
+        -14,
+        -74,
+        -77,
+        -3,
+        -76,
+        -9,
+        -12
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          37,
+          -69,
+          -4,
+          -80,
+          41,
+          -25,
+          60,
+          58,
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69
+        ],
+        14
+      ],
+      "expected": [
+        -69,
+        -4,
+        -80,
+        41,
+        -25,
+        60,
+        58,
+        -8,
+        47,
+        -51,
+        80,
+        -83,
+        -89,
+        69,
+        37
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          -80,
+          -41,
+          -75,
+          -3,
+          -29,
+          16,
+          62,
+          -7,
+          -59,
+          -6
+        ],
+        22
+      ],
+      "expected": [
+        -59,
+        -6,
+        -80,
+        -41,
+        -75,
+        -3,
+        -29,
+        16,
+        62,
+        -7
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          71,
+          -32,
+          79,
+          74,
+          65,
+          -82,
+          55
+        ],
+        40
+      ],
+      "expected": [
+        79,
+        74,
+        65,
+        -82,
+        55,
+        71,
+        -32
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          36,
+          86,
+          -38,
+          -59,
+          18,
+          -3
+        ],
+        17
+      ],
+      "expected": [
+        86,
+        -38,
+        -59,
+        18,
+        -3,
+        36
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83,
+          -20,
+          -46,
+          67
+        ],
+        31
+      ],
+      "expected": [
+        -86,
+        -42,
+        -92,
+        -20,
+        2,
+        -32,
+        -84,
+        -46,
+        45,
+        83,
+        -20,
+        -46,
+        67,
+        -44,
+        75,
+        -17,
+        96,
+        98
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          811,
+          872,
+          316,
+          -61,
+          -708,
+          -458,
+          -715,
+          -495,
+          525,
+          149,
+          103,
+          -462,
+          529,
+          197,
+          -123,
+          838,
+          195,
+          -183,
+          -259,
+          -551,
+          -717,
+          43,
+          10,
+          -814,
+          547,
+          -904,
+          763,
+          -776,
+          -687,
+          285,
+          -673,
+          622,
+          393,
+          -136,
+          221,
+          -870,
+          -212,
+          -219,
+          220,
+          -42,
+          83,
+          -486,
+          988,
+          133,
+          762,
+          930,
+          -977,
+          393,
+          476,
+          -766,
+          396,
+          812,
+          99,
+          537,
+          -454
+        ],
+        787
+      ],
+      "expected": [
+        220,
+        -42,
+        83,
+        -486,
+        988,
+        133,
+        762,
+        930,
+        -977,
+        393,
+        476,
+        -766,
+        396,
+        812,
+        99,
+        537,
+        -454,
+        811,
+        872,
+        316,
+        -61,
+        -708,
+        -458,
+        -715,
+        -495,
+        525,
+        149,
+        103,
+        -462,
+        529,
+        197,
+        -123,
+        838,
+        195,
+        -183,
+        -259,
+        -551,
+        -717,
+        43,
+        10,
+        -814,
+        547,
+        -904,
+        763,
+        -776,
+        -687,
+        285,
+        -673,
+        622,
+        393,
+        -136,
+        221,
+        -870,
+        -212,
+        -219
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          -304,
+          -772,
+          -399,
+          -110,
+          -677,
+          -71,
+          -994,
+          953,
+          478,
+          793,
+          473,
+          -461,
+          990,
+          25,
+          560,
+          -635,
+          39,
+          869,
+          -783,
+          782,
+          280,
+          -389,
+          723,
+          308,
+          39,
+          247,
+          -593,
+          -687,
+          -235,
+          561,
+          -670,
+          104,
+          952,
+          594,
+          889,
+          86,
+          881,
+          -999,
+          226,
+          -337,
+          0,
+          -961,
+          -771,
+          902,
+          -257,
+          799,
+          703,
+          652,
+          -371,
+          -510,
+          -882,
+          -507,
+          798,
+          161,
+          939,
+          -839,
+          -825,
+          498,
+          -5,
+          671,
+          -859,
+          557,
+          90,
+          568,
+          -743,
+          -738,
+          351,
+          -27,
+          939,
+          125,
+          -662
+        ],
+        271
+      ],
+      "expected": [
+        25,
+        560,
+        -635,
+        39,
+        869,
+        -783,
+        782,
+        280,
+        -389,
+        723,
+        308,
+        39,
+        247,
+        -593,
+        -687,
+        -235,
+        561,
+        -670,
+        104,
+        952,
+        594,
+        889,
+        86,
+        881,
+        -999,
+        226,
+        -337,
+        0,
+        -961,
+        -771,
+        902,
+        -257,
+        799,
+        703,
+        652,
+        -371,
+        -510,
+        -882,
+        -507,
+        798,
+        161,
+        939,
+        -839,
+        -825,
+        498,
+        -5,
+        671,
+        -859,
+        557,
+        90,
+        568,
+        -743,
+        -738,
+        351,
+        -27,
+        939,
+        125,
+        -662,
+        -304,
+        -772,
+        -399,
+        -110,
+        -677,
+        -71,
+        -994,
+        953,
+        478,
+        793,
+        473,
+        -461,
+        990
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          786,
+          242,
+          -134,
+          975,
+          -567,
+          902,
+          104,
+          546,
+          494,
+          412,
+          -589,
+          460,
+          -362,
+          -183,
+          375,
+          330,
+          -236,
+          -103,
+          842,
+          59,
+          -76,
+          -753,
+          -493,
+          -540,
+          -869,
+          -308,
+          -957,
+          204,
+          134,
+          -529,
+          205,
+          -549,
+          -986,
+          -855,
+          449,
+          292,
+          -880,
+          -532,
+          -862,
+          854,
+          -936,
+          760,
+          -324,
+          -855,
+          52,
+          -513,
+          -430,
+          370,
+          -6,
+          -562,
+          104,
+          -730,
+          481,
+          915,
+          807,
+          169,
+          180,
+          -32,
+          -503,
+          606,
+          -32,
+          653,
+          -167
+        ],
+        194
+      ],
+      "expected": [
+        -503,
+        606,
+        -32,
+        653,
+        -167,
+        786,
+        242,
+        -134,
+        975,
+        -567,
+        902,
+        104,
+        546,
+        494,
+        412,
+        -589,
+        460,
+        -362,
+        -183,
+        375,
+        330,
+        -236,
+        -103,
+        842,
+        59,
+        -76,
+        -753,
+        -493,
+        -540,
+        -869,
+        -308,
+        -957,
+        204,
+        134,
+        -529,
+        205,
+        -549,
+        -986,
+        -855,
+        449,
+        292,
+        -880,
+        -532,
+        -862,
+        854,
+        -936,
+        760,
+        -324,
+        -855,
+        52,
+        -513,
+        -430,
+        370,
+        -6,
+        -562,
+        104,
+        -730,
+        481,
+        915,
+        807,
+        169,
+        180,
+        -32
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          -802,
+          349,
+          -118,
+          -275,
+          -133,
+          -159,
+          -44,
+          769,
+          493,
+          -890,
+          379,
+          338,
+          323,
+          -799,
+          -876,
+          -176,
+          491,
+          -306,
+          639,
+          764,
+          -777,
+          -491,
+          -608,
+          -611,
+          98,
+          -82,
+          -713,
+          -136,
+          -625,
+          -430,
+          -53,
+          -489,
+          790,
+          890,
+          -846,
+          -93
+        ],
+        827
+      ],
+      "expected": [
+        349,
+        -118,
+        -275,
+        -133,
+        -159,
+        -44,
+        769,
+        493,
+        -890,
+        379,
+        338,
+        323,
+        -799,
+        -876,
+        -176,
+        491,
+        -306,
+        639,
+        764,
+        -777,
+        -491,
+        -608,
+        -611,
+        98,
+        -82,
+        -713,
+        -136,
+        -625,
+        -430,
+        -53,
+        -489,
+        790,
+        890,
+        -846,
+        -93,
+        -802
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n \u00b7 (k mod n)) | Space: O(n)",
+      "language": "javascript",
+      "code": "function rotateRight(nums, k) {\n  if (nums.length <= 1 || k === 0) return nums.slice();\n  const arr = nums.slice();\n  const effectiveK = k % arr.length;\n  for (let step = 0; step < effectiveK; step++) {\n    const last = arr.pop();\n    arr.unshift(last);\n  }\n  return arr;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function rotateRight(nums, k) {\n  const n = nums.length;\n  if (n <= 1) return nums.slice();\n  const effectiveK = k % n;\n  if (effectiveK === 0) return nums.slice();\n  const splitIdx = n - effectiveK;\n  return nums.slice(splitIdx).concat(nums.slice(0, splitIdx));\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n \u00b7 (k mod n)) | Space: O(n)",
+      "language": "python",
+      "code": "def rotateRight(nums: list[int], k: int) -> list[int]:\n    if len(nums) <= 1 or k == 0:\n        return list(nums)\n    arr = list(nums)\n    eff_k = k % len(arr)\n    for _ in range(eff_k):\n        last = arr.pop()\n        arr.insert(0, last)\n    return arr\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def rotateRight(nums: list[int], k: int) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    eff_k = k % n\n    if eff_k == 0:\n        return list(nums)\n    split_idx = n - eff_k\n    return nums[split_idx:] + nums[:split_idx]\n",
+      "isReference": true
+    }
+  ]
+}

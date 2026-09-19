@@ -1,0 +1,1087 @@
+{
+  "slug": "partition-list",
+  "title": "Partition List",
+  "topic": "linked-lists",
+  "difficulty": "Medium",
+  "pattern": "linked-list / Stable partition",
+  "statement": "# Partition List\n\nYou are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+  "examples": [
+    {
+      "input": "nums = [1, 4, 3, 2, 5, 2], x = 3",
+      "output": "[1, 2, 2, 4, 3, 5]",
+      "explanation": "Elements strictly less than 3 are [1, 2, 2]. Elements greater than or equal to 3 are [4, 3, 5]. Combining them while preserving relative order gives [1, 2, 2, 4, 3, 5]."
+    },
+    {
+      "input": "nums = [2, 1], x = 2",
+      "output": "[1, 2]",
+      "explanation": "1 is less than 2 and placed first; 2 is greater than or equal to 2 and placed second."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function partitionList(nums: number[], x: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Maintain two separate collections: one for values strictly less than x, and another for values greater than or equal to x.",
+    "Traverse the original sequence sequentially so relative order is automatically preserved.",
+    "Combine the two collections with the 'less than' group first."
+  ],
+  "editorial": {
+    "approach": "Filter or split elements into two partitions based on val < x: one partition for smaller values, one for values greater than or equal to x. Then concatenate them.",
+    "why_optimal": "Single linear scan O(n) time and O(n) space guarantees stable relative ordering. Measured PAF benchmark runtimes: Optimal 0.14ms vs Brute Force 0.16ms across 26 test cases.",
+    "pitfalls": "Strictly less than (< x) versus less than or equal (<= x): nodes equal to x must go into the second partition."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Partition_problem",
+    "https://visualgo.net/en/list"
+  ],
+  "starterCode": {
+    "javascript": "function partitionList(nums, x) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def partitionList(nums, x):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "partitionList",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 26,
+    "bruteForceRuntimeMs": 0.15603399999999468,
+    "optimalRuntimeMs": 0.1403139999999965
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          1,
+          4,
+          3,
+          2,
+          5,
+          2
+        ],
+        3
+      ],
+      "expected": [
+        1,
+        2,
+        2,
+        4,
+        3,
+        5
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          2,
+          1
+        ],
+        2
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [],
+        0
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          1
+        ],
+        2
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          2
+        ],
+        1
+      ],
+      "expected": [
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          2
+        ],
+        2
+      ],
+      "expected": [
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          1,
+          2,
+          0,
+          -3
+        ],
+        5
+      ],
+      "expected": [
+        1,
+        2,
+        0,
+        -3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          5,
+          8,
+          9,
+          5
+        ],
+        5
+      ],
+      "expected": [
+        5,
+        8,
+        9,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          3,
+          3,
+          3,
+          3
+        ],
+        3
+      ],
+      "expected": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          -5,
+          -1,
+          0,
+          4,
+          2
+        ],
+        0
+      ],
+      "expected": [
+        -5,
+        -1,
+        0,
+        4,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41
+        ],
+        14
+      ],
+      "expected": [
+        -72,
+        -94,
+        -30,
+        -38,
+        -43,
+        -65,
+        -74,
+        -78,
+        8,
+        -92,
+        -93,
+        -77,
+        -45,
+        -41,
+        89,
+        88,
+        73,
+        89,
+        39,
+        51
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          -94,
+          43,
+          -50,
+          83,
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60,
+          78,
+          8,
+          -13,
+          -29
+        ],
+        -31
+      ],
+      "expected": [
+        -94,
+        -50,
+        -44,
+        -99,
+        -60,
+        43,
+        83,
+        66,
+        79,
+        39,
+        7,
+        14,
+        50,
+        -29,
+        94,
+        78,
+        8,
+        -13,
+        -29
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76
+        ],
+        -5
+      ],
+      "expected": [
+        -14,
+        -74,
+        -77,
+        -76,
+        95,
+        -3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80,
+          41,
+          -25
+        ],
+        30
+      ],
+      "expected": [
+        -33,
+        -89,
+        17,
+        -69,
+        -4,
+        -80,
+        -25,
+        54,
+        86,
+        37,
+        41
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          -8,
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75,
+          -3,
+          -29,
+          16,
+          62,
+          -7,
+          -59
+        ],
+        -3
+      ],
+      "expected": [
+        -8,
+        -51,
+        -83,
+        -89,
+        -42,
+        -26,
+        -80,
+        -41,
+        -75,
+        -29,
+        -7,
+        -59,
+        47,
+        80,
+        69,
+        97,
+        -3,
+        16,
+        62
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          -47,
+          71,
+          -32,
+          79,
+          74,
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36
+        ],
+        43
+      ],
+      "expected": [
+        -47,
+        -32,
+        -82,
+        -57,
+        36,
+        71,
+        79,
+        74,
+        65,
+        55,
+        62
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42
+        ],
+        -22
+      ],
+      "expected": [
+        -59,
+        -31,
+        18,
+        -3,
+        63,
+        76,
+        42
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          96,
+          98,
+          -86,
+          -42,
+          -92,
+          -20,
+          2,
+          -32,
+          -84,
+          -46
+        ],
+        22
+      ],
+      "expected": [
+        -86,
+        -42,
+        -92,
+        -20,
+        2,
+        -32,
+        -84,
+        -46,
+        96,
+        98
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          -46,
+          67,
+          27,
+          1,
+          64,
+          17,
+          -64,
+          -33,
+          -65,
+          -37
+        ],
+        45
+      ],
+      "expected": [
+        -46,
+        27,
+        1,
+        17,
+        -64,
+        -33,
+        -65,
+        -37,
+        67,
+        64
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44,
+          -65,
+          30,
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61
+        ],
+        30
+      ],
+      "expected": [
+        -33,
+        9,
+        2,
+        -8,
+        -44,
+        -65,
+        26,
+        -77,
+        -88,
+        -72,
+        -61,
+        37,
+        91,
+        49,
+        49,
+        30,
+        93
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          74,
+          8,
+          52,
+          -84,
+          -2
+        ],
+        -2
+      ],
+      "expected": [
+        -84,
+        74,
+        8,
+        52,
+        -2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          19,
+          35,
+          -36,
+          41,
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60
+        ],
+        8
+      ],
+      "expected": [
+        -36,
+        -98,
+        -71,
+        -32,
+        -13,
+        -72,
+        -25,
+        -60,
+        19,
+        35,
+        41,
+        74,
+        84,
+        74,
+        37,
+        92,
+        96,
+        64,
+        11
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          953,
+          478,
+          793,
+          473,
+          -461,
+          990,
+          25,
+          560,
+          -635,
+          39,
+          869,
+          -783,
+          782,
+          280,
+          -389,
+          723,
+          308,
+          39,
+          247,
+          -593,
+          -687,
+          -235,
+          561,
+          -670,
+          104,
+          952,
+          594,
+          889,
+          86,
+          881
+        ],
+        953
+      ],
+      "expected": [
+        478,
+        793,
+        473,
+        -461,
+        25,
+        560,
+        -635,
+        39,
+        869,
+        -783,
+        782,
+        280,
+        -389,
+        723,
+        308,
+        39,
+        247,
+        -593,
+        -687,
+        -235,
+        561,
+        -670,
+        104,
+        952,
+        594,
+        889,
+        86,
+        881,
+        953,
+        990
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          -337,
+          0,
+          -961,
+          -771,
+          902,
+          -257,
+          799,
+          703,
+          652,
+          -371,
+          -510,
+          -882,
+          -507,
+          798,
+          161,
+          939,
+          -839,
+          -825,
+          498,
+          -5,
+          671,
+          -859,
+          557,
+          90,
+          568,
+          -743,
+          -738,
+          351,
+          -27,
+          939,
+          125,
+          -662,
+          -458,
+          80,
+          786,
+          242,
+          -134,
+          975,
+          -567,
+          902,
+          104,
+          546,
+          494,
+          412,
+          -589,
+          460,
+          -362,
+          -183,
+          375,
+          330,
+          -236,
+          -103,
+          842,
+          59,
+          -76,
+          -753,
+          -493,
+          -540,
+          -869,
+          -308,
+          -957,
+          204,
+          134,
+          -529,
+          205,
+          -549,
+          -986,
+          -855
+        ],
+        703
+      ],
+      "expected": [
+        -337,
+        0,
+        -961,
+        -771,
+        -257,
+        652,
+        -371,
+        -510,
+        -882,
+        -507,
+        161,
+        -839,
+        -825,
+        498,
+        -5,
+        671,
+        -859,
+        557,
+        90,
+        568,
+        -743,
+        -738,
+        351,
+        -27,
+        125,
+        -662,
+        -458,
+        80,
+        242,
+        -134,
+        -567,
+        104,
+        546,
+        494,
+        412,
+        -589,
+        460,
+        -362,
+        -183,
+        375,
+        330,
+        -236,
+        -103,
+        59,
+        -76,
+        -753,
+        -493,
+        -540,
+        -869,
+        -308,
+        -957,
+        204,
+        134,
+        -529,
+        205,
+        -549,
+        -986,
+        -855,
+        902,
+        799,
+        703,
+        798,
+        939,
+        939,
+        786,
+        975,
+        902,
+        842
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          -862,
+          854,
+          -936,
+          760,
+          -324,
+          -855,
+          52,
+          -513,
+          -430,
+          370,
+          -6,
+          -562,
+          104,
+          -730,
+          481,
+          915,
+          807,
+          169,
+          180,
+          -32,
+          -503,
+          606,
+          -32,
+          653,
+          -167,
+          -611,
+          -807,
+          -802,
+          349,
+          -118,
+          -275,
+          -133,
+          -159,
+          -44,
+          769,
+          493,
+          -890,
+          379,
+          338,
+          323,
+          -799,
+          -876,
+          -176,
+          491
+        ],
+        606
+      ],
+      "expected": [
+        -862,
+        -936,
+        -324,
+        -855,
+        52,
+        -513,
+        -430,
+        370,
+        -6,
+        -562,
+        104,
+        -730,
+        481,
+        169,
+        180,
+        -32,
+        -503,
+        -32,
+        -167,
+        -611,
+        -807,
+        -802,
+        349,
+        -118,
+        -275,
+        -133,
+        -159,
+        -44,
+        493,
+        -890,
+        379,
+        338,
+        323,
+        -799,
+        -876,
+        -176,
+        491,
+        854,
+        760,
+        915,
+        807,
+        606,
+        653,
+        769
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          -491,
+          -608,
+          -611,
+          98,
+          -82,
+          -713,
+          -136,
+          -625,
+          -430,
+          -53,
+          -489,
+          790,
+          890,
+          -846,
+          -93,
+          654,
+          764,
+          753,
+          127,
+          -800,
+          -897,
+          335,
+          107,
+          712,
+          -970,
+          984,
+          -809,
+          897,
+          543,
+          738,
+          -516,
+          -660,
+          -168,
+          -6,
+          -15,
+          -563
+        ],
+        984
+      ],
+      "expected": [
+        -491,
+        -608,
+        -611,
+        98,
+        -82,
+        -713,
+        -136,
+        -625,
+        -430,
+        -53,
+        -489,
+        790,
+        890,
+        -846,
+        -93,
+        654,
+        764,
+        753,
+        127,
+        -800,
+        -897,
+        335,
+        107,
+        712,
+        -970,
+        -809,
+        897,
+        543,
+        738,
+        -516,
+        -660,
+        -168,
+        -6,
+        -15,
+        -563,
+        984
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function partitionList(nums, x) {\n  const less = [];\n  const greaterOrEqual = [];\n  for (let i = 0; i < nums.length; i++) {\n    if (nums[i] < x) {\n      less.push(nums[i]);\n    } else {\n      greaterOrEqual.push(nums[i]);\n    }\n  }\n  const result = [];\n  for (let i = 0; i < less.length; i++) result.push(less[i]);\n  for (let i = 0; i < greaterOrEqual.length; i++) result.push(greaterOrEqual[i]);\n  return result;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function partitionList(nums, x) {\n  const n = nums.length;\n  if (n <= 1) return nums.slice();\n  const less = [];\n  const greater = [];\n  for (let i = 0; i < n; i++) {\n    const val = nums[i];\n    if (val < x) {\n      less.push(val);\n    } else {\n      greater.push(val);\n    }\n  }\n  return less.concat(greater);\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def partitionList(nums: list[int], x: int) -> list[int]:\n    less = []\n    greater = []\n    for val in nums:\n        if val < x:\n            less.append(val)\n        else:\n            greater.append(val)\n    res = []\n    for val in less:\n        res.append(val)\n    for val in greater:\n        res.append(val)\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def partitionList(nums: list[int], x: int) -> list[int]:\n    less = [v for v in nums if v < x]\n    greater = [v for v in nums if v >= x]\n    return less + greater\n",
+      "isReference": true
+    }
+  ]
+}
