@@ -7,6 +7,8 @@ COPY apps/web/package*.json ./
 RUN npm ci
 
 COPY apps/web/ ./
+ARG VITE_CLERK_PUBLISHABLE_KEY
+ARG VITE_CLERK_JWT_TEMPLATE=merit
 RUN npm run build
 
 # Stage 2: Serve with Nginx
