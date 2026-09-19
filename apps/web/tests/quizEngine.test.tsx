@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { QuizEngine } from '../src/components/QuizEngine';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { AuthProvider } from '../src/store/AuthContext';
@@ -210,6 +210,50 @@ describe('QuizEngine Component', () => {
       expect(await screen.findByText(/1. What is the time complexity/i)).toBeInTheDocument();
       // Let the short per-question clock run out (real timers, tight timeout).
       expect(await screen.findByText(/2. Which data structure follows LIFO/i, {}, { timeout: 8000 })).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  }, 15000);
+
+  it('timeout locks the question: advancing then going back disallows answering', async () => {
+    const { authApi } = await import('../src/utils/api');
+    vi.spyOn(authApi, 'getMe').mockRejectedValue(new Error('NO_SESSION'));
+    vi.useFakeTimers();
+    try {
+      render(
+        <AuthProvider>
+          <ProgressProvider>
+            <QuizEngine
+              topicTitle="Arrays & Hashing"
+              topicId="arrays-hashing"
+              questions={sampleQuestions}
+              perQuestionSec={20}
+            />
+          </ProgressProvider>
+        </AuthProvider>
+      );
+
+      // Flush the async guest load (refreshUser rejection -> local fallback).
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(100);
+      });
+      expect(screen.getByText(/1. What is the time complexity/i)).toBeInTheDocument();
+
+      // Exhaust the 20s per-question clock (extra tick for boundary).
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(21000);
+      });
+
+      // Auto-advanced to question 2.
+      expect(screen.getByText(/2. Which data structure follows LIFO/i)).toBeInTheDocument();
+
+      // Go back to the timed-out question: it must show locked and refuse answers.
+      fireEvent.click(screen.getByText(/← Previous/i));
+      expect(screen.getByText(/Timed out — locked/i)).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('O(log n)'));
+      // Selection unchanged: submit counter still shows 0 answered.
+      expect(screen.getByText(/Submit Quiz \(0\/2\)/i)).toBeInTheDocument();
     } finally {
       vi.useRealTimers();
     }

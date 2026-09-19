@@ -12,7 +12,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { QuizQuestion } from '../data/quizzes';
-import { quizApi, QuizQuestionItem } from '../utils/api';
+import { quizApi, QuizGenerateResponse, QuizQuestionItem } from '../utils/api';
 import { useAuth } from '../store/AuthContext';
 
 interface DisplayQuestion {
@@ -74,12 +74,21 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(perQuestionSec ?? 0);
+  const [timedOut, setTimedOut] = useState<Record<string, true>>({});
   // Echo of the topics the server actually sampled from (debuggability).
   const [servedTopics, setServedTopics] = useState<string[] | null>(null);
   // Monotonic run token: only the latest loadQuiz invocation may commit
   // state. Prevents StrictMode double-mounts and user/context races from
   // creating two attempts or flashing an error over good questions.
   const loadRunRef = useRef(0);
+  // In-flight /generate dedup: a concurrent duplicate call for the same key
+  // (StrictMode remount, context refresh refire) joins the same promise
+  // instead of firing a second POST that races on exposure inserts.
+  const inflightRef = useRef<{ key: string; promise: Promise<QuizGenerateResponse> } | null>(null);
+  // Last successfully loaded quiz key (user + params). Effect refires caused
+  // by context identity churn must not wipe an in-progress quiz or mint a
+  // duplicate attempt for identical params.
+  const loadedKeyRef = useRef<string | null>(null);
 
 
   // Server results map: question_id -> result details
@@ -99,17 +108,53 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     scorePct: number;
   } | null>(null);
 
-  // Initialize or fetch quiz. Runs once on mount with a refresh-first
-  // auth check: `user` from context may still be null on first paint even
-  // when a session cookie exists, so resolve the session here instead of
-  // depending on possibly-stale context state. A run token guards against
-  // double-invocation (e.g. StrictMode remounts) creating two attempts.
-  const loadQuiz = useCallback(async () => {
+  // Initialize or fetch quiz. Runs on mount / param change with a
+  // refresh-first auth check: `user` from context may still be null on first
+  // paint even when a session cookie exists, so resolve the session here
+  // instead of depending on possibly-stale context state. A run token guards
+  // against double-invocation committing stale state; an in-flight map stops
+  // the duplicate POST itself; a loaded-key guard stops identical refires
+  // (e.g. auth context identity churn) from wiping quiz state.
+  const loadQuiz = useCallback(async (force = false) => {
     const runToken = ++loadRunRef.current;
     const isStale = () => runToken !== loadRunRef.current;
+
+    // Resolve the session before touching quiz state: the load key includes
+    // the user id, and the guard below needs it to decide anything.
+    let activeUser = user;
+    if (!activeUser) {
+      try {
+        activeUser = await refreshUser();
+      } catch {
+        activeUser = null;
+      }
+    }
+    if (isStale()) return;
+
+    const topics =
+      examTopics && examTopics.length > 0
+        ? examTopics
+        : topicId === 'mixed'
+        ? ['arrays-hashing', 'trees', 'graphs', 'dynamic-programming']
+        : [topicId];
+    const count = examCount ?? (isMock ? 20 : 10);
+    const loadKey = JSON.stringify([
+      activeUser?.id ?? null,
+      topics,
+      count,
+      examDifficulty ?? null,
+      isMock,
+      durationLimitSec,
+      examTopicPlan ?? null,
+      topicId,
+    ]);
+
+    if (!force && loadKey === loadedKeyRef.current) return;
+
     setIsLoading(true);
     setLoadError(null);
     setSelectedAnswers({});
+    setTimedOut({});
     setSubmitted(false);
     setSecondsElapsed(0);
     setSecondsRemaining(durationLimitSec);
@@ -120,50 +165,42 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setServedTopics(null);
 
     try {
-      // Prefer already-resolved context state (covers StrictMode remounts
-      // and tests that set the session before mount); only hit the network
-      // when context has no user yet.
-      let activeUser = user;
-      if (!activeUser) {
-        try {
-          activeUser = await refreshUser();
-        } catch {
-          activeUser = null;
-        }
-      }
-      if (isStale()) return;
       if (activeUser) {
-        const topics =
-          examTopics && examTopics.length > 0
-            ? examTopics
-            : topicId === 'mixed'
-            ? ['arrays-hashing', 'trees', 'graphs', 'dynamic-programming']
-            : [topicId];
-        const count = examCount ?? (isMock ? 20 : 10);
         let res;
-        try {
-          res = await quizApi.generateQuiz(
-            topics,
-            count,
-            examDifficulty,
-            isMock,
-            durationLimitSec,
-            examTopicPlan
-          );
-        } catch (genErr: unknown) {
-          // A definite "no questions for these topics" is authoritative:
-          // surface it instead of silently showing unrelated questions.
-          const genCode = (genErr as { code?: string })?.code;
-          if (genCode === 'NO_QUESTIONS_FOR_TOPICS') {
-            if (isStale()) return;
-            setAttemptId(null);
-            setServedTopics(null);
-            setActiveQuestions([]);
-            setLoadError(`No verified questions for topic${topics.length > 1 ? 's' : ''}: ${topics.join(', ')}.`);
-            setIsLoading(false);
-            return;
+        const inKey = `gen:${loadKey}`;
+        if (inflightRef.current && inflightRef.current.key === inKey) {
+          res = await inflightRef.current.promise;
+        } else {
+          try {
+            const p = quizApi.generateQuiz(
+              topics,
+              count,
+              examDifficulty,
+              isMock,
+              durationLimitSec,
+              examTopicPlan
+            );
+            inflightRef.current = { key: inKey, promise: p };
+            res = await p;
+          } catch (genErr: unknown) {
+            // A definite "no questions for these topics" is authoritative:
+            // surface it instead of silently showing unrelated questions.
+            const genCode = (genErr as { code?: string })?.code;
+            if (genCode === 'NO_QUESTIONS_FOR_TOPICS') {
+              if (isStale()) return;
+              setAttemptId(null);
+              setServedTopics(null);
+              setActiveQuestions([]);
+              setLoadError(`No verified questions for topic${topics.length > 1 ? 's' : ''}: ${topics.join(', ')}.`);
+              setIsLoading(false);
+              return;
+            }
+            throw genErr;
+          } finally {
+            if (inflightRef.current && inflightRef.current.key === inKey) {
+              inflightRef.current = null;
+            }
           }
-          throw genErr;
         }
         if (isStale()) return;
         if (res.questions && res.questions.length > 0) {
@@ -181,6 +218,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               topic: q.topic,
             }))
           );
+          loadedKeyRef.current = loadKey;
           setIsLoading(false);
           return;
         }
@@ -188,7 +226,21 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     } catch (err: unknown) {
       if (isStale()) return;
       if (err instanceof Error && err.message === 'NO_SESSION') {
-        // fall through to local bank below
+        // fall through to local bank below (guest)
+      } else if (activeUser) {
+        // Authenticated but the server failed: never silently serve the
+        // static local bank as if it were a fresh quiz. That fallback is
+        // exactly how users kept seeing "the same 10 questions" while the
+        // real error hid in the console. Surface it with a retry.
+        console.error('Server quiz generation failed:', err);
+        setAttemptId(null);
+        setServedTopics(null);
+        setActiveQuestions([]);
+        setLoadError(
+          'Could not load a fresh quiz from the server. Your progress is safe — hit Try Again for a new set.'
+        );
+        setIsLoading(false);
+        return;
       } else {
         console.warn('Server quiz generation fallback to local questions:', err);
       }
@@ -210,6 +262,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           explanation: q.explanation,
         }))
       );
+      loadedKeyRef.current = loadKey;
     } else {
       setLoadError('No questions available for this topic yet.');
     }
@@ -217,7 +270,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   }, [user, topicId, isMock, durationLimitSec, examTopics, examCount, examDifficulty, examTopicPlan, perQuestionSec, questions, refreshUser]);
 
   useEffect(() => {
-    loadQuiz();
+    void loadQuiz();
   }, [loadQuiz]);
 
   // Timer: count-up always; mock/exam countdown with auto-submit;
@@ -227,6 +280,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // avoid referencing handleSubmitQuiz before its declaration.
   useEffect(() => {
     if (submitted || isLoading) return;
+    const currentQForTimer = activeQuestions[currentIndex];
     const timer = setInterval(() => {
       setSecondsElapsed((s) => s + 1);
       if (isMock) {
@@ -241,7 +295,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       } else if (perQuestionSec && perQuestionSec > 0) {
         setQuestionTimeLeft((left) => {
           if (left <= 1) {
-            // Time up on this MCQ: advance (or finish on the last one).
+            // Time up on this MCQ: lock it, then advance (or stop on last).
+            if (currentQForTimer) {
+              const timedId = currentQForTimer.id;
+              setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
+            }
             setCurrentIndex((i) => {
               if (i >= activeQuestions.length - 1) {
                 clearInterval(timer);
@@ -255,7 +313,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [submitted, isLoading, isMock, perQuestionSec, activeQuestions.length]);
+  }, [submitted, isLoading, isMock, perQuestionSec, activeQuestions, currentIndex]);
 
   // Reset the per-question clock whenever the question changes.
   useEffect(() => {
@@ -268,7 +326,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const currentQ = activeQuestions[currentIndex];
 
   const handleSelectOption = (idx: number) => {
-    if (submitted || !currentQ) return;
+    if (submitted || !currentQ || timedOut[currentQ.id]) return;
     setSelectedAnswers((prev) => ({ ...prev, [currentQ.id]: idx }));
   };
 
@@ -351,6 +409,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           );
           setCurrentIndex(0);
           setSelectedAnswers({});
+          setTimedOut({});
           setSubmitted(false);
           setSecondsElapsed(0);
           setServerResults({});
@@ -374,6 +433,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setActiveQuestions(wrongList);
     setCurrentIndex(0);
     setSelectedAnswers({});
+    setTimedOut({});
     setSubmitted(false);
     setSecondsElapsed(0);
     setServerResults({});
@@ -432,7 +492,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           </p>
         </div>
         <button
-          onClick={loadQuiz}
+          onClick={() => void loadQuiz(true)}
           className="px-4 py-2 rounded-lg bg-mint text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer"
         >
           Try Again
@@ -532,6 +592,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             <h3 className="text-base font-semibold text-ink leading-relaxed">
               {currentIndex + 1}. {currentQ.question}
             </h3>
+            {timedOut[currentQ.id] && (
+              <span className="inline-flex items-center shrink-0 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-rose/15 text-rose border border-rose/40">
+                Timed out — locked
+              </span>
+            )}
           </div>
 
           {/* MCQ Option Buttons */}
@@ -558,7 +623,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
                 <button
                   key={idx}
                   onClick={() => handleSelectOption(idx)}
-                  disabled={submitted || isSubmitting}
+                  disabled={submitted || isSubmitting || !!timedOut[currentQ.id]}
                   className={`w-full text-left p-3.5 rounded-lg border text-xs font-mono transition flex items-center justify-between cursor-pointer ${btnClass}`}
                 >
                   <div className="flex items-center gap-3">
@@ -643,7 +708,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
                   )}
 
                   <button
-                    onClick={loadQuiz}
+                    onClick={() => void loadQuiz(true)}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-ink hover:border-mint transition cursor-pointer"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
