@@ -20,13 +20,6 @@ import { PROBLEMS } from '../data/problems';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
 
-const PATTERN_TAGS = [
-  'Arrays & Hashing', 'Two Pointers', 'Sliding Windows', 'Stack', 'Linked Lists',
-  'Binary Search', 'Trees', 'Heap', 'Backtracking', 'Graphs',
-  'Dynamic Programming', 'Greedy', 'Trie', 'Intervals', 'Math & Matrices',
-  'Bit Manipulation', 'Sorting', 'Data Structures', 'Aptitude', 'Core CS'
-];
-
 /* --- Live bubble-sort demo that actually runs to completion ---
    Single-pass engine: each tick performs exactly one adjacent compare
    (and swap if needed), advancing a real (pass, i) cursor. No reshuffle,
@@ -243,20 +236,6 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Pattern ticker */}
-        <div className="relative border-t border-line bg-surface/60 overflow-hidden">
-          <div className="flex w-max animate-marquee py-2.5" aria-hidden="true">
-            {[...PATTERN_TAGS, ...PATTERN_TAGS].map((tag, i) => (
-              <span
-                key={i}
-                className="inline-flex items-center gap-2 px-5 text-[11px] font-mono uppercase tracking-[0.14em] text-muted whitespace-nowrap"
-              >
-                <span className="w-1 h-1 rounded-full bg-mint/60" />
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* ============ QUICK START (right under hero: one tap to begin) ============ */}

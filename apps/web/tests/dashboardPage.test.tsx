@@ -24,5 +24,8 @@ describe('DashboardPage Honest Initial State (D7)', () => {
     expect(screen.getByText('0d')).toBeInTheDocument();
     expect(screen.getAllByText(/Start your first problem/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/No assessment scores recorded yet/i)).toBeInTheDocument();
+    // Lean KPI strip: quizzes-taken counter replaces the saved-notes counter
+    expect(screen.getByText('Quizzes taken')).toBeInTheDocument();
+    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument();
   });
 });

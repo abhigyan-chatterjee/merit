@@ -75,8 +75,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(perQuestionSec ?? 0);
   const [timedOut, setTimedOut] = useState<Record<string, true>>({});
-  // Echo of the topics the server actually sampled from (debuggability).
-  const [servedTopics, setServedTopics] = useState<string[] | null>(null);
+  // Echo of the topics the server actually sampled from (kept in state for
+  // debuggability; not rendered to keep the header lean).
+  const [, setServedTopics] = useState<string[] | null>(null);
   // Monotonic run token: only the latest loadQuiz invocation may commit
   // state. Prevents StrictMode double-mounts and user/context races from
   // creating two attempts or flashing an error over good questions.
@@ -473,9 +474,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <RefreshCw className="w-8 h-8 text-mint animate-spin" />
         <div>
           <h3 className="text-sm font-semibold text-ink">Sampling Verified Questions...</h3>
-          <p className="text-xs text-muted mt-1">
-            Balancing difficulty curve (40% Easy / 40% Med / 20% Hard) & preventing repeats.
-          </p>
+          <p className="text-xs text-muted mt-1">Loading verified questions…</p>
         </div>
       </div>
     );
@@ -549,11 +548,6 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             {currentQ?.topic && (
               <span className="ml-2 font-mono text-[10px] uppercase text-violet/90">
                 • {currentQ.topic}
-              </span>
-            )}
-            {servedTopics && servedTopics.length > 0 && (
-              <span className="ml-2 font-mono text-[10px] text-muted/80">
-                • bank: {servedTopics.join(', ')}
               </span>
             )}
           </p>

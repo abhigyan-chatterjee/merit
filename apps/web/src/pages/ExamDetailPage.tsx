@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Timer, ListChecks, BrainCircuit, Code2 } from 'lucide-react';
+import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
 import { QuizEngine } from '../components/QuizEngine';
 import { ExamCodingSection } from '../components/ExamCodingSection';
@@ -49,16 +49,8 @@ export const ExamDetailPage: React.FC = () => {
             <span className="inline-flex items-center gap-1.5">
               <ListChecks className="w-3.5 h-3.5 text-mint" />
               {exam.questionCount} MCQs
-            </span>
-            {exam.coding.length > 0 && (
-              <span className="inline-flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5 text-violet" />
-                {exam.coding.length} coding
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1.5">
-              <Timer className="w-3.5 h-3.5 text-amber" />
-              {Math.round(exam.durationSec / 60)} min limit · auto-submits
+              {exam.coding.length > 0 && ` · ${exam.coding.length} coding`} ·{' '}
+              {Math.round(exam.durationSec / 60)} min · auto-submits
             </span>
           </div>
         </div>

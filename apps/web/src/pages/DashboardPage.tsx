@@ -56,7 +56,6 @@ export const DashboardPage: React.FC = () => {
   const solvedCount = Object.values(state.progress).filter((s) => s === 'Done').length;
   const inProgress = Object.values(state.progress).filter((s) => s === 'Doing').length;
   const totalProblems = PROBLEMS.length;
-  const notesCount = Object.values(state.notes).filter((n) => n.trim().length > 0).length;
 
   const chartData = TOPICS.map((t) => {
     const topicProblems = PROBLEMS.filter((p) => p.topic === t.slug);
@@ -117,7 +116,7 @@ export const DashboardPage: React.FC = () => {
           { v: `${solvedCount}/${totalProblems}`, l: 'Problems solved', c: 'text-mint' },
           { v: inProgress, l: 'In progress', c: 'text-amber' },
           { v: `${currentStreak}d`, l: 'Day streak', c: 'text-violet' },
-          { v: notesCount, l: 'Saved notes', c: 'text-ink' },
+          { v: Object.keys(allQuizScores).length, l: 'Quizzes taken', c: 'text-ink' },
         ].map((k, i) => (
           <Reveal key={k.l} delay={i * 0.04}>
             <div className="border-r border-b border-line p-5 bg-surface/40">
@@ -191,8 +190,11 @@ export const DashboardPage: React.FC = () => {
                 Due Today for Revision ({revisionItems.length})
               </h3>
             </div>
-            <span className="text-[10px] font-mono text-muted">
-              Spaced Repetition (1d / 3d / 7d interval)
+            <span
+              className="text-[10px] font-mono text-muted"
+              title="Spaced Repetition (1d / 3d / 7d interval)"
+            >
+              Spaced Repetition
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">

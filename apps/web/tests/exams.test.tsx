@@ -67,9 +67,9 @@ describe('Exams catalog', () => {
     expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
     expect(screen.getByText('Aptitude')).toBeInTheDocument();
     expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
-    // 20+2 format on coding exams; aptitude is MCQ-only
-    expect(screen.getAllByText(/20 MCQs \+ 2 coding/i).length).toBeGreaterThanOrEqual(5);
-    expect(screen.getByText('20 MCQs')).toBeInTheDocument();
+    // collapsed single meta line: "20 MCQs · 2 coding · 45 min"; aptitude is MCQ-only
+    expect(screen.getAllByText(/20 MCQs · 2 coding/i).length).toBeGreaterThanOrEqual(5);
+    expect(screen.getAllByText(/20 MCQs/i).length).toBeGreaterThanOrEqual(6);
   });
 
   it('routes an exam card to its timed detail page', async () => {
@@ -108,8 +108,8 @@ describe('Exams catalog', () => {
     });
     renderExams('/exams/aptitude');
     await screen.findByText(/Aptitude/);
-    expect(screen.getByText('20 MCQs')).toBeInTheDocument();
-    expect(screen.queryByText(/\+ 2 coding/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/20 MCQs · 30 min/i)).toBeInTheDocument();
+    expect(screen.queryByText(/2 coding/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByText(/Start timed exam/i));
     expect(
       await screen.findByText((_content, el) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Timer, Play, ListChecks, Gauge } from 'lucide-react';
+import { Play, ListChecks, Gauge } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
 import { Panel } from '../components/ui/Panel';
 
@@ -48,11 +48,7 @@ export const ExamsPage: React.FC = () => {
               <div className="flex items-center gap-4 text-[11px] font-mono text-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <ListChecks className="w-3.5 h-3.5 text-mint" />
-                  {exam.questionCount} MCQs{exam.coding.length > 0 && ` + ${exam.coding.length} coding`}
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Timer className="w-3.5 h-3.5 text-amber" />
-                  {formatDuration(exam.durationSec)}
+                  {exam.questionCount} MCQs{exam.coding.length > 0 && ` · ${exam.coding.length} coding`} · {formatDuration(exam.durationSec)}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Gauge className="w-3.5 h-3.5 text-violet" />
