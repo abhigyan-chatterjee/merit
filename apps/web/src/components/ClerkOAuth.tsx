@@ -37,7 +37,11 @@ const ClerkBridge: React.FC<BridgeProps> = ({ mode, onSuccess, onError }) => {
     });
   }, [isSignedIn, exchanged, getToken, loginWithClerk, onSuccess, onError]);
 
-  return mode === "signin" ? <SignIn /> : <SignUp />;
+  return mode === "signin" ? (
+    <SignIn appearance={{ elements: { footerAction: "hidden" } }} />
+  ) : (
+    <SignUp appearance={{ elements: { footerAction: "hidden" } }} />
+  );
 };
 
 interface ClerkOAuthSectionProps {
