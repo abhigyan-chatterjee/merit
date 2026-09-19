@@ -1,0 +1,328 @@
+{
+  "slug": "decode-ways",
+  "title": "Decode Ways",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "dp / Prefix count",
+  "statement": "# Decode Ways\n\nA message containing letters from `A-Z` can be encoded into numbers using the following mapping:\n- `'A'` -> `\"1\"`\n- `'B'` -> `\"2\"`\n- ...\n- `'Z'` -> `\"26\"`\n\nTo decode an encoded message, all the digits must be grouped and mapped back into letters using the reverse mapping. There may be multiple valid groupings. For example, `\"11106\"` can be mapped into:\n- `\"AAJF\"` with grouping `(1, 1, 10, 6)`\n- `\"KJF\"` with grouping `(11, 10, 6)`\n\nNote that the grouping `(1, 11, 06)` is invalid because `\"06\"` cannot be mapped into `'F'` since `'6'` is different from `\"06\"`.\n\nGiven a string `s` containing only digits, return the number of ways to decode it.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of digits. The test cases are generated so that the answer fits in a 32-bit integer.\n",
+  "examples": [
+    {
+      "input": "s = '226'",
+      "output": "3",
+      "explanation": "It could be decoded as 'BZ' (2, 26), 'VF' (22, 6), or 'BBF' (2, 2, 6)."
+    },
+    {
+      "input": "s = '10'",
+      "output": "1",
+      "explanation": "It can only be decoded as 'J' (10). Digits '0' cannot be parsed independently."
+    },
+    {
+      "input": "s = '06'",
+      "output": "0",
+      "explanation": "'06' cannot be mapped to 'F' because of the leading zero. There are 0 valid decodings."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function numDecodings(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "If the string starts with '0', it cannot be decoded at all; return 0 immediately.",
+    "At each character s[i], you can decode s[i] as a single digit (if 1-9) or s[i-1..i] as a two-digit number (if 10-26).",
+    "This recurrence matches Fibonacci numbers with condition checks, allowing O(1) space with two rolling variables."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming: Counting Valid Decodings\n\nA digit sequence can be decoded by reading characters either one digit at a time (if 1 <= d <= 9) or two digits at a time (if 10 <= dd <= 26). Any digit '0' cannot form a letter on its own and is valid only when preceded by '1' or '2'.\n\n#### 1. DP State Definition\nLet dp[i] be the number of valid ways to decode the prefix s[0...i - 1] of length i.\n\n#### 2. Recurrence Relation & State Transition\nFor position i from 2 to n:\n- **Single-digit transition**: Look at character s[i - 1]. If s[i - 1] is between '1' and '9', it forms a valid letter, contributing dp[i - 1] decodings:\n  dp[i] += dp[i - 1]\n- **Two-digit transition**: Look at the two-character substring s[i - 2...i - 1]. If its numeric value lies in [10, 26], it forms a valid letter, contributing dp[i - 2] decodings:\n  dp[i] += dp[i - 2]\n\ndp[i] = (dp[i - 1] if s[i - 1] != '0') + (dp[i - 2] if 10 <= int(s[i - 2...i - 1]) <= 26)\n\nBecause dp[i] only depends on dp[i - 1] and dp[i - 2], the full table can be compressed into two scalar variables prev1 and prev2, achieving O(1) auxiliary space.\n\n#### 3. Base Cases\n- dp[0] = 1: An empty string has 1 valid decoding (the empty decoding).\n- If s[0] == '0', the string starts with a leading zero and cannot be decoded, immediately yielding 0. Otherwise, dp[1] = 1.\n\n#### 4. Answer Extraction\nans = dp[n] (stored in prev1).",
+    "why_optimal": "A full DP table requires O(n) auxiliary memory, whereas rolling two state variables (prev1 and prev2) requires only O(1) space while traversing the string in a single O(n) linear pass. Across 30 verified test cases, the space-optimized solution finished in 0.21 ms versus 0.26 ms for the full array allocation.",
+    "pitfalls": "Handling '0' requires strict care: a single '0' cannot be decoded on its own, and invalid pairs like '30', '70', or consecutive zeros like '100' must immediately collapse subsequent counts to 0."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming",
+    "https://algo.monster/problems/decode_ways"
+  ],
+  "starterCode": {
+    "javascript": "function numDecodings(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def numDecodings(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "numDecodings",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 0.25798799999998323,
+    "optimalRuntimeMs": 0.2087339999999962
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        "226"
+      ],
+      "expected": 3,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        "10"
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        "06"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        "0"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        "7"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        "12"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        "27"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        "20"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        "30"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        "100"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        "11106"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        "2101"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        "1201234"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        "2611055971756562"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        "1111111111"
+      ],
+      "expected": 89,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        "205443292104491974851376"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        "346202651927"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        "956420"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        "52286366452"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        "39438759461175264878353"
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        "99577643982"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        "20372"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        "7895912956238159"
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        "925943639"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        "18106541208293389359"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        "74945768982294410112584"
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        "1201234789120123478912012347891201234789120123478912012347891201234789120123478912012347891201234789"
+      ],
+      "expected": 59049,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        "2101345678210134567821013456782101345678210134567821013456782101345678210134567821013456782101345678"
+      ],
+      "expected": 1024,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        "2738495018273849501827384950182738495018273849501827384950182738495018273849501827384950182738495018"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        "1010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010"
+      ],
+      "expected": 1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function numDecodings(s) {\n  if (!s || s[0] === '0') return 0;\n  const n = s.length;\n  const dp = new Array(n + 1).fill(0);\n  dp[0] = 1;\n  dp[1] = 1;\n  for (let i = 2; i <= n; i++) {\n    const oneDigit = Number(s[i - 1]);\n    const twoDigits = Number(s.slice(i - 2, i));\n    if (oneDigit >= 1 && oneDigit <= 9) {\n      dp[i] += dp[i - 1];\n    }\n    if (twoDigits >= 10 && twoDigits <= 26) {\n      dp[i] += dp[i - 2];\n    }\n  }\n  return dp[n];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function numDecodings(s) {\n  if (!s || s[0] === '0') return 0;\n  let prev2 = 1;\n  let prev1 = 1;\n  for (let i = 2; i <= s.length; i++) {\n    let current = 0;\n    const oneDigit = Number(s[i - 1]);\n    const twoDigits = Number(s.slice(i - 2, i));\n    if (oneDigit >= 1 && oneDigit <= 9) {\n      current += prev1;\n    }\n    if (twoDigits >= 10 && twoDigits <= 26) {\n      current += prev2;\n    }\n    prev2 = prev1;\n    prev1 = current;\n  }\n  return prev1;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def numDecodings(s: str) -> int:\n    if not s or s[0] == \"0\":\n        return 0\n    n = len(s)\n    dp = [0] * (n + 1)\n    dp[0] = 1\n    dp[1] = 1\n    for i in range(2, n + 1):\n        one_digit = int(s[i - 1])\n        two_digits = int(s[i - 2 : i])\n        if 1 <= one_digit <= 9:\n            dp[i] += dp[i - 1]\n        if 10 <= two_digits <= 26:\n            dp[i] += dp[i - 2]\n    return dp[n]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def numDecodings(s: str) -> int:\n    if not s or s[0] == \"0\":\n        return 0\n    prev2, prev1 = 1, 1\n    for i in range(2, len(s) + 1):\n        current = 0\n        one_digit = int(s[i - 1])\n        two_digits = int(s[i - 2 : i])\n        if 1 <= one_digit <= 9:\n            current += prev1\n        if 10 <= two_digits <= 26:\n            current += prev2\n        prev2, prev1 = prev1, current\n    return prev1\n",
+      "isReference": true
+    }
+  ]
+}

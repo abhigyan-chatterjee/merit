@@ -1,0 +1,981 @@
+{
+  "slug": "house-robber-ii",
+  "title": "House Robber II",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "dp / Circular split",
+  "statement": "# House Robber II\n\nYou are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 1000`.\n",
+  "examples": [
+    {
+      "input": "nums = [2, 3, 2]",
+      "output": "3",
+      "explanation": "You cannot rob house 1 (money = 2) and house 3 (money = 2) because they are adjacent in the circular street. Robbing house 2 yields 3."
+    },
+    {
+      "input": "nums = [1, 2, 3, 1]",
+      "output": "4",
+      "explanation": "Rob house 1 (money = 1) and house 3 (money = 3). Total amount robbed is 1 + 3 = 4. Note that house 1 and house 4 cannot both be robbed."
+    },
+    {
+      "input": "nums = [1, 2, 1, 1]",
+      "output": "3",
+      "explanation": "Rob house 2 (money = 2) and house 4 (money = 1). Total amount robbed is 2 + 1 = 3."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function rob2(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Because the houses form a circle, the first and last houses are adjacent; you cannot rob both.",
+    "Divide the problem into two linear subproblems: robbing houses 0 to n - 2, and robbing houses 1 to n - 1.",
+    "Solve each linear subproblem in O(n) time and O(1) space using two rolling variables, then take the maximum of the two results."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming with Circular Decomposition\n\nIn a linear street of houses, house 0 and house n - 1 are not adjacent. In a circular street, however, robbing house 0 strictly prohibits robbing house n - 1. This circular dependency can be resolved by decomposing the problem into two independent linear subproblems:\n1. **Exclude the last house**: Rob houses from index 0 to n - 2.\n2. **Exclude the first house**: Rob houses from index 1 to n - 1.\n\nThe maximum amount achievable is the greater of these two linear runs: max(robLinear(0, n - 2), robLinear(1, n - 1)).\n\n#### 1. DP State Definition\nFor a linear subarray A, define dp[i] as the maximum amount of money that can be robbed from the prefix A[0...i].\n\n#### 2. Recurrence Relation & State Transition\nAt each house i, we make a binary choice:\n- **Skip house i**: The accumulated money remains dp[i - 1].\n- **Rob house i**: We cannot rob house i - 1, so the accumulated money is dp[i - 2] + A[i].\n\ndp[i] = max(dp[i - 1], dp[i - 2] + A[i])\n\nSince computing dp[i] only depends on the two preceding states (dp[i - 1] and dp[i - 2]), we can maintain two rolling scalar variables prev1 and prev2, reducing auxiliary space from O(n) to O(1).\n\n#### 3. Base Cases\n- When n = 1: Only one house exists, so return nums[0].\n- When n = 2: Return max(nums[0], nums[1]).\n- For linear DP starting at an empty prefix: prev2 = 0, prev1 = 0.\n\n#### 4. Answer Extraction\nans = max(robLinear(nums[0...n - 2]), robLinear(nums[1...n - 1]))",
+    "why_optimal": "Allocating separate DP tables for each slice requires O(n) space, whereas tracking two rolling variables (prev1 and prev2) reduces space complexity to O(1) while maintaining O(n) linear time. On 30 verified test cases, the space-optimized solution finished in 0.91 ms compared to 0.73 ms for tabular dynamic programming.",
+    "pitfalls": "A common mistake is neglecting the single-house edge case: when nums has only 1 element, slicing [0, n - 2] produces an empty array and evaluates to 0 instead of nums[0]. Always handle n = 1 as an explicit guard condition."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming",
+    "https://algo.monster/problems/house_robber_ii"
+  ],
+  "starterCode": {
+    "javascript": "function rob2(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def rob2(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "rob2",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 0.7325780000000037,
+    "optimalRuntimeMs": 0.9116349999999969
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          2,
+          3,
+          2
+        ]
+      ],
+      "expected": 3,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          1
+        ]
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          1,
+          2,
+          1,
+          1
+        ]
+      ],
+      "expected": 3,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          5
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          2,
+          3
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          10,
+          1
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          10,
+          10,
+          10,
+          10
+        ]
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          100,
+          1,
+          100,
+          1,
+          100
+        ]
+      ],
+      "expected": 200,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          20,
+          1,
+          1,
+          20
+        ]
+      ],
+      "expected": 21,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          1,
+          7,
+          9,
+          2
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          4,
+          1,
+          2,
+          7,
+          5,
+          3,
+          1
+        ]
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          57,
+          12,
+          379,
+          140,
+          125,
+          114,
+          71,
+          377,
+          52,
+          346,
+          379,
+          456,
+          279,
+          44,
+          302,
+          216,
+          16,
+          15,
+          47,
+          111,
+          119,
+          258,
+          308,
+          13
+        ]
+      ],
+      "expected": 2532,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          101,
+          366,
+          332,
+          359,
+          279,
+          214,
+          112,
+          229,
+          301,
+          142,
+          414,
+          445,
+          3,
+          388,
+          412,
+          81,
+          357,
+          216,
+          174,
+          142,
+          79
+        ]
+      ],
+      "expected": 2777,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          490,
+          390,
+          172,
+          52,
+          47,
+          194,
+          49,
+          183,
+          433,
+          176
+        ]
+      ],
+      "expected": 1289,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          135,
+          413,
+          22,
+          373,
+          235,
+          274,
+          63,
+          498,
+          472,
+          193,
+          40,
+          282,
+          150,
+          424,
+          321,
+          316,
+          453,
+          441,
+          185,
+          295,
+          98,
+          360,
+          35
+        ]
+      ],
+      "expected": 3869,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          338,
+          116,
+          395,
+          148,
+          40
+        ]
+      ],
+      "expected": 733,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          443,
+          51,
+          194,
+          142,
+          232,
+          325,
+          427,
+          186,
+          83,
+          189,
+          181
+        ]
+      ],
+      "expected": 1485,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          343,
+          136,
+          359,
+          479,
+          349,
+          331,
+          36,
+          311,
+          325,
+          87
+        ]
+      ],
+      "expected": 1478,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          373,
+          125,
+          83,
+          236,
+          194,
+          138,
+          473,
+          327,
+          352,
+          285,
+          112,
+          350,
+          166,
+          431,
+          393,
+          397,
+          28,
+          117,
+          420,
+          16,
+          412
+        ]
+      ],
+      "expected": 3196,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          205,
+          137,
+          33,
+          108,
+          467,
+          482,
+          290,
+          448,
+          367,
+          161,
+          108,
+          335,
+          255,
+          202
+        ]
+      ],
+      "expected": 1873,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          234,
+          73,
+          135,
+          71,
+          126,
+          381,
+          287,
+          275,
+          134,
+          382,
+          299,
+          219,
+          459,
+          298,
+          204,
+          185,
+          112,
+          70,
+          260,
+          252,
+          46,
+          386,
+          24,
+          440
+        ]
+      ],
+      "expected": 3043,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          78,
+          321,
+          81,
+          405,
+          348,
+          216,
+          305
+        ]
+      ],
+      "expected": 1031,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          197,
+          195,
+          305,
+          239,
+          270,
+          128
+        ]
+      ],
+      "expected": 772,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        [
+          666,
+          981,
+          111,
+          796,
+          838,
+          217,
+          798,
+          649,
+          868,
+          373,
+          887,
+          756,
+          448,
+          214,
+          400,
+          545,
+          261,
+          564,
+          103,
+          839,
+          996,
+          836,
+          369,
+          612,
+          880,
+          282,
+          619,
+          208,
+          991,
+          740,
+          405,
+          961,
+          754,
+          619,
+          723,
+          303,
+          256,
+          482,
+          880,
+          265,
+          652,
+          897,
+          643,
+          100,
+          713,
+          431,
+          600,
+          119,
+          214,
+          471,
+          999,
+          951,
+          926,
+          414,
+          345,
+          159,
+          346,
+          999,
+          680,
+          180,
+          187,
+          849,
+          597,
+          935,
+          170,
+          878,
+          645,
+          884,
+          228,
+          231,
+          775,
+          586,
+          662,
+          269,
+          371,
+          640,
+          993,
+          721,
+          533,
+          316,
+          652,
+          873,
+          847,
+          806,
+          305,
+          830,
+          419,
+          508,
+          787,
+          765,
+          482,
+          548,
+          629,
+          562,
+          223,
+          353,
+          330,
+          165,
+          446,
+          121
+        ]
+      ],
+      "expected": 31954,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        [
+          602,
+          567,
+          235,
+          602,
+          225,
+          7,
+          72,
+          724,
+          646,
+          60,
+          234,
+          69,
+          927,
+          32,
+          880,
+          338,
+          72,
+          526,
+          243,
+          285,
+          685,
+          497,
+          219,
+          552,
+          135,
+          740,
+          957,
+          903,
+          584,
+          590,
+          484,
+          248,
+          803,
+          484,
+          826,
+          416,
+          194,
+          96,
+          99,
+          674,
+          441,
+          362,
+          433,
+          420,
+          478,
+          884,
+          746,
+          55,
+          689,
+          669,
+          661,
+          100,
+          62,
+          412,
+          745,
+          347,
+          819,
+          882,
+          111,
+          254,
+          196,
+          194,
+          549,
+          459,
+          143,
+          432,
+          187,
+          285,
+          473,
+          255,
+          895,
+          945,
+          77,
+          453,
+          827,
+          882,
+          876,
+          563,
+          100,
+          51,
+          667,
+          553,
+          856,
+          15,
+          992,
+          95,
+          948,
+          771,
+          869,
+          242,
+          170,
+          416,
+          497,
+          492,
+          218,
+          885,
+          410,
+          924,
+          60,
+          168
+        ]
+      ],
+      "expected": 27175,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        [
+          1000,
+          0,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          0,
+          0,
+          1000,
+          1000,
+          1000,
+          0,
+          1000,
+          0,
+          1000,
+          1000,
+          0,
+          1000,
+          1000,
+          1000,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          0,
+          1000,
+          0,
+          1000,
+          0,
+          0,
+          1000,
+          1000,
+          0,
+          1000,
+          1000,
+          0,
+          1000,
+          0,
+          0,
+          1000,
+          0,
+          0,
+          0,
+          1000,
+          1000,
+          0,
+          1000,
+          0,
+          1000,
+          1000,
+          1000,
+          0,
+          0,
+          1000,
+          1000,
+          0,
+          0,
+          1000,
+          0,
+          1000,
+          0,
+          1000,
+          1000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1000,
+          0,
+          1000,
+          0,
+          0,
+          1000,
+          1000,
+          0,
+          1000
+        ]
+      ],
+      "expected": 32000,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ]
+      ],
+      "expected": 25000,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(arr) {\n    const n = arr.length;\n    if (n === 0) return 0;\n    if (n === 1) return arr[0];\n    const dp = new Array(n).fill(0);\n    dp[0] = arr[0];\n    dp[1] = Math.max(arr[0], arr[1]);\n    for (let i = 2; i < n; i++) {\n      dp[i] = Math.max(dp[i - 1], dp[i - 2] + arr[i]);\n    }\n    return dp[n - 1];\n  }\n\n  const case1 = robLinear(nums.slice(0, nums.length - 1));\n  const case2 = robLinear(nums.slice(1));\n  return Math.max(case1, case2);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(start, end) {\n    let prev2 = 0;\n    let prev1 = 0;\n    for (let i = start; i <= end; i++) {\n      const cur = Math.max(prev1, prev2 + nums[i]);\n      prev2 = prev1;\n      prev1 = cur;\n    }\n    return prev1;\n  }\n\n  return Math.max(robLinear(0, nums.length - 2), robLinear(1, nums.length - 1));\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(arr: list[int]) -> int:\n        n = len(arr)\n        if n == 0:\n            return 0\n        if n == 1:\n            return arr[0]\n        dp = [0] * n\n        dp[0] = arr[0]\n        dp[1] = max(arr[0], arr[1])\n        for i in range(2, n):\n            dp[i] = max(dp[i - 1], dp[i - 2] + arr[i])\n        return dp[-1]\n\n    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(start: int, end: int) -> int:\n        prev2, prev1 = 0, 0\n        for i in range(start, end + 1):\n            cur = max(prev1, prev2 + nums[i])\n            prev2, prev1 = prev1, cur\n        return prev1\n\n    return max(rob_linear(0, len(nums) - 2), rob_linear(1, len(nums) - 1))\n",
+      "isReference": true
+    }
+  ]
+}

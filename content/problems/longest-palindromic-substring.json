@@ -1,0 +1,328 @@
+{
+  "slug": "longest-palindromic-substring",
+  "title": "Longest Palindromic Substring",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "dp / Expand center",
+  "statement": "# Longest Palindromic Substring\n\nGiven a string `s`, return the longest palindromic substring in `s`.\n\nIf there are multiple palindromic substrings of the same maximum length, return the one that appears earliest (smallest start index) in `s`.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of lowercase English letters.\n",
+  "examples": [
+    {
+      "input": "s = 'babad'",
+      "output": "'bab'",
+      "explanation": "Both 'bab' and 'aba' are palindromic substrings of length 3. Because 'bab' begins at index 0 and 'aba' begins at index 1, the tie is broken by the earliest start index, yielding 'bab'."
+    },
+    {
+      "input": "s = 'cbbd'",
+      "output": "'bb'",
+      "explanation": "The longest palindromic substring is 'bb' with length 2 starting at index 1."
+    },
+    {
+      "input": "s = 'abacdfgdcaba'",
+      "output": "'aba'",
+      "explanation": "Both the prefix 'aba' (index 0) and suffix 'aba' (index 9) have length 3. The earliest occurrence at index 0 is returned."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function longestPalindrome(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "A palindrome reads the same forwards and backwards and is symmetric around its center.",
+    "There are 2n - 1 possible centers: n single characters and n - 1 adjacent character pairs.",
+    "Whenever a candidate matches the current best length, preserve the one with the smaller starting index."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming & Center Expansion\n\nA palindrome mirrors around its center. A string of length n has 2n - 1 possible centers: n single-character centers (odd-length palindromes) and n - 1 between-character centers (even-length palindromes).\n\n#### 1. DP State Definition\nIn 2D tabular DP, let dp[i][j] be a boolean indicating whether substring s[i...j] is a palindrome.\n\n#### 2. Recurrence Relation & State Transition\nA substring s[i...j] is a palindrome if and only if its endpoint characters match and the inner substring is also a palindrome:\ndp[i][j] = (s[i] == s[j]) and (j - i < 2 or dp[i + 1][j - 1])\n\nRather than storing an O(n\u00b2) table, we can expand outwards from each center (c1, c2) while s[left] == s[right].\n\n#### 3. Deterministic Tie-Breaking Invariant\nWhen comparing candidate palindromes with start index i and length L:\nupdate if L > bestLen or (L == bestLen and i < bestStart)\nThis guarantees that if two different substrings attain the maximum length, the one appearing earliest in the string is chosen deterministically in both implementations.\n\n#### 4. Base Cases\n- Single characters are palindromes of length 1: dp[i][i] = true.\n- Adjacent pairs are palindromes of length 2 if s[i] == s[i + 1].\n\n#### 5. Answer Extraction\nans = s.slice(bestStart, bestStart + bestLen).",
+    "why_optimal": "Brute force checks all O(n\u00b2) substrings with an O(n) palindrome test, taking O(n\u00b3) time. Center expansion evaluates all 2n - 1 centers in O(n\u00b2) time and O(1) auxiliary space without matrix allocations. Across 30 verified test cases, center expansion executed in 0.83 ms compared to 1.19 ms for cubic brute force.",
+    "pitfalls": "Remember to test both odd centers (i, i) and even centers (i, i + 1). When breaking ties, using strictly greater length (> bestLen) naturally keeps earlier occurrences for the same center orientation, but when comparing across odd and even centers, an explicit start index check (len === bestLen && start < bestStart) prevents incorrect overrides."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Longest_palindromic_substring",
+    "https://algo.monster/problems/longest_palindromic_substring"
+  ],
+  "starterCode": {
+    "javascript": "function longestPalindrome(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def longestPalindrome(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "longestPalindrome",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 1.1884680000000074,
+    "optimalRuntimeMs": 0.8260689999999968
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        "babad"
+      ],
+      "expected": "bab",
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        "cbbd"
+      ],
+      "expected": "bb",
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        "abacdfgdcaba"
+      ],
+      "expected": "aba",
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        "a"
+      ],
+      "expected": "a",
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        "aa"
+      ],
+      "expected": "aa",
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        "ab"
+      ],
+      "expected": "a",
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        "racecar"
+      ],
+      "expected": "racecar",
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        "bananas"
+      ],
+      "expected": "anana",
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        "aaaa"
+      ],
+      "expected": "aaaa",
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        "ccc"
+      ],
+      "expected": "ccc",
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        "noon"
+      ],
+      "expected": "noon",
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        "ac"
+      ],
+      "expected": "a",
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        "adam"
+      ],
+      "expected": "ada",
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        "forgeeksskeegfor"
+      ],
+      "expected": "geeksskeeg",
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        "bbbfaffeafxfaaedaaabbeea"
+      ],
+      "expected": "afxfa",
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        "bdecabfffeeffffdccbbc"
+      ],
+      "expected": "fffeefff",
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        "ddcceca"
+      ],
+      "expected": "cec",
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        "ebfaaeadaecfeefceadaefbcaba"
+      ],
+      "expected": "eadaecfeefceadae",
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        "ccdfccfdbfcfffae"
+      ],
+      "expected": "dfccfd",
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        "ddcffefbxbfeebfcabacdcab"
+      ],
+      "expected": "efbxbfe",
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        "cbbfddfddfddfbbfeecfed"
+      ],
+      "expected": "bbfddfddfddfbb",
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        "bcbbedaaaadebbcfbfdead"
+      ],
+      "expected": "cbbedaaaadebbc",
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        "fafecdeceaxaeced"
+      ],
+      "expected": "deceaxaeced",
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        "beafcfcacdbdaffceecffadbdcac"
+      ],
+      "expected": "cacdbdaffceecffadbdcac",
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        "eaecdaaccbabbcbeebcb"
+      ],
+      "expected": "bcbeebcb",
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        "aebbfdebceedbefaffafbf"
+      ],
+      "expected": "faffaf",
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "expected": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        "abababababababababababababababababababababababababababababababababababababababababababababababababab"
+      ],
+      "expected": "abababababababababababababababababababababababababababababababababababababababababababababababababa",
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbracecarcccccccccccccccccccccccccccccccccccccccccccccccc"
+      ],
+      "expected": "cccccccccccccccccccccccccccccccccccccccccccccccc",
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"
+      ],
+      "expected": "a",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b3) | Space: O(1)",
+      "language": "javascript",
+      "code": "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n  function isPalindrome(left, right) {\n    while (left < right) {\n      if (s[left] !== s[right]) return false;\n      left++;\n      right--;\n    }\n    return true;\n  }\n  for (let i = 0; i < s.length; i++) {\n    for (let j = i; j < s.length; j++) {\n      const len = j - i + 1;\n      if (len > bestLen && isPalindrome(i, j)) {\n        bestStart = i;\n        bestLen = len;\n      }\n    }\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n\n  function expand(left, right) {\n    while (left >= 0 && right < s.length && s[left] === s[right]) {\n      left--;\n      right++;\n    }\n    const start = left + 1;\n    const len = right - left - 1;\n    if (len > bestLen || (len === bestLen && start < bestStart)) {\n      bestStart = start;\n      bestLen = len;\n    }\n  }\n\n  for (let i = 0; i < s.length; i++) {\n    expand(i, i);\n    expand(i, i + 1);\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b3) | Space: O(1)",
+      "language": "python",
+      "code": "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def is_palindrome(left: int, right: int) -> bool:\n        while left < right:\n            if s[left] != s[right]:\n                return False\n            left += 1\n            right -= 1\n        return True\n\n    for i in range(len(s)):\n        for j in range(i, len(s)):\n            length = j - i + 1\n            if length > best_len and is_palindrome(i, j):\n                best_start = i\n                best_len = length\n    return s[best_start : best_start + best_len]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def expand(left: int, right: int) -> None:\n        nonlocal best_start, best_len\n        while left >= 0 and right < len(s) and s[left] == s[right]:\n            left -= 1\n            right += 1\n        start = left + 1\n        length = right - left - 1\n        if length > best_len or (length == best_len and start < best_start):\n            best_start = start\n            best_len = length\n\n    for i in range(len(s)):\n        expand(i, i)\n        expand(i, i + 1)\n    return s[best_start : best_start + best_len]\n",
+      "isReference": true
+    }
+  ]
+}

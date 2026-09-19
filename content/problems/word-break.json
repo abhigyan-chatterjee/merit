@@ -1,0 +1,523 @@
+{
+  "slug": "word-break",
+  "title": "Word Break",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "dp / Reachability",
+  "statement": "# Word Break\n\nGiven a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
+  "examples": [
+    {
+      "input": "s = 'applepenapple', wordDict = ['apple', 'pen']",
+      "output": "true",
+      "explanation": "'applepenapple' can be segmented as 'apple pen apple'. Dictionary words can be reused."
+    },
+    {
+      "input": "s = 'catsandog', wordDict = ['cats', 'dog', 'sand', 'and', 'cat']",
+      "output": "false",
+      "explanation": "The string cannot be segmented into dictionary words because the remaining 'og' is not in wordDict."
+    },
+    {
+      "input": "s = 'goalspecial', wordDict = ['go', 'goal', 'goals', 'special']",
+      "output": "true",
+      "explanation": "'goalspecial' can be segmented into 'goal' + 'special'."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function wordBreak(s: string, wordDict: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Define a boolean array dp of length n + 1, where dp[i] indicates whether prefix s[0..i-1] can be segmented.",
+    "Convert wordDict to a hash set for O(1) average lookup time.",
+    "Notice that substrings longer than the longest dictionary word cannot match, so bound the inner search window."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming: Prefix Reachability\n\nTo decide if a string s of length n can be partitioned into valid dictionary words, we determine reachability for each prefix of s from left to right.\n\n#### 1. DP State Definition\nLet dp[i] be a boolean value indicating whether the prefix s[0...i - 1] of length i can be completely segmented into words from wordDict.\n\n#### 2. Recurrence Relation & State Transition\nFor each length i from 1 to n, dp[i] is true if there exists some split point j (0 <= j < i) such that:\n1. Prefix s[0...j - 1] is segmentable: dp[j] == true.\n2. Suffix substring s[j...i - 1] is a dictionary word: s[j...i - 1] in wordDict.\n\ndp[i] = OR_{j = max(0, i - L)}^{i - 1} (dp[j] and (s[j...i - 1] in wordDictSet))\n\nwhere L = max_{w in wordDict} length(w) is the maximum length of any word in the dictionary. Limiting j to [i - L, i - 1] bounds the inner loop to at most L steps instead of i steps.\n\n#### 3. Base Cases\n- dp[0] = true: An empty prefix requires zero words and is valid by definition.\n- All dp[i] = false for i > 0 initially.\n\n#### 4. Answer Extraction\nans = dp[n].",
+    "why_optimal": "Converting wordDict into a hash set enables O(1) word lookups, and bounding the inner loop search by the maximum word length L reduces the time complexity from O(n\u00b2 \u00b7 m) to O(n \u00b7 L). On 30 verified test cases, the optimized set-based DP completed in 0.52 ms compared to 2.59 ms for linear dictionary scans.",
+    "pitfalls": "Scanning all 0 <= j < i with array.includes takes O(n\u00b2 \u00b7 m) time and can time out on long strings. Bounding j >= i - L and using a hash set avoids redundant comparisons."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming",
+    "https://algo.monster/problems/word_break"
+  ],
+  "starterCode": {
+    "javascript": "function wordBreak(s, wordDict) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def wordBreak(s, wordDict):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "wordBreak",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 2.594533999999996,
+    "optimalRuntimeMs": 0.5216379999999816
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        "applepenapple",
+        [
+          "apple",
+          "pen"
+        ]
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        "catsandog",
+        [
+          "cats",
+          "dog",
+          "sand",
+          "and",
+          "cat"
+        ]
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        "goalspecial",
+        [
+          "go",
+          "goal",
+          "goals",
+          "special"
+        ]
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        "a",
+        [
+          "a"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        "a",
+        [
+          "b"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        "aaaaaaa",
+        [
+          "aaaa",
+          "aaa"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        "leetcode",
+        [
+          "leet",
+          "code"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        "cars",
+        [
+          "car",
+          "ca",
+          "rs"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        "abcd",
+        [
+          "a",
+          "abc",
+          "b",
+          "cd"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        "bb",
+        [
+          "a",
+          "b",
+          "bbb",
+          "bbbb"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        "programmers",
+        [
+          "program",
+          "mer",
+          "mers",
+          "pro",
+          "gram"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        "fastalgo",
+        [
+          "fast",
+          "code",
+          "coder",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        "slowhighrunfastfastslow",
+        [
+          "run",
+          "coder",
+          "fast",
+          "jump",
+          "slow",
+          "high"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        "coderjumpruncoderrunnerhigh",
+        [
+          "runner",
+          "run",
+          "coder",
+          "jump",
+          "fast",
+          "code",
+          "high",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        "algocodecodervistaxyz",
+        [
+          "run",
+          "coder",
+          "code",
+          "slow",
+          "vista",
+          "algo"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        "highalgofastrunnerxyz",
+        [
+          "runner",
+          "run",
+          "fast",
+          "jump",
+          "slow",
+          "high",
+          "algo"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        "highvistahighcoder",
+        [
+          "coder",
+          "fast",
+          "slow",
+          "vista",
+          "high"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        "coderslow",
+        [
+          "runner",
+          "run",
+          "coder",
+          "slow",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        "codevistavistacoder",
+        [
+          "coder",
+          "code",
+          "slow",
+          "vista",
+          "high",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        "codercoderunnerrunalgojumpxyz",
+        [
+          "runner",
+          "run",
+          "coder",
+          "jump",
+          "fast",
+          "code",
+          "vista",
+          "algo"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        "vistarun",
+        [
+          "run",
+          "coder",
+          "slow",
+          "vista",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        "vistacoderrunnerrunrunnercode",
+        [
+          "runner",
+          "run",
+          "coder",
+          "code",
+          "vista",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        "algohighrunhighrunvista",
+        [
+          "run",
+          "coder",
+          "jump",
+          "code",
+          "vista",
+          "high",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        "slowcodexyz",
+        [
+          "code",
+          "slow",
+          "high",
+          "run"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        "highrunnerjumpalgojump",
+        [
+          "runner",
+          "jump",
+          "fast",
+          "slow",
+          "high",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        "slowalgoruncode",
+        [
+          "runner",
+          "run",
+          "fast",
+          "code",
+          "slow",
+          "algo"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        [
+          "a",
+          "aa",
+          "aaa"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+        [
+          "a",
+          "aa",
+          "aaa"
+        ]
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        "codecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecodecode",
+        [
+          "code",
+          "coder",
+          "co",
+          "de"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        "abababababababababababababababababababababababababababababababababababababababababababababababababab",
+        [
+          "a",
+          "b",
+          "ab"
+        ]
+      ],
+      "expected": true,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 \u00b7 m) | Space: O(n)",
+      "language": "javascript",
+      "code": "function wordBreak(s, wordDict) {\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (dp[j]) {\n        const sub = s.slice(j, i);\n        if (wordDict.includes(sub)) {\n          dp[i] = true;\n          break;\n        }\n      }\n    }\n  }\n  return dp[n];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n \u00b7 L) | Space: O(n + W)",
+      "language": "javascript",
+      "code": "function wordBreak(s, wordDict) {\n  const wordSet = new Set(wordDict);\n  let maxLen = 0;\n  for (const w of wordDict) {\n    if (w.length > maxLen) maxLen = w.length;\n  }\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    const start = Math.max(0, i - maxLen);\n    for (let j = i - 1; j >= start; j--) {\n      if (dp[j] && wordSet.has(s.slice(j, i))) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n  return dp[n];\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 \u00b7 m) | Space: O(n)",
+      "language": "python",
+      "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in wordDict:\n                dp[i] = True\n                break\n    return dp[n]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n \u00b7 L) | Space: O(n + W)",
+      "language": "python",
+      "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    word_set = set(wordDict)\n    max_len = max(len(w) for w in wordDict) if wordDict else 0\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        start = max(0, i - max_len)\n        for j in range(i - 1, start - 1, -1):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[n]\n",
+      "isReference": true
+    }
+  ]
+}

@@ -1,0 +1,996 @@
+{
+  "slug": "maximum-product-subarray",
+  "title": "Maximum Product Subarray",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "dp / Min-max track",
+  "statement": "# Maximum Product Subarray\n\nGiven an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
+  "examples": [
+    {
+      "input": "nums = [2, 3, -2, 4]",
+      "output": "6",
+      "explanation": "[2, 3] has the largest product 6."
+    },
+    {
+      "input": "nums = [-2, 0, -1]",
+      "output": "0",
+      "explanation": "The result cannot be 2, because [-2, -1] is not a contiguous subarray. The maximum product subarray is [0] with product 0."
+    },
+    {
+      "input": "nums = [-2, 3, -4]",
+      "output": "24",
+      "explanation": "The entire subarray [-2, 3, -4] has product (-2) * 3 * (-4) = 24."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function maxProduct(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Multiplying a negative number by another negative number produces a positive number.",
+    "Track both the maximum product and the minimum product ending at the current position.",
+    "When the current number is negative, the minimum product can become the new maximum product."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming: Dual Extremum Tracking (Kadane Extension)\n\nUnlike maximum sum subarray where adding negative numbers strictly decreases the sum, multiplying two negative numbers creates a positive product. Therefore, a very small negative product can become a large positive product when multiplied by another negative number.\n\n#### 1. DP State Definition\nFor prefix ending at index i:\n- maxProd[i]: Maximum product of a non-empty contiguous subarray ending at index i.\n- minProd[i]: Minimum product of a non-empty contiguous subarray ending at index i.\n\n#### 2. Recurrence Relation & State Transition\nAt index i, the new subarray ending at i can either start at nums[i] alone, or extend the previous maximum or minimum:\ncandidates = {nums[i], maxProd[i - 1] * nums[i], minProd[i - 1] * nums[i]}\nmaxProd[i] = max(candidates)\nminProd[i] = min(candidates)\n\nWhen nums[i] < 0, multiplying by a negative number inverts order, so swapping curMax and curMin before multiplying cleanly handles the sign flip.\n\nSince only the previous index's values are needed, we maintain two scalar variables curMax and curMin, reducing space to O(1).\n\n#### 3. Base Cases\ncurMax = nums[0], curMin = nums[0], globalMax = nums[0].\n\n#### 4. Answer Extraction\nans = max_{0 <= i < n} maxProd[i] (tracked in globalMax).",
+    "why_optimal": "Brute force checks all O(n\u00b2) contiguous subarrays and computes their products, taking O(n\u00b2) time. Tracking running minimum and maximum products in a single pass achieves O(n) linear time with O(1) auxiliary space. Across 30 verified test cases, the linear DP finished in 0.16 ms compared to 0.77 ms for the quadratic search.",
+    "pitfalls": "Do not discard minimum products: when a negative number appears, the current minimum (most negative) product multiplied by that number yields a large positive candidate. Also, be sure to update curMax and curMin simultaneously or swap them when num < 0 so the new curMax does not overwrite the value needed to compute curMin."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Maximum_subarray_problem",
+    "https://algo.monster/problems/maximum_product_subarray"
+  ],
+  "starterCode": {
+    "javascript": "function maxProduct(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def maxProduct(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "maxProduct",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 30,
+    "bruteForceRuntimeMs": 0.7746179999999896,
+    "optimalRuntimeMs": 0.15643999999999636
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          2,
+          3,
+          -2,
+          4
+        ]
+      ],
+      "expected": 6,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          -2,
+          0,
+          -1
+        ]
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          -2,
+          3,
+          -4
+        ]
+      ],
+      "expected": 24,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          -2
+        ]
+      ],
+      "expected": -2,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          3
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          0,
+          2
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          0,
+          -3,
+          1,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          -1,
+          -2,
+          -3,
+          -4
+        ]
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          -2,
+          -3,
+          -1
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          2,
+          -5,
+          -2,
+          -4,
+          3
+        ]
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          -1,
+          0,
+          -2
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          3,
+          -1,
+          4
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          0,
+          -1,
+          -3,
+          -1,
+          -3,
+          3,
+          -3,
+          1,
+          1,
+          0,
+          2,
+          3,
+          3,
+          0,
+          2,
+          -3,
+          -3,
+          3,
+          2,
+          0,
+          -3,
+          -1,
+          0,
+          -2
+        ]
+      ],
+      "expected": 108,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          -3,
+          1,
+          1,
+          3,
+          0,
+          0,
+          3,
+          -2,
+          1,
+          0,
+          0,
+          0,
+          3,
+          3,
+          -3,
+          1,
+          1,
+          2,
+          -3,
+          -1,
+          0,
+          -3,
+          -3,
+          2,
+          -1
+        ]
+      ],
+      "expected": 162,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          -2,
+          0,
+          2,
+          -2,
+          -2,
+          2
+        ]
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -2,
+          -1,
+          -1,
+          2,
+          0,
+          -2,
+          3,
+          3,
+          0,
+          0,
+          3,
+          -1,
+          0,
+          -3,
+          1,
+          0,
+          0,
+          -3
+        ]
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          -3,
+          0,
+          -3,
+          -2,
+          3,
+          -1,
+          1,
+          3,
+          0,
+          -3,
+          1,
+          -2,
+          0,
+          -3,
+          -2,
+          -2,
+          -1,
+          2
+        ]
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          -2,
+          1,
+          -3,
+          0,
+          -3,
+          0,
+          1,
+          2,
+          2,
+          -3,
+          -3,
+          -1
+        ]
+      ],
+      "expected": 36,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          1,
+          -2,
+          3,
+          -3,
+          0,
+          -1,
+          1
+        ]
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          3,
+          -1,
+          -2,
+          1,
+          -3,
+          -1,
+          3,
+          -2,
+          -2
+        ]
+      ],
+      "expected": 216,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          0,
+          1,
+          -2,
+          -3,
+          1,
+          3,
+          -2,
+          3,
+          2,
+          2,
+          1,
+          0,
+          -1,
+          1,
+          -3,
+          2,
+          0
+        ]
+      ],
+      "expected": 216,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          0,
+          -2,
+          1,
+          -3,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          -2,
+          -2,
+          1,
+          0,
+          1,
+          -1,
+          0
+        ]
+      ],
+      "expected": 192,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          3,
+          -2,
+          3,
+          -3,
+          -3,
+          1,
+          0,
+          3,
+          0,
+          2,
+          3,
+          -2,
+          2,
+          2,
+          -2,
+          1,
+          -1,
+          0,
+          -2
+        ]
+      ],
+      "expected": 96,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          1,
+          1,
+          -3,
+          3,
+          2,
+          3
+        ]
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        [
+          -2,
+          1,
+          0,
+          3,
+          -2,
+          3,
+          -3,
+          1,
+          0,
+          1,
+          3,
+          3,
+          -1,
+          1,
+          -1,
+          -2,
+          -2,
+          0,
+          -2,
+          1,
+          0
+        ]
+      ],
+      "expected": 54,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        [
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1,
+          1,
+          -1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-28",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-29",
+      "input": [
+        [
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0,
+          2,
+          1,
+          1,
+          0
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-30",
+      "input": [
+        [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function maxProduct(nums) {\n  let maxProd = nums[0];\n  for (let i = 0; i < nums.length; i++) {\n    let current = 1;\n    for (let j = i; j < nums.length; j++) {\n      current *= nums[j];\n      if (current > maxProd) {\n        maxProd = current;\n      }\n    }\n  }\n  return maxProd;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function maxProduct(nums) {\n  let globalMax = nums[0];\n  let curMax = nums[0];\n  let curMin = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    const x = nums[i];\n    if (x < 0) {\n      const temp = curMax;\n      curMax = curMin;\n      curMin = temp;\n    }\n    curMax = Math.max(x, curMax * x);\n    curMin = Math.min(x, curMin * x);\n    if (curMax > globalMax) {\n      globalMax = curMax;\n    }\n  }\n  return globalMax;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def maxProduct(nums: list[int]) -> int:\n    max_prod = nums[0]\n    for i in range(len(nums)):\n        current = 1\n        for j in range(i, len(nums)):\n            current *= nums[j]\n            if current > max_prod:\n                max_prod = current\n    return max_prod\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def maxProduct(nums: list[int]) -> int:\n    global_max = nums[0]\n    cur_max = nums[0]\n    cur_min = nums[0]\n    for i in range(1, len(nums)):\n        x = nums[i]\n        if x < 0:\n            cur_max, cur_min = cur_min, cur_max\n        cur_max = max(x, cur_max * x)\n        cur_min = min(x, cur_min * x)\n        if cur_max > global_max:\n            global_max = cur_max\n    return global_max\n",
+      "isReference": true
+    }
+  ]
+}
