@@ -18,7 +18,8 @@ version: "3.8"
 services:
   # 1. Sandboxed Judge Execution Service
   piston:
-    image: ghcr.io/engineer-man/piston:latest
+    # pinned 2026-09-19, update through review
+    image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     container_name: merit-piston
     restart: unless-stopped
     mem_limit: 300m

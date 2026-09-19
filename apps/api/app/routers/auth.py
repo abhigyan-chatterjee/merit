@@ -1,7 +1,8 @@
+import uuid
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -226,26 +227,61 @@ def refresh_token_rotation(
             detail={"code": "USER_INACTIVE", "message": "User not active"},
         )
 
-    # ROTATION: Revoke old token, issue new token
+    # ROTATION: Revoke old token, issue new token.
+    # Atomic revocation: a single conditional UPDATE claims the old token
+    # (revoked_at IS NULL predicate). Concurrent double-use races so that
+    # exactly one request wins (rowcount == 1); the loser falls into the
+    # theft path below instead of minting a second replacement.
     new_raw_refresh = generate_opaque_token()
     new_token_h = hash_token(new_raw_refresh)
     new_expires_at = (
         datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
     ).isoformat()
+    new_token_id = str(uuid.uuid4())
+    now_str = utcnow_iso()
+
+    revoke_stmt = (
+        update(RefreshToken)
+        .where(
+            RefreshToken.token_hash == token_h,
+            RefreshToken.revoked_at.is_(None),
+        )
+        .values(revoked_at=now_str, replaced_by=new_token_id)
+        .execution_options(synchronize_session=False)
+    )
+    revoke_result = db.execute(revoke_stmt)
+    if revoke_result.rowcount != 1:
+        # Lost the race (or replayed a revoked token that slipped past the
+        # SELECT above): treat as reuse — revoke all sessions for this user.
+        user_id = db_token.user_id
+        tokens = db.scalars(
+            select(RefreshToken).where(
+                RefreshToken.user_id == user_id, RefreshToken.revoked_at.is_(None)
+            )
+        ).all()
+        theft_now = utcnow_iso()
+        for t in tokens:
+            t.revoked_at = theft_now
+        db.commit()
+        clear_auth_cookies(response)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "TOKEN_REUSE_DETECTED",
+                "message": "Security compromise detected. All sessions revoked.",
+            },
+        )
 
     new_token_row = RefreshToken(
+        id=new_token_id,
         user_id=user.id,
         token_hash=new_token_h,
         expires_at=new_expires_at,
-        created_at=utcnow_iso(),
+        created_at=now_str,
         ip=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
     db.add(new_token_row)
-    db.flush()
-
-    db_token.revoked_at = utcnow_iso()
-    db_token.replaced_by = new_token_row.id
 
     new_access_token = create_access_token(user.id, user.role)
     db.commit()

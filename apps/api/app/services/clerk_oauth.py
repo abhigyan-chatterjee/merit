@@ -30,6 +30,13 @@ JWKS_SUFFIX = "/.well-known/jwks.json"
 # Several common template key names are accepted.
 EMAIL_CLAIM_KEYS = ("email", "primary_email", "email_address")
 
+# Claim keys probed (in order) for the email-verified flag. The flag MUST be
+# present and true: a missing flag or an explicit false means the email is
+# unverified and the token is rejected (401 OAUTH_EMAIL_UNVERIFIED). This
+# blocks account takeover via a Clerk account holding a victim's unverified
+# email address. Template snippet in docs/prod.md includes this flag.
+EMAIL_VERIFIED_CLAIM_KEYS = ("email_verified", "emailVerified", "verified_email")
+
 
 def expected_issuer(jwks_url: str | None = None) -> str:
     """Derive the expected ``iss`` claim from the Clerk JWKS URL."""
@@ -51,8 +58,8 @@ def verify_clerk_session_token(token: str) -> dict:
     ``clerk_id`` is the Clerk user id (``sub`` claim) and ``email`` is the
     verified email address from the token claims.
 
-    Raises ``HTTPException`` 401 when the token is invalid, expired, or
-    carries no usable email claim.
+    Raises ``HTTPException`` 401 when the token is invalid, expired, carries
+    no usable email claim, or carries no (or a false) email-verified flag.
     """
     jwks_url = settings.clerk_jwks_url.strip()
     try:
@@ -107,6 +114,40 @@ def verify_clerk_session_token(token: str) -> dict:
                 "code": "OAUTH_EMAIL_MISSING",
                 "message": "Clerk token is valid but carries no email claim. "
                 "Configure a Clerk JWT template that includes the user's email.",
+            },
+        )
+
+    # Require a verified-email flag: reject when absent or present-and-false.
+    # Without this, an attacker could create a Clerk account with a victim's
+    # email address and take over the linked Merit row.
+    email_verified: bool | None = None
+    for key in EMAIL_VERIFIED_CLAIM_KEYS:
+        if key in claims:
+            value = claims[key]
+            if isinstance(value, bool):
+                email_verified = value
+            elif isinstance(value, (int, float)):
+                email_verified = bool(value)
+            elif isinstance(value, str):
+                email_verified = value.strip().lower() in (
+                    "true",
+                    "1",
+                    "yes",
+                    "verified",
+                )
+            elif value is None:
+                email_verified = False
+            else:
+                email_verified = bool(value)
+            break
+
+    if email_verified is not True:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "OAUTH_EMAIL_UNVERIFIED",
+                "message": "Clerk token email is not verified. "
+                "Configure a Clerk JWT template that includes the email-verified flag.",
             },
         )
 

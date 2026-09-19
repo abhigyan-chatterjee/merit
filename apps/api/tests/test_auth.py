@@ -1,6 +1,8 @@
+import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import Update, select
+from sqlalchemy.dialects import sqlite
 
 import app.routers.auth as auth_router
 from app.models.user import User
@@ -264,6 +266,7 @@ def test_clerk_oauth_links_existing_email_account(client: TestClient, monkeypatc
             "clerk_id": "user_clerk_link123",
             "email": "oauthlink@example.com",
             "display_name": "OAuth Link",
+            "email_verified": True,
         },
     )
     resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
@@ -291,6 +294,7 @@ def test_clerk_oauth_creates_new_user(client: TestClient, monkeypatch, db_sessio
             "clerk_id": "user_clerk_new456",
             "email": "brandnew-oauth@example.com",
             "display_name": "Brand New",
+            "email_verified": True,
         },
     )
     resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
@@ -313,6 +317,7 @@ def test_clerk_oauth_reuses_linked_account(client: TestClient, monkeypatch):
         "clerk_id": "user_clerk_repeat789",
         "email": "repeat-oauth@example.com",
         "display_name": "Repeat User",
+        "email_verified": True,
     }
     _mock_verified_claims(monkeypatch, claims=claims)
     first = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
@@ -358,3 +363,130 @@ def test_clerk_oauth_unconfigured_returns_501(client: TestClient, monkeypatch):
     resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
     assert resp.status_code == 501
     assert resp.json()["detail"]["code"] == "OAUTH_NOT_CONFIGURED"
+
+
+def _mock_service_claims(monkeypatch, claims):
+    """Run the REAL verify_clerk_session_token with mocked JWKS/JWT layers."""
+    import app.services.clerk_oauth as clerk_module
+
+    monkeypatch.setattr(clerk_module.settings, "clerk_jwks_url", TEST_JWKS_URL, raising=False)
+    monkeypatch.setattr(clerk_module.settings, "clerk_audience", "", raising=False)
+
+    class _FakeKey:
+        key = "test-signing-key"
+
+    class _FakeClient:
+        def get_signing_key_from_jwt(self, token):
+            return _FakeKey()
+
+    monkeypatch.setattr(clerk_module, "_jwks_client", lambda url: _FakeClient())
+    monkeypatch.setattr(
+        clerk_module.jwt, "decode", lambda token, key, **kwargs: claims
+    )
+
+
+def test_clerk_service_rejects_unverified_email(monkeypatch):
+    import app.services.clerk_oauth as clerk_module
+
+    _mock_service_claims(
+        monkeypatch,
+        {"sub": "user_attacker", "email": "victim@example.com", "email_verified": False},
+    )
+    with pytest.raises(HTTPException) as exc:
+        clerk_module.verify_clerk_session_token("any.token.here")
+    assert exc.value.status_code == 401
+    assert exc.value.detail["code"] == "OAUTH_EMAIL_UNVERIFIED"
+
+
+def test_clerk_service_rejects_missing_verified_flag(monkeypatch):
+    import app.services.clerk_oauth as clerk_module
+
+    # No verified flag at all -> reject (fail closed).
+    _mock_service_claims(
+        monkeypatch, {"sub": "user_attacker", "email": "victim@example.com"}
+    )
+    with pytest.raises(HTTPException) as exc:
+        clerk_module.verify_clerk_session_token("any.token.here")
+    assert exc.value.status_code == 401
+    assert exc.value.detail["code"] == "OAUTH_EMAIL_UNVERIFIED"
+
+
+def test_clerk_service_verified_flag_spellings(monkeypatch):
+    import app.services.clerk_oauth as clerk_module
+
+    base = {"sub": "user_x", "email": "x@example.com"}
+    for key in ("email_verified", "emailVerified", "verified_email"):
+        _mock_service_claims(monkeypatch, {**base, key: True})
+        out = clerk_module.verify_clerk_session_token("any.token.here")
+        assert out["email"] == "x@example.com"
+        assert out["clerk_id"] == "user_x"
+
+        _mock_service_claims(monkeypatch, {**base, key: False})
+        with pytest.raises(HTTPException) as exc:
+            clerk_module.verify_clerk_session_token("any.token.here")
+        assert exc.value.detail["code"] == "OAUTH_EMAIL_UNVERIFIED"
+
+
+def test_clerk_oauth_unverified_email_rejected_no_user_created(
+    client: TestClient, monkeypatch, db_session
+):
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        error=HTTPException(
+            status_code=401,
+            detail={
+                "code": "OAUTH_EMAIL_UNVERIFIED",
+                "message": "Clerk token email is not verified.",
+            },
+        ),
+    )
+    before = len(db_session.scalars(select(User)).all())
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 401
+    assert resp.json()["detail"]["code"] == "OAUTH_EMAIL_UNVERIFIED"
+    assert len(db_session.scalars(select(User)).all()) == before
+
+
+def test_refresh_rotation_race_loser_triggers_reuse(client: TestClient, monkeypatch, db_session):
+    """Simulate a concurrent double-use: the conditional UPDATE affects 0 rows.
+
+    The loser must fall into the TOKEN_REUSE_DETECTED theft path instead of
+    minting a second replacement. Also asserts the UPDATE carries the
+    ``revoked_at IS NULL`` predicate.
+    """
+    reg_resp = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "race@example.com",
+            "display_name": "Race User",
+            "password": "Password123456",
+        },
+    )
+    original_refresh = reg_resp.cookies.get("merit_refresh")
+    assert original_refresh is not None
+
+    statements = []
+    real_execute = db_session.execute
+
+    def spy_execute(statement, *args, **kwargs):
+        statements.append(statement)
+        if isinstance(statement, Update):
+            # Race lost: someone else revoked the token first.
+            class _FakeResult:
+                rowcount = 0
+
+            return _FakeResult()
+        return real_execute(statement, *args, **kwargs)
+
+    monkeypatch.setattr(db_session, "execute", spy_execute)
+    resp = client.post("/api/v1/auth/refresh", cookies={"merit_refresh": original_refresh})
+    assert resp.status_code == 401
+    assert resp.json()["detail"]["code"] == "TOKEN_REUSE_DETECTED"
+
+    updates = [s for s in statements if isinstance(s, Update)]
+    assert updates, "expected a conditional UPDATE during rotation"
+    compiled = str(
+        updates[0].compile(dialect=sqlite.dialect(), compile_kwargs={"literal_binds": True})
+    )
+    assert "revoked_at IS NULL" in compiled

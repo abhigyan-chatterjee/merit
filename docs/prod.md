@@ -41,14 +41,20 @@ How it works:
      backend derives the expected token issuer by stripping that suffix.)
    - `CLERK_AUDIENCE`: leave empty unless you configured a custom JWT
      template with an `aud` claim, in which case paste that audience.
-5. **Add an email claim (REQUIRED):** the backend links accounts by the
-   **verified email inside the signed token**. Clerk's default session token
-   carries no email, so create a JWT template:
-   Configure → **JWT templates** → New template → name it `merit`,
-   add claims `{"email": "{{user.primary_email_address}}",
-   "name": "{{user.full_name}}"}`, Save. Then set
-   `VITE_CLERK_JWT_TEMPLATE=merit` on the frontend (see below). Without this,
-   login fails with `401 OAUTH_EMAIL_MISSING`.
+5. **Add email + verified claims (REQUIRED):** the backend links accounts by the
+    **verified email inside the signed token**. Clerk's default session token
+    carries no email, so create a JWT template:
+    Configure → **JWT templates** → New template → name it `merit`,
+    add claims `{"email": "{{user.primary_email_address}}",
+    "email_verified": "{{user.primary_email_address_verified}}",
+    "name": "{{user.full_name}}"}`, Save. (`emailVerified` or
+    `verified_email` are also accepted as the verified-flag key; what
+    matters is the flag is present and true only for a verified email.)
+    Then set `VITE_CLERK_JWT_TEMPLATE=merit` on the frontend (see below).
+    Without the email claim, login fails with `401 OAUTH_EMAIL_MISSING`;
+    with a missing/false verified flag it fails with
+    `401 OAUTH_EMAIL_UNVERIFIED` (this blocks takeover via a Clerk
+    account holding someone else's unverified email).
 6. **Paste keys into env files (never commit — both are gitignored):**
    - `apps/api/.env`:
      ```ini
