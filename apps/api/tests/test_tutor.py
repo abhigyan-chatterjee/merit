@@ -1,0 +1,283 @@
+"""Tests for the BYOK tutor proxy. httpx is mocked via monkeypatch (no network)."""
+
+import httpx
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
+import app.routers.tutor as tutor_module
+from app.seed import seed_problems
+
+API_KEY = "sk-test-sentinel-key-abc123"
+BASE_URL = "https://provider.example.com/v1"
+
+
+@pytest.fixture(autouse=True)
+def seed_test_problems(db_session: Session):
+    seed_problems(db_session)
+
+
+@pytest.fixture(autouse=True)
+def clean_rate_limits():
+    tutor_module._rate_buckets.clear()
+    yield
+    tutor_module._rate_buckets.clear()
+
+
+def register_user(client: TestClient, email: str) -> None:
+    res = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": email,
+            "display_name": "Tutor Student",
+            "password": "StrongPassword123!",
+        },
+    )
+    assert res.status_code == 201
+
+
+class FakeResponse:
+    def __init__(self, status_code: int = 200, payload: object = None):
+        self.status_code = status_code
+        self._payload = payload if payload is not None else {}
+
+    def json(self):
+        return self._payload
+
+
+def install_fake_client(monkeypatch, *, get=None, post=None, capture=None):
+    """Monkeypatch httpx.AsyncClient in the tutor module namespace."""
+
+    class FakeClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def get(self, url, headers=None):
+            if capture is not None:
+                capture["get"] = {"url": url, "headers": headers}
+            assert get is not None
+            return get(url, headers)
+
+        async def post(self, url, headers=None, json=None):
+            if capture is not None:
+                capture["post"] = {"url": url, "headers": headers, "json": json}
+            assert post is not None
+            return post(url, headers, json)
+
+    monkeypatch.setattr(tutor_module.httpx, "AsyncClient", FakeClient)
+
+
+def test_models_passthrough(client: TestClient, monkeypatch):
+    register_user(client, "tutor_models@merit.org")
+    capture: dict = {}
+    install_fake_client(
+        monkeypatch,
+        capture=capture,
+        get=lambda url, headers: FakeResponse(
+            200, {"data": [{"id": "gpt-4o"}, {"id": "gpt-4o-mini"}]}
+        ),
+    )
+
+    res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert res.status_code == 200
+    assert res.json() == {"models": ["gpt-4o", "gpt-4o-mini"]}
+    assert capture["get"]["url"] == f"{BASE_URL}/models"
+    assert capture["get"]["headers"] == {"Authorization": f"Bearer {API_KEY}"}
+    assert API_KEY not in res.text
+
+
+def test_models_upstream_500_maps_to_502(client: TestClient, monkeypatch):
+    register_user(client, "tutor_models_500@merit.org")
+    install_fake_client(
+        monkeypatch, get=lambda url, headers: FakeResponse(500, {"error": "boom"})
+    )
+
+    res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert res.status_code == 502
+    assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
+
+
+def test_models_upstream_connection_error_maps_to_502(client: TestClient, monkeypatch):
+    register_user(client, "tutor_models_conn@merit.org")
+
+    class ExplodingClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def get(self, url, headers=None):
+            raise httpx.ConnectError("connection refused")
+
+    monkeypatch.setattr(tutor_module.httpx, "AsyncClient", ExplodingClient)
+
+    res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert res.status_code == 502
+    assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
+
+
+def test_chat_forwards_system_and_problem_context(client: TestClient, monkeypatch):
+    register_user(client, "tutor_chat@merit.org")
+    capture: dict = {}
+    install_fake_client(
+        monkeypatch,
+        capture=capture,
+        post=lambda url, headers, body: FakeResponse(
+            200,
+            {"choices": [{"message": {"content": "Think about what a hash map gives you."}}]},
+        ),
+    )
+
+    question = "I am stuck on the brute force approach, what should I try next?"
+    code = "def solve(nums, target):\n    return [0, 0]"
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "code": code,
+            "question": question,
+        },
+    )
+    assert res.status_code == 200
+    assert res.json() == {"reply": "Think about what a hash map gives you."}
+
+    sent = capture["post"]
+    assert sent["url"] == f"{BASE_URL}/chat/completions"
+    assert sent["headers"] == {"Authorization": f"Bearer {API_KEY}"}
+    assert sent["json"]["model"] == "gpt-4o-mini"
+    messages = sent["json"]["messages"]
+    assert messages[0]["role"] == "system"
+    # System prompt carries problem context + student code + hint-first policy
+    assert "Two Sum" in messages[0]["content"]
+    assert "Given an array of integers" in messages[0]["content"]
+    assert code in messages[0]["content"]
+    assert "NEVER provide the full solution" in messages[0]["content"]
+    assert messages[1] == {"role": "user", "content": question}
+    # Key travels only in the Authorization header, never echoed back
+    assert API_KEY not in res.text
+    assert API_KEY not in str(sent["json"])
+
+
+def test_chat_reveals_solution_only_after_3_failed_attempts(
+    client: TestClient, monkeypatch,
+):
+    register_user(client, "tutor_chat_attempts@merit.org")
+    captured: list = []
+    reply = FakeResponse(200, {"choices": [{"message": {"content": "ok"}}]})
+    install_fake_client(
+        monkeypatch,
+        post=lambda url, headers, body: (captured.append(body) or reply),
+    )
+
+    body = {
+        "base_url": BASE_URL,
+        "api_key": API_KEY,
+        "model": "gpt-4o-mini",
+        "problem_slug": "two-sum",
+        "question": "Give me a nudge.",
+    }
+    assert client.post("/api/v1/tutor/chat", json=body).status_code == 200
+    assert "NEVER provide the full solution" in captured[0]["messages"][0]["content"]
+
+    assert (
+        client.post("/api/v1/tutor/chat", json={**body, "failed_attempts": 3}).status_code
+        == 200
+    )
+    assert "MAY now show a complete solution" in captured[1]["messages"][0]["content"]
+
+
+def test_chat_upstream_500_maps_to_502(client: TestClient, monkeypatch):
+    register_user(client, "tutor_chat_500@merit.org")
+    install_fake_client(
+        monkeypatch, post=lambda url, headers, body: FakeResponse(500, {"error": "boom"})
+    )
+
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "question": "Help?",
+        },
+    )
+    assert res.status_code == 502
+    assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
+
+
+def test_chat_unknown_problem_404(client: TestClient, monkeypatch):
+    register_user(client, "tutor_chat_404@merit.org")
+    install_fake_client(
+        monkeypatch, post=lambda url, headers, body: FakeResponse(200, {})
+    )
+
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "no-such-problem",
+            "question": "Help?",
+        },
+    )
+    assert res.status_code == 404
+    assert res.json()["detail"]["code"] == "PROBLEM_NOT_FOUND"
+
+
+def test_unauthenticated_rejected_on_both(client: TestClient):
+    res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert res.status_code == 401
+
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "question": "Help?",
+        },
+    )
+    assert res.status_code == 401
+
+
+def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
+    register_user(client, "tutor_ratelimit@merit.org")
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
+    )
+
+    for _ in range(30):
+        res = client.post(
+            "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+        )
+        assert res.status_code == 200
+    res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert res.status_code == 429
+    assert res.json()["detail"]["code"] == "TUTOR_RATE_LIMIT"
