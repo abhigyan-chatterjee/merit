@@ -1,0 +1,959 @@
+{
+  "slug": "palindrome-partitioning",
+  "title": "Palindrome Partitioning",
+  "topic": "backtracking",
+  "difficulty": "Medium",
+  "pattern": "backtracking / Cut positions",
+  "statement": "# Palindrome Partitioning\n\nGiven a string `s`, partition `s` such that every substring of the partition is a palindrome.\n\nReturn all possible palindrome partitionings of `s`. The partitions must be returned sorted in lexicographical order.\n\nConstraints: `1 <= s.length <= 16`. `s` contains only lowercase English letters.\n",
+  "examples": [
+    {
+      "input": "s = 'aab'",
+      "output": "[['a', 'a', 'b'], ['aa', 'b']]",
+      "explanation": "'aab' can be partitioned into ['a', 'a', 'b'] and ['aa', 'b'] where all components are palindromes."
+    },
+    {
+      "input": "s = 'a'",
+      "output": "[['a']]",
+      "explanation": "A single character string is a palindrome itself."
+    },
+    {
+      "input": "s = 'racecar'",
+      "output": "[['r', 'a', 'c', 'e', 'c', 'a', 'r'], ['r', 'a', 'cec', 'a', 'r'], ['r', 'aceca', 'r'], ['racecar']]",
+      "explanation": "Multiple valid palindrome decompositions exist for 'racecar'."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function partition(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Precompute a 2D boolean table isPal[i][j] where isPal[i][j] is true if s[i..j] is a palindrome.",
+    "From each start index, iterate over all possible end indices and cut only if s[start..end] is a palindrome.",
+    "Sort the final partitions lexicographically to ensure consistent ordering."
+  ],
+  "editorial": {
+    "approach": "### Dynamic Programming Precomputation + Backtracking\n\nWe must split string $s$ of length $n$ at a subset of cut positions such that every segmented substring is a palindrome.\n\n#### 1. DP Palindrome Table Precomputation\nInstead of evaluating whether substring $s[i \\dots j]$ is a palindrome using a two-pointer scan in $O(j - i)$ time repeatedly, precalculate an $n \\times n$ boolean matrix $isPal$:\n- Base cases: $isPal[i][i] = true$ for all $i$.\n- For length 2: $isPal[i][i+1] = (s[i] == s[i+1])$.\n- For lengths $L \\ge 3$: $isPal[i][j] = (s[i] == s[j]) \\land isPal[i+1][j-1]$.\nThis precomputation takes $O(n^2)$ time and allows $O(1)$ palindrome checks during backtracking.\n\n#### 2. Backtracking Decision Process\nAt state $start$:\n- If $start == n$, append a copy of current partition to result.\n- For $end$ from $start$ to $n - 1$:\n  - If $isPal[start][end]$ is true:\n    - Add $s[start \\dots end]$ to current partition.\n    - Recurse on $end + 1$.\n    - Pop substring to backtrack.",
+    "why_optimal": "Checking palindromes on-the-fly with two pointers takes O(n) per substring verification across all 2\u207f possible cuts. Precomputing an O(n\u00b2) boolean table reduces palindrome validation to O(1) time. Across 25 verified test cases, DP-accelerated partitioning executed in 13.48 ms compared to 12.72 ms for naive verification.",
+    "pitfalls": "In 0-indexed substring slicing, s.slice(start, end + 1) includes character end, so the next recursion must begin at end + 1."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Palindrome",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function partition(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def partition(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "partition",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 25,
+    "bruteForceRuntimeMs": 12.724772000000016,
+    "optimalRuntimeMs": 13.475619000000002
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        "a"
+      ],
+      "expected": [
+        [
+          "a"
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        "aa"
+      ],
+      "expected": [
+        [
+          "a",
+          "a"
+        ],
+        [
+          "aa"
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        "ab"
+      ],
+      "expected": [
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        "aab"
+      ],
+      "expected": [
+        [
+          "a",
+          "a",
+          "b"
+        ],
+        [
+          "aa",
+          "b"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        "aba"
+      ],
+      "expected": [
+        [
+          "a",
+          "b",
+          "a"
+        ],
+        [
+          "aba"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        "racecar"
+      ],
+      "expected": [
+        [
+          "r",
+          "a",
+          "c",
+          "e",
+          "c",
+          "a",
+          "r"
+        ],
+        [
+          "r",
+          "a",
+          "cec",
+          "a",
+          "r"
+        ],
+        [
+          "r",
+          "aceca",
+          "r"
+        ],
+        [
+          "racecar"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        "noon"
+      ],
+      "expected": [
+        [
+          "n",
+          "o",
+          "o",
+          "n"
+        ],
+        [
+          "n",
+          "oo",
+          "n"
+        ],
+        [
+          "noon"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        "civic"
+      ],
+      "expected": [
+        [
+          "c",
+          "i",
+          "v",
+          "i",
+          "c"
+        ],
+        [
+          "c",
+          "ivi",
+          "c"
+        ],
+        [
+          "civic"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        "bb"
+      ],
+      "expected": [
+        [
+          "b",
+          "b"
+        ],
+        [
+          "bb"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        "efe"
+      ],
+      "expected": [
+        [
+          "e",
+          "f",
+          "e"
+        ],
+        [
+          "efe"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        "abcba"
+      ],
+      "expected": [
+        [
+          "a",
+          "b",
+          "c",
+          "b",
+          "a"
+        ],
+        [
+          "a",
+          "bcb",
+          "a"
+        ],
+        [
+          "abcba"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        "cddc"
+      ],
+      "expected": [
+        [
+          "c",
+          "d",
+          "d",
+          "c"
+        ],
+        [
+          "c",
+          "dd",
+          "c"
+        ],
+        [
+          "cddc"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        "abacaba"
+      ],
+      "expected": [
+        [
+          "a",
+          "b",
+          "a",
+          "c",
+          "a",
+          "b",
+          "a"
+        ],
+        [
+          "a",
+          "b",
+          "a",
+          "c",
+          "aba"
+        ],
+        [
+          "a",
+          "b",
+          "aca",
+          "b",
+          "a"
+        ],
+        [
+          "a",
+          "bacab",
+          "a"
+        ],
+        [
+          "aba",
+          "c",
+          "a",
+          "b",
+          "a"
+        ],
+        [
+          "aba",
+          "c",
+          "aba"
+        ],
+        [
+          "abacaba"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        "aaaa"
+      ],
+      "expected": [
+        [
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "aa"
+        ],
+        [
+          "a",
+          "aa",
+          "a"
+        ],
+        [
+          "a",
+          "aaa"
+        ],
+        [
+          "aa",
+          "a",
+          "a"
+        ],
+        [
+          "aa",
+          "aa"
+        ],
+        [
+          "aaa",
+          "a"
+        ],
+        [
+          "aaaa"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        "aaaaa"
+      ],
+      "expected": [
+        [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "a",
+          "aa"
+        ],
+        [
+          "a",
+          "a",
+          "aa",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "aaa"
+        ],
+        [
+          "a",
+          "aa",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "aa",
+          "aa"
+        ],
+        [
+          "a",
+          "aaa",
+          "a"
+        ],
+        [
+          "a",
+          "aaaa"
+        ],
+        [
+          "aa",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "aa",
+          "a",
+          "aa"
+        ],
+        [
+          "aa",
+          "aa",
+          "a"
+        ],
+        [
+          "aa",
+          "aaa"
+        ],
+        [
+          "aaa",
+          "a",
+          "a"
+        ],
+        [
+          "aaa",
+          "aa"
+        ],
+        [
+          "aaaa",
+          "a"
+        ],
+        [
+          "aaaaa"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        "aaaaaa"
+      ],
+      "expected": [
+        [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "a",
+          "a",
+          "aa"
+        ],
+        [
+          "a",
+          "a",
+          "a",
+          "aa",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "a",
+          "aaa"
+        ],
+        [
+          "a",
+          "a",
+          "aa",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "aa",
+          "aa"
+        ],
+        [
+          "a",
+          "a",
+          "aaa",
+          "a"
+        ],
+        [
+          "a",
+          "a",
+          "aaaa"
+        ],
+        [
+          "a",
+          "aa",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "aa",
+          "a",
+          "aa"
+        ],
+        [
+          "a",
+          "aa",
+          "aa",
+          "a"
+        ],
+        [
+          "a",
+          "aa",
+          "aaa"
+        ],
+        [
+          "a",
+          "aaa",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "aaa",
+          "aa"
+        ],
+        [
+          "a",
+          "aaaa",
+          "a"
+        ],
+        [
+          "a",
+          "aaaaa"
+        ],
+        [
+          "aa",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "aa",
+          "a",
+          "a",
+          "aa"
+        ],
+        [
+          "aa",
+          "a",
+          "aa",
+          "a"
+        ],
+        [
+          "aa",
+          "a",
+          "aaa"
+        ],
+        [
+          "aa",
+          "aa",
+          "a",
+          "a"
+        ],
+        [
+          "aa",
+          "aa",
+          "aa"
+        ],
+        [
+          "aa",
+          "aaa",
+          "a"
+        ],
+        [
+          "aa",
+          "aaaa"
+        ],
+        [
+          "aaa",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "aaa",
+          "a",
+          "aa"
+        ],
+        [
+          "aaa",
+          "aa",
+          "a"
+        ],
+        [
+          "aaa",
+          "aaa"
+        ],
+        [
+          "aaaa",
+          "a",
+          "a"
+        ],
+        [
+          "aaaa",
+          "aa"
+        ],
+        [
+          "aaaaa",
+          "a"
+        ],
+        [
+          "aaaaaa"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        "abcde"
+      ],
+      "expected": [
+        [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        "radar"
+      ],
+      "expected": [
+        [
+          "r",
+          "a",
+          "d",
+          "a",
+          "r"
+        ],
+        [
+          "r",
+          "ada",
+          "r"
+        ],
+        [
+          "radar"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        "madam"
+      ],
+      "expected": [
+        [
+          "m",
+          "a",
+          "d",
+          "a",
+          "m"
+        ],
+        [
+          "m",
+          "ada",
+          "m"
+        ],
+        [
+          "madam"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        "level"
+      ],
+      "expected": [
+        [
+          "l",
+          "e",
+          "v",
+          "e",
+          "l"
+        ],
+        [
+          "l",
+          "eve",
+          "l"
+        ],
+        [
+          "level"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        "acb"
+      ],
+      "expected": [
+        [
+          "a",
+          "c",
+          "b"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        "aaca"
+      ],
+      "expected": [
+        [
+          "a",
+          "a",
+          "c",
+          "a"
+        ],
+        [
+          "a",
+          "aca"
+        ],
+        [
+          "aa",
+          "c",
+          "a"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        "acbaaaa"
+      ],
+      "expected": [
+        [
+          "a",
+          "c",
+          "b",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "a",
+          "a",
+          "aa"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "a",
+          "aa",
+          "a"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "a",
+          "aaa"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "aa",
+          "a",
+          "a"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "aa",
+          "aa"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "aaa",
+          "a"
+        ],
+        [
+          "a",
+          "c",
+          "b",
+          "aaaa"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        "ccac"
+      ],
+      "expected": [
+        [
+          "c",
+          "c",
+          "a",
+          "c"
+        ],
+        [
+          "c",
+          "cac"
+        ],
+        [
+          "cc",
+          "a",
+          "c"
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        "cccc"
+      ],
+      "expected": [
+        [
+          "c",
+          "c",
+          "c",
+          "c"
+        ],
+        [
+          "c",
+          "c",
+          "cc"
+        ],
+        [
+          "c",
+          "cc",
+          "c"
+        ],
+        [
+          "c",
+          "ccc"
+        ],
+        [
+          "cc",
+          "c",
+          "c"
+        ],
+        [
+          "cc",
+          "cc"
+        ],
+        [
+          "ccc",
+          "c"
+        ],
+        [
+          "cccc"
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n \u00b7 2\u207f) | Space: O(n)",
+      "language": "javascript",
+      "code": "function partition(s) {\n  const res = [];\n  const current = [];\n  function isPal(str) {\n    let l = 0, r = str.length - 1;\n    while (l < r) {\n      if (str[l++] !== str[r--]) return false;\n    }\n    return true;\n  }\n  function backtrack(start) {\n    if (start === s.length) {\n      res.push(current.slice());\n      return;\n    }\n    for (let end = start + 1; end <= s.length; end++) {\n      const sub = s.slice(start, end);\n      if (isPal(sub)) {\n        current.push(sub);\n        backtrack(end);\n        current.pop();\n      }\n    }\n  }\n  backtrack(0);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      const cmp = a[i].localeCompare(b[i]);\n      if (cmp !== 0) return cmp;\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b2 + 2\u207f) | Space: O(n\u00b2)",
+      "language": "javascript",
+      "code": "function partition(s) {\n  const n = s.length;\n  const isPal = Array.from({ length: n }, () => new Array(n).fill(false));\n  for (let i = 0; i < n; i++) isPal[i][i] = true;\n  for (let len = 2; len <= n; len++) {\n    for (let i = 0; i <= n - len; i++) {\n      const j = i + len - 1;\n      if (s[i] === s[j]) {\n        isPal[i][j] = len === 2 ? true : isPal[i + 1][j - 1];\n      }\n    }\n  }\n  const res = [];\n  const current = [];\n  function backtrack(start) {\n    if (start === n) {\n      res.push(current.slice());\n      return;\n    }\n    for (let end = start; end < n; end++) {\n      if (isPal[start][end]) {\n        current.push(s.slice(start, end + 1));\n        backtrack(end + 1);\n        current.pop();\n      }\n    }\n  }\n  backtrack(0);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      const cmp = a[i].localeCompare(b[i]);\n      if (cmp !== 0) return cmp;\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n \u00b7 2\u207f) | Space: O(n)",
+      "language": "python",
+      "code": "def partition(s: str) -> list[list[str]]:\n    res = []\n    current = []\n\n    def backtrack(start: int) -> None:\n        if start == len(s):\n            res.append(list(current))\n            return\n        for end in range(start + 1, len(s) + 1):\n            sub = s[start:end]\n            if sub == sub[::-1]:\n                current.append(sub)\n                backtrack(end)\n                current.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b2 + 2\u207f) | Space: O(n\u00b2)",
+      "language": "python",
+      "code": "def partition(s: str) -> list[list[str]]:\n    n = len(s)\n    is_pal = [[False] * n for _ in range(n)]\n    for i in range(n):\n        is_pal[i][i] = True\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            if s[i] == s[j]:\n                is_pal[i][j] = True if length == 2 else is_pal[i + 1][j - 1]\n\n    res = []\n    current: list[str] = []\n\n    def backtrack(start: int) -> None:\n        if start == n:\n            res.append(list(current))\n            return\n        for end in range(start, n):\n            if is_pal[start][end]:\n                current.append(s[start : end + 1])\n                backtrack(end + 1)\n                current.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
+      "isReference": true
+    }
+  ]
+}

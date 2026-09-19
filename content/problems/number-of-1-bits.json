@@ -1,0 +1,280 @@
+{
+  "slug": "number-of-1-bits",
+  "title": "Number of 1 Bits",
+  "topic": "bit-manipulation",
+  "difficulty": "Easy",
+  "pattern": "bit-manipulation / n&(n-1)",
+  "statement": "# Number of 1 Bits\n\nGiven a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
+  "examples": [
+    {
+      "input": "n = 11",
+      "output": "3",
+      "explanation": "11 in binary is 1011, which has three '1' bits."
+    },
+    {
+      "input": "n = 128",
+      "output": "1",
+      "explanation": "128 in binary is 10000000, which has one '1' bit."
+    },
+    {
+      "input": "n = 4294967295",
+      "output": "32",
+      "explanation": "All 32 bits are 1 in 0xFFFFFFFF."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function hammingWeight(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Subtracting 1 from n turns the lowest 1-bit into a 0 and turns trailing 0s into 1s.",
+    "Thus, n & (n - 1) always clears the lowest set bit of n.",
+    "Count how many times you can clear the lowest set bit until n becomes 0."
+  ],
+  "editorial": {
+    "approach": "### Brian Kernighan's Bit-Clearing Algorithm\n\nTo count the number of set bits (Hamming weight) of a 32-bit unsigned integer $n$:\n\n#### 1. Invariant of n & (n - 1)\nSubtracting 1 from a binary number $n$ flips all bits after the rightmost set bit, including that rightmost set bit itself.\nPerforming a bitwise AND between $n$ and $n - 1$ ($n \\land (n - 1)$) clears the lowest set bit while keeping all higher bits unchanged.\n\n#### 2. Algorithm\n1. Initialize `count = 0`.\n2. While $n \\ne 0$:\n   - $n = (n \\land (n - 1)) \\ggg 0$\n   - `count++`\n3. Return `count`.\n\nThis loop executes exactly $k$ times, where $k$ is the number of set bits, rather than iterating through all 32 bits.",
+    "why_optimal": "A fixed 32-iteration loop inspects every bit position regardless of sparsity. Brian Kernighan's algorithm loops only once per set bit, terminating in at most k steps where k <= 32. On 24 verified test cases, Kernighan's algorithm completed in 0.07 ms versus 0.09 ms for fixed 32-bit scanning.",
+    "pitfalls": "In JavaScript, bitwise operations convert numbers to 32-bit signed integers. Use the unsigned right shift >>> 0 to ensure non-negative integer representation."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Hamming_weight",
+    "https://en.wikipedia.org/wiki/Bit_manipulation"
+  ],
+  "starterCode": {
+    "javascript": "function hammingWeight(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def hammingWeight(n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "hammingWeight",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 24,
+    "bruteForceRuntimeMs": 0.09107200000000404,
+    "optimalRuntimeMs": 0.06847500000001361
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        0
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        1
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        2
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        3
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        4
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        7
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        11
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        128
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        255
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        2147483648
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        4294967295
+      ],
+      "expected": 32,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        4294967294
+      ],
+      "expected": 31,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        1431655765
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        2863311530
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        2746317213
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        1181241943
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        958682846
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        3163119785
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        1812140441
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        127978094
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        939042955
+      ],
+      "expected": 17,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        2340505846
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        946785248
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        2530876844
+      ],
+      "expected": 17,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "javascript",
+      "code": "function hammingWeight(n) {\n  let count = 0;\n  for (let i = 0; i < 32; i++) {\n    count += (n >>> i) & 1;\n  }\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(k) | Space: O(1)",
+      "language": "javascript",
+      "code": "function hammingWeight(n) {\n  let count = 0;\n  let val = n >>> 0;\n  while (val !== 0) {\n    val = (val & (val - 1)) >>> 0;\n    count++;\n  }\n  return count;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "python",
+      "code": "def hammingWeight(n: int) -> int:\n    count = 0\n    for i in range(32):\n        count += (n >> i) & 1\n    return count\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(k) | Space: O(1)",
+      "language": "python",
+      "code": "def hammingWeight(n: int) -> int:\n    count = 0\n    val = n & 0xFFFFFFFF\n    while val > 0:\n        val &= val - 1\n        count += 1\n    return count\n",
+      "isReference": true
+    }
+  ]
+}

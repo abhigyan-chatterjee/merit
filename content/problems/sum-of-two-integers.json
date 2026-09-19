@@ -1,0 +1,322 @@
+{
+  "slug": "sum-of-two-integers",
+  "title": "Sum of Two Integers",
+  "topic": "bit-manipulation",
+  "difficulty": "Medium",
+  "pattern": "bit-manipulation / Carry loop",
+  "statement": "# Sum of Two Integers\n\nGiven two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
+  "examples": [
+    {
+      "input": "a = 1, b = 2",
+      "output": "3",
+      "explanation": "1 + 2 = 3 calculated with bitwise operators."
+    },
+    {
+      "input": "a = 2, b = 3",
+      "output": "5",
+      "explanation": "2 + 3 = 5 without using + or -."
+    },
+    {
+      "input": "a = -1, b = 1",
+      "output": "0",
+      "explanation": "Two's complement cancellation yields 0."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function getSum(a: number, b: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "XOR (a ^ b) gives the sum without any carry.",
+    "AND shifted left by one ((a & b) << 1) gives the carry bits.",
+    "Repeat the process until the carry becomes 0."
+  ],
+  "editorial": {
+    "approach": "### Digital Logic: Full-Adder Carry-Lookahead Loop\n\nAddition of two numbers in digital electronics can be decomposed into XOR addition (sum without carry) and AND addition (carry propagation).\n\n#### 1. Arithmetic Decomposition\nFor two binary integers $a$ and $b$:\n- **Sum without carry**: $a \\oplus b$ computes the sum bit at each position.\n- **Carry**: $(a \\land b) \\ll 1$ computes where both bits were 1, shifting left by 1 because the carry adds into the next higher bit position.\n\n#### 2. Iterative Carry Propagation\nSet $a = a \\oplus b$ and $b = (a \\land b) \\ll 1$. Repeat this process until $b == 0$. Since carry bits propagate upward, the loop terminates within at most 32 iterations for any 32-bit signed integers.\n\nIn Python, arbitrary precision integers must be masked by `0xFFFFFFFF` to simulate 32-bit signed wrap-around.",
+    "why_optimal": "Bit-by-bit ripple-carry addition processes bits sequentially in 32 iterations. Parallel bitwise addition processes all 32 bits simultaneously per carry round, terminating as soon as carries settle. On 26 verified test cases, the parallel carry loop ran in 0.07 ms compared to 0.15 ms for bit-by-bit ripple addition.",
+    "pitfalls": "Python does not natively cap integers to 32 bits. Without masking with 0xFFFFFFFF, negative numbers enter an infinite carry loop."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Adder_(electronics)",
+    "https://en.wikipedia.org/wiki/Two%27s_complement"
+  ],
+  "starterCode": {
+    "javascript": "function getSum(a, b) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def getSum(a, b):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "getSum",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 26,
+    "bruteForceRuntimeMs": 0.148444000000012,
+    "optimalRuntimeMs": 0.07240599999999375
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        1,
+        2
+      ],
+      "expected": 3,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        2,
+        3
+      ],
+      "expected": 5,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        0,
+        0
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        -1,
+        1
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        -2,
+        3
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        -5,
+        -7
+      ],
+      "expected": -12,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        100,
+        -100
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        500,
+        500
+      ],
+      "expected": 1000,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        -1000,
+        1000
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        -1000,
+        -1000
+      ],
+      "expected": -2000,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        0,
+        15
+      ],
+      "expected": 15,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        -15,
+        0
+      ],
+      "expected": -15,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        12,
+        -4
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        -4,
+        12
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        309,
+        -772
+      ],
+      "expected": -463,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        -949,
+        518
+      ],
+      "expected": -431,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        -437,
+        -499
+      ],
+      "expected": -936,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        -543,
+        -715
+      ],
+      "expected": -1258,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        508,
+        -791
+      ],
+      "expected": -283,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        385,
+        516
+      ],
+      "expected": 901,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        827,
+        116
+      ],
+      "expected": 943,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        -822,
+        209
+      ],
+      "expected": -613,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        -136,
+        -935
+      ],
+      "expected": -1071,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        -939,
+        -809
+      ],
+      "expected": -1748,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        -553,
+        -524
+      ],
+      "expected": -1077,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        34,
+        232
+      ],
+      "expected": 266,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "javascript",
+      "code": "function getSum(a, b) {\n  let res = 0;\n  let carry = 0;\n  for (let i = 0; i < 32; i++) {\n    const bitA = (a >> i) & 1;\n    const bitB = (b >> i) & 1;\n    const sum = bitA ^ bitB ^ carry;\n    carry = (bitA & bitB) | (bitA & carry) | (bitB & carry);\n    res |= (sum << i);\n  }\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "language": "javascript",
+      "code": "function getSum(a, b) {\n  while (b !== 0) {\n    const carry = (a & b) << 1;\n    a = a ^ b;\n    b = carry;\n  }\n  return a;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "python",
+      "code": "def getSum(a: int, b: int) -> int:\n    res = 0\n    carry = 0\n    for i in range(32):\n        bit_a = (a >> i) & 1\n        bit_b = (b >> i) & 1\n        sum_bit = bit_a ^ bit_b ^ carry\n        carry = (bit_a & bit_b) | (bit_a & carry) | (bit_b & carry)\n        res |= (sum_bit << i)\n    mask = 0xFFFFFFFF\n    res &= mask\n    return res if res <= 0x7FFFFFFF else ~(res ^ mask)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "language": "python",
+      "code": "def getSum(a: int, b: int) -> int:\n    mask = 0xFFFFFFFF\n    while (b & mask) != 0:\n        carry = (a & b) << 1\n        a = (a ^ b) & mask\n        b = carry & mask\n    return a if a <= 0x7FFFFFFF else ~(a ^ mask)\n",
+      "isReference": true
+    }
+  ]
+}

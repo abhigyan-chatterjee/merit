@@ -1,0 +1,946 @@
+{
+  "slug": "combination-sum",
+  "title": "Combination Sum",
+  "topic": "backtracking",
+  "difficulty": "Medium",
+  "pattern": "backtracking / Unbounded pick",
+  "statement": "# Combination Sum\n\nGiven an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
+  "examples": [
+    {
+      "input": "candidates = [2, 3, 6, 7], target = 7",
+      "output": "[[2, 2, 3], [7]]",
+      "explanation": "2 + 2 + 3 = 7 and 7 = 7. 2 can be chosen multiple times."
+    },
+    {
+      "input": "candidates = [2, 3, 5], target = 8",
+      "output": "[[2, 2, 2, 2], [2, 3, 3], [3, 5]]",
+      "explanation": "All three combinations sum to 8."
+    },
+    {
+      "input": "candidates = [2], target = 1",
+      "output": "[]",
+      "explanation": "No combination of 2 can sum to 1."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function combinationSum(candidates: number[], target: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Sort the candidates array first to enable early break pruning.",
+    "Pass the current index i to the recursive call so the same number can be reused.",
+    "When the remaining sum reaches 0, save a copy of the current combination."
+  ],
+  "editorial": {
+    "approach": "### Backtracking with Unbounded Element Selection & Pruning\n\nWe must find all unique multisets of numbers from `candidates` that sum to `target`. Elements may be reused an unlimited number of times.\n\n#### 1. Sorting and Pruning\nSort `candidates` ascending. If at any step the current candidate exceeds the remaining target (`candidates[i] > remain`), all subsequent candidates in the sorted array will also exceed `remain`, allowing an immediate `break` from the loop.\n\n#### 2. Decision Formulation\nAt state $(idx, remain)$:\n- If $remain == 0$, record the current combination.\n- Iterate $i$ from $idx$ to $len(candidates) - 1$:\n  - If $candidates[i] > remain$, terminate loop (prune).\n  - Push $candidates[i]$ into path.\n  - Recurse to $(i, remain - candidates[i])$. Passing $i$ (rather than $i + 1$) enables unbounded reuse of the current candidate while preventing duplicate combinations in different orderings.\n  - Pop $candidates[i]$ to backtrack.\n\n#### 3. Recurrence\n$$C(idx, remain) = \\bigcup_{i = idx}^{len - 1} [candidates[i]] \\oplus C(i, remain - candidates[i])$$\nBase case: $C(idx, 0) = \\{[]\\}$.",
+    "why_optimal": "Unsorted candidate searching explores dead branches where remaining sums go negative, resulting in exponential overhead. Pre-sorting candidates allows immediate loop termination when candidate > remain. Across 25 verified test cases, sorted pruned backtracking executed in 0.45 ms versus 1.51 ms for unpruned exploration.",
+    "pitfalls": "Starting the inner loop at index 0 instead of idx generates duplicate permutations of the same combination. Not breaking when candidate > remain wastes significant recursion depth."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Subset_sum_problem",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function combinationSum(candidates, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def combinationSum(candidates, target):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "combinationSum",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 25,
+    "bruteForceRuntimeMs": 1.5076480000000103,
+    "optimalRuntimeMs": 0.45476999999998924
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          2
+        ],
+        1
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          2
+        ],
+        2
+      ],
+      "expected": [
+        [
+          2
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          2
+        ],
+        4
+      ],
+      "expected": [
+        [
+          2,
+          2
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          2,
+          3,
+          6,
+          7
+        ],
+        7
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          3
+        ],
+        [
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          2,
+          3,
+          5
+        ],
+        8
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          3,
+          3
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          2
+        ],
+        3
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          3,
+          5
+        ],
+        11
+      ],
+      "expected": [
+        [
+          3,
+          3,
+          5
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          8,
+          7,
+          4,
+          3
+        ],
+        11
+      ],
+      "expected": [
+        [
+          3,
+          4,
+          4
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          7
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          2,
+          4,
+          6,
+          8
+        ],
+        10
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          2,
+          4
+        ],
+        [
+          2,
+          2,
+          6
+        ],
+        [
+          2,
+          4,
+          4
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          4,
+          6
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          7,
+          3,
+          2
+        ],
+        18
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          3,
+          7
+        ],
+        [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          2,
+          2,
+          7,
+          7
+        ],
+        [
+          2,
+          3,
+          3,
+          3,
+          7
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          2,
+          9,
+          10
+        ],
+        15
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2,
+          9
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          4,
+          5,
+          19,
+          23
+        ],
+        21
+      ],
+      "expected": [
+        [
+          4,
+          4,
+          4,
+          4,
+          5
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          2,
+          4,
+          8
+        ],
+        15
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          8,
+          19,
+          24
+        ],
+        21
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          2,
+          10,
+          16,
+          20
+        ],
+        13
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          5,
+          6,
+          8,
+          10,
+          12,
+          24
+        ],
+        10
+      ],
+      "expected": [
+        [
+          5,
+          5
+        ],
+        [
+          10
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          3,
+          5,
+          10,
+          13,
+          21,
+          23
+        ],
+        22
+      ],
+      "expected": [
+        [
+          3,
+          3,
+          3,
+          3,
+          5,
+          5
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          10
+        ],
+        [
+          3,
+          3,
+          3,
+          13
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          4,
+          14,
+          19
+        ],
+        17
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          3,
+          4,
+          8,
+          20,
+          24
+        ],
+        15
+      ],
+      "expected": [
+        [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          3,
+          4,
+          4,
+          4
+        ],
+        [
+          3,
+          4,
+          8
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          4,
+          5,
+          9,
+          10,
+          14
+        ],
+        22
+      ],
+      "expected": [
+        [
+          4,
+          4,
+          4,
+          5,
+          5
+        ],
+        [
+          4,
+          4,
+          4,
+          10
+        ],
+        [
+          4,
+          4,
+          5,
+          9
+        ],
+        [
+          4,
+          4,
+          14
+        ],
+        [
+          4,
+          9,
+          9
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          7,
+          8,
+          10,
+          13,
+          23
+        ],
+        10
+      ],
+      "expected": [
+        [
+          10
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          7,
+          9,
+          16,
+          19
+        ],
+        20
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          2,
+          3,
+          5,
+          7
+        ],
+        20
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          3
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          5
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          3,
+          7
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          5,
+          5
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          2,
+          2,
+          2,
+          2,
+          5,
+          7
+        ],
+        [
+          2,
+          2,
+          2,
+          3,
+          3,
+          3,
+          5
+        ],
+        [
+          2,
+          2,
+          2,
+          7,
+          7
+        ],
+        [
+          2,
+          2,
+          3,
+          3,
+          3,
+          7
+        ],
+        [
+          2,
+          2,
+          3,
+          3,
+          5,
+          5
+        ],
+        [
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        [
+          2,
+          3,
+          3,
+          5,
+          7
+        ],
+        [
+          2,
+          3,
+          5,
+          5,
+          5
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          5
+        ],
+        [
+          3,
+          3,
+          7,
+          7
+        ],
+        [
+          3,
+          5,
+          5,
+          7
+        ],
+        [
+          5,
+          5,
+          5,
+          5
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          3,
+          5,
+          7,
+          11
+        ],
+        25
+      ],
+      "expected": [
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          7
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          3,
+          5,
+          5
+        ],
+        [
+          3,
+          3,
+          3,
+          5,
+          11
+        ],
+        [
+          3,
+          3,
+          5,
+          7,
+          7
+        ],
+        [
+          3,
+          5,
+          5,
+          5,
+          7
+        ],
+        [
+          3,
+          11,
+          11
+        ],
+        [
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        [
+          7,
+          7,
+          11
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        [
+          5,
+          10,
+          15,
+          20
+        ],
+        35
+      ],
+      "expected": [
+        [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        [
+          5,
+          5,
+          5,
+          5,
+          5,
+          10
+        ],
+        [
+          5,
+          5,
+          5,
+          5,
+          15
+        ],
+        [
+          5,
+          5,
+          5,
+          10,
+          10
+        ],
+        [
+          5,
+          5,
+          5,
+          20
+        ],
+        [
+          5,
+          5,
+          10,
+          15
+        ],
+        [
+          5,
+          10,
+          10,
+          10
+        ],
+        [
+          5,
+          10,
+          20
+        ],
+        [
+          5,
+          15,
+          15
+        ],
+        [
+          10,
+          10,
+          15
+        ],
+        [
+          15,
+          20
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^target) | Space: O(target)",
+      "language": "javascript",
+      "code": "function combinationSum(candidates, target) {\n  const res = [];\n  function search(idx, current, sum) {\n    if (sum === target) {\n      const sorted = current.slice().sort((a, b) => a - b);\n      res.push(sorted);\n      return;\n    }\n    if (sum > target || idx >= candidates.length) return;\n    for (let i = idx; i < candidates.length; i++) {\n      current.push(candidates[i]);\n      search(i, current, sum + candidates[i]);\n      current.pop();\n    }\n  }\n  search(0, [], 0);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      if (a[i] !== b[i]) return a[i] - b[i];\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(N^(T/M)) | Space: O(T/M)",
+      "language": "javascript",
+      "code": "function combinationSum(candidates, target) {\n  const sorted = candidates.slice().sort((a, b) => a - b);\n  const res = [];\n  const current = [];\n  function backtrack(idx, remain) {\n    if (remain === 0) {\n      res.push(current.slice());\n      return;\n    }\n    for (let i = idx; i < sorted.length; i++) {\n      if (sorted[i] > remain) break;\n      current.push(sorted[i]);\n      backtrack(i, remain - sorted[i]);\n      current.pop();\n    }\n  }\n  backtrack(0, target);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      if (a[i] !== b[i]) return a[i] - b[i];\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^target) | Space: O(target)",
+      "language": "python",
+      "code": "def combinationSum(candidates: list[int], target: int) -> list[list[int]]:\n    res = []\n\n    def search(idx: int, current: list[int], cur_sum: int) -> None:\n        if cur_sum == target:\n            res.append(sorted(current))\n            return\n        if cur_sum > target or idx >= len(candidates):\n            return\n        for i in range(idx, len(candidates)):\n            current.append(candidates[i])\n            search(i, current, cur_sum + candidates[i])\n            current.pop()\n\n    search(0, [], 0)\n    res.sort()\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(N^(T/M)) | Space: O(T/M)",
+      "language": "python",
+      "code": "def combinationSum(candidates: list[int], target: int) -> list[list[int]]:\n    arr = sorted(candidates)\n    res = []\n    current: list[int] = []\n\n    def backtrack(idx: int, remain: int) -> None:\n        if remain == 0:\n            res.append(list(current))\n            return\n        for i in range(idx, len(arr)):\n            if arr[i] > remain:\n                break\n            current.append(arr[i])\n            backtrack(i, remain - arr[i])\n            current.pop()\n\n    backtrack(0, target)\n    res.sort()\n    return res\n",
+      "isReference": true
+    }
+  ]
+}

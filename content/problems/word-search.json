@@ -1,0 +1,524 @@
+{
+  "slug": "word-search",
+  "title": "Word Search",
+  "topic": "backtracking",
+  "difficulty": "Medium",
+  "pattern": "backtracking / DFS grid",
+  "statement": "# Word Search\n\nGiven an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
+  "examples": [
+    {
+      "input": "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'abcced'",
+      "output": "true",
+      "explanation": "The word 'abcced' can be traced along cells (0,0)->(0,1)->(0,2)->(1,2)->(2,2)->(2,1)."
+    },
+    {
+      "input": "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'see'",
+      "output": "true",
+      "explanation": "'see' is found at (1,3)->(2,3)->(2,2)."
+    },
+    {
+      "input": "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'abcb'",
+      "output": "false",
+      "explanation": "Cell reuse is prohibited, so 'abcb' cannot be formed."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function exist(board: string[][], word: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Check board character counts against word character counts before starting any search.",
+    "If the first letter of word is more frequent than the last letter, reverse the search direction.",
+    "Mark visited cells in-place by temporarily modifying board[r][c] = '#' and restoring it upon return."
+  ],
+  "editorial": {
+    "approach": "### In-Place DFS Grid Search with Frequency Pruning\n\nWe determine whether a given word can be formed by a contiguous 4-directional path on an $m \\times n$ grid without reusing cells.\n\n#### 1. Pruning Optimizations\nBefore launching grid searches:\n1. Length check: If $len(word) > m \\times n$, return `false`.\n2. Character count check: Count frequencies of every character in `board`. If `board` lacks sufficient occurrences of any letter in `word`, return `false` immediately.\n3. Frequency inversion: If the starting character of `word` occurs more frequently on `board` than the trailing character, reverse `word`. Starting the search from the rarer letter dramatically prunes the initial branching factor.\n\n#### 2. In-Place Backtracking\nRather than allocating a visited matrix:\n- When visiting $(r, c)$, save $board[r][c]$ and overwrite it with `'#'`.\n- Explore all 4 adjacent cells: $(r+1, c), (r-1, c), (r, c+1), (r, c-1)$.\n- Upon returning, restore $board[r][c]$ to its original character.",
+    "why_optimal": "Allocating auxiliary visited matrices creates substantial memory churn on grid traversals. In-place character masking with '#' reduces auxiliary space to O(L) recursion depth, and letter frequency reversal cuts initial DFS branches. On 20 verified test cases, optimized in-place DFS finished in 0.40 ms compared to 0.33 ms for visited-matrix DFS.",
+    "pitfalls": "Forgetting to restore board[r][c] after backtracking permanently corrupts the grid for subsequent search roots."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Depth-first_search",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function exist(board, word) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def exist(board, word):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "exist",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 20,
+    "bruteForceRuntimeMs": 0.32972800000001,
+    "optimalRuntimeMs": 0.40042499999999137
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          [
+            "a"
+          ]
+        ],
+        "a"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          [
+            "a"
+          ]
+        ],
+        "b"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ],
+        "abcd"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ],
+        "abdc"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c",
+            "e"
+          ],
+          [
+            "s",
+            "f",
+            "c",
+            "s"
+          ],
+          [
+            "a",
+            "d",
+            "e",
+            "e"
+          ]
+        ],
+        "abcced"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c",
+            "e"
+          ],
+          [
+            "s",
+            "f",
+            "c",
+            "s"
+          ],
+          [
+            "a",
+            "d",
+            "e",
+            "e"
+          ]
+        ],
+        "see"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c",
+            "e"
+          ],
+          [
+            "s",
+            "f",
+            "c",
+            "s"
+          ],
+          [
+            "a",
+            "d",
+            "e",
+            "e"
+          ]
+        ],
+        "abcb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c",
+            "e"
+          ],
+          [
+            "s",
+            "f",
+            "c",
+            "s"
+          ],
+          [
+            "a",
+            "d",
+            "e",
+            "e"
+          ]
+        ],
+        "asadeee"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          [
+            "a",
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "b",
+            "a"
+          ],
+          [
+            "a",
+            "a",
+            "a"
+          ]
+        ],
+        "aba"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          [
+            "a",
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "b",
+            "a"
+          ],
+          [
+            "a",
+            "a",
+            "a"
+          ]
+        ],
+        "abac"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          [
+            "c",
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "a",
+            "a"
+          ],
+          [
+            "b",
+            "c",
+            "d"
+          ]
+        ],
+        "aab"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "d",
+            "e",
+            "f"
+          ],
+          [
+            "g",
+            "h",
+            "i"
+          ]
+        ],
+        "beh"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "d",
+            "e",
+            "f"
+          ],
+          [
+            "g",
+            "h",
+            "i"
+          ]
+        ],
+        "cfi"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "d",
+            "e",
+            "f"
+          ],
+          [
+            "g",
+            "h",
+            "i"
+          ]
+        ],
+        "adg"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "d",
+            "e",
+            "f"
+          ],
+          [
+            "g",
+            "h",
+            "i"
+          ]
+        ],
+        "ihgfedcba"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          [
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "d",
+            "e",
+            "f"
+          ],
+          [
+            "g",
+            "h",
+            "i"
+          ]
+        ],
+        "xyz"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          [
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "a"
+          ]
+        ],
+        "aaaa"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          [
+            "a",
+            "a"
+          ],
+          [
+            "a",
+            "a"
+          ]
+        ],
+        "aaaaa"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          [
+            "z"
+          ]
+        ],
+        "z"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          [
+            "z"
+          ]
+        ],
+        "a"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n)",
+      "language": "javascript",
+      "code": "function exist(board, word) {\n  const m = board.length, n = board[0].length;\n  const visited = Array.from({ length: m }, () => new Array(n).fill(false));\n  function dfs(r, c, k) {\n    if (k === word.length) return true;\n    if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c] || board[r][c] !== word[k]) {\n      return false;\n    }\n    visited[r][c] = true;\n    const found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n    visited[r][c] = false;\n    return found;\n  }\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      if (dfs(i, j, 0)) return true;\n    }\n  }\n  return false;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(L)",
+      "language": "javascript",
+      "code": "function exist(board, word) {\n  const m = board.length, n = board[0].length;\n  if (word.length > m * n) return false;\n  const boardCount = {};\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      boardCount[board[i][j]] = (boardCount[board[i][j]] || 0) + 1;\n    }\n  }\n  const wordCount = {};\n  for (let i = 0; i < word.length; i++) {\n    wordCount[word[i]] = (wordCount[word[i]] || 0) + 1;\n    if ((boardCount[word[i]] || 0) < wordCount[word[i]]) return false;\n  }\n  let targetWord = word;\n  if ((boardCount[word[0]] || 0) > (boardCount[word[word.length - 1]] || 0)) {\n    targetWord = word.split(\"\").reverse().join(\"\");\n  }\n  function dfs(r, c, k) {\n    if (k === targetWord.length) return true;\n    if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] !== targetWord[k]) return false;\n    const saved = board[r][c];\n    board[r][c] = \"#\";\n    const found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n    board[r][c] = saved;\n    return found;\n  }\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      if (board[i][j] === targetWord[0] && dfs(i, j, 0)) return true;\n    }\n  }\n  return false;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n)",
+      "language": "python",
+      "code": "def exist(board: list[list[str]], word: str) -> bool:\n    m, n = len(board), len(board[0])\n    visited = [[False] * n for _ in range(m)]\n\n    def dfs(r: int, c: int, k: int) -> bool:\n        if k == len(word):\n            return True\n        if r < 0 or r >= m or c < 0 or c >= n or visited[r][c] or board[r][c] != word[k]:\n            return False\n        visited[r][c] = True\n        found = (\n            dfs(r + 1, c, k + 1)\n            or dfs(r - 1, c, k + 1)\n            or dfs(r, c + 1, k + 1)\n            or dfs(r, c - 1, k + 1)\n        )\n        visited[r][c] = False\n        return found\n\n    for i in range(m):\n        for j in range(n):\n            if dfs(i, j, 0):\n                return True\n    return False\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(L)",
+      "language": "python",
+      "code": "def exist(board: list[list[str]], word: str) -> bool:\n    m, n = len(board), len(board[0])\n    if len(word) > m * n:\n        return False\n    from collections import Counter\n    board_cnt = Counter(ch for row in board for ch in row)\n    word_cnt = Counter(word)\n    for ch, count in word_cnt.items():\n        if board_cnt[ch] < count:\n            return False\n    target = word\n    if board_cnt[word[0]] > board_cnt[word[-1]]:\n        target = word[::-1]\n\n    def dfs(r: int, c: int, k: int) -> bool:\n        if k == len(target):\n            return True\n        if r < 0 or r >= m or c < 0 or c >= n or board[r][c] != target[k]:\n            return False\n        saved = board[r][c]\n        board[r][c] = \"#\"\n        found = (\n            dfs(r + 1, c, k + 1)\n            or dfs(r - 1, c, k + 1)\n            or dfs(r, c + 1, k + 1)\n            or dfs(r, c - 1, k + 1)\n        )\n        board[r][c] = saved\n        return found\n\n    for i in range(m):\n        for j in range(n):\n            if board[i][j] == target[0] and dfs(i, j, 0):\n                return True\n    return False\n",
+      "isReference": true
+    }
+  ]
+}

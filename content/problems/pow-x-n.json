@@ -1,0 +1,330 @@
+{
+  "slug": "pow-x-n",
+  "title": "Pow(x, n)",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "math-matrices / Fast pow",
+  "statement": "# Pow(x, n)\n\nImplement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `x\u207f`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
+  "examples": [
+    {
+      "input": "x = 2.0, n = 10",
+      "output": "1024",
+      "explanation": "2\u00b9\u2070 = 1024."
+    },
+    {
+      "input": "x = 2.1, n = 3",
+      "output": "9.261",
+      "explanation": "2.1\u00b3 = 9.261."
+    },
+    {
+      "input": "x = 2.0, n = -2",
+      "output": "0.25",
+      "explanation": "2\u207b\u00b2 = 1 / (2\u00b2) = 1 / 4 = 0.25."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function myPow(x: number, n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "If n is even, x\u207f = (x\u00b2)^(n/2). If n is odd, x\u207f = x \u00b7 (x\u00b2)^((n-1)/2).",
+    "When n is negative, transform the problem to (1/x)^(-n).",
+    "This reduces the number of multiplications from O(n) to O(log n)."
+  ],
+  "editorial": {
+    "approach": "### Exponentiation by Squaring (Binary Exponentiation)\n\nComputing $x^n$ by multiplying $x$ by itself $n$ times takes $O(|n|)$ operations, which is prohibitively slow for large exponents. Binary exponentiation halves the exponent at each step.\n\n#### 1. Mathematical Principle\nFor any integer $n \\ge 0$:\n$$x^n = \\begin{cases} 1 & \\text{if } n = 0 \\\\ (x^2)^{n/2} & \\text{if } n \\text{ is even} \\\\ x \\cdot (x^2)^{(n-1)/2} & \\text{if } n \\text{ is odd} \\end{cases}$$\n\n#### 2. Negative Exponents\nIf $n < 0$, invert the base and negate the exponent:\n$$x = \\frac{1}{x}, \\quad n = -n$$\n\n#### 3. Algorithm\nInitialize `res = 1.0`. While $n > 0$:\n- If $n$ is odd ($n \\% 2 == 1$), `res *= x`.\n- Square the base: `x *= x`.\n- Halve the exponent: $n = \\lfloor n / 2 \\rfloor$.\nRound the result to 5 decimal places to prevent float precision divergence.",
+    "why_optimal": "Linear multiplication takes O(|n|) operations. Binary exponentiation squares the base and halves the exponent at each step, reducing runtime to O(log |n|). On 27 verified test cases, binary exponentiation executed in 0.12 ms versus 0.11 ms for linear multiplication.",
+    "pitfalls": "Handling 32-bit integer minimum -2147483648: negating it directly causes overflow in languages without 64-bit promotion. Using division by 2 avoids overflow."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Exponentiation_by_squaring"
+  ],
+  "starterCode": {
+    "javascript": "function myPow(x, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def myPow(x, n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "myPow",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 27,
+    "bruteForceRuntimeMs": 0.10899300000001233,
+    "optimalRuntimeMs": 0.11911000000000627
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        2.0,
+        10
+      ],
+      "expected": 1024,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        2.1,
+        3
+      ],
+      "expected": 9.261,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        2.0,
+        -2
+      ],
+      "expected": 0.25,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        1.0,
+        100
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        -1.0,
+        3
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        -1.0,
+        4
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        2.0,
+        0
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        0.5,
+        2
+      ],
+      "expected": 0.25,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        3.0,
+        5
+      ],
+      "expected": 243,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        5.0,
+        -3
+      ],
+      "expected": 0.008,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        0.0,
+        5
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        7.0,
+        2
+      ],
+      "expected": 49,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        -2.0,
+        3
+      ],
+      "expected": -8,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        -2.0,
+        4
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        0.25,
+        2
+      ],
+      "expected": 0.0625,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        2.1,
+        -10
+      ],
+      "expected": 0.0006,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        2.4,
+        -3
+      ],
+      "expected": 0.07234,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        1.1,
+        13
+      ],
+      "expected": 3.45227,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        0.8,
+        13
+      ],
+      "expected": 0.05498,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        2.7,
+        -8
+      ],
+      "expected": 0.00035,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        2.0,
+        -9
+      ],
+      "expected": 0.00195,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        0.6,
+        -4
+      ],
+      "expected": 7.71605,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        1.1,
+        9
+      ],
+      "expected": 2.35795,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        0.6,
+        -4
+      ],
+      "expected": 7.71605,
+      "isSample": false
+    },
+    {
+      "label": "case-25",
+      "input": [
+        2.3,
+        12
+      ],
+      "expected": 21914.62443,
+      "isSample": false
+    },
+    {
+      "label": "case-26",
+      "input": [
+        2.0,
+        30
+      ],
+      "expected": 1073741824,
+      "isSample": false
+    },
+    {
+      "label": "case-27",
+      "input": [
+        1.0001,
+        500
+      ],
+      "expected": 1.05127,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(|n|) | Space: O(1)",
+      "language": "javascript",
+      "code": "function myPow(x, n) {\n  if (n === 0) return 1;\n  let exp = n;\n  let base = x;\n  if (exp < 0) {\n    base = 1 / base;\n    exp = -exp;\n  }\n  let res = 1.0;\n  for (let i = 0; i < exp; i++) {\n    res *= base;\n  }\n  res = Math.round(res * 1e5) / 1e5;\n  return Number.isInteger(res) ? Math.trunc(res) : res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log |n|) | Space: O(1)",
+      "language": "javascript",
+      "code": "function myPow(x, n) {\n  if (n === 0) return 1;\n  let exp = n;\n  let base = x;\n  if (exp < 0) {\n    base = 1 / base;\n    exp = -exp;\n  }\n  let res = 1.0;\n  while (exp > 0) {\n    if (exp % 2 === 1) res *= base;\n    base *= base;\n    exp = Math.floor(exp / 2);\n  }\n  res = Math.round(res * 1e5) / 1e5;\n  return Number.isInteger(res) ? Math.trunc(res) : res;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(|n|) | Space: O(1)",
+      "language": "python",
+      "code": "def myPow(x: float, n: int) -> float | int:\n    if n == 0:\n        return 1\n    exp = n\n    base = x\n    if exp < 0:\n        base = 1.0 / base\n        exp = -exp\n    res = 1.0\n    for _ in range(exp):\n        res *= base\n    res = round(res, 5)\n    return int(res) if res.is_integer() else res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log |n|) | Space: O(1)",
+      "language": "python",
+      "code": "def myPow(x: float, n: int) -> float | int:\n    if n == 0:\n        return 1\n    exp = n\n    base = x\n    if exp < 0:\n        base = 1.0 / base\n        exp = -exp\n    res = 1.0\n    while exp > 0:\n        if exp % 2 == 1:\n            res *= base\n        base *= base\n        exp //= 2\n    res = round(res, 5)\n    return int(res) if res.is_integer() else res\n",
+      "isReference": true
+    }
+  ]
+}

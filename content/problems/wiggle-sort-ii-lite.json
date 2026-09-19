@@ -1,0 +1,834 @@
+{
+  "slug": "wiggle-sort-ii-lite",
+  "title": "Wiggle Sort II Lite",
+  "topic": "sorting",
+  "difficulty": "Medium",
+  "pattern": "sorting / Interleave halves",
+  "statement": "# Wiggle Sort II Lite\n\nGiven an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `\u2308n/2\u2309` and a larger half of length `\u230an/2\u230b`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
+  "examples": [
+    {
+      "input": "nums = [1, 5, 1, 1, 6, 4]",
+      "output": "[1, 6, 1, 5, 1, 4]",
+      "explanation": "1 < 6 > 1 < 5 > 1 < 4 satisfies nums[0] < nums[1] > nums[2] < nums[3]..."
+    },
+    {
+      "input": "nums = [1, 3, 2, 2, 3, 1]",
+      "output": "[2, 3, 1, 3, 1, 2]",
+      "explanation": "2 < 3 > 1 < 3 > 1 < 2 satisfies the wiggle requirement."
+    },
+    {
+      "input": "nums = [1]",
+      "output": "[1]",
+      "explanation": "Single element array is trivially valid."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function wiggleSort(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Sort the array and divide it into a smaller half and a larger half.",
+    "Place smaller elements at even indices and larger elements at odd indices.",
+    "Write the elements in reverse order (from largest to smallest within each half) to keep duplicates separated."
+  ],
+  "editorial": {
+    "approach": "### Sorting and Interleaving Reverse Halves\n\nWe rearrange `nums` such that $nums[0] < nums[1] > nums[2] < nums[3] \\dots$.\n\n#### 1. Separation into Two Halves\nSort a copy of `nums` ascending:\n- Smaller half `left`: first $\\lceil n / 2 \\rceil$ elements ($nums[0 \\dots mid - 1]$).\n- Larger half `right`: remaining $\\lfloor n / 2 \\rfloor$ elements ($nums[mid \\dots n - 1]$).\n\n#### 2. Reverse Interleaving Construction\nIf elements were placed from left to right, median duplicates from the boundary could collide at adjacent indices.\nBy taking elements in reverse order:\n- Even indices $0, 2, 4, \\dots$ take elements from the end of `left` backwards.\n- Odd indices $1, 3, 5, \\dots$ take elements from the end of `right` backwards.\nThis maximizes the distance between identical elements, strictly satisfying $nums[i-1] < nums[i] > nums[i+1]$.",
+    "why_optimal": "O(n\u00b2) selection sorting performs quadratic comparisons across elements. Using an O(n log n) sort followed by O(n) reverse-half interleaving rearranges the array in O(n log n) time and O(n) space. Across 23 verified test cases, O(n log n) sort-and-interleave executed in 1.13 ms compared to 0.96 ms for selection sort.",
+    "pitfalls": "Interleaving from the start of each half instead of the reverse ends causes identical median values to end up adjacent."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Median",
+    "https://en.wikipedia.org/wiki/Quickselect"
+  ],
+  "starterCode": {
+    "javascript": "function wiggleSort(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def wiggleSort(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "wiggleSort",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 23,
+    "bruteForceRuntimeMs": 0.9645990000000069,
+    "optimalRuntimeMs": 1.1344430000000614
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        []
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          1,
+          2
+        ]
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          1,
+          5,
+          1,
+          1,
+          6,
+          4
+        ]
+      ],
+      "expected": [
+        1,
+        6,
+        1,
+        5,
+        1,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          1,
+          3,
+          2,
+          2,
+          3,
+          1
+        ]
+      ],
+      "expected": [
+        2,
+        3,
+        1,
+        3,
+        1,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          4,
+          5,
+          5,
+          6
+        ]
+      ],
+      "expected": [
+        5,
+        6,
+        4,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          1,
+          1,
+          2,
+          1,
+          2,
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          3,
+          2,
+          1,
+          4,
+          5
+        ]
+      ],
+      "expected": [
+        3,
+        5,
+        2,
+        4,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      ],
+      "expected": [
+        3,
+        6,
+        2,
+        5,
+        1,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        3,
+        6,
+        2,
+        5,
+        1,
+        4
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          1,
+          2,
+          2,
+          3
+        ]
+      ],
+      "expected": [
+        2,
+        3,
+        1,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          4,
+          1,
+          9,
+          8,
+          8,
+          5,
+          4,
+          18,
+          3,
+          19,
+          14,
+          2,
+          1,
+          3
+        ]
+      ],
+      "expected": [
+        4,
+        19,
+        4,
+        18,
+        3,
+        14,
+        3,
+        9,
+        2,
+        8,
+        1,
+        8,
+        1,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          8,
+          17,
+          20,
+          1,
+          18,
+          7,
+          18
+        ]
+      ],
+      "expected": [
+        17,
+        20,
+        8,
+        18,
+        7,
+        18,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          8,
+          15,
+          19,
+          9,
+          1,
+          6,
+          14,
+          11,
+          9,
+          5
+        ]
+      ],
+      "expected": [
+        9,
+        19,
+        8,
+        15,
+        6,
+        14,
+        5,
+        11,
+        1,
+        9
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          11,
+          4,
+          3,
+          13,
+          4,
+          12,
+          12
+        ]
+      ],
+      "expected": [
+        11,
+        13,
+        4,
+        12,
+        4,
+        12,
+        3
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          9,
+          2,
+          15,
+          18,
+          4,
+          13,
+          3,
+          18,
+          10,
+          20,
+          12,
+          19,
+          7
+        ]
+      ],
+      "expected": [
+        12,
+        20,
+        10,
+        19,
+        9,
+        18,
+        7,
+        18,
+        4,
+        15,
+        3,
+        13,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          3,
+          2,
+          8,
+          10,
+          3,
+          8,
+          4,
+          13,
+          9,
+          15,
+          12,
+          6,
+          12,
+          12,
+          7
+        ]
+      ],
+      "expected": [
+        8,
+        15,
+        8,
+        13,
+        7,
+        12,
+        6,
+        12,
+        4,
+        12,
+        3,
+        10,
+        3,
+        9,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          9,
+          3,
+          20,
+          6,
+          18,
+          8,
+          6,
+          15,
+          13,
+          9,
+          18,
+          8,
+          11,
+          2
+        ]
+      ],
+      "expected": [
+        9,
+        20,
+        8,
+        18,
+        8,
+        18,
+        6,
+        15,
+        6,
+        13,
+        3,
+        11,
+        2,
+        9
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          2,
+          11,
+          13,
+          9,
+          3,
+          7,
+          19
+        ]
+      ],
+      "expected": [
+        9,
+        19,
+        7,
+        13,
+        3,
+        11,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          11,
+          7,
+          16,
+          13,
+          15,
+          5,
+          9,
+          5,
+          8,
+          18,
+          18,
+          9,
+          19,
+          14,
+          19
+        ]
+      ],
+      "expected": [
+        13,
+        19,
+        11,
+        19,
+        9,
+        18,
+        9,
+        18,
+        8,
+        16,
+        7,
+        15,
+        5,
+        14,
+        5
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          12,
+          8,
+          5,
+          17,
+          16,
+          3,
+          2,
+          4,
+          5,
+          6
+        ]
+      ],
+      "expected": [
+        5,
+        17,
+        5,
+        16,
+        4,
+        12,
+        3,
+        8,
+        2,
+        6
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          88,
+          55,
+          77,
+          9,
+          50,
+          49,
+          77,
+          60,
+          68,
+          33,
+          71,
+          2,
+          88,
+          93,
+          15,
+          88,
+          69,
+          97,
+          35,
+          99,
+          83,
+          44,
+          15,
+          38,
+          56,
+          21,
+          59,
+          1,
+          93,
+          93,
+          34,
+          65,
+          98,
+          23,
+          65,
+          14,
+          81,
+          39,
+          82,
+          65
+        ]
+      ],
+      "expected": [
+        60,
+        99,
+        59,
+        98,
+        56,
+        97,
+        55,
+        93,
+        50,
+        93,
+        49,
+        93,
+        44,
+        88,
+        39,
+        88,
+        38,
+        88,
+        35,
+        83,
+        34,
+        82,
+        33,
+        81,
+        23,
+        77,
+        21,
+        77,
+        15,
+        71,
+        15,
+        69,
+        14,
+        68,
+        9,
+        65,
+        2,
+        65,
+        1,
+        65
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          78,
+          26,
+          20,
+          48,
+          98,
+          21,
+          70,
+          100,
+          68,
+          1,
+          77,
+          42,
+          63,
+          3,
+          15,
+          47,
+          40,
+          31,
+          8,
+          31,
+          73,
+          11,
+          11,
+          94,
+          63,
+          9,
+          98,
+          69,
+          99,
+          17,
+          17,
+          85,
+          61,
+          71,
+          22,
+          34,
+          68,
+          78,
+          55,
+          28,
+          70,
+          97,
+          94,
+          89,
+          26,
+          92,
+          40,
+          52,
+          86,
+          84,
+          48,
+          57,
+          67,
+          58,
+          16,
+          32,
+          29,
+          9,
+          44,
+          3
+        ]
+      ],
+      "expected": [
+        48,
+        100,
+        48,
+        99,
+        47,
+        98,
+        44,
+        98,
+        42,
+        97,
+        40,
+        94,
+        40,
+        94,
+        34,
+        92,
+        32,
+        89,
+        31,
+        86,
+        31,
+        85,
+        29,
+        84,
+        28,
+        78,
+        26,
+        78,
+        26,
+        77,
+        22,
+        73,
+        21,
+        71,
+        20,
+        70,
+        17,
+        70,
+        17,
+        69,
+        16,
+        68,
+        15,
+        68,
+        11,
+        67,
+        11,
+        63,
+        9,
+        63,
+        9,
+        61,
+        8,
+        58,
+        3,
+        57,
+        3,
+        55,
+        1,
+        52
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function wiggleSort(nums) {\n  const n = nums.length;\n  if (n <= 1) return nums.slice();\n  const sorted = nums.slice();\n  for (let i = 0; i < n; i++) {\n    let minIdx = i;\n    for (let j = i + 1; j < n; j++) {\n      if (sorted[j] < sorted[minIdx]) minIdx = j;\n    }\n    const temp = sorted[i];\n    sorted[i] = sorted[minIdx];\n    sorted[minIdx] = temp;\n  }\n  const mid = Math.floor((n + 1) / 2);\n  const left = sorted.slice(0, mid);\n  const right = sorted.slice(mid);\n  const res = new Array(n);\n  let l = left.length - 1;\n  let r = right.length - 1;\n  for (let i = 0; i < n; i++) {\n    if (i % 2 === 0) res[i] = left[l--];\n    else res[i] = right[r--];\n  }\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function wiggleSort(nums) {\n  const n = nums.length;\n  if (n <= 1) return nums.slice();\n  const sorted = nums.slice().sort((a, b) => a - b);\n  const mid = Math.floor((n + 1) / 2);\n  const left = sorted.slice(0, mid);\n  const right = sorted.slice(mid);\n  const res = new Array(n);\n  let l = left.length - 1;\n  let r = right.length - 1;\n  for (let i = 0; i < n; i++) {\n    if (i % 2 === 0) res[i] = left[l--];\n    else res[i] = right[r--];\n  }\n  return res;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "python",
+      "code": "def wiggleSort(nums: list[int]) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    sorted_nums = list(nums)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if sorted_nums[j] < sorted_nums[min_idx]:\n                min_idx = j\n        sorted_nums[i], sorted_nums[min_idx] = sorted_nums[min_idx], sorted_nums[i]\n    mid = (n + 1) // 2\n    left = sorted_nums[:mid]\n    right = sorted_nums[mid:]\n    res = [0] * n\n    l, r = len(left) - 1, len(right) - 1\n    for i in range(n):\n        if i % 2 == 0:\n            res[i] = left[l]\n            l -= 1\n        else:\n            res[i] = right[r]\n            r -= 1\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def wiggleSort(nums: list[int]) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    sorted_nums = sorted(nums)\n    mid = (n + 1) // 2\n    left = sorted_nums[:mid]\n    right = sorted_nums[mid:]\n    res = [0] * n\n    l, r = len(left) - 1, len(right) - 1\n    for i in range(n):\n        if i % 2 == 0:\n            res[i] = left[l]\n            l -= 1\n        else:\n            res[i] = right[r]\n            r -= 1\n    return res\n",
+      "isReference": true
+    }
+  ]
+}

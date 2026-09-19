@@ -1,0 +1,1319 @@
+{
+  "slug": "meeting-rooms-ii",
+  "title": "Meeting Rooms II",
+  "topic": "intervals",
+  "difficulty": "Medium",
+  "pattern": "intervals / Heap sweep",
+  "statement": "# Meeting Rooms II\n\nGiven an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10\u2076`.\n",
+  "examples": [
+    {
+      "input": "intervals = [[0, 30], [5, 10], [15, 20]]",
+      "output": "2",
+      "explanation": "Meeting [0, 30] conflicts with [5, 10] and [15, 20]. At least 2 rooms are required."
+    },
+    {
+      "input": "intervals = [[7, 10], [2, 4]]",
+      "output": "1",
+      "explanation": "The two meetings do not overlap in time, requiring only 1 room."
+    },
+    {
+      "input": "intervals = []",
+      "output": "0",
+      "explanation": "No meetings require 0 rooms."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function minMeetingRooms(intervals: number[][])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The minimum rooms required is equal to the maximum number of simultaneous overlapping meetings.",
+    "Separate the start times and end times into two arrays and sort both independently.",
+    "Use two pointers: when start[s] < end[e], allocate a room; otherwise free a room."
+  ],
+  "editorial": {
+    "approach": "### Sweep-Line / Two-Pointer Coordinate Discretization\n\nThe minimum number of conference rooms required equals the maximum number of concurrent meetings occurring at any point in time.\n\n#### 1. Decoupling Starts and Ends\nA meeting interval $[start, end]$ indicates that at time $start$ a room is claimed (+1), and at time $end$ a room is released (-1).\nBecause each room release is interchangeable across all active meetings, start times and end times can be extracted and sorted into two separate arrays:\n- `starts = intervals.map(iv => iv[0]).sort()`\n- `ends = intervals.map(iv => iv[1]).sort()`\n\n#### 2. Two-Pointer Scan\nMaintain pointers $s$ (current start) and $e$ (current end), and tracking variables `rooms` and `maxRooms`:\n- If $starts[s] < ends[e]$: A meeting starts before the earliest ending meeting finishes. Increment `rooms++`, update `maxRooms = max(maxRooms, rooms)`, and advance $s++$.\n- Else: A meeting has ended. Decrement `rooms--` and advance $e++$.\nTerminates when all meetings have started ($s == n$).",
+    "why_optimal": "Checking all pairwise overlaps for each interval takes O(n\u00b2) time. Decoupling start and end coordinates into two sorted arrays allows a linear two-pointer scan, reducing time complexity to O(n log n). On 24 verified test cases, the two-pointer sweep line ran in 1.75 ms compared to 0.92 ms for pairwise overlap checks.",
+    "pitfalls": "A meeting ending at time t does NOT conflict with a meeting starting at time t. Use strictly less than (starts[s] < ends[e]) so the ended room is freed."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sweep_line_algorithm",
+    "https://en.wikipedia.org/wiki/Priority_queue"
+  ],
+  "starterCode": {
+    "javascript": "function minMeetingRooms(intervals) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def minMeetingRooms(intervals):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "minMeetingRooms",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 24,
+    "bruteForceRuntimeMs": 0.9215710000000001,
+    "optimalRuntimeMs": 1.752125000000028
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        []
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          [
+            0,
+            30
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            15,
+            20
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          [
+            7,
+            10
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            4,
+            8
+          ]
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          [
+            1,
+            10
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            8,
+            9
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          [
+            9,
+            10
+          ],
+          [
+            4,
+            9
+          ],
+          [
+            4,
+            17
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          [
+            5,
+            8
+          ],
+          [
+            6,
+            8
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          [
+            1,
+            100
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            7,
+            9
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          [
+            14,
+            16
+          ],
+          [
+            94,
+            112
+          ],
+          [
+            31,
+            46
+          ],
+          [
+            17,
+            65
+          ],
+          [
+            13,
+            57
+          ],
+          [
+            94,
+            129
+          ],
+          [
+            11,
+            49
+          ],
+          [
+            54,
+            57
+          ],
+          [
+            3,
+            9
+          ],
+          [
+            27,
+            42
+          ],
+          [
+            64,
+            103
+          ],
+          [
+            3,
+            39
+          ],
+          [
+            25,
+            71
+          ]
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          [
+            89,
+            124
+          ],
+          [
+            53,
+            68
+          ],
+          [
+            57,
+            95
+          ],
+          [
+            35,
+            36
+          ],
+          [
+            97,
+            108
+          ],
+          [
+            89,
+            117
+          ],
+          [
+            43,
+            61
+          ],
+          [
+            19,
+            33
+          ],
+          [
+            97,
+            119
+          ],
+          [
+            13,
+            19
+          ],
+          [
+            48,
+            55
+          ],
+          [
+            45,
+            68
+          ],
+          [
+            77,
+            94
+          ]
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          [
+            5,
+            52
+          ],
+          [
+            58,
+            93
+          ],
+          [
+            15,
+            40
+          ],
+          [
+            10,
+            46
+          ],
+          [
+            37,
+            78
+          ],
+          [
+            79,
+            103
+          ],
+          [
+            73,
+            86
+          ],
+          [
+            90,
+            95
+          ],
+          [
+            5,
+            48
+          ],
+          [
+            29,
+            79
+          ],
+          [
+            37,
+            43
+          ],
+          [
+            29,
+            36
+          ],
+          [
+            48,
+            66
+          ],
+          [
+            58,
+            99
+          ],
+          [
+            46,
+            57
+          ]
+        ]
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          [
+            45,
+            59
+          ],
+          [
+            85,
+            103
+          ],
+          [
+            89,
+            133
+          ],
+          [
+            82,
+            87
+          ],
+          [
+            77,
+            118
+          ],
+          [
+            21,
+            56
+          ],
+          [
+            93,
+            109
+          ],
+          [
+            20,
+            50
+          ]
+        ]
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          [
+            34,
+            75
+          ],
+          [
+            88,
+            124
+          ],
+          [
+            28,
+            72
+          ],
+          [
+            41,
+            91
+          ],
+          [
+            99,
+            103
+          ],
+          [
+            29,
+            32
+          ],
+          [
+            40,
+            66
+          ],
+          [
+            34,
+            39
+          ],
+          [
+            27,
+            64
+          ]
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          [
+            40,
+            54
+          ],
+          [
+            83,
+            115
+          ],
+          [
+            50,
+            92
+          ],
+          [
+            58,
+            68
+          ],
+          [
+            33,
+            42
+          ],
+          [
+            31,
+            79
+          ],
+          [
+            71,
+            106
+          ],
+          [
+            33,
+            81
+          ],
+          [
+            74,
+            102
+          ],
+          [
+            74,
+            100
+          ],
+          [
+            46,
+            61
+          ],
+          [
+            17,
+            50
+          ],
+          [
+            63,
+            69
+          ],
+          [
+            96,
+            100
+          ]
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          [
+            19,
+            60
+          ],
+          [
+            20,
+            64
+          ],
+          [
+            54,
+            93
+          ],
+          [
+            8,
+            33
+          ]
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          [
+            76,
+            106
+          ],
+          [
+            67,
+            84
+          ],
+          [
+            70,
+            71
+          ],
+          [
+            87,
+            134
+          ],
+          [
+            14,
+            58
+          ],
+          [
+            68,
+            117
+          ],
+          [
+            34,
+            84
+          ],
+          [
+            82,
+            104
+          ],
+          [
+            14,
+            33
+          ]
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          [
+            20,
+            50
+          ],
+          [
+            0,
+            47
+          ],
+          [
+            92,
+            109
+          ],
+          [
+            64,
+            113
+          ],
+          [
+            22,
+            55
+          ],
+          [
+            13,
+            54
+          ],
+          [
+            38,
+            79
+          ],
+          [
+            64,
+            103
+          ],
+          [
+            25,
+            35
+          ]
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          [
+            97,
+            108
+          ],
+          [
+            69,
+            119
+          ],
+          [
+            67,
+            68
+          ],
+          [
+            76,
+            97
+          ],
+          [
+            62,
+            64
+          ],
+          [
+            14,
+            38
+          ],
+          [
+            39,
+            55
+          ],
+          [
+            7,
+            23
+          ]
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          [
+            10,
+            16
+          ],
+          [
+            93,
+            125
+          ],
+          [
+            8,
+            57
+          ],
+          [
+            68,
+            118
+          ],
+          [
+            16,
+            25
+          ],
+          [
+            84,
+            115
+          ],
+          [
+            70,
+            81
+          ],
+          [
+            33,
+            67
+          ],
+          [
+            77,
+            105
+          ],
+          [
+            27,
+            62
+          ],
+          [
+            96,
+            143
+          ],
+          [
+            88,
+            101
+          ]
+        ]
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          [
+            39,
+            65
+          ],
+          [
+            85,
+            127
+          ],
+          [
+            47,
+            76
+          ],
+          [
+            66,
+            95
+          ],
+          [
+            15,
+            31
+          ],
+          [
+            28,
+            33
+          ],
+          [
+            43,
+            45
+          ],
+          [
+            75,
+            111
+          ],
+          [
+            29,
+            67
+          ],
+          [
+            28,
+            29
+          ],
+          [
+            9,
+            55
+          ],
+          [
+            80,
+            84
+          ],
+          [
+            29,
+            34
+          ],
+          [
+            4,
+            26
+          ]
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          [
+            0,
+            10
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            2,
+            12
+          ],
+          [
+            3,
+            13
+          ],
+          [
+            4,
+            14
+          ],
+          [
+            5,
+            15
+          ],
+          [
+            6,
+            16
+          ],
+          [
+            7,
+            17
+          ],
+          [
+            8,
+            18
+          ],
+          [
+            9,
+            19
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            11,
+            21
+          ],
+          [
+            12,
+            22
+          ],
+          [
+            13,
+            23
+          ],
+          [
+            14,
+            24
+          ],
+          [
+            15,
+            25
+          ],
+          [
+            16,
+            26
+          ],
+          [
+            17,
+            27
+          ],
+          [
+            18,
+            28
+          ],
+          [
+            19,
+            29
+          ],
+          [
+            20,
+            30
+          ],
+          [
+            21,
+            31
+          ],
+          [
+            22,
+            32
+          ],
+          [
+            23,
+            33
+          ],
+          [
+            24,
+            34
+          ],
+          [
+            25,
+            35
+          ],
+          [
+            26,
+            36
+          ],
+          [
+            27,
+            37
+          ],
+          [
+            28,
+            38
+          ],
+          [
+            29,
+            39
+          ],
+          [
+            30,
+            40
+          ],
+          [
+            31,
+            41
+          ],
+          [
+            32,
+            42
+          ],
+          [
+            33,
+            43
+          ],
+          [
+            34,
+            44
+          ],
+          [
+            35,
+            45
+          ],
+          [
+            36,
+            46
+          ],
+          [
+            37,
+            47
+          ],
+          [
+            38,
+            48
+          ],
+          [
+            39,
+            49
+          ],
+          [
+            40,
+            50
+          ],
+          [
+            41,
+            51
+          ],
+          [
+            42,
+            52
+          ],
+          [
+            43,
+            53
+          ],
+          [
+            44,
+            54
+          ],
+          [
+            45,
+            55
+          ],
+          [
+            46,
+            56
+          ],
+          [
+            47,
+            57
+          ],
+          [
+            48,
+            58
+          ],
+          [
+            49,
+            59
+          ]
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            8,
+            9
+          ],
+          [
+            10,
+            11
+          ],
+          [
+            12,
+            13
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            16,
+            17
+          ],
+          [
+            18,
+            19
+          ],
+          [
+            20,
+            21
+          ],
+          [
+            22,
+            23
+          ],
+          [
+            24,
+            25
+          ],
+          [
+            26,
+            27
+          ],
+          [
+            28,
+            29
+          ],
+          [
+            30,
+            31
+          ],
+          [
+            32,
+            33
+          ],
+          [
+            34,
+            35
+          ],
+          [
+            36,
+            37
+          ],
+          [
+            38,
+            39
+          ],
+          [
+            40,
+            41
+          ],
+          [
+            42,
+            43
+          ],
+          [
+            44,
+            45
+          ],
+          [
+            46,
+            47
+          ],
+          [
+            48,
+            49
+          ],
+          [
+            50,
+            51
+          ],
+          [
+            52,
+            53
+          ],
+          [
+            54,
+            55
+          ],
+          [
+            56,
+            57
+          ],
+          [
+            58,
+            59
+          ],
+          [
+            60,
+            61
+          ],
+          [
+            62,
+            63
+          ],
+          [
+            64,
+            65
+          ],
+          [
+            66,
+            67
+          ],
+          [
+            68,
+            69
+          ],
+          [
+            70,
+            71
+          ],
+          [
+            72,
+            73
+          ],
+          [
+            74,
+            75
+          ],
+          [
+            76,
+            77
+          ],
+          [
+            78,
+            79
+          ],
+          [
+            80,
+            81
+          ],
+          [
+            82,
+            83
+          ],
+          [
+            84,
+            85
+          ],
+          [
+            86,
+            87
+          ],
+          [
+            88,
+            89
+          ],
+          [
+            90,
+            91
+          ],
+          [
+            92,
+            93
+          ],
+          [
+            94,
+            95
+          ],
+          [
+            96,
+            97
+          ],
+          [
+            98,
+            99
+          ]
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function minMeetingRooms(intervals) {\n  if (!intervals || intervals.length === 0) return 0;\n  let maxRooms = 0;\n  for (let i = 0; i < intervals.length; i++) {\n    const time = intervals[i][0];\n    let count = 0;\n    for (let j = 0; j < intervals.length; j++) {\n      if (intervals[j][0] <= time && time < intervals[j][1]) {\n        count++;\n      }\n    }\n    if (count > maxRooms) maxRooms = count;\n  }\n  return maxRooms;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function minMeetingRooms(intervals) {\n  if (!intervals || intervals.length === 0) return 0;\n  const starts = intervals.map(iv => iv[0]).sort((a, b) => a - b);\n  const ends = intervals.map(iv => iv[1]).sort((a, b) => a - b);\n  let s = 0, e = 0, rooms = 0, maxRooms = 0;\n  while (s < starts.length) {\n    if (starts[s] < ends[e]) {\n      rooms++;\n      if (rooms > maxRooms) maxRooms = rooms;\n      s++;\n    } else {\n      rooms--;\n      e++;\n    }\n  }\n  return maxRooms;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "python",
+      "code": "def minMeetingRooms(intervals: list[list[int]]) -> int:\n    if not intervals:\n        return 0\n    max_rooms = 0\n    for i in range(len(intervals)):\n        time = intervals[i][0]\n        count = sum(1 for iv in intervals if iv[0] <= time < iv[1])\n        if count > max_rooms:\n            max_rooms = count\n    return max_rooms\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "python",
+      "code": "def minMeetingRooms(intervals: list[list[int]]) -> int:\n    if not intervals:\n        return 0\n    starts = sorted(iv[0] for iv in intervals)\n    ends = sorted(iv[1] for iv in intervals)\n    s = e = rooms = max_rooms = 0\n    while s < len(starts):\n        if starts[s] < ends[e]:\n            rooms += 1\n            max_rooms = max(max_rooms, rooms)\n            s += 1\n        else:\n            rooms -= 1\n            e += 1\n    return max_rooms\n",
+      "isReference": true
+    }
+  ]
+}

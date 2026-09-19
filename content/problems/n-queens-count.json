@@ -1,0 +1,248 @@
+{
+  "slug": "n-queens-count",
+  "title": "N-Queens Count",
+  "topic": "backtracking",
+  "difficulty": "Hard",
+  "pattern": "backtracking / Constraint place",
+  "statement": "# N-Queens Count\n\nThe n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
+  "examples": [
+    {
+      "input": "n = 4",
+      "output": "2",
+      "explanation": "There are 2 distinct configurations to place 4 non-attacking queens on a 4x4 board."
+    },
+    {
+      "input": "n = 1",
+      "output": "1",
+      "explanation": "A 1x1 board has trivially 1 valid queen placement."
+    },
+    {
+      "input": "n = 2",
+      "output": "0",
+      "explanation": "No valid non-attacking configuration exists for n = 2."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function totalNQueens(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Represent occupied columns and diagonals as bitmasks to test availability in O(1).",
+    "Left shifts model main diagonals shifting leftward for each advancing row; right shifts model anti-diagonals.",
+    "Use available & -available to extract the lowest available candidate bit."
+  ],
+  "editorial": {
+    "approach": "### Bitmask Backtracking for N-Queens\n\nPlacing $n$ non-attacking queens requires placing exactly one queen per row such that no two queens share the same column, main diagonal, or anti-diagonal.\n\n#### 1. Bitmask Representation\nFor row $r$:\n- Bitmask `cols` tracks occupied columns (bit $c$ set means column $c$ is taken).\n- Bitmask `diag1` tracks occupied main diagonals (drifting left as we move down: `(diag1 | bit) << 1`).\n- Bitmask `diag2` tracks occupied anti-diagonals (drifting right as we move down: `(diag2 | bit) >> 1`).\n\n#### 2. Bitwise Position Extraction\nAt row $r$:\n$$\\text{available} = ((1 \\ll n) - 1) \\land \\sim(cols \\mid diag1 \\mid diag2)$$\nWhile $\\text{available} \\ne 0$:\n- Extract least significant bit: $bit = \\text{available} \\land (-\\text{available})$.\n- Clear this bit: $\\text{available} \\oplus= bit$.\n- Recurse: `solve(row + 1, cols | bit, (diag1 | bit) << 1, (diag2 | bit) >> 1)`.\n\nWhen $row == n$, increment total count.",
+    "why_optimal": "Checking column and diagonal validity using array iterations takes O(n) time per candidate placement. Bitwise operations compute all available positions simultaneously with bit shifts and mask extractions in O(1) time. Across 20 verified test cases, bitmask backtracking completed in 1.36 ms versus 6.28 ms for array-based conflict checks.",
+    "pitfalls": "When shifting diagonals in JavaScript, ensure 32-bit integer boundaries and mask by (1 << n) - 1 so bits do not leak past column bounds."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Eight_queens_puzzle",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function totalNQueens(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def totalNQueens(n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "totalNQueens",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 20,
+    "bruteForceRuntimeMs": 6.278708000000009,
+    "optimalRuntimeMs": 1.3643539999999987
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        1
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        2
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        3
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        4
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        5
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        6
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        7
+      ],
+      "expected": 40,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        8
+      ],
+      "expected": 92,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        9
+      ],
+      "expected": 352,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        1
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        2
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        3
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        4
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        5
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        6
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        7
+      ],
+      "expected": 40,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        8
+      ],
+      "expected": 92,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        9
+      ],
+      "expected": 352,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        4
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        8
+      ],
+      "expected": 92,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n!) | Space: O(n)",
+      "language": "javascript",
+      "code": "function totalNQueens(n) {\n  let count = 0;\n  const cols = new Array(n).fill(-1);\n  function isValid(row, col) {\n    for (let r = 0; r < row; r++) {\n      const c = cols[r];\n      if (c === col || Math.abs(r - row) === Math.abs(c - col)) {\n        return false;\n      }\n    }\n    return true;\n  }\n  function solve(row) {\n    if (row === n) {\n      count++;\n      return;\n    }\n    for (let col = 0; col < n; col++) {\n      if (isValid(row, col)) {\n        cols[row] = col;\n        solve(row + 1);\n        cols[row] = -1;\n      }\n    }\n  }\n  solve(0);\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n!) | Space: O(n)",
+      "language": "javascript",
+      "code": "function totalNQueens(n) {\n  let count = 0;\n  function solve(row, cols, diag1, diag2) {\n    if (row === n) {\n      count++;\n      return;\n    }\n    let available = ((1 << n) - 1) & ~(cols | diag1 | diag2);\n    while (available !== 0) {\n      const bit = available & -available;\n      available ^= bit;\n      solve(row + 1, cols | bit, (diag1 | bit) << 1, (diag2 | bit) >> 1);\n    }\n  }\n  solve(0, 0, 0, 0);\n  return count;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n!) | Space: O(n)",
+      "language": "python",
+      "code": "def totalNQueens(n: int) -> int:\n    cols = [-1] * n\n    count = 0\n\n    def is_valid(row: int, col: int) -> bool:\n        for r in range(row):\n            c = cols[r]\n            if c == col or abs(r - row) == abs(c - col):\n                return False\n        return True\n\n    def solve(row: int) -> None:\n        nonlocal count\n        if row == n:\n            count += 1\n            return\n        for col in range(n):\n            if is_valid(row, col):\n                cols[row] = col\n                solve(row + 1)\n                cols[row] = -1\n\n    solve(0)\n    return count\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n!) | Space: O(n)",
+      "language": "python",
+      "code": "def totalNQueens(n: int) -> int:\n    count = 0\n    all_mask = (1 << n) - 1\n\n    def solve(row: int, cols: int, diag1: int, diag2: int) -> None:\n        nonlocal count\n        if row == n:\n            count += 1\n            return\n        available = all_mask & ~(cols | diag1 | diag2)\n        while available:\n            bit = available & -available\n            available ^= bit\n            solve(row + 1, cols | bit, (diag1 | bit) << 1, (diag2 | bit) >> 1)\n\n    solve(0, 0, 0, 0)\n    return count\n",
+      "isReference": true
+    }
+  ]
+}

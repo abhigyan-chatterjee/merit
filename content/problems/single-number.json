@@ -1,0 +1,566 @@
+{
+  "slug": "single-number",
+  "title": "Single Number",
+  "topic": "bit-manipulation",
+  "difficulty": "Easy",
+  "pattern": "bit-manipulation / XOR cancel",
+  "statement": "# Single Number\n\nGiven a non-empty array of integers `nums`, every element appears twice except for one. Find that single element.\n\nYou must implement a solution with linear runtime complexity and use only constant extra space.\n\nConstraints: `1 <= nums.length <= 101` (`nums.length` is odd) and `-30000 <= nums[i] <= 30000`. Each element appears twice except one which appears once.\n",
+  "examples": [
+    {
+      "input": "nums = [2, 2, 1]",
+      "output": "1",
+      "explanation": "2 appears twice; 1 appears once."
+    },
+    {
+      "input": "nums = [4, 1, 2, 1, 2]",
+      "output": "4",
+      "explanation": "1 and 2 appear twice; 4 appears once."
+    },
+    {
+      "input": "nums = [1]",
+      "output": "1",
+      "explanation": "The array has a single element which is trivially unique."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function singleNumber(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Recall that x XOR x = 0 and x XOR 0 = x.",
+    "Because XOR is commutative, all paired duplicates cancel out regardless of their positions.",
+    "Initialize an accumulator to 0 and XOR each element in the array."
+  ],
+  "editorial": {
+    "approach": "### Bitwise XOR Invariant: Self-Cancellation\n\nThe problem states that every element appears exactly twice except for a single element that appears once.\n\n#### 1. Mathematical Invariants of XOR\nXOR ($\\oplus$) possesses three algebraic properties:\n1. **Identity**: $x \\oplus 0 = x$\n2. **Self-Inverse**: $x \\oplus x = 0$\n3. **Commutativity and Associativity**: Order of evaluation does not alter the result.\n\n#### 2. Reduction\nLet the unique element be $u$ and the pairs of duplicates be $p_1, p_1, p_2, p_2, \\dots, p_k, p_k$.\n$$\\bigoplus_{x \\in nums} x = u \\oplus (p_1 \\oplus p_1) \\oplus (p_2 \\oplus p_2) \\dots = u \\oplus 0 \\oplus 0 = u$$\nIterating through `nums` once and accumulating XOR values yields $u$ in $O(n)$ time and $O(1)$ auxiliary space.",
+    "why_optimal": "Using a hash map or frequency table requires O(n) auxiliary memory to count occurrences. Bitwise XOR cancellation isolates the single element in a single pass using strictly O(1) auxiliary memory. On 23 verified test cases, XOR cancellation completed in 0.08 ms compared to 0.59 ms for hash map counting.",
+    "pitfalls": "Initializing the accumulator to anything other than 0 corrupts the XOR sum."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Exclusive_or",
+    "https://en.wikipedia.org/wiki/Bit_manipulation"
+  ],
+  "starterCode": {
+    "javascript": "function singleNumber(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def singleNumber(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "singleNumber",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 23,
+    "bruteForceRuntimeMs": 0.5914799999999971,
+    "optimalRuntimeMs": 0.0792070000000038
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          2,
+          2,
+          1
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          4,
+          1,
+          2,
+          1,
+          2
+        ]
+      ],
+      "expected": 4,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          -1
+        ]
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          -1,
+          -1,
+          -2
+        ]
+      ],
+      "expected": -2,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          100,
+          200,
+          100
+        ]
+      ],
+      "expected": 200,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          -50,
+          -50,
+          25
+        ]
+      ],
+      "expected": 25,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          999,
+          888,
+          999
+        ]
+      ],
+      "expected": 888,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          -437,
+          -499,
+          518,
+          -437,
+          -949,
+          -499,
+          518
+        ]
+      ],
+      "expected": -949,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          -553,
+          -553,
+          -809,
+          -939,
+          -809
+        ]
+      ],
+      "expected": -939,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          -549,
+          780,
+          780,
+          -431,
+          650,
+          -81,
+          657,
+          -141,
+          650,
+          554,
+          206,
+          -674,
+          554,
+          -987,
+          -549,
+          -674,
+          206,
+          -81,
+          -431,
+          657,
+          -987
+        ]
+      ],
+      "expected": -141,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          182,
+          -607,
+          182,
+          -400,
+          442,
+          -260,
+          -858,
+          813,
+          -260,
+          442,
+          266,
+          764,
+          -607,
+          287,
+          266,
+          287,
+          -858,
+          698,
+          764,
+          813,
+          698
+        ]
+      ],
+      "expected": -400,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          310,
+          -223,
+          493,
+          -499,
+          310,
+          895,
+          409,
+          -54,
+          140,
+          409,
+          -54,
+          -448,
+          -666,
+          140,
+          -666,
+          895,
+          -551,
+          -551,
+          -223,
+          -499,
+          -448
+        ]
+      ],
+      "expected": 493,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          -123,
+          103,
+          197,
+          -183,
+          -123,
+          -717,
+          -717,
+          195,
+          -551,
+          838,
+          197,
+          -183,
+          195,
+          -551,
+          838,
+          529,
+          529,
+          -462,
+          -462,
+          -259,
+          -259
+        ]
+      ],
+      "expected": 103,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          99,
+          99,
+          812,
+          396,
+          537,
+          537,
+          812
+        ]
+      ],
+      "expected": 396,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          478,
+          953,
+          478,
+          -994,
+          793,
+          -71,
+          793,
+          -994,
+          953
+        ]
+      ],
+      "expected": -71,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          889,
+          594,
+          952,
+          952,
+          86,
+          86,
+          594,
+          889,
+          104
+        ]
+      ],
+      "expected": 104,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          161,
+          798,
+          798,
+          161,
+          -507
+        ]
+      ],
+      "expected": -507,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          557,
+          90,
+          568,
+          -743,
+          568,
+          -743,
+          90
+        ]
+      ],
+      "expected": 557,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          412,
+          104,
+          -589,
+          104,
+          902,
+          546,
+          -589,
+          412,
+          494,
+          494,
+          546
+        ]
+      ],
+      "expected": 902,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          6301,
+          976,
+          3695,
+          1812,
+          -2241,
+          -3323,
+          -8346,
+          -23819,
+          -17522,
+          -6781,
+          -2241,
+          -29529,
+          11359,
+          -28622,
+          -15568,
+          -14403,
+          -6781,
+          -14997,
+          -17522,
+          -14997,
+          -23648,
+          -15960,
+          21420,
+          -21329,
+          -14075,
+          -14075,
+          -25583,
+          16389,
+          -7844,
+          976,
+          17405,
+          8555,
+          22920,
+          -14920,
+          26337,
+          -27942,
+          -3323,
+          -25357,
+          3695,
+          16389,
+          26612,
+          26337,
+          -25357,
+          -28622,
+          17780,
+          -23648,
+          -23819,
+          13187,
+          14129,
+          13842,
+          -14403,
+          -1751,
+          27827,
+          13842,
+          -11750,
+          -3059,
+          -25348,
+          29337,
+          7423,
+          -15960,
+          14129,
+          -29529,
+          -3059,
+          12345,
+          1812,
+          22920,
+          -26450,
+          17780,
+          -25583,
+          7762,
+          7762,
+          5339,
+          11359,
+          29337,
+          8564,
+          -7844,
+          996,
+          8555,
+          -26450,
+          996,
+          17405,
+          -14920,
+          606,
+          7423,
+          -8346,
+          -26142,
+          -21329,
+          -25348,
+          27827,
+          21420,
+          606,
+          -26142,
+          -27942,
+          -15568,
+          -11750,
+          26612,
+          5339,
+          6301,
+          8564,
+          13187,
+          -1751
+        ]
+      ],
+      "expected": 12345,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function singleNumber(nums) {\n  const counts = {};\n  for (let i = 0; i < nums.length; i++) {\n    counts[nums[i]] = (counts[nums[i]] || 0) + 1;\n  }\n  for (const k in counts) {\n    if (counts[k] === 1) return Number(k);\n  }\n  return nums[0];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function singleNumber(nums) {\n  let res = 0;\n  for (let i = 0; i < nums.length; i++) {\n    res ^= nums[i];\n  }\n  return res;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "python",
+      "code": "def singleNumber(nums: list[int]) -> int:\n    from collections import Counter\n    counts = Counter(nums)\n    for num, count in counts.items():\n        if count == 1:\n            return num\n    return nums[0]\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "python",
+      "code": "def singleNumber(nums: list[int]) -> int:\n    res = 0\n    for num in nums:\n        res ^= num\n    return res\n",
+      "isReference": true
+    }
+  ]
+}

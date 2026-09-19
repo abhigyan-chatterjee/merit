@@ -1,0 +1,411 @@
+{
+  "slug": "largest-number",
+  "title": "Largest Number",
+  "topic": "sorting",
+  "difficulty": "Medium",
+  "pattern": "sorting / Custom comparator",
+  "statement": "# Largest Number\n\nGiven a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10\u2079`.\n",
+  "examples": [
+    {
+      "input": "nums = [10, 2]",
+      "output": "'210'",
+      "explanation": "'210' > '102'."
+    },
+    {
+      "input": "nums = [3, 30, 34, 5, 9]",
+      "output": "'9534330'",
+      "explanation": "'9' followed by '5', '34', '3', '30' yields the maximum concatenated string."
+    },
+    {
+      "input": "nums = [0, 0]",
+      "output": "'0'",
+      "explanation": "If all digits are 0, return '0' rather than '00'."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function largestNumber(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Convert all numbers into their string representations.",
+    "Compare any two numbers a and b by checking whether b + a > a + b.",
+    "Do not forget to handle the edge case where the array contains only zeros."
+  ],
+  "editorial": {
+    "approach": "### Greedy Sorting with Custom Pairwise Concatenation Comparator\n\nTo form the largest number by concatenating strings, we determine the relative ordering of any two numbers $A$ and $B$.\n\n#### 1. Comparator Invariant\nFor any two string representations $A$ and $B$:\n- Concatenation $A + B$ puts $A$ before $B$.\n- Concatenation $B + A$ puts $B$ before $A$.\nWe define our ordering such that $A$ should precede $B$ if and only if $A + B > B + A$.\nThis relation defines a total ordering over non-negative integer strings, proving transitivity and guaranteeing global optimality.\n\n#### 2. Edge Case Handling\nSort strings according to this comparator in descending order.\nIf the first element after sorting is `\"0\"`, all elements must be `\"0\"`, so return `\"0\"` immediately rather than `\"00...0\"`. Otherwise, join the sorted strings.",
+    "why_optimal": "Bubble sort with pairwise comparisons takes O(n\u00b2 \u00b7 k) time. Using an O(n log n) sorting algorithm with the pairwise concatenation comparator achieves optimal O(n log n \u00b7 k) complexity. On 23 verified test cases, custom comparator sorting completed in 12.48 ms compared to 16.35 ms for bubble sort.",
+    "pitfalls": "Numerical comparison a - b fails for numbers with different digit lengths (e.g. 3 vs 30: '330' > '303'). Always compare concatenated strings (b + a) vs (a + b)."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Lexicographic_order",
+    "https://en.wikipedia.org/wiki/Sorting_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function largestNumber(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def largestNumber(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "largestNumber",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 23,
+    "bruteForceRuntimeMs": 16.348920000000007,
+    "optimalRuntimeMs": 12.48220099999999
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          10,
+          2
+        ]
+      ],
+      "expected": "210",
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          3,
+          30,
+          34,
+          5,
+          9
+        ]
+      ],
+      "expected": "9534330",
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          0,
+          0
+        ]
+      ],
+      "expected": "0",
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          1
+        ]
+      ],
+      "expected": "1",
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          111311,
+          1113
+        ]
+      ],
+      "expected": "1113111311",
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          12,
+          121
+        ]
+      ],
+      "expected": "12121",
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          8308,
+          8308,
+          830
+        ]
+      ],
+      "expected": "83088308830",
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          9,
+          98,
+          97,
+          99
+        ]
+      ],
+      "expected": "9999897",
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          4,
+          40,
+          44,
+          45,
+          43
+        ]
+      ],
+      "expected": "454444340",
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          100,
+          10,
+          1
+        ]
+      ],
+      "expected": "110100",
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          25,
+          759,
+          281,
+          250
+        ]
+      ],
+      "expected": "75928125250",
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          142,
+          754,
+          104,
+          692,
+          758,
+          913
+        ]
+      ],
+      "expected": "913758754692142104",
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          604,
+          432,
+          32,
+          30
+        ]
+      ],
+      "expected": "6044323230",
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          223,
+          238,
+          517,
+          616
+        ]
+      ],
+      "expected": "616517238223",
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          574,
+          203,
+          733
+        ]
+      ],
+      "expected": "733574203",
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          225,
+          459,
+          603,
+          284,
+          828,
+          890,
+          6,
+          777,
+          825
+        ]
+      ],
+      "expected": "8908288257776603459284225",
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          714,
+          432,
+          348,
+          284,
+          159
+        ]
+      ],
+      "expected": "714432348284159",
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          980,
+          781,
+          344,
+          104,
+          94,
+          389
+        ]
+      ],
+      "expected": "98094781389344104",
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          367,
+          867,
+          352,
+          618
+        ]
+      ],
+      "expected": "867618367352",
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        [
+          826,
+          44,
+          747,
+          470,
+          549,
+          127,
+          996
+        ]
+      ],
+      "expected": "99682674754947044127",
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        [
+          967096,
+          396922,
+          82627,
+          578856,
+          307419,
+          869693,
+          659176,
+          648564,
+          928463,
+          903565,
+          379201,
+          605397,
+          201629,
+          738797,
+          72933,
+          48050,
+          693384,
+          238968,
+          810620,
+          303445,
+          83667,
+          896865,
+          244098,
+          908573,
+          105907,
+          398591,
+          291476,
+          475435,
+          666563,
+          874628
+        ]
+      ],
+      "expected": "96709692846390857390356589686587462886969383667826278106207387977293369338466656365917664856460539757885648050475435398591396922379201307419303445291476244098238968201629105907",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 \u00b7 k) | Space: O(n \u00b7 k)",
+      "language": "javascript",
+      "code": "function largestNumber(nums) {\n  const strs = nums.map(String);\n  for (let i = 0; i < strs.length; i++) {\n    for (let j = 0; j < strs.length - 1; j++) {\n      if ((strs[j + 1] + strs[j]).localeCompare(strs[j] + strs[j + 1]) > 0) {\n        const temp = strs[j];\n        strs[j] = strs[j + 1];\n        strs[j + 1] = temp;\n      }\n    }\n  }\n  if (strs[0] === \"0\") return \"0\";\n  return strs.join(\"\");\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n \u00b7 k) | Space: O(n \u00b7 k)",
+      "language": "javascript",
+      "code": "function largestNumber(nums) {\n  const strs = nums.map(String);\n  strs.sort((a, b) => (b + a).localeCompare(a + b));\n  if (strs[0] === \"0\") return \"0\";\n  return strs.join(\"\");\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 \u00b7 k) | Space: O(n \u00b7 k)",
+      "language": "python",
+      "code": "def largestNumber(nums: list[int]) -> str:\n    strs = [str(x) for x in nums]\n    for i in range(len(strs)):\n        for j in range(len(strs) - 1):\n            if strs[j + 1] + strs[j] > strs[j] + strs[j + 1]:\n                strs[j], strs[j + 1] = strs[j + 1], strs[j]\n    if strs[0] == \"0\":\n        return \"0\"\n    return \"\".join(strs)\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n \u00b7 k) | Space: O(n \u00b7 k)",
+      "language": "python",
+      "code": "def largestNumber(nums: list[int]) -> str:\n    from functools import cmp_to_key\n\n    strs = [str(x) for x in nums]\n\n    def cmp(a: str, b: str) -> int:\n        if a + b > b + a:\n            return -1\n        elif a + b < b + a:\n            return 1\n        return 0\n\n    strs.sort(key=cmp_to_key(cmp))\n    if strs[0] == \"0\":\n        return \"0\"\n    return \"\".join(strs)\n",
+      "isReference": true
+    }
+  ]
+}

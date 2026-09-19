@@ -1,0 +1,1201 @@
+{
+  "slug": "merge-sorted-array",
+  "title": "Merge Sorted Array",
+  "topic": "sorting",
+  "difficulty": "Easy",
+  "pattern": "sorting / Back-fill",
+  "statement": "# Merge Sorted Array\n\nYou are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
+  "examples": [
+    {
+      "input": "nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3",
+      "output": "[1, 2, 2, 3, 5, 6]",
+      "explanation": "nums2 is merged into nums1 in-place producing a fully sorted array."
+    },
+    {
+      "input": "nums1 = [1], m = 1, nums2 = [], n = 0",
+      "output": "[1]",
+      "explanation": "nums2 is empty, so nums1 remains [1]."
+    },
+    {
+      "input": "nums1 = [0], m = 0, nums2 = [1], n = 1",
+      "output": "[1]",
+      "explanation": "nums1 has no initial elements; nums2 is copied directly."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function merge(nums1: number[], m: number, nums2: number[], n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Start merging from the back of nums1 to avoid overwriting existing elements.",
+    "Compare nums1[p1] and nums2[p2], writing the larger value at index p = m + n - 1.",
+    "Once p2 < 0, all elements from nums2 are placed and any remaining elements in nums1 are already in place."
+  ],
+  "editorial": {
+    "approach": "### Three-Pointer In-Place Back-Fill\n\nGiven `nums1` of size $m + n$ and `nums2` of size $n$, merge `nums2` into `nums1` in sorted order without using extra memory.\n\n#### 1. Why Iterate From the Back?\nIterating from the front would overwrite elements in `nums1` that have not yet been compared.\nHowever, the end of `nums1` (indices $m$ to $m + n - 1$) contains unused padding zeros. Writing largest elements from index $m + n - 1$ down to 0 guarantees that no unread element of `nums1` is ever overwritten.\n\n#### 2. Algorithm\n- Initialize $p_1 = m - 1$, $p_2 = n - 1$, and write pointer $p = m + n - 1$.\n- While $p_2 \\ge 0$:\n  - If $p_1 \\ge 0$ and $nums1[p_1] > nums2[p_2]$, set $nums1[p--] = nums1[p_1--]$.\n  - Else set $nums1[p--] = nums2[p_2--]$.\n- Return `nums1`.",
+    "why_optimal": "Appending nums2 to nums1 and sorting takes O((m + n) log(m + n)) time. The three-pointer reverse fill takes linear O(m + n) time and O(1) auxiliary space by utilizing the pre-allocated trailing space in nums1. On 21 verified test cases, three-pointer back-fill ran in 0.10 ms versus 0.87 ms for append-and-sort.",
+    "pitfalls": "Stopping when p1 < 0 instead of when p2 < 0. If p1 runs out first, remaining elements in nums2 must still be copied into nums1."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Merge_algorithm",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function merge(nums1, m, nums2, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def merge(nums1, m, nums2, n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "merge",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.8672520000000077,
+    "optimalRuntimeMs": 0.1047190000000171
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        [
+          1,
+          2,
+          3,
+          0,
+          0,
+          0
+        ],
+        3,
+        [
+          2,
+          5,
+          6
+        ],
+        3
+      ],
+      "expected": [
+        1,
+        2,
+        2,
+        3,
+        5,
+        6
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        [
+          1
+        ],
+        1,
+        [],
+        0
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        [
+          0
+        ],
+        0,
+        [
+          1
+        ],
+        1
+      ],
+      "expected": [
+        1
+      ],
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        [
+          2,
+          0
+        ],
+        1,
+        [
+          1
+        ],
+        1
+      ],
+      "expected": [
+        1,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        [
+          4,
+          5,
+          6,
+          0,
+          0,
+          0
+        ],
+        3,
+        [
+          1,
+          2,
+          3
+        ],
+        3
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        3,
+        [
+          1,
+          1,
+          1
+        ],
+        3
+      ],
+      "expected": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        [
+          0,
+          0,
+          0
+        ],
+        0,
+        [
+          2,
+          4,
+          6
+        ],
+        3
+      ],
+      "expected": [
+        2,
+        4,
+        6
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        [
+          -3,
+          -1,
+          0,
+          0
+        ],
+        2,
+        [
+          -2,
+          1
+        ],
+        2
+      ],
+      "expected": [
+        -3,
+        -2,
+        -1,
+        1
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        [
+          -94,
+          -74,
+          -65,
+          -43,
+          -38,
+          -30,
+          39,
+          73,
+          88,
+          89,
+          89,
+          0,
+          0
+        ],
+        11,
+        [
+          -78,
+          51
+        ],
+        2
+      ],
+      "expected": [
+        -94,
+        -78,
+        -74,
+        -65,
+        -43,
+        -38,
+        -30,
+        39,
+        51,
+        73,
+        88,
+        89,
+        89
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        [
+          -94,
+          -93,
+          -77,
+          -45,
+          -41,
+          29,
+          54,
+          0
+        ],
+        7,
+        [
+          43
+        ],
+        1
+      ],
+      "expected": [
+        -94,
+        -93,
+        -77,
+        -45,
+        -41,
+        29,
+        43,
+        54
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        [
+          7,
+          39,
+          66,
+          79,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        4,
+        [
+          -99,
+          -61,
+          -60,
+          -44,
+          -29,
+          -29,
+          -13,
+          8,
+          14,
+          50,
+          78,
+          94
+        ],
+        12
+      ],
+      "expected": [
+        -99,
+        -61,
+        -60,
+        -44,
+        -29,
+        -29,
+        -13,
+        7,
+        8,
+        14,
+        39,
+        50,
+        66,
+        78,
+        79,
+        94
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        [
+          -77,
+          -74,
+          -14,
+          -3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        4,
+        [
+          -89,
+          -80,
+          -76,
+          -69,
+          -33,
+          -12,
+          -9,
+          -4,
+          17,
+          37,
+          41,
+          54,
+          86
+        ],
+        13
+      ],
+      "expected": [
+        -89,
+        -80,
+        -77,
+        -76,
+        -74,
+        -69,
+        -33,
+        -14,
+        -12,
+        -9,
+        -4,
+        -3,
+        17,
+        37,
+        41,
+        54,
+        86
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        [
+          -51,
+          -8,
+          47,
+          58,
+          60,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        5,
+        [
+          -89,
+          -83,
+          -80,
+          -75,
+          -42,
+          -41,
+          -29,
+          -26,
+          -3,
+          16,
+          62,
+          69,
+          80,
+          97
+        ],
+        14
+      ],
+      "expected": [
+        -89,
+        -83,
+        -80,
+        -75,
+        -51,
+        -42,
+        -41,
+        -29,
+        -26,
+        -8,
+        -3,
+        16,
+        47,
+        58,
+        60,
+        62,
+        69,
+        80,
+        97
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        [
+          -82,
+          -59,
+          -57,
+          -47,
+          -32,
+          -10,
+          -6,
+          36,
+          55,
+          62,
+          65,
+          71,
+          74,
+          79,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        14,
+        [
+          -59,
+          -38,
+          -31,
+          -3,
+          18,
+          86
+        ],
+        6
+      ],
+      "expected": [
+        -82,
+        -59,
+        -59,
+        -57,
+        -47,
+        -38,
+        -32,
+        -31,
+        -10,
+        -6,
+        -3,
+        18,
+        36,
+        55,
+        62,
+        65,
+        71,
+        74,
+        79,
+        86
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        [
+          -92,
+          -86,
+          -84,
+          -46,
+          -44,
+          -42,
+          -32,
+          -20,
+          -17,
+          2,
+          42,
+          75,
+          76,
+          96,
+          98,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        15,
+        [
+          -64,
+          -46,
+          -33,
+          -20,
+          1,
+          17,
+          27,
+          45,
+          64,
+          67,
+          83
+        ],
+        11
+      ],
+      "expected": [
+        -92,
+        -86,
+        -84,
+        -64,
+        -46,
+        -46,
+        -44,
+        -42,
+        -33,
+        -32,
+        -20,
+        -20,
+        -17,
+        1,
+        2,
+        17,
+        27,
+        42,
+        45,
+        64,
+        67,
+        75,
+        76,
+        83,
+        96,
+        98
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        [
+          37,
+          43,
+          90,
+          0,
+          0,
+          0,
+          0
+        ],
+        3,
+        [
+          -33,
+          9,
+          49,
+          91
+        ],
+        4
+      ],
+      "expected": [
+        -33,
+        9,
+        37,
+        43,
+        49,
+        90,
+        91
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        [
+          -88,
+          -77,
+          -72,
+          -65,
+          -61,
+          -60,
+          -44,
+          -8,
+          2,
+          8,
+          26,
+          30,
+          60,
+          74,
+          93,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        15,
+        [
+          -98,
+          -84,
+          -36,
+          -3,
+          -2,
+          19,
+          35,
+          41,
+          52,
+          52
+        ],
+        10
+      ],
+      "expected": [
+        -98,
+        -88,
+        -84,
+        -77,
+        -72,
+        -65,
+        -61,
+        -60,
+        -44,
+        -36,
+        -8,
+        -3,
+        -2,
+        2,
+        8,
+        19,
+        26,
+        30,
+        35,
+        41,
+        52,
+        52,
+        60,
+        74,
+        93
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        [
+          -72,
+          -71,
+          -32,
+          -25,
+          -13,
+          11,
+          37,
+          64,
+          74,
+          92,
+          96,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        11,
+        [
+          -100,
+          -73,
+          -60,
+          -55,
+          -33,
+          16,
+          28,
+          29,
+          60,
+          84,
+          84,
+          95
+        ],
+        12
+      ],
+      "expected": [
+        -100,
+        -73,
+        -72,
+        -71,
+        -60,
+        -55,
+        -33,
+        -32,
+        -25,
+        -13,
+        11,
+        16,
+        28,
+        29,
+        37,
+        60,
+        64,
+        74,
+        84,
+        84,
+        92,
+        95,
+        96
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        [
+          -61,
+          -50,
+          29,
+          55,
+          63,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        5,
+        [
+          -100,
+          -96,
+          -72,
+          -59,
+          -22,
+          -18,
+          -8,
+          -5,
+          25,
+          35,
+          38,
+          53,
+          95,
+          99
+        ],
+        14
+      ],
+      "expected": [
+        -100,
+        -96,
+        -72,
+        -61,
+        -59,
+        -50,
+        -22,
+        -18,
+        -8,
+        -5,
+        25,
+        29,
+        35,
+        38,
+        53,
+        55,
+        63,
+        95,
+        99
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        [
+          -80,
+          -79,
+          -39,
+          45,
+          0
+        ],
+        4,
+        [
+          87
+        ],
+        1
+      ],
+      "expected": [
+        -80,
+        -79,
+        -39,
+        45,
+        87
+      ],
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        [
+          -986,
+          -957,
+          -869,
+          -859,
+          -855,
+          -753,
+          -743,
+          -738,
+          -662,
+          -589,
+          -567,
+          -549,
+          -540,
+          -529,
+          -493,
+          -458,
+          -362,
+          -308,
+          -236,
+          -183,
+          -134,
+          -103,
+          -76,
+          -27,
+          -5,
+          59,
+          80,
+          90,
+          104,
+          125,
+          134,
+          204,
+          205,
+          242,
+          330,
+          351,
+          375,
+          412,
+          449,
+          460,
+          494,
+          546,
+          557,
+          568,
+          671,
+          786,
+          842,
+          902,
+          939,
+          975,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        50,
+        [
+          -936,
+          -890,
+          -880,
+          -876,
+          -862,
+          -855,
+          -807,
+          -802,
+          -799,
+          -730,
+          -611,
+          -562,
+          -532,
+          -513,
+          -503,
+          -430,
+          -324,
+          -306,
+          -275,
+          -176,
+          -167,
+          -159,
+          -133,
+          -118,
+          -44,
+          -32,
+          -32,
+          -6,
+          52,
+          104,
+          169,
+          180,
+          292,
+          323,
+          338,
+          349,
+          370,
+          379,
+          481,
+          491,
+          493,
+          606,
+          639,
+          653,
+          760,
+          764,
+          769,
+          807,
+          854,
+          915
+        ],
+        50
+      ],
+      "expected": [
+        -986,
+        -957,
+        -936,
+        -890,
+        -880,
+        -876,
+        -869,
+        -862,
+        -859,
+        -855,
+        -855,
+        -807,
+        -802,
+        -799,
+        -753,
+        -743,
+        -738,
+        -730,
+        -662,
+        -611,
+        -589,
+        -567,
+        -562,
+        -549,
+        -540,
+        -532,
+        -529,
+        -513,
+        -503,
+        -493,
+        -458,
+        -430,
+        -362,
+        -324,
+        -308,
+        -306,
+        -275,
+        -236,
+        -183,
+        -176,
+        -167,
+        -159,
+        -134,
+        -133,
+        -118,
+        -103,
+        -76,
+        -44,
+        -32,
+        -32,
+        -27,
+        -6,
+        -5,
+        52,
+        59,
+        80,
+        90,
+        104,
+        104,
+        125,
+        134,
+        169,
+        180,
+        204,
+        205,
+        242,
+        292,
+        323,
+        330,
+        338,
+        349,
+        351,
+        370,
+        375,
+        379,
+        412,
+        449,
+        460,
+        481,
+        491,
+        493,
+        494,
+        546,
+        557,
+        568,
+        606,
+        639,
+        653,
+        671,
+        760,
+        764,
+        769,
+        786,
+        807,
+        842,
+        854,
+        902,
+        915,
+        939,
+        975
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((m + n) log(m + n)) | Space: O(1)",
+      "language": "javascript",
+      "code": "function merge(nums1, m, nums2, n) {\n  for (let i = 0; i < n; i++) {\n    nums1[m + i] = nums2[i];\n  }\n  nums1.sort((a, b) => a - b);\n  return nums1;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m + n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function merge(nums1, m, nums2, n) {\n  let p1 = m - 1;\n  let p2 = n - 1;\n  let p = m + n - 1;\n  while (p2 >= 0) {\n    if (p1 >= 0 && nums1[p1] > nums2[p2]) {\n      nums1[p] = nums1[p1--];\n    } else {\n      nums1[p] = nums2[p2--];\n    }\n    p--;\n  }\n  return nums1;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O((m + n) log(m + n)) | Space: O(1)",
+      "language": "python",
+      "code": "def merge(nums1: list[int], m: int, nums2: list[int], n: int) -> list[int]:\n    for i in range(n):\n        nums1[m + i] = nums2[i]\n    nums1.sort()\n    return nums1\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m + n) | Space: O(1)",
+      "language": "python",
+      "code": "def merge(nums1: list[int], m: int, nums2: list[int], n: int) -> list[int]:\n    p1 = m - 1\n    p2 = n - 1\n    p = m + n - 1\n    while p2 >= 0:\n        if p1 >= 0 and nums1[p1] > nums2[p2]:\n            nums1[p] = nums1[p1]\n            p1 -= 1\n        else:\n            nums1[p] = nums2[p2]\n            p2 -= 1\n        p -= 1\n    return nums1\n",
+      "isReference": true
+    }
+  ]
+}

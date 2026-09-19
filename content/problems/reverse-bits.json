@@ -1,0 +1,280 @@
+{
+  "slug": "reverse-bits",
+  "title": "Reverse Bits",
+  "topic": "bit-manipulation",
+  "difficulty": "Easy",
+  "pattern": "bit-manipulation / Mirror",
+  "statement": "# Reverse Bits\n\nReverse the bits of a given 32-bit unsigned integer and return the resulting 32-bit unsigned integer.\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
+  "examples": [
+    {
+      "input": "n = 43261596",
+      "output": "964176192",
+      "explanation": "43261596 represented in binary is 00000010100101000001111010011100; reversed it is 00111001011110000010100101000000 = 964176192."
+    },
+    {
+      "input": "n = 1",
+      "output": "2147483648",
+      "explanation": "1 with bit 0 set becomes bit 31 set, which is 2\u00b3\u00b9 = 2147483648."
+    },
+    {
+      "input": "n = 4294967295",
+      "output": "4294967295",
+      "explanation": "All 32 bits are 1; reversing yields the identical integer."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function reverseBits(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Think of reversing 32 bits like merge sort in reverse: swap halves, then quarters, then eighths.",
+    "Mask 0xFF00FF00 and 0x00FF00FF to swap 8-bit bytes.",
+    "Use >>> 0 in JavaScript to keep numbers in unsigned 32-bit integer range."
+  ],
+  "editorial": {
+    "approach": "### Divide-and-Conquer Bit Reversal\n\nReversing 32 bits can be achieved without iterative shifting by hierarchically swapping bit blocks using bitmasks:\n\n#### 1. Swap Blocks of Decreasing Powers of 2\n1. Swap the top 16 bits with the bottom 16 bits:\n   $$n = ((n \\ggg 16) \\mid (n \\ll 16)) \\ggg 0$$\n2. Swap adjacent 8-bit bytes using mask `0x00FF00FF`:\n   $$n = (((n \\& \\text{0xFF00FF00}) \\ggg 8) \\mid ((n \\& \\text{0x00FF00FF}) \\ll 8)) \\ggg 0$$\n3. Swap adjacent 4-bit nibbles using mask `0x0F0F0F0F`:\n   $$n = (((n \\& \\text{0xF0F0F0F0}) \\ggg 4) \\mid ((n \\& \\text{0x0F0F0F0F}) \\ll 4)) \\ggg 0$$\n4. Swap adjacent 2-bit pairs using mask `0x33333333`:\n   $$n = (((n \\& \\text{0xCCCCCCCC}) \\ggg 2) \\mid ((n \\& \\text{0x33333333}) \\ll 2)) \\ggg 0$$\n5. Swap adjacent single bits using mask `0x55555555`:\n   $$n = (((n \\& \\text{0xAAAAAAAA}) \\ggg 1) \\mid ((n \\& \\text{0x55555555}) \\ll 1)) \\ggg 0$$\n\nAll 32 bits are completely reversed in exactly 5 constant-time parallel operations.",
+    "why_optimal": "Iterative bit reversal requires 32 loop iterations with branch and shift evaluations. Divide-and-conquer bit swaps reverse blocks in 5 parallel bitwise operations in O(1) time. Across 24 verified test cases, divide-and-conquer reversal executed in 0.20 ms versus 0.09 ms for loop-based reversal.",
+    "pitfalls": "JavaScript bitwise shifts produce signed 32-bit integers. Applying >>> 0 at each step guarantees non-negative unsigned representation."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Bit-reversal_permutation",
+    "https://en.wikipedia.org/wiki/Bitwise_operation"
+  ],
+  "starterCode": {
+    "javascript": "function reverseBits(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def reverseBits(n):\n    # Write your solution here\n    raise NotImplementedError\n"
+  },
+  "functionName": "reverseBits",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 24,
+    "bruteForceRuntimeMs": 0.09296300000001878,
+    "optimalRuntimeMs": 0.19836200000001014
+  },
+  "testCases": [
+    {
+      "label": "case-01",
+      "input": [
+        0
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "case-02",
+      "input": [
+        1
+      ],
+      "expected": 2147483648,
+      "isSample": true
+    },
+    {
+      "label": "case-03",
+      "input": [
+        2
+      ],
+      "expected": 1073741824,
+      "isSample": true
+    },
+    {
+      "label": "case-04",
+      "input": [
+        43261596
+      ],
+      "expected": 964176192,
+      "isSample": false
+    },
+    {
+      "label": "case-05",
+      "input": [
+        4294967295
+      ],
+      "expected": 4294967295,
+      "isSample": false
+    },
+    {
+      "label": "case-06",
+      "input": [
+        2147483648
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "case-07",
+      "input": [
+        1073741824
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "case-08",
+      "input": [
+        3
+      ],
+      "expected": 3221225472,
+      "isSample": false
+    },
+    {
+      "label": "case-09",
+      "input": [
+        255
+      ],
+      "expected": 4278190080,
+      "isSample": false
+    },
+    {
+      "label": "case-10",
+      "input": [
+        65535
+      ],
+      "expected": 4294901760,
+      "isSample": false
+    },
+    {
+      "label": "case-11",
+      "input": [
+        16777215
+      ],
+      "expected": 4294967040,
+      "isSample": false
+    },
+    {
+      "label": "case-12",
+      "input": [
+        1431655765
+      ],
+      "expected": 2863311530,
+      "isSample": false
+    },
+    {
+      "label": "case-13",
+      "input": [
+        2746317213
+      ],
+      "expected": 3114175941,
+      "isSample": false
+    },
+    {
+      "label": "case-14",
+      "input": [
+        1181241943
+      ],
+      "expected": 3930723938,
+      "isSample": false
+    },
+    {
+      "label": "case-15",
+      "input": [
+        958682846
+      ],
+      "expected": 2070553756,
+      "isSample": false
+    },
+    {
+      "label": "case-16",
+      "input": [
+        3163119785
+      ],
+      "expected": 2500235581,
+      "isSample": false
+    },
+    {
+      "label": "case-17",
+      "input": [
+        1812140441
+      ],
+      "expected": 2575876150,
+      "isSample": false
+    },
+    {
+      "label": "case-18",
+      "input": [
+        127978094
+      ],
+      "expected": 1985152480,
+      "isSample": false
+    },
+    {
+      "label": "case-19",
+      "input": [
+        939042955
+      ],
+      "expected": 3507822572,
+      "isSample": false
+    },
+    {
+      "label": "case-20",
+      "input": [
+        2340505846
+      ],
+      "expected": 1863483857,
+      "isSample": false
+    },
+    {
+      "label": "case-21",
+      "input": [
+        946785248
+      ],
+      "expected": 131298844,
+      "isSample": false
+    },
+    {
+      "label": "case-22",
+      "input": [
+        2530876844
+      ],
+      "expected": 901274473,
+      "isSample": false
+    },
+    {
+      "label": "case-23",
+      "input": [
+        3460967357
+      ],
+      "expected": 3184808563,
+      "isSample": false
+    },
+    {
+      "label": "case-24",
+      "input": [
+        2998485882
+      ],
+      "expected": 1589812557,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "javascript",
+      "code": "function reverseBits(n) {\n  let res = 0;\n  for (let i = 0; i < 32; i++) {\n    res = (res * 2) + ((n >>> i) & 1);\n  }\n  return res >>> 0;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "language": "javascript",
+      "code": "function reverseBits(n) {\n  n = ((n >>> 16) | (n << 16)) >>> 0;\n  n = (((n & 0xff00ff00) >>> 8) | ((n & 0x00ff00ff) << 8)) >>> 0;\n  n = (((n & 0xf0f0f0f0) >>> 4) | ((n & 0x0f0f0f0f) << 4)) >>> 0;\n  n = (((n & 0xcccccccc) >>> 2) | ((n & 0x33333333) << 2)) >>> 0;\n  n = (((n & 0xaaaaaaaa) >>> 1) | ((n & 0x55555555) << 1)) >>> 0;\n  return n >>> 0;\n}",
+      "isReference": true
+    },
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(32) | Space: O(1)",
+      "language": "python",
+      "code": "def reverseBits(n: int) -> int:\n    res = 0\n    for i in range(32):\n        res = (res << 1) | ((n >> i) & 1)\n    return res\n",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "language": "python",
+      "code": "def reverseBits(n: int) -> int:\n    n = ((n >> 16) | ((n << 16) & 0xFFFFFFFF))\n    n = (((n & 0xFF00FF00) >> 8) | ((n & 0x00FF00FF) << 8))\n    n = (((n & 0xF0F0F0F0) >> 4) | ((n & 0x0F0F0F0F) << 4))\n    n = (((n & 0xCCCCCCCC) >> 2) | ((n & 0x33333333) << 2))\n    n = (((n & 0xAAAAAAAA) >> 1) | ((n & 0x55555555) << 1))\n    return n & 0xFFFFFFFF\n",
+      "isReference": true
+    }
+  ]
+}
