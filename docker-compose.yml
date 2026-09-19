@@ -98,8 +98,10 @@ services:
     restart: unless-stopped
     mem_limit: 64m
     mem_reservation: 32m
+    # Localhost-only: TLS + public traffic go through the host reverse
+    # proxy (Caddy). Never publish the app server directly.
     ports:
-      - "80:80"
+      - "127.0.0.1:8080:80"
     depends_on:
       - api
     logging:
