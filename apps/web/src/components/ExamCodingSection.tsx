@@ -17,8 +17,13 @@ interface ExamCodingState {
   passed: boolean | null;
 }
 
-export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string }[]; onVerdict: (slug: string, passed: boolean) => void }> = ({
+export const ExamCodingSection: React.FC<{
+  coding: { slug: string; title: string }[];
+  selectedSlug?: string;
+  onVerdict: (slug: string, passed: boolean) => void;
+}> = ({
   coding,
+  selectedSlug,
   onVerdict,
 }) => {
   const [items, setItems] = useState<ExamCodingState[]>([]);
@@ -89,7 +94,7 @@ export const ExamCodingSection: React.FC<{ coding: { slug: string; title: string
           Judge-graded against hidden tests. Submit each one — an Accepted verdict counts toward the exam score.
         </p>
       </div>
-      {items.map((item) => (
+      {items.filter((item) => !selectedSlug || item.slug === selectedSlug).map((item) => (
         <div key={item.slug} className="space-y-3 rounded-xl border border-line bg-canvas p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">

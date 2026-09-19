@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
@@ -16,6 +16,12 @@ export const ExamDetailPage: React.FC = () => {
   const [started, setStarted] = useState(false);
   const [mcqPct, setMcqPct] = useState<number | null>(null);
   const [codingPassed, setCodingPassed] = useState<Record<string, boolean>>({});
+  const [selectedItem, setSelectedItem] = useState<{ type: 'mcq' | 'coding'; index: number }>({
+    type: 'mcq',
+    index: 0,
+  });
+  const [answeredMcqs, setAnsweredMcqs] = useState<Record<number, boolean>>({});
+  const mcqPaneRef = useRef<HTMLDivElement>(null);
 
   if (!exam) {
     return (
@@ -27,6 +33,43 @@ export const ExamDetailPage: React.FC = () => {
       />
     );
   }
+
+  const selectMcq = (targetIndex: number) => {
+    setSelectedItem({ type: 'mcq', index: targetIndex });
+    const pane = mcqPaneRef.current;
+    if (!pane) return;
+    const status = pane.textContent?.match(/Question\s+(\d+)\s+of\s+(\d+)/);
+    const currentIndex = status ? Number(status[1]) - 1 : 0;
+    const direction = targetIndex >= currentIndex ? 'Next →' : '← Previous';
+    const steps = Math.abs(targetIndex - currentIndex);
+    if (steps === 0) return;
+    const advance = (remaining: number) => {
+      if (remaining === 0) return;
+      const button = Array.from(pane.querySelectorAll('button')).find(
+        (candidate) => candidate.textContent?.trim() === direction
+      ) as HTMLButtonElement | undefined;
+      if (!button || button.disabled) return;
+      button.click();
+      window.setTimeout(() => advance(remaining - 1), 0);
+    };
+    advance(steps);
+  };
+
+  const items = [
+    ...Array.from({ length: exam.questionCount }, (_, index) => ({
+      type: 'mcq' as const,
+      index,
+      label: `Question ${index + 1}`,
+      answered: !!answeredMcqs[index],
+    })),
+    ...exam.coding.map((item, index) => ({
+      type: 'coding' as const,
+      index,
+      label: item.title,
+      answered: !!codingPassed[item.slug],
+      slug: item.slug,
+    })),
+  ];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
@@ -80,7 +123,7 @@ export const ExamDetailPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="space-y-10">
+        <div className="space-y-6">
           {(mcqPct !== null || Object.keys(codingPassed).length > 0) && (
             <div className="p-4 rounded-xl border border-mint/40 bg-mint/5 text-xs font-mono text-ink">
               MCQ score: {mcqPct ?? '—'}%
@@ -92,28 +135,122 @@ export const ExamDetailPage: React.FC = () => {
               )}
             </div>
           )}
-          <QuizEngine
-            key={exam.id}
-            topicTitle={exam.title}
-            topicId="mixed"
-            examTopics={exam.topics}
-            examCount={exam.questionCount}
-            examDifficulty={exam.difficulty}
-            examTopicPlan={exam.topicPlan}
-            isMock
-            perQuestionSec={null}
-            durationLimitSec={exam.durationSec}
-            onComplete={(pct) => {
-              setMcqPct(pct);
-              saveQuizScore(`exam:${exam.id}`, pct);
-            }}
-          />
-          {exam.coding.length > 0 && (
-            <ExamCodingSection
-              coding={exam.coding}
-              onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
-            />
-          )}
+          <div className="md:hidden">
+            <label htmlFor="exam-question-select" className="sr-only">Select exam question</label>
+            <select
+              id="exam-question-select"
+              value={`${selectedItem.type}-${selectedItem.index}`}
+              onChange={(event) => {
+                const [type, index] = event.target.value.split('-');
+                if (type === 'mcq') selectMcq(Number(index));
+                else setSelectedItem({ type: 'coding', index: Number(index) });
+              }}
+              className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-xs font-mono text-ink"
+            >
+              <option disabled>MCQs ({exam.questionCount})</option>
+              {items.filter((item) => item.type === 'mcq').map((item) => (
+                <option key={`mcq-${item.index}`} value={`mcq-${item.index}`}>
+                  {item.label} · {item.answered ? 'answered' : 'unanswered'}
+                </option>
+              ))}
+              {exam.coding.length > 0 && <option disabled>Coding ({exam.coding.length})</option>}
+              {items.filter((item) => item.type === 'coding').map((item) => (
+                <option key={`coding-${item.index}`} value={`coding-${item.index}`}>
+                  {item.label} · {item.answered ? 'Accepted' : 'unattempted'}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid gap-6 md:grid-cols-[13rem_1fr] items-start">
+            <aside className="hidden md:block rounded-xl border border-line bg-surface p-3 space-y-3">
+              <h2 className="text-xs font-bold text-ink">Exam navigator</h2>
+              <div>
+                <h3 className="px-2 pb-1 text-[10px] font-mono uppercase tracking-wider text-muted">
+                  MCQs ({exam.questionCount})
+                </h3>
+                <div className="space-y-1">
+                  {items.filter((item) => item.type === 'mcq').map((item) => (
+                    <button
+                      key={`mcq-${item.index}`}
+                      onClick={() => selectMcq(item.index)}
+                      className={`w-full flex items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-[11px] font-mono cursor-pointer ${
+                        selectedItem.type === 'mcq' && selectedItem.index === item.index
+                          ? 'bg-violet/15 text-violet'
+                          : 'text-ink hover:bg-canvas'
+                      }`}
+                    >
+                      <span className="truncate">{item.label}</span>
+                      <span aria-label={item.answered ? 'answered' : 'unanswered'} className={item.answered ? 'text-mint' : 'text-muted'}>
+                        {item.answered ? '●' : '○'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {exam.coding.length > 0 && (
+                <div>
+                  <h3 className="px-2 pb-1 text-[10px] font-mono uppercase tracking-wider text-muted">
+                    Coding ({exam.coding.length})
+                  </h3>
+                  <div className="space-y-1">
+                    {items.filter((item) => item.type === 'coding').map((item) => (
+                      <button
+                        key={`coding-${item.index}`}
+                        onClick={() => setSelectedItem({ type: 'coding', index: item.index })}
+                        className={`w-full flex items-center justify-between gap-2 rounded px-2 py-1.5 text-left text-[11px] font-mono cursor-pointer ${
+                          selectedItem.type === 'coding' && selectedItem.index === item.index
+                            ? 'bg-violet/15 text-violet'
+                            : 'text-ink hover:bg-canvas'
+                        }`}
+                      >
+                        <span className="truncate">{item.label}</span>
+                        <span aria-label={item.answered ? 'Accepted' : 'unattempted'} className={item.answered ? 'text-mint' : 'text-muted'}>
+                          {item.answered ? '●' : '○'}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </aside>
+            <main>
+              <div
+                ref={mcqPaneRef}
+                hidden={selectedItem.type !== 'mcq'}
+                onClickCapture={(event) => {
+                  const button = (event.target as HTMLElement).closest('button');
+                  const text = button?.textContent?.trim() ?? '';
+                  if (button && text && !/^(← Previous|Next →|Submit Quiz|New Assessment|Retry Wrong Only)/.test(text)) {
+                    setAnsweredMcqs((prev) => ({ ...prev, [selectedItem.index]: true }));
+                  }
+                }}
+              >
+                <QuizEngine
+                  key={exam.id}
+                  topicTitle={exam.title}
+                  topicId="mixed"
+                  examTopics={exam.topics}
+                  examCount={exam.questionCount}
+                  examDifficulty={exam.difficulty}
+                  examTopicPlan={exam.topicPlan}
+                  isMock
+                  perQuestionSec={null}
+                  durationLimitSec={exam.durationSec}
+                  onComplete={(pct) => {
+                    setMcqPct(pct);
+                    saveQuizScore(`exam:${exam.id}`, pct);
+                  }}
+                />
+              </div>
+              {exam.coding.length > 0 && selectedItem.type === 'coding' && (
+                <ExamCodingSection
+                  coding={exam.coding}
+                  selectedSlug={exam.coding[selectedItem.index]?.slug}
+                  onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
+                />
+              )}
+            </main>
+          </div>
         </div>
       )}
     </div>

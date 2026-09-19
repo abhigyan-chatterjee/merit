@@ -120,14 +120,51 @@ describe('Exams catalog', () => {
     expect(screen.queryByText(/Coding questions/i)).not.toBeInTheDocument();
   });
 
-  it('shows the coding section after starting the exam', async () => {
+  it('shows the coding navigator item after starting the exam', async () => {
     mockGuestFetch();
     renderExams('/exams/foundational-dsa');
     await screen.findByText(/Foundational DSA/);
     fireEvent.click(screen.getByText(/Start timed exam/i));
-    expect(await screen.findByText(/Coding questions \(2\)/i)).toBeInTheDocument();
-    expect(await screen.findByText('Two Sum')).toBeInTheDocument();
-    expect(await screen.findByText('Valid Parentheses')).toBeInTheDocument();
+    expect((await screen.findAllByText(/Coding \(2\)/i)).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /Two Sum/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Valid Parentheses/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Two Sum/i }));
+    expect(await screen.findByText(/Given an array of integers/i)).toBeInTheDocument();
+  });
+
+  it('navigates to an MCQ and preserves its answer', async () => {
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-navigator',
+      email: 'navigator@test.com',
+      display_name: 'Navigator',
+      displayName: 'Navigator',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-navigator-1',
+      questions: Array.from({ length: 20 }, (_, index) => ({
+        id: `q-${index + 1}`,
+        topic: 'arrays-hashing',
+        subtopic: null,
+        difficulty: 'Easy',
+        prompt: `Navigator question ${index + 1}?`,
+        options: ['A', 'B', 'C', 'D'],
+      })),
+      total: 20,
+    });
+    renderExams('/exams/aptitude');
+    fireEvent.click(await screen.findByText(/Start timed exam/i));
+    expect(await screen.findByText(/Navigator question 1/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Question 3/i }));
+    expect(await screen.findByText(/Navigator question 3/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^AA$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^Question 1unanswered$/i }));
+    expect(await screen.findByText(/Navigator question 1/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^Question 3answered$/i }));
+    expect(await screen.findByRole('button', { name: /^AA$/i })).toHaveClass('border-mint');
+    expect(screen.getByLabelText('answered')).toBeInTheDocument();
   });
 
   it('samples a targeted exam topic set from the server bank', async () => {
