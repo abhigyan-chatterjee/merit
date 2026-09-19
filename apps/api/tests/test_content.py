@@ -31,7 +31,7 @@ def test_list_visualizers():
 
 def test_list_problems_and_filter():
     client = TestClient(app)
-    resp = client.get("/api/v1/problems?limit=100")
+    resp = client.get("/api/v1/problems?limit=500")
     assert resp.status_code == 200
     problems = resp.json()
 

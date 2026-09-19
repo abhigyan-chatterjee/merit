@@ -114,7 +114,7 @@ def list_visualizers() -> list[dict[str, Any]]:
 def list_problems(
     topic: str | None = Query(None),
     difficulty: str | None = Query(None),
-    limit: int = Query(50, ge=1, le=100),
+    limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
