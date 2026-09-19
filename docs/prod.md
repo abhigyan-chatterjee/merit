@@ -113,3 +113,90 @@ curl -s -X POST $API/api/v1/auth/oauth/clerk \
   no network, no real keys).
 - Frontend social block renders only on `/login` + `/register`; all other
   routes are unchanged.
+
+## 4. Neon Postgres prod DB (SQLite stays for dev/test)
+
+Local dev/test keep using SQLite with zero env needed. Only prod on the VPS
+points at Neon. No live URL exists yet — everything below is ready short of
+the owner-run cutover.
+
+Why it works without a data migration: all models use `String`/`Text`/
+`Integer`/`Float` (no SQLite-only DDL in any of the 9 migrations), UUID
+primary keys are generated client-side (`str(uuid.uuid4())`, no `pgcrypto`
+needed), `server_default`s are plain string literals valid on Postgres, and
+the Clerk migration (`c4f1a2b3d4e5`) uses a unique *index* on nullable
+`clerk_id` — Postgres unique indexes permit multiple NULLs, matching SQLite
+semantics. Offline pg-compat coverage lives in
+`apps/api/tests/test_pg_compat.py` (engine builds from a pg URL, metadata
+compiles on the Postgres dialect, migration chain inspected — no live
+server required).
+
+### 4.1 Owner steps: create the Neon project (owner executes)
+
+1. Go to <https://console.neon.tech> → **Create project** (name it e.g.
+   `merit-prod`, pick the region closest to the VPS).
+2. Copy the **pooled** connection string (Neon shows a "Pooled connection"
+   toggle — keep it on) → looks like
+   `postgresql://USER:PASSWORD@HOST/dbname?sslmode=require`.
+3. Convert the scheme for the psycopg v3 driver (required):
+   `postgresql://` → `postgresql+psycopg://`, keeping the rest identical:
+   `postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require`
+4. On the VPS, set it in the API env (never commit it — `.env` is
+   gitignored):
+   ```ini
+   # /opt/merit/apps/api/.env (VPS only)
+   ENVIRONMENT=production
+   SECRET_KEY=<output of: python3 -c "import secrets; print(secrets.token_urlsafe(48))">
+   DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require
+   ```
+   For `docker compose` deploys, export it instead (compose falls back to
+   SQLite when unset — see the `DATABASE_URL` comment in
+   `docker-compose.yml`):
+   ```bash
+   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
+   ```
+
+### 4.2 Owner steps: cutover commands (owner executes on the VPS)
+
+```bash
+cd /opt/merit/apps/api
+
+# 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 9 revisions)
+DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
+
+# 2. Seed verified content ONCE (problems, questions, paths). Re-runs are
+#    idempotent — existing rows are skipped, never duplicated.
+DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
+
+# 3. Restart the API so the engine binds the pg URL
+sudo systemctl restart merit-api   # or: docker compose up -d --force-recreate api
+```
+
+### 4.3 Owner verification (prod, after restart)
+
+```bash
+API=https://<vps-host>
+
+# 1. Health
+curl -s $API/api/v1/health   # expect {"status":"ok",...}
+
+# 2. Register + login (prod JWT cookies)
+curl -s -i -X POST $API/api/v1/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"owner@example.com","display_name":"Owner","password":"VeryStrongPass123"}' \
+| head -12   # expect 201 (or 200 if already registered) + cookies
+
+# 3. One judge submit through the UI (Python or JavaScript only) ->
+#    expect a verdict (AC/WA/...) on a real submission row.
+```
+
+### 4.4 Notes / known behaviour
+
+- Staging cutover happens with the owner — do not point any shared env at
+  Neon without them.
+- Never commit a `DATABASE_URL` or password. Prod secrets live only in the
+  VPS env / `.env` (gitignored).
+- Rolling back to SQLite is just unsetting `DATABASE_URL` (default
+  `sqlite:///./merit.db`); no code change needed either way.
+- Image builds need no extra step: `apps/api/Dockerfile` installs
+  `pyproject.toml`, which now includes `psycopg[binary]`.

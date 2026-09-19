@@ -83,6 +83,9 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def normalize_sqlite_url(self) -> "Settings":
+        # Neon Postgres prod URLs pass through untouched.
+        if self.database_url.startswith("postgresql"):
+            return self
         if (
             self.database_url.startswith("sqlite:///")
             and not self.database_url.startswith("sqlite:////")

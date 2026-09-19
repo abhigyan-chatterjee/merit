@@ -7,13 +7,18 @@ from app.config import settings
 
 # Engine configuration
 connect_args = {}
+engine_kwargs: dict = {"echo": False}
 if settings.database_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
+elif settings.database_url.startswith("postgresql"):
+    # Neon pooled connections can go stale (scale-to-zero / idle timeout);
+    # pre-ping keeps prod checkouts honest. SQLite path untouched.
+    engine_kwargs["pool_pre_ping"] = True
 
 engine = create_engine(
     settings.database_url,
     connect_args=connect_args,
-    echo=False,
+    **engine_kwargs,
 )
 
 # Apply SQLite pragmas (WAL mode and foreign keys)

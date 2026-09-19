@@ -24,7 +24,10 @@ services:
       - piston
     environment:
       - ENVIRONMENT=production
-      - DATABASE_URL=sqlite:////data/merit.db
+      # Local default stays SQLite (zero friction: no env needed).
+      # Neon prod override (VPS only, never commit the URL — export it):
+      #   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
+      - DATABASE_URL=${DATABASE_URL:-sqlite:////data/merit.db}
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
       - PISTON_URL=http://piston:2000
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
