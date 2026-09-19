@@ -29,7 +29,7 @@ describe('Path progress consistency (/learn cards)', () => {
 
   it('counts visited visualizers the same way as the detail page', () => {
     window.localStorage.setItem(
-      'algovista_store_v1',
+      'merit_store_v1',
       JSON.stringify({
         progress: {
           'two-sum': 'Done',
@@ -56,7 +56,7 @@ describe('Path progress consistency (/learn cards)', () => {
 
   it('renders one consistent percentage on the card (no 13% ghost)', () => {
     window.localStorage.setItem(
-      'algovista_store_v1',
+      'merit_store_v1',
       JSON.stringify({
         progress: {
           'two-sum': 'Done',

@@ -38,7 +38,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 app = FastAPI(
-    title="Algovista API",
+    title="Merit API",
     version="1.0.0",
     docs_url="/api/docs",
     openapi_url="/api/openapi.json",
@@ -66,4 +66,4 @@ app.include_router(admin.router)
 
 @app.get("/api/v1/health")
 def health_check():
-    return {"status": "ok", "service": "algovista-api"}
+    return {"status": "ok", "service": "merit-api"}

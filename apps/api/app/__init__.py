@@ -1,1 +1,1 @@
-"""Algovista API package."""
+"""Merit API package."""

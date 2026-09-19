@@ -1,4 +1,4 @@
-# AGENTS.md — Algovista Engineering & Context Manual
+# AGENTS.md — Merit Engineering & Context Manual
 
 > **Mandatory Read for Autonomous Agents (Codex, Antigravity, Claude Code, Hermes):**
 > Read this file completely before touching code or executing commands. It defines repository architecture, hard invariants, completed tickets, active branch topology, and canonical test gates.
@@ -7,7 +7,7 @@
 
 ## 1. Project Overview & Vision
 
-**Algovista** is a multi-user, placement-grade Data Structures & Algorithms (DSA) preparation platform tailored for Indian campus recruitment (MAANG, Tier-1 product firms, and mass recruiters).
+**Merit** is a multi-user, placement-grade Data Structures & Algorithms (DSA) preparation platform tailored for Indian campus recruitment (MAANG, Tier-1 product firms, and mass recruiters).
 
 - **Frontend (`apps/web`)**: Vite + React 19 + TypeScript + Tailwind CSS 4. Monaco editor runner, algorithm visualizers (Trees, Graphs, Sorting, Dynamic Programming), guided paths, and dynamic quiz engine.
 - **Backend (`apps/api`)**: FastAPI + SQLAlchemy 2.0 (declarative) + Alembic + SQLite (WAL mode). Argon2id password hashing + JWT in `httpOnly` secure cookies. User isolation on every query.
@@ -17,7 +17,7 @@
 
 ## 2. Active Git State & Remote Forge
 
-- **Remote Forge**: `https://git.nullbit.in/abhi/Algovista.git` (Private self-hosted Gitea).
+- **Remote Forge**: `https://git.nullbit.in/abhi/Merit.git` (Private self-hosted Gitea).
 - **Active Feature Branch**: `scope/extension`.
 - **Commit Identity (STRICT)**:
   ```bash
@@ -25,7 +25,7 @@
   git config user.email "abhi@nullbit.in"
   ```
 - **Credentials & Environment**:
-  - Forge auth tokens and secrets live in local configuration / environment (`~/.config/algovista/forge.env`).
+  - Forge auth tokens and secrets live in local configuration / environment (`~/.config/merit/forge.env`).
   - **NEVER** commit secrets, passwords, or tokens to git.
   - SQLite database files (`*.db*`), caches (`.ruff_cache`, `.pytest_cache`, `node_modules`), and `.env` are gitignored.
 
@@ -59,19 +59,20 @@
 | `421c2f7` | Ticket B | Deduplicated question bank: capped instances at 4, added 28 new distinct designs (+112 questions) in starved categories, raised Hard questions from 34 to 73, updated `coverage_report.py` gate to `distinct_designs >= 130`. |
 | `74f5593` | Ticket E | Fixed `seed_problems` in `apps/api/app/seed.py` to inspect `reviewStatus` / `review_status`, skipping and purging 200 `scrap-*` draft files from the live API. |
 | `2e665a4` | Ticket F | Introduced **Question Authoring Framework (QAF)** in `content/generators/qaf/`: declarative specs, random parameter oracles, distractor generators, and 6 quality gates in `verify_questions.py`. |
+| Working tree | Ticket G | Added **Problem Authoring Framework (PAF)** in `content/generators/paf/`: typed signature parsing, deterministic edge/random/stress inputs, real-judge cross-validation, runtime profiling, and verified JSON emission. |
 | `32aa70c` | Fix API | Added local development secret auto-fallback in `apps/api/app/config.py` (strict failure retained for production). |
 | `e5fc8cc` | Test API | Added unit test coverage in `tests/test_config.py` for secret fallback and production rejection. |
-| `5240cc5` | Fix API | Anchored SQLite `DATABASE_URL` path directly to `apps/api/algovista.db` regardless of invocation CWD; added lifespan startup hook in `app/main.py` to auto-initialize schema and seed content. |
+| `5240cc5` | Fix API | Anchored SQLite `DATABASE_URL` path directly to `apps/api/merit.db` regardless of invocation CWD; added lifespan startup hook in `app/main.py` to auto-initialize schema and seed content. |
 
 ---
 
 ## 5. Repository Layout
 
 ```text
-Algovista/
+Merit/
 ├── AGENTS.md                               # This file
 ├── README.md                               # Project documentation
-├── algovista.db                            # Root artifact (use apps/api/algovista.db)
+├── merit.db                                # Root artifact (use apps/api/merit.db)
 ├── apps/
 │   ├── api/                                # FastAPI backend
 │   │   ├── alembic/                        # Migration versions (184cc17df8ca -> 9e4a5c28d7f2)
@@ -97,6 +98,7 @@ Algovista/
     ├── catalog/catalog.json                # 3,997 canonical deduplicated problems
     ├── generators/
     │   ├── qaf/                            # Question Authoring Framework (spec, oracles, distractors, engine)
+    │   ├── paf/                            # Problem Authoring Framework (spec, inputs, judge validation, emitter)
     │   │   └── specs/                      # Declarative MCQ design specs
     │   ├── arrays_strings.py               # Topic question generators (QAF-driven)
     │   ├── generate_all.py                 # Master generator runner
@@ -173,10 +175,6 @@ python3 content/validators/run_all.py
 
 ---
 
-## 8. Next Immediate Focus: Ticket G (PAF)
+## 8. Next Immediate Focus: Learning-path alignment
 
-The next priority task is implementing **Ticket G: Problem Authoring Framework (PAF)**:
-- Create `content/generators/paf/` mirroring `content/generators/qaf/`.
-- Allow problem authors to write only: function signature, Markdown statement, Brute-Force algorithm, and Optimal algorithm.
-- PAF automatically generates random edge & stress test inputs, validates both solutions against each other, profiles execution time, and outputs production-grade problem JSON files with 100% verified test cases.
-- Following PAF, align learning paths (`content/paths/foundation.json`, `targeted.json`, `mastery.json`) to the verified problem set.
+Ticket G is implemented in `content/generators/paf/`. The next priority is to align learning paths (`content/paths/foundation.json`, `targeted.json`, `mastery.json`) to the verified problem set.

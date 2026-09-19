@@ -262,7 +262,7 @@ export const ProfilePage: React.FC = () => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'algovista-export.json';
+                a.download = 'merit-export.json';
                 a.click();
                 URL.revokeObjectURL(url);
                 setDataMsg('Exported.');

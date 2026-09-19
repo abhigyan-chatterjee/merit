@@ -5,7 +5,7 @@ test.describe('Progress Sync and Guest Import', () => {
     const timestamp = Date.now();
     const user = {
       displayName: 'Progress Tester',
-      email: `progresstester_${timestamp}@algovista.org`,
+      email: `progresstester_${timestamp}@merit.org`,
       password: 'StrongPassword123!',
     };
 

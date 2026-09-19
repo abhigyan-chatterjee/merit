@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Play,
   Send,
@@ -21,6 +21,11 @@ import {
 } from "../utils/api";
 import { useAuth } from "../store/AuthContext";
 
+type EditorLang = "javascript" | "python";
+
+const pythonSkeleton = (fn: string): string =>
+  `def ${fn}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`;
+
 interface CodeRunnerProps {
   problemSlug: string;
   starterCode: string;
@@ -37,16 +42,37 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   onAllPassed,
 }) => {
   const { user } = useAuth();
-  const [language, setLanguage] = useState<"javascript" | "python">(() => {
+  const [language, setLanguage] = useState<EditorLang>(() => {
     try {
-      const saved = window.localStorage.getItem('algovista_lang_v1');
+      let saved = window.localStorage.getItem('merit_lang_v1');
+      if (saved === null) {
+        const legacy = window.localStorage.getItem('algovista_lang_v1');
+        if (legacy !== null) {
+          saved = legacy;
+          try {
+            window.localStorage.setItem('merit_lang_v1', legacy);
+            window.localStorage.removeItem('algovista_lang_v1');
+          } catch {
+            // ignore
+          }
+        }
+      }
       return saved === 'python' ? 'python' : 'javascript';
     } catch {
       return 'javascript';
     }
   });
-  const [code, setCode] = useState(starterCode);
-  const [editedCode, setEditedCode] = useState<string | null>(null);
+  // Per-language buffers: switching languages swaps skeletons without
+  // clobbering what the user typed in the other language. Previously a
+  // single `code` state plus an `editedCode` guard meant the switch was a
+  // no-op after any keystroke, so e.g. the JS boilerplate stuck around
+  // after selecting Python.
+  const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() => ({
+    javascript: starterCode,
+    python: pythonSkeleton(functionName),
+  }));
+  const code = codeByLang[language];
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [activeView, setActiveView] = useState<"results" | "submissions">("results");
   const [results, setResults] = useState<TestCaseResult[] | null>(null);
@@ -57,23 +83,90 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
 
-  // Update default starter code when switching languages. The user's own
-  // edits are never clobbered: once edited, Reset restores the skeleton.
-  const handleLanguageChange = (lang: "javascript" | "python") => {
+  const setCode = (next: string) => {
+    setCodeByLang((prev) => ({ ...prev, [language]: next }));
+  };
+
+  // Fresh skeletons when navigating between problems: without this the
+  // previous problem's code (and function name) lingered in the editor.
+  useEffect(() => {
+    setCodeByLang({
+      javascript: starterCode,
+      python: pythonSkeleton(functionName),
+    });
+    setResults(null);
+    setVerdict(null);
+    setCompileError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [problemSlug]);
+
+  // Tab inserts indentation instead of moving focus — a must for any code
+  // editor. Plain Tab indents (multiline-aware); Shift+Tab outdents.
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key !== 'Tab') return;
+    e.preventDefault();
+    const el = editorRef.current;
+    if (!el) return;
+    const { selectionStart: start, selectionEnd: end, value } = el;
+    const INDENT = '  ';
+    if (e.shiftKey) {
+      // Outdent: drop one indent level from each selected line's start.
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const endLineEnd = value.indexOf('\n', end);
+      const blockEnd = endLineEnd === -1 ? value.length : endLineEnd;
+      const block = value.slice(lineStart, blockEnd);
+      const outdented = block
+        .split('\n')
+        .map((line) =>
+          line.startsWith(INDENT) ? line.slice(INDENT.length) : line.startsWith(' ') ? line.slice(1) : line
+        )
+        .join('\n');
+      const next = value.slice(0, lineStart) + outdented + value.slice(blockEnd);
+      setCode(next);
+      requestAnimationFrame(() => {
+        el.focus();
+        el.setSelectionRange(lineStart, lineStart + outdented.length);
+      });
+      return;
+    }
+    if (start !== end && value.slice(start, end).includes('\n')) {
+      // Multiline indent.
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const endLineEnd = value.indexOf('\n', end);
+      const blockEnd = endLineEnd === -1 ? value.length : endLineEnd;
+      const block = value.slice(lineStart, blockEnd);
+      const indented = block
+        .split('\n')
+        .map((line) => INDENT + line)
+        .join('\n');
+      const next = value.slice(0, lineStart) + indented + value.slice(blockEnd);
+      setCode(next);
+      requestAnimationFrame(() => {
+        el.focus();
+        el.setSelectionRange(lineStart, lineStart + indented.length);
+      });
+      return;
+    }
+    const next = value.slice(0, start) + INDENT + value.slice(end);
+    setCode(next);
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(start + INDENT.length, start + INDENT.length);
+    });
+  };
+
+  // Update default starter code when switching languages. Each language
+  // keeps its own buffer, so the user's edits in one language are never
+  // clobbered by switching to the other and back.
+  const handleLanguageChange = (lang: EditorLang) => {
     setLanguage(lang);
     try {
-      window.localStorage.setItem('algovista_lang_v1', lang);
+      window.localStorage.setItem('merit_lang_v1', lang);
     } catch {
       // private mode: ignore
     }
     if (user) {
       progressApi.saveSettings({ preferred_language: lang }).catch(() => {});
-    }
-    if (editedCode !== null) return;
-    if (lang === "python") {
-      setCode(`def ${functionName}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`);
-    } else {
-      setCode(starterCode);
     }
     setResults(null);
     setVerdict(null);
@@ -81,12 +174,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   const handleReset = () => {
-    setEditedCode(null);
-    if (language === "python") {
-      setCode(`def ${functionName}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`);
-    } else {
-      setCode(starterCode);
-    }
+    setCodeByLang((prev) => ({
+      ...prev,
+      [language]: language === "python" ? pythonSkeleton(functionName) : starterCode,
+    }));
     setResults(null);
     setVerdict(null);
     setCompileError(null);
@@ -254,11 +345,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       {/* Code Area */}
       <div className="p-0 bg-canvas">
         <textarea
+          ref={editorRef}
           value={code}
           onChange={(e) => {
             setCode(e.target.value);
-            setEditedCode(e.target.value);
           }}
+          onKeyDown={handleEditorKeyDown}
           rows={12}
           spellCheck={false}
           aria-label="Code Editor"

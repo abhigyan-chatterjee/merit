@@ -1,6 +1,6 @@
-# ALGOVISTA — Interactive Data Structures & Algorithms Practice Platform
+# MERIT — Interactive Data Structures & Algorithms Practice Platform
 
-ALGOVISTA is a placement-grade, full-stack Data Structures & Algorithms visual practice platform built with a **React 19 + TypeScript + Tailwind 4** frontend (`apps/web`) and a **FastAPI + SQLAlchemy 2.0 + Alembic** backend (`apps/api`) with **SQLite / PostgreSQL** persistence and sandboxed code execution.
+MERIT is a placement-grade, full-stack Data Structures & Algorithms visual practice platform built with a **React 19 + TypeScript + Tailwind 4** frontend (`apps/web`) and a **FastAPI + SQLAlchemy 2.0 + Alembic** backend (`apps/api`) with **SQLite / PostgreSQL** persistence and sandboxed code execution.
 
 **Author**: [Abhigyan Chatterjee](https://nullbit.in) — GitHub: [https://github.com/abhigyan-chatterjee](https://github.com/abhigyan-chatterjee)
 
@@ -56,7 +56,7 @@ ALGOVISTA is a placement-grade, full-stack Data Structures & Algorithms visual p
 ## Repository Layout
 
 ```
-algovista/
+merit/
 ├── apps/
 │   ├── web/                     # React 19 + Vite + TypeScript frontend
 │   │   ├── src/
@@ -82,7 +82,7 @@ algovista/
 │   ├── questions/               # 1,083 question items across 16 topic directories
 │   ├── paths/                   # Learning path definitions (Foundation, Targeted, Mastery)
 │   ├── catalog/                 # Canonical DSA catalog (3,997 entries) with companies & topic map
-│   ├── generators/              # build_catalog, sync_problems_ts, question generators
+│   ├── generators/              # build_catalog, sync_problems_ts, QAF/PAF, question generators
 │   └── validators/              # verify_problems, verify_questions, coverage_report, run_all
 └── docs/
     ├── launch-checklist.md      # Launch readiness audit & verification gates
@@ -150,7 +150,7 @@ python3 content/generators/sync_problems_ts.py
 
 ## Data Privacy & Retention Policy
 
-1. **Guest Mode**: All visualizers and problem reading are accessible without an account. Unauthenticated progress is stored locally in the browser's `localStorage` and validated against a strict Zod schema (`algovista_store_v1`).
+1. **Guest Mode**: All visualizers and problem reading are accessible without an account. Unauthenticated progress is stored locally in the browser's `localStorage` and validated against a strict Zod schema (`merit_store_v1`).
 2. **Account Sync & Merge**: Upon first registration or login, local progress is imported and merged using a **max-wins** strategy (`Done` > `Doing` > `Todo`; union of active streak days).
 3. **Multi-User Isolation**: User IDs are never trusted from client inputs. All database operations filter strictly by the authenticated JWT session cookie (`Table.user_id == current_user.id`).
 4. **Account Purge & Export**: Users retain full control over their data via `GET /api/v1/auth/export` (full JSON archive) and `DELETE /api/v1/auth/account` (complete cascading purge).

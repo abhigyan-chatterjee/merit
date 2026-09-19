@@ -17,8 +17,8 @@ def test_register_login_logout_flow(client: TestClient):
     assert "password_hash" not in user_data
 
     # Check httpOnly cookies
-    assert "av_access" in reg_resp.cookies
-    assert "av_refresh" in reg_resp.cookies
+    assert "merit_access" in reg_resp.cookies
+    assert "merit_refresh" in reg_resp.cookies
 
     # 2. Get /me
     me_resp = client.get("/api/v1/auth/me", cookies=reg_resp.cookies)
@@ -35,8 +35,8 @@ def test_register_login_logout_flow(client: TestClient):
         json={"email": "testuser@example.com", "password": "StrongPassword123!"},
     )
     assert login_resp.status_code == 200
-    assert "av_access" in login_resp.cookies
-    assert "av_refresh" in login_resp.cookies
+    assert "merit_access" in login_resp.cookies
+    assert "merit_refresh" in login_resp.cookies
 
 
 def test_register_duplicate_email_rejected(client: TestClient):
@@ -88,28 +88,28 @@ def test_refresh_token_rotation_and_theft_detection(client: TestClient):
             "password": "Password123456",
         },
     )
-    original_refresh = reg_resp.cookies.get("av_refresh")
+    original_refresh = reg_resp.cookies.get("merit_refresh")
     assert original_refresh is not None
 
     # Rotate 1: refresh using original token
-    ref_resp = client.post("/api/v1/auth/refresh", cookies={"av_refresh": original_refresh})
+    ref_resp = client.post("/api/v1/auth/refresh", cookies={"merit_refresh": original_refresh})
     assert ref_resp.status_code == 200
-    rotated_refresh = ref_resp.cookies.get("av_refresh")
+    rotated_refresh = ref_resp.cookies.get("merit_refresh")
     assert rotated_refresh is not None
     assert rotated_refresh != original_refresh
 
     # Rotate 2: using new rotated token works
-    ref2_resp = client.post("/api/v1/auth/refresh", cookies={"av_refresh": rotated_refresh})
+    ref2_resp = client.post("/api/v1/auth/refresh", cookies={"merit_refresh": rotated_refresh})
     assert ref2_resp.status_code == 200
 
     # THEFT DETECTION: Try to reuse original_refresh token (already revoked)
-    theft_resp = client.post("/api/v1/auth/refresh", cookies={"av_refresh": original_refresh})
+    theft_resp = client.post("/api/v1/auth/refresh", cookies={"merit_refresh": original_refresh})
     assert theft_resp.status_code == 401
     assert theft_resp.json()["detail"]["code"] == "TOKEN_REUSE_DETECTED"
 
     # All tokens should now be revoked for this user
     assert (
-        client.post("/api/v1/auth/refresh", cookies={"av_refresh": rotated_refresh}).status_code
+        client.post("/api/v1/auth/refresh", cookies={"merit_refresh": rotated_refresh}).status_code
         == 401
     )
 

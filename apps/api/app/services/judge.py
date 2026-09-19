@@ -68,7 +68,7 @@ async def execute_code(
             compile_output="Code size exceeds maximum limit of 64 KB",
         )
 
-    tmpdir = tempfile.mkdtemp(prefix="algovista_judge_")
+    tmpdir = tempfile.mkdtemp(prefix="merit_judge_")
     try:
         tmp_path = Path(tmpdir)
         timeout_sec = max(3.0, (time_limit_ms / 1000.0) * 1.5)

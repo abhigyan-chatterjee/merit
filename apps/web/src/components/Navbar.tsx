@@ -115,7 +115,7 @@ export const Navbar: React.FC = () => {
             </div>
             <div className="flex flex-col leading-none">
               <span className="font-mono font-bold text-sm tracking-[-0.02em] text-ink">
-                ALGOVISTA
+                MERIT
               </span>
               <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-muted mt-0.5 hidden sm:inline">
                 dsa workbench

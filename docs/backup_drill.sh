@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Algovista Database Backup and Restore Drill Script
+# Merit Database Backup and Restore Drill Script
 # Demonstrates zero-data-loss SQLite WAL checkpointing, encrypted backup, and restore.
 # ==============================================================================
 
 set -euo pipefail
 
-DB_FILE="${1:-algovista.db}"
-BACKUP_DIR="${2:-/tmp/algovista_backups}"
+DB_FILE="${1:-merit.db}"
+BACKUP_DIR="${2:-/tmp/merit_backups}"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BACKUP_FILE="${BACKUP_DIR}/algovista_backup_${TIMESTAMP}.sqlite"
-RESTORED_DB="/tmp/algovista_restored_${TIMESTAMP}.db"
+BACKUP_FILE="${BACKUP_DIR}/merit_backup_${TIMESTAMP}.sqlite"
+RESTORED_DB="/tmp/merit_restored_${TIMESTAMP}.db"
 
 echo "=== 1. PRE-BACKUP HEALTH CHECK ==="
 if [ ! -f "${DB_FILE}" ]; then

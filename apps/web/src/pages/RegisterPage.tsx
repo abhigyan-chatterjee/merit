@@ -58,7 +58,7 @@ export const RegisterPage: React.FC = () => {
           <div className="text-center space-y-2">
             <SectionLabel title="New Student Registration" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
-              Create an ALGOVISTA Account
+              Create a MERIT Account
             </h1>
             <p className="text-xs text-muted">
               Get an isolated, verified workspace for placement practice.

@@ -8,7 +8,20 @@ export function useLocalStorage<T>(
 ): [T, (value: T | ((val: T) => T)) => void] {
   const readAndValidate = useCallback((): T => {
     try {
-      const raw = window.localStorage.getItem(key);
+      let raw = window.localStorage.getItem(key);
+      if (raw === null && key.startsWith('merit_')) {
+        const legacyKey = key.replace(/^merit_/, 'algovista_');
+        const legacyRaw = window.localStorage.getItem(legacyKey);
+        if (legacyRaw !== null) {
+          raw = legacyRaw;
+          try {
+            window.localStorage.setItem(key, legacyRaw);
+            window.localStorage.removeItem(legacyKey);
+          } catch {
+            // ignore migration storage write failure
+          }
+        }
+      }
       if (raw === null) return initialValue;
 
       const parsed = JSON.parse(raw);

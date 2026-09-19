@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
               </svg>
             </div>
             <span className="font-mono font-bold text-sm tracking-[-0.02em] text-ink">
-              ALGOVISTA
+              MERIT
             </span>
           </Link>
           <p className="text-xs text-muted leading-relaxed max-w-xs">
@@ -98,7 +98,7 @@ export const Footer: React.FC = () => {
 
       <div className="border-t border-line">
         <div className="max-w-7xl mx-auto px-4 h-12 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-muted">
-          <span>ALGOVISTA — practice that shows its work.</span>
+          <span>MERIT — Make the merit list.</span>
           <span>Algorithms, visualised.</span>
         </div>
       </div>

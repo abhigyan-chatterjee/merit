@@ -1,7 +1,7 @@
 import os
 
 # Set a test-only SECRET_KEY before any app modules or settings are imported.
-os.environ["SECRET_KEY"] = "test_only_jwt_secret_key_algovista_testing_minimum_32_chars"
+os.environ["SECRET_KEY"] = "test_only_jwt_secret_key_merit_testing_minimum_32_chars"
 
 from collections.abc import Generator  # noqa: E402
 

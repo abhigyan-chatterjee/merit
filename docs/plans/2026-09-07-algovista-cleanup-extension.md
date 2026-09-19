@@ -1,4 +1,4 @@
-# ALGOVISTA Cleanup & Extension Plan
+# MERIT Cleanup & Extension Plan
 
 > **For Hermes / implementing agents:** Execute this plan phase-by-phase. Before starting each phase, expand its tasks into bite-sized TDD tasks per the `writing-plans` skill (failing test → implement → pass → commit). Do not skip verification gates. Do not modify `main` directly — one branch per task.
 
@@ -54,7 +54,7 @@ Verified facts from review + browser testing of the base at commit `8737bf7`:
 ## 2. Target Repo Layout
 
 ```
-algovista/
+merit/
 ├── apps/
 │   ├── web/                  # existing frontend, moved as-is then fixed
 │   │   ├── src/...
@@ -216,7 +216,7 @@ Backend does not exist yet; everything stays localStorage-backed. Each fix = one
 5. **D4 visualizer completion tracking.** Add `visitedVisualizers: string[]` to the store (replacing the `lastVisited`-derived rule in `GuidedPathDetailPage.tsx:51-53`: `done = state.visitedVisualizers.includes(step.id)`). Record a visit on mount of `VisualizerDetailPage`. Test: visiting array then returning to path keeps sorting done.
 6. **D7 honest initial state.** Empty `INITIAL_STATE` (no fake streak/scores/solved). Add empty-state UI to Dashboard (heat map empty, "start your first problem" CTA). Test: fresh storage → 0s everywhere.
 7. **D8 local-date streaks.** Replace `toISOString().split('T')[0]` with a local `yyyy-mm-dd` formatter (`getFullYear/getMonth/getDate`) in `useStreak.ts` and anywhere else dates are derived. Test with a mocked Date at 02:00 IST → today is the local date.
-8. **D9 storage schema validation.** Add zod schema for `algovista_store_v1`; on parse failure or version mismatch, back up the raw value to `algovista_store_v1.backup` and reset to defaults (never crash). Test: corrupted JSON and wrong-shape JSON both recover.
+8. **D9 storage schema validation.** Add zod schema for `merit_store_v1`; on parse failure or version mismatch, back up the raw value to `merit_store_v1.backup` and reset to defaults (never crash). Test: corrupted JSON and wrong-shape JSON both recover.
 9. **D6 interim (until Phase 4):** move `new Function` execution into a Web Worker (`apps/web/src/workers/runner.worker.ts`) with `postMessage` + `setTimeout` kill at 3s; Worker scope has no DOM/localStorage. This is the *interim* — Phase 4 replaces with server judge.
 10. **D12 SPA fallback:** document + provide `vercel.json`/`_redirects`/nginx snippet in README deploy section.
 

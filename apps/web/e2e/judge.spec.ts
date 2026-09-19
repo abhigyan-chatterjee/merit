@@ -5,7 +5,7 @@ test.describe('Judge Sandboxed Execution and Submission', () => {
     const timestamp = Date.now();
     const user = {
       displayName: 'Judge E2E Tester',
-      email: `judgetester_${timestamp}@algovista.org`,
+      email: `judgetester_${timestamp}@merit.org`,
       password: 'StrongPassword123!',
     };
 

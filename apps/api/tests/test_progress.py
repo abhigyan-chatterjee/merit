@@ -32,7 +32,7 @@ def test_progress_unauthorized(client: TestClient):
 
 
 def test_problem_progress_lifecycle(client: TestClient):
-    register_user(client, "student1@algovista.org")
+    register_user(client, "student1@merit.org")
 
     # Initial state is default Todo
     res = client.get("/api/v1/progress/problems/two-sum")
@@ -63,7 +63,7 @@ def test_problem_progress_lifecycle(client: TestClient):
 
 
 def test_notes_and_bookmarks(client: TestClient):
-    register_user(client, "student2@algovista.org")
+    register_user(client, "student2@merit.org")
 
     # Empty note initially
     res = client.get("/api/v1/progress/notes/two-sum")
@@ -96,7 +96,7 @@ def test_notes_and_bookmarks(client: TestClient):
 
 
 def test_visualizer_visit_tracking(client: TestClient):
-    register_user(client, "student3@algovista.org")
+    register_user(client, "student3@merit.org")
 
     res = client.post("/api/v1/progress/visualizers/sorting/visit")
     assert res.status_code == 200
@@ -108,7 +108,7 @@ def test_visualizer_visit_tracking(client: TestClient):
 
 
 def test_import_local_max_wins(client: TestClient):
-    register_user(client, "student4@algovista.org")
+    register_user(client, "student4@merit.org")
 
     # Existing progress: two-sum is Doing
     client.put("/api/v1/progress/problems/two-sum", json={"status": "Doing"})

@@ -29,8 +29,8 @@ def test_production_rejects_placeholder_secret(monkeypatch):
 def test_sqlite_relative_url_normalized_to_apps_api():
     settings = Settings(
         secret_key="test_secret_for_config_validation_32chars",
-        database_url="sqlite:///./algovista.db",
+        database_url="sqlite:///./merit.db",
     )
     assert settings.database_url.startswith("sqlite:////")
-    assert settings.database_url.endswith("apps/api/algovista.db")
+    assert settings.database_url.endswith("apps/api/merit.db")
 

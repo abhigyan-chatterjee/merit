@@ -130,7 +130,7 @@ export const LandingPage: React.FC = () => {
               <span className="relative flex items-center justify-center w-3.5 h-3.5">
                 <span className="absolute w-1.5 h-1.5 rounded-full bg-mint animate-pulse-dot" />
               </span>
-              <span className="text-ink">An interactive DSA lab</span>
+              <span className="text-ink">Make the merit list</span>
             </div>
 
             <h1 className="text-[2.1rem] leading-[1.06] sm:text-6xl sm:leading-[1.03] font-bold tracking-[-0.03em] text-ink">

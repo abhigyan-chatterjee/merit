@@ -147,7 +147,7 @@ def logout(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    raw_refresh = request.cookies.get("av_refresh")
+    raw_refresh = request.cookies.get("merit_refresh")
     if raw_refresh:
         token_h = hash_token(raw_refresh)
         db_token = db.scalar(select(RefreshToken).where(RefreshToken.token_hash == token_h))
@@ -165,7 +165,7 @@ def refresh_token_rotation(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    raw_refresh = request.cookies.get("av_refresh")
+    raw_refresh = request.cookies.get("merit_refresh")
     if not raw_refresh:
         clear_auth_cookies(response)
         raise HTTPException(

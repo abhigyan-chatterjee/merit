@@ -15,7 +15,7 @@ interface PanelProps {
 }
 
 /**
- * Panel — the core surface of ALGOVISTA.
+ * Panel — the core surface of MERIT.
  * A dense, hairline-bordered instrument card with an optional header rail
  * and drafting-table corner brackets.
  */

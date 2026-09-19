@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.seed import seed_problems
 
 
-def register_user(client: TestClient, email: str = "judge_student@algovista.org") -> str:
+def register_user(client: TestClient, email: str = "judge_student@merit.org") -> str:
     res = client.post(
         "/api/v1/auth/register",
         json={
@@ -79,7 +79,7 @@ function solve(nums, target) {
 
 
 def test_judge_submit_ac_flips_progress(client: TestClient):
-    register_user(client, "submit_student@algovista.org")
+    register_user(client, "submit_student@merit.org")
 
     correct_js = """
 function solve(nums, target) {
@@ -119,7 +119,7 @@ function solve(nums, target) {
 
 
 def test_judge_python_execution(client: TestClient):
-    register_user(client, "python_student@algovista.org")
+    register_user(client, "python_student@merit.org")
 
     py_code = """
 def solve(nums, target):

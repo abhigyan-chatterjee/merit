@@ -13,7 +13,7 @@ const TestAuthConsumer = () => {
   return (
     <div>
       <span data-testid="user-email">{user ? user.email : 'guest'}</span>
-      <button onClick={() => login('test@algovista.org', 'ValidPass123!')}>Login</button>
+      <button onClick={() => login('test@merit.org', 'ValidPass123!')}>Login</button>
       <button onClick={() => logout()}>Logout</button>
     </div>
   );
@@ -84,7 +84,7 @@ describe('Auth Integration and UI', () => {
     fireEvent.click(screen.getByText('Login'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('user-email')).toHaveTextContent('test@algovista.org');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('test@merit.org');
     });
   });
 

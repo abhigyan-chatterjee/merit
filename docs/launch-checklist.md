@@ -1,4 +1,4 @@
-# Algovista Platform Launch & Hardening Verification Checklist
+# Merit Platform Launch & Hardening Verification Checklist
 
 **Date of Execution:** 2026-09-09
 **Platform Status:** PRODUCTION READY
@@ -69,7 +69,7 @@ curl -i http://localhost/api/v1/health
 ### 3.2 Switching to PostgreSQL
 The backend is completely database-agnostic through SQLAlchemy 2.0. To switch from SQLite to PostgreSQL:
 ```env
-DATABASE_URL=postgresql://algovista_user:secure_password@postgres_host:5432/algovista_db
+DATABASE_URL=postgresql://merit_user:secure_password@postgres_host:5432/merit_db
 ```
 Apply migrations:
 ```bash

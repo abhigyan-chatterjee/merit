@@ -53,7 +53,7 @@ def test_admin_endpoints_reject_student(client: TestClient, db_session: Session)
         db_session, "student_tester@example.com", role="student"
     )
 
-    client.cookies.set("av_access", student_token)
+    client.cookies.set("merit_access", student_token)
 
     # Student should receive 403 Forbidden on all admin endpoints
     res_stats = client.get("/api/v1/admin/stats")
@@ -77,7 +77,7 @@ def test_admin_stats_and_audit_logging(client: TestClient, db_session: Session):
         db_session, "admin_user@example.com", role="admin", name="Admin Officer"
     )
 
-    client.cookies.set("av_access", admin_token)
+    client.cookies.set("merit_access", admin_token)
 
     # 1. Check stats
     res = client.get("/api/v1/admin/stats")
@@ -120,7 +120,7 @@ def test_admin_question_review_workflow(client: TestClient, db_session: Session)
     db_session.add(draft_q)
     db_session.commit()
 
-    client.cookies.set("av_access", admin_token)
+    client.cookies.set("merit_access", admin_token)
 
     # 1. Draft question should appear in review queue
     res_queue = client.get("/api/v1/admin/review-queue?type=questions")

@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Algovista Golden Smoke & Invariants', () => {
+test.describe('Merit Golden Smoke & Invariants', () => {
   test('landing page loads and displays title', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Algovista/i);
+    await expect(page).toHaveTitle(/Merit/i);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 

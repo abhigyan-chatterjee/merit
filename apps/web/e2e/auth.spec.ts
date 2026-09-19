@@ -4,14 +4,14 @@ test.describe('Authentication and User Isolation', () => {
   const timestamp = Date.now();
   const userA = {
     displayName: 'Alice Engineer',
-    email: `alice_${timestamp}@algovista.org`,
+    email: `alice_${timestamp}@merit.org`,
     password: 'Password123!',
   };
 
   test('registers a new user, signs out, and logs in', async ({ page }) => {
     // 1. Visit Register page
     await page.goto('/register');
-    await expect(page.getByRole('heading', { name: /Create an ALGOVISTA Account/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Create a MERIT Account/i })).toBeVisible();
 
     // 2. Fill registration form
     await page.getByLabel(/Display Name/i).fill(userA.displayName);
@@ -50,7 +50,7 @@ test.describe('Authentication and User Isolation', () => {
     // Register user in context A
     const userUnique = {
       displayName: 'Bob Isolator',
-      email: `bob_${Date.now()}@algovista.org`,
+      email: `bob_${Date.now()}@merit.org`,
       password: 'StrongPassword123!',
     };
 

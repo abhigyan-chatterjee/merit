@@ -4,52 +4,52 @@ services:
   # 1. Sandboxed Judge Execution Service
   piston:
     image: ghcr.io/engineer-man/piston:latest
-    container_name: algovista-piston
+    container_name: merit-piston
     restart: unless-stopped
     ports:
       - "2000:2000"
     tmpfs:
       - /tmp:exec,mode=1777
     networks:
-      - algovista-net
+      - merit-net
 
   # 2. FastAPI Backend
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: algovista-api
+    container_name: merit-api
     restart: unless-stopped
     depends_on:
       - piston
     environment:
       - ENVIRONMENT=production
-      - DATABASE_URL=sqlite:////data/algovista.db
+      - DATABASE_URL=sqlite:////data/merit.db
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
       - PISTON_URL=http://piston:2000
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
     volumes:
-      - algovista-data:/data
+      - merit-data:/data
     networks:
-      - algovista-net
+      - merit-net
 
   # 3. Static Web Frontend with Nginx & SPA Fallback
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    container_name: algovista-web
+    container_name: merit-web
     restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
       - api
     networks:
-      - algovista-net
+      - merit-net
 
 volumes:
-  algovista-data:
+  merit-data:
 
 networks:
-  algovista-net:
+  merit-net:
     driver: bridge

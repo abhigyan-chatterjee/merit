@@ -30,7 +30,7 @@ def register_and_login(client: TestClient, email: str, name: str) -> None:
 
 def test_generate_quiz_no_answer_leak():
     client = TestClient(app)
-    register_and_login(client, "quiz_user_1@algovista.org", "Quiz User 1")
+    register_and_login(client, "quiz_user_1@merit.org", "Quiz User 1")
 
     resp = client.post(
         "/api/v1/quizzes/generate",
@@ -50,7 +50,7 @@ def test_generate_quiz_no_answer_leak():
 
 def test_submit_quiz_and_grading():
     client = TestClient(app)
-    register_and_login(client, "quiz_user_2@algovista.org", "Quiz User 2")
+    register_and_login(client, "quiz_user_2@merit.org", "Quiz User 2")
 
     gen_resp = client.post(
         "/api/v1/quizzes/generate",
@@ -101,7 +101,7 @@ def test_submit_quiz_and_grading():
 
 def test_retry_wrong_questions():
     client = TestClient(app)
-    register_and_login(client, "quiz_user_3@algovista.org", "Quiz User 3")
+    register_and_login(client, "quiz_user_3@merit.org", "Quiz User 3")
 
     gen_resp = client.post(
         "/api/v1/quizzes/generate",
@@ -143,7 +143,7 @@ def test_retry_wrong_questions():
 
 def test_generate_unknown_topic_returns_404():
     client = TestClient(app)
-    register_and_login(client, "quiz_user_4@algovista.org", "Quiz User 4")
+    register_and_login(client, "quiz_user_4@merit.org", "Quiz User 4")
 
     # No silent widening: unknown/empty topics must 404, never serve off-topic questions.
     resp = client.post(
@@ -156,7 +156,7 @@ def test_generate_unknown_topic_returns_404():
 
 def test_generate_topic_plan_section_sizes():
     client = TestClient(app)
-    register_and_login(client, "quiz_user_plan@algovista.org", "Quiz User Plan")
+    register_and_login(client, "quiz_user_plan@merit.org", "Quiz User Plan")
 
     # Placement-mock shape: per-section quotas hold even across uneven pools.
     desired = [
@@ -199,7 +199,7 @@ def test_generate_topic_plan_section_sizes():
 
 def test_quiz_attempt_user_isolation():
     client_a = TestClient(app)
-    register_and_login(client_a, "isolation_quiz_a@algovista.org", "User A")
+    register_and_login(client_a, "isolation_quiz_a@merit.org", "User A")
 
     gen_resp = client_a.post(
         "/api/v1/quizzes/generate",
@@ -209,7 +209,7 @@ def test_quiz_attempt_user_isolation():
 
     # User B cannot access User A's attempt
     client_b = TestClient(app)
-    register_and_login(client_b, "isolation_quiz_b@algovista.org", "User B")
+    register_and_login(client_b, "isolation_quiz_b@merit.org", "User B")
 
     get_resp = client_b.get(f"/api/v1/quizzes/attempts/{attempt_id_a}")
     assert get_resp.status_code == 404

@@ -49,7 +49,7 @@ export const LoginPage: React.FC = () => {
           <div className="text-center space-y-2">
             <SectionLabel title="Account Authentication" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
-              Sign in to ALGOVISTA
+              Sign in to MERIT
             </h1>
             <p className="text-xs text-muted">
               Sync your problem submissions, quiz exposure, and learning progress.
@@ -86,7 +86,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@algovista.org"
+                    placeholder="student@merit.org"
                     className="w-full pl-9 pr-3 py-2 rounded-lg border border-line bg-canvas text-xs text-ink placeholder-muted/60 focus:outline-none focus:border-mint transition font-mono"
                   />
                 </div>

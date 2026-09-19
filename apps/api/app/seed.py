@@ -1,4 +1,4 @@
-"""Database seeder for Algovista content (problems, test cases, solutions, questions, paths)."""
+"""Database seeder for Merit content (problems, test cases, solutions, questions, paths)."""
 
 import json
 from pathlib import Path

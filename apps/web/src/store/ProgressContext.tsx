@@ -43,11 +43,11 @@ const ProgressContext = createContext<ProgressContextType | undefined>(undefined
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [state, setState] = useLocalStorage<ProgressStateSchema>(
-    'algovista_store_v1',
+    'merit_store_v1',
     EMPTY_INITIAL_STATE,
     ProgressStateZodSchema
   );
-  const [theme, setTheme] = useLocalStorage<'dark' | 'light'>('algovista_theme_v1', 'dark');
+  const [theme, setTheme] = useLocalStorage<'dark' | 'light'>('merit_theme_v1', 'dark');
 
   const recordActivityDate = (dateStr: string) => {
     setState((prev) => {

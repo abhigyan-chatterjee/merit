@@ -68,9 +68,9 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: algovista
-          POSTGRES_PASSWORD: algovistapassword
-          POSTGRES_DB: algovista_test
+          POSTGRES_USER: merit
+          POSTGRES_PASSWORD: meritpassword
+          POSTGRES_DB: merit_test
         ports:
           - 5432:5432
         options: >-
@@ -96,7 +96,7 @@ jobs:
       - name: Run Pytest
         working-directory: apps/api
         env:
-          DATABASE_URL: ${{ matrix.db == 'postgresql' && 'postgresql://algovista:algovistapassword@localhost:5432/algovista_test' || 'sqlite:///:memory:' }}
+          DATABASE_URL: ${{ matrix.db == 'postgresql' && 'postgresql://merit:meritpassword@localhost:5432/merit_test' || 'sqlite:///:memory:' }}
         run: uv run pytest -q
 
   content-validate:

@@ -76,7 +76,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
     is_secure = settings.environment.lower() == "production"
 
     response.set_cookie(
-        key="av_access",
+        key="merit_access",
         value=access_token,
         max_age=settings.access_token_expire_minutes * 60,
         httponly=True,
@@ -85,7 +85,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
         path="/",
     )
     response.set_cookie(
-        key="av_refresh",
+        key="merit_refresh",
         value=refresh_token,
         max_age=settings.refresh_token_expire_days * 86400,
         httponly=True,
@@ -96,12 +96,12 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
 
 
 def clear_auth_cookies(response: Response) -> None:
-    response.delete_cookie(key="av_access", path="/")
-    response.delete_cookie(key="av_refresh", path="/")
+    response.delete_cookie(key="merit_access", path="/")
+    response.delete_cookie(key="merit_refresh", path="/")
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
-    token = request.cookies.get("av_access")
+    token = request.cookies.get("merit_access")
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -129,7 +129,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
 def get_optional_current_user(
     request: Request, db: Session = Depends(get_db)
 ) -> User | None:
-    token = request.cookies.get("av_access")
+    token = request.cookies.get("merit_access")
     if not token:
         return None
     try:
