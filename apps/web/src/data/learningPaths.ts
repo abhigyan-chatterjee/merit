@@ -35,7 +35,7 @@ export const LEARNING_PATHS: LearningPath[] = [
     blurb: 'Absolute-beginner track: basic data structures and algorithms with visualizers, short summaries, and further reading.',
     icon: 'LayoutGrid',
     steps: [
-      { type: 'visualizer', id: 'array', title: 'Arrays: indexed storage', summary: 'Arrays store items side by side so any index reads in O(1). Inserting or deleting in the middle shifts everything after it, which costs O(n).', readingLinks: ['https://en.wikipedia.org/wiki/Array_data_structure', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array'] },
+      { type: 'visualizer', id: 'array', title: 'Arrays: indexed storage', summary: 'Arrays store items contiguously for O(1) indexed access. Inserting or deleting in the middle shifts all later items, costing O(n).', readingLinks: ['https://en.wikipedia.org/wiki/Array_data_structure', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array'] },
       { type: 'problem', id: 'two-sum', title: 'Two Sum', summary: 'First hashing pattern: trade one pass plus a lookup table for the naive pair check.' },
       { type: 'problem', id: 'contains-duplicate', title: 'Contains Duplicate', summary: 'Same set-membership idea as Two Sum, reduced to a yes/no duplicate check.' },
       { type: 'visualizer', id: 'sorting', title: 'Sorting basics', summary: 'Sorting arranges data so binary search and two-pointer scans work. Watch how many comparisons each method needs.', readingLinks: ['https://en.wikipedia.org/wiki/Sorting_algorithm', 'https://visualgo.net/en/sorting'] },

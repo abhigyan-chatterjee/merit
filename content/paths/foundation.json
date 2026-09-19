@@ -12,7 +12,7 @@
       "step_type": "visualizer",
       "ref_id": "array",
       "title": "Arrays: indexed storage",
-      "summary": "Arrays store items side by side so any index reads in O(1). Inserting or deleting in the middle shifts everything after it, which costs O(n).",
+      "summary": "Arrays store items contiguously for O(1) indexed access. Inserting or deleting in the middle shifts all later items, costing O(n).",
       "reading_links": [
         "https://en.wikipedia.org/wiki/Array_data_structure",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
