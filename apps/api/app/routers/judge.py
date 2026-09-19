@@ -56,11 +56,13 @@ async def run_samples(
 
     cases = []
     for tc in tc_rows:
-        cases.append({
-            "label": tc.label,
-            "input": json.loads(tc.input_json),
-            "expected": json.loads(tc.expected_json),
-        })
+        cases.append(
+            {
+                "label": tc.label,
+                "input": json.loads(tc.input_json),
+                "expected": json.loads(tc.expected_json),
+            }
+        )
 
     res = await execute_code(
         language=req.language,
@@ -103,11 +105,13 @@ async def submit_solution(
 
     cases = []
     for tc in tc_rows:
-        cases.append({
-            "label": tc.label,
-            "input": json.loads(tc.input_json),
-            "expected": json.loads(tc.expected_json),
-        })
+        cases.append(
+            {
+                "label": tc.label,
+                "input": json.loads(tc.input_json),
+                "expected": json.loads(tc.expected_json),
+            }
+        )
 
     res = await execute_code(
         language=req.language,

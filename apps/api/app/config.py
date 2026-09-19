@@ -50,9 +50,7 @@ class Settings(BaseSettings):
             env_mode = getattr(values, "environment", "development")
 
         is_insecure = (
-            not secret
-            or not str(secret).strip()
-            or str(secret).strip() in INSECURE_SECRET_KEYS
+            not secret or not str(secret).strip() or str(secret).strip() in INSECURE_SECRET_KEYS
         )
 
         if is_insecure:
@@ -66,8 +64,10 @@ class Settings(BaseSettings):
 
             # In development, auto-generate a secure random secret so local dev works smoothly
             import secrets
+
             dev_key = secrets.token_urlsafe(48)
             import warnings
+
             warnings.warn(
                 "SECRET_KEY not set or using placeholder; generated a temporary development key. "
                 "Set SECRET_KEY in apps/api/.env for persistent sessions.",

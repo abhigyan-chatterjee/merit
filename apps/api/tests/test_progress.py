@@ -6,7 +6,6 @@ TODAY = datetime.now(UTC).strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
 
 
-
 def register_user(client: TestClient, email: str, name: str = "Test User") -> str:
     res = client.post(
         "/api/v1/auth/register",

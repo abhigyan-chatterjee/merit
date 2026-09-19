@@ -33,4 +33,3 @@ def test_sqlite_relative_url_normalized_to_apps_api():
     )
     assert settings.database_url.startswith("sqlite:////")
     assert settings.database_url.endswith("apps/api/merit.db")
-

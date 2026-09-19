@@ -1,12 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Bot,
-  ChevronDown,
-  ChevronUp,
-  KeyRound,
-  RefreshCw,
-  Send,
-} from "lucide-react";
+import { Bot, ChevronDown, ChevronUp, KeyRound, RefreshCw, Send } from "lucide-react";
 import { useTutorKey } from "../hooks/useTutorKey";
 
 interface AiTutorProps {
@@ -54,21 +47,9 @@ async function readErrorMessage(res: Response, fallback: string): Promise<string
   return `${fallback} (HTTP ${res.status})`;
 }
 
-export const AiTutor: React.FC<AiTutorProps> = ({
-  problemSlug,
-  code = "",
-  failedAttempts = 0,
-}) => {
-  const {
-    baseUrl,
-    apiKey,
-    model,
-    remember,
-    setBaseUrl,
-    setApiKey,
-    setModel,
-    setRemember,
-  } = useTutorKey();
+export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failedAttempts = 0 }) => {
+  const { baseUrl, apiKey, model, remember, setBaseUrl, setApiKey, setModel, setRemember } =
+    useTutorKey();
 
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<string[]>([]);
@@ -81,10 +62,12 @@ export const AiTutor: React.FC<AiTutorProps> = ({
   const [failedCount, setFailedCount] = useState<number>(failedAttempts);
   // Uncontrolled key field (ref): the secret stays a live input property and
   // is never written back into serialized markup as a value attribute.
-  // The initial value is snapshotted so re-renders (e.g. after typing, which
-  // updates hook state) never echo the secret into `defaultValue`.
+  // The initial value is snapshotted once via lazy state init so re-renders
+  // (e.g. after typing, which updates hook state) never echo the secret
+  // into `defaultValue`. (A ref snapshot read during render would violate
+  // react-hooks/refs, so state — identical first-render semantics — is used.)
   const keyInputRef = useRef<HTMLInputElement>(null);
-  const initialApiKeyRef = useRef(apiKey);
+  const [initialApiKey] = useState(apiKey);
 
   // Resolve failed_attempts from the existing submissions data flow when the
   // panel is opened. Falls back to the `failedAttempts` prop (default 0).
@@ -93,10 +76,9 @@ export const AiTutor: React.FC<AiTutorProps> = ({
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(
-          `/api/v1/judge/submissions/${encodeURIComponent(problemSlug)}`,
-          { credentials: "include" }
-        );
+        const res = await fetch(`/api/v1/judge/submissions/${encodeURIComponent(problemSlug)}`, {
+          credentials: "include",
+        });
         if (!res.ok) return;
         const subs = (await res.json()) as Array<{ verdict?: unknown }>;
         if (!cancelled && Array.isArray(subs)) {
@@ -215,11 +197,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({
               <span className="text-muted">Provider preset</span>
               <select
                 aria-label="Provider preset"
-                value={
-                  PRESETS.some((p) => p.url === baseUrl)
-                    ? baseUrl
-                    : PRESETS[0].url
-                }
+                value={PRESETS.some((p) => p.url === baseUrl) ? baseUrl : PRESETS[0].url}
                 onChange={(e) => setBaseUrl(e.target.value)}
                 className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink focus:outline-none focus:border-violet cursor-pointer"
               >
@@ -249,7 +227,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({
               <input
                 type="password"
                 aria-label="API key"
-                defaultValue={initialApiKeyRef.current}
+                defaultValue={initialApiKey}
                 ref={keyInputRef}
                 onChange={() => setApiKey(keyInputRef.current?.value ?? "")}
                 placeholder="sk-…"
@@ -259,12 +237,12 @@ export const AiTutor: React.FC<AiTutorProps> = ({
               />
             </label>
             <p className="text-[11px] font-mono text-muted">
-              No key? Get a free one at AI Studio (aistudio.google.com):
-              Gemini Flash has a free tier.
+              No key? Get a free one at AI Studio (aistudio.google.com): Gemini Flash has a free
+              tier.
             </p>
             <p className="text-[11px] font-mono text-muted">
-              Your key stays on your device + provider: it is sent only to the
-              provider above via our proxy and never stored on our servers.
+              Your key stays on your device + provider: it is sent only to the provider above via
+              our proxy and never stored on our servers.
             </p>
             <label className="flex items-center gap-2 text-xs font-mono text-muted cursor-pointer">
               <input

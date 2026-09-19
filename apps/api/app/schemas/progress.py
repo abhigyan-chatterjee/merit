@@ -109,7 +109,6 @@ class ProgressSummaryResponse(BaseModel):
     daily_goal: dict[str, Any] | None = None
 
 
-
 class LocalImportRequest(BaseModel):
     progress: dict[str, str] = Field(default_factory=dict)
     notes: dict[str, str] = Field(default_factory=dict)

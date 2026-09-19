@@ -1,9 +1,11 @@
 import json
 import random
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
-from typing import Sequence
+
 from sqlalchemy import select
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.models.content import Question
@@ -100,6 +102,17 @@ def sample_questions(
     else:
         sampled = pick_from(all_candidates, count)
 
+    # 4b. Dedupe: per-section sampling (topic_plan) can surface the same
+    # question from overlapping sections. Duplicates would double-insert
+    # into user_question_exposure and blow the PK unique constraint.
+    seen_ids: set[str] = set()
+    deduped: list[Question] = []
+    for q in sampled:
+        if q.id not in seen_ids:
+            seen_ids.add(q.id)
+            deduped.append(q)
+    sampled = deduped
+
     # 5. Create attempt shell with server-side snapshot of question IDs
     attempt_id = str(uuid.uuid4())
     now_str = utcnow_iso()
@@ -131,19 +144,20 @@ def sample_questions(
     )
     db.add(attempt)
 
-    # 6. Record exposures for user
-    for q in sampled:
-        exp = db.scalar(
-            select(UserQuestionExposure).where(
-                UserQuestionExposure.user_id == user_id,
-                UserQuestionExposure.question_id == q.id,
-            )
+    # 6. Record exposures for user. Upsert, not select-then-insert: two
+    # concurrent /generate calls (StrictMode remount, double-click Retake)
+    # used to SELECT-miss the same rows and then INSERT-collide on the
+    # (user_id, question_id) PK → 500 IntegrityError. ON CONFLICT makes
+    # the second writer a timestamp refresh instead of a crash.
+    if sampled:
+        upsert = sqlite_insert(UserQuestionExposure).values(
+            [{"user_id": user_id, "question_id": q.id, "shown_at": now_str} for q in sampled]
         )
-        if exp:
-            exp.shown_at = now_str
-        else:
-            db.add(UserQuestionExposure(user_id=user_id, question_id=q.id, shown_at=now_str))
+        upsert = upsert.on_conflict_do_update(
+            index_elements=["user_id", "question_id"],
+            set_={"shown_at": now_str},
+        )
+        db.execute(upsert)
 
     db.commit()
     return attempt_id, sampled, expires_at
-

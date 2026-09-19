@@ -1,11 +1,12 @@
 """Pydantic schemas for quizzes, attempts, and question sampling."""
 
-from typing import Any
 from pydantic import BaseModel, Field
 
 
 class QuizGenerateRequest(BaseModel):
-    topics: list[str] = Field(default_factory=lambda: ["arrays-hashing", "trees", "graphs", "dynamic-programming"])
+    topics: list[str] = Field(
+        default_factory=lambda: ["arrays-hashing", "trees", "graphs", "dynamic-programming"]
+    )
     count: int = Field(default=10, ge=1, le=200)
     difficulty: str | None = None
     is_mock: bool = False
@@ -31,7 +32,6 @@ class QuizGenerateResponse(BaseModel):
     is_mock: bool = False
     duration_sec: int | None = None
     expires_at: str | None = None
-
 
 
 class QuizSubmitRequest(BaseModel):

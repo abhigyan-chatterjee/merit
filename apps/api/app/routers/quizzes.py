@@ -2,7 +2,7 @@
 
 import json
 import uuid
-from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
@@ -73,7 +73,6 @@ def generate_quiz(
         duration_sec=request.duration_sec,
         expires_at=expires_at,
     )
-
 
 
 @router.post("/attempts/{attempt_id}", response_model=QuizSubmitResponse)
@@ -181,7 +180,10 @@ def retry_wrong_questions(
     if not wrong_qids:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"code": "NO_WRONG_QUESTIONS", "message": "All questions in this attempt were correct!"},
+            detail={
+                "code": "NO_WRONG_QUESTIONS",
+                "message": "All questions in this attempt were correct!",
+            },
         )
 
     questions = db.scalars(select(Question).where(Question.id.in_(wrong_qids))).all()

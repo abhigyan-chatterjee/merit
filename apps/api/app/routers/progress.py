@@ -352,8 +352,7 @@ def get_progress_summary(
                     break
 
     total_problems = (
-        db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "verified"))
-        or 0
+        db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "verified")) or 0
     )
 
     return ProgressSummaryResponse(
@@ -373,7 +372,6 @@ def get_progress_summary(
         preferred_language=getattr(user, "preferred_language", None) or "javascript",
         daily_goal=_user_daily_goal(user),
     )
-
 
 
 def _user_daily_goal(user: User) -> dict | None:
@@ -411,7 +409,6 @@ def update_settings(
         preferred_language=user.preferred_language or "javascript",
         daily_goal=json.loads(user.daily_goal_json) if user.daily_goal_json else None,
     )
-
 
 
 @router.post("/import-local", response_model=ProgressSummaryResponse)

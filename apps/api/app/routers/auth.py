@@ -344,6 +344,7 @@ def clerk_oauth(
 def get_me(user: User = Depends(get_current_user)):
     return user
 
+
 @router.patch("/me", response_model=UserResponse)
 def update_profile(
     req: ProfileUpdate,
@@ -427,23 +428,15 @@ def export_user_data(
     from app.models.quiz import QuizAttempt
     from app.models.submission import Submission
 
-    problems = db.scalars(
-        select(ProblemProgress).where(ProblemProgress.user_id == user.id)
-    ).all()
+    problems = db.scalars(select(ProblemProgress).where(ProblemProgress.user_id == user.id)).all()
     notes = db.scalars(select(Note).where(Note.user_id == user.id)).all()
     bookmarks = db.scalars(select(Bookmark).where(Bookmark.user_id == user.id)).all()
-    activities = db.scalars(
-        select(ActivityDay).where(ActivityDay.user_id == user.id)
-    ).all()
+    activities = db.scalars(select(ActivityDay).where(ActivityDay.user_id == user.id)).all()
     visualizers = db.scalars(
         select(VisualizerCompletion).where(VisualizerCompletion.user_id == user.id)
     ).all()
-    submissions = db.scalars(
-        select(Submission).where(Submission.user_id == user.id)
-    ).all()
-    quizzes = db.scalars(
-        select(QuizAttempt).where(QuizAttempt.user_id == user.id)
-    ).all()
+    submissions = db.scalars(select(Submission).where(Submission.user_id == user.id)).all()
+    quizzes = db.scalars(select(QuizAttempt).where(QuizAttempt.user_id == user.id)).all()
 
     return {
         "user": {
@@ -500,4 +493,3 @@ def export_user_data(
         "sessions_count": len(user.refresh_tokens),
         "exported_at": utcnow_iso(),
     }
-

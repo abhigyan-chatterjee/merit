@@ -84,9 +84,7 @@ def test_models_passthrough(client: TestClient, monkeypatch):
         ),
     )
 
-    res = client.post(
-        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-    )
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 200
     assert res.json() == {"models": ["gpt-4o", "gpt-4o-mini"]}
     assert capture["get"]["url"] == f"{BASE_URL}/models"
@@ -96,13 +94,9 @@ def test_models_passthrough(client: TestClient, monkeypatch):
 
 def test_models_upstream_500_maps_to_502(client: TestClient, monkeypatch):
     register_user(client, "tutor_models_500@merit.org")
-    install_fake_client(
-        monkeypatch, get=lambda url, headers: FakeResponse(500, {"error": "boom"})
-    )
+    install_fake_client(monkeypatch, get=lambda url, headers: FakeResponse(500, {"error": "boom"}))
 
-    res = client.post(
-        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-    )
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 502
     assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
 
@@ -125,9 +119,7 @@ def test_models_upstream_connection_error_maps_to_502(client: TestClient, monkey
 
     monkeypatch.setattr(tutor_module.httpx, "AsyncClient", ExplodingClient)
 
-    res = client.post(
-        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-    )
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 502
     assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
 
@@ -178,14 +170,15 @@ def test_chat_forwards_system_and_problem_context(client: TestClient, monkeypatc
 
 
 def test_chat_reveals_solution_only_after_3_failed_attempts(
-    client: TestClient, monkeypatch,
+    client: TestClient,
+    monkeypatch,
 ):
     register_user(client, "tutor_chat_attempts@merit.org")
     captured: list = []
     reply = FakeResponse(200, {"choices": [{"message": {"content": "ok"}}]})
     install_fake_client(
         monkeypatch,
-        post=lambda url, headers, body: (captured.append(body) or reply),
+        post=lambda url, headers, body: captured.append(body) or reply,
     )
 
     body = {
@@ -198,10 +191,7 @@ def test_chat_reveals_solution_only_after_3_failed_attempts(
     assert client.post("/api/v1/tutor/chat", json=body).status_code == 200
     assert "NEVER provide the full solution" in captured[0]["messages"][0]["content"]
 
-    assert (
-        client.post("/api/v1/tutor/chat", json={**body, "failed_attempts": 3}).status_code
-        == 200
-    )
+    assert client.post("/api/v1/tutor/chat", json={**body, "failed_attempts": 3}).status_code == 200
     assert "MAY now show a complete solution" in captured[1]["messages"][0]["content"]
 
 
@@ -227,9 +217,7 @@ def test_chat_upstream_500_maps_to_502(client: TestClient, monkeypatch):
 
 def test_chat_unknown_problem_404(client: TestClient, monkeypatch):
     register_user(client, "tutor_chat_404@merit.org")
-    install_fake_client(
-        monkeypatch, post=lambda url, headers, body: FakeResponse(200, {})
-    )
+    install_fake_client(monkeypatch, post=lambda url, headers, body: FakeResponse(200, {}))
 
     res = client.post(
         "/api/v1/tutor/chat",
@@ -246,9 +234,7 @@ def test_chat_unknown_problem_404(client: TestClient, monkeypatch):
 
 
 def test_unauthenticated_rejected_on_both(client: TestClient):
-    res = client.post(
-        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-    )
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 401
 
     res = client.post(
@@ -272,12 +258,8 @@ def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
     )
 
     for _ in range(30):
-        res = client.post(
-            "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-        )
+        res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
         assert res.status_code == 200
-    res = client.post(
-        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
-    )
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 429
     assert res.json()["detail"]["code"] == "TUTOR_RATE_LIMIT"

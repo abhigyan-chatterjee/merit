@@ -64,7 +64,6 @@ app.include_router(admin.router)
 app.include_router(tutor.router)
 
 
-
 @app.get("/api/v1/health")
 def health_check():
     return {"status": "ok", "service": "merit-api"}

@@ -1,6 +1,5 @@
 """Tests for Dynamic Quiz Engine (sampling, grading, retry-wrong, and user isolation)."""
 
-import json
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select

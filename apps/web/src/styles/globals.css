@@ -5,38 +5,36 @@
    Dark-first engineering-instrument palette with a real light mode.
    ============================================================ */
 :root {
-  --c-canvas: #0A0E14;
+  --c-canvas: #0a0e14;
   --c-surface: #121826;
-  --c-line: #1F2A3D;
-  --c-steel: #2D3A52;
-  --c-ink: #E6EDF3;
-  --c-muted: #8B98AD;
-  --c-mint: #00E5A0;
-  --c-violet: #7C6CFF;
-  --c-amber: #FFB224;
-  --c-rose: #FF5C5C;
+  --c-line: #1f2a3d;
+  --c-steel: #2d3a52;
+  --c-ink: #e6edf3;
+  --c-muted: #8b98ad;
+  --c-mint: #00e5a0;
+  --c-violet: #7c6cff;
+  --c-amber: #ffb224;
+  --c-rose: #ff5c5c;
 
   --grid-rgb: 139, 152, 173;
-  --grid-alpha: 0.10;
-  --dot-alpha: 0.20;
+  --grid-alpha: 0.1;
   --shadow-panel: 0 1px 0 0 rgba(255, 255, 255, 0.02) inset;
 }
 
 .light {
-  --c-canvas: #F4F6FA;
-  --c-surface: #FFFFFF;
-  --c-line: #DFE5EE;
-  --c-steel: #C3CCDA;
-  --c-ink: #0B1220;
+  --c-canvas: #f4f6fa;
+  --c-surface: #ffffff;
+  --c-line: #dfe5ee;
+  --c-steel: #c3ccda;
+  --c-ink: #0b1220;
   --c-muted: #566179;
-  --c-mint: #00835C;
-  --c-violet: #5643DE;
-  --c-amber: #9A5B00;
-  --c-rose: #D23B3B;
+  --c-mint: #00835c;
+  --c-violet: #5643de;
+  --c-amber: #9a5b00;
+  --c-rose: #d23b3b;
 
   --grid-rgb: 11, 18, 32;
   --grid-alpha: 0.07;
-  --dot-alpha: 0.13;
   --shadow-panel: 0 1px 2px 0 rgba(11, 18, 32, 0.04);
 }
 
@@ -52,8 +50,8 @@
   --color-amber: var(--c-amber);
   --color-rose: var(--c-rose);
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 @layer base {
@@ -65,17 +63,22 @@
     font-family: var(--font-sans);
     background-color: var(--c-canvas);
     color: var(--c-ink);
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
-    transition: background-color 200ms ease-out, color 200ms ease-out;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out;
   }
 
-  code, pre, .font-mono {
+  code,
+  pre,
+  .font-mono {
     font-family: var(--font-mono);
     font-variant-ligatures: none;
   }
 
   /* Numerals never jitter while counters animate */
-  .font-mono, .tnum {
+  .font-mono,
+  .tnum {
     font-variant-numeric: tabular-nums;
   }
 
@@ -95,24 +98,27 @@
 /* ============================================================
    Scrollbars — thin instrument rails
    ============================================================ */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
   background: var(--c-line);
   border-radius: 99px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--c-steel); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-steel);
+  background-clip: content-box;
+}
 
 /* ============================================================
    Surface textures
    ============================================================ */
-.dot-matrix-bg {
-  background-image: radial-gradient(rgba(var(--grid-rgb), var(--dot-alpha)) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-
 /* Blueprint grid used behind hero + canvases */
 .blueprint-grid {
   background-image:
@@ -152,10 +158,12 @@
 /* ============================================================
    Panel corner brackets — drafting-table framing
    ============================================================ */
-.bracketed { position: relative; }
+.bracketed {
+  position: relative;
+}
 .bracketed::before,
 .bracketed::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 9px;
   height: 9px;
@@ -165,43 +173,46 @@
   transition: opacity 200ms ease-out;
 }
 .bracketed::before {
-  top: -1px; left: -1px;
-  border-top: 1.5px solid; border-left: 1.5px solid;
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
   border-top-left-radius: 3px;
 }
 .bracketed::after {
-  bottom: -1px; right: -1px;
-  border-bottom: 1.5px solid; border-right: 1.5px solid;
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
   border-bottom-right-radius: 3px;
 }
 .bracketed:hover::before,
-.bracketed:hover::after { opacity: 1; }
+.bracketed:hover::after {
+  opacity: 1;
+}
 
 /* ============================================================
    Motion
    ============================================================ */
-@keyframes av-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: av-marquee 38s linear infinite;
-}
-
 @keyframes av-pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.45; transform: scale(0.82); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
 }
-.animate-pulse-dot { animation: av-pulse-dot 1.8s ease-in-out infinite; }
-
-@keyframes av-sweep {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(320%); }
+.animate-pulse-dot {
+  animation: av-pulse-dot 1.8s ease-in-out infinite;
 }
-.animate-sweep { animation: av-sweep 2.6s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

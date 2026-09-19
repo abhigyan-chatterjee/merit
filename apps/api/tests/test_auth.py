@@ -299,9 +299,7 @@ def test_clerk_oauth_creates_new_user(client: TestClient, monkeypatch, db_sessio
     assert "merit_access" in resp.cookies
     assert "merit_refresh" in resp.cookies
 
-    user = db_session.scalar(
-        select(User).where(User.email == "brandnew-oauth@example.com")
-    )
+    user = db_session.scalar(select(User).where(User.email == "brandnew-oauth@example.com"))
     assert user is not None
     assert user.clerk_id == "user_clerk_new456"
     assert user.auth_provider == "clerk"

@@ -165,7 +165,7 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
 
     count = 0
     for q_file in sorted(questions_dir.glob("*/*.json")):
-        with open(q_file, "r", encoding="utf-8") as f:
+        with open(q_file, encoding="utf-8") as f:
             data = json.load(f)
 
         qid = data["id"]
@@ -207,7 +207,7 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
 
     count = 0
     for p_file in sorted(paths_dir.glob("*.json")):
-        with open(p_file, "r", encoding="utf-8") as f:
+        with open(p_file, encoding="utf-8") as f:
             data = json.load(f)
 
         slug = data["slug"]
@@ -241,9 +241,7 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
             count += 1
         else:
             # Re-sync steps on re-seed (path replacement across scope changes).
-            for old_step in db.scalars(
-                select(PathStep).where(PathStep.path_slug == slug)
-            ).all():
+            for old_step in db.scalars(select(PathStep).where(PathStep.path_slug == slug)).all():
                 db.delete(old_step)
             db.flush()
             existing.title = data["title"]
@@ -271,6 +269,7 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
 
 def seed_admin(db: Session) -> int:
     import os
+
     from app.models.user import User
     from app.security import hash_password
 

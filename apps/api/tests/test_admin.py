@@ -1,11 +1,11 @@
 """Tests for Admin endpoints and role-based access control (Phase 9)."""
 
 import uuid
+
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.models.content import Problem, Question
-from app.models.quiz import AdminAuditLog
+from app.models.content import Question
 from app.models.user import User, utcnow_iso
 from app.security import create_access_token, hash_password
 
@@ -41,10 +41,7 @@ def test_admin_endpoints_reject_unauthenticated(client: TestClient):
     ]
 
     for method, url in endpoints:
-        if method == "GET":
-            res = client.get(url)
-        else:
-            res = client.post(url, json={"action": "approved"})
+        res = client.get(url) if method == "GET" else client.post(url, json={"action": "approved"})
         assert res.status_code == 401, f"Expected 401 for {method} {url}, got {res.status_code}"
 
 
@@ -66,9 +63,7 @@ def test_admin_endpoints_reject_student(client: TestClient, db_session: Session)
     res_cov = client.get("/api/v1/admin/coverage")
     assert res_cov.status_code == 403
 
-    res_rev = client.post(
-        "/api/v1/admin/questions/dummy/review", json={"action": "approved"}
-    )
+    res_rev = client.post("/api/v1/admin/questions/dummy/review", json={"action": "approved"})
     assert res_rev.status_code == 403
 
 
@@ -93,7 +88,7 @@ def test_admin_stats_and_audit_logging(client: TestClient, db_session: Session):
     assert res_logs.status_code == 200
     logs = res_logs.json()
     assert len(logs) >= 1
-    assert any(l["action"] == "view_stats" for l in logs)
+    assert any(log["action"] == "view_stats" for log in logs)
 
 
 def test_admin_question_review_workflow(client: TestClient, db_session: Session):

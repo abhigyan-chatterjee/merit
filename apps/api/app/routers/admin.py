@@ -2,6 +2,7 @@
 
 import json
 from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
@@ -9,8 +10,8 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.content import Problem, Question, QuestionReview
-from app.models.submission import Submission
 from app.models.quiz import AdminAuditLog, QuizAttempt
+from app.models.submission import Submission
 from app.models.user import User, utcnow_iso
 from app.security import require_admin_user
 
@@ -47,36 +48,22 @@ def get_admin_stats(
 
     user_count = db.scalar(select(func.count(User.id))) or 0
     total_subs = db.scalar(select(func.count(Submission.id))) or 0
-    ac_subs = (
-        db.scalar(select(func.count(Submission.id)).where(Submission.verdict == "AC")) or 0
-    )
+    ac_subs = db.scalar(select(func.count(Submission.id)).where(Submission.verdict == "AC")) or 0
     ac_rate = round((ac_subs / total_subs) * 100, 1) if total_subs > 0 else 0.0
 
     total_attempts = db.scalar(select(func.count(QuizAttempt.id))) or 0
 
     verified_questions = (
-        db.scalar(
-            select(func.count(Question.id)).where(Question.review_status == "verified")
-        )
-        or 0
+        db.scalar(select(func.count(Question.id)).where(Question.review_status == "verified")) or 0
     )
     draft_questions = (
-        db.scalar(
-            select(func.count(Question.id)).where(Question.review_status == "draft")
-        )
-        or 0
+        db.scalar(select(func.count(Question.id)).where(Question.review_status == "draft")) or 0
     )
     verified_problems = (
-        db.scalar(
-            select(func.count(Problem.slug)).where(Problem.review_status == "verified")
-        )
-        or 0
+        db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "verified")) or 0
     )
     draft_problems = (
-        db.scalar(
-            select(func.count(Problem.slug)).where(Problem.review_status == "draft")
-        )
-        or 0
+        db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "draft")) or 0
     )
 
     return {
@@ -94,7 +81,7 @@ def get_admin_stats(
 
 @router.get("/review-queue")
 def get_review_queue(
-    type: str = Query("questions", description="Type: questions | problems"),
+    type: str = Query("questions", description="Type: questions | problems"),  # noqa: A002 - `type` is the public query-param name
     admin: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
@@ -162,7 +149,10 @@ def review_question(
     if action not in {"approved", "rejected", "edited"}:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"code": "INVALID_ACTION", "message": "Action must be approved, rejected, or edited"},
+            detail={
+                "code": "INVALID_ACTION",
+                "message": "Action must be approved, rejected, or edited",
+            },
         )
 
     now_str = utcnow_iso()
@@ -262,18 +252,16 @@ def get_audit_logs(
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
     logs = db.scalars(
-        select(AdminAuditLog)
-        .order_by(AdminAuditLog.created_at.desc())
-        .limit(limit)
+        select(AdminAuditLog).order_by(AdminAuditLog.created_at.desc()).limit(limit)
     ).all()
 
     return [
         {
-            "id": l.id,
-            "admin_id": l.admin_id,
-            "action": l.action,
-            "target": l.target,
-            "created_at": l.created_at,
+            "id": log.id,
+            "admin_id": log.admin_id,
+            "action": log.action,
+            "target": log.target,
+            "created_at": log.created_at,
         }
-        for l in logs
+        for log in logs
     ]

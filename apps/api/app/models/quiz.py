@@ -18,9 +18,7 @@ class QuizAttempt(Base):
     correct: Mapped[int] = mapped_column(Integer, nullable=False)
     score_pct: Mapped[int] = mapped_column(Integer, nullable=False)
     duration_sec: Mapped[int] = mapped_column(Integer, nullable=False)
-    created_at: Mapped[str] = mapped_column(
-        String, default=utcnow_iso, nullable=False, index=True
-    )
+    created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False, index=True)
 
     user: Mapped["User"] = relationship("User")
     answers: Mapped[list["QuizAttemptAnswer"]] = relationship(
@@ -49,9 +47,7 @@ class UserQuestionExposure(Base):
         String, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
     )
     question_id: Mapped[str] = mapped_column(String, primary_key=True)
-    shown_at: Mapped[str] = mapped_column(
-        String, default=utcnow_iso, nullable=False, index=True
-    )
+    shown_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False, index=True)
 
     user: Mapped["User"] = relationship("User")
 

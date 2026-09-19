@@ -2,6 +2,7 @@
 
 import json
 from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
@@ -11,10 +12,9 @@ from app.models.content import LearningPath, PathStep, Problem, Question
 from app.models.progress import ProblemProgress, VisualizerCompletion
 from app.models.quiz import PathStepProgress, QuizAttempt
 from app.models.user import User, utcnow_iso
-from app.security import get_optional_current_user, get_current_user
+from app.security import get_current_user, get_optional_current_user
 
 router = APIRouter(prefix="/api/v1", tags=["content"])
-
 
 
 VISUALIZERS_CATALOG = [
@@ -30,7 +30,10 @@ VISUALIZERS_CATALOG = [
         "title": "Sorting Algorithms",
         "category": "Fundamental Algorithms",
         "complexity": "O(n log n) - O(n²)",
-        "description": "Step-by-step comparisons and swaps for Bubble, Selection, Insertion, Quick, and Merge sort.",
+        "description": (
+            "Step-by-step comparisons and swaps for Bubble, Selection, "
+            "Insertion, Quick, and Merge sort."
+        ),
     },
     {
         "id": "linked-list",
@@ -86,7 +89,9 @@ VISUALIZERS_CATALOG = [
         "title": "Graph BFS / DFS Explorer",
         "category": "Network Structures",
         "complexity": "O(V + E) time",
-        "description": "Breadth-First and Depth-First exploration on directed and undirected graphs.",
+        "description": (
+            "Breadth-First and Depth-First exploration on directed and undirected graphs."
+        ),
     },
     {
         "id": "searching",
@@ -225,7 +230,6 @@ def get_problem(
     }
 
 
-
 @router.get("/questions")
 def list_questions(
     topic: str | None = Query(None),
@@ -261,7 +265,7 @@ def list_questions(
 
 @router.get("/questions/{id}")
 def get_question(
-    id: str,
+    id: str,  # noqa: A002 - `id` is the public path-param name
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
     question = db.scalar(
@@ -492,9 +496,7 @@ def get_path(
                 "ref_id": s.ref_id,
                 "title": s.title,
                 "summary": s.summary,
-                "reading_links": json.loads(s.reading_links_json)
-                if s.reading_links_json
-                else [],
+                "reading_links": json.loads(s.reading_links_json) if s.reading_links_json else [],
                 "completed": is_completed,
             }
         )
@@ -546,4 +548,3 @@ def complete_path_step(
         db.commit()
 
     return {"step_id": step_id, "completed": True}
-

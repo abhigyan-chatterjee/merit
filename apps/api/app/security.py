@@ -126,9 +126,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     return user
 
 
-def get_optional_current_user(
-    request: Request, db: Session = Depends(get_db)
-) -> User | None:
+def get_optional_current_user(request: Request, db: Session = Depends(get_db)) -> User | None:
     token = request.cookies.get("merit_access")
     if not token:
         return None
@@ -152,4 +150,3 @@ def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
             detail={"code": "FORBIDDEN", "message": "Admin privileges required"},
         )
     return current_user
-

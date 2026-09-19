@@ -82,9 +82,7 @@ def _extract_model_ids(payload: object) -> list[str]:
     raise _upstream_error()
 
 
-def _build_system_prompt(
-    problem: Problem, code: str | None, failed_attempts: int
-) -> str:
+def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: int) -> str:
     if failed_attempts >= 3:
         policy = (
             f"The student has already made {failed_attempts} failed submissions, "
@@ -114,9 +112,7 @@ async def list_models(
     _check_rate_limit(user.id)
     try:
         async with httpx.AsyncClient(timeout=MODELS_TIMEOUT_S) as client:
-            resp = await client.get(
-                f"{req.base_url}/models", headers=_auth_headers(req.api_key)
-            )
+            resp = await client.get(f"{req.base_url}/models", headers=_auth_headers(req.api_key))
     except httpx.HTTPError as err:
         raise _upstream_error() from err
     if resp.status_code != status.HTTP_200_OK:
@@ -136,9 +132,7 @@ async def chat(
 ) -> TutorChatResponse:
     _check_rate_limit(user.id)
     problem = db.scalar(
-        select(Problem).where(
-            Problem.slug == req.problem_slug, Problem.review_status == "verified"
-        )
+        select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
     )
     if not problem:
         raise HTTPException(
