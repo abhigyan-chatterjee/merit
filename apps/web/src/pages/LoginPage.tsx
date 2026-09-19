@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LogIn, Mail, Lock, AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
 import { useAuth } from "../store/AuthContext";
+import { ClerkOAuthSection } from "../components/ClerkOAuth";
 import { Panel } from "../components/ui/Panel";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
@@ -130,6 +131,10 @@ export const LoginPage: React.FC = () => {
               </button>
             </form>
           </Panel>
+        </Reveal>
+
+        <Reveal delay={0.15}>
+          <ClerkOAuthSection mode="signin" onSuccess={() => navigate(from, { replace: true })} />
         </Reveal>
 
         <Reveal delay={0.2}>

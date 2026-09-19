@@ -6,6 +6,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, displayName: string) => Promise<void>;
+  loginWithClerk: (clerkToken: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<UserProfile | null>;
   updateProfile: (displayName: string) => Promise<void>;
@@ -47,6 +48,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(profile);
   };
 
+  const loginWithClerk = async (clerkToken: string) => {
+    const profile = await authApi.loginWithClerk(clerkToken);
+    setUser(profile);
+  };
+
   const logout = async () => {
     try {
       await authApi.logout();
@@ -81,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         register,
+        loginWithClerk,
         logout,
         refreshUser,
         updateProfile,
@@ -102,6 +109,7 @@ export const useAuth = (): AuthContextType => {
       isLoading: false,
       login: async () => {},
       register: async () => {},
+      loginWithClerk: async () => {},
       logout: async () => {},
       refreshUser: async () => null,
       updateProfile: async () => {},

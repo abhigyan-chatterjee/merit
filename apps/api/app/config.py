@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 30
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Clerk OAuth (Google/GitHub). Empty in dev → POST /api/v1/auth/oauth/clerk
+    # returns 501 OAUTH_NOT_CONFIGURED instead of crashing.
+    clerk_jwks_url: str = ""
+    clerk_audience: str = ""
 
     model_config = {
         "env_file": ".env",

@@ -29,6 +29,11 @@ class User(Base):
     daily_goal_json: Mapped[str | None] = mapped_column(String, nullable=True)  # JSON or null
     created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
     last_login_at: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Clerk OAuth linkage. NULL until the user signs in via Clerk at least once.
+    clerk_id: Mapped[str | None] = mapped_column(String, unique=True, nullable=True, default=None)
+    auth_provider: Mapped[str] = mapped_column(
+        String, default="password", nullable=False
+    )  # password | clerk
 
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
         "RefreshToken", back_populates="user", cascade="all, delete-orphan"

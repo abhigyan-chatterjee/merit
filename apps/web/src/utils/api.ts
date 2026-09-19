@@ -62,7 +62,8 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
   const isAuthEndpoint =
     endpoint.includes("/auth/login") ||
     endpoint.includes("/auth/register") ||
-    endpoint.includes("/auth/refresh");
+    endpoint.includes("/auth/refresh") ||
+    endpoint.includes("/auth/oauth");
 
   if (response.status === 401 && !isAuthEndpoint) {
     if (!isRefreshing) {
@@ -147,6 +148,16 @@ export const authApi = {
       body: JSON.stringify({
         email,
         password,
+      }),
+    });
+    return normalizeUser(res);
+  },
+
+  async loginWithClerk(clerkToken: string): Promise<UserProfile> {
+    const res = await apiRequest<Record<string, unknown>>("/api/v1/auth/oauth/clerk", {
+      method: "POST",
+      body: JSON.stringify({
+        clerk_token: clerkToken,
       }),
     });
     return normalizeUser(res);

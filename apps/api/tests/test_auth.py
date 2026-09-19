@@ -1,4 +1,33 @@
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from sqlalchemy import select
+
+import app.routers.auth as auth_router
+from app.models.user import User
+
+TEST_JWKS_URL = "https://test-oauth.clerk.accounts.dev/.well-known/jwks.json"
+MOCK_TOKEN_PAYLOAD = {"clerk_token": "mocked.clerk.session.token"}
+
+
+def _configure_clerk(monkeypatch):
+    """Pretend Clerk is configured (no network: verification itself is mocked)."""
+    monkeypatch.setattr(auth_router.settings, "clerk_jwks_url", TEST_JWKS_URL, raising=False)
+
+
+def _mock_verified_claims(monkeypatch, claims=None, error=None):
+    if error is not None:
+
+        def _raise(token: str):
+            raise error
+
+        monkeypatch.setattr(auth_router, "verify_clerk_session_token", _raise)
+    else:
+
+        def _ok(token: str):
+            assert token == "mocked.clerk.session.token"
+            return claims
+
+        monkeypatch.setattr(auth_router, "verify_clerk_session_token", _ok)
 
 
 def test_register_login_logout_flow(client: TestClient):
@@ -211,3 +240,123 @@ def test_change_password_flow(client: TestClient):
         json={"email": "pwchg@example.com", "password": "NewPassword123456"},
     )
     assert new_login.status_code == 200
+
+
+# --- Clerk OAuth (Google/GitHub): mocked JWKS verification, no network ---
+
+
+def test_clerk_oauth_links_existing_email_account(client: TestClient, monkeypatch, db_session):
+    _configure_clerk(monkeypatch)
+    reg_resp = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "oauthlink@example.com",
+            "display_name": "OAuth Link",
+            "password": "Password123456",
+        },
+    )
+    assert reg_resp.status_code == 201
+    user_id = reg_resp.json()["id"]
+
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_clerk_link123",
+            "email": "oauthlink@example.com",
+            "display_name": "OAuth Link",
+        },
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 200
+    assert resp.json()["id"] == user_id  # same account, not a duplicate
+    assert "merit_access" in resp.cookies
+    assert "merit_refresh" in resp.cookies
+
+    user = db_session.get(User, user_id)
+    assert user.clerk_id == "user_clerk_link123"
+
+    # Password login still works after linking (password + data kept).
+    login_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "oauthlink@example.com", "password": "Password123456"},
+    )
+    assert login_resp.status_code == 200
+
+
+def test_clerk_oauth_creates_new_user(client: TestClient, monkeypatch, db_session):
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_clerk_new456",
+            "email": "brandnew-oauth@example.com",
+            "display_name": "Brand New",
+        },
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 201
+    assert resp.json()["email"] == "brandnew-oauth@example.com"
+    assert "merit_access" in resp.cookies
+    assert "merit_refresh" in resp.cookies
+
+    user = db_session.scalar(
+        select(User).where(User.email == "brandnew-oauth@example.com")
+    )
+    assert user is not None
+    assert user.clerk_id == "user_clerk_new456"
+    assert user.auth_provider == "clerk"
+    assert user.password_hash == "oauth$clerk"
+    assert user.is_active == 1
+
+
+def test_clerk_oauth_reuses_linked_account(client: TestClient, monkeypatch):
+    _configure_clerk(monkeypatch)
+    claims = {
+        "clerk_id": "user_clerk_repeat789",
+        "email": "repeat-oauth@example.com",
+        "display_name": "Repeat User",
+    }
+    _mock_verified_claims(monkeypatch, claims=claims)
+    first = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert first.status_code == 201
+    second = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert second.status_code == 200
+    assert second.json()["id"] == first.json()["id"]
+
+
+def test_clerk_oauth_invalid_token_rejected(client: TestClient, monkeypatch):
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        error=HTTPException(
+            status_code=401,
+            detail={
+                "code": "OAUTH_INVALID_TOKEN",
+                "message": "Could not verify Clerk session token.",
+            },
+        ),
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 401
+    assert resp.json()["detail"]["code"] == "OAUTH_INVALID_TOKEN"
+
+
+def test_clerk_oauth_expired_token_rejected(client: TestClient, monkeypatch):
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        error=HTTPException(
+            status_code=401,
+            detail={"code": "OAUTH_TOKEN_EXPIRED", "message": "Clerk session has expired."},
+        ),
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 401
+    assert resp.json()["detail"]["code"] == "OAUTH_TOKEN_EXPIRED"
+
+
+def test_clerk_oauth_unconfigured_returns_501(client: TestClient, monkeypatch):
+    monkeypatch.setattr(auth_router.settings, "clerk_jwks_url", "", raising=False)
+    resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 501
+    assert resp.json()["detail"]["code"] == "OAUTH_NOT_CONFIGURED"

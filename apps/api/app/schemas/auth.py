@@ -69,3 +69,7 @@ class PasswordChange(BaseModel):
 
 class AuthMessageResponse(BaseModel):
     message: str
+
+
+class ClerkOAuthRequest(BaseModel):
+    clerk_token: str = Field(..., min_length=1, description="Clerk session JWT")

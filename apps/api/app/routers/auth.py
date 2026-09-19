@@ -9,6 +9,7 @@ from app.db import get_db
 from app.models.user import RefreshToken, User, utcnow_iso
 from app.schemas.auth import (
     AuthMessageResponse,
+    ClerkOAuthRequest,
     EmailChange,
     LoginRequest,
     PasswordChange,
@@ -26,6 +27,7 @@ from app.security import (
     set_auth_cookies,
     verify_password,
 )
+from app.services.clerk_oauth import verify_clerk_session_token
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
@@ -252,10 +254,95 @@ def refresh_token_rotation(
     return {"message": "Token refreshed successfully."}
 
 
+@router.post("/oauth/clerk", response_model=UserResponse)
+def clerk_oauth(
+    req: ClerkOAuthRequest,
+    response: Response,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """Sign in with a Clerk session JWT (Google/GitHub), linking to an existing account.
+
+    Password login is untouched: this endpoint only verifies the Clerk token,
+    links or creates the user row, then issues the standard merit_access /
+    merit_refresh cookies through the same rotation code path as login.
+    """
+    if not settings.clerk_jwks_url.strip():
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail={
+                "code": "OAUTH_NOT_CONFIGURED",
+                "message": "Clerk OAuth is not configured on this server.",
+            },
+        )
+
+    claims = verify_clerk_session_token(req.clerk_token)
+    clerk_id = claims["clerk_id"]
+    email = claims["email"]
+    display_name = claims["display_name"]
+
+    created = False
+    user = db.scalar(select(User).where(User.clerk_id == clerk_id))
+    if user is None:
+        user = db.scalar(select(User).where(User.email == email))
+        if user is not None:
+            # LINK: attach clerk_id, keep password hash and all existing data.
+            user.clerk_id = clerk_id
+        else:
+            # CREATE: OAuth-only account (no usable password).
+            user = User(
+                email=email,
+                display_name=display_name,
+                password_hash="oauth$clerk",
+                role="student",
+                is_active=1,
+                clerk_id=clerk_id,
+                auth_provider="clerk",
+                created_at=utcnow_iso(),
+                last_login_at=utcnow_iso(),
+            )
+            db.add(user)
+            db.flush()
+            created = True
+
+    if user.is_active != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "USER_INACTIVE", "message": "Account has been deactivated."},
+        )
+
+    user.last_login_at = utcnow_iso()
+
+    # Issue tokens via the standard rotation code path (same as password login).
+    access_token = create_access_token(user.id, user.role)
+    raw_refresh = generate_opaque_token()
+    token_h = hash_token(raw_refresh)
+
+    expires_at = (
+        datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
+    ).isoformat()
+
+    refresh_row = RefreshToken(
+        user_id=user.id,
+        token_hash=token_h,
+        expires_at=expires_at,
+        created_at=utcnow_iso(),
+        ip=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+    db.add(refresh_row)
+    db.commit()
+    db.refresh(user)
+
+    set_auth_cookies(response, access_token, raw_refresh)
+    if created:
+        response.status_code = status.HTTP_201_CREATED
+    return user
+
+
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
     return user
-
 
 @router.patch("/me", response_model=UserResponse)
 def update_profile(
