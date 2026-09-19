@@ -47,6 +47,26 @@ def test_generate_quiz_no_answer_leak():
         assert len(q["options"]) == 4
 
 
+def test_generate_quiz_rotates_recently_exposed_questions():
+    client = TestClient(app)
+    register_and_login(client, "quiz_rotation@merit.org", "Quiz Rotation")
+
+    first = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["arrays-hashing"], "count": 10},
+    )
+    second = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["arrays-hashing"], "count": 10},
+    )
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    first_ids = [question["id"] for question in first.json()["questions"]]
+    second_ids = [question["id"] for question in second.json()["questions"]]
+    assert len(set(first_ids) & set(second_ids)) < 5
+
+
 def test_submit_quiz_and_grading():
     client = TestClient(app)
     register_and_login(client, "quiz_user_2@merit.org", "Quiz User 2")

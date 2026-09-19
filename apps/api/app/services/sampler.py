@@ -56,6 +56,8 @@ def sample_questions(
     def pick_from(pool: list[Question], n: int) -> list[Question]:
         """Difficulty-weighted pick (40/40/20) from one pool, exposure-aware."""
         fresh = [q for q in pool if q.id not in recent_exposed_ids]
+        # Avoid stable database ordering making the fresh portion deterministic.
+        random.shuffle(fresh)
         chosen = fresh[:]
         if len(chosen) < n:
             relaxed = [q for q in pool if q.id in recent_exposed_ids]

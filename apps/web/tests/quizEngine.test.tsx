@@ -206,6 +206,45 @@ describe('QuizEngine Component', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows loading state while the first quiz request is still pending', async () => {
+    const student = {
+      id: 'usr-delayed',
+      email: 'delayed@test.com',
+      display_name: 'Delayed Student',
+      displayName: 'Delayed Student',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    };
+    let resolveSession!: (value: typeof student) => void;
+    const session = new Promise<typeof student>((resolve) => {
+      resolveSession = resolve;
+    });
+    vi.spyOn(apiModule.authApi, 'getMe').mockReturnValue(session);
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockReturnValue(new Promise(() => {}));
+
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle="Trees & BST"
+            topicId="trees"
+            questions={[]}
+            perQuestionSec={null}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    expect(screen.getByText(/Sampling Verified Questions/i)).toBeInTheDocument();
+    expect(screen.queryByText(/No Questions Available/i)).not.toBeInTheDocument();
+
+    await act(async () => {
+      resolveSession(student);
+    });
+    expect(screen.getByText(/Sampling Verified Questions/i)).toBeInTheDocument();
+  });
+
   it('auto-advances to the next question when the 20s timer expires', async () => {
     // Guest path (no session): engine falls back to local questions, and the
     // 20s timer is the only thing under test. Keep real timers for the async
