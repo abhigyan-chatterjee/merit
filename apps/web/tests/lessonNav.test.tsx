@@ -101,7 +101,7 @@ describe('LessonNav & Unblocked Guided Path Flow', () => {
 
     // Summaries come from the synced JSON mirror, not just titles.
     expect(
-      screen.getByText(/any index reads in O\(1\)/i)
+      screen.getByText(/contiguously for O\(1\) indexed access/i)
     ).toBeInTheDocument();
     // Further-reading links render alongside visualizer steps.
     expect(screen.getAllByText(/Further reading →/i).length).toBeGreaterThanOrEqual(1);
