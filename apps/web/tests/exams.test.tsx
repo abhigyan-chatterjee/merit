@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../src/store/AuthContext';
@@ -326,6 +327,151 @@ describe('Exams catalog', () => {
     await screen.findByText(/Given an array of integers/i);
     fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
     expect(await screen.findByText(/^Attempted$/i)).toBeInTheDocument();
+  });
+
+  it('updates the exam coding verdict on every AC and WA transition', async () => {
+    const { judgeApi } = await import('../src/utils/api');
+    vi.spyOn(judgeApi, 'submit')
+      .mockResolvedValueOnce({
+        id: 'sub-ac-1',
+        problem_slug: 'two-sum',
+        language: 'javascript',
+        verdict: 'AC',
+        runtime_ms: 5,
+        test_results: [],
+        created_at: '2026-09-20T00:00:00Z',
+      })
+      .mockResolvedValueOnce({
+        id: 'sub-wa-2',
+        problem_slug: 'two-sum',
+        language: 'javascript',
+        verdict: 'WA',
+        runtime_ms: 6,
+        test_results: [],
+        created_at: '2026-09-20T00:00:00Z',
+      })
+      .mockResolvedValueOnce({
+        id: 'sub-ac-3',
+        problem_slug: 'two-sum',
+        language: 'javascript',
+        verdict: 'AC',
+        runtime_ms: 5,
+        test_results: [],
+        created_at: '2026-09-20T00:00:00Z',
+      });
+    const Wrapper = () => {
+      const [passed, setPassed] = React.useState<boolean | null>(null);
+      return (
+        <>
+          <ExamCodingSection
+            coding={[{ slug: 'two-sum', title: 'Two Sum' }]}
+            onVerdict={(_, nextPassed) => setPassed(nextPassed)}
+          />
+          <span>{passed === true ? 'Navigator Accepted' : passed === false ? 'Navigator Attempted' : 'Navigator Unattempted'}</span>
+        </>
+      );
+    };
+
+    renderEngine(<Wrapper />);
+    await screen.findByText(/Given an array of integers/i);
+    const submit = () => fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
+
+    submit();
+    expect(await screen.findByText('Navigator Accepted')).toBeInTheDocument();
+    submit();
+    expect(await screen.findByText('Navigator Attempted')).toBeInTheDocument();
+    submit();
+    expect(await screen.findByText('Navigator Accepted')).toBeInTheDocument();
+  });
+
+  it('retries only wrong MCQs from inside a timed exam', async () => {
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-retry',
+      email: 'retry@test.com',
+      display_name: 'Retry User',
+      displayName: 'Retry User',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-retry-1',
+      questions: [
+        {
+          id: 'retry-q-1',
+          topic: 'arrays-hashing',
+          subtopic: null,
+          difficulty: 'Easy',
+          prompt: 'Exam retry question one?',
+          options: ['Wrong', 'Right'],
+        },
+        {
+          id: 'retry-q-2',
+          topic: 'arrays-hashing',
+          subtopic: null,
+          difficulty: 'Easy',
+          prompt: 'Exam retry question two?',
+          options: ['Right', 'Wrong'],
+        },
+      ],
+      total: 2,
+    });
+    vi.spyOn(apiModule.quizApi, 'submitQuiz').mockResolvedValue({
+      attempt_id: 'att-retry-1',
+      total: 2,
+      correct: 1,
+      score_pct: 50,
+      results: [
+        {
+          question_id: 'retry-q-1',
+          prompt: 'Exam retry question one?',
+          options: ['Wrong', 'Right'],
+          selected_index: 0,
+          correct_index: 1,
+          is_correct: false,
+          explanation: 'Choose the second option.',
+        },
+        {
+          question_id: 'retry-q-2',
+          prompt: 'Exam retry question two?',
+          options: ['Right', 'Wrong'],
+          selected_index: 0,
+          correct_index: 0,
+          is_correct: true,
+          explanation: 'The first option is correct.',
+        },
+      ],
+    });
+    vi.spyOn(apiModule.quizApi, 'retryWrong').mockResolvedValue({
+      attempt_id: 'att-retry-2',
+      questions: [
+        {
+          id: 'retry-q-1',
+          topic: 'arrays-hashing',
+          subtopic: null,
+          difficulty: 'Easy',
+          prompt: 'Exam retry question one?',
+          options: ['Wrong', 'Right'],
+        },
+      ],
+      total: 1,
+    });
+
+    renderExams('/exams/foundational-dsa');
+    fireEvent.click(await screen.findByText(/Start timed exam/i));
+    expect(await screen.findByText(/Exam retry question one/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Wrong'));
+    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
+    fireEvent.click(screen.getByText('Right'));
+    fireEvent.click(screen.getByRole('button', { name: /Submit Quiz/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /Retry Wrong Only \(1\)/i }));
+
+    await waitFor(() => {
+      expect(apiModule.quizApi.retryWrong).toHaveBeenCalledWith('att-retry-1');
+    });
+    expect(screen.getByText(/Question 1 of 1/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Exam retry question one/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Exam retry question two/i)).not.toBeInTheDocument();
   });
 
   it('auto-submits the timed mock when the countdown reaches zero', async () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { contentApi } from '../utils/api';
@@ -29,7 +29,6 @@ export const ExamCodingSection: React.FC<{
 }) => {
   const [items, setItems] = useState<ExamCodingState[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const acceptedSlugs = useRef(new Set<string>());
 
   useEffect(() => {
     let active = true;
@@ -164,10 +163,6 @@ export const ExamCodingSection: React.FC<{
                 setItems((prev) =>
                   prev.map((p) => (p.slug === item.slug ? { ...p, passed: passed ? true : false } : p)),
                 );
-                if (passed) {
-                  if (acceptedSlugs.current.has(item.slug)) return;
-                  acceptedSlugs.current.add(item.slug);
-                }
                 onVerdict(item.slug, passed);
               }}
               tutorEnabled={false}
