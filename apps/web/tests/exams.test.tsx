@@ -8,7 +8,7 @@ import { ExamsPage } from '../src/pages/ExamsPage';
 import { ExamDetailPage } from '../src/pages/ExamDetailPage';
 import { QuizEngine } from '../src/components/QuizEngine';
 import { ExamCodingSection } from '../src/components/ExamCodingSection';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { TARGETED_EXAMS } from '../src/data/exams';
 import * as apiModule from '../src/utils/api';
 
@@ -229,6 +229,79 @@ describe('Exams catalog', () => {
     fireEvent.click(await screen.findByText(/Start timed exam/i));
     fireEvent.click(await screen.findByRole('button', { name: /Question 80/i }));
     expect(await screen.findByText(/Large question 80/i)).toBeInTheDocument();
+  });
+
+  it('renders exam B pristine after navigating from a used exam A on the same route', async () => {
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-remount',
+      email: 'remount@test.com',
+      display_name: 'Remount User',
+      displayName: 'Remount User',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-remount',
+      questions: Array.from({ length: 20 }, (_, index) => ({
+        id: `remount-q-${index + 1}`,
+        topic: 'dynamic-programming',
+        subtopic: null,
+        difficulty: 'Easy',
+        prompt: `Remount question ${index + 1}?`,
+        options: ['A', 'B', 'C', 'D'],
+      })),
+      total: 20,
+    });
+    const { judgeApi } = await import('../src/utils/api');
+    vi.spyOn(judgeApi, 'submit').mockResolvedValue({
+      id: 'sub-remount-ac',
+      problem_slug: 'coin-change',
+      language: 'javascript',
+      verdict: 'AC',
+      runtime_ms: 5,
+      test_results: [],
+      created_at: '2026-09-20T00:00:00Z',
+    });
+
+    const JumpNextExam: React.FC = () => {
+      const navigate = useNavigate();
+      return <button onClick={() => navigate('/exams/full-mock')}>jump-next-exam</button>;
+    };
+    render(
+      <MemoryRouter initialEntries={['/exams/dp-greedy']}>
+        <AuthProvider>
+          <ProgressProvider>
+            <Routes>
+              <Route path="/exams" element={<ExamsPage />} />
+              <Route
+                path="/exams/:id"
+                element={
+                  <>
+                    <ExamDetailPage />
+                    <JumpNextExam />
+                  </>
+                }
+              />
+            </Routes>
+          </ProgressProvider>
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    // Exam A (dp-greedy): start, then accept coin-change — a slug shared with full-mock.
+    fireEvent.click(await screen.findByText(/Start timed exam/i));
+    fireEvent.click(await screen.findByRole('button', { name: /Coin Change/i }));
+    await screen.findByText(/Coding questions \(2\)/i);
+    fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
+    expect(await screen.findByText(/Coding accepted: 1\/2/)).toBeInTheDocument();
+
+    // Same component instance, new :id param -> exam B must show pristine state.
+    fireEvent.click(screen.getByRole('button', { name: /jump-next-exam/i }));
+    expect(await screen.findByRole('heading', { name: /Full Placement Mock/i })).toBeInTheDocument();
+    expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Coding accepted/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/MCQ score/i)).not.toBeInTheDocument();
   });
 
   it('samples a targeted exam topic set from the server bank', async () => {

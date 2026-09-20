@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
@@ -28,6 +28,16 @@ export const ExamDetailPage: React.FC = () => {
   const [answeredMcqs, setAnsweredMcqs] = useState<Record<string, boolean>>({});
   const [loadedMcqCount, setLoadedMcqCount] = useState(0);
   const [mcqQuestionIds, setMcqQuestionIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setStarted(false);
+    setMcqPct(null);
+    setCodingPassed({});
+    setSelectedItem({ type: 'mcq', index: 0 });
+    setAnsweredMcqs({});
+    setLoadedMcqCount(0);
+    setMcqQuestionIds([]);
+  }, [id]);
 
   if (!exam) {
     return (
