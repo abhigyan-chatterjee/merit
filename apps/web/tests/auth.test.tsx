@@ -105,6 +105,8 @@ describe('Auth Integration and UI', () => {
       expect(screen.getByText(/Create a MERIT Account/i)).toBeInTheDocument();
     });
     expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
+    expect(screen.getByText('Sign-in is not available in this environment.')).toBeInTheDocument();
+    expect(screen.getByText('Set VITE_CLERK_PUBLISHABLE_KEY and rebuild.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Sign in/i })).toBeInTheDocument();
   });
 
@@ -162,6 +164,8 @@ describe('Auth Integration and UI', () => {
       expect(screen.getByText(/Sign in to MERIT/i)).toBeInTheDocument();
     });
     expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
+    expect(screen.getByText('Sign-in is not available in this environment.')).toBeInTheDocument();
+    expect(screen.getByText('Set VITE_CLERK_PUBLISHABLE_KEY and rebuild.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Register here/i })).toBeInTheDocument();
   });
 });

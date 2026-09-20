@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, ShieldCheck } from "lucide-react";
-import { ClerkOAuthSection } from "../components/ClerkOAuth";
+import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
 
@@ -27,7 +27,18 @@ export const LoginPage: React.FC = () => {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <ClerkOAuthSection mode="signin" onSuccess={() => navigate(from, { replace: true })} />
+          {isClerkConfigured() ? (
+            <ClerkOAuthSection mode="signin" onSuccess={() => navigate(from, { replace: true })} />
+          ) : (
+            <div className="rounded-lg border border-line bg-surface p-5 text-center">
+              <p className="font-mono text-sm font-medium text-ink">
+                Sign-in is not available in this environment.
+              </p>
+              <p className="mt-2 text-xs text-muted">
+                Set VITE_CLERK_PUBLISHABLE_KEY and rebuild.
+              </p>
+            </div>
+          )}
         </Reveal>
 
         <Reveal delay={0.15}>
