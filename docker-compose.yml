@@ -79,6 +79,9 @@ services:
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
       - PISTON_URL=http://piston:2000
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
+      # OAuth (empty = disabled with 501; set on VPS, never commit).
+      - CLERK_JWKS_URL=${CLERK_JWKS_URL:-}
+      - CLERK_AUDIENCE=${CLERK_AUDIENCE:-}
     volumes:
       - merit-data:/data
     logging:
