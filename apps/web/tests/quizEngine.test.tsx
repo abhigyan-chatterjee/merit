@@ -44,7 +44,32 @@ describe('QuizEngine Component', () => {
     );
 
     expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
-    expect(QUIZZES[id]).toHaveLength(10);
+    expect(QUIZZES[id]).toHaveLength(15);
+  });
+
+  it('rotates the guest question order between consecutive assessments', async () => {
+    const renderQuiz = () =>
+      render(
+        <AuthProvider>
+          <ProgressProvider>
+            <QuizEngine
+              topicTitle="Arrays & Hashing"
+              topicId="arrays-hashing"
+              questions={QUIZZES['arrays-hashing']}
+              perQuestionSec={null}
+            />
+          </ProgressProvider>
+        </AuthProvider>
+      );
+
+    const first = renderQuiz();
+    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    const firstQuestion = screen.getByText(/1\./i).textContent;
+    first.unmount();
+
+    renderQuiz();
+    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    expect(screen.getByText(/1\./i).textContent).not.toBe(firstQuestion);
   });
 
   it('renders guest quiz with local questions correctly', async () => {

@@ -43,6 +43,8 @@ def generate_quiz(
         duration_limit_sec=request.duration_sec,
         topic_plan=[tuple(p) for p in request.topic_plan] if request.topic_plan else None,
     )
+    if request.difficulty:
+        questions = [q for q in questions if q.difficulty == request.difficulty]
 
     if not questions:
         raise HTTPException(

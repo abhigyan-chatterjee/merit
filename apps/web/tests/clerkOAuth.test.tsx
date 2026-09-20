@@ -60,7 +60,11 @@ describe("Clerk OAuth exchange", () => {
 
   it("shows the exchange error and a login link", async () => {
     getToken.mockResolvedValue("clerk-token");
-    loginWithClerk.mockRejectedValue(new Error("Backend exchange failed"));
+    loginWithClerk.mockRejectedValue(
+      new (class extends Error {
+        code = "OAUTH_NOT_CONFIGURED";
+      })("Configure a Clerk JWT template before deploying")
+    );
     const { ClerkSsoCallback } = await import("../src/components/ClerkOAuth");
 
     render(
@@ -69,8 +73,24 @@ describe("Clerk OAuth exchange", () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Backend exchange failed");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Sign-in is temporarily unavailable.");
+    expect(screen.queryByText("Configure a Clerk JWT template before deploying")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Back to login/i })).toHaveAttribute("href", "/login");
+  });
+
+  it.each([
+    ["OAUTH_EMAIL_MISSING", "Your sign-in didn't include a verified email. Try another method or contact support."],
+    ["OAUTH_EMAIL_UNVERIFIED", "Your sign-in didn't include a verified email. Try another method or contact support."],
+    ["UNKNOWN", "Sign-in failed. Please try again."],
+  ])("maps %s OAuth errors to stable copy", async (code, message) => {
+    getToken.mockResolvedValue("clerk-token");
+    loginWithClerk.mockRejectedValue(Object.assign(new Error("sensitive backend detail"), { code }));
+    const { ClerkOAuthSection } = await import("../src/components/ClerkOAuth");
+
+    render(<ClerkOAuthSection mode="signin" onSuccess={vi.fn()} />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(message);
+    expect(screen.queryByText("sensitive backend detail")).not.toBeInTheDocument();
   });
 
   it("forwards the callback URL to both Clerk widgets", async () => {

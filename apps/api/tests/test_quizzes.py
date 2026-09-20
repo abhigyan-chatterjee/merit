@@ -173,6 +173,26 @@ def test_generate_unknown_topic_returns_404():
     assert resp.json()["detail"]["code"] == "NO_QUESTIONS_FOR_TOPICS"
 
 
+def test_generate_difficulty_never_falls_back_to_other_difficulties():
+    client = TestClient(app)
+    register_and_login(client, "quiz_difficulty@merit.org", "Quiz Difficulty")
+
+    resp = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["core-cs"], "count": 10, "difficulty": "Hard"},
+    )
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["total"] == len(data["questions"])
+    assert data["total"] < 10
+    with SessionLocal() as db:
+        rows = db.scalars(
+            select(Question).where(Question.id.in_([q["id"] for q in data["questions"]]))
+        ).all()
+    assert all(row.difficulty == "Hard" for row in rows)
+
+
 def test_generate_topic_plan_section_sizes():
     client = TestClient(app)
     register_and_login(client, "quiz_user_plan@merit.org", "Quiz User Plan")

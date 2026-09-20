@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
-import { LoginPage } from '../src/pages/LoginPage';
+import { getLoginDestination, LoginPage } from '../src/pages/LoginPage';
 import { RegisterPage } from '../src/pages/RegisterPage';
 import { Navbar } from '../src/components/Navbar';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -22,6 +22,14 @@ const TestAuthConsumer = () => {
 describe('Auth Integration and UI', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it('preserves a safe next destination and rejects absolute URLs', () => {
+    expect(getLoginDestination({ search: '?next=/exams', state: null })).toBe('/exams');
+    expect(
+      getLoginDestination({ search: '?next=https%3A%2F%2Fevil.example', state: { from: '/problems' } })
+    ).toBe('/problems');
+    expect(getLoginDestination({ search: '?next=%2F%2Fevil.example', state: null })).toBe('/dashboard');
   });
 
   it('renders guest state when getMe returns 401', async () => {

@@ -3,6 +3,7 @@ import { ClerkProvider, SignIn, SignUp, useAuth as useClerkAuth } from "@clerk/c
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
+import { ApiError } from "../utils/api";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 // Optional custom Clerk JWT template name (must expose an email claim).
@@ -10,6 +11,17 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | u
 const JWT_TEMPLATE = import.meta.env.VITE_CLERK_JWT_TEMPLATE as string | undefined;
 
 export const isClerkConfigured = (): boolean => Boolean(PUBLISHABLE_KEY);
+
+const oauthErrorMessage = (error: unknown): string => {
+  const code = error instanceof ApiError ? error.code : (error as { code?: unknown })?.code;
+  if (code === "OAUTH_EMAIL_MISSING" || code === "OAUTH_EMAIL_UNVERIFIED") {
+    return "Your sign-in didn't include a verified email. Try another method or contact support.";
+  }
+  if (code === "OAUTH_NOT_CONFIGURED") {
+    return "Sign-in is temporarily unavailable.";
+  }
+  return "Sign-in failed. Please try again.";
+};
 
 interface BridgeProps {
   mode: "signin" | "signup";
@@ -34,7 +46,7 @@ const ClerkBridge: React.FC<BridgeProps> = ({ mode, onSuccess, onError }) => {
       onSuccess();
     })().catch((err: unknown) => {
       setExchanged(false);
-      onError(err instanceof Error ? err.message : "Social sign-in failed. Please try again.");
+      onError(oauthErrorMessage(err));
     });
   }, [isSignedIn, exchanged, getToken, loginWithClerk, onSuccess, onError]);
 
@@ -119,7 +131,7 @@ const ClerkSsoCallbackInner: React.FC = () => {
       await loginWithClerk(token);
       navigate("/dashboard", { replace: true });
     })().catch((err: unknown) => {
-      setError(err instanceof Error ? err.message : "Social sign-in failed. Please try again.");
+      setError(oauthErrorMessage(err));
     });
   }, [attempted, getToken, isLoaded, isSignedIn, loginWithClerk, navigate]);
 

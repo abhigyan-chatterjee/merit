@@ -5,11 +5,19 @@ import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
 
+export const getLoginDestination = (location: { search: string; state: unknown }): string => {
+  const from = (location.state as { from?: string })?.from || "/dashboard";
+  const requestedNext = new URLSearchParams(location.search).get("next");
+  return requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : from;
+};
+
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as { from?: string })?.from || "/dashboard";
+  const next = getLoginDestination(location);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
@@ -28,7 +36,7 @@ export const LoginPage: React.FC = () => {
 
         <Reveal delay={0.1}>
           {isClerkConfigured() ? (
-            <ClerkOAuthSection mode="signin" onSuccess={() => navigate(from, { replace: true })} />
+            <ClerkOAuthSection mode="signin" onSuccess={() => navigate(next, { replace: true })} />
           ) : (
             <div className="rounded-lg border border-line bg-surface p-5 text-center">
               <p className="font-mono text-sm font-medium text-ink">

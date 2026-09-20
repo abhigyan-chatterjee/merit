@@ -27,6 +27,22 @@ interface DisplayQuestion {
 
 /** Stable default so `loadQuiz` identity doesn't churn every render. */
 const NO_QUESTIONS: QuizQuestion[] = [];
+const guestAttemptCounters = new Map<string, number>();
+
+function selectGuestQuestions(topicId: string, questions: QuizQuestion[]): QuizQuestion[] {
+  const day = new Date().toISOString().slice(0, 10);
+  const key = `${topicId}:${day}`;
+  const attempt = (guestAttemptCounters.get(key) ?? 0) + 1;
+  guestAttemptCounters.set(key, attempt);
+  const seed = `${key}:${attempt}`;
+  return [...questions]
+    .sort((a, b) => {
+      const hash = (id: string) =>
+        [...`${seed}:${id}`].reduce((total, char) => (total * 31 + char.charCodeAt(0)) >>> 0, 0);
+      return hash(a.id) - hash(b.id);
+    })
+    .slice(0, 10);
+}
 
 interface QuizEngineProps {
   topicTitle: string;
@@ -254,8 +270,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setAttemptId(null);
     setServedTopics(null);
     if (questions && questions.length > 0) {
+      const guestQuestions = selectGuestQuestions(topicId, questions);
       setActiveQuestions(
-        questions.map((q) => ({
+        guestQuestions.map((q) => ({
           id: q.id,
           question: q.question,
           options: q.options,
