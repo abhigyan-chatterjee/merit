@@ -121,7 +121,27 @@ describe('Exams catalog', () => {
   });
 
   it('shows the coding navigator item after starting the exam', async () => {
-    mockGuestFetch();
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-coding',
+      email: 'coding@test.com',
+      display_name: 'Coder',
+      displayName: 'Coder',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-coding',
+      questions: Array.from({ length: 20 }, (_, index) => ({
+        id: `q-${index + 1}`,
+        topic: 'arrays-hashing',
+        subtopic: null,
+        difficulty: 'Easy',
+        prompt: `Question ${index + 1}?`,
+        options: ['A', 'B', 'C', 'D'],
+      })),
+      total: 20,
+    });
     renderExams('/exams/foundational-dsa');
     await screen.findByText(/Foundational DSA/);
     fireEvent.click(screen.getByText(/Start timed exam/i));
@@ -130,6 +150,14 @@ describe('Exams catalog', () => {
     expect(screen.getByRole('button', { name: /Valid Parentheses/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Two Sum/i }));
     expect(await screen.findByText(/Given an array of integers/i)).toBeInTheDocument();
+  });
+
+  it('shows sign-in prompt for guests instead of Start timed exam', async () => {
+    mockGuestFetch();
+    renderExams('/exams/foundational-dsa');
+    await screen.findByText(/Foundational DSA/);
+    expect(screen.queryByText(/Start timed exam/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Sign in to start exam/i })).toBeInTheDocument();
   });
 
   it('navigates to an MCQ and preserves its answer', async () => {
@@ -242,5 +270,11 @@ describe('Exams catalog', () => {
     expect(await screen.findByText(/Given an array of integers/i)).toBeInTheDocument();
     expect(await screen.findByText(/Example 1/i)).toBeInTheDocument();
     expect(screen.getByText(/Open full statement/i)).toBeInTheDocument();
+  });
+
+  it('does not render AiTutor inside the exam coding section', async () => {
+    renderEngine(<ExamCodingSection coding={[{ slug: 'two-sum', title: 'Two Sum' }]} onVerdict={() => {}} />);
+    await screen.findByText(/Given an array of integers/i);
+    expect(screen.queryByRole('button', { name: /ask the tutor/i })).not.toBeInTheDocument();
   });
 });

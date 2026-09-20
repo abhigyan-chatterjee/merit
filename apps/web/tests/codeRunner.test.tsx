@@ -150,6 +150,22 @@ describe('CodeRunner Component (Phase 4)', () => {
     expect(textarea).toHaveValue('function solve() { return 42; }');
   });
 
+  it('hides the tutor when tutorEnabled is false', () => {
+    render(
+      <AuthProvider>
+        <CodeRunner
+          problemSlug="two-sum"
+          starterCode="function solve() {}"
+          functionName="solve"
+          testCases={mockTestCases}
+          tutorEnabled={false}
+        />
+      </AuthProvider>
+    );
+
+    expect(screen.queryByRole('button', { name: /ask the tutor/i })).not.toBeInTheDocument();
+  });
+
   it('inserts two spaces on Tab instead of moving focus', () => {
     render(
       <AuthProvider>

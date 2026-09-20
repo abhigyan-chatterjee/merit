@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentStreak } = useProgress();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -180,7 +180,7 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-1.5 pl-1 border-l border-line">
                 <UserDropdown />
               </div>
-            ) : (
+            ) : authLoading ? null : (
               <Link
                 to="/login"
                 className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-ink hover:border-mint hover:text-mint transition"

@@ -331,12 +331,13 @@ export const ProblemDetailPage: React.FC = () => {
         {/* Right Column: Interactive Sandbox Code Runner */}
         <div className="lg:col-span-7">
           <CodeRunner
-            problemSlug={problem.slug}
-            starterCode={problem.starterCode}
-            functionName={problem.functionName}
-            testCases={problem.testCases}
-            onAllPassed={() => setProblemStatus(problem.slug, 'Done')}
-          />
+              problemSlug={problem.slug}
+              starterCode={problem.starterCode}
+              functionName={problem.functionName}
+              testCases={problem.testCases}
+              onAllPassed={() => setProblemStatus(problem.slug, 'Done')}
+              tutorEnabled={false}
+            />
           {/* BYOK tutor: mount-only. AiTutor sends code="" (no live editor
               access — CodeRunner owns the textarea) and resolves
               failed_attempts itself from the judge submissions endpoint. */}

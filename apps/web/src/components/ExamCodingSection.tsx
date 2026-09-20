@@ -160,6 +160,7 @@ export const ExamCodingSection: React.FC<{
                 setItems((prev) => prev.map((p) => (p.slug === item.slug ? { ...p, passed: true } : p)));
                 onVerdict(item.slug, true);
               }}
+              tutorEnabled={false}
             />
           ) : (
             <p className="text-xs text-muted">Could not load this question. Open the full statement instead.</p>

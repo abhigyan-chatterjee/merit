@@ -33,6 +33,7 @@ interface CodeRunnerProps {
   functionName: string;
   testCases: TestCase[];
   onAllPassed?: () => void;
+  tutorEnabled?: boolean;
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
@@ -41,6 +42,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   functionName,
   testCases: _testCases,
   onAllPassed,
+  tutorEnabled = true,
 }) => {
   const { user } = useAuth();
   const [language, setLanguage] = useState<EditorLang>(() => {
@@ -322,9 +324,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         </div>
       </div>
 
-      <div className="p-2 border-b border-line bg-surface">
-        <AiTutor problemSlug={problemSlug} code={code} />
-      </div>
+      {tutorEnabled && (
+        <div className="p-2 border-b border-line bg-surface">
+          <AiTutor problemSlug={problemSlug} code={code} />
+        </div>
+      )}
 
       {/* Code Area */}
       <div className="p-0 bg-canvas">

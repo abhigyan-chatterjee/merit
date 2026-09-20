@@ -128,6 +128,27 @@ describe('Auth Integration and UI', () => {
     });
   });
 
+  it('does not flash Sign In while the session check is in flight', () => {
+    vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+      if (String(url).includes('/auth/me') || String(url).includes('/auth/refresh')) {
+        return new Promise<Response>(() => {});
+      }
+      return new Response(JSON.stringify({}), { status: 200 });
+    });
+
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <ProgressProvider>
+            <Navbar />
+          </ProgressProvider>
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByRole('link', { name: /Sign In/i })).not.toBeInTheDocument();
+  });
+
   it('renders Clerk-only login without a native password input', async () => {
     render(
       <MemoryRouter>

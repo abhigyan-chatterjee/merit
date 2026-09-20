@@ -5,12 +5,14 @@ import { TARGETED_EXAMS } from '../data/exams';
 import { QuizEngine } from '../components/QuizEngine';
 import { ExamCodingSection } from '../components/ExamCodingSection';
 import { useProgress } from '../store/ProgressContext';
+import { useAuth } from '../store/AuthContext';
 import { NotFound } from '../components/NotFound';
 
 export const ExamDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { saveQuizScore } = useProgress();
+  const { user, isLoading: authLoading } = useAuth();
 
   const exam = TARGETED_EXAMS.find((e) => e.id === id);
   const [started, setStarted] = useState(false);
@@ -115,12 +117,21 @@ export const ExamDetailPage: React.FC = () => {
             {Math.round(exam.durationSec / 60)}-minute countdown · unanswered questions count as
             wrong. The timer auto-submits at zero.
           </p>
-          <button
-            onClick={() => setStarted(true)}
-            className="px-5 py-2.5 rounded-lg bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
-          >
-            Start timed exam
-          </button>
+          {user ? (
+            <button
+              onClick={() => setStarted(true)}
+              className="px-5 py-2.5 rounded-lg bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
+            >
+              Start timed exam
+            </button>
+          ) : authLoading ? null : (
+            <Link
+              to="/login?next=/exams"
+              className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-lg bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
+            >
+              Sign in to start exam
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-6">
