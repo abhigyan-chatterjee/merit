@@ -15,13 +15,16 @@ The expected token issuer is derived from that URL by stripping the
     Issuer:   https://spiffy-panda-12.clerk.accounts.dev
 """
 
+import logging
 from functools import lru_cache
+from urllib.parse import urlparse
 
 import jwt
 from fastapi import HTTPException, status
 
 from app.config import settings
 
+logger = logging.getLogger(__name__)
 JWKS_SUFFIX = "/.well-known/jwks.json"
 
 # Claim keys probed (in order) for the verified email address. Clerk's
@@ -51,6 +54,23 @@ def _jwks_client(jwks_url: str) -> jwt.PyJWKClient:
     return jwt.PyJWKClient(jwks_url)
 
 
+def _token_kid(token: str) -> str | None:
+    """Return only the JWT header key id for diagnostics."""
+    try:
+        header = jwt.get_unverified_header(token)
+    except jwt.PyJWTError:
+        return None
+    kid = header.get("kid")
+    return kid if isinstance(kid, str) and kid else None
+
+
+def _issuer_domain(issuer: object) -> str:
+    if not isinstance(issuer, str):
+        return "<missing>"
+    parsed = urlparse(issuer)
+    return parsed.netloc or "<invalid>"
+
+
 def verify_clerk_session_token(token: str) -> dict:
     """Verify a Clerk session JWT and return its verified identity claims.
 
@@ -62,11 +82,21 @@ def verify_clerk_session_token(token: str) -> dict:
     no usable email claim, or carries no (or a false) email-verified flag.
     """
     jwks_url = settings.clerk_jwks_url.strip()
+    kid = _token_kid(token)
     try:
         signing_key = _jwks_client(jwks_url).get_signing_key_from_jwt(token).key
     except HTTPException:
+        logger.warning(
+            "Clerk token rejected: stage=jwks_fetch exception=HTTPException kid=%s",
+            kid,
+        )
         raise
     except Exception as err:
+        logger.warning(
+            "Clerk token rejected: stage=jwks_fetch exception=%s kid=%s",
+            type(err).__name__,
+            kid,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -86,11 +116,93 @@ def verify_clerk_session_token(token: str) -> dict:
     try:
         claims = jwt.decode(token, signing_key, **decode_kwargs)
     except jwt.ExpiredSignatureError as err:
+        logger.warning(
+            "Clerk token rejected: stage=expired exception=%s kid=%s",
+            type(err).__name__,
+            kid,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "OAUTH_TOKEN_EXPIRED", "message": "Clerk session has expired."},
         ) from err
+    except jwt.InvalidSignatureError as err:
+        logger.warning(
+            "Clerk token rejected: stage=invalid_signature exception=%s kid=%s",
+            type(err).__name__,
+            kid,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "OAUTH_INVALID_TOKEN",
+                "message": "Could not verify Clerk session token.",
+            },
+        ) from err
+    except jwt.InvalidIssuerError as err:
+        actual_issuer = "<unavailable>"
+        try:
+            diagnostic_claims = jwt.decode(
+                token,
+                signing_key,
+                algorithms=["RS256"],
+                options={
+                    "verify_exp": False,
+                    "verify_iss": False,
+                    "verify_aud": False,
+                },
+            )
+            actual_issuer = _issuer_domain(diagnostic_claims.get("iss"))
+        except jwt.PyJWTError:
+            pass
+        logger.warning(
+            "Clerk token rejected: stage=issuer_mismatch exception=%s "
+            "expected_issuer=%s actual_issuer=%s kid=%s",
+            type(err).__name__,
+            _issuer_domain(expected_issuer(jwks_url)),
+            actual_issuer,
+            kid,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "OAUTH_ISSUER_MISMATCH",
+                "message": "Could not verify Clerk session token.",
+            },
+        ) from err
+    except jwt.InvalidAudienceError as err:
+        logger.warning(
+            "Clerk token rejected: stage=audience_mismatch exception=%s kid=%s",
+            type(err).__name__,
+            kid,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "OAUTH_INVALID_TOKEN",
+                "message": "Could not verify Clerk session token.",
+            },
+        ) from err
+    except jwt.MissingRequiredClaimError as err:
+        stage = "missing_sub" if err.claim == "sub" else "invalid_claim"
+        logger.warning(
+            "Clerk token rejected: stage=%s exception=%s kid=%s",
+            stage,
+            type(err).__name__,
+            kid,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={
+                "code": "OAUTH_INVALID_TOKEN",
+                "message": "Could not verify Clerk session token.",
+            },
+        ) from err
     except jwt.PyJWTError as err:
+        logger.warning(
+            "Clerk token rejected: stage=invalid_token exception=%s kid=%s",
+            type(err).__name__,
+            kid,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -108,6 +220,12 @@ def verify_clerk_session_token(token: str) -> dict:
             break
 
     if not clerk_id or not email:
+        stage = "missing_sub" if not clerk_id else "missing_email"
+        logger.warning(
+            "Clerk token rejected: stage=%s exception=MissingClaim kid=%s",
+            stage,
+            kid,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
@@ -142,6 +260,10 @@ def verify_clerk_session_token(token: str) -> dict:
             break
 
     if email_verified is not True:
+        logger.warning(
+            "Clerk token rejected: stage=email_unverified exception=UnverifiedEmail kid=%s",
+            kid,
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={

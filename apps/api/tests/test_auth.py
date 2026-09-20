@@ -427,6 +427,84 @@ def test_clerk_service_verified_flag_spellings(monkeypatch):
         assert exc.value.detail["code"] == "OAUTH_EMAIL_UNVERIFIED"
 
 
+@pytest.mark.parametrize(
+    ("failure", "stage", "code"),
+    [
+        ("jwks", "jwks_fetch", "OAUTH_INVALID_TOKEN"),
+        ("signature", "invalid_signature", "OAUTH_INVALID_TOKEN"),
+        ("expired", "expired", "OAUTH_TOKEN_EXPIRED"),
+        ("issuer", "issuer_mismatch", "OAUTH_ISSUER_MISMATCH"),
+        ("audience", "audience_mismatch", "OAUTH_INVALID_TOKEN"),
+        ("missing_sub", "missing_sub", "OAUTH_EMAIL_MISSING"),
+        ("missing_email", "missing_email", "OAUTH_EMAIL_MISSING"),
+        ("unverified", "email_unverified", "OAUTH_EMAIL_UNVERIFIED"),
+    ],
+)
+def test_clerk_service_rejection_logs_reason(monkeypatch, caplog, failure, stage, code):
+    import logging
+
+    import app.services.clerk_oauth as clerk_module
+
+    _mock_service_claims(monkeypatch, {"sub": "user_x", "email": "x@example.com"})
+    monkeypatch.setattr(clerk_module.jwt, "get_unverified_header", lambda token: {"kid": "key-1"})
+
+    if failure == "jwks":
+        def _fail_client(url):
+            raise RuntimeError("JWKS unavailable")
+
+        monkeypatch.setattr(clerk_module, "_jwks_client", _fail_client)
+    elif failure == "missing_sub":
+        monkeypatch.setattr(
+            clerk_module.jwt, "decode", lambda token, key, **kwargs: {"email": "x@example.com"}
+        )
+    elif failure == "missing_email":
+        monkeypatch.setattr(
+            clerk_module.jwt, "decode", lambda token, key, **kwargs: {"sub": "user_x"}
+        )
+    elif failure == "unverified":
+        monkeypatch.setattr(
+            clerk_module.jwt,
+            "decode",
+            lambda token, key, **kwargs: {
+                "sub": "user_x",
+                "email": "x@example.com",
+                "email_verified": False,
+            },
+        )
+    else:
+        exception = {
+            "signature": clerk_module.jwt.InvalidSignatureError("bad signature"),
+            "expired": clerk_module.jwt.ExpiredSignatureError("expired"),
+            "issuer": clerk_module.jwt.InvalidIssuerError("wrong issuer"),
+            "audience": clerk_module.jwt.InvalidAudienceError("wrong audience"),
+        }[failure]
+        decode_calls = 0
+
+        def _fail_decode(token, key, **kwargs):
+            nonlocal decode_calls
+            decode_calls += 1
+            if failure == "issuer" and decode_calls == 2:
+                return {"iss": "https://wrong.example"}
+            raise exception
+
+        monkeypatch.setattr(clerk_module.jwt, "decode", _fail_decode)
+
+    with caplog.at_level(logging.WARNING, logger="app.services.clerk_oauth"), pytest.raises(
+        HTTPException
+    ) as exc:
+        clerk_module.verify_clerk_session_token("eyJ.fake-token")
+
+    assert exc.value.status_code == 401
+    assert exc.value.detail["code"] == code
+    records = [record for record in caplog.records if record.name == "app.services.clerk_oauth"]
+    assert records
+    assert any(f"stage={stage}" in record.getMessage() for record in records)
+    assert all(
+        "@" not in record.getMessage() and "eyJ" not in record.getMessage()
+        for record in records
+    )
+
+
 def test_clerk_oauth_unverified_email_rejected_no_user_created(
     client: TestClient, monkeypatch, db_session
 ):
