@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../src/store/AuthContext';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -271,6 +271,111 @@ describe('Exams catalog', () => {
     expect(await screen.findByText(/Example 1/i)).toBeInTheDocument();
     expect(screen.getByText(/Open full statement/i)).toBeInTheDocument();
   });
+
+  it('marks the navigator item Attempted after a non-AC exam coding submit', async () => {
+    const { judgeApi } = await import('../src/utils/api');
+    vi.spyOn(judgeApi, 'submit').mockResolvedValue({
+      id: 'sub-wa-1',
+      problem_slug: 'two-sum',
+      language: 'javascript',
+      verdict: 'WA',
+      runtime_ms: 6.1,
+      test_results: [
+        { label: 'Case 1', passed: false, input: [[2, 7], 9], expected: [0, 1], actual: [0, 0], runtime_ms: 2.0, error: null },
+      ],
+      created_at: '2026-09-20T00:00:00Z',
+    });
+    renderEngine(
+      <ExamCodingSection coding={[{ slug: 'two-sum', title: 'Two Sum' }]} onVerdict={() => {}} />
+    );
+    await screen.findByText(/Given an array of integers/i);
+    fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
+    expect(await screen.findByText(/^Attempted$/i)).toBeInTheDocument();
+  });
+
+  it('auto-submits the timed mock when the countdown reaches zero', async () => {
+    const { progressApi } = await import('../src/utils/api');
+    vi.spyOn(progressApi, 'getSummary').mockResolvedValue({
+      solved_count: 0,
+      doing_count: 0,
+      total_problems: 140,
+      current_streak: 0,
+      activity_days: {},
+      progress: {},
+      notes: {},
+      bookmarks: [],
+      visited_visualizers: [],
+      has_imported_local: true,
+      quiz_scores: {},
+      weakest_topics: [],
+      revision_due: [],
+      preferred_language: 'javascript',
+      daily_goal: null,
+    });
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-auto',
+      email: 'auto@test.com',
+      display_name: 'Auto User',
+      displayName: 'Auto User',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-auto-1',
+      questions: [
+        {
+          id: 'q-auto-1',
+          topic: 'aptitude',
+          subtopic: null,
+          difficulty: 'Easy',
+          prompt: 'Auto-submit probe question?',
+          options: ['A', 'B', 'C', 'D'],
+        },
+      ],
+      total: 1,
+      duration_sec: 2,
+    });
+    const submitSpy = vi.spyOn(apiModule.quizApi, 'submitQuiz').mockResolvedValue({
+      attempt_id: 'att-auto-1',
+      total: 1,
+      correct: 0,
+      score_pct: 0,
+      duration_sec: 2,
+      results: [
+        {
+          question_id: 'q-auto-1',
+          prompt: 'Auto-submit probe question?',
+          options: ['A', 'B', 'C', 'D'],
+          selected_index: null,
+          correct_index: 0,
+          is_correct: false,
+          explanation: 'Unanswered counts as wrong.',
+        },
+      ],
+    });
+
+    renderEngine(
+      <QuizEngine
+        topicTitle="Aptitude Mock"
+        topicId="mixed"
+        examTopics={['aptitude']}
+        examCount={1}
+        isMock
+        durationLimitSec={2}
+      />
+    );
+
+    expect(await screen.findByText(/Auto-submit probe question/i)).toBeInTheDocument();
+    await screen.findByText(/Remaining:/i);
+    await waitFor(
+      () => {
+        expect(submitSpy).toHaveBeenCalledWith('att-auto-1', expect.any(Number), {});
+      },
+      { timeout: 8000 },
+    );
+    expect(await screen.findByText(/Score: 0%/i)).toBeInTheDocument();
+  }, 15000);
 
   it('does not render AiTutor inside the exam coding section', async () => {
     renderEngine(<ExamCodingSection coding={[{ slug: 'two-sum', title: 'Two Sum' }]} onVerdict={() => {}} />);

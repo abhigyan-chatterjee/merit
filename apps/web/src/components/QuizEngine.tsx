@@ -391,6 +391,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       gradeLocally();
     }
   };
+  const handleSubmitQuizRef = useRef(handleSubmitQuiz);
+  handleSubmitQuizRef.current = handleSubmitQuiz;
 
   const handleRetryWrongOnly = async () => {
     if (attemptId) {
@@ -450,12 +452,13 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
 
   // Auto-submit the mock exam when the countdown hits zero. Placed after
   // handleSubmitQuiz is defined so the effect never references a binding
-  // that is still in its temporal dead zone.
+  // that is still in its temporal dead zone. Goes through a ref so the
+  // timer always calls the latest closure (current attemptId, answers).
   useEffect(() => {
     if (isMock && !submitted && !isLoading && secondsRemaining <= 0 && activeQuestions.length > 0) {
-      void handleSubmitQuiz();
+      void handleSubmitQuizRef.current();
     }
-  }, [isMock, submitted, isLoading, secondsRemaining, activeQuestions.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isMock, submitted, isLoading, secondsRemaining, activeQuestions.length]);
 
   const correctCount = serverSummary
     ? serverSummary.correct

@@ -33,6 +33,7 @@ interface CodeRunnerProps {
   functionName: string;
   testCases: TestCase[];
   onAllPassed?: () => void;
+  onVerdict?: (passed: boolean) => void;
   tutorEnabled?: boolean;
 }
 
@@ -42,6 +43,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   functionName,
   testCases: _testCases,
   onAllPassed,
+  onVerdict,
   tutorEnabled = true,
 }) => {
   const { user } = useAuth();
@@ -242,6 +244,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       setVerdict(sub.verdict);
       setRuntimeMs(sub.runtime_ms);
       setResults(sub.test_results);
+      onVerdict?.(sub.verdict === "AC");
       if (sub.verdict === "AC" && onAllPassed) {
         onAllPassed();
       }

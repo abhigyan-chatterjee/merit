@@ -38,6 +38,15 @@ async def run_samples(
             },
         )
 
+    if not req.code.strip():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "EMPTY_CODE",
+                "message": "Code must not be empty.",
+            },
+        )
+
     # Load sample test cases
     tc_rows = db.scalars(
         select(ProblemTestCase)
@@ -93,6 +102,15 @@ async def submit_solution(
             detail={
                 "code": "PROBLEM_NOT_FOUND",
                 "message": f"Problem '{req.problem_slug}' not found",
+            },
+        )
+
+    if not req.code.strip():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "EMPTY_CODE",
+                "message": "Submitted code must not be empty.",
             },
         )
 

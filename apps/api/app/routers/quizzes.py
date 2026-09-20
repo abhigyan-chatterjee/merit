@@ -2,6 +2,7 @@
 
 import json
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -93,6 +94,33 @@ def submit_attempt(
             detail={"code": "ATTEMPT_NOT_FOUND", "message": "Quiz attempt not found"},
         )
 
+    if attempt.answers:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "ATTEMPT_ALREADY_SUBMITTED",
+                "message": "Quiz attempt already submitted",
+            },
+        )
+
+    try:
+        spec = json.loads(attempt.topic_spec) if attempt.topic_spec else {}
+    except (json.JSONDecodeError, TypeError):
+        spec = {}
+    expires_at = spec.get("expires_at")
+    if expires_at:
+        try:
+            if datetime.fromisoformat(expires_at) < datetime.now(UTC):
+                raise HTTPException(
+                    status_code=status.HTTP_410_GONE,
+                    detail={
+                        "code": "ATTEMPT_EXPIRED",
+                        "message": "Quiz attempt has expired",
+                    },
+                )
+        except ValueError:
+            pass
+
     # Question IDs snapshot from server-side creation
     question_ids: list[str] = json.loads(attempt.question_ids)
     questions = db.scalars(select(Question).where(Question.id.in_(question_ids))).all()
@@ -100,11 +128,6 @@ def submit_attempt(
 
     results: list[QuizQuestionResult] = []
     correct_count = 0
-
-    # Clean existing answers if re-submitting
-    for ans in list(attempt.answers):
-        db.delete(ans)
-    db.flush()
 
     for qid in question_ids:
         q = q_map.get(qid)

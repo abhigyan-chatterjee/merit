@@ -5,15 +5,15 @@ from pydantic import BaseModel, Field, field_validator
 
 class JudgeRunRequest(BaseModel):
     problem_slug: str
-    language: str = Field(..., description="Language: javascript | python | cpp | java")
+    language: str = Field(..., description="Language: javascript | python")
     code: str
 
     @field_validator("language")
     @classmethod
     def validate_lang(cls, v: str) -> str:
         norm = v.lower()
-        if norm not in {"javascript", "python", "cpp", "java"}:
-            raise ValueError("Unsupported language. Must be javascript, python, cpp, or java")
+        if norm not in {"javascript", "python"}:
+            raise ValueError("Unsupported language. Must be javascript or python")
         return norm
 
 
