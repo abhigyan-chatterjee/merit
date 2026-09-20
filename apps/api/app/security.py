@@ -81,7 +81,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
         max_age=settings.access_token_expire_minutes * 60,
         httponly=True,
         secure=is_secure,
-        samesite="lax",
+        samesite="strict",
         path="/",
     )
     response.set_cookie(
@@ -90,7 +90,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
         max_age=settings.refresh_token_expire_days * 86400,
         httponly=True,
         secure=is_secure,
-        samesite="lax",
+        samesite="strict",
         path="/",
     )
 
@@ -98,6 +98,19 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
 def clear_auth_cookies(response: Response) -> None:
     response.delete_cookie(key="merit_access", path="/")
     response.delete_cookie(key="merit_refresh", path="/")
+
+
+def require_same_origin(request: Request) -> None:
+    """Reject browser cross-site state changes; Strict cookies cover cookie delivery."""
+    origin = request.headers.get("origin")
+    if not origin:
+        return
+    expected = f"{request.url.scheme}://{request.headers.get('host', request.url.netloc)}"
+    if origin.rstrip("/") != expected.rstrip("/"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "CSRF_ORIGIN_MISMATCH", "message": "Cross-site request rejected."},
+        )
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:

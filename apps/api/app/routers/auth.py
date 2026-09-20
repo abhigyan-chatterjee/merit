@@ -25,6 +25,7 @@ from app.security import (
     get_current_user,
     hash_password,
     hash_token,
+    require_same_origin,
     set_auth_cookies,
     verify_password,
 )
@@ -41,6 +42,7 @@ def register(
     req: RegisterRequest,
     response: Response,
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     # Check existing email
     existing = db.scalar(select(User).where(User.email == req.email))
@@ -95,6 +97,7 @@ def login(
     response: Response,
     request: Request,
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     user = db.scalar(select(User).where(User.email == req.email))
 
@@ -149,6 +152,7 @@ def logout(
     request: Request,
     response: Response,
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     raw_refresh = request.cookies.get("merit_refresh")
     if raw_refresh:
@@ -167,6 +171,7 @@ def refresh_token_rotation(
     request: Request,
     response: Response,
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     raw_refresh = request.cookies.get("merit_refresh")
     if not raw_refresh:
@@ -296,6 +301,7 @@ def clerk_oauth(
     response: Response,
     request: Request,
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     """Sign in with a Clerk session JWT (Google/GitHub), linking to an existing account.
 
@@ -386,6 +392,7 @@ def update_profile(
     req: ProfileUpdate,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     if req.display_name:
         user.display_name = req.display_name
@@ -399,6 +406,7 @@ def change_email(
     req: EmailChange,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     if not verify_password(req.current_password, user.password_hash):
         raise HTTPException(
@@ -425,6 +433,7 @@ def change_password(
     req: PasswordChange,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     if not verify_password(req.current_password, user.password_hash):
         raise HTTPException(
@@ -441,6 +450,7 @@ def delete_account(
     response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
 ):
     # Hard delete user and cascade all dependent data
     db.delete(user)

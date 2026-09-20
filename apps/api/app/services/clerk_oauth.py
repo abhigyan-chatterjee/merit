@@ -39,6 +39,7 @@ EMAIL_CLAIM_KEYS = ("email", "primary_email", "email_address")
 # blocks account takeover via a Clerk account holding a victim's unverified
 # email address. Template snippet in docs/prod.md includes this flag.
 EMAIL_VERIFIED_CLAIM_KEYS = ("email_verified", "emailVerified", "verified_email")
+JWT_CLOCK_LEEWAY_SECONDS = 90
 
 
 def expected_issuer(jwks_url: str | None = None) -> str:
@@ -108,6 +109,7 @@ def verify_clerk_session_token(token: str) -> dict:
     decode_kwargs: dict = {
         "algorithms": ["RS256"],
         "issuer": expected_issuer(jwks_url),
+        "leeway": JWT_CLOCK_LEEWAY_SECONDS,
         "options": {"require": ["exp", "iss", "sub"]},
     }
     if settings.clerk_audience.strip():

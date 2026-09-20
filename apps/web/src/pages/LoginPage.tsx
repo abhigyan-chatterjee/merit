@@ -5,12 +5,26 @@ import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
 
+export const isSafeLoginDestination = (value: string): boolean => {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return false;
+  if (/[\\\u0000-\u001f\u007f]/.test(value)) return false;
+  try {
+    const parsed = new URL(value, window.location.origin);
+    return (
+      parsed.origin === window.location.origin &&
+      parsed.pathname.startsWith("/") &&
+      !parsed.pathname.startsWith("//")
+    );
+  } catch {
+    return false;
+  }
+};
+
 export const getLoginDestination = (location: { search: string; state: unknown }): string => {
   const from = (location.state as { from?: string })?.from || "/dashboard";
   const requestedNext = new URLSearchParams(location.search).get("next");
-  return requestedNext && requestedNext.startsWith("/") && !requestedNext.startsWith("//")
-    ? requestedNext
-    : from;
+  if (requestedNext && isSafeLoginDestination(requestedNext)) return requestedNext;
+  return isSafeLoginDestination(from) ? from : "/dashboard";
 };
 
 export const LoginPage: React.FC = () => {

@@ -92,6 +92,29 @@ def test_register_short_password_rejected(client: TestClient):
     assert resp.status_code == 422
 
 
+def test_cross_site_auth_post_rejected(client: TestClient):
+    resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "csrf@example.com", "password": "Password123456"},
+        headers={"Origin": "https://evil.example"},
+    )
+    assert resp.status_code == 403
+    assert resp.json()["detail"]["code"] == "CSRF_ORIGIN_MISMATCH"
+
+
+def test_auth_cookies_are_strict(client: TestClient):
+    resp = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "strict-cookie@example.com",
+            "display_name": "Strict Cookie",
+            "password": "Password123456",
+        },
+    )
+    set_cookie = resp.headers["set-cookie"]
+    assert set_cookie.count("SameSite=strict") == 2
+
+
 def test_login_invalid_password(client: TestClient):
     client.post(
         "/api/v1/auth/register",
@@ -425,6 +448,25 @@ def test_clerk_service_verified_flag_spellings(monkeypatch):
         with pytest.raises(HTTPException) as exc:
             clerk_module.verify_clerk_session_token("any.token.here")
         assert exc.value.detail["code"] == "OAUTH_EMAIL_UNVERIFIED"
+
+
+def test_clerk_service_uses_clock_leeway(monkeypatch):
+    import app.services.clerk_oauth as clerk_module
+
+    captured = {}
+
+    def _decode(token, key, **kwargs):
+        captured.update(kwargs)
+        return {
+            "sub": "user_x",
+            "email": "x@example.com",
+            "email_verified": True,
+        }
+
+    _mock_service_claims(monkeypatch, {})
+    monkeypatch.setattr(clerk_module.jwt, "decode", _decode)
+    clerk_module.verify_clerk_session_token("any.token.here")
+    assert captured["leeway"] == 90
 
 
 @pytest.mark.parametrize(

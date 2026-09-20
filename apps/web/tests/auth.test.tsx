@@ -24,12 +24,19 @@ describe('Auth Integration and UI', () => {
     vi.restoreAllMocks();
   });
 
-  it('preserves a safe next destination and rejects absolute URLs', () => {
+  it.each([
+    '?next=https%3A%2F%2Fevil.example',
+    '?next=%2F%2Fevil.example',
+    '?next=%5C%2Fevil.example',
+    '?next=%2F%5C%2Fevil.example',
+    '?next=%20%2Fdashboard',
+    '?next=%2F%2Fevil.example%2F%2E%2E%2Fdashboard',
+  ])('rejects unsafe next destination %s', (search) => {
+    expect(getLoginDestination({ search, state: { from: '/problems' } })).toBe('/problems');
+  });
+
+  it('preserves a safe next destination', () => {
     expect(getLoginDestination({ search: '?next=/exams', state: null })).toBe('/exams');
-    expect(
-      getLoginDestination({ search: '?next=https%3A%2F%2Fevil.example', state: { from: '/problems' } })
-    ).toBe('/problems');
-    expect(getLoginDestination({ search: '?next=%2F%2Fevil.example', state: null })).toBe('/dashboard');
   });
 
   it('renders guest state when getMe returns 401', async () => {

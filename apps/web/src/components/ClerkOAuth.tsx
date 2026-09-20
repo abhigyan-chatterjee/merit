@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { AlertCircle, RefreshCw } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
 import { ApiError } from "../utils/api";
 
@@ -9,6 +9,7 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | u
 // Optional custom Clerk JWT template name (must expose an email claim).
 // When unset, the default Clerk session token is exchanged instead.
 const JWT_TEMPLATE = import.meta.env.VITE_CLERK_JWT_TEMPLATE as string | undefined;
+const OAUTH_STATE_KEY = "merit.oauth.state";
 
 export const isClerkConfigured = (): boolean => Boolean(PUBLISHABLE_KEY);
 
@@ -25,40 +26,24 @@ const oauthErrorMessage = (error: unknown): string => {
 
 interface BridgeProps {
   mode: "signin" | "signup";
-  onSuccess: () => void;
-  onError: (message: string) => void;
 }
 
-const ClerkBridge: React.FC<BridgeProps> = ({ mode, onSuccess, onError }) => {
-  const { isSignedIn, getToken } = useClerkAuth();
-  const { loginWithClerk } = useAuth();
-  const [exchanged, setExchanged] = useState(false);
-
-  useEffect(() => {
-    if (!isSignedIn || exchanged) return;
-    setExchanged(true);
-    (async () => {
-      const token = await getToken(JWT_TEMPLATE ? { template: JWT_TEMPLATE } : undefined);
-      if (!token) {
-        throw new Error("Could not retrieve a Clerk session token.");
-      }
-      await loginWithClerk(token);
-      onSuccess();
-    })().catch((err: unknown) => {
-      setExchanged(false);
-      onError(oauthErrorMessage(err));
-    });
-  }, [isSignedIn, exchanged, getToken, loginWithClerk, onSuccess, onError]);
+const ClerkBridge: React.FC<BridgeProps> = ({ mode }) => {
+  const [state] = useState(() => {
+    const value = crypto.randomUUID();
+    sessionStorage.setItem(OAUTH_STATE_KEY, value);
+    return value;
+  });
 
   return mode === "signin" ? (
     <SignIn
       appearance={{ elements: { footerAction: "hidden" } }}
-      afterSignInUrl="/sso-callback"
+      afterSignInUrl={`/sso-callback?state=${encodeURIComponent(state)}`}
     />
   ) : (
     <SignUp
       appearance={{ elements: { footerAction: "hidden" } }}
-      afterSignUpUrl="/sso-callback"
+      afterSignUpUrl={`/sso-callback?state=${encodeURIComponent(state)}`}
     />
   );
 };
@@ -78,9 +63,7 @@ export const ClerkOAuthSection: React.FC<ClerkOAuthSectionProps> = ({ mode, onSu
   return <ClerkOAuthInner mode={mode} onSuccess={onSuccess} />;
 };
 
-const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, onSuccess }) => {
-  const [error, setError] = useState<string | null>(null);
-
+const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
@@ -90,18 +73,9 @@ const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, onSuccess }) 
         </span>
         <span className="h-px flex-1 bg-line" />
       </div>
-      {error && (
-        <div
-          role="alert"
-          className="flex items-start gap-2.5 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose text-xs"
-        >
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-          <span className="font-mono">{error}</span>
-        </div>
-      )}
       <div className="flex justify-center">
         <ClerkProvider publishableKey={PUBLISHABLE_KEY as string}>
-          <ClerkBridge mode={mode} onSuccess={onSuccess} onError={setError} />
+          <ClerkBridge mode={mode} />
         </ClerkProvider>
       </div>
     </div>
@@ -112,11 +86,19 @@ const ClerkSsoCallbackInner: React.FC = () => {
   const { isLoaded, isSignedIn, getToken } = useClerkAuth();
   const { loginWithClerk } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState<string | null>(null);
   const [attempted, setAttempted] = useState(false);
 
   useEffect(() => {
     if (!isLoaded || attempted) return;
+    const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
+    const returnedState = new URLSearchParams(location.search).get("state");
+    sessionStorage.removeItem(OAUTH_STATE_KEY);
+    if (!expectedState || !returnedState || returnedState !== expectedState) {
+      setError("This sign-in attempt is invalid or has expired. Please sign in again.");
+      return;
+    }
     if (!isSignedIn) {
       setError("No active Clerk session was found. Please sign in again.");
       return;
@@ -133,7 +115,7 @@ const ClerkSsoCallbackInner: React.FC = () => {
     })().catch((err: unknown) => {
       setError(oauthErrorMessage(err));
     });
-  }, [attempted, getToken, isLoaded, isSignedIn, loginWithClerk, navigate]);
+  }, [attempted, getToken, isLoaded, isSignedIn, location.search, loginWithClerk, navigate]);
 
   if (error) {
     return (

@@ -34,9 +34,11 @@ describe("Clerk OAuth exchange", () => {
     clerkState = { isLoaded: true, isSignedIn: true };
     signInProps = {};
     signUpProps = {};
+    sessionStorage.clear();
   });
 
   it("exchanges a callback session and navigates to the dashboard", async () => {
+    sessionStorage.setItem("merit.oauth.state", "test-state");
     getToken.mockResolvedValue("clerk-token");
     loginWithClerk.mockResolvedValue(undefined);
     const { ClerkSsoCallback } = await import("../src/components/ClerkOAuth");
@@ -46,7 +48,7 @@ describe("Clerk OAuth exchange", () => {
     };
 
     render(
-      <MemoryRouter initialEntries={["/sso-callback"]}>
+      <MemoryRouter initialEntries={["/sso-callback?state=test-state"]}>
         <ClerkSsoCallback />
         <LocationProbe />
       </MemoryRouter>
@@ -59,6 +61,7 @@ describe("Clerk OAuth exchange", () => {
   });
 
   it("shows the exchange error and a login link", async () => {
+    sessionStorage.setItem("merit.oauth.state", "test-state");
     getToken.mockResolvedValue("clerk-token");
     loginWithClerk.mockRejectedValue(
       new (class extends Error {
@@ -68,7 +71,7 @@ describe("Clerk OAuth exchange", () => {
     const { ClerkSsoCallback } = await import("../src/components/ClerkOAuth");
 
     render(
-      <MemoryRouter initialEntries={["/sso-callback"]}>
+      <MemoryRouter initialEntries={["/sso-callback?state=test-state"]}>
         <ClerkSsoCallback />
       </MemoryRouter>
     );
@@ -78,32 +81,35 @@ describe("Clerk OAuth exchange", () => {
     expect(screen.getByRole("link", { name: /Back to login/i })).toHaveAttribute("href", "/login");
   });
 
-  it.each([
-    ["OAUTH_EMAIL_MISSING", "Your sign-in didn't include a verified email. Try another method or contact support."],
-    ["OAUTH_EMAIL_UNVERIFIED", "Your sign-in didn't include a verified email. Try another method or contact support."],
-    ["UNKNOWN", "Sign-in failed. Please try again."],
-  ])("maps %s OAuth errors to stable copy", async (code, message) => {
-    getToken.mockResolvedValue("clerk-token");
-    loginWithClerk.mockRejectedValue(Object.assign(new Error("sensitive backend detail"), { code }));
-    const { ClerkOAuthSection } = await import("../src/components/ClerkOAuth");
-
-    render(<ClerkOAuthSection mode="signin" onSuccess={vi.fn()} />);
-
-    expect(await screen.findByRole("alert")).toHaveTextContent(message);
-    expect(screen.queryByText("sensitive backend detail")).not.toBeInTheDocument();
-  });
-
   it("forwards the callback URL to both Clerk widgets", async () => {
     const { ClerkOAuthSection } = await import("../src/components/ClerkOAuth");
 
     render(
       <ClerkOAuthSection mode="signin" onSuccess={vi.fn()} />
     );
-    expect(signInProps).toMatchObject({ afterSignInUrl: "/sso-callback" });
+    expect(signInProps.afterSignInUrl).toMatch(/^\/sso-callback\?state=.+/);
 
     render(
       <ClerkOAuthSection mode="signup" onSuccess={vi.fn()} />
     );
-    expect(signUpProps).toMatchObject({ afterSignUpUrl: "/sso-callback" });
+    expect(signUpProps.afterSignUpUrl).toMatch(/^\/sso-callback\?state=.+/);
+  });
+
+  it("aborts a callback with a missing or tampered state", async () => {
+    sessionStorage.setItem("merit.oauth.state", "expected-state");
+    getToken.mockResolvedValue("clerk-token");
+    const { ClerkSsoCallback } = await import("../src/components/ClerkOAuth");
+
+    render(
+      <MemoryRouter initialEntries={["/sso-callback?state=tampered-state"]}>
+        <ClerkSsoCallback />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "This sign-in attempt is invalid or has expired."
+    );
+    expect(loginWithClerk).not.toHaveBeenCalled();
+    expect(sessionStorage.getItem("merit.oauth.state")).toBeNull();
   });
 });
