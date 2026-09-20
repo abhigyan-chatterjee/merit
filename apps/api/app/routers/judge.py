@@ -24,7 +24,8 @@ router = APIRouter(prefix="/api/v1/judge", tags=["Judge"])
 
 # Content files supply function names, but the harness interpolates them into
 # generated code — enforce a plain identifier before anything reaches it.
-FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*$")
+FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*\Z")
+DUNDER_NAME_RE = re.compile(r"^__.*__\Z")
 
 
 def _get_verified_problem(db: Session, slug: str) -> Problem:
@@ -42,7 +43,10 @@ def _get_verified_problem(db: Session, slug: str) -> Problem:
                 "message": f"Problem '{slug}' not found",
             },
         )
-    if not FUNCTION_NAME_RE.match(problem.function_name):
+    if (
+        not FUNCTION_NAME_RE.match(problem.function_name)
+        or DUNDER_NAME_RE.match(problem.function_name)
+    ):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={

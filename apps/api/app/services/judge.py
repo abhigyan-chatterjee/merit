@@ -9,7 +9,8 @@ from typing import Any
 
 # Mirrors the router-level check: harnesses interpolate function_name into
 # generated code, so anything beyond a plain identifier must never reach it.
-_FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*$")
+_FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*\Z")
+_DUNDER_NAME_RE = re.compile(r"^__.*__\Z")
 
 
 class JudgeResult:
@@ -73,7 +74,10 @@ async def execute_code(
             compile_output="Code size exceeds maximum limit of 64 KB",
         )
 
-    if not _FUNCTION_NAME_RE.match(function_name):
+    if (
+        not _FUNCTION_NAME_RE.match(function_name)
+        or _DUNDER_NAME_RE.match(function_name)
+    ):
         return JudgeResult(
             verdict="CE",
             runtime_ms=0,

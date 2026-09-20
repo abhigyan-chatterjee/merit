@@ -222,3 +222,32 @@ def test_judge_run_and_submit_reject_invalid_function_name(
         )
         assert res.status_code == 422
         assert res.json()["detail"]["code"] == "INVALID_FUNCTION_NAME"
+
+
+@pytest.mark.parametrize(
+    ("slug", "function_name"),
+    [
+        ("newline-fn-name", "solve\n"),
+        ("dunder-fn-name", "__import__"),
+    ],
+)
+def test_judge_run_and_submit_reject_function_name_bypasses(
+    client: TestClient,
+    db_session: Session,
+    slug: str,
+    function_name: str,
+):
+    register_user(client, f"{slug}@merit.org")
+    insert_problem(db_session, slug, function_name=function_name)
+
+    for endpoint in ("run", "submit"):
+        res = client.post(
+            f"/api/v1/judge/{endpoint}",
+            json={
+                "problem_slug": slug,
+                "language": "javascript",
+                "code": "function solve() { return []; }",
+            },
+        )
+        assert res.status_code == 422
+        assert res.json()["detail"]["code"] == "INVALID_FUNCTION_NAME"
