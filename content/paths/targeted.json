@@ -58,17 +58,17 @@
     {
       "ordinal": 7,
       "step_type": "problem",
-      "ref_id": "longest-consecutive-sequence",
-      "title": "Longest Consecutive Sequence",
-      "summary": "Set streaks in O(n): only count from streak starts.",
+      "ref_id": "gas-station",
+      "title": "Gas Station",
+      "summary": "Greedy surplus tracking finds the unique start that can complete the circuit.",
       "reading_links": []
     },
     {
       "ordinal": 8,
       "step_type": "problem",
-      "ref_id": "container-with-most-water",
-      "title": "Container With Most Water",
-      "summary": "Converging pointers: move the shorter wall inward.",
+      "ref_id": "jump-game-ii",
+      "title": "Jump Game II",
+      "summary": "Greedy range expansion counts the minimum jumps needed to reach the end.",
       "reading_links": []
     },
     {
@@ -146,7 +146,7 @@
       "title": "Daily Temperatures",
       "summary": "Monotonic decreasing stack of indices: pop when finding a warmer day.",
       "reading_links": [
-        "https://en.wikipedia.org/wiki/Monotonic_stack"
+        "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
       ]
     },
     {
@@ -260,9 +260,9 @@
     {
       "ordinal": 31,
       "step_type": "problem",
-      "ref_id": "longest-common-prefix",
-      "title": "Longest Common Prefix",
-      "summary": "Trie or character-by-character horizontal scan across strings.",
+      "ref_id": "letter-combinations-of-a-phone-number",
+      "title": "Letter Combinations of a Phone Number",
+      "summary": "Backtrack through each digit's choices, undoing a choice before trying the next.",
       "reading_links": []
     },
     {
@@ -284,9 +284,9 @@
     {
       "ordinal": 34,
       "step_type": "problem",
-      "ref_id": "flood-fill",
-      "title": "Flood Fill",
-      "summary": "Grid BFS/DFS: replace connected component with new color.",
+      "ref_id": "word-search",
+      "title": "Word Search",
+      "summary": "Backtrack through adjacent cells while marking and restoring the current path.",
       "reading_links": []
     },
     {
@@ -376,17 +376,17 @@
     {
       "ordinal": 45,
       "step_type": "problem",
-      "ref_id": "roman-to-integer",
-      "title": "Roman to Integer",
-      "summary": "Right-to-left traversal: add if value >= prev, subtract otherwise.",
+      "ref_id": "majority-element",
+      "title": "Majority Element",
+      "summary": "Sorting or voting reveals the value that occurs more than half the time.",
       "reading_links": []
     },
     {
       "ordinal": 46,
       "step_type": "problem",
-      "ref_id": "single-number",
-      "title": "Single Number",
-      "summary": "Use XOR cancellation to isolate the value that appears once among paired integers.",
+      "ref_id": "subsets",
+      "title": "Subsets",
+      "summary": "Bit choices or backtracking enumerate every subset without repeating a combination.",
       "reading_links": [
         "https://en.wikipedia.org/wiki/Bitwise_operation"
       ]

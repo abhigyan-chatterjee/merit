@@ -46,17 +46,17 @@
       ]
     },
     {
-      "ordinal": 5,
+      "ordinal": 7,
       "step_type": "problem",
       "ref_id": "sort-an-array",
       "title": "Sort an Array",
-      "summary": "Practice sorting before binary search: order values in place with a predictable comparison strategy.",
+      "summary": "Reinforce sorting after binary search: order values in place with a predictable comparison strategy.",
       "reading_links": [
         "https://en.wikipedia.org/wiki/Sorting_algorithm"
       ]
     },
     {
-      "ordinal": 6,
+      "ordinal": 5,
       "step_type": "visualizer",
       "ref_id": "searching",
       "title": "Binary search step-through",
@@ -66,7 +66,7 @@
       ]
     },
     {
-      "ordinal": 7,
+      "ordinal": 6,
       "step_type": "problem",
       "ref_id": "binary-search",
       "title": "Binary Search",

@@ -208,7 +208,7 @@
       "title": "Trapping Rain Water",
       "summary": "Two pointers converge while tracking max left and right walls to accumulate trapped water.",
       "reading_links": [
-        "https://en.wikipedia.org/wiki/Two-pointer_technique"
+        "https://en.wikipedia.org/wiki/In-place_algorithm"
       ]
     },
     {
@@ -226,7 +226,7 @@
       "title": "Sliding Window Maximum",
       "summary": "Monotonic decreasing deque keeps candidate maxima at the front over each window shift.",
       "reading_links": [
-        "https://en.wikipedia.org/wiki/Monotonic_queue"
+        "https://en.wikipedia.org/wiki/Double-ended_queue"
       ]
     },
     {
@@ -252,7 +252,7 @@
       "title": "Widest Bar Rectangle",
       "summary": "Monotonic stack finds nearest smaller bars left and right to compute maximal rectangle.",
       "reading_links": [
-        "https://en.wikipedia.org/wiki/Monotonic_stack"
+        "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
       ]
     },
     {
@@ -326,10 +326,12 @@
     {
       "ordinal": 39,
       "step_type": "problem",
-      "ref_id": "same-tree",
-      "title": "Same Tree",
-      "summary": "Full trees chain in category order.",
-      "reading_links": []
+      "ref_id": "combination-sum",
+      "title": "Combination Sum",
+      "summary": "Backtracking chooses, reuses, and undoes candidates while pruning sums over the target.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Backtracking"
+      ]
     },
     {
       "ordinal": 40,
@@ -384,9 +386,9 @@
     {
       "ordinal": 46,
       "step_type": "problem",
-      "ref_id": "longest-common-prefix",
-      "title": "Longest Common Prefix",
-      "summary": "Full trie chain in category order.",
+      "ref_id": "letter-combinations-of-a-phone-number",
+      "title": "Letter Combinations of a Phone Number",
+      "summary": "Backtracking builds one valid digit-to-letter choice at a time.",
       "reading_links": []
     },
     {
@@ -400,33 +402,33 @@
     {
       "ordinal": 48,
       "step_type": "problem",
-      "ref_id": "roman-to-integer",
-      "title": "Roman to Integer",
-      "summary": "Full math-matrices chain in category order.",
+      "ref_id": "insert-interval",
+      "title": "Insert Interval",
+      "summary": "Merge the overlapping zone into a sorted interval list after Merge Intervals.",
       "reading_links": []
     },
     {
       "ordinal": 49,
       "step_type": "problem",
-      "ref_id": "spiral-matrix",
-      "title": "Spiral Matrix",
-      "summary": "Full math-matrices chain in category order.",
+      "ref_id": "subsets",
+      "title": "Subsets",
+      "summary": "Bit choices or backtracking enumerate every subset without duplicate output.",
       "reading_links": []
     },
     {
       "ordinal": 50,
       "step_type": "problem",
-      "ref_id": "find-the-town-judge",
-      "title": "Find the Town Judge",
-      "summary": "Full graphs chain in category order.",
+      "ref_id": "majority-element",
+      "title": "Majority Element",
+      "summary": "Sorting or voting identifies the element appearing more than half the time.",
       "reading_links": []
     },
     {
       "ordinal": 51,
       "step_type": "problem",
-      "ref_id": "find-if-path-exists-in-graph",
-      "title": "Find if Path Exists in Graph",
-      "summary": "Full graphs chain in category order.",
+      "ref_id": "gas-station",
+      "title": "Gas Station",
+      "summary": "Greedy surplus tracking finds the only viable circuit start.",
       "reading_links": []
     },
     {
@@ -440,9 +442,9 @@
     {
       "ordinal": 53,
       "step_type": "problem",
-      "ref_id": "flood-fill",
-      "title": "Flood Fill",
-      "summary": "Full graphs chain in category order.",
+      "ref_id": "jump-game-ii",
+      "title": "Jump Game II",
+      "summary": "Greedy range expansion counts the minimum jumps to reach the end.",
       "reading_links": []
     },
     {
@@ -532,9 +534,9 @@
     {
       "ordinal": 64,
       "step_type": "problem",
-      "ref_id": "combination-sum",
-      "title": "Combination Sum",
-      "summary": "Backtracking after DP: choose, recurse, and undo while pruning combinations that exceed the target.",
+      "ref_id": "find-words-on-board",
+      "title": "Word Search II",
+      "summary": "Trie-guided backtracking finds every dictionary word on the board.",
       "reading_links": [
         "https://en.wikipedia.org/wiki/Backtracking"
       ]
