@@ -59,6 +59,11 @@ interface QuizEngineProps {
   /** Quizzes: 20s hard per-question timer. Exams use their own countdown. */
   perQuestionSec?: number | null;
   onComplete?: (scorePercentage: number) => void;
+  currentIndex?: number;
+  onCurrentIndexChange?: (index: number) => void;
+  onAnswersChange?: (answers: Record<string, number>) => void;
+  onQuestionCountChange?: (count: number) => void;
+  onQuestionIdsChange?: (ids: string[]) => void;
 }
 
 /** Default quiz timing: 20s per MCQ with hard auto-advance. Null = untimed. */
@@ -76,6 +81,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   examTopicPlan,
   perQuestionSec = QUIZ_PER_QUESTION_SEC,
   onComplete,
+  currentIndex: controlledIndex,
+  onCurrentIndexChange,
+  onAnswersChange,
+  onQuestionCountChange,
+  onQuestionIdsChange,
 }) => {
   const { user, refreshUser } = useAuth();
 
@@ -106,6 +116,31 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // by context identity churn must not wipe an in-progress quiz or mint a
   // duplicate attempt for identical params.
   const loadedKeyRef = useRef<string | null>(null);
+
+  const changeCurrentIndex = (next: number | ((index: number) => number)) => {
+    setCurrentIndex((previous) => {
+      const updated = typeof next === 'function' ? next(previous) : next;
+      onCurrentIndexChange?.(updated);
+      return updated;
+    });
+  };
+
+  useEffect(() => {
+    if (controlledIndex !== undefined && controlledIndex !== currentIndex) {
+      setCurrentIndex(controlledIndex);
+    }
+  }, [controlledIndex, currentIndex]);
+
+  useEffect(() => {
+    onAnswersChange?.(selectedAnswers);
+    // The callback is intentionally excluded: exam pages provide an inline
+    // state setter, and callback identity must not retrigger this effect.
+  }, [selectedAnswers]);
+
+  useEffect(() => {
+    onQuestionCountChange?.(activeQuestions.length);
+    onQuestionIdsChange?.(activeQuestions.map((question) => question.id));
+  }, [activeQuestions, onQuestionCountChange, onQuestionIdsChange]);
 
 
   // Server results map: question_id -> result details
@@ -176,7 +211,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setSecondsElapsed(0);
     setSecondsRemaining(durationLimitSec);
     setQuestionTimeLeft(perQuestionSec ?? 0);
-    setCurrentIndex(0);
+    changeCurrentIndex(0);
     setServerResults({});
     setServerSummary(null);
     setServedTopics(null);
@@ -318,7 +353,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               const timedId = currentQForTimer.id;
               setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
             }
-            setCurrentIndex((i) => {
+            changeCurrentIndex((i) => {
               if (i >= activeQuestions.length - 1) {
                 clearInterval(timer);
               }
@@ -427,7 +462,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               topic: q.topic,
             }))
           );
-          setCurrentIndex(0);
+          changeCurrentIndex(0);
           setSelectedAnswers({});
           setTimedOut({});
           setSubmitted(false);
@@ -451,7 +486,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
 
     if (wrongList.length === 0) return;
     setActiveQuestions(wrongList);
-    setCurrentIndex(0);
+    changeCurrentIndex(0);
     setSelectedAnswers({});
     setTimedOut({});
     setSubmitted(false);
@@ -675,14 +710,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-line">
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+                onClick={() => changeCurrentIndex((i) => Math.max(0, i - 1))}
                 disabled={currentIndex === 0 || isSubmitting}
                 className="px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-ink disabled:opacity-40 cursor-pointer hover:border-muted transition"
               >
                 ← Previous
               </button>
               <button
-                onClick={() => setCurrentIndex((i) => Math.min(activeQuestions.length - 1, i + 1))}
+                onClick={() => changeCurrentIndex((i) => Math.min(activeQuestions.length - 1, i + 1))}
                 disabled={currentIndex === activeQuestions.length - 1 || isSubmitting}
                 className="px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-ink disabled:opacity-40 cursor-pointer hover:border-muted transition"
               >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { contentApi } from '../utils/api';
@@ -14,6 +14,7 @@ interface ExamCodingState {
   starterCode: string;
   functionName: string;
   testCases: TestCase[];
+  topic?: string;
   passed: boolean | null;
 }
 
@@ -28,6 +29,7 @@ export const ExamCodingSection: React.FC<{
 }) => {
   const [items, setItems] = useState<ExamCodingState[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const acceptedSlugs = useRef(new Set<string>());
 
   useEffect(() => {
     let active = true;
@@ -46,6 +48,7 @@ export const ExamCodingSection: React.FC<{
             starterCode: local.starterCode,
             functionName: local.functionName,
             testCases: local.testCases,
+            topic: local.topic,
             passed: null,
           });
           continue;
@@ -66,6 +69,7 @@ export const ExamCodingSection: React.FC<{
               expected: t.expected,
               label: t.label,
             })),
+            topic: typeof remote.topic === 'string' ? remote.topic : undefined,
             passed: null,
           });
         } catch {
@@ -111,7 +115,7 @@ export const ExamCodingSection: React.FC<{
               )}
             </div>
             <Link
-              to={`/problems/${PROBLEMS.find((p) => p.slug === item.slug)?.topic ?? 'arrays-hashing'}/${item.slug}`}
+              to={`/problems/${item.topic ?? PROBLEMS.find((p) => p.slug === item.slug)?.topic ?? 'arrays-hashing'}/${item.slug}`}
               target="_blank"
               rel="noreferrer"
               className="text-[11px] font-mono text-muted hover:text-mint transition-colors"
@@ -156,14 +160,14 @@ export const ExamCodingSection: React.FC<{
               starterCode={item.starterCode}
               functionName={item.functionName}
               testCases={item.testCases}
-              onAllPassed={() => {
-                setItems((prev) => prev.map((p) => (p.slug === item.slug ? { ...p, passed: true } : p)));
-                onVerdict(item.slug, true);
-              }}
               onVerdict={(passed) => {
                 setItems((prev) =>
                   prev.map((p) => (p.slug === item.slug ? { ...p, passed: passed ? true : false } : p)),
                 );
+                if (passed) {
+                  if (acceptedSlugs.current.has(item.slug)) return;
+                  acceptedSlugs.current.add(item.slug);
+                }
                 onVerdict(item.slug, passed);
               }}
               tutorEnabled={false}

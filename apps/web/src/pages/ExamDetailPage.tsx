@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
 import { QuizEngine } from '../components/QuizEngine';
@@ -11,8 +11,11 @@ import { NotFound } from '../components/NotFound';
 export const ExamDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { saveQuizScore } = useProgress();
   const { user, isLoading: authLoading } = useAuth();
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
+  const loginNext = currentPath.startsWith('/') ? currentPath : '/exams';
 
   const exam = TARGETED_EXAMS.find((e) => e.id === id);
   const [started, setStarted] = useState(false);
@@ -22,8 +25,9 @@ export const ExamDetailPage: React.FC = () => {
     type: 'mcq',
     index: 0,
   });
-  const [answeredMcqs, setAnsweredMcqs] = useState<Record<number, boolean>>({});
-  const mcqPaneRef = useRef<HTMLDivElement>(null);
+  const [answeredMcqs, setAnsweredMcqs] = useState<Record<string, boolean>>({});
+  const [loadedMcqCount, setLoadedMcqCount] = useState(0);
+  const [mcqQuestionIds, setMcqQuestionIds] = useState<string[]>([]);
 
   if (!exam) {
     return (
@@ -38,23 +42,6 @@ export const ExamDetailPage: React.FC = () => {
 
   const selectMcq = (targetIndex: number) => {
     setSelectedItem({ type: 'mcq', index: targetIndex });
-    const pane = mcqPaneRef.current;
-    if (!pane) return;
-    const status = pane.textContent?.match(/Question\s+(\d+)\s+of\s+(\d+)/);
-    const currentIndex = status ? Number(status[1]) - 1 : 0;
-    const direction = targetIndex >= currentIndex ? 'Next →' : '← Previous';
-    const steps = Math.abs(targetIndex - currentIndex);
-    if (steps === 0) return;
-    const advance = (remaining: number) => {
-      if (remaining === 0) return;
-      const button = Array.from(pane.querySelectorAll('button')).find(
-        (candidate) => candidate.textContent?.trim() === direction
-      ) as HTMLButtonElement | undefined;
-      if (!button || button.disabled) return;
-      button.click();
-      window.setTimeout(() => advance(remaining - 1), 0);
-    };
-    advance(steps);
   };
 
   const items = [
@@ -62,7 +49,7 @@ export const ExamDetailPage: React.FC = () => {
       type: 'mcq' as const,
       index,
       label: `Question ${index + 1}`,
-      answered: !!answeredMcqs[index],
+      answered: !!answeredMcqs[mcqQuestionIds[index]],
     })),
     ...exam.coding.map((item, index) => ({
       type: 'coding' as const,
@@ -126,7 +113,7 @@ export const ExamDetailPage: React.FC = () => {
             </button>
           ) : authLoading ? null : (
             <Link
-              to="/login?next=/exams"
+              to={`/login?next=${encodeURIComponent(loginNext)}`}
               className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-lg bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
             >
               Sign in to start exam
@@ -144,6 +131,11 @@ export const ExamDetailPage: React.FC = () => {
                   {Object.values(codingPassed).filter(Boolean).length}/{exam.coding.length}
                 </>
               )}
+            </div>
+          )}
+          {loadedMcqCount > 0 && loadedMcqCount < exam.questionCount && (
+            <div role="status" className="rounded-lg border border-amber/40 bg-amber/10 px-3 py-2 text-xs text-amber">
+              This exam loaded {loadedMcqCount} of {exam.questionCount} MCQs. Some questions are unavailable right now.
             </div>
           )}
           <div className="md:hidden">
@@ -226,15 +218,7 @@ export const ExamDetailPage: React.FC = () => {
             </aside>
             <main>
               <div
-                ref={mcqPaneRef}
                 hidden={selectedItem.type !== 'mcq'}
-                onClickCapture={(event) => {
-                  const button = (event.target as HTMLElement).closest('button');
-                  const text = button?.textContent?.trim() ?? '';
-                  if (button && text && !/^(← Previous|Next →|Submit Quiz|New Assessment|Retry Wrong Only)/.test(text)) {
-                    setAnsweredMcqs((prev) => ({ ...prev, [selectedItem.index]: true }));
-                  }
-                }}
               >
                 <QuizEngine
                   key={exam.id}
@@ -247,6 +231,13 @@ export const ExamDetailPage: React.FC = () => {
                   isMock
                   perQuestionSec={null}
                   durationLimitSec={exam.durationSec}
+                  currentIndex={selectedItem.index}
+                  onCurrentIndexChange={(index) => setSelectedItem({ type: 'mcq', index })}
+                  onAnswersChange={(answers) =>
+                    setAnsweredMcqs(Object.fromEntries(Object.keys(answers).map((questionId) => [questionId, true])))
+                  }
+                  onQuestionCountChange={setLoadedMcqCount}
+                  onQuestionIdsChange={setMcqQuestionIds}
                   onComplete={(pct) => {
                     setMcqPct(pct);
                     saveQuizScore(`exam:${exam.id}`, pct);

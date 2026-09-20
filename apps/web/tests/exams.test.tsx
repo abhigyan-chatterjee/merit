@@ -160,6 +160,13 @@ describe('Exams catalog', () => {
     expect(screen.getByRole('link', { name: /Sign in to start exam/i })).toBeInTheDocument();
   });
 
+  it('preserves the deep exam link in the guest sign-in redirect', async () => {
+    mockGuestFetch();
+    renderExams('/exams/foundational-dsa');
+    const signIn = await screen.findByRole('link', { name: /Sign in to start exam/i });
+    expect(signIn).toHaveAttribute('href', '/login?next=%2Fexams%2Ffoundational-dsa');
+  });
+
   it('navigates to an MCQ and preserves its answer', async () => {
     vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
       id: 'usr-navigator',
@@ -193,6 +200,34 @@ describe('Exams catalog', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Question 3answered$/i }));
     expect(await screen.findByRole('button', { name: /^AA$/i })).toHaveClass('border-mint');
     expect(screen.getByLabelText('answered')).toBeInTheDocument();
+  });
+
+  it('jumps directly to a distant MCQ in a large exam', async () => {
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
+      id: 'usr-large-exam',
+      email: 'large@test.com',
+      display_name: 'Large Exam User',
+      displayName: 'Large Exam User',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    });
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-large-exam',
+      questions: Array.from({ length: 80 }, (_, index) => ({
+        id: `large-q-${index + 1}`,
+        topic: 'aptitude',
+        subtopic: null,
+        difficulty: 'Easy',
+        prompt: `Large question ${index + 1}?`,
+        options: ['A', 'B', 'C', 'D'],
+      })),
+      total: 80,
+    });
+    renderExams('/exams/full-mock');
+    fireEvent.click(await screen.findByText(/Start timed exam/i));
+    fireEvent.click(await screen.findByRole('button', { name: /Question 80/i }));
+    expect(await screen.findByText(/Large question 80/i)).toBeInTheDocument();
   });
 
   it('samples a targeted exam topic set from the server bank', async () => {
