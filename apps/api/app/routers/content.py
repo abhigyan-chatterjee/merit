@@ -202,6 +202,7 @@ def get_problem(
                 "is_sample": bool(tc.is_sample),
             }
             for tc in problem.test_cases
+            if tc.is_sample == 1
         ],
         "solutions": [
             {

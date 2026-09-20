@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Play,
   Send,
@@ -10,9 +11,11 @@ import {
   Terminal,
   History,
   Code2,
+  Lock,
 } from "lucide-react";
 import { TestCase } from "../data/problems";
 import {
+  ApiError,
   judgeApi,
   JudgeResponse,
   SubmissionItem,
@@ -47,6 +50,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   tutorEnabled = true,
 }) => {
   const { user } = useAuth();
+  const location = useLocation();
   const [language, setLanguage] = useState<EditorLang>(() => {
     try {
       let saved = window.localStorage.getItem('merit_lang_v1');
@@ -86,6 +90,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [compileError, setCompileError] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [needsAuth, setNeedsAuth] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
 
   const setCode = (next: string) => {
@@ -102,6 +107,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setNeedsAuth(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problemSlug]);
 
@@ -176,6 +182,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setNeedsAuth(false);
   };
 
   const handleReset = () => {
@@ -186,6 +193,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setNeedsAuth(false);
   };
 
   const fetchSubmissions = useCallback(async () => {
@@ -215,21 +223,39 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       .catch(() => {});
   }, [user]);
 
+  // Shared failure path: 401 gets an inline sign-in prompt (a guest hitting the
+  // judge is an auth state, not a crash); everything else keeps the RE verdict.
+  // Every error also drops stale results and the selected case tab so old
+  // output can never linger under the banner.
+  const handleJudgeError = (err: unknown, fallbackMessage: string) => {
+    if (err instanceof ApiError && err.status === 401) {
+      setNeedsAuth(true);
+      setVerdict(null);
+    } else {
+      setNeedsAuth(false);
+      setVerdict("RE");
+      setCompileError(err instanceof Error ? err.message : fallbackMessage);
+    }
+    setResults(null);
+    setActiveTab(0);
+  };
+
   const handleRunSamples = async () => {
     setIsRunning(true);
     setCompileError(null);
     setActiveView("results");
     try {
       const res: JudgeResponse = await judgeApi.runSamples(problemSlug, language, code);
+      setNeedsAuth(false);
       setVerdict(res.verdict);
       setRuntimeMs(res.runtime_ms);
       setResults(res.test_results);
+      setActiveTab(0);
       if (res.compile_output && res.verdict !== "AC") {
         setCompileError(res.compile_output);
       }
     } catch (err: unknown) {
-      setVerdict("RE");
-      setCompileError(err instanceof Error ? err.message : "Execution failed");
+      handleJudgeError(err, "Execution failed");
     } finally {
       setIsRunning(false);
     }
@@ -241,17 +267,18 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setActiveView("results");
     try {
       const sub: SubmissionItem = await judgeApi.submit(problemSlug, language, code);
+      setNeedsAuth(false);
       setVerdict(sub.verdict);
       setRuntimeMs(sub.runtime_ms);
       setResults(sub.test_results);
+      setActiveTab(0);
       onVerdict?.(sub.verdict === "AC");
       if (sub.verdict === "AC" && onAllPassed) {
         onAllPassed();
       }
       fetchSubmissions();
     } catch (err: unknown) {
-      setVerdict("RE");
-      setCompileError(err instanceof Error ? err.message : "Submission failed");
+      handleJudgeError(err, "Submission failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -409,6 +436,21 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       <div className="p-4 bg-surface min-h-[160px]">
         {activeView === "results" ? (
           <div>
+            {needsAuth && (
+              <div className="mb-4 p-3 rounded-lg border border-amber/30 bg-amber/10 flex flex-wrap items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 font-mono text-xs text-ink">
+                  <Lock className="w-3.5 h-3.5 text-amber shrink-0" />
+                  Sign in to run code
+                </span>
+                <Link
+                  to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`}
+                  className="px-2.5 py-1 rounded bg-mint text-canvas font-mono text-xs font-semibold hover:bg-mint/90"
+                >
+                  Sign in
+                </Link>
+              </div>
+            )}
+
             {compileError && (
               <div className="mb-4 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose font-mono text-xs whitespace-pre-wrap">
                 <div className="flex items-center gap-1.5 font-bold mb-1">

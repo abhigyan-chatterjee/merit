@@ -4,9 +4,11 @@ import json
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 from app.db import SessionLocal
 from app.main import app
+from app.models.content import Problem
 from app.seed import _resolve_content_dir, seed_all
 
 
@@ -69,9 +71,30 @@ def test_get_problem_detail():
     problem = resp.json()
     assert problem["slug"] == "two-sum"
     assert problem["function_name"] == "solve"
-    assert len(problem["test_cases"]) >= 3
+    assert len(problem["test_cases"]) >= 1
+    assert all(tc["is_sample"] for tc in problem["test_cases"])
     assert len(problem["solutions"]) >= 1
-    assert any(tc["is_sample"] for tc in problem["test_cases"])
+
+
+def test_problem_detail_hides_hidden_test_cases():
+    """GET /problems/{slug} must never expose non-sample inputs or expected outputs."""
+    client = TestClient(app)
+    with SessionLocal() as db:
+        problem = db.scalar(select(Problem).where(Problem.slug == "two-sum"))
+        assert problem is not None
+        cases = sorted(problem.test_cases, key=lambda tc: tc.ordinal)
+        sample = [tc for tc in cases if tc.is_sample == 1]
+        hidden = [tc for tc in cases if tc.is_sample != 1]
+    assert len(sample) >= 1, "two-sum must ship sample cases for this regression test"
+    assert len(hidden) >= 1, "two-sum must ship hidden cases for this regression test"
+
+    resp = client.get("/api/v1/problems/two-sum")
+    assert resp.status_code == 200
+    returned = resp.json()["test_cases"]
+
+    # Only sample rows are returned — same rows (by id), same order.
+    assert [tc["id"] for tc in returned] == [tc.id for tc in sample]
+    assert all(tc["is_sample"] for tc in returned)
 
 
 def test_problem_sequence_links():

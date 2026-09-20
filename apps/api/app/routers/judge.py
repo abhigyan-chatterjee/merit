@@ -1,4 +1,5 @@
 import json
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -21,6 +22,36 @@ from app.services.streak import record_activity
 
 router = APIRouter(prefix="/api/v1/judge", tags=["Judge"])
 
+# Content files supply function names, but the harness interpolates them into
+# generated code — enforce a plain identifier before anything reaches it.
+FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*$")
+
+
+def _get_verified_problem(db: Session, slug: str) -> Problem:
+    problem = db.scalar(
+        select(Problem).where(
+            Problem.slug == slug,
+            Problem.review_status == "verified",
+        )
+    )
+    if not problem:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROBLEM_NOT_FOUND",
+                "message": f"Problem '{slug}' not found",
+            },
+        )
+    if not FUNCTION_NAME_RE.match(problem.function_name):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "INVALID_FUNCTION_NAME",
+                "message": "Problem function name is not a valid identifier.",
+            },
+        )
+    return problem
+
 
 @router.post("/run", response_model=JudgeRunResponse)
 async def run_samples(
@@ -28,15 +59,7 @@ async def run_samples(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    problem = db.scalar(select(Problem).where(Problem.slug == req.problem_slug))
-    if not problem:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "code": "PROBLEM_NOT_FOUND",
-                "message": f"Problem '{req.problem_slug}' not found",
-            },
-        )
+    problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
         raise HTTPException(
@@ -95,15 +118,7 @@ async def submit_solution(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    problem = db.scalar(select(Problem).where(Problem.slug == req.problem_slug))
-    if not problem:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "code": "PROBLEM_NOT_FOUND",
-                "message": f"Problem '{req.problem_slug}' not found",
-            },
-        )
+    problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
         raise HTTPException(

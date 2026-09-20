@@ -1,10 +1,15 @@
 import asyncio
 import contextlib
 import json
+import re
 import shutil
 import tempfile
 from pathlib import Path
 from typing import Any
+
+# Mirrors the router-level check: harnesses interpolate function_name into
+# generated code, so anything beyond a plain identifier must never reach it.
+_FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*$")
 
 
 class JudgeResult:
@@ -68,6 +73,16 @@ async def execute_code(
             compile_output="Code size exceeds maximum limit of 64 KB",
         )
 
+    if not _FUNCTION_NAME_RE.match(function_name):
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                f"Invalid function name {function_name!r}: expected a plain identifier"
+            ),
+        )
+
     tmpdir = tempfile.mkdtemp(prefix="merit_judge_")
     try:
         tmp_path = Path(tmpdir)
@@ -78,6 +93,18 @@ async def execute_code(
 {code}
 
 const cases = {json.dumps(test_cases)};
+
+// Deterministic key order so comparison parity matches the Python judge's
+// json.dumps(..., sort_keys=True).
+const stableStringify = (value) => {{
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return '[' + value.map(stableStringify).join(',') + ']';
+  const entries = Object.keys(value)
+    .sort()
+    .map((k) => JSON.stringify(k) + ':' + stableStringify(value[k]));
+  return '{{' + entries.join(',') + '}}';
+}};
+
 const results = [];
 let totalRuntime = 0;
 
@@ -93,8 +120,8 @@ for (let i = 0; i < cases.length; i++) {{
     totalRuntime += runtime;
 
     // Strict comparison
-    const expectedStr = JSON.stringify(tc.expected);
-    const actualStr = JSON.stringify(out);
+    const expectedStr = stableStringify(tc.expected);
+    const actualStr = stableStringify(out);
     const passed = expectedStr === actualStr;
 
     results.push({{
