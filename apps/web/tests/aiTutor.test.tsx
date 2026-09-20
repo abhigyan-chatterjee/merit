@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { AiTutor } from "../src/components/AiTutor";
+import { catalogIdForBaseUrl } from "../src/hooks/useTutorKey";
 
 const TEST_KEY = "sk-test-sentinel-9f8e7d6c5b4a";
 const REPLY = "What information would a hash map let you remember?";
@@ -32,6 +33,11 @@ describe("AiTutor", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     window.localStorage.clear();
+  });
+
+  it("does not apply a preset catalog to custom providers", () => {
+    expect(catalogIdForBaseUrl("https://custom.example.test/v1")).toBeNull();
+    expect(catalogIdForBaseUrl("https://api.openai.com/v1")).toBe("openai");
   });
 
   it("shows an account setup prompt when no key is configured", () => {

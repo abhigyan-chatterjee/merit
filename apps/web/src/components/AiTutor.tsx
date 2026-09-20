@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Bot, ChevronDown, ChevronUp, ExternalLink, Send } from "lucide-react";
-import { loadTutorCatalog, useTutorKey } from "../hooks/useTutorKey";
+import { catalogIdForBaseUrl, loadTutorCatalog, useTutorKey } from "../hooks/useTutorKey";
 
 interface AiTutorProps {
   problemSlug: string;
@@ -46,8 +46,14 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
 
   useEffect(() => {
     if (!open) return;
+    const catalogId = catalogIdForBaseUrl(baseUrl);
+    if (!catalogId) {
+      setModels([]);
+      setStatus(apiKey.trim() ? "key-set" : "idle");
+      return;
+    }
     let cancelled = false;
-    void loadTutorCatalog(baseUrl.includes("googleapis") ? "google" : baseUrl.includes("groq") ? "groq" : "openai")
+    void loadTutorCatalog(catalogId)
       .then((list) => {
         if (!cancelled) {
           setModels(list);

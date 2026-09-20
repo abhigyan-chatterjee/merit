@@ -20,6 +20,10 @@ export const TUTOR_PRESETS: TutorPreset[] = [
   { id: "groq", label: "Groq", baseUrl: "https://api.groq.com/openai/v1", catalogId: "groq" },
 ];
 
+export function catalogIdForBaseUrl(baseUrl: string): string | null {
+  return TUTOR_PRESETS.find((preset) => preset.baseUrl === baseUrl)?.catalogId ?? null;
+}
+
 const LS_BASE_URL = "merit_tutor_base_url";
 const LS_API_KEY = "merit_tutor_api_key";
 const LS_MODEL = "merit_tutor_model";
