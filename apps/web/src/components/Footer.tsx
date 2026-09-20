@@ -28,13 +28,20 @@ const COLUMNS: { title: string; links: { to: string; label: string }[] }[] = [
       { to: '/quiz/graphs', label: 'Graphs quiz' },
       { to: '/dashboard', label: 'Progress dashboard' }
     ]
+  },
+  {
+    title: 'Legal',
+    links: [
+      { to: '/privacy', label: 'Privacy policy' },
+      { to: '/terms', label: 'Terms of service' }
+    ]
   }
 ];
 
 export const Footer: React.FC = () => {
   return (
     <footer className="mt-20 border-t border-line bg-surface/40 pb-20 md:pb-0">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-6 gap-8">
         {/* Brand */}
         <div className="col-span-2 space-y-3">
           <Link to="/" className="flex items-center gap-2.5">

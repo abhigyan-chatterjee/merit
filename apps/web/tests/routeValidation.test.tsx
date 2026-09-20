@@ -104,6 +104,14 @@ describe('Route Validation & 404 Handling (D5)', () => {
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
+  it('renders the privacy policy and terms pages', async () => {
+    renderWithRouter('/privacy');
+    expect(await screen.findByRole('heading', { name: 'Privacy Policy' })).toBeInTheDocument();
+
+    renderWithRouter('/terms');
+    expect(await screen.findByRole('heading', { name: 'Terms of Service' })).toBeInTheDocument();
+  });
+
   it('renders real problem when topic and slug match', async () => {
     renderWithRouter('/problems/arrays-hashing/two-sum');
     await waitFor(() => {

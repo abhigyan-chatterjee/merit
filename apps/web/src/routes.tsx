@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
 
 import { LandingPage } from './pages/LandingPage';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
 import { NotFound } from './components/NotFound';
 
 // Code splitting / lazy-loaded routes for performance & modular chunking
@@ -61,6 +63,8 @@ export const AppRoutes: React.FC = () => {
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin" element={<AdminPage />} />
