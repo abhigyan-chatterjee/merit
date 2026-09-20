@@ -30,6 +30,31 @@ import { Reveal } from '../components/ui/Reveal';
 import { PROBLEMS } from '../data/problems';
 import { TOPICS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
+import { usePathProgress } from './GuidedPathsPage';
+
+const DashboardPathCard: React.FC<{ path: (typeof LEARNING_PATHS)[number] }> = ({ path }) => {
+  const { done, total, pct } = usePathProgress(path.id);
+
+  return (
+    <Link
+      to={`/learn/${path.id}`}
+      className="group flex items-center justify-between gap-3 p-4 rounded-xl border border-line bg-surface hover:border-mint/50 transition-colors cursor-pointer"
+    >
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <Route className="w-3.5 h-3.5 text-mint shrink-0" />
+          <span className="text-xs font-semibold text-ink truncate group-hover:text-mint transition-colors">
+            {path.title}
+          </span>
+        </div>
+        <div className="text-[10px] font-mono text-muted mt-0.5">
+          {path.steps.length} steps · {done}/{total} complete · {pct}%
+        </div>
+      </div>
+      <ArrowRight className="w-4 h-4 text-muted group-hover:text-mint group-hover:translate-x-0.5 transition-all shrink-0" />
+    </Link>
+  );
+};
 
 export const DashboardPage: React.FC = () => {
   const { state, currentStreak, resetAllData } = useProgress();
@@ -338,25 +363,8 @@ export const DashboardPage: React.FC = () => {
       <div className="space-y-5">
         <SectionLabel index="01" title="Guided paths" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {LEARNING_PATHS.map((p) => (
-            <Link
-              key={p.id}
-              to={`/learn/${p.id}`}
-              className="group flex items-center justify-between gap-3 p-4 rounded-xl border border-line bg-surface hover:border-mint/50 transition-colors cursor-pointer"
-            >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <Route className="w-3.5 h-3.5 text-mint shrink-0" />
-                  <span className="text-xs font-semibold text-ink truncate group-hover:text-mint transition-colors">
-                    {p.title}
-                  </span>
-                </div>
-                <div className="text-[10px] font-mono text-muted mt-0.5">
-                  {p.steps.length} steps
-                </div>
-              </div>
-              <ArrowRight className="w-4 h-4 text-muted group-hover:text-mint group-hover:translate-x-0.5 transition-all shrink-0" />
-            </Link>
+          {LEARNING_PATHS.map((path) => (
+            <DashboardPathCard key={path.id} path={path} />
           ))}
         </div>
       </div>

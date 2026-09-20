@@ -5,6 +5,7 @@ import { DashboardPage } from '../src/pages/DashboardPage';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { PROBLEMS } from '../src/data/problems';
 import { TOPICS } from '../src/data/curriculum';
+import { LEARNING_PATHS } from '../src/data/learningPaths';
 
 describe('DashboardPage Honest Initial State (D7)', () => {
   beforeEach(() => {
@@ -36,5 +37,36 @@ describe('DashboardPage Honest Initial State (D7)', () => {
     // Lean KPI strip: quizzes-taken counter replaces the saved-notes counter
     expect(screen.getByText('Quizzes taken')).toBeInTheDocument();
     expect(screen.queryByText('Saved notes')).not.toBeInTheDocument();
+  });
+
+  it('shows path completion counts and percentages', () => {
+    window.localStorage.setItem(
+      'merit_store_v1',
+      JSON.stringify({
+        progress: { 'two-sum': 'Done', 'contains-duplicate': 'Done' },
+        quizzes: { 'arrays-hashing': 80 },
+        streak: [],
+        notes: {},
+        bookmarks: [],
+        dailyGoalDone: {},
+        dailyGoal: null,
+        dailyGoalProgress: {},
+        visitedVisualizers: ['array'],
+        lastVisited: null,
+      })
+    );
+
+    render(
+      <ProgressProvider>
+        <MemoryRouter>
+          <DashboardPage />
+        </MemoryRouter>
+      </ProgressProvider>
+    );
+
+    const foundation = screen.getByText('Foundation').closest('a');
+    expect(foundation).toHaveTextContent(
+      `${LEARNING_PATHS[0].steps.length} steps · 4/21 complete · 19%`
+    );
   });
 });

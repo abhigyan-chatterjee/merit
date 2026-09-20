@@ -31,7 +31,7 @@ from app.schemas.progress import (
     VisualizerVisitResponse,
 )
 from app.security import get_current_user
-from app.services.streak import compute_streak, record_activity
+from app.services.streak import compute_streak, get_current_date_str, record_activity
 
 router = APIRouter(prefix="/api/v1/progress", tags=["Progress"])
 
@@ -168,6 +168,7 @@ def toggle_bookmark(
 @router.post("/visualizers/{visualizer_id}/visit", response_model=VisualizerVisitResponse)
 def visit_visualizer(
     visualizer_id: str,
+    local_date: str | None = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -187,7 +188,7 @@ def visit_visualizer(
         )
         db.add(row)
 
-    record_activity(db, user.id)
+    record_activity(db, user.id, local_date)
     db.commit()
     db.refresh(row)
     return row
@@ -195,6 +196,7 @@ def visit_visualizer(
 
 @router.get("/summary", response_model=ProgressSummaryResponse)
 def get_progress_summary(
+    local_date: str | None = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -217,7 +219,7 @@ def get_progress_summary(
     # Fetch activity days
     act_rows = db.scalars(select(ActivityDay).where(ActivityDay.user_id == user.id)).all()
     act_map = {a.day: a.action_count for a in act_rows}
-    streak = compute_streak(list(act_map.keys()))
+    streak = compute_streak(list(act_map.keys()), local_date or get_current_date_str())
 
     # Fetch visited visualizers
     vis_rows = db.scalars(

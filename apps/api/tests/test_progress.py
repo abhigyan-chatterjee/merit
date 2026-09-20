@@ -96,14 +96,25 @@ def test_notes_and_bookmarks(client: TestClient):
 
 def test_visualizer_visit_tracking(client: TestClient):
     register_user(client, "student3@merit.org")
+    local_date = (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d")
 
-    res = client.post("/api/v1/progress/visualizers/sorting/visit")
+    res = client.post(
+        f"/api/v1/progress/visualizers/sorting/visit?local_date={local_date}"
+    )
     assert res.status_code == 200
     assert res.json()["visits"] == 1
 
-    res = client.post("/api/v1/progress/visualizers/sorting/visit")
+    res = client.post(
+        f"/api/v1/progress/visualizers/sorting/visit?local_date={local_date}"
+    )
     assert res.status_code == 200
     assert res.json()["visits"] == 2
+
+    summary = client.get(
+        f"/api/v1/progress/summary?local_date={local_date}"
+    ).json()
+    assert summary["activity_days"] == {local_date: 2}
+    assert summary["current_streak"] == 1
 
 
 def test_import_local_max_wins(client: TestClient):
