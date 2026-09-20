@@ -78,4 +78,4 @@ is `merit.nullbit.in`; the API is Neon-Postgres-ready (any `postgresql://`
   email; password login untouched; works keyless in dev (returns 501 until
   configured).
 - **Neon-ready**: SQLite for local dev, Postgres for prod, migrations
-  current (`b7c1d9e4a2f5`).
+  current (`c4f1a2b3d4e5`).

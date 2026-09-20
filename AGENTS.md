@@ -41,7 +41,7 @@ apps/api/app/models/               # user, content, progress, quiz, submission
 apps/api/app/routers/              # auth, content, judge, progress, quizzes, admin, tutor
 apps/api/app/schemas/              # request/response schemas (incl. auth, tutor)
 apps/api/app/services/             # judge, sampler, streak, session_cleanup, clerk_oauth
-apps/api/alembic/                  # migrations (head: b7c1d9e4a2f5 Clerk OAuth)
+apps/api/alembic/                  # migrations (head: c4f1a2b3d4e5 Clerk OAuth)
 apps/api/tests/                    # pytest suite (test_auth[z], content, judge, quizzes,
                                    # progress, admin, tutor, session_cleanup, config, pg_compat)
 apps/web/src/components/           # QuizEngine, CodeRunner, AiTutor, ClerkOAuth, visualizers…
