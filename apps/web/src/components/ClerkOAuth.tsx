@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, useAuth as useClerkAuth } from "@clerk/clerk-react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, RefreshCw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
@@ -38,9 +39,15 @@ const ClerkBridge: React.FC<BridgeProps> = ({ mode, onSuccess, onError }) => {
   }, [isSignedIn, exchanged, getToken, loginWithClerk, onSuccess, onError]);
 
   return mode === "signin" ? (
-    <SignIn appearance={{ elements: { footerAction: "hidden" } }} />
+    <SignIn
+      appearance={{ elements: { footerAction: "hidden" } }}
+      afterSignInUrl="/sso-callback"
+    />
   ) : (
-    <SignUp appearance={{ elements: { footerAction: "hidden" } }} />
+    <SignUp
+      appearance={{ elements: { footerAction: "hidden" } }}
+      afterSignUpUrl="/sso-callback"
+    />
   );
 };
 
@@ -86,5 +93,77 @@ const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, onSuccess }) 
         </ClerkProvider>
       </div>
     </div>
+  );
+};
+
+const ClerkSsoCallbackInner: React.FC = () => {
+  const { isLoaded, isSignedIn, getToken } = useClerkAuth();
+  const { loginWithClerk } = useAuth();
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [attempted, setAttempted] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded || attempted) return;
+    if (!isSignedIn) {
+      setError("No active Clerk session was found. Please sign in again.");
+      return;
+    }
+
+    setAttempted(true);
+    (async () => {
+      const token = await getToken(JWT_TEMPLATE ? { template: JWT_TEMPLATE } : undefined);
+      if (!token) {
+        throw new Error("Could not retrieve a Clerk session token.");
+      }
+      await loginWithClerk(token);
+      navigate("/dashboard", { replace: true });
+    })().catch((err: unknown) => {
+      setError(err instanceof Error ? err.message : "Social sign-in failed. Please try again.");
+    });
+  }, [attempted, getToken, isLoaded, isSignedIn, loginWithClerk, navigate]);
+
+  if (error) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center px-4">
+        <div className="w-full max-w-md space-y-4 text-center">
+          <div
+            role="alert"
+            className="flex items-start gap-2.5 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose text-xs text-left"
+          >
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span className="font-mono">{error}</span>
+          </div>
+          <Link to="/login" className="text-mint hover:underline font-mono text-xs">
+            Back to login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-center">
+      <RefreshCw className="w-6 h-6 text-mint animate-spin" />
+      <span className="text-xs font-mono text-muted">Signing you in…</span>
+    </div>
+  );
+};
+
+export const ClerkSsoCallback: React.FC = () => {
+  if (!isClerkConfigured()) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Link to="/login" className="text-mint hover:underline font-mono text-xs">
+          Back to login
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY as string}>
+      <ClerkSsoCallbackInner />
+    </ClerkProvider>
   );
 };

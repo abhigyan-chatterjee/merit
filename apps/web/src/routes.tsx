@@ -6,6 +6,7 @@ import { LandingPage } from './pages/LandingPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
 import { NotFound } from './components/NotFound';
+import { ClerkSsoCallback } from './components/ClerkOAuth';
 
 // Code splitting / lazy-loaded routes for performance & modular chunking
 const DashboardPage = lazy(() =>
@@ -67,6 +68,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/sso-callback" element={<ClerkSsoCallback />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
