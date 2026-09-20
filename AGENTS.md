@@ -14,7 +14,7 @@ Read this file fully before touching code. Rules only — no history lessons.
 |---|---|---|
 | Web | `apps/web/` | Vite + React 19 + TypeScript + Tailwind CSS 4, Clerk `<SignIn/>`/`<SignUp/>` (only when `VITE_CLERK_PUBLISHABLE_KEY` is set), BYOK AI tutor panel (`AiTutor.tsx`) |
 | API | `apps/api/` | FastAPI + SQLAlchemy 2.0 + Alembic; SQLite dev (`apps/api/merit.db`), Neon Postgres prod (`postgresql://` passes through untouched in `app/config.py`); Argon2id + JWT in `httpOnly` cookies; Clerk link/verify in `app/services/clerk_oauth.py` |
-| Content | `content/` | 120 verified problems + 539 question items; QAF question generators, PAF problem framework, catalog classifier |
+| Content | `content/` | 140 verified problems + 539 question items; QAF question generators, PAF problem framework, catalog classifier |
 | Judge | `apps/api/app/services/judge.py` | Subprocess-isolated sandbox, **Python and JavaScript only** |
 
 ---
@@ -41,15 +41,15 @@ apps/api/app/models/               # user, content, progress, quiz, submission
 apps/api/app/routers/              # auth, content, judge, progress, quizzes, admin, tutor
 apps/api/app/schemas/              # request/response schemas (incl. auth, tutor)
 apps/api/app/services/             # judge, sampler, streak, session_cleanup, clerk_oauth
-apps/api/alembic/                  # migrations (head: c4f1a2b3d4e5 Clerk OAuth)
+apps/api/alembic/                  # migrations (head: b7c1d9e4a2f5 Clerk OAuth)
 apps/api/tests/                    # pytest suite (test_auth[z], content, judge, quizzes,
                                    # progress, admin, tutor, session_cleanup, config, pg_compat)
 apps/web/src/components/           # QuizEngine, CodeRunner, AiTutor, ClerkOAuth, visualizers…
-apps/web/src/pages/                # Landing, Dashboard, Problems, Quiz, Exams, Paths, Admin
+apps/web/src/pages/                # Landing, Dashboard, Problems, Quiz, Exams, Paths, Admin, Privacy, Terms
 apps/web/src/data/                 # curriculum, quizzes, problems bundle, paths
 apps/web/src/store/                # AuthContext, ProgressContext
-apps/web/tests/                    # Vitest suite (17 files)
-content/problems/                  # 120 verified + 200 scrap-*.json drafts (quarantined)
+apps/web/tests/                    # Vitest suite (19 files)
+content/problems/                  # 140 verified + 200 scrap-*.json drafts (quarantined)
 content/questions/                 # 539 items across ~20 topic dirs (341 verified active)
 content/paths/                     # foundation.json, targeted.json, mastery.json
 content/catalog/catalog.json       # canonical deduplicated catalog
@@ -71,13 +71,13 @@ Owner-only, untracked, never commit content from: `design ideas/` (owner screens
 ## 4. Canonical gates — exact commands, expected counts
 
 ```bash
-# API: 67 passed
+# API: 81 passed
 cd apps/api && .venv/bin/python -m pytest -q --no-header
 
-# Web: 85 passed (17 files)
+# Web: 102 passed (19 files)
 cd apps/web && npx vitest run
 
-# Content: 120 problems 100% AC (200 drafts skipped) + 539 questions
+# Content: 140 problems 100% AC (200 drafts skipped) + 539 questions
 # (341 verified) + 136 distinct designs (>= 130) + path refs resolve
 python3 content/validators/run_all.py
 ```

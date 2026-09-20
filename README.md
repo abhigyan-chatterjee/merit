@@ -1,7 +1,7 @@
 # Merit — Make the merit list
 
 Merit is a placement-grade DSA practice platform for Indian campus
-recruitment: 12 interactive algorithm visualizers, 120 verified coding
+recruitment: 12 interactive algorithm visualizers, 140 verified coding
 problems with a sandboxed judge (Python + JavaScript), adaptive quizzes and
 timed mock exams, 3 guided learning paths, and spaced revision with
 weak-area tracking. Multi-user accounts with Argon2id + JWT cookies;
@@ -35,20 +35,21 @@ npm run dev
 Verify everything is green (run from repo root):
 
 ```bash
-cd apps/api && .venv/bin/python -m pytest -q --no-header   # 67 passed
-cd ../web && npx vitest run                                # 85 passed, 17 files
-cd ../.. && python3 content/validators/run_all.py          # 120 problems 100% AC, 539 questions, 136 designs
+cd apps/api && .venv/bin/python -m pytest -q --no-header   # 81 passed
+cd ../web && npx vitest run                                # 102 passed, 19 files
+cd ../.. && python3 content/validators/run_all.py          # 140 problems 100% AC, 539 questions, 136 designs
 ```
 
 ## Where things live
 
 - `apps/web/` — React 19 + Vite + TypeScript + Tailwind 4 frontend.
   Visualizers, `CodeRunner`, `QuizEngine`, BYOK AI tutor panel, Clerk
-  sign-in components (active only when `VITE_CLERK_PUBLISHABLE_KEY` is set).
+  sign-in components (active only when `VITE_CLERK_PUBLISHABLE_KEY` is set),
+  privacy/terms pages, exam sidebar navigator.
 - `apps/api/` — FastAPI + SQLAlchemy 2.0 backend. Routers for auth,
   content, judge, progress, quizzes, admin, tutor; SQLite locally
   (`apps/api/merit.db`), Postgres in prod. Alembic migrations + seeder.
-- `content/` — the source of truth: 120 verified problems (+ 200
+- `content/` — the source of truth: 140 verified problems (+ 200
   quarantined `scrap-*.json` drafts that are never served), 539 question
   items, `foundation` / `targeted` / `mastery` learning paths, the
   deduplicated catalog, and the QAF/PAF authoring frameworks with the
@@ -67,7 +68,7 @@ is `merit.nullbit.in`; the API is Neon-Postgres-ready (any `postgresql://`
 
 ## Current state
 
-- **120 verified coding problems**, every reference solution executed to
+- **140 verified coding problems**, every reference solution executed to
   100% AC through the real judge; 200 scrap drafts quarantined on disk.
 - **539-question bank** (341 verified active) with balanced options and
   136 distinct designs; quizzes sampled server-side with no-repeat windows.
@@ -77,4 +78,4 @@ is `merit.nullbit.in`; the API is Neon-Postgres-ready (any `postgresql://`
   email; password login untouched; works keyless in dev (returns 501 until
   configured).
 - **Neon-ready**: SQLite for local dev, Postgres for prod, migrations
-  current (`c4f1a2b3d4e5`).
+  current (`b7c1d9e4a2f5`).
