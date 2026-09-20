@@ -115,6 +115,8 @@ def generate_coverage_report(questions_dir: Path, target_designs: int = 130) -> 
         print("-" * len(rep_header))
         for gk, top, cnt in over_repeated:
             print(f"{gk:<36} | {top:<20} | {cnt:<10} | {f'+{cnt - 4}':<10}")
+        print("\nFAILED: Generator keys exceed the hard cap of 4 verified instances.")
+        return 1
     else:
         print("None: all generator keys are within the cap of 4 instances.")
     print("=" * 90)

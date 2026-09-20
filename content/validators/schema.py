@@ -145,7 +145,7 @@ class PathStepSchema(BaseModel):
     step_type: Literal["visualizer", "problem", "quiz", "mock"]
     ref_id: str = Field(..., min_length=1)
     title: str | None = None
-    summary: str | None = Field(default=None, min_length=10)
+    summary: str | None = Field(default=None, min_length=10, max_length=160)
     reading_links: list[str] = Field(default_factory=list)
 
 
@@ -164,4 +164,7 @@ class LearningPathSchema(BaseModel):
         ordinals = [s.ordinal for s in self.steps]
         if sorted(ordinals) != list(range(1, len(ordinals) + 1)):
             raise ValueError(f"Step ordinals must be 1..N contiguous. Got: {ordinals}")
+        missing_summaries = [s.ordinal for s in self.steps if not s.summary]
+        if missing_summaries:
+            raise ValueError(f"Every path step must have a summary. Missing ordinals: {missing_summaries}")
         return self

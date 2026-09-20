@@ -110,6 +110,14 @@ VISUALIZERS_CATALOG = [
 ]
 
 
+def _is_submitted_mock(attempt: QuizAttempt) -> bool:
+    try:
+        spec = json.loads(attempt.topic_spec) if attempt.topic_spec else {}
+    except (TypeError, json.JSONDecodeError):
+        return False
+    return bool(spec.get("is_mock")) and bool(attempt.answers)
+
+
 @router.get("/visualizers")
 def list_visualizers() -> list[dict[str, Any]]:
     return VISUALIZERS_CATALOG
@@ -329,19 +337,20 @@ def list_paths(
         user_visualizer_done = set(vis_rows)
 
         quiz_attempts = db.scalars(
-            select(QuizAttempt).where(
-                QuizAttempt.user_id == current_user.id,
-                QuizAttempt.score_pct >= 70,
-            )
+            select(QuizAttempt)
+            .options(selectinload(QuizAttempt.answers))
+            .where(QuizAttempt.user_id == current_user.id)
         ).all()
+        mock_completed = any(_is_submitted_mock(qa) for qa in quiz_attempts)
         for qa in quiz_attempts:
-            try:
-                spec = json.loads(qa.topic_spec)
-                topics = spec.get("topics", [])
-                for t in topics:
-                    user_quiz_passed.add(t)
-            except Exception:
-                pass
+            if qa.score_pct >= 70:
+                try:
+                    spec = json.loads(qa.topic_spec)
+                    topics = spec.get("topics", [])
+                    for t in topics:
+                        user_quiz_passed.add(t)
+                except (TypeError, json.JSONDecodeError):
+                    continue
 
         step_progress_rows = db.scalars(
             select(PathStepProgress.step_id).where(
@@ -366,7 +375,7 @@ def list_paths(
                 elif s.step_type == "quiz":
                     is_comp = s.ref_id in user_quiz_passed
                 elif s.step_type == "mock":
-                    is_comp = s.id in user_explicit_steps or len(user_quiz_passed) > 0
+                    is_comp = s.id in user_explicit_steps or mock_completed
             if is_comp:
                 completed += 1
 
@@ -424,7 +433,6 @@ def get_path(
     user_visualizer_done: set[str] = set()
     user_quiz_passed: set[str] = set()
     user_explicit_steps: set[int] = set()
-    total_quiz_attempts = 0
 
     if current_user:
         problem_rows = db.scalars(
@@ -443,11 +451,11 @@ def get_path(
         user_visualizer_done = set(vis_rows)
 
         quiz_attempts = db.scalars(
-            select(QuizAttempt).where(
-                QuizAttempt.user_id == current_user.id,
-            )
+            select(QuizAttempt)
+            .options(selectinload(QuizAttempt.answers))
+            .where(QuizAttempt.user_id == current_user.id)
         ).all()
-        total_quiz_attempts = len(quiz_attempts)
+        mock_completed = any(_is_submitted_mock(qa) for qa in quiz_attempts)
         for qa in quiz_attempts:
             if qa.score_pct >= 70:
                 try:
@@ -482,7 +490,7 @@ def get_path(
             elif s.step_type == "quiz":
                 is_completed = s.ref_id in user_quiz_passed
             elif s.step_type == "mock":
-                is_completed = s.id in user_explicit_steps or total_quiz_attempts > 0
+                is_completed = s.id in user_explicit_steps or mock_completed
 
         if is_completed:
             completed_count += 1

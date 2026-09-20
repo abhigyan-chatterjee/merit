@@ -44,6 +44,16 @@ export function resolveStep(step: PathStep): ResolvedStep {
   }
 
   // quiz
+  if (step.type === 'mock') {
+    return {
+      step,
+      title: step.title ?? 'Mock assessment',
+      subtitle: 'Timed mixed assessment',
+      link: `/quiz/${step.id}?mock=true`,
+      ...guides,
+    };
+  }
+
   const quizTopic = QUIZ_TOPICS.find((t) => t.id === step.id);
   return {
     step,

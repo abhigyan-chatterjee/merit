@@ -9,6 +9,7 @@ import {
   Layers,
   Code2,
   BrainCircuit,
+  ClipboardCheck,
   Check,
   ArrowRight,
 } from 'lucide-react';
@@ -29,16 +30,19 @@ const STEP_ICONS: Record<PathStep['type'], React.ComponentType<any>> = {
   visualizer: Layers,
   problem: Code2,
   quiz: BrainCircuit,
+  mock: ClipboardCheck,
 };
 const STEP_TONE: Record<PathStep['type'], string> = {
   visualizer: 'text-mint',
   problem: 'text-violet',
   quiz: 'text-amber',
+  mock: 'text-amber',
 };
 const STEP_LABEL: Record<PathStep['type'], string> = {
   visualizer: 'Workbench',
   problem: 'Problem',
   quiz: 'Quiz',
+  mock: 'Mock',
 };
 
 interface ServerPathData {
@@ -118,7 +122,7 @@ export const GuidedPathDetailPage: React.FC = () => {
 
   if (serverPath && serverPath.steps.length > 0) {
     steps = serverPath.steps.map((s) => ({
-      type: (s.step_type === 'mock' ? 'quiz' : s.step_type) as PathStep['type'],
+      type: s.step_type as PathStep['type'],
       id: s.ref_id,
       title: s.title || undefined,
       summary: s.summary || undefined,
@@ -127,10 +131,10 @@ export const GuidedPathDetailPage: React.FC = () => {
 
     stepStatus = serverPath.steps.map((s) => {
       let done = s.completed;
-      const stepType = s.step_type === 'mock' ? 'quiz' : s.step_type;
+      const stepType = s.step_type;
       if (stepType === 'problem') {
         done = done || state.progress[s.ref_id] === 'Done';
-      } else if (stepType === 'quiz') {
+      } else if (stepType === 'quiz' || stepType === 'mock') {
         done = done || (state.quizzes[s.ref_id] ?? 0) >= 70;
       } else if (stepType === 'visualizer') {
         done = done || (state.visitedVisualizers?.includes(s.ref_id) ?? false);
@@ -148,7 +152,7 @@ export const GuidedPathDetailPage: React.FC = () => {
       let done = false;
       if (step.type === 'problem') {
         done = state.progress[step.id] === 'Done';
-      } else if (step.type === 'quiz') {
+      } else if (step.type === 'quiz' || step.type === 'mock') {
         done = (state.quizzes[step.id] ?? 0) >= 70;
       } else if (step.type === 'visualizer') {
         done = state.visitedVisualizers?.includes(step.id) ?? false;

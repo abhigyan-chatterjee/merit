@@ -6,6 +6,7 @@ import { ProgressProvider } from '../src/store/ProgressContext';
 import { GuidedPathsPage, usePathProgress } from '../src/pages/GuidedPathsPage';
 import { renderHookForTest } from './testUtils';
 import { PROBLEMS } from '../src/data/problems';
+import { resolveStep } from '../src/utils/stepLink';
 import foundationPath from '../../../content/paths/foundation.json';
 import targetedPath from '../../../content/paths/targeted.json';
 import masteryPath from '../../../content/paths/mastery.json';
@@ -87,6 +88,16 @@ describe('Path progress consistency (/learn cards)', () => {
 });
 
 describe('Path step resolution', () => {
+  test('mock steps preserve mock routing and labeling', () => {
+    const resolved = resolveStep({
+      type: 'mock',
+      id: 'mixed',
+      title: 'Targeted placement mock',
+    });
+    expect(resolved.link).toBe('/quiz/mixed?mock=true');
+    expect(resolved.title).toBe('Targeted placement mock');
+  });
+
   test('every problem step resolves to a verified problem', () => {
     const knownSlugs = new Set(PROBLEMS.map((p) => p.slug));
     const pathJsons = [foundationPath, targetedPath, masteryPath];

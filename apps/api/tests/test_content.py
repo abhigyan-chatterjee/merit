@@ -180,3 +180,40 @@ def test_list_and_get_learning_paths():
     assert ordinals == sorted(ordinals)
     # Foundation steps carry summaries (not visualization alone)
     assert any(s.get("summary") for s in foundation["steps"])
+
+
+def test_mock_path_step_requires_submitted_mock_and_is_consistent(client: TestClient):
+    registered = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "mock-path@merit.org",
+            "display_name": "Mock Path",
+            "password": "StrongPassword123!",
+        },
+    )
+    assert registered.status_code == 201
+
+    before_detail = client.get("/api/v1/paths/targeted").json()
+    mock_step = next(step for step in before_detail["steps"] if step["step_type"] == "mock")
+    assert mock_step["completed"] is False
+    before_list = client.get("/api/v1/paths").json()
+    targeted = next(path for path in before_list if path["slug"] == "targeted")
+    assert targeted["completed_steps"] == before_detail["completed_steps"]
+
+    generated = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["arrays-hashing"], "count": 1, "is_mock": True, "duration_sec": 600},
+    )
+    assert generated.status_code == 200
+    attempt_id = generated.json()["attempt_id"]
+    submitted = client.post(
+        f"/api/v1/quizzes/attempts/{attempt_id}",
+        json={"duration_sec": 1, "selected": {}},
+    )
+    assert submitted.status_code == 200
+
+    after_detail = client.get("/api/v1/paths/targeted").json()
+    assert next(step for step in after_detail["steps"] if step["step_type"] == "mock")["completed"]
+    after_list = client.get("/api/v1/paths").json()
+    targeted = next(path for path in after_list if path["slug"] == "targeted")
+    assert targeted["completed_steps"] == after_detail["completed_steps"]

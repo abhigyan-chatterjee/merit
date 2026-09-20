@@ -31,7 +31,7 @@ export const QuizPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
       {/* Guided Path Lesson Navigation */}
-      <LessonNav currentType="quiz" currentId={currentTopic.id} />
+      <LessonNav currentType={isMock ? 'mock' : 'quiz'} currentId={currentTopic.id} />
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">

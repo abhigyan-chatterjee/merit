@@ -25,7 +25,7 @@ from content.validators.schema import LearningPathSchema  # noqa: E402
 PATHS_DIR = REPO_ROOT / "content" / "paths"
 OUTPUT_TS = REPO_ROOT / "apps" / "web" / "src" / "data" / "learningPaths.ts"
 
-HEADER = """export type StepType = 'visualizer' | 'problem' | 'quiz';
+HEADER = """export type StepType = 'visualizer' | 'problem' | 'quiz' | 'mock';
 
 export interface PathStep {
   type: StepType;
@@ -65,7 +65,12 @@ def ts_string(value: str) -> str:
 
 
 def render_step(step: dict) -> str:
-    type_map = {"visualizer": "'visualizer'", "problem": "'problem'", "quiz": "'quiz'", "mock": "'quiz'"}
+    type_map = {
+        "visualizer": "'visualizer'",
+        "problem": "'problem'",
+        "quiz": "'quiz'",
+        "mock": "'mock'",
+    }
     parts = [
         f"type: {type_map.get(step['step_type'], repr(step['step_type']))}",
         f"id: {ts_string(step['ref_id'])}",

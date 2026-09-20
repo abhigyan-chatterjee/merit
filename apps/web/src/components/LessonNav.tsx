@@ -8,6 +8,7 @@ import {
   Layers,
   Code2,
   BrainCircuit,
+  ClipboardCheck,
 } from 'lucide-react';
 import { LEARNING_PATHS } from '../data/learningPaths';
 import { resolveStep } from '../utils/stepLink';
@@ -16,7 +17,7 @@ import { useAuth } from '../store/AuthContext';
 import { progressApi } from '../utils/api';
 
 interface LessonNavProps {
-  currentType: 'visualizer' | 'problem' | 'quiz';
+  currentType: 'visualizer' | 'problem' | 'quiz' | 'mock';
   currentId: string;
 }
 
@@ -24,6 +25,7 @@ const STEP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   visualizer: Layers,
   problem: Code2,
   quiz: BrainCircuit,
+  mock: ClipboardCheck,
 };
 
 export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) => {

@@ -19,7 +19,7 @@ function isStepDone(
 ): boolean {
   if (step.type === 'problem') {
     return state.progress[step.id] === 'Done';
-  } else if (step.type === 'quiz') {
+  } else if (step.type === 'quiz' || step.type === 'mock') {
     return (state.quizzes[step.id] ?? 0) >= 70;
   } else if (step.type === 'visualizer') {
     return state.visitedVisualizers?.includes(step.id) ?? false;

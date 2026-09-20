@@ -7,6 +7,8 @@ import re
 import sys
 from pathlib import Path
 
+from pydantic import ValidationError
+
 # Ensure repo root and apps/api are in sys.path
 _repo_root = Path(__file__).resolve().parent.parent.parent
 if str(_repo_root) not in sys.path:
@@ -15,6 +17,7 @@ if str(_repo_root / "apps" / "api") not in sys.path:
     sys.path.insert(0, str(_repo_root / "apps" / "api"))
 
 from content.validators.coverage_report import generate_coverage_report
+from content.validators.schema import LearningPathSchema
 from content.validators.verify_problems import verify_all_problems
 from content.validators.verify_questions import verify_all_questions
 
@@ -65,6 +68,11 @@ def verify_path_refs(paths_dir: Path, problems_dir: Path, repo_root: Path) -> in
         with open(path_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         if not data.get("is_published"):
+            continue
+        try:
+            LearningPathSchema(**data)
+        except ValidationError as exc:
+            errors.append(f"{path_file.stem}: path schema validation failed: {exc}")
             continue
         for step in data["steps"]:
             rt = step["step_type"]
