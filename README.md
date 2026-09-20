@@ -35,8 +35,8 @@ npm run dev
 Verify everything is green (run from repo root):
 
 ```bash
-cd apps/api && .venv/bin/python -m pytest -q --no-header   # 81 passed
-cd ../web && npx vitest run                                # 102 passed, 19 files
+cd apps/api && .venv/bin/python -m pytest -q --no-header   # 114 passed
+cd ../web && npx vitest run                                # 130 passed, 20 files
 cd ../.. && python3 content/validators/run_all.py          # 140 problems 100% AC, 539 questions, 136 designs
 ```
 

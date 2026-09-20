@@ -71,10 +71,10 @@ Owner-only, untracked, never commit content from: `design ideas/` (owner screens
 ## 4. Canonical gates — exact commands, expected counts
 
 ```bash
-# API: 81 passed
+# API: 114 passed
 cd apps/api && .venv/bin/python -m pytest -q --no-header
 
-# Web: 102 passed (19 files)
+# Web: 130 passed (20 files)
 cd apps/web && npx vitest run
 
 # Content: 140 problems 100% AC (200 drafts skipped) + 539 questions
