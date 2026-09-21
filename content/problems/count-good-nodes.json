@@ -742,7 +742,7 @@
       "isReference": true
     }
   ],
-  "sequence": 6,
+  "sequence": 13,
   "prevSlug": "construct-from-preorder-inorder",
-  "nextSlug": "flatten-binary-tree-preorder"
+  "nextSlug": "binary-tree-right-side-view"
 }

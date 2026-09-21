@@ -67,9 +67,9 @@
       "label": "\"listen\", \"silent\""
     }
   ],
-  "sequence": 3,
-  "prevSlug": "contains-duplicate",
-  "nextSlug": "product-of-array-except-self",
+  "sequence": 10,
+  "prevSlug": "two-sum-ii-sorted",
+  "nextSlug": "group-anagrams",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ]

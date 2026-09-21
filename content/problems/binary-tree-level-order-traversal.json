@@ -1377,7 +1377,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "balanced-binary-tree",
-  "nextSlug": "binary-tree-right-side-view"
+  "sequence": 9,
+  "prevSlug": "kth-smallest-element-in-a-bst",
+  "nextSlug": "lowest-common-ancestor-of-a-binary-tree"
 }

@@ -82,9 +82,9 @@
       "label": "[]"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "middle-of-the-linked-list",
+  "sequence": 5,
+  "prevSlug": "remove-linked-list-elements",
+  "nextSlug": "add-two-numbers",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
   ]

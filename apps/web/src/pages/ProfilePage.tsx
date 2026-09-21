@@ -172,29 +172,6 @@ export const ProfilePage: React.FC = () => {
 
       {tab === 'profile' && (
         <div className="space-y-5">
-          {isClerkConfigured() && CLERK_PUBLISHABLE_KEY && (
-            <section aria-label="Clerk account management" className="p-5 rounded-xl border border-line bg-surface space-y-3">
-              <h2 className="text-sm font-bold text-ink">Account security</h2>
-              <p className="text-xs text-muted">Manage emails, linked accounts (Google/GitHub/Microsoft), and security below.</p>
-              <ClerkProvider
-                publishableKey={CLERK_PUBLISHABLE_KEY}
-                appearance={{
-                  variables: {
-                    colorBackground: '#12181f',
-                    colorInputBackground: '#0d1117',
-                    colorText: '#e6edf3',
-                    colorTextSecondary: '#8b949e',
-                    colorPrimary: '#3fb950',
-                    colorInputText: '#e6edf3',
-                    borderRadius: '0.75rem',
-                  },
-                }}
-              >
-                <UserProfile routing="hash" />
-              </ClerkProvider>
-            </section>
-          )}
-
           <section className="p-5 rounded-xl border border-line bg-surface space-y-3">
             <h2 className="text-sm font-bold text-ink flex items-center gap-2">
               <UserIcon className="w-4 h-4 text-mint" /> Display name
@@ -226,6 +203,37 @@ export const ProfilePage: React.FC = () => {
             </form>
             {nameMsg && <p className="text-xs font-mono text-muted">{nameMsg}</p>}
           </section>
+
+          {isClerkConfigured() && CLERK_PUBLISHABLE_KEY && (
+            <section aria-label="Clerk account management" className="w-full overflow-x-auto p-5 rounded-xl border border-line bg-surface space-y-3">
+              <h2 className="text-sm font-bold text-ink">Account security</h2>
+              <p className="text-xs text-muted">Manage emails, linked accounts (Google/GitHub/Microsoft), and security below.</p>
+              <ClerkProvider
+                publishableKey={CLERK_PUBLISHABLE_KEY}
+                appearance={{
+                  variables: {
+                    colorBackground: '#12181f',
+                    colorInputBackground: '#0d1117',
+                    colorText: '#e6edf3',
+                    colorTextSecondary: '#8b949e',
+                    colorPrimary: '#3fb950',
+                    colorInputText: '#e6edf3',
+                    borderRadius: '0.75rem',
+                  },
+                  elements: {
+                    rootBox: "w-full max-w-full",
+                    cardBox: "w-full max-w-full shadow-none border-0 bg-transparent",
+                    card: "w-full max-w-full shadow-none border-0 bg-transparent",
+                    navbar: "border-r border-line bg-transparent",
+                    navbarButton: "text-muted hover:text-ink hover:bg-canvas",
+                    pageScrollBox: "p-4 bg-transparent",
+                  },
+                }}
+              >
+                <UserProfile routing="hash" />
+              </ClerkProvider>
+            </section>
+          )}
         </div>
       )}
 

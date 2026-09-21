@@ -749,7 +749,7 @@
       "isReference": true
     }
   ],
-  "sequence": 10,
-  "prevSlug": "sum-root-to-leaf-numbers",
+  "sequence": 17,
+  "prevSlug": "validate-binary-search-tree",
   "nextSlug": null
 }

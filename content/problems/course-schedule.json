@@ -98,8 +98,8 @@
       "label": "4 courses DAG"
     }
   ],
-  "sequence": 5,
-  "prevSlug": "flood-fill",
+  "sequence": 6,
+  "prevSlug": "all-paths-from-source-to-target",
   "nextSlug": "course-schedule-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"

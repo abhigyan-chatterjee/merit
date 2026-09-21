@@ -116,7 +116,7 @@ def get_topic_prefix(topic: str) -> str:
 
 
 def wire_sequences() -> int:
-    """Wire sequence and prevSlug/nextSlug for problems where sequence is null."""
+    """Wire clean sequence chains for every verified problem topic."""
     files = sorted(PROBLEMS_DIR.glob("*.json"))
     by_topic: dict[str, list[tuple[Path, dict]]] = {}
 
@@ -128,14 +128,17 @@ def wire_sequences() -> int:
         status = data.get("reviewStatus") or data.get("review_status") or "verified"
         if status != "verified":
             continue
-        # Only touch files where sequence is null (never rewrite existing chains)
-        if data.get("sequence") is None:
-            by_topic.setdefault(data["topic"], []).append((fp, data))
+        by_topic.setdefault(data["topic"], []).append((fp, data))
 
     total_wired = 0
     for topic, items in by_topic.items():
-        # order Easy -> Medium -> Hard then slug
-        items.sort(key=lambda x: (DIFF_RANK.get(x[1].get("difficulty"), 99), x[1]["slug"]))
+        items.sort(
+            key=lambda x: (
+                DIFF_RANK.get(x[1].get("difficulty"), 99),
+                x[1]["title"],
+                x[1]["slug"],
+            )
+        )
         n = len(items)
         for i, (fp, data) in enumerate(items):
             seq = i + 1
@@ -291,7 +294,7 @@ def main():
     parser.add_argument(
         "--wire-sequences",
         action="store_true",
-        help="Wire sequence numbers and prevSlug/nextSlug in problem JSONs where sequence is null",
+        help="Wire sequence numbers and prevSlug/nextSlug in every verified problem JSON",
     )
     args = parser.parse_args()
 

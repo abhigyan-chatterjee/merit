@@ -1169,7 +1169,7 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
-  "prevSlug": "count-good-nodes",
-  "nextSlug": "lowest-common-ancestor-bst"
+  "sequence": 11,
+  "prevSlug": "lowest-common-ancestor-of-a-binary-tree",
+  "nextSlug": "construct-from-preorder-inorder"
 }

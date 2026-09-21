@@ -16,6 +16,14 @@ interface ChatMessage {
 }
 type TutorStatus = "idle" | "key-set" | "models-loaded" | "chatting" | "error";
 
+export function stripThinking(text: string): string {
+  return text
+    .replace(/<(thought|think)>[\s\S]*?<\/\1>/gi, "")
+    .replace(/<(thought|think)>[\s\S]*$/gi, "")
+    .replace(/<\/(thought|think)>/gi, "")
+    .trim();
+}
+
 export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failedAttempts = 0, defaultOpen = false }) => {
   const { apiKey, baseUrl, model, setModel } = useTutorKey();
   const [open, setOpen] = useState(defaultOpen);
@@ -106,7 +114,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
         setStatus("error");
         return;
       }
-      setMessages((previous) => [...previous, { role: "tutor", content: data.reply as string }]);
+      setMessages((previous) => [...previous, { role: "tutor", content: stripThinking(data.reply as string) }]);
     } catch (err) {
       // Surface the server's message verbatim (ApiError carries
       // error.message / detail.message); network failures get a hint.

@@ -3305,7 +3305,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "all-paths-from-source-to-target",
+  "sequence": 9,
+  "prevSlug": "number-of-islands",
   "nextSlug": "redundant-connection"
 }

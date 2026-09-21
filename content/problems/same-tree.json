@@ -90,9 +90,9 @@
       "label": "p=[1,2,1], q=[1,1,2]"
     }
   ],
-  "sequence": 2,
-  "prevSlug": "maximum-depth-of-binary-tree",
-  "nextSlug": "invert-binary-tree",
+  "sequence": 5,
+  "prevSlug": "symmetric-tree",
+  "nextSlug": "lowest-common-ancestor-bst",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"

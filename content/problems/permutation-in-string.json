@@ -283,7 +283,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
+  "sequence": 4,
   "prevSlug": "max-consecutive-ones-iii",
   "nextSlug": "sliding-window-maximum"
 }

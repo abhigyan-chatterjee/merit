@@ -935,7 +935,7 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm"
   ],
-  "sequence": 2,
+  "sequence": 4,
   "prevSlug": "counting-bits",
   "nextSlug": "missing-number"
 }

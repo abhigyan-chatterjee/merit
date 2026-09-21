@@ -86,9 +86,9 @@
       "label": "root=[2,1,3], k=2"
     }
   ],
-  "sequence": 6,
-  "prevSlug": "validate-binary-search-tree",
-  "nextSlug": "lowest-common-ancestor-of-a-binary-tree",
+  "sequence": 8,
+  "prevSlug": "balanced-binary-tree",
+  "nextSlug": "binary-tree-level-order-traversal",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
   ]

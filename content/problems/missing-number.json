@@ -936,7 +936,7 @@
     "https://en.wikipedia.org/wiki/Sum_of_natural_numbers",
     "https://en.wikipedia.org/wiki/In-place_algorithm"
   ],
-  "sequence": 3,
+  "sequence": 5,
   "prevSlug": "majority-element",
   "nextSlug": "move-zeroes"
 }

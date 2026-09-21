@@ -429,6 +429,6 @@
     }
   ],
   "sequence": 6,
-  "prevSlug": "asteroid-collision",
-  "nextSlug": "daily-temperatures"
+  "prevSlug": "valid-parentheses",
+  "nextSlug": "simplify-path"
 }

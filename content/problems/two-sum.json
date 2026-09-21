@@ -23,14 +23,14 @@
     "Only one valid answer exists."
   ],
   "hints": [
-    "A brute force approach inspects all pairs (i, j) in O(n²) time.",
+    "A brute force approach inspects all pairs (i, j) in O(n\u00b2) time.",
     "Can we look up the complement (target - nums[i]) in O(1) time?",
     "Store previously visited numbers and their indices in a Map."
   ],
   "solutions": [
     {
       "title": "Brute Force Nested Loops",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    for (let j = i + 1; j < nums.length; j++) {\n      if (nums[i] + nums[j] === target) return [i, j];\n    }\n  }\n  return [];\n}"
     },
     {
@@ -91,9 +91,9 @@
       "label": "nums=[3,3], target=6"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "contains-duplicate",
+  "sequence": 8,
+  "prevSlug": "remove-duplicates-sorted",
+  "nextSlug": "two-sum-ii-sorted",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"

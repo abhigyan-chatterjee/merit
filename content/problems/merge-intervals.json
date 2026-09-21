@@ -30,7 +30,7 @@
   "solutions": [
     {
       "title": "Pairwise Overlap Scan",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "code": "function solve(intervals) {\n  const ivs = intervals.map(x => x.slice()).sort((a, b) => a[0] - b[0]);\n  const out = [];\n  for (const cur of ivs) {\n    let merged = false;\n    for (const prev of out) {\n      if (cur[0] <= prev[1] && prev[0] <= cur[1]) {\n        prev[0] = Math.min(prev[0], cur[0]);\n        prev[1] = Math.max(prev[1], cur[1]);\n        merged = true;\n        break;\n      }\n    }\n    if (!merged) out.push(cur.slice());\n  }\n  return out.sort((a, b) => a[0] - b[0]);\n}"
     },
     {
@@ -146,9 +146,9 @@
       "label": "[[1,4],[2,3]] nested"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": null,
+  "sequence": 4,
+  "prevSlug": "meeting-rooms-ii",
+  "nextSlug": "non-overlapping-intervals",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Interval_scheduling"
   ]

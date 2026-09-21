@@ -99,9 +99,9 @@
       "label": "[2,5], [1,3,6]"
     }
   ],
-  "sequence": 3,
-  "prevSlug": "valid-palindrome",
-  "nextSlug": "remove-nth-node-from-end",
+  "sequence": 2,
+  "prevSlug": "backspace-string-compare",
+  "nextSlug": "squares-of-sorted-array",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ]

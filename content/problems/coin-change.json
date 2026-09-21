@@ -77,9 +77,9 @@
       "label": "coins=[1], amount=0"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "maximum-subarray",
-  "nextSlug": "longest-increasing-subsequence",
+  "sequence": 2,
+  "prevSlug": "climbing-stairs",
+  "nextSlug": "decode-ways",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
   ]

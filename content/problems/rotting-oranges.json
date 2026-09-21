@@ -1312,7 +1312,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
+  "sequence": 11,
   "prevSlug": "redundant-connection",
   "nextSlug": "surrounded-regions"
 }

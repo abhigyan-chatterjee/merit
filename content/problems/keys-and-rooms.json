@@ -3253,7 +3253,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
+  "sequence": 4,
+  "prevSlug": "flood-fill",
   "nextSlug": "all-paths-from-source-to-target"
 }

@@ -327,7 +327,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": null
+  "sequence": 2,
+  "prevSlug": "roman-to-integer",
+  "nextSlug": "spiral-matrix"
 }

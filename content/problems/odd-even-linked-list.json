@@ -1298,7 +1298,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
+  "sequence": 8,
   "prevSlug": "copy-list-with-random-pointer",
   "nextSlug": "partition-list"
 }

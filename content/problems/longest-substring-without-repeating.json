@@ -65,9 +65,9 @@
       "label": "\"pwwkew\""
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": null,
+  "sequence": 2,
+  "prevSlug": "longest-repeating-character-replacement",
+  "nextSlug": "max-consecutive-ones-iii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Sliding_window_protocol",
     "https://www.geeksforgeeks.org/window-sliding-technique/"

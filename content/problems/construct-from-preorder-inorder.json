@@ -1036,7 +1036,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
-  "prevSlug": "binary-tree-right-side-view",
+  "sequence": 12,
+  "prevSlug": "flatten-binary-tree-preorder",
   "nextSlug": "count-good-nodes"
 }

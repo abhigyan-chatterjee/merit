@@ -141,9 +141,9 @@
       "label": "Single isolated cell"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "number-of-islands",
-  "nextSlug": "course-schedule",
+  "sequence": 3,
+  "prevSlug": "find-the-town-judge",
+  "nextSlug": "keys-and-rooms",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Breadth-first_search"

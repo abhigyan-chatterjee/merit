@@ -67,9 +67,9 @@
       "label": "m=1, n=1"
     }
   ],
-  "sequence": 6,
-  "prevSlug": "longest-increasing-subsequence",
-  "nextSlug": null,
+  "sequence": 11,
+  "prevSlug": "partition-equal-subset-sum",
+  "nextSlug": "word-break",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
   ]

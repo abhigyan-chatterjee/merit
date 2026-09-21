@@ -85,9 +85,9 @@
       "label": "[] empty"
     }
   ],
-  "sequence": 7,
-  "prevSlug": "best-time-to-buy-and-sell-stock",
-  "nextSlug": null,
+  "sequence": 12,
+  "prevSlug": "group-anagrams",
+  "nextSlug": "product-of-array-except-self",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ]

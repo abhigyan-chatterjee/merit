@@ -86,9 +86,9 @@
       "label": "[1,2], n=1"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "merge-two-sorted-lists",
-  "nextSlug": null,
+  "sequence": 8,
+  "prevSlug": "container-with-most-water",
+  "nextSlug": "three-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ]

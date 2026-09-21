@@ -1338,7 +1338,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
-  "prevSlug": "remove-all-adjacent-duplicates",
-  "nextSlug": "basic-calculator-ii"
+  "sequence": 8,
+  "prevSlug": "simplify-path",
+  "nextSlug": "decode-string"
 }

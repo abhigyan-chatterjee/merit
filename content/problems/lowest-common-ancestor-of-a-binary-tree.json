@@ -100,9 +100,9 @@
       "label": "p=1, q=2 -> 1"
     }
   ],
-  "sequence": 7,
-  "prevSlug": "kth-smallest-element-in-a-bst",
-  "nextSlug": null,
+  "sequence": 10,
+  "prevSlug": "binary-tree-level-order-traversal",
+  "nextSlug": "flatten-binary-tree-preorder",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
   ]

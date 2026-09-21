@@ -2834,7 +2834,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "remove-linked-list-elements",
+  "sequence": 7,
+  "prevSlug": "add-two-numbers",
   "nextSlug": "odd-even-linked-list"
 }

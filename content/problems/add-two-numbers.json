@@ -109,9 +109,9 @@
       "label": "carry cascade"
     }
   ],
-  "sequence": 5,
-  "prevSlug": "palindrome-linked-list",
-  "nextSlug": null,
+  "sequence": 6,
+  "prevSlug": "reverse-linked-list",
+  "nextSlug": "copy-list-with-random-pointer",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
   ]

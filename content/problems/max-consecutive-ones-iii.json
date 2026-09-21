@@ -928,7 +928,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "longest-repeating-character-replacement",
+  "sequence": 3,
+  "prevSlug": "longest-substring-without-repeating",
   "nextSlug": "permutation-in-string"
 }

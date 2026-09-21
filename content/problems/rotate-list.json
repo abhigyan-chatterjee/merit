@@ -1066,7 +1066,7 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
+  "sequence": 12,
   "prevSlug": "reverse-linked-list-ii",
   "nextSlug": "swap-nodes-in-pairs"
 }

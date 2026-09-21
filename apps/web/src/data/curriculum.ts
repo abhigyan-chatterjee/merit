@@ -140,13 +140,6 @@ export const TOPICS: TopicItem[] = [
     problemCount: 2,
     iconName: 'ListTree'
   },
-  {
-    slug: 'data-structures',
-    title: 'Data Structures',
-    description: 'Design problems composing maps, queues, and caches.',
-    problemCount: 0,
-    iconName: 'Database'
-  }
 ];
 
 export const VISUALIZERS: VisualizerItem[] = [

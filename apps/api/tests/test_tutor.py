@@ -376,6 +376,34 @@ def test_unauthenticated_allowed_on_both(client: TestClient, monkeypatch):
     assert res.status_code == 200
 
 
+def test_chat_sanitizes_thought_and_think_tags(client: TestClient, monkeypatch):
+    register_user(client, "tutor_chat_sanitize@merit.org")
+
+    replies = [
+        "<thought>internal reasoning</thought>Real answer",
+        "<think>internal</think>Real answer",
+    ]
+    for raw in replies:
+        install_fake_client(
+            monkeypatch,
+            post=lambda url, headers, body, _raw=raw: FakeResponse(
+                200, {"choices": [{"message": {"content": _raw}}]}
+            ),
+        )
+        res = client.post(
+            "/api/v1/tutor/chat",
+            json={
+                "base_url": BASE_URL,
+                "api_key": API_KEY,
+                "model": "gpt-4o-mini",
+                "problem_slug": "two-sum",
+                "question": "Help?",
+            },
+        )
+        assert res.status_code == 200
+        assert res.json() == {"reply": "Real answer"}
+
+
 def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
     register_user(client, "tutor_ratelimit@merit.org")
     install_fake_client(

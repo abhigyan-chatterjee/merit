@@ -89,9 +89,9 @@
       "label": "2 courses, cycle"
     }
   ],
-  "sequence": 6,
+  "sequence": 7,
   "prevSlug": "course-schedule",
-  "nextSlug": null,
+  "nextSlug": "number-of-islands",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
   ]

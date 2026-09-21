@@ -31,7 +31,7 @@
   "solutions": [
     {
       "title": "All Start-End Pairs",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(nums, k) {\n  let count = 0;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      if (sum === k) count++;\n    }\n  }\n  return count;\n}"
     },
     {
@@ -83,9 +83,9 @@
       "label": "[1,-1,0], k=0"
     }
   ],
-  "sequence": 5,
-  "prevSlug": "product-of-array-except-self",
-  "nextSlug": "best-time-to-buy-and-sell-stock",
+  "sequence": 15,
+  "prevSlug": "sort-colors",
+  "nextSlug": "top-k-frequent-elements",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"

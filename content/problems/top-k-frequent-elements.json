@@ -1106,7 +1106,7 @@
     "https://en.wikipedia.org/wiki/Partial_sorting",
     "https://en.wikipedia.org/wiki/Bucket_sort"
   ],
-  "sequence": 9,
-  "prevSlug": "sort-colors",
+  "sequence": 16,
+  "prevSlug": "subarray-sum-equals-k",
   "nextSlug": "first-missing-positive"
 }

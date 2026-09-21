@@ -1560,7 +1560,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "backspace-string-compare",
-  "nextSlug": "valid-palindrome-ii"
+  "sequence": 3,
+  "prevSlug": "merge-two-sorted-lists",
+  "nextSlug": "valid-palindrome"
 }

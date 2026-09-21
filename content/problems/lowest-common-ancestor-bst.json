@@ -583,7 +583,7 @@
       "isReference": true
     }
   ],
-  "sequence": 8,
-  "prevSlug": "flatten-binary-tree-preorder",
-  "nextSlug": "sum-root-to-leaf-numbers"
+  "sequence": 6,
+  "prevSlug": "same-tree",
+  "nextSlug": "balanced-binary-tree"
 }

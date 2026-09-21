@@ -978,7 +978,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "decode-ways",
-  "nextSlug": "longest-palindromic-substring"
+  "sequence": 5,
+  "prevSlug": "house-robber",
+  "nextSlug": "longest-increasing-subsequence"
 }

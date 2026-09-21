@@ -1730,6 +1730,6 @@
     }
   ],
   "sequence": 3,
-  "prevSlug": "make-the-string-great",
-  "nextSlug": "remove-all-adjacent-duplicates"
+  "prevSlug": "remove-all-adjacent-duplicates",
+  "nextSlug": "make-the-string-great"
 }

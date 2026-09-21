@@ -105,9 +105,9 @@
       "label": "All water"
     }
   ],
-  "sequence": 3,
-  "prevSlug": "find-if-path-exists-in-graph",
-  "nextSlug": "flood-fill",
+  "sequence": 8,
+  "prevSlug": "course-schedule-ii",
+  "nextSlug": "pacific-atlantic-water-flow",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"

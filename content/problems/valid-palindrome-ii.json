@@ -253,7 +253,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "squares-of-sorted-array",
+  "sequence": 5,
+  "prevSlug": "valid-palindrome",
   "nextSlug": "boats-to-save-people"
 }

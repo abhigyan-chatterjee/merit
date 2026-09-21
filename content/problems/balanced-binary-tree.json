@@ -750,7 +750,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "symmetric-tree",
-  "nextSlug": "binary-tree-level-order-traversal"
+  "sequence": 7,
+  "prevSlug": "lowest-common-ancestor-bst",
+  "nextSlug": "kth-smallest-element-in-a-bst"
 }

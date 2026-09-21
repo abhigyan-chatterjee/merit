@@ -64,9 +64,9 @@
       "label": "\" \""
     }
   ],
-  "sequence": 2,
-  "prevSlug": "container-with-most-water",
-  "nextSlug": "merge-two-sorted-lists",
+  "sequence": 4,
+  "prevSlug": "squares-of-sorted-array",
+  "nextSlug": "valid-palindrome-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ]

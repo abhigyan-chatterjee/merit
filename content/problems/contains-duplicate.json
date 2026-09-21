@@ -86,8 +86,8 @@
     }
   ],
   "sequence": 2,
-  "prevSlug": "two-sum",
-  "nextSlug": "valid-anagram",
+  "prevSlug": "best-time-to-buy-and-sell-stock",
+  "nextSlug": "counting-bits",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"

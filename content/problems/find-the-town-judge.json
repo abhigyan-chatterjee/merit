@@ -94,9 +94,9 @@
       "label": "n=3, no judge"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "find-if-path-exists-in-graph",
+  "sequence": 2,
+  "prevSlug": "find-if-path-exists-in-graph",
+  "nextSlug": "flood-fill",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
   ]

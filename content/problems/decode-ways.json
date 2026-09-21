@@ -325,7 +325,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "house-robber-ii"
+  "sequence": 3,
+  "prevSlug": "coin-change",
+  "nextSlug": "house-robber"
 }

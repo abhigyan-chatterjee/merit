@@ -1284,7 +1284,7 @@
       "isReference": true
     }
   ],
-  "sequence": 8,
+  "sequence": 13,
   "prevSlug": "rotate-list",
   "nextSlug": "merge-k-sorted-lists"
 }

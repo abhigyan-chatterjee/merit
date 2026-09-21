@@ -752,7 +752,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "balanced-binary-tree"
+  "sequence": 4,
+  "prevSlug": "maximum-depth-of-binary-tree",
+  "nextSlug": "same-tree"
 }

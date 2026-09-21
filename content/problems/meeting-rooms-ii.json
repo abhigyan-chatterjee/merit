@@ -1316,7 +1316,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": null
+  "sequence": 3,
+  "prevSlug": "insert-interval",
+  "nextSlug": "merge-intervals"
 }

@@ -91,9 +91,9 @@
       "label": "[1], pos=0 self-loop"
     }
   ],
-  "sequence": 3,
-  "prevSlug": "middle-of-the-linked-list",
-  "nextSlug": "palindrome-linked-list",
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "middle-of-the-linked-list",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
   ]

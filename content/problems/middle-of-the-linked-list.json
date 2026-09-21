@@ -90,8 +90,8 @@
     }
   ],
   "sequence": 2,
-  "prevSlug": "reverse-linked-list",
-  "nextSlug": "linked-list-cycle",
+  "prevSlug": "linked-list-cycle",
+  "nextSlug": "palindrome-linked-list",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
   ]

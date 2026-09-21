@@ -954,7 +954,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
+  "sequence": 6,
   "prevSlug": "valid-palindrome-ii",
-  "nextSlug": "three-sum"
+  "nextSlug": "container-with-most-water"
 }

@@ -325,7 +325,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "house-robber-ii",
+  "sequence": 7,
+  "prevSlug": "longest-increasing-subsequence",
   "nextSlug": "maximum-product-subarray"
 }

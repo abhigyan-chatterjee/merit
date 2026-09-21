@@ -520,7 +520,7 @@
       "isReference": true
     }
   ],
-  "sequence": 6,
-  "prevSlug": "partition-equal-subset-sum",
+  "sequence": 12,
+  "prevSlug": "unique-paths",
   "nextSlug": "edit-distance"
 }

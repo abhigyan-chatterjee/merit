@@ -29,7 +29,7 @@
   "solutions": [
     {
       "title": "Quadratic Prefix Sums",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}"
     },
     {
@@ -84,9 +84,9 @@
       "label": "[5,4,-1,7,8]"
     }
   ],
-  "sequence": 3,
-  "prevSlug": "house-robber",
-  "nextSlug": "coin-change",
+  "sequence": 9,
+  "prevSlug": "maximum-product-subarray",
+  "nextSlug": "partition-equal-subset-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
   ]

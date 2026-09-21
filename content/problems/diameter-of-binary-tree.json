@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All-Pairs Path Check",
-      "complexity": "Time: O(n²) | Space: O(h)",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
       "code": "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}"
     },
     {
@@ -74,9 +74,9 @@
       "label": "[]"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "invert-binary-tree",
-  "nextSlug": "validate-binary-search-tree",
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "invert-binary-tree",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
   ]

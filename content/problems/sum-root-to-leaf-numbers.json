@@ -726,7 +726,7 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
-  "prevSlug": "lowest-common-ancestor-bst",
-  "nextSlug": "binary-tree-maximum-path-sum"
+  "sequence": 15,
+  "prevSlug": "binary-tree-right-side-view",
+  "nextSlug": "validate-binary-search-tree"
 }

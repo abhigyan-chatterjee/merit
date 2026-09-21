@@ -1572,7 +1572,7 @@
     "https://en.wikipedia.org/wiki/Dutch_national_flag_problem",
     "https://en.wikipedia.org/wiki/Quicksort"
   ],
-  "sequence": 8,
-  "prevSlug": "group-anagrams",
-  "nextSlug": "top-k-frequent-elements"
+  "sequence": 14,
+  "prevSlug": "product-of-array-except-self",
+  "nextSlug": "subarray-sum-equals-k"
 }

@@ -93,9 +93,9 @@
       "label": "[2,5]"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "valid-anagram",
-  "nextSlug": "subarray-sum-equals-k",
+  "sequence": 13,
+  "prevSlug": "longest-consecutive-sequence",
+  "nextSlug": "sort-colors",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ]

@@ -84,9 +84,9 @@
       "label": "[10,5,15,null,null,6,20]"
     }
   ],
-  "sequence": 5,
-  "prevSlug": "diameter-of-binary-tree",
-  "nextSlug": "kth-smallest-element-in-a-bst",
+  "sequence": 16,
+  "prevSlug": "sum-root-to-leaf-numbers",
+  "nextSlug": "binary-tree-maximum-path-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"

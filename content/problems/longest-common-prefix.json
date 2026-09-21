@@ -78,7 +78,7 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": null,
+  "nextSlug": "find-words-on-board",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Trie"
   ]

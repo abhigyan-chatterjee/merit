@@ -489,7 +489,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
+  "sequence": 2,
+  "prevSlug": "longest-common-prefix",
   "nextSlug": null
 }

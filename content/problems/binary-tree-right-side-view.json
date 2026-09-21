@@ -880,7 +880,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
-  "prevSlug": "binary-tree-level-order-traversal",
-  "nextSlug": "construct-from-preorder-inorder"
+  "sequence": 14,
+  "prevSlug": "count-good-nodes",
+  "nextSlug": "sum-root-to-leaf-numbers"
 }

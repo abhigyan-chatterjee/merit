@@ -1632,7 +1632,7 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
-  "prevSlug": "basic-calculator-ii",
-  "nextSlug": "evaluate-reverse-polish-notation"
+  "sequence": 11,
+  "prevSlug": "evaluate-reverse-polish-notation",
+  "nextSlug": "largest-rectangle-in-histogram"
 }

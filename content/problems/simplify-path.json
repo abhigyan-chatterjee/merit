@@ -420,7 +420,7 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
-  "prevSlug": "evaluate-reverse-polish-notation",
-  "nextSlug": "largest-rectangle-in-histogram"
+  "sequence": 7,
+  "prevSlug": "basic-calculator-ii",
+  "nextSlug": "asteroid-collision"
 }

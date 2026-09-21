@@ -1260,7 +1260,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "copy-list-with-random-pointer"
+  "sequence": 4,
+  "prevSlug": "palindrome-linked-list",
+  "nextSlug": "reverse-linked-list"
 }

@@ -1616,7 +1616,7 @@
     "https://en.wikipedia.org/wiki/Partition_(mathematics)",
     "https://en.wikipedia.org/wiki/In-place_algorithm"
   ],
-  "sequence": 4,
+  "sequence": 6,
   "prevSlug": "missing-number",
   "nextSlug": "remove-duplicates-sorted"
 }

@@ -67,9 +67,9 @@
       "label": "\"2[abc]3[cd]ef\""
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "valid-parentheses",
+  "sequence": 9,
+  "prevSlug": "asteroid-collision",
+  "nextSlug": "evaluate-reverse-polish-notation",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
   ]

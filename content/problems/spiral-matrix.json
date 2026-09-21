@@ -150,8 +150,8 @@
       "label": "2x2 square"
     }
   ],
-  "sequence": 2,
-  "prevSlug": "roman-to-integer",
+  "sequence": 3,
+  "prevSlug": "pow-x-n",
   "nextSlug": null,
   "reading_links": [
     "https://en.wikipedia.org/wiki/Matrix_(mathematics)"

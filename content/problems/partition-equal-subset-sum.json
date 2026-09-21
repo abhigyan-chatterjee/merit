@@ -981,7 +981,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
-  "prevSlug": "maximum-product-subarray",
-  "nextSlug": "word-break"
+  "sequence": 10,
+  "prevSlug": "maximum-subarray",
+  "nextSlug": "unique-paths"
 }

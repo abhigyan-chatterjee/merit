@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
 import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
@@ -64,17 +64,7 @@ export const LoginPage: React.FC = () => {
         </Reveal>
 
         <Reveal delay={0.15}>
-          <div className="flex flex-col items-center gap-3 text-center text-xs">
-            <p className="text-muted">
-              Don&apos;t have an account yet?{" "}
-              <Link
-                to="/register"
-                className="text-mint hover:underline font-mono font-medium inline-flex items-center gap-1"
-              >
-                <span>Register here</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-            </p>
+          <div className="flex justify-center text-center text-xs">
             <div className="flex items-center gap-2 text-[11px] text-muted/70 font-mono">
               <ShieldCheck className="w-3.5 h-3.5 text-mint" />
               <span>Secure Clerk authentication · Zero tracking</span>

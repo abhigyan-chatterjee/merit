@@ -66,15 +66,32 @@ export const ClerkOAuthSection: React.FC<ClerkOAuthSectionProps> = ({ mode, onSu
 const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode }) => {
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <span className="h-px flex-1 bg-line" />
-        <span className="text-[11px] font-mono uppercase tracking-wider text-muted">
-          or continue with Google / GitHub
-        </span>
-        <span className="h-px flex-1 bg-line" />
-      </div>
       <div className="flex justify-center">
-        <ClerkProvider publishableKey={PUBLISHABLE_KEY as string}>
+        <ClerkProvider
+          publishableKey={PUBLISHABLE_KEY as string}
+          appearance={{
+            variables: {
+              colorBackground: '#12181f',
+              colorInputBackground: '#0d1117',
+              colorText: '#e6edf3',
+              colorTextSecondary: '#8b949e',
+              colorPrimary: '#3fb950',
+              colorInputText: '#e6edf3',
+              borderRadius: '0.75rem',
+            },
+            elements: {
+              card: "bg-surface border border-line shadow-none",
+              headerTitle: "text-ink",
+              headerSubtitle: "text-muted",
+              socialButtonsBlockButton: "bg-canvas border border-line text-ink hover:bg-surface-elevated",
+              formFieldLabel: "text-ink",
+              formFieldInput: "bg-canvas border-line text-ink",
+              footer: "bg-surface border-t border-line",
+              footerActionText: "text-muted",
+              footerActionLink: "text-mint hover:underline",
+            },
+          }}
+        >
           <ClerkBridge mode={mode} />
         </ClerkProvider>
       </div>

@@ -1949,7 +1949,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "insert-interval",
+  "sequence": 5,
+  "prevSlug": "merge-intervals",
   "nextSlug": null
 }

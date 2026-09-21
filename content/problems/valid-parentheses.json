@@ -89,9 +89,9 @@
       "label": "\"{[]}\""
     }
   ],
-  "sequence": 2,
-  "prevSlug": "decode-string",
-  "nextSlug": null,
+  "sequence": 5,
+  "prevSlug": "make-the-string-great",
+  "nextSlug": "basic-calculator-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
   ]

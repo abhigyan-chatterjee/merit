@@ -233,7 +233,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "baseball-game",
-  "nextSlug": "next-greater-element-i"
+  "sequence": 4,
+  "prevSlug": "next-greater-element-i",
+  "nextSlug": "valid-parentheses"
 }

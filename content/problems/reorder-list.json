@@ -1280,7 +1280,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
+  "sequence": 10,
   "prevSlug": "partition-list",
   "nextSlug": "reverse-linked-list-ii"
 }

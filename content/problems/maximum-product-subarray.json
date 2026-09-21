@@ -993,7 +993,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
+  "sequence": 8,
   "prevSlug": "longest-palindromic-substring",
-  "nextSlug": "partition-equal-subset-sum"
+  "nextSlug": "maximum-subarray"
 }

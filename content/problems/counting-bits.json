@@ -3832,7 +3832,7 @@
     "https://en.wikipedia.org/wiki/Bitwise_operation",
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators"
   ],
-  "sequence": 1,
-  "prevSlug": null,
+  "sequence": 3,
+  "prevSlug": "contains-duplicate",
   "nextSlug": "majority-element"
 }

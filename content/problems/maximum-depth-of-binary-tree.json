@@ -76,9 +76,9 @@
       "label": "[]"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "same-tree",
+  "sequence": 3,
+  "prevSlug": "invert-binary-tree",
+  "nextSlug": "symmetric-tree",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"

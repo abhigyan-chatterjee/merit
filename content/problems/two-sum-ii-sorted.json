@@ -977,7 +977,7 @@
     "https://en.wikipedia.org/wiki/Subset_sum_problem",
     "https://en.wikipedia.org/wiki/Quicksort"
   ],
-  "sequence": 6,
-  "prevSlug": "remove-duplicates-sorted",
-  "nextSlug": "group-anagrams"
+  "sequence": 9,
+  "prevSlug": "two-sum",
+  "nextSlug": "valid-anagram"
 }
