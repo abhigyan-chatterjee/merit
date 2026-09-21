@@ -12,10 +12,12 @@ import {
   X,
   CornerDownLeft,
   Route,
-  LogIn
+  LogIn,
+  Bug
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { UserDropdown } from './UserDropdown';
+import { FeedbackModal } from './FeedbackModal';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
 import { PROBLEMS } from '../data/problems';
@@ -28,6 +30,7 @@ export const Navbar: React.FC = () => {
   const { currentStreak } = useProgress();
   const { user, isLoading: authLoading } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -185,6 +188,16 @@ export const Navbar: React.FC = () => {
             </Link>
 
             <ThemeToggle />
+
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              title="Report Bug / Feedback"
+              aria-label="Report Bug or Feedback"
+              className="p-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-mint transition cursor-pointer"
+            >
+              <Bug className="w-3.5 h-3.5 text-mint" />
+            </button>
 
             {user ? (
               <div className="flex items-center gap-1.5 pl-1 border-l border-line">
@@ -369,6 +382,8 @@ export const Navbar: React.FC = () => {
           </motion.div>
         </div>
       )}
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </>
   );
 };

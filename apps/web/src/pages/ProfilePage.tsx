@@ -135,7 +135,7 @@ export const ProfilePage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
         <Link to="/dashboard" className="hover:text-mint transition-colors">
           dashboard
@@ -205,33 +205,37 @@ export const ProfilePage: React.FC = () => {
           </section>
 
           {isClerkConfigured() && CLERK_PUBLISHABLE_KEY && (
-            <section aria-label="Clerk account management" className="w-full overflow-x-auto p-5 rounded-xl border border-line bg-surface space-y-3">
-              <h2 className="text-sm font-bold text-ink">Account security</h2>
-              <p className="text-xs text-muted">Manage emails, linked accounts (Google/GitHub/Microsoft), and security below.</p>
-              <ClerkProvider
-                publishableKey={CLERK_PUBLISHABLE_KEY}
-                appearance={{
-                  variables: {
-                    colorBackground: '#12181f',
-                    colorInputBackground: '#0d1117',
-                    colorText: '#e6edf3',
-                    colorTextSecondary: '#8b949e',
-                    colorPrimary: '#3fb950',
-                    colorInputText: '#e6edf3',
-                    borderRadius: '0.75rem',
-                  },
-                  elements: {
-                    rootBox: "w-full max-w-full",
-                    cardBox: "w-full max-w-full shadow-none border-0 bg-transparent",
-                    card: "w-full max-w-full shadow-none border-0 bg-transparent",
-                    navbar: "border-r border-line bg-transparent",
-                    navbarButton: "text-muted hover:text-ink hover:bg-canvas",
-                    pageScrollBox: "p-4 bg-transparent",
-                  },
-                }}
-              >
-                <UserProfile routing="hash" />
-              </ClerkProvider>
+            <section aria-label="Clerk account management" className="w-full rounded-xl border border-line bg-surface p-6 sm:p-8 space-y-4">
+              <div>
+                <h2 className="text-sm font-bold text-ink">Account security</h2>
+                <p className="text-xs text-muted mt-0.5">Manage emails, linked accounts (Google/GitHub/Microsoft), and security below.</p>
+              </div>
+              <div className="w-full flex justify-center overflow-x-auto py-2">
+                <ClerkProvider
+                  publishableKey={CLERK_PUBLISHABLE_KEY}
+                  appearance={{
+                    variables: {
+                      colorBackground: '#12181f',
+                      colorInputBackground: '#0d1117',
+                      colorText: '#e6edf3',
+                      colorTextSecondary: '#8b949e',
+                      colorPrimary: '#3fb950',
+                      colorInputText: '#e6edf3',
+                      borderRadius: '0.75rem',
+                    },
+                    elements: {
+                      rootBox: "w-full max-w-4xl mx-auto",
+                      cardBox: "w-full shadow-none border-0 bg-transparent",
+                      card: "w-full shadow-none border-0 bg-transparent",
+                      navbar: "border-r border-line bg-transparent",
+                      navbarButton: "text-muted hover:text-ink hover:bg-canvas",
+                      pageScrollBox: "p-4 sm:p-6 bg-transparent",
+                    },
+                  }}
+                >
+                  <UserProfile routing="hash" />
+                </ClerkProvider>
+              </div>
             </section>
           )}
         </div>

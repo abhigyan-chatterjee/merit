@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     # returns 501 OAUTH_NOT_CONFIGURED instead of crashing.
     clerk_jwks_url: str = ""
     clerk_audience: str = ""
+    github_token: str = ""
+    github_repo: str = "abhigyan-chatterjee/merit"
 
     model_config = {
         "env_file": ".env",

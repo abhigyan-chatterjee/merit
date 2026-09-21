@@ -12,7 +12,7 @@ import app.models.submission  # noqa: F401
 import app.models.user  # noqa: F401
 from app.config import settings
 from app.db import Base, SessionLocal, engine
-from app.routers import admin, auth, content, judge, progress, quizzes, tutor
+from app.routers import admin, auth, content, feedback, judge, progress, quizzes, tutor
 from app.seed import seed_all
 
 
@@ -62,6 +62,7 @@ app.include_router(content.router)
 app.include_router(quizzes.router)
 app.include_router(admin.router)
 app.include_router(tutor.router)
+app.include_router(feedback.router)
 
 
 @app.get("/api/v1/health")

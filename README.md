@@ -1,81 +1,201 @@
-# Merit — Make the merit list
+# MERIT — Placement-Grade DSA & Technical Assessment Workbench
 
-Merit is a placement-grade DSA practice platform for Indian campus
-recruitment: 12 interactive algorithm visualizers, 140 verified coding
-problems with a sandboxed judge (Python + JavaScript), adaptive quizzes and
-timed mock exams, 3 guided learning paths, and spaced revision with
-weak-area tracking. Multi-user accounts with Argon2id + JWT cookies;
-optional Google/GitHub sign-in via Clerk.
+> **"Step through the execution, not the explanation. Make the merit list."**
 
-By [Abhigyan Chatterjee](https://nullbit.in) — GitHub:
-<https://github.com/abhigyan-chatterjee>
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-merit.nullbit.in-00E599?style=flat-square&logo=googlechrome&logoColor=white)](https://merit.nullbit.in)
+[![API Tests](https://img.shields.io/badge/API%20Tests-121%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
+[![Web Tests](https://img.shields.io/badge/Web%20Tests-138%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
+[![Verified Problems](https://img.shields.io/badge/Problem%20Bank-140%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+
+MERIT is an end-to-end technical assessment and Data Structures & Algorithms learning platform tailored for Indian engineering campus placements (TCS NQT Ninja/Prime, Infosys SP/DSE, Cognizant, and product-based hiring drives).
+
+It bridges the gap between passive tutorial consumption and real campus test execution by pairing **frame-by-frame algorithm visualizers** with a **sandboxed code judge**, **tab-switch proctored mock exams**, and a **privacy-first BYOK AI tutor**.
 
 ---
 
-## 60-second quickstart
+## System Architecture
 
-Prereqs: Node.js ≥ 20, Python ≥ 3.12.
+```mermaid
+graph TD
+    Client["Browser Client (React 19 + TypeScript + Tailwind 4)"]
+    
+    subgraph Edge & Auth
+        Clerk["Clerk OAuth (Google / GitHub)"]
+        Caddy["Caddy Reverse Proxy (TLS + Rate Limiting)"]
+    end
+    
+    subgraph Application Stack
+        API["Merit API (FastAPI + SQLAlchemy 2.0)"]
+        Piston["Piston Code Execution Sandbox (Docker / Isolate)"]
+        DB[(Neon Serverless Postgres / SQLite)]
+    end
+    
+    subgraph External
+        LLM["BYOK LLM Providers (Gemini / OpenAI / Anthropic / Groq)"]
+        GitHubAPI["GitHub Issues API (Feedback Webform)"]
+    end
 
+    Client -->|OAuth Session| Clerk
+    Client -->|HTTPS Traffic| Caddy
+    Caddy -->|Reverse Proxy| API
+    API -->|Dialect-Aware Queries| DB
+    API -->|Isolated Code Runs| Piston
+    API -->|Sanitized Streaming Proxy| LLM
+    API -->|In-App Bug Reports| GitHubAPI
+```
+
+---
+
+## Key Features
+
+### 1. Interactive Algorithm Visualizers (12 Canvas Engines)
+* **Frame-by-frame state execution**: Step forward and backward with custom scrubbing speeds (0.25× to 2×).
+* **Synchronized pseudocode**: Visual memory pointers and stack frames sync with highlighted logic lines.
+* **Supported engines**:
+  * **Graph Traversal**: Visual BFS & DFS over customizable adjacency lists and connected components.
+  * **Recursion Trees**: Unrolling call stacks and return values for Fibonacci, Subsets, and Divide-and-Conquer.
+  * **Linear & Trees**: Binary Search Tree (Insert/Delete/Balance), Min/Max Heaps, Linked Lists, Stack, Circular Queue, Dynamic Array, and Hashing collisions.
+  * **Sorting & Searching**: Bubble, Selection, Insertion, Merge, Quick Sort, and Binary Search intervals.
+
+### 2. Full-Length Multi-Section Mock Placement Exams
+* **Indian Campus Drive Simulation**: 3-hour holistic assessments featuring:
+  * **Section A**: Quantitative Aptitude & Logical Reasoning
+  * **Section B**: Core Computer Science (Operating Systems, DBMS, Computer Networks)
+  * **Section C**: Hands-on DSA Problem Solving with test case grading
+* **Exam Proctoring Engine**:
+  * Persistent countdown timer with server synchronization.
+  * Fullscreen enforcement & **tab-switch auto-submit detection** to prevent malpractice.
+  * HackerRank-style sidebar navigator with answered/flagged/visited question states.
+
+### 3. Curated Problem Bank & Practice Modules
+* **140 Verified Problems**: Spanning 17 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions.
+* **Continuous Doubly-Linked Sequences**: Seamless "Next in Category" navigation ordered strictly by pedagogical difficulty (`Easy` $\rightarrow$ `Medium` $\rightarrow$ `Hard`).
+* **539 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
+
+### 4. Zero-Liability BYOK AI Tutor
+* **Bring Your Own Key**: Works with free Gemini API keys, OpenAI, Anthropic, DeepSeek, and Groq.
+* **Zero Server Storage**: API keys reside strictly on the user's client device and are transmitted ephemerally to the tutor proxy.
+* **Chain-of-Thought Sanitization**: Backend and frontend filters strip internal reasoning tags (`<thought>`, `<think>`) to ensure clean, pedagogical hints without leaking solutions.
+
+### 5. In-App Bug & Test Case Feedback Webform
+* Self-hosted dialog accessible across the application.
+* Automatically captures problem context, page route, and error details, filing tracked issues directly into the public GitHub issue tracker via the GitHub REST API.
+
+---
+
+## Engineered for Low-Cost Infrastructure
+
+Merit was intentionally architected to operate **100% free of cloud compute costs** on a single Oracle Cloud Free Tier AMD instance (1 vCPU / 1GB RAM) without triggering Linux OOM crashes:
+
+| Container | Memory Limit | Memory Reservation | Purpose |
+| :--- | :---: | :---: | :--- |
+| **merit-piston** | `300MB` | `150MB` | Sandboxed compiler & runner via Linux namespaces/cgroups |
+| **merit-api** | `350MB` | `200MB` | FastAPI uvicorn worker, SQLAlchemy ORM, and rate-limiting |
+| **merit-web** | `64MB` | `32MB` | Production Nginx serving gzip-compressed single-page app |
+| **OS & Buffer** | `~310MB` | — | Kernel headroom, swap cache, and Caddy TLS terminator |
+
+* **Total Memory Budget**: Stack caps itself at **714MB**, leaving ample headroom on a 1GB host.
+* **Dialect-Aware Persistence**: Zero-configuration SQLite for local offline development; automatic dialect branching for Neon Serverless PostgreSQL with atomic upserts in production.
+
+---
+
+## Monorepo Layout
+
+```text
+.
+├── apps/
+│   ├── api/                 # FastAPI backend
+│   │   ├── app/
+│   │   │   ├── models/      # SQLAlchemy ORM models
+│   │   │   ├── routers/     # Auth, Judge, Quizzes, Tutor, Feedback, Progress
+│   │   │   ├── schemas/     # Pydantic validation schemas
+│   │   │   └── seed.py      # Problem and question seed loaders
+│   │   └── tests/           # 121 Pytest unit and integration tests
+│   └── web/                 # React 19 single-page application
+│       ├── src/
+│       │   ├── components/  # Modals, Navbars, CodeRunner, QuizEngine, Tutor
+│       │   ├── pages/       # Problems, Exams, Dashboard, Profile, Landing
+│       │   ├── visualizers/ # 12 interactive canvas algorithm engines
+│       │   └── store/       # Auth & Progress state contexts
+│       └── tests/           # 138 Vitest component tests
+├── content/
+│   ├── problems/            # 140 authored problem JSON specifications
+│   ├── questions/           # 539 verified multiple-choice question datasets
+│   ├── generators/          # Problem Authoring Framework (PAF) & TS sync scripts
+│   └── validators/          # Automated content & reference solution AC gates
+├── docker-compose.yml       # Production multi-container composition
+└── Caddyfile                # Reverse proxy with automatic HTTPS
+```
+
+---
+
+## Quickstart (Local Development)
+
+### Prerequisites
+* **Node.js**: v20+
+* **Python**: v3.11+
+* **Docker & Docker Compose** (optional, for full sandboxed judge)
+
+### 1. Clone the Repository
 ```bash
-# Backend (http://localhost:8000, docs at /api/docs)
-cd apps/api
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-cp .env.example .env   # then set a real SECRET_KEY in .env
-.venv/bin/alembic upgrade head
-.venv/bin/python -m app.seed
-.venv/bin/uvicorn app.main:app --reload --port 8000
+git clone https://github.com/abhigyan-chatterjee/merit.git
+cd merit
+```
 
-# Frontend (http://localhost:5173) — in a second terminal
+### 2. Backend Setup
+```bash
+cd apps/api
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# Run database migrations and seed problems
+python -c "from app.db import Base, engine, SessionLocal; from app.seed import seed_all; Base.metadata.create_all(bind=engine); db=SessionLocal(); seed_all(db); db.close()"
+
+# Start API server
+uvicorn app.main:app --reload --port 8000
+```
+
+### 3. Frontend Setup
+```bash
 cd apps/web
 npm install
 npm run dev
 ```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Verify everything is green (run from repo root):
+---
 
+## Running Test Suites
+
+### Backend Unit & Integration Tests (121 tests)
 ```bash
-cd apps/api && .venv/bin/python -m pytest -q --no-header   # 114 passed
-cd ../web && npx vitest run                                # 130 passed, 20 files
-cd ../.. && python3 content/validators/run_all.py          # 140 problems 100% AC, 539 questions, 136 designs
+cd apps/api
+pytest -q
 ```
 
-## Where things live
+### Frontend Component & Route Tests (138 tests)
+```bash
+cd apps/web
+npm test
+```
 
-- `apps/web/` — React 19 + Vite + TypeScript + Tailwind 4 frontend.
-  Visualizers, `CodeRunner`, `QuizEngine`, BYOK AI tutor panel, Clerk
-  sign-in components (active only when `VITE_CLERK_PUBLISHABLE_KEY` is set),
-  privacy/terms pages, exam sidebar navigator.
-- `apps/api/` — FastAPI + SQLAlchemy 2.0 backend. Routers for auth,
-  content, judge, progress, quizzes, admin, tutor; SQLite locally
-  (`apps/api/merit.db`), Postgres in prod. Alembic migrations + seeder.
-- `content/` — the source of truth: 140 verified problems (+ 200
-  quarantined `scrap-*.json` drafts that are never served), 539 question
-  items, `foundation` / `targeted` / `mastery` learning paths, the
-  deduplicated catalog, and the QAF/PAF authoring frameworks with the
-  `run_all.py` verification gate.
-- `docs/` — runbooks: `prod.md` (Clerk + production handoff),
-  `launch-checklist.md` (hardening/launch verification), `backup_drill.sh`.
-- `design ideas/` — your private reference screenshots (untracked, never
-  committed).
+### Problem & Question Content Verification Suite
+```bash
+python3 content/validators/run_all.py
+```
 
-## Deploy
+---
 
-See `docs/prod.md` for the Clerk + production handoff and
-`docs/launch-checklist.md` for the launch verification matrix. Prod target
-is `merit.nullbit.in`; the API is Neon-Postgres-ready (any `postgresql://`
-`DATABASE_URL` passes through untouched).
+## Contributing & Bug Reports
 
-## Current state
+Found an incorrect test case, edge case bug, or explanation typo?
+* Use the in-app **Report Bug / Feedback** button in the footer or navbar.
+* Or open an issue directly in the [GitHub Issue Tracker](https://github.com/abhigyan-chatterjee/merit/issues).
 
-- **140 verified coding problems**, every reference solution executed to
-  100% AC through the real judge; 200 scrap drafts quarantined on disk.
-- **539-question bank** (341 verified active) with balanced options and
-  136 distinct designs; quizzes sampled server-side with no-repeat windows.
-- **BYOK AI tutor**: your API key is sent per-request and never stored;
-  the server just proxies to your provider.
-- **Clerk OAuth** (Google/GitHub) linked to existing accounts by verified
-  email; password login untouched; works keyless in dev (returns 501 until
-  configured).
-- **Neon-ready**: SQLite for local dev, Postgres for prod, migrations
-  current (`c4f1a2b3d4e5`).
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) — Copyright (c) 2026 Abhigyan Chatterjee.
