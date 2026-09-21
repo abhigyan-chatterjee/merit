@@ -100,5 +100,8 @@
   ],
   "sequence": 5,
   "prevSlug": "flood-fill",
-  "nextSlug": "course-schedule-ii"
+  "nextSlug": "course-schedule-ii",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Graph_traversal"
+  ]
 }

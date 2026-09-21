@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { CodeRunner } from '../components/CodeRunner';
-import { AiTutor } from '../components/AiTutor';
 import {
   ArrowLeft,
   Lightbulb,
@@ -336,14 +335,7 @@ export const ProblemDetailPage: React.FC = () => {
               functionName={problem.functionName}
               testCases={problem.testCases}
               onAllPassed={() => setProblemStatus(problem.slug, 'Done')}
-              tutorEnabled={false}
             />
-          {/* BYOK tutor: mount-only. AiTutor sends code="" (no live editor
-              access — CodeRunner owns the textarea) and resolves
-              failed_attempts itself from the judge submissions endpoint. */}
-          <div className="mt-4">
-            <AiTutor problemSlug={problem.slug} />
-          </div>
         </div>
       </div>
     </div>

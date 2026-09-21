@@ -12,6 +12,9 @@ import {
   History,
   Code2,
   Lock,
+  Lightbulb,
+  Copy,
+  X,
 } from "lucide-react";
 import { TestCase } from "../data/problems";
 import {
@@ -92,6 +95,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needsAuth, setNeedsAuth] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
+  const [showTutor, setShowTutor] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<SubmissionItem | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const setCode = (next: string) => {
     setCodeByLang((prev) => ({ ...prev, [language]: next }));
@@ -284,6 +290,43 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     }
   };
 
+  // Sub-second runtimes round to "0.0 ms" with one decimal, which reads
+  // like the run never happened. Show "< 1 ms" for anything between 0
+  // and 1ms; a true zero keeps its explicit "0.0 ms".
+  const formatRuntime = (ms: number): string => {
+    if (ms === 0) return "0.0 ms";
+    if (ms < 1) return "< 1 ms";
+    return `${ms.toFixed(1)} ms`;
+  };
+
+  // The judge list endpoint does not guarantee a `code` field on every
+  // row (older rows / guest verdicts). Read it defensively.
+  const selectedSubmissionCode = (s: SubmissionItem): string | null => {
+    const code = (s as unknown as { code?: unknown }).code;
+    return typeof code === "string" && code ? code : null;
+  };
+
+  const handleCopySubmissionCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      // Clipboard API unavailable (permissions / insecure context): fall
+      // back to a hidden textarea + execCommand.
+      const ta = document.createElement("textarea");
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+      } catch {
+        // Best effort only.
+      }
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1500);
+  };
+
   const renderVerdictBadge = () => {
     if (!verdict) return null;
     if (verdict === "AC") {
@@ -351,12 +394,27 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             <span className="hidden sm:inline">Reset</span>
           </button>
 
+          {tutorEnabled && (
+            <button
+              onClick={() => setShowTutor((v) => !v)}
+              aria-expanded={showTutor}
+              title="Toggle the AI tutor panel"
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded border text-xs font-mono cursor-pointer transition ${
+                showTutor
+                  ? "bg-violet/15 border-violet/50 text-ink"
+                  : "bg-surface border-line text-muted hover:text-ink"
+              }`}
+            >
+              <Lightbulb className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Ask the tutor</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {tutorEnabled && (
+      {tutorEnabled && showTutor && (
         <div className="p-2 border-b border-line bg-surface">
-          <AiTutor problemSlug={problemSlug} code={code} />
+          <AiTutor problemSlug={problemSlug} code={code} defaultOpen />
         </div>
       )}
 
@@ -550,7 +608,21 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                 {submissions.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between p-2.5 rounded-lg border border-line bg-canvas text-xs"
+                    role="button"
+                    tabIndex={0}
+                    title="View submitted code"
+                    onClick={() => {
+                      setCopied(false);
+                      setSelectedSubmission(s);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setCopied(false);
+                        setSelectedSubmission(s);
+                      }
+                    }}
+                    className="flex items-center justify-between p-2.5 rounded-lg border border-line bg-canvas text-xs cursor-pointer hover:border-mint transition"
                   >
                     <div className="flex items-center gap-2">
                       <span
@@ -563,7 +635,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                         {s.verdict}
                       </span>
                       <span className="text-ink uppercase text-[10px]">{s.language}</span>
-                      <span className="text-muted text-[10px]">{s.runtime_ms.toFixed(1)} ms</span>
+                      <span className="text-muted text-[10px]">{formatRuntime(s.runtime_ms)}</span>
                     </div>
                     <span className="text-[10px] text-muted">
                       {new Date(s.created_at).toLocaleString()}
@@ -575,6 +647,72 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           </div>
         )}
       </div>
+
+      {/* Previous-submission code viewer */}
+      {selectedSubmission && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Submitted code"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+          onClick={() => setSelectedSubmission(null)}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[80vh] flex flex-col rounded-xl border border-line bg-surface shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-2 px-4 py-2.5 border-b border-line font-mono text-xs">
+              <span className="flex items-center gap-2 text-muted">
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    selectedSubmission.verdict === "AC"
+                      ? "bg-mint/20 text-mint"
+                      : "bg-rose/20 text-rose"
+                  }`}
+                >
+                  {selectedSubmission.verdict}
+                </span>
+                <span className="text-ink uppercase text-[10px]">{selectedSubmission.language}</span>
+                <span className="text-[10px]">{formatRuntime(selectedSubmission.runtime_ms)}</span>
+              </span>
+              <div className="flex items-center gap-2">
+                {selectedSubmissionCode(selectedSubmission) && (
+                  <button
+                    onClick={() =>
+                      void handleCopySubmissionCode(
+                        selectedSubmissionCode(selectedSubmission) as string
+                      )
+                    }
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-line text-muted hover:text-ink hover:border-mint cursor-pointer transition"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    {copied ? "Copied!" : "Copy code"}
+                  </button>
+                )}
+                <button
+                  onClick={() => setSelectedSubmission(null)}
+                  aria-label="Close"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-line text-muted hover:text-ink cursor-pointer transition"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  Close
+                </button>
+              </div>
+            </div>
+            <div className="p-4 overflow-auto">
+              {selectedSubmissionCode(selectedSubmission) ? (
+                <pre className="p-3 rounded-lg bg-canvas border border-line font-mono text-xs text-ink overflow-x-auto whitespace-pre">
+                  {selectedSubmissionCode(selectedSubmission)}
+                </pre>
+              ) : (
+                <p className="font-mono text-xs text-muted">
+                  Code is not available for this submission.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

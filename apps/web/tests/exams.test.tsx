@@ -195,11 +195,11 @@ describe('Exams catalog', () => {
     expect(await screen.findByText(/Navigator question 1/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Question 3/i }));
     expect(await screen.findByText(/Navigator question 3/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /^AA$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^A\.\s*A$/i }));
     fireEvent.click(screen.getByRole('button', { name: /^Question 1unanswered$/i }));
     expect(await screen.findByText(/Navigator question 1/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /^Question 3answered$/i }));
-    expect(await screen.findByRole('button', { name: /^AA$/i })).toHaveClass('border-mint');
+    expect(await screen.findByRole('button', { name: /^A\.\s*A$/i })).toHaveClass('border-mint');
     expect(screen.getByLabelText('answered')).toBeInTheDocument();
   });
 
@@ -378,7 +378,7 @@ describe('Exams catalog', () => {
     // Full statement visible inline without clicking the "Open full statement" link.
     expect(await screen.findByText(/Given an array of integers/i)).toBeInTheDocument();
     expect(await screen.findByText(/Example 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Open full statement/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Open full statement/i)).not.toBeInTheDocument();
   });
 
   it('marks the navigator item Attempted after a non-AC exam coding submit', async () => {
@@ -457,7 +457,7 @@ describe('Exams catalog', () => {
     expect(await screen.findByText('Navigator Accepted')).toBeInTheDocument();
   });
 
-  it('retries only wrong MCQs from inside a timed exam', async () => {
+  it('submits an exam and shows a result without a casual retry action', async () => {
     vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
       id: 'usr-retry',
       email: 'retry@test.com',
@@ -515,36 +515,19 @@ describe('Exams catalog', () => {
         },
       ],
     });
-    vi.spyOn(apiModule.quizApi, 'retryWrong').mockResolvedValue({
-      attempt_id: 'att-retry-2',
-      questions: [
-        {
-          id: 'retry-q-1',
-          topic: 'arrays-hashing',
-          subtopic: null,
-          difficulty: 'Easy',
-          prompt: 'Exam retry question one?',
-          options: ['Wrong', 'Right'],
-        },
-      ],
-      total: 1,
-    });
-
     renderExams('/exams/foundational-dsa');
     fireEvent.click(await screen.findByText(/Start timed exam/i));
     expect(await screen.findByText(/Exam retry question one/i)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Wrong'));
     fireEvent.click(screen.getByRole('button', { name: /Next/i }));
     fireEvent.click(screen.getByText('Right'));
-    fireEvent.click(screen.getByRole('button', { name: /Submit Quiz/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /Retry Wrong Only \(1\)/i }));
-
-    await waitFor(() => {
-      expect(apiModule.quizApi.retryWrong).toHaveBeenCalledWith('att-retry-1');
-    });
-    expect(screen.getByText(/Question 1 of 1/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/Exam retry question one/i).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/Exam retry question two/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Submit Exam \(2\/2\)/i }));
+    await waitFor(() => expect(apiModule.quizApi.submitQuiz).toHaveBeenCalledWith('att-retry-1', expect.any(Number), {
+      'retry-q-1': 0,
+      'retry-q-2': 0,
+    }));
+    expect(await screen.findByText(/Exam Result/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Retry/i })).not.toBeInTheDocument();
   });
 
   it('auto-submits the timed mock when the countdown reaches zero', async () => {

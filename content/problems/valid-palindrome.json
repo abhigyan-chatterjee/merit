@@ -66,5 +66,8 @@
   ],
   "sequence": 2,
   "prevSlug": "container-with-most-water",
-  "nextSlug": "merge-two-sorted-lists"
+  "nextSlug": "merge-two-sorted-lists",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Two-pointer_technique"
+  ]
 }

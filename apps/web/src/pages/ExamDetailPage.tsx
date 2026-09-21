@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
-import { QuizEngine } from '../components/QuizEngine';
+import { ExamMcqSection } from '../components/ExamMcqSection';
 import { ExamCodingSection } from '../components/ExamCodingSection';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
@@ -28,6 +28,10 @@ export const ExamDetailPage: React.FC = () => {
   const [answeredMcqs, setAnsweredMcqs] = useState<Record<string, boolean>>({});
   const [loadedMcqCount, setLoadedMcqCount] = useState(0);
   const [mcqQuestionIds, setMcqQuestionIds] = useState<string[]>([]);
+  const [secondsRemaining, setSecondsRemaining] = useState(exam?.durationSec ?? 0);
+  const [examSubmitted, setExamSubmitted] = useState(false);
+  const [isAutoSubmitRequested, setIsAutoSubmitRequested] = useState(false);
+  const [proctorNotice, setProctorNotice] = useState<string | null>(null);
 
   useEffect(() => {
     setStarted(false);
@@ -37,7 +41,49 @@ export const ExamDetailPage: React.FC = () => {
     setAnsweredMcqs({});
     setLoadedMcqCount(0);
     setMcqQuestionIds([]);
+    setSecondsRemaining(exam?.durationSec ?? 0);
+    setExamSubmitted(false);
+    setIsAutoSubmitRequested(false);
+    setProctorNotice(null);
   }, [id]);
+
+  useEffect(() => {
+    if (!started || examSubmitted) return;
+    const timer = window.setInterval(() => {
+      setSecondsRemaining((remaining) => Math.max(remaining - 1, 0));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [started, examSubmitted]);
+
+  useEffect(() => {
+    if (!started || examSubmitted || secondsRemaining > 0) return;
+    setIsAutoSubmitRequested(true);
+  }, [started, examSubmitted, secondsRemaining]);
+
+  useEffect(() => {
+    if (!started || examSubmitted) return;
+    const notice = 'Exam auto-submitted: tab switch or window blur detected.';
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsAutoSubmitRequested(true);
+        setProctorNotice(notice);
+      }
+    };
+    const handleBlur = () => {
+      setIsAutoSubmitRequested(true);
+      setProctorNotice(notice);
+    };
+    const previousBlurHandler = window.onblur;
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.onblur = handleBlur;
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.onblur = previousBlurHandler;
+    };
+  }, [started, examSubmitted]);
+
+  const formatTime = (seconds: number) =>
+    `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
   if (!exam) {
     return (
@@ -132,6 +178,25 @@ export const ExamDetailPage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
+          <div className="sticky top-3 z-10 flex justify-end">
+            <div
+              aria-label={`Time remaining ${formatTime(secondsRemaining)}`}
+              className={`inline-flex items-center rounded-lg border px-3 py-1.5 font-mono text-sm font-bold shadow-sm ${
+                secondsRemaining < 60
+                  ? 'border-rose/60 bg-rose/15 text-rose animate-pulse'
+                  : secondsRemaining < 300
+                    ? 'border-amber/60 bg-amber/15 text-amber'
+                    : 'border-line bg-surface text-ink'
+              }`}
+            >
+              ⏱ {formatTime(secondsRemaining)}
+            </div>
+          </div>
+          {proctorNotice && (
+            <div role="alert" className="rounded-lg border border-rose/50 bg-rose/10 px-3 py-2 text-xs font-mono text-rose">
+              {proctorNotice}
+            </div>
+          )}
           {(mcqPct !== null || Object.keys(codingPassed).length > 0) && (
             <div className="p-4 rounded-xl border border-mint/40 bg-mint/5 text-xs font-mono text-ink">
               MCQ score: {mcqPct ?? '—'}%
@@ -230,28 +295,30 @@ export const ExamDetailPage: React.FC = () => {
               <div
                 hidden={selectedItem.type !== 'mcq'}
               >
-                <QuizEngine
+                <ExamMcqSection
                   key={exam.id}
-                  topicTitle={exam.title}
-                  topicId="mixed"
-                  examTopics={exam.topics}
-                  examCount={exam.questionCount}
-                  examDifficulty={exam.difficulty}
-                  examTopicPlan={exam.topicPlan}
-                  isMock
-                  perQuestionSec={null}
-                  durationLimitSec={exam.durationSec}
+                  examId={exam.id}
+                  examTitle={exam.title}
+                  topics={exam.topics}
+                  questionCount={exam.questionCount}
+                  difficulty={exam.difficulty ?? ''}
+                  topicPlan={exam.topicPlan}
+                  durationSec={exam.durationSec}
                   currentIndex={selectedItem.index}
                   onCurrentIndexChange={(index) => setSelectedItem({ type: 'mcq', index })}
                   onAnswersChange={(answers) =>
                     setAnsweredMcqs(Object.fromEntries(Object.keys(answers).map((questionId) => [questionId, true])))
                   }
-                  onQuestionCountChange={setLoadedMcqCount}
-                  onQuestionIdsChange={setMcqQuestionIds}
+                  onQuestionIdsChange={(ids) => {
+                    setMcqQuestionIds(ids);
+                    setLoadedMcqCount(ids.length);
+                  }}
                   onComplete={(pct) => {
+                    setExamSubmitted(true);
                     setMcqPct(pct);
                     saveQuizScore(`exam:${exam.id}`, pct);
                   }}
+                  isAutoSubmitRequested={isAutoSubmitRequested}
                 />
               </div>
               {exam.coding.length > 0 && selectedItem.type === 'coding' && (

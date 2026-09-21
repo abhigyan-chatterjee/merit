@@ -113,6 +113,17 @@ def test_models_passthrough(client: TestClient, monkeypatch):
     assert API_KEY not in res.text
 
 
+def test_models_allow_guest_access(client: TestClient, monkeypatch):
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "guest-model"}]}),
+    )
+
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
+    assert res.status_code == 200
+    assert res.json() == {"models": ["guest-model"]}
+
+
 def test_models_upstream_500_maps_to_502(client: TestClient, monkeypatch):
     register_user(client, "tutor_models_500@merit.org")
     install_fake_client(monkeypatch, get=lambda url, headers: FakeResponse(500, {"error": "boom"}))
@@ -190,6 +201,28 @@ def test_chat_forwards_system_and_problem_context(client: TestClient, monkeypatc
     # Key travels only in the Authorization header, never echoed back
     assert API_KEY not in res.text
     assert API_KEY not in str(sent["json"])
+
+
+def test_chat_allows_guest_access(client: TestClient, monkeypatch):
+    install_fake_client(
+        monkeypatch,
+        post=lambda url, headers, body: FakeResponse(
+            200, {"choices": [{"message": {"content": "Guest hint"}}]}
+        ),
+    )
+
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "question": "Help?",
+        },
+    )
+    assert res.status_code == 200
+    assert res.json() == {"reply": "Guest hint"}
 
 
 def test_chat_tripwire_blocks_solution_code_reply(client: TestClient, monkeypatch):
@@ -318,9 +351,17 @@ def test_chat_unknown_problem_404(client: TestClient, monkeypatch):
     assert res.json()["detail"]["code"] == "PROBLEM_NOT_FOUND"
 
 
-def test_unauthenticated_rejected_on_both(client: TestClient):
+def test_unauthenticated_allowed_on_both(client: TestClient, monkeypatch):
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
+        post=lambda url, headers, body: FakeResponse(
+            200, {"choices": [{"message": {"content": "Guest hint"}}]}
+        ),
+    )
+
     res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
-    assert res.status_code == 401
+    assert res.status_code == 200
 
     res = client.post(
         "/api/v1/tutor/chat",
@@ -332,7 +373,7 @@ def test_unauthenticated_rejected_on_both(client: TestClient):
             "question": "Help?",
         },
     )
-    assert res.status_code == 401
+    assert res.status_code == 200
 
 
 def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):

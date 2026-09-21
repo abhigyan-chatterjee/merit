@@ -70,5 +70,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "spiral-matrix"
+  "nextSlug": "spiral-matrix",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Matrix_(mathematics)"
+  ]
 }

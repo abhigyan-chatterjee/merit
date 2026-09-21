@@ -30,7 +30,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(prices) {\n  let best = 0;\n  for (let i = 0; i < prices.length; i++) {\n    for (let j = i + 1; j < prices.length; j++) {\n      best = Math.max(best, prices[j] - prices[i]);\n    }\n  }\n  return best;\n}"
     },
     {
@@ -85,5 +85,8 @@
   ],
   "sequence": 6,
   "prevSlug": "subarray-sum-equals-k",
-  "nextSlug": "longest-consecutive-sequence"
+  "nextSlug": "longest-consecutive-sequence",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure"
+  ]
 }

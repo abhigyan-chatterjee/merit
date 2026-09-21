@@ -93,5 +93,8 @@
   ],
   "sequence": 3,
   "prevSlug": "middle-of-the-linked-list",
-  "nextSlug": "palindrome-linked-list"
+  "nextSlug": "palindrome-linked-list",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Linked_list"
+  ]
 }

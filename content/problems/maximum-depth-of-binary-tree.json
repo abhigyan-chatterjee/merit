@@ -78,5 +78,9 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "same-tree"
+  "nextSlug": "same-tree",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal",
+    "https://en.wikipedia.org/wiki/Depth-first_search"
+  ]
 }

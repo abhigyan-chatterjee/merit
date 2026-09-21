@@ -67,5 +67,9 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sliding_window_protocol",
+    "https://www.geeksforgeeks.org/window-sliding-technique/"
+  ]
 }

@@ -95,5 +95,8 @@
   ],
   "sequence": 4,
   "prevSlug": "valid-anagram",
-  "nextSlug": "subarray-sum-equals-k"
+  "nextSlug": "subarray-sum-equals-k",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure"
+  ]
 }

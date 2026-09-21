@@ -87,5 +87,9 @@
   ],
   "sequence": 2,
   "prevSlug": "two-sum",
-  "nextSlug": "valid-anagram"
+  "nextSlug": "valid-anagram",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure",
+    "https://en.wikipedia.org/wiki/Hash_table"
+  ]
 }

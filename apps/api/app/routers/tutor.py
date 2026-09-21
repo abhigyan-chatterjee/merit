@@ -20,7 +20,7 @@ from threading import Lock
 from urllib.parse import urlsplit
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -33,7 +33,7 @@ from app.schemas.tutor import (
     TutorModelsRequest,
     TutorModelsResponse,
 )
-from app.security import get_current_user
+from app.security import get_optional_current_user
 
 router = APIRouter(prefix="/api/v1/tutor", tags=["tutor"])
 
@@ -178,9 +178,11 @@ def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: in
 @router.post("/models", response_model=TutorModelsResponse)
 async def list_models(
     req: TutorModelsRequest,
-    user: User = Depends(get_current_user),
+    request: Request,
+    user: User | None = Depends(get_optional_current_user),
 ) -> TutorModelsResponse:
-    _check_rate_limit(user.id)
+    rate_key = user.id if user else (request.client.host if request.client else "guest")
+    _check_rate_limit(rate_key)
     _validate_provider_url(req.base_url)
     try:
         async with httpx.AsyncClient(timeout=MODELS_TIMEOUT_S, follow_redirects=False) as client:
@@ -199,10 +201,12 @@ async def list_models(
 @router.post("/chat", response_model=TutorChatResponse)
 async def chat(
     req: TutorChatRequest,
-    user: User = Depends(get_current_user),
+    request: Request,
+    user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ) -> TutorChatResponse:
-    _check_rate_limit(user.id)
+    rate_key = user.id if user else (request.client.host if request.client else "guest")
+    _check_rate_limit(rate_key)
     _validate_provider_url(req.base_url)
     problem = db.scalar(
         select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")

@@ -143,5 +143,9 @@
   ],
   "sequence": 4,
   "prevSlug": "number-of-islands",
-  "nextSlug": "course-schedule"
+  "nextSlug": "course-schedule",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Graph_traversal",
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ]
 }

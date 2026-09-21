@@ -111,5 +111,8 @@
   ],
   "sequence": 5,
   "prevSlug": "palindrome-linked-list",
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Linked_list"
+  ]
 }

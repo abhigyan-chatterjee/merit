@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { contentApi } from '../utils/api';
 import { CodeRunner } from '../components/CodeRunner';
@@ -113,14 +112,6 @@ export const ExamCodingSection: React.FC<{
                 </span>
               )}
             </div>
-            <Link
-              to={`/problems/${item.topic ?? PROBLEMS.find((p) => p.slug === item.slug)?.topic ?? 'arrays-hashing'}/${item.slug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[11px] font-mono text-muted hover:text-mint transition-colors"
-            >
-              Open full statement →
-            </Link>
           </div>
           <div className="p-3 rounded-lg border border-line bg-surface space-y-3">
             {item.statement && <p className="text-xs text-ink leading-relaxed">{item.statement}</p>}
@@ -168,7 +159,7 @@ export const ExamCodingSection: React.FC<{
               tutorEnabled={false}
             />
           ) : (
-            <p className="text-xs text-muted">Could not load this question. Open the full statement instead.</p>
+            <p className="text-xs text-muted">Could not load this question.</p>
           )}
         </div>
       ))}

@@ -69,5 +69,8 @@
   ],
   "sequence": 3,
   "prevSlug": "contains-duplicate",
-  "nextSlug": "product-of-array-except-self"
+  "nextSlug": "product-of-array-except-self",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure"
+  ]
 }

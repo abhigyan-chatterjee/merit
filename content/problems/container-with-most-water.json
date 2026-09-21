@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(height) {\n  let max = 0;\n  for (let i = 0; i < height.length; i++) {\n    for (let j = i + 1; j < height.length; j++) {\n      max = Math.max(max, (j - i) * Math.min(height[i], height[j]));\n    }\n  }\n  return max;\n}"
     },
     {
@@ -86,5 +86,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "valid-palindrome"
+  "nextSlug": "valid-palindrome",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Two-pointer_technique"
+  ]
 }

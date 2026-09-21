@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Bot, ChevronDown, ChevronUp, ExternalLink, Send } from "lucide-react";
 import { catalogIdForBaseUrl, loadTutorCatalog, useTutorKey } from "../hooks/useTutorKey";
+import { ApiError, apiRequest } from "../utils/api";
 
 interface AiTutorProps {
   problemSlug: string;
   code?: string;
   failedAttempts?: number;
+  defaultOpen?: boolean;
 }
 
 interface ChatMessage {
@@ -14,23 +16,9 @@ interface ChatMessage {
 }
 type TutorStatus = "idle" | "key-set" | "models-loaded" | "chatting" | "error";
 
-async function readErrorMessage(res: Response, fallback: string): Promise<string> {
-  try {
-    const data = await res.json();
-    const detail = (data as { detail?: unknown }).detail;
-    if (typeof detail === "string" && detail) return detail;
-    if (detail && typeof detail === "object" && typeof (detail as { message?: unknown }).message === "string") {
-      return (detail as { message: string }).message;
-    }
-  } catch {
-    // Use the status fallback for non-JSON responses.
-  }
-  return `${fallback} (HTTP ${res.status})`;
-}
-
-export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failedAttempts = 0 }) => {
+export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failedAttempts = 0, defaultOpen = false }) => {
   const { apiKey, baseUrl, model, setModel } = useTutorKey();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [models, setModels] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [question, setQuestion] = useState("");
@@ -75,9 +63,14 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
-    void fetch(`/api/v1/judge/submissions/${encodeURIComponent(problemSlug)}`, { credentials: "include" })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((subs: Array<{ verdict?: unknown }>) => {
+    // Routed through apiRequest so an expired 15-minute access token is
+    // silently refreshed (single 401 retry) instead of surfacing
+    // "Authentication credentials missing" for a logged-in user.
+    void apiRequest<Array<{ verdict?: unknown }>>(
+      `/api/v1/judge/submissions/${encodeURIComponent(problemSlug)}`,
+      { method: "GET" }
+    )
+      .then((subs) => {
         if (!cancelled && Array.isArray(subs)) setFailedCount(subs.filter((s) => s.verdict !== "AC").length);
       })
       .catch(() => undefined);
@@ -101,26 +94,27 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
     setMessages((previous) => [...previous, { role: "user", content: q }]);
     setQuestion("");
     try {
-      const res = await fetch("/api/v1/tutor/chat", {
+      // apiRequest refreshes an expired access token once on 401, so a
+      // stale 15-minute cookie retries transparently instead of failing
+      // with "Authentication credentials missing".
+      const data = await apiRequest<{ reply?: unknown }>("/api/v1/tutor/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ base_url: baseUrl, api_key: apiKey, model, problem_slug: problemSlug, code, question: q, failed_attempts: failedCount }),
       });
-      if (!res.ok) {
-        setError(await readErrorMessage(res, "Tutor request failed"));
-        setStatus("error");
-        return;
-      }
-      const data = (await res.json()) as { reply?: unknown };
       if (typeof data.reply !== "string" || !data.reply.trim()) {
         setError("Tutor returned an empty reply. Try again.");
         setStatus("error");
         return;
       }
       setMessages((previous) => [...previous, { role: "tutor", content: data.reply as string }]);
-    } catch {
-      setError("Could not reach the tutor service. Is the API server up?");
+    } catch (err) {
+      // Surface the server's message verbatim (ApiError carries
+      // error.message / detail.message); network failures get a hint.
+      if (err instanceof ApiError) {
+        setError(err.message || "Tutor request failed. Try again.");
+      } else {
+        setError("Could not reach the tutor service. Is the API server up?");
+      }
       setStatus("error");
     } finally {
       setSending(false);

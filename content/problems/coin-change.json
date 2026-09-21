@@ -79,5 +79,8 @@
   ],
   "sequence": 4,
   "prevSlug": "maximum-subarray",
-  "nextSlug": "longest-increasing-subsequence"
+  "nextSlug": "longest-increasing-subsequence",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ]
 }

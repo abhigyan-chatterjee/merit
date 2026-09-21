@@ -90,5 +90,8 @@
   ],
   "sequence": 3,
   "prevSlug": "same-tree",
-  "nextSlug": "diameter-of-binary-tree"
+  "nextSlug": "diameter-of-binary-tree",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal"
+  ]
 }

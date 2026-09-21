@@ -86,5 +86,9 @@
   ],
   "sequence": 5,
   "prevSlug": "diameter-of-binary-tree",
-  "nextSlug": "kth-smallest-element-in-a-bst"
+  "nextSlug": "kth-smallest-element-in-a-bst",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal",
+    "https://en.wikipedia.org/wiki/Depth-first_search"
+  ]
 }

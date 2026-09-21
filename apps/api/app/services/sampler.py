@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
@@ -152,9 +153,11 @@ def sample_questions(
     # (user_id, question_id) PK → 500 IntegrityError. ON CONFLICT makes
     # the second writer a timestamp refresh instead of a crash.
     if sampled:
-        upsert = sqlite_insert(UserQuestionExposure).values(
-            [{"user_id": user_id, "question_id": q.id, "shown_at": now_str} for q in sampled]
-        )
+        values = [
+            {"user_id": user_id, "question_id": q.id, "shown_at": now_str} for q in sampled
+        ]
+        insert = pg_insert if db.get_bind().dialect.name == "postgresql" else sqlite_insert
+        upsert = insert(UserQuestionExposure).values(values)
         upsert = upsert.on_conflict_do_update(
             index_elements=["user_id", "question_id"],
             set_={"shown_at": now_str},

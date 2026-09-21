@@ -91,5 +91,8 @@
   ],
   "sequence": 2,
   "prevSlug": "reverse-linked-list",
-  "nextSlug": "linked-list-cycle"
+  "nextSlug": "linked-list-cycle",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Linked_list"
+  ]
 }

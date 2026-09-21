@@ -69,5 +69,8 @@
   ],
   "sequence": 6,
   "prevSlug": "longest-increasing-subsequence",
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ]
 }

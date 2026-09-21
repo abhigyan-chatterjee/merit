@@ -82,5 +82,8 @@
   ],
   "sequence": 2,
   "prevSlug": "climbing-stairs",
-  "nextSlug": "maximum-subarray"
+  "nextSlug": "maximum-subarray",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ]
 }

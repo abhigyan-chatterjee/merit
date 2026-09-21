@@ -91,5 +91,8 @@
   ],
   "sequence": 2,
   "prevSlug": "decode-string",
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+  ]
 }

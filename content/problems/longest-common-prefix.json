@@ -78,5 +78,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Trie"
+  ]
 }

@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "Quadratic DP Tabulation",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "code": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}"
     },
     {
@@ -88,5 +88,9 @@
   ],
   "sequence": 5,
   "prevSlug": "coin-change",
-  "nextSlug": "unique-paths"
+  "nextSlug": "unique-paths",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming",
+    "https://visualgo.net/en/sorting"
+  ]
 }

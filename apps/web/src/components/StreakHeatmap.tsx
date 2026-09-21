@@ -60,19 +60,20 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
 
   return (
     <div className="rounded-xl border border-line bg-surface">
-      {/* header rail */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 h-11 border-b border-line">
-        <span className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+      {/* header rail — single line, no wrapping: the bottom border must
+          never slice through badges, so height grows instead of clipping */}
+      <div className="flex items-center justify-between gap-3 px-4 py-2 min-h-11 border-b border-line whitespace-nowrap overflow-x-auto">
+        <span className="inline-flex shrink-0 items-center gap-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
           <span className="w-1 h-1 rounded-full bg-mint" />
           Activity · last {WEEKS} weeks
         </span>
-        <div className="flex items-center gap-4 font-mono text-[11px]">
+        <div className="flex shrink-0 items-center gap-4 font-mono text-[11px]">
           <span className="text-muted">
             <span className="text-ink font-bold tnum">{activeCount}</span> active days
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-mint/40 bg-mint/10 text-mint">
+          <span title={`${currentStreak} day streak`} className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-mint/40 bg-mint/10 text-mint">
             <Flame className="w-3 h-3" />
-            <span className="font-bold tnum">{currentStreak}</span> day streak
+            <span className="font-bold tnum">{currentStreak}</span>
           </span>
         </div>
       </div>

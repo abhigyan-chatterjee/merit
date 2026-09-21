@@ -54,14 +54,14 @@ describe('Route Validation & 404 Handling (D5)', () => {
     // Lazy route chunks can be slow to resolve under full-suite load.
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
     expect(screen.getByText(/Visualizer Not Found/i)).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('renders NotFound for mismatching problem slug and topic', async () => {
     // two-sum belongs to 'arrays-hashing', not 'graphs'
     renderWithRouter('/problems/graphs/two-sum');
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('renders NotFound for unknown problem slug', async () => {
     renderWithRouter('/problems/arrays-hashing/not-a-real-problem');

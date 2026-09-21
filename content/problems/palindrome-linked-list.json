@@ -78,5 +78,8 @@
   ],
   "sequence": 4,
   "prevSlug": "linked-list-cycle",
-  "nextSlug": "add-two-numbers"
+  "nextSlug": "add-two-numbers",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Linked_list"
+  ]
 }

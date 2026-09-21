@@ -57,6 +57,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authApi.logout();
     } finally {
+      // Invalidate the Clerk session as well, otherwise Clerk's cookie
+      // survives and /login auto-signs the user back into the previous
+      // account without letting them reselect. AuthProvider sits outside
+      // any ClerkProvider so useClerk() is unavailable here — go through
+      // the global Clerk instance when it is active. (Deliberately not
+      // importing ClerkOAuth: it imports this module for useAuth.)
+      try {
+        const clerk = (
+          window as unknown as { Clerk?: { signOut?: () => Promise<unknown> | unknown } }
+        ).Clerk;
+        if (clerk && typeof clerk.signOut === "function") {
+          await clerk.signOut();
+        }
+      } catch {
+        // Clerk not configured or already unloaded — nothing to clear.
+      }
       setUser(null);
     }
   };

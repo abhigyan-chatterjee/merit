@@ -92,5 +92,9 @@
   ],
   "sequence": 2,
   "prevSlug": "maximum-depth-of-binary-tree",
-  "nextSlug": "invert-binary-tree"
+  "nextSlug": "invert-binary-tree",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal",
+    "https://en.wikipedia.org/wiki/Depth-first_search"
+  ]
 }

@@ -87,5 +87,8 @@
   ],
   "sequence": 7,
   "prevSlug": "best-time-to-buy-and-sell-stock",
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Array_data_structure"
+  ]
 }

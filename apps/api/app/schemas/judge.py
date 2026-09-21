@@ -38,6 +38,7 @@ class SubmissionResponse(BaseModel):
     id: str
     problem_slug: str
     language: str
+    code: str | None = None
     verdict: str
     runtime_ms: float
     test_results: list[TestCaseResult]

@@ -69,5 +69,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "valid-parentheses"
+  "nextSlug": "valid-parentheses",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+  ]
 }

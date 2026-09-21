@@ -66,5 +66,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "house-robber"
+  "nextSlug": "house-robber",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ]
 }

@@ -91,6 +91,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[7, 6, 4, 3, 1]], expected: 0, label: "[7,6,4,3,1]" },
       { input: [[1, 2]], expected: 1, label: "[1,2]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+    ],
   },
   {
     id: "arr-5",
@@ -133,6 +136,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 1]], expected: true, label: "[1,2,3,1]" },
       { input: [[1, 2, 3, 4]], expected: false, label: "[1,2,3,4]" },
       { input: [[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]], expected: true, label: "[1,1,1,3,3...]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+      "https://en.wikipedia.org/wiki/Hash_table",
     ],
   },
   {
@@ -585,6 +592,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[3, 2, 4], 6], expected: [1, 2], label: "nums=[3,2,4], target=6" },
       { input: [[3, 3], 6], expected: [0, 1], label: "nums=[3,3], target=6" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+      "https://en.wikipedia.org/wiki/Hash_table",
+    ],
   },
   {
     id: "arr-15",
@@ -712,6 +723,9 @@ export const PROBLEMS: Problem[] = [
       { input: ["rat", "car"], expected: false, label: "\"rat\", \"car\"" },
       { input: ["listen", "silent"], expected: true, label: "\"listen\", \"silent\"" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+    ],
   },
   {
     id: "arr-16",
@@ -837,6 +851,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[0, 3, 7, 2, 5, 8, 4, 6, 0, 1]], expected: 9, label: "[0,3,7,2,5,8,4,6,0,1]" },
       { input: [[]], expected: 0, label: "[] empty" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+    ],
   },
   {
     id: "arr-3",
@@ -879,6 +896,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 4]], expected: [24, 12, 8, 6], label: "[1,2,3,4]" },
       { input: [[-1, 1, 0, -3, 3]], expected: [0, 0, 9, 0, 0], label: "[-1,1,0,-3,3]" },
       { input: [[2, 5]], expected: [5, 2], label: "[2,5]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
     ],
   },
   {
@@ -1005,6 +1025,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 1, 1], 2], expected: 2, label: "[1,1,1], k=2" },
       { input: [[1, 2, 3], 3], expected: 2, label: "[1,2,3], k=3" },
       { input: [[1, -1, 0], 0], expected: 3, label: "[1,-1,0], k=0" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Array_data_structure",
+      "https://en.wikipedia.org/wiki/Hash_table",
     ],
   },
   {
@@ -1299,6 +1323,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[], [0]], expected: [0], label: "[], [0]" },
       { input: [[2, 5], [1, 3, 6]], expected: [1, 2, 3, 5, 6], label: "[2,5], [1,3,6]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Two-pointer_technique",
+    ],
   },
   {
     id: "tp-2",
@@ -1424,6 +1451,9 @@ export const PROBLEMS: Problem[] = [
       { input: ["A man, a plan, a canal: Panama"], expected: true, label: "\"A man, a plan...\"" },
       { input: ["race a car"], expected: false, label: "\"race a car\"" },
       { input: [" "], expected: true, label: "\" \"" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
   },
   {
@@ -1633,6 +1663,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 1]], expected: 1, label: "[1,1]" },
       { input: [[4, 3, 2, 1, 4]], expected: 16, label: "[4,3,2,1,4]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Two-pointer_technique",
+    ],
   },
   {
     id: "ll-4",
@@ -1674,6 +1707,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 4, 5], 2], expected: [1, 2, 3, 5], label: "[1,2,3,4,5], n=2" },
       { input: [[1], 1], expected: [], label: "[1], n=1" },
       { input: [[1, 2], 1], expected: [1], label: "[1,2], n=1" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
   },
   {
@@ -1964,6 +2000,10 @@ export const PROBLEMS: Problem[] = [
       { input: ["abcabcbb"], expected: 3, label: "\"abcabcbb\"" },
       { input: ["bbbbb"], expected: 1, label: "\"bbbbb\"" },
       { input: ["pwwkew"], expected: 3, label: "\"pwwkew\"" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Sliding_window_protocol",
+      "https://www.geeksforgeeks.org/window-sliding-technique/",
     ],
   },
   {
@@ -2619,6 +2659,9 @@ export const PROBLEMS: Problem[] = [
       { input: ["(]"], expected: false, label: "\"(]\"" },
       { input: ["{[]}"], expected: true, label: "\"{[]}\"" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+    ],
   },
   {
     id: "stack-5",
@@ -2930,6 +2973,9 @@ export const PROBLEMS: Problem[] = [
       { input: ["3[a]2[bc]"], expected: "aaabcbc", label: "\"3[a]2[bc]\"" },
       { input: ["3[a2[c]]"], expected: "accaccacc", label: "\"3[a2[c]]\"" },
       { input: ["2[abc]3[cd]ef"], expected: "abcabccdcdcdef", label: "\"2[abc]3[cd]ef\"" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
     ],
   },
   {
@@ -3257,6 +3303,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1], -1], expected: false, label: "[1], pos=-1" },
       { input: [[1], 0], expected: true, label: "[1], pos=0 self-loop" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Linked_list",
+    ],
   },
   {
     id: "ll-2",
@@ -3300,6 +3349,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 4, 5, 6]], expected: [4, 5, 6], label: "[1,2,3,4,5,6]" },
       { input: [[1]], expected: [1], label: "[1]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Linked_list",
+    ],
   },
   {
     id: "ll-5",
@@ -3342,6 +3394,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 2, 1]], expected: true, label: "[1,2,2,1]" },
       { input: [[1, 2]], expected: false, label: "[1,2]" },
       { input: [[1, 3, 1]], expected: true, label: "[1,3,1]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Linked_list",
     ],
   },
   {
@@ -3472,6 +3527,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2]], expected: [2, 1], label: "[1,2]" },
       { input: [[]], expected: [], label: "[]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Linked_list",
+    ],
   },
   {
     id: "ll-7",
@@ -3513,6 +3571,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 4, 3], [5, 6, 4]], expected: [7, 0, 8], label: "[2,4,3] + [5,6,4]" },
       { input: [[0], [0]], expected: [0], label: "[0] + [0]" },
       { input: [[9, 9, 9, 9, 9, 9, 9], [9, 9, 9, 9]], expected: [8, 9, 9, 9, 0, 0, 0, 1], label: "carry cascade" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Linked_list",
     ],
   },
   {
@@ -4341,6 +4402,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2]], expected: 1, label: "[1,2]" },
       { input: [[]], expected: 0, label: "[]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
   },
   {
     id: "tree-2",
@@ -4384,6 +4448,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 1, 3]], expected: [2, 3, 1], label: "[2,1,3]" },
       { input: [[]], expected: [], label: "[]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
   },
   {
     id: "tree-1",
@@ -4425,6 +4492,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[3, 9, 20, null, null, 15, 7]], expected: 3, label: "[3,9,20,null,null,15,7]" },
       { input: [[1, null, 2]], expected: 2, label: "[1,null,2]" },
       { input: [[]], expected: 0, label: "[]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
     ],
   },
   {
@@ -4468,6 +4539,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3], [1, 2, 3]], expected: true, label: "p=[1,2,3], q=[1,2,3]" },
       { input: [[1, 2], [1, null, 2]], expected: false, label: "p=[1,2], q=[1,null,2]" },
       { input: [[1, 2, 1], [1, 1, 2]], expected: false, label: "p=[1,2,1], q=[1,1,2]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
     ],
   },
   {
@@ -5136,6 +5211,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[5, 3, 6, 2, 4, null, null, 1], 3], expected: 3, label: "root=[5,3,6,2,4...], k=3" },
       { input: [[2, 1, 3], 2], expected: 2, label: "root=[2,1,3], k=2" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
   },
   {
     id: "tree-15",
@@ -5261,6 +5339,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 1], expected: 3, label: "p=5, q=1 -> 3" },
       { input: [[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 4], expected: 5, label: "p=5, q=4 -> 5" },
       { input: [[1, 2], 1, 2], expected: 1, label: "p=1, q=2 -> 1" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
     ],
   },
   {
@@ -5393,6 +5474,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 1, 3]], expected: true, label: "[2,1,3]" },
       { input: [[5, 1, 4, null, null, 3, 6]], expected: false, label: "[5,1,4,null,null,3,6]" },
       { input: [[10, 5, 15, null, null, 6, 20]], expected: false, label: "[10,5,15,null,null,6,20]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
     ],
   },
   {
@@ -6386,6 +6471,10 @@ export const PROBLEMS: Problem[] = [
       { input: [6, [[0, 1], [0, 2], [3, 5], [5, 4], [4, 3]], 0, 5], expected: false, label: "n=6, disconnected" },
       { input: [1, [], 0, 0], expected: true, label: "n=1, same source/dest" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
+      "https://en.wikipedia.org/wiki/Breadth-first_search",
+    ],
   },
   {
     id: "graph-5",
@@ -6428,6 +6517,9 @@ export const PROBLEMS: Problem[] = [
       { input: [3, [[1, 3], [2, 3]]], expected: 3, label: "n=3, judge=3" },
       { input: [3, [[1, 3], [2, 3], [3, 1]]], expected: -1, label: "n=3, no judge" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
+    ],
   },
   {
     id: "graph-4",
@@ -6469,6 +6561,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2], expected: [[2, 2, 2], [2, 2, 0], [2, 0, 1]], label: "3x3 flood fill center" },
       { input: [[[0, 0, 0], [0, 0, 0]], 0, 0, 0], expected: [[0, 0, 0], [0, 0, 0]], label: "Same color no-op" },
       { input: [[[1, 0], [0, 1]], 0, 0, 5], expected: [[5, 0], [0, 1]], label: "Single isolated cell" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
+      "https://en.wikipedia.org/wiki/Breadth-first_search",
     ],
   },
   {
@@ -6713,6 +6809,9 @@ export const PROBLEMS: Problem[] = [
       { input: [2, [[1, 0], [0, 1]]], expected: false, label: "2 courses, mutual cycle" },
       { input: [4, [[1, 0], [2, 0], [3, 1], [3, 2]]], expected: true, label: "4 courses DAG" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
+    ],
   },
   {
     id: "graph-7",
@@ -6754,6 +6853,9 @@ export const PROBLEMS: Problem[] = [
       { input: [2, [[1, 0]]], expected: [0, 1], label: "2 courses, chain" },
       { input: [1, []], expected: [0], label: "1 course, no prereqs" },
       { input: [2, [[1, 0], [0, 1]]], expected: [], label: "2 courses, cycle" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
     ],
   },
   {
@@ -6797,6 +6899,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[[1, 1, 0], [0, 1, 0], [0, 0, 1]]], expected: 2, label: "3x3 grid with 2 islands" },
       { input: [[[1, 1, 1], [0, 1, 0], [1, 1, 1]]], expected: 1, label: "3x3 connected island" },
       { input: [[[0, 0], [0, 0]]], expected: 0, label: "All water" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Graph_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
     ],
   },
   {
@@ -7598,6 +7704,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[[4, 7], [1, 4]]], expected: [[1, 7]], label: "[[4,7],[1,4]] unsorted" },
       { input: [[[1, 4], [2, 3]]], expected: [[1, 4]], label: "[[1,4],[2,3]] nested" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Interval_scheduling",
+    ],
   },
   {
     id: "intervals-3",
@@ -7731,6 +7840,9 @@ export const PROBLEMS: Problem[] = [
       { input: [3], expected: 3, label: "n = 3" },
       { input: [5], expected: 8, label: "n = 5" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
   },
   {
     id: "dp-3",
@@ -7773,6 +7885,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 5], 11], expected: 3, label: "coins=[1,2,5], amount=11" },
       { input: [[2], 3], expected: -1, label: "coins=[2], amount=3" },
       { input: [[1], 0], expected: 0, label: "coins=[1], amount=0" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
   },
   {
@@ -7908,6 +8023,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 7, 9, 3, 1]], expected: 12, label: "[2,7,9,3,1]" },
       { input: [[2, 1, 1, 2]], expected: 4, label: "[2,1,1,2]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
   },
   {
     id: "dp-7",
@@ -8042,6 +8160,10 @@ export const PROBLEMS: Problem[] = [
       { input: [[10, 9, 2, 5, 3, 7, 101, 18]], expected: 4, label: "[10,9,2,5,3,7,101,18]" },
       { input: [[0, 1, 0, 3, 2, 3]], expected: 4, label: "[0,1,0,3,2,3]" },
       { input: [[7, 7, 7, 7]], expected: 1, label: "[7,7,7,7]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://visualgo.net/en/sorting",
     ],
   },
   {
@@ -8270,6 +8392,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[1]], expected: 1, label: "[1]" },
       { input: [[5, 4, -1, 7, 8]], expected: 23, label: "[5,4,-1,7,8]" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
   },
   {
     id: "dp-10",
@@ -8403,6 +8528,9 @@ export const PROBLEMS: Problem[] = [
       { input: [3, 7], expected: 28, label: "m=3, n=7" },
       { input: [3, 2], expected: 3, label: "m=3, n=2" },
       { input: [1, 1], expected: 1, label: "m=1, n=1" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
   },
   {
@@ -10269,6 +10397,9 @@ export const PROBLEMS: Problem[] = [
       { input: ["LVIII"], expected: 58, label: "\"LVIII\"" },
       { input: ["MCMXCIV"], expected: 1994, label: "\"MCMXCIV\"" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Matrix_(mathematics)",
+    ],
   },
   {
     id: "math-1",
@@ -10398,6 +10529,9 @@ export const PROBLEMS: Problem[] = [
       { input: [[[1]]], expected: [1], label: "1x1 single" },
       { input: [[[1, 2], [3, 4]]], expected: [1, 2, 4, 3], label: "2x2 square" },
     ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Matrix_(mathematics)",
+    ],
   },
 
   // TRIE (2 problems)
@@ -10440,6 +10574,9 @@ export const PROBLEMS: Problem[] = [
       { input: [["flower", "flow", "flight"]], expected: "fl", label: "[\"flower\",\"flow\",\"flight\"]" },
       { input: [["dog", "racecar", "car"]], expected: "", label: "[\"dog\",\"racecar\",\"car\"]" },
       { input: [["interstellar", "internet", "internal"]], expected: "inter", label: "[\"interstellar\",...]" },
+    ],
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Trie",
     ],
   },
   {

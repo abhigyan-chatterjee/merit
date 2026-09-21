@@ -32,7 +32,7 @@
     },
     {
       "title": "Disjoint Set Union (DSU)",
-      "complexity": "Time: O(E \u03b1(V)) | Space: O(V)",
+      "complexity": "Time: O(E α(V)) | Space: O(V)",
       "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}"
     }
   ],
@@ -109,5 +109,9 @@
   ],
   "sequence": 2,
   "prevSlug": "find-the-town-judge",
-  "nextSlug": "number-of-islands"
+  "nextSlug": "number-of-islands",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Graph_traversal",
+    "https://en.wikipedia.org/wiki/Breadth-first_search"
+  ]
 }

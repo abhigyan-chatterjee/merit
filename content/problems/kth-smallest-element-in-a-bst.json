@@ -88,5 +88,8 @@
   ],
   "sequence": 6,
   "prevSlug": "validate-binary-search-tree",
-  "nextSlug": "lowest-common-ancestor-of-a-binary-tree"
+  "nextSlug": "lowest-common-ancestor-of-a-binary-tree",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Tree_traversal"
+  ]
 }

@@ -84,5 +84,8 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "middle-of-the-linked-list"
+  "nextSlug": "middle-of-the-linked-list",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Linked_list"
+  ]
 }

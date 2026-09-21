@@ -88,5 +88,8 @@
   ],
   "sequence": 4,
   "prevSlug": "merge-two-sorted-lists",
-  "nextSlug": null
+  "nextSlug": null,
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Two-pointer_technique"
+  ]
 }

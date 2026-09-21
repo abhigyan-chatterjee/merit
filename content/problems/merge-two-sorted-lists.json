@@ -101,5 +101,8 @@
   ],
   "sequence": 3,
   "prevSlug": "valid-palindrome",
-  "nextSlug": "remove-nth-node-from-end"
+  "nextSlug": "remove-nth-node-from-end",
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Two-pointer_technique"
+  ]
 }

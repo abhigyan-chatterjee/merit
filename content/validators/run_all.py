@@ -27,6 +27,29 @@ def _collect_problem_slugs(problems_dir: Path) -> set[str]:
     return {p.stem for p in problems_dir.glob("*.json") if not p.stem.startswith("scrap-")}
 
 
+def verify_problem_reading_links(problems_dir: Path) -> int:
+    """Require every problem artifact, including drafts, to expose 1-3 HTTPS links."""
+    errors: list[str] = []
+    for path in sorted(problems_dir.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"{path.name}: could not read JSON ({exc})")
+            continue
+        links = data.get("reading_links")
+        if not isinstance(links, list) or not 1 <= len(links) <= 3:
+            errors.append(f"{path.name}: reading_links must contain 1-3 entries")
+        elif any(not isinstance(link, str) or not link.startswith("https://") for link in links):
+            errors.append(f"{path.name}: reading_links entries must be HTTPS URLs")
+    if errors:
+        print("\nReading link errors:")
+        for error in errors:
+            print(f"  - {error}")
+        return 1
+    print(f"Reading links present for all {len(list(problems_dir.glob('*.json')))} problem files.")
+    return 0
+
+
 def _collect_visualizer_ids(repo_root: Path) -> set[str]:
     """Collect visualizer IDs from the frontend registry and backend catalog.
 
@@ -111,6 +134,12 @@ def main() -> int:
     problems_dir = content_dir / "problems"
     questions_dir = content_dir / "questions"
     paths_dir = content_dir / "paths"
+
+    # Reading links are metadata and must also be present on quarantined drafts.
+    links_code = verify_problem_reading_links(problems_dir)
+    if links_code != 0:
+        print("\n❌ Problem reading-link verification FAILED.")
+        return links_code
 
     # 1. Verify Problems through real judge
     print("\n--- [1/4] VERIFYING PROBLEMS & REFERENCE SOLUTIONS ---")

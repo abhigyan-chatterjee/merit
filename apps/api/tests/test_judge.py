@@ -195,6 +195,7 @@ function solve(nums, target) {
     sub = res.json()
     assert sub["verdict"] == "AC"
     assert sub["problem_slug"] == "two-sum"
+    assert sub["code"] == correct_js
 
     # Verify problem_progress for two-sum is now Done
     prog = client.get("/api/v1/progress/problems/two-sum").json()
@@ -204,6 +205,7 @@ function solve(nums, target) {
     subs = client.get("/api/v1/judge/submissions/two-sum").json()
     assert len(subs) == 1
     assert subs[0]["verdict"] == "AC"
+    assert subs[0]["code"] == correct_js
 
 
 def test_judge_python_execution(client: TestClient):

@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, User as UserIcon, Code2, Download, Trash2, KeyRound, RefreshCw } from 'lucide-react';
+import { ClerkProvider, UserProfile } from '@clerk/clerk-react';
+import { ArrowLeft, User as UserIcon, Code2, Download, Trash2, KeyRound, RefreshCw, Save } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
 import { authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
+import { isClerkConfigured } from '../components/ClerkOAuth';
 import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
 
-type Tab = 'profile' | 'language' | 'data' | 'danger';
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+
+type Tab = 'profile' | 'tutor' | 'language' | 'data' | 'danger';
 
 export const ProfilePage: React.FC = () => {
   const { user, updateProfile, deleteAccount } = useAuth();
   const [tab, setTab] = useState<Tab>(() => {
     const q = new URLSearchParams(window.location.search).get('tab');
-    return q === 'data' || q === 'danger' || q === 'language' ? q : 'profile';
+    return q === 'data' || q === 'danger' || q === 'language' || q === 'tutor' ? q : 'profile';
   });
 
   const [name, setName] = useState('');
@@ -25,6 +29,8 @@ export const ProfilePage: React.FC = () => {
   const [models, setModels] = useState<string[]>([]);
   const [modelsLoading, setModelsLoading] = useState(false);
   const [modelsError, setModelsError] = useState<string | null>(null);
+  const [connResult, setConnResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [tutorSaveMsg, setTutorSaveMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -41,7 +47,7 @@ export const ProfilePage: React.FC = () => {
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (window.location.hash === '#tutor') setTab('profile');
+    if (window.location.hash === '#tutor') setTab('tutor');
   }, []);
 
   const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === tutor.baseUrl) ?? TUTOR_PRESETS[0];
@@ -58,10 +64,12 @@ export const ProfilePage: React.FC = () => {
   const checkModels = async () => {
     if (!tutor.apiKey.trim()) {
       setModelsError('Add an API key before checking the provider.');
+      setConnResult({ ok: false, text: 'Connection failed: missing API key.' });
       return;
     }
     setModelsLoading(true);
     setModelsError(null);
+    setConnResult(null);
     try {
       const response = await fetch('/api/v1/tutor/models', {
         method: 'POST',
@@ -69,16 +77,36 @@ export const ProfilePage: React.FC = () => {
         credentials: 'include',
         body: JSON.stringify({ base_url: tutor.baseUrl, api_key: tutor.apiKey }),
       });
-      if (!response.ok) throw new Error(`Could not load provider models (HTTP ${response.status}).`);
+      if (!response.ok) {
+        let detail = `HTTP ${response.status}`;
+        try {
+          const data = (await response.json()) as { detail?: unknown; error?: { message?: unknown } };
+          if (typeof data.detail === 'string' && data.detail) detail = data.detail;
+          else if (data.error && typeof data.error.message === 'string') detail = data.error.message;
+        } catch {
+          // Non-JSON error body — keep the status fallback.
+        }
+        throw new Error(detail);
+      }
       const data = (await response.json()) as { models?: unknown };
       const list = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
       setModels(list);
       if (list.length > 0) tutor.setModel(list[0]);
+      setConnResult({ ok: true, text: `Connection successful! Provider returned ${list.length} models.` });
     } catch (error) {
-      setModelsError(error instanceof Error ? error.message : 'Could not load provider models.');
+      const message = error instanceof Error ? error.message : 'Could not load provider models.';
+      setModelsError(message);
+      setConnResult({ ok: false, text: `Connection failed: ${message}` });
     } finally {
       setModelsLoading(false);
     }
+  };
+
+  const saveTutorSettings = () => {
+    // setRemember(true) persists the current baseUrl/apiKey/model snapshot
+    // to local storage (see useTutorKey.update).
+    tutor.setRemember(true);
+    setTutorSaveMsg('Tutor settings saved on this device.');
   };
 
   useEffect(() => {
@@ -100,6 +128,7 @@ export const ProfilePage: React.FC = () => {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'profile', label: 'Profile' },
+    { id: 'tutor', label: 'Tutor' },
     { id: 'language', label: 'Language' },
     { id: 'data', label: 'Data' },
     { id: 'danger', label: 'Danger' },
@@ -143,6 +172,29 @@ export const ProfilePage: React.FC = () => {
 
       {tab === 'profile' && (
         <div className="space-y-5">
+          {isClerkConfigured() && CLERK_PUBLISHABLE_KEY && (
+            <section aria-label="Clerk account management" className="p-5 rounded-xl border border-line bg-surface space-y-3">
+              <h2 className="text-sm font-bold text-ink">Account security</h2>
+              <p className="text-xs text-muted">Manage emails, linked accounts (Google/GitHub/Microsoft), and security below.</p>
+              <ClerkProvider
+                publishableKey={CLERK_PUBLISHABLE_KEY}
+                appearance={{
+                  variables: {
+                    colorBackground: '#12181f',
+                    colorInputBackground: '#0d1117',
+                    colorText: '#e6edf3',
+                    colorTextSecondary: '#8b949e',
+                    colorPrimary: '#3fb950',
+                    colorInputText: '#e6edf3',
+                    borderRadius: '0.75rem',
+                  },
+                }}
+              >
+                <UserProfile routing="hash" />
+              </ClerkProvider>
+            </section>
+          )}
+
           <section className="p-5 rounded-xl border border-line bg-surface space-y-3">
             <h2 className="text-sm font-bold text-ink flex items-center gap-2">
               <UserIcon className="w-4 h-4 text-mint" /> Display name
@@ -174,7 +226,11 @@ export const ProfilePage: React.FC = () => {
             </form>
             {nameMsg && <p className="text-xs font-mono text-muted">{nameMsg}</p>}
           </section>
+        </div>
+      )}
 
+      {tab === 'tutor' && (
+        <div className="space-y-5">
           <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-6">
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
@@ -209,9 +265,16 @@ export const ProfilePage: React.FC = () => {
                   {models.length === 0 ? <option value="">Loading catalog…</option> : models.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
               </label>
-              <button onClick={() => void checkModels()} disabled={modelsLoading || !tutor.apiKey.trim()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-xs font-mono text-ink hover:border-mint disabled:opacity-50 cursor-pointer"><RefreshCw className={`w-3.5 h-3.5 ${modelsLoading ? 'animate-spin' : ''}`} />{modelsLoading ? 'Checking…' : 'Check models'}</button>
+              <button onClick={saveTutorSettings} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-mint text-canvas text-xs font-mono font-semibold hover:brightness-110 transition cursor-pointer"><Save className="w-3.5 h-3.5" />Save</button>
+              <button onClick={() => void checkModels()} disabled={modelsLoading || !tutor.apiKey.trim()} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line text-xs font-mono text-ink hover:border-mint disabled:opacity-50 cursor-pointer"><RefreshCw className={`w-3.5 h-3.5 ${modelsLoading ? 'animate-spin' : ''}`} />{modelsLoading ? 'Checking…' : 'Test connection'}</button>
             </div>
+            {tutorSaveMsg && <p className="text-xs font-mono text-mint">{tutorSaveMsg}</p>}
             {modelsError && <p role="alert" className="text-xs font-mono text-rose">{modelsError}</p>}
+            {connResult && (
+              <p role="status" className={`text-xs font-mono ${connResult.ok ? 'text-mint' : 'text-rose'}`}>
+                {connResult.text}
+              </p>
+            )}
           </section>
 
         </div>
