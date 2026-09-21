@@ -3,9 +3,12 @@ import os
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.db import get_db
+from app.models.feedback import Feedback
 from app.schemas.feedback import FeedbackCreate, FeedbackResponse
 
 logger = logging.getLogger(__name__)
@@ -14,12 +17,32 @@ router = APIRouter(prefix="/api/v1/feedback", tags=["feedback"])
 
 
 @router.post("", response_model=FeedbackResponse, status_code=status.HTTP_201_CREATED)
-async def submit_feedback(payload: FeedbackCreate) -> FeedbackResponse:
+async def submit_feedback(
+    payload: FeedbackCreate,
+    db: Session = Depends(get_db),
+) -> FeedbackResponse:
     """Submit user feedback or bug report.
 
-    Creates an issue on the configured GitHub repository if a GitHub token is
-    present, or gracefully logs it locally if running in headless/offline mode.
+    Persists report to the database table first, then creates an issue on the
+    configured GitHub repository if GITHUB_TOKEN is present.
     """
+    category_label = payload.category.strip().lower()
+    if category_label not in {"bug", "testcase", "feature", "other"}:
+        category_label = "bug"
+
+    feedback_record = Feedback(
+        category=category_label,
+        title=payload.title.strip(),
+        description=payload.description.strip(),
+        page_url=payload.page_url.strip() if payload.page_url else None,
+        problem_slug=payload.problem_slug.strip() if payload.problem_slug else None,
+        email=payload.email.strip() if payload.email else None,
+        status="open",
+    )
+    db.add(feedback_record)
+    db.commit()
+    db.refresh(feedback_record)
+
     token = (
         settings.github_token
         or os.environ.get("GITHUB_TOKEN", "")
@@ -28,16 +51,13 @@ async def submit_feedback(payload: FeedbackCreate) -> FeedbackResponse:
 
     repo = (settings.github_repo or "abhigyan-chatterjee/merit").strip()
 
-    category_label = payload.category.strip().lower()
-    if category_label not in {"bug", "testcase", "feature", "other"}:
-        category_label = "feedback"
-
     body_lines = [
         "### User Feedback Submission",
         f"- **Category:** `{payload.category}`",
         f"- **Reported URL:** {payload.page_url or 'N/A'}",
         f"- **Problem Context:** {payload.problem_slug or 'N/A'}",
         f"- **Contact:** {payload.email or 'Anonymous'}",
+        f"- **Internal Ref:** `{feedback_record.id}`",
         "",
         "### Details",
         payload.description.strip(),
@@ -65,9 +85,13 @@ async def submit_feedback(payload: FeedbackCreate) -> FeedbackResponse:
                 )
                 if res.status_code in {200, 201}:
                     data = res.json()
+                    feedback_record.github_issue_url = data.get("html_url")
+                    feedback_record.github_issue_number = data.get("number")
+                    db.commit()
                     return FeedbackResponse(
                         status="ok",
                         message="Issue created successfully on GitHub!",
+                        feedback_id=feedback_record.id,
                         issue_url=data.get("html_url"),
                         issue_number=data.get("number"),
                     )
@@ -80,18 +104,17 @@ async def submit_feedback(payload: FeedbackCreate) -> FeedbackResponse:
         except Exception as exc:
             logger.warning("Error forwarding feedback to GitHub: %s", exc)
 
-    # Fallback when token is not present or GitHub API call fails
     logger.info(
-        "User feedback recorded locally: [%s] %s | Context: %s | Description: %s",
-        payload.category,
-        payload.title,
-        payload.problem_slug or payload.page_url,
-        payload.description[:200],
+        "User feedback recorded in DB: [%s] %s (id: %s)",
+        feedback_record.category,
+        feedback_record.title,
+        feedback_record.id,
     )
 
     return FeedbackResponse(
         status="ok",
         message="Thank you! Your feedback has been recorded.",
+        feedback_id=feedback_record.id,
         issue_url=None,
         issue_number=None,
     )

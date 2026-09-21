@@ -534,9 +534,35 @@ export interface AdminStats {
   draft_problems: number;
 }
 
+export interface AdminFeedbackItem {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  page_url?: string;
+  problem_slug?: string;
+  email?: string;
+  github_issue_url?: string;
+  github_issue_number?: number;
+  status: string;
+  created_at: string;
+}
+
 export const adminApi = {
   async getStats(): Promise<AdminStats> {
     return await apiRequest<AdminStats>("/api/v1/admin/stats");
+  },
+
+  async getFeedbacks(status?: string): Promise<AdminFeedbackItem[]> {
+    const query = status ? `?status=${encodeURIComponent(status)}` : "";
+    return await apiRequest<AdminFeedbackItem[]>(`/api/v1/admin/feedback${query}`);
+  },
+
+  async updateFeedbackStatus(id: string, status: "open" | "resolved" | "dismissed"): Promise<any> {
+    return await apiRequest(`/api/v1/admin/feedback/${encodeURIComponent(id)}/status`, {
+      method: "POST",
+      body: JSON.stringify({ status }),
+    });
   },
 
   async getReviewQueue(type: "questions" | "problems" = "questions"): Promise<any[]> {

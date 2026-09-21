@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class FeedbackCreate(BaseModel):
@@ -14,5 +14,22 @@ class FeedbackCreate(BaseModel):
 class FeedbackResponse(BaseModel):
     status: str
     message: str
+    feedback_id: Optional[str] = None
     issue_url: Optional[str] = None
     issue_number: Optional[int] = None
+
+
+class FeedbackItem(BaseModel):
+    id: str
+    category: str
+    title: str
+    description: str
+    page_url: Optional[str] = None
+    problem_slug: Optional[str] = None
+    email: Optional[str] = None
+    github_issue_url: Optional[str] = None
+    github_issue_number: Optional[int] = None
+    status: str
+    created_at: str
+
+    model_config = ConfigDict(from_attributes=True)

@@ -82,6 +82,9 @@ services:
       # OAuth (empty = disabled with 501; set on VPS, never commit).
       - CLERK_JWKS_URL=${CLERK_JWKS_URL:-}
       - CLERK_AUDIENCE=${CLERK_AUDIENCE:-}
+      # GitHub Issue forwarding for in-app user feedback
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - GITHUB_REPO=${GITHUB_REPO:-abhigyan-chatterjee/merit}
     volumes:
       - merit-data:/data
     logging:

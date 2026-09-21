@@ -10,15 +10,19 @@ import {
   AlertTriangle,
   RefreshCw,
   Clock,
+  MessageSquare,
+  ExternalLink,
 } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
-import { adminApi, AdminStats } from '../utils/api';
+import { adminApi, AdminStats, AdminFeedbackItem } from '../utils/api';
 
 export const AdminPage: React.FC = () => {
   const { user, isLoading: authLoading } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'queue' | 'coverage' | 'audit'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'feedback' | 'queue' | 'coverage' | 'audit'>('stats');
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [feedbacks, setFeedbacks] = useState<AdminFeedbackItem[]>([]);
+  const [feedbackFilter, setFeedbackFilter] = useState<'all' | 'open' | 'resolved' | 'dismissed'>('all');
   const [queue, setQueue] = useState<any[]>([]);
   const [queueType, setQueueType] = useState<'questions' | 'problems'>('questions');
   const [coverage, setCoverage] = useState<{ matrix: Record<string, Record<string, number>>; total_verified: number } | null>(null);
@@ -33,6 +37,9 @@ export const AdminPage: React.FC = () => {
       if (activeTab === 'stats') {
         const data = await adminApi.getStats();
         setStats(data);
+      } else if (activeTab === 'feedback') {
+        const data = await adminApi.getFeedbacks(feedbackFilter === 'all' ? undefined : feedbackFilter);
+        setFeedbacks(data);
       } else if (activeTab === 'queue') {
         const data = await adminApi.getReviewQueue(queueType);
         setQueue(data);
@@ -47,6 +54,17 @@ export const AdminPage: React.FC = () => {
       console.error('Failed to load admin data:', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFeedbackStatus = async (id: string, newStatus: 'open' | 'resolved' | 'dismissed') => {
+    try {
+      await adminApi.updateFeedbackStatus(id, newStatus);
+      setActionSuccess(`Feedback status updated to ${newStatus}!`);
+      const data = await adminApi.getFeedbacks(feedbackFilter === 'all' ? undefined : feedbackFilter);
+      setFeedbacks(data);
+    } catch (err: any) {
+      alert(`Failed to update status: ${err.message}`);
     }
   };
 
@@ -78,7 +96,7 @@ export const AdminPage: React.FC = () => {
       void loadData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, activeTab, queueType]);
+  }, [user, activeTab, queueType, feedbackFilter]);
 
   if (authLoading) {
     return (
@@ -146,6 +164,7 @@ export const AdminPage: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2 border-b border-line pb-2">
         {[
           { id: 'stats', label: 'Aggregate Stats', icon: BarChart3 },
+          { id: 'feedback', label: 'User Feedback', icon: MessageSquare },
           { id: 'queue', label: 'Review Queue', icon: ListChecks },
           { id: 'coverage', label: 'Coverage Matrix', icon: Layers },
           { id: 'audit', label: 'Audit Logs', icon: Clock },
@@ -202,6 +221,140 @@ export const AdminPage: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Tab: Feedback */}
+      {activeTab === 'feedback' && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              {(['all', 'open', 'resolved', 'dismissed'] as const).map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setFeedbackFilter(filter)}
+                  className={`px-3 py-1 rounded-md text-xs font-mono capitalize transition cursor-pointer ${
+                    feedbackFilter === filter
+                      ? 'bg-mint text-canvas font-semibold'
+                      : 'bg-surface text-muted border border-line hover:text-ink'
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+            <div className="text-xs font-mono text-muted">
+              {feedbacks.length} reports {feedbackFilter !== 'all' ? `(${feedbackFilter})` : ''}
+            </div>
+          </div>
+
+          {feedbacks.length === 0 ? (
+            <div className="p-8 text-center rounded-xl border border-line bg-surface text-muted text-xs font-mono">
+              No feedback submissions found in this view.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {feedbacks.map((item) => (
+                <div key={item.id} className="p-4 rounded-xl border border-line bg-surface space-y-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase ${
+                            item.category === 'bug'
+                              ? 'bg-red-500/15 text-red-400 border border-red-500/30'
+                              : item.category === 'testcase'
+                              ? 'bg-amber/15 text-amber border border-amber/30'
+                              : item.category === 'feature'
+                              ? 'bg-mint/15 text-mint border border-mint/30'
+                              : 'bg-surface text-muted border border-line'
+                          }`}
+                        >
+                          {item.category}
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold capitalize ${
+                            item.status === 'open'
+                              ? 'bg-amber/15 text-amber'
+                              : item.status === 'resolved'
+                              ? 'bg-mint/15 text-mint'
+                              : 'bg-surface text-muted'
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                        <span className="text-[10px] font-mono text-muted">
+                          {new Date(item.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-ink">{item.title}</h3>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {item.github_issue_url && (
+                        <a
+                          href={item.github_issue_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono text-mint border border-mint/30 bg-mint/10 hover:bg-mint/20 transition"
+                        >
+                          <span>Issue #{item.github_issue_number}</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                      {item.status === 'open' ? (
+                        <>
+                          <button
+                            onClick={() => handleFeedbackStatus(item.id, 'resolved')}
+                            className="px-2.5 py-1 rounded-md text-xs font-mono bg-mint text-canvas font-semibold hover:bg-mint/90 transition cursor-pointer"
+                          >
+                            Resolve
+                          </button>
+                          <button
+                            onClick={() => handleFeedbackStatus(item.id, 'dismissed')}
+                            className="px-2.5 py-1 rounded-md text-xs font-mono bg-surface text-muted border border-line hover:text-ink transition cursor-pointer"
+                          >
+                            Dismiss
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => handleFeedbackStatus(item.id, 'open')}
+                          className="px-2.5 py-1 rounded-md text-xs font-mono bg-surface text-muted border border-line hover:text-ink transition cursor-pointer"
+                        >
+                          Reopen
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted leading-relaxed whitespace-pre-wrap bg-canvas p-3 rounded-lg border border-line font-mono">
+                    {item.description}
+                  </p>
+
+                  {(item.problem_slug || item.page_url || item.email) && (
+                    <div className="flex flex-wrap items-center gap-3 text-[10px] font-mono text-muted pt-1">
+                      {item.problem_slug && (
+                        <span>
+                          Problem: <span className="text-ink font-semibold">{item.problem_slug}</span>
+                        </span>
+                      )}
+                      {item.page_url && (
+                        <span className="truncate max-w-xs">
+                          URL: <span className="text-ink">{item.page_url}</span>
+                        </span>
+                      )}
+                      {item.email && (
+                        <span>
+                          Submitter: <span className="text-mint">{item.email}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

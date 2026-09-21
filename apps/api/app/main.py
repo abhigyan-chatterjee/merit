@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -6,6 +7,7 @@ from sqlalchemy import inspect
 from starlette.middleware.base import BaseHTTPMiddleware
 
 import app.models.content  # noqa: F401
+import app.models.feedback  # noqa: F401
 import app.models.progress  # noqa: F401
 import app.models.quiz  # noqa: F401
 import app.models.submission  # noqa: F401
@@ -15,13 +17,15 @@ from app.db import Base, SessionLocal, engine
 from app.routers import admin, auth, content, feedback, judge, progress, quizzes, tutor
 from app.seed import seed_all
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Ensure database schema and verified seed content exist on startup
+    Base.metadata.create_all(bind=engine)
     inspector = inspect(engine)
-    if not inspector.has_table("users"):
-        Base.metadata.create_all(bind=engine)
+    if not inspector.has_table("problems"):
         with SessionLocal() as db:
             seed_all(db)
     yield

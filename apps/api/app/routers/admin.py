@@ -10,9 +10,11 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.content import Problem, Question, QuestionReview
+from app.models.feedback import Feedback
 from app.models.quiz import AdminAuditLog, QuizAttempt
 from app.models.submission import Submission
 from app.models.user import User, utcnow_iso
+from app.schemas.feedback import FeedbackItem
 from app.security import require_admin_user
 
 router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
@@ -265,3 +267,40 @@ def get_audit_logs(
         }
         for log in logs
     ]
+
+
+class FeedbackStatusRequest(BaseModel):
+    status: str = Field(..., description="open | resolved | dismissed")
+
+
+@router.get("/feedback", response_model=list[FeedbackItem])
+def get_admin_feedback(
+    status_filter: str | None = Query(None, alias="status"),
+    limit: int = Query(100, ge=1, le=200),
+    admin: User = Depends(require_admin_user),
+    db: Session = Depends(get_db),
+) -> list[FeedbackItem]:
+    stmt = select(Feedback)
+    if status_filter:
+        stmt = stmt.where(Feedback.status == status_filter)
+    stmt = stmt.order_by(Feedback.created_at.desc()).limit(limit)
+    rows = db.scalars(stmt).all()
+    log_admin_action(db, admin.id, "view_feedback", f"filter_{status_filter or 'all'}")
+    return [FeedbackItem.model_validate(r) for r in rows]
+
+
+@router.post("/feedback/{feedback_id}/status")
+def update_feedback_status(
+    feedback_id: str,
+    req: FeedbackStatusRequest,
+    admin: User = Depends(require_admin_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    feedback = db.scalar(select(Feedback).where(Feedback.id == feedback_id))
+    if not feedback:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Feedback not found")
+    feedback.status = req.status
+    db.commit()
+    log_admin_action(db, admin.id, f"feedback_{req.status}", feedback_id)
+    return {"status": "ok", "feedback_id": feedback.id, "new_status": feedback.status}
+

@@ -1,10 +1,12 @@
 from fastapi.testclient import TestClient
 from app.main import app
+from app.db import SessionLocal
+from app.models.feedback import Feedback
 
 client = TestClient(app)
 
 
-def test_submit_feedback_fallback():
+def test_submit_feedback_persists_to_db():
     payload = {
         "title": "Test case missing edge case",
         "description": "In problem two-sum, empty arrays should be handled cleanly.",
@@ -18,6 +20,15 @@ def test_submit_feedback_fallback():
     data = response.json()
     assert data["status"] == "ok"
     assert "Thank you" in data["message"] or "created" in data["message"]
+    assert "feedback_id" in data
+    assert data["feedback_id"] is not None
+
+    with SessionLocal() as db:
+        fb = db.get(Feedback, data["feedback_id"])
+        assert fb is not None
+        assert fb.title == payload["title"]
+        assert fb.category == payload["category"]
+        assert fb.status == "open"
 
 
 def test_submit_feedback_validation_error():

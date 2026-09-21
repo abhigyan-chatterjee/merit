@@ -23,10 +23,12 @@ from app.models.quiz import (
 )
 from app.models.submission import Submission
 from app.models.user import RefreshToken, User
+from app.models.feedback import Feedback
 
 __all__ = [
     "User",
     "RefreshToken",
+    "Feedback",
     "ProblemProgress",
     "Note",
     "Bookmark",
