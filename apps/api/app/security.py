@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
+from urllib.parse import urlparse
 
 import jwt
 from fastapi import Depends, HTTPException, Request, Response, status
@@ -105,12 +106,37 @@ def require_same_origin(request: Request) -> None:
     origin = request.headers.get("origin")
     if not origin:
         return
-    expected = f"{request.url.scheme}://{request.headers.get('host', request.url.netloc)}"
-    if origin.rstrip("/") != expected.rstrip("/"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"code": "CSRF_ORIGIN_MISMATCH", "message": "Cross-site request rejected."},
-        )
+    origin_parsed = urlparse(origin)
+    host = (
+        request.headers.get("x-forwarded-host")
+        or request.headers.get("host")
+        or request.url.netloc
+    ).lower()
+
+    origin_netloc = origin_parsed.netloc.lower()
+    host_netloc = host
+
+    # Strip default ports :80 and :443 for clean comparison
+    for p in (":80", ":443"):
+        if origin_netloc.endswith(p):
+            origin_netloc = origin_netloc[: -len(p)]
+        if host_netloc.endswith(p):
+            host_netloc = host_netloc[: -len(p)]
+
+    if origin_netloc == host_netloc:
+        return
+
+    # Check against CORS origins (both full origin and netloc)
+    cors_allowed = [urlparse(o).netloc.lower() for o in settings.cors_origins] + [
+        o.rstrip("/").lower() for o in settings.cors_origins
+    ]
+    if origin_netloc in cors_allowed or origin.rstrip("/").lower() in cors_allowed:
+        return
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail={"code": "CSRF_ORIGIN_MISMATCH", "message": "Cross-site request rejected."},
+    )
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:

@@ -16,7 +16,7 @@ from app.schemas.judge import (
     SubmissionResponse,
     TestCaseResult,
 )
-from app.security import get_current_user
+from app.security import get_current_user, get_optional_current_user
 from app.services.judge import execute_code
 from app.services.streak import record_activity
 
@@ -60,7 +60,7 @@ def _get_verified_problem(db: Session, slug: str) -> Problem:
 @router.post("/run", response_model=JudgeRunResponse)
 async def run_samples(
     req: JudgeRunRequest,
-    user: User = Depends(get_current_user),
+    user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ):
     problem = _get_verified_problem(db, req.problem_slug)
@@ -119,7 +119,7 @@ async def run_samples(
 @router.post("/submit", response_model=SubmissionResponse)
 async def submit_solution(
     req: JudgeRunRequest,
-    user: User = Depends(get_current_user),
+    user: User | None = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ):
     problem = _get_verified_problem(db, req.problem_slug)
@@ -159,52 +159,58 @@ async def submit_solution(
     )
 
     now_str = utcnow_iso()
-    test_results_json = json.dumps(res.test_results)
 
-    submission = Submission(
-        user_id=user.id,
-        problem_slug=req.problem_slug,
-        language=req.language,
-        code=req.code,
-        verdict=res.verdict,
-        runtime_ms=res.runtime_ms,
-        test_results=test_results_json,
-        created_at=now_str,
-    )
-    db.add(submission)
-
-    # If AC, flip problem_progress to Done
-    if res.verdict == "AC":
-        prog = db.scalar(
-            select(ProblemProgress).where(
-                ProblemProgress.user_id == user.id,
-                ProblemProgress.problem_slug == req.problem_slug,
-            )
+    if user is not None:
+        test_results_json = json.dumps(res.test_results)
+        submission = Submission(
+            user_id=user.id,
+            problem_slug=req.problem_slug,
+            language=req.language,
+            code=req.code,
+            verdict=res.verdict,
+            runtime_ms=res.runtime_ms,
+            test_results=test_results_json,
+            created_at=now_str,
         )
-        if prog:
-            prog.status = "Done"
-            prog.updated_at = now_str
-        else:
-            prog = ProblemProgress(
-                user_id=user.id,
-                problem_slug=req.problem_slug,
-                status="Done",
-                updated_at=now_str,
-            )
-            db.add(prog)
+        db.add(submission)
 
-    record_activity(db, user.id)
-    db.commit()
-    db.refresh(submission)
+        # If AC, flip problem_progress to Done
+        if res.verdict == "AC":
+            prog = db.scalar(
+                select(ProblemProgress).where(
+                    ProblemProgress.user_id == user.id,
+                    ProblemProgress.problem_slug == req.problem_slug,
+                )
+            )
+            if prog:
+                prog.status = "Done"
+                prog.updated_at = now_str
+            else:
+                prog = ProblemProgress(
+                    user_id=user.id,
+                    problem_slug=req.problem_slug,
+                    status="Done",
+                    updated_at=now_str,
+                )
+                db.add(prog)
+
+        record_activity(db, user.id)
+        db.commit()
+        db.refresh(submission)
+        sub_id = submission.id
+        created_at = submission.created_at
+    else:
+        sub_id = "guest"
+        created_at = now_str
 
     return SubmissionResponse(
-        id=submission.id,
-        problem_slug=submission.problem_slug,
-        language=submission.language,
-        verdict=submission.verdict,
-        runtime_ms=submission.runtime_ms,
+        id=sub_id,
+        problem_slug=req.problem_slug,
+        language=req.language,
+        verdict=res.verdict,
+        runtime_ms=res.runtime_ms,
         test_results=[TestCaseResult(**t) for t in res.test_results],
-        created_at=submission.created_at,
+        created_at=created_at,
     )
 
 

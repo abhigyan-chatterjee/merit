@@ -97,6 +97,52 @@ function solve(nums, target) {
     assert all(tc["passed"] for tc in data["test_results"])
 
 
+def test_guest_can_run_and_submit_without_login(client: TestClient):
+    # Guests (unauthenticated) must be able to run samples and submit solutions
+    # so they can freely solve and test problems.
+    code = """
+function solve(nums, target) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    map.set(nums[i], i);
+  }
+  return [];
+}
+"""
+    # 1. Run samples as guest (no cookies/auth header)
+    run_res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+        },
+    )
+    assert run_res.status_code == 200
+    run_data = run_res.json()
+    assert run_data["verdict"] == "AC"
+    assert len(run_data["test_results"]) >= 1
+
+    # 2. Submit as guest (grades all cases without requiring user account)
+    sub_res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+        },
+    )
+    assert sub_res.status_code == 200
+    sub_data = sub_res.json()
+    assert sub_data["id"] == "guest"
+    assert sub_data["verdict"] == "AC"
+    assert len(sub_data["test_results"]) >= 1
+
+
 def test_judge_run_samples_wa(client: TestClient):
     register_user(client)
 
@@ -253,7 +299,9 @@ def test_judge_run_and_submit_reject_function_name_bypasses(
         assert res.json()["detail"]["code"] == "INVALID_FUNCTION_NAME"
 
 
-def test_claim_b1_no_answer_leak_beyond_standard_wa_display(client: TestClient, db_session: Session):
+def test_claim_b1_no_answer_leak_beyond_standard_wa_display(
+    client: TestClient, db_session: Session
+):
     """
     CLAIM B1 DENIED: submit/history expose expected values only for YOUR OWN submissions.
     This is standard debugging UX (LeetCode/HackerRank show expected on YOUR failed submit).
@@ -604,7 +652,10 @@ def test_claim_m1_no_false_ac_on_empty_test_cases(client: TestClient, db_session
             constraints_json=json.dumps([]),
             hints=json.dumps([]),
             starter_code=json.dumps(
-                {"javascript": "function solve(x) { return x; }", "python": "def solve(x):\n    return x"}
+                {
+                    "javascript": "function solve(x) { return x; }",
+                    "python": "def solve(x):\n    return x",
+                }
             ),
             function_name="solve",
             review_status="verified",

@@ -102,6 +102,23 @@ def test_cross_site_auth_post_rejected(client: TestClient):
     assert resp.json()["detail"]["code"] == "CSRF_ORIGIN_MISMATCH"
 
 
+def test_same_origin_reverse_proxy_https_allowed(client: TestClient):
+    # Behind reverse proxies (e.g. Caddy/Nginx -> FastAPI), the browser sends
+    # Origin: https://merit.nullbit.in while Host header is merit.nullbit.in.
+    # This must be allowed even if internal FastAPI scheme is http.
+    resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "nonexistent@example.com", "password": "Password123456"},
+        headers={
+            "Origin": "https://testserver",
+            "Host": "testserver",
+        },
+    )
+    # Origin matches host -> CSRF check passes (then hits auth invalid creds 401)
+    assert resp.status_code == 401
+    assert resp.json()["detail"]["code"] == "INVALID_CREDENTIALS"
+
+
 def test_auth_cookies_are_strict(client: TestClient):
     resp = client.post(
         "/api/v1/auth/register",
