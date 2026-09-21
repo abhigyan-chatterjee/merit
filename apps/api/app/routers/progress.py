@@ -371,7 +371,7 @@ def get_progress_summary(
         quiz_scores=quiz_scores,
         weakest_topics=weakest_topics,
         revision_due=revision_due,
-        preferred_language=getattr(user, "preferred_language", None) or "javascript",
+        preferred_language=getattr(user, "preferred_language", None) or "python",
         daily_goal=_user_daily_goal(user),
     )
 
@@ -387,7 +387,7 @@ def get_settings(
     db: Session = Depends(get_db),
 ):
     return SettingsResponse(
-        preferred_language=getattr(user, "preferred_language", None) or "javascript",
+        preferred_language=getattr(user, "preferred_language", None) or "python",
         daily_goal=_user_daily_goal(user),
     )
 
@@ -408,7 +408,7 @@ def update_settings(
     db.commit()
     db.refresh(user)
     return SettingsResponse(
-        preferred_language=user.preferred_language or "javascript",
+        preferred_language=user.preferred_language or "python",
         daily_goal=json.loads(user.daily_goal_json) if user.daily_goal_json else None,
     )
 

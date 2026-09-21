@@ -24,7 +24,7 @@ class User(Base):
         Integer, server_default="0", default=0, nullable=False
     )
     preferred_language: Mapped[str] = mapped_column(
-        String, server_default="javascript", default="javascript", nullable=False
+        String, server_default="python", default="python", nullable=False
     )  # javascript | python
     daily_goal_json: Mapped[str | None] = mapped_column(String, nullable=True)  # JSON or null
     created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)

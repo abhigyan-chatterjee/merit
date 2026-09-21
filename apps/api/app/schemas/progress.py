@@ -105,7 +105,7 @@ class ProgressSummaryResponse(BaseModel):
     quiz_scores: dict[str, int] = Field(default_factory=dict)
     weakest_topics: list[str] = Field(default_factory=list)
     revision_due: list[dict[str, Any]] = Field(default_factory=list)
-    preferred_language: str = "javascript"
+    preferred_language: str = "python"
     daily_goal: dict[str, Any] | None = None
 
 
@@ -152,5 +152,8 @@ class SettingsUpdate(BaseModel):
 
 
 class SettingsResponse(BaseModel):
-    preferred_language: str
+    preferred_language: str = "python"
     daily_goal: dict[str, Any] | None = None
+
+
+UserSettingsResponse = SettingsResponse

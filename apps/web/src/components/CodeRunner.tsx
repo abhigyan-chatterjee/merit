@@ -66,9 +66,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           }
         }
       }
-      return saved === 'python' ? 'python' : 'javascript';
+      return saved === 'javascript' ? 'javascript' : 'python';
     } catch {
-      return 'javascript';
+      return 'python';
     }
   });
   // Per-language buffers: switching languages swaps skeletons without
@@ -332,8 +332,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
               onChange={(e) => handleLanguageChange(e.target.value as "javascript" | "python")}
               className="bg-surface border border-line rounded px-2 py-0.5 text-xs font-mono text-ink focus:outline-none focus:border-mint cursor-pointer"
             >
+              <option value="python">Python 3.12</option>
               <option value="javascript">JavaScript (Node.js)</option>
-              <option value="python">Python 3</option>
             </select>
           </div>
           <span className="hidden sm:inline text-[11px] font-mono text-muted">

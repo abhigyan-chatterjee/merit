@@ -25,7 +25,7 @@ describe('CodeRunner Component (Phase 4)', () => {
     { label: 'Case 2', input: [[3, 2, 4], 6], expected: [1, 2] },
   ];
 
-  it('renders language selector and switches to Python', () => {
+  it('renders language selector and defaults to Python', () => {
     renderRunner({
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
@@ -35,13 +35,14 @@ describe('CodeRunner Component (Phase 4)', () => {
 
     const select = screen.getByLabelText(/Execution Language/i);
     expect(select).toBeInTheDocument();
-    expect(select).toHaveValue('javascript');
-
-    fireEvent.change(select, { target: { value: 'python' } });
     expect(select).toHaveValue('python');
 
     const textarea = screen.getByLabelText(/Code Editor/i);
     expect(textarea).toHaveValue('def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n');
+
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    expect(select).toHaveValue('javascript');
+    expect(textarea).toHaveValue('function solve() {}');
   });
 
   it('places the tutor above the editor and actions in the results bar', () => {
@@ -253,15 +254,15 @@ describe('CodeRunner Component (Phase 4)', () => {
     const select = screen.getByLabelText(/Execution Language/i);
     const textarea = screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement;
 
-    // User types in JS...
-    fireEvent.change(textarea, { target: { value: 'function solve() { return 42; }' } });
-    // ...switches to Python: must get the Python skeleton, not the JS text.
-    fireEvent.change(select, { target: { value: 'python' } });
-    expect(textarea).toHaveValue('def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n');
-    // ...types in Python, switches back: JS edits preserved, not reset.
+    // User types in Python (default)...
     fireEvent.change(textarea, { target: { value: 'def solve(*args):\n    return 42' } });
+    // ...switches to JS: must get the JS skeleton, not the Python text.
     fireEvent.change(select, { target: { value: 'javascript' } });
-    expect(textarea).toHaveValue('function solve() { return 42; }');
+    expect(textarea).toHaveValue('function solve() {}');
+    // ...types in JS, switches back to Python: Python edits preserved, not reset.
+    fireEvent.change(textarea, { target: { value: 'function solve() { return 42; }' } });
+    fireEvent.change(select, { target: { value: 'python' } });
+    expect(textarea).toHaveValue('def solve(*args):\n    return 42');
   });
 
   it('hides the tutor when tutorEnabled is false', () => {

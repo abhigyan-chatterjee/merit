@@ -17,7 +17,7 @@ export const ProfilePage: React.FC = () => {
 
   const [name, setName] = useState('');
   const [nameMsg, setNameMsg] = useState<string | null>(null);
-  const [lang, setLang] = useState<'javascript' | 'python'>('javascript');
+  const [lang, setLang] = useState<'javascript' | 'python'>('python');
   const [langMsg, setLangMsg] = useState<string | null>(null);
   const [dataMsg, setDataMsg] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
