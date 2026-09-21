@@ -62,7 +62,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
           <button
             onClick={onStepBack}
             disabled={isPlaying || disabledBack}
-            aria-label="Step back one frame"
+            aria-label="Step back"
             className={ghostBtn}
           >
             <SkipBack className="w-3.5 h-3.5 text-violet" />
@@ -73,7 +73,7 @@ export const ControlBar: React.FC<ControlBarProps> = ({
         <button
           onClick={stepForward}
           disabled={isPlaying || disabledStep || !stepForward}
-          aria-label="Step forward one frame"
+          aria-label="Step forward"
           className={ghostBtn}
         >
           <SkipForward className="w-3.5 h-3.5 text-mint" />

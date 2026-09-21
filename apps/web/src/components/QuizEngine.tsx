@@ -30,18 +30,14 @@ const NO_QUESTIONS: QuizQuestion[] = [];
 const guestAttemptCounters = new Map<string, number>();
 
 function selectGuestQuestions(topicId: string, questions: QuizQuestion[]): QuizQuestion[] {
+  if (questions.length <= 10) return [...questions];
   const day = new Date().toISOString().slice(0, 10);
   const key = `${topicId}:${day}`;
   const attempt = (guestAttemptCounters.get(key) ?? 0) + 1;
   guestAttemptCounters.set(key, attempt);
-  const seed = `${key}:${attempt}`;
-  return [...questions]
-    .sort((a, b) => {
-      const hash = (id: string) =>
-        [...`${seed}:${id}`].reduce((total, char) => (total * 31 + char.charCodeAt(0)) >>> 0, 0);
-      return hash(a.id) - hash(b.id);
-    })
-    .slice(0, 10);
+  const offset = attempt % questions.length;
+  const rotated = [...questions.slice(offset), ...questions.slice(0, offset)];
+  return rotated.slice(0, 10);
 }
 
 interface QuizEngineProps {

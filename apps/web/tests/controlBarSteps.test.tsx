@@ -73,4 +73,24 @@ describe('ControlBar step controls (regression: Step/Back must work)', () => {
     expect(container.textContent).not.toBe(before);
     expect(container.textContent).toMatch(/Visited node/);
   });
+
+  it('exposes the exact e2e smoke label contract (Step forward / Step back)', () => {
+    render(
+      <ControlBar
+        isPlaying={false}
+        onPlayPause={() => {}}
+        onStepForward={vi.fn()}
+        onStepBack={vi.fn()}
+        onReset={() => {}}
+        onRandomize={() => {}}
+        speed={1}
+        onSpeedChange={() => {}}
+      />
+    );
+    // The e2e smoke spec queries getByLabel('Step forward'). Keep the
+    // accessible name an exact, stable contract rather than relying on
+    // fragile substring matching against "Step forward one frame".
+    expect(screen.getByRole('button', { name: /^Step forward$/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Step back$/ })).toBeInTheDocument();
+  });
 });

@@ -106,4 +106,11 @@ describe('LessonNav & Unblocked Guided Path Flow', () => {
     // Further-reading links render alongside visualizer steps.
     expect(screen.getAllByText(/Further reading →/i).length).toBeGreaterThanOrEqual(1);
   });
+
+  it('does not nest anchors in the step list (no <a> inside <a>) on /learn/foundation', () => {
+    const { container } = renderComponent(<GuidedPathDetailPage />, '/learn/foundation');
+    // External "Further reading" links must live outside the step <Link> so
+    // anchors never nest -- the root cause of React's DOM nesting warning.
+    expect(container.querySelector('a a')).toBeNull();
+  });
 });

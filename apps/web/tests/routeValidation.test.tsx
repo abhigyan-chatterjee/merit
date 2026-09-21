@@ -99,6 +99,23 @@ describe('Route Validation & 404 Handling (D5)', () => {
     expect(screen.getByText(/Learning Path Not Found/i)).toBeInTheDocument();
   });
 
+  it('recovery link points to the live /learn catalog route (not the dead /paths)', async () => {
+    renderWithRouter('/learn/unknown-alien-path');
+    expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();
+
+    // The recovery link must target the live catalog route.
+    const recovery = screen.getByRole('link', { name: /All Guided Paths/i });
+    expect(recovery).toHaveAttribute('href', '/learn');
+
+    // Clicking it must render the catalog, not another 404.
+    fireEvent.click(recovery);
+    expect(
+      await screen.findByRole('heading', { name: /Learning paths/i }, { timeout: 10000 })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Foundation/i })).toBeInTheDocument();
+    expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+  });
+
   it('renders NotFound for random unmatched route', async () => {
     renderWithRouter('/some/completely/random/route');
     expect(await screen.findByTestId('not-found-page', {}, { timeout: 10000 })).toBeInTheDocument();

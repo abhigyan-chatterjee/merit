@@ -98,6 +98,16 @@ export const Navbar: React.FC = () => {
   const difficultyDot = (d: string) =>
     d === 'Easy' ? 'bg-mint' : d === 'Medium' ? 'bg-amber' : 'bg-rose';
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const { paths, visualizers, problems } = searchResults;
+    setSearchOpen(false);
+    if (paths.length > 0) navigate(`/learn/${paths[0].id}`);
+    else if (visualizers.length > 0) navigate(`/visualizers/${visualizers[0].id}`);
+    else if (problems.length > 0) navigate(`/problems/${problems[0].topic}/${problems[0].slug}`);
+  };
+
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur-md">
@@ -240,6 +250,7 @@ export const Navbar: React.FC = () => {
                 placeholder="Search structures, problems or patterns…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
                 className="flex-1 bg-transparent text-sm text-ink placeholder-muted focus:outline-none"
               />
               <span className="text-[10px] font-mono text-muted tnum hidden sm:inline">

@@ -105,7 +105,7 @@ export const GuidedPathDetailPage: React.FC = () => {
       <NotFound
         title="Learning Path Not Found"
         message={`The learning path "${id}" does not exist.`}
-        backTo="/paths"
+        backTo="/learn"
         backLabel="All Guided Paths"
       />
     );
@@ -296,25 +296,25 @@ export const GuidedPathDetailPage: React.FC = () => {
                       {step.summary && (
                         <p className="text-xs text-muted leading-relaxed mt-1">{step.summary}</p>
                       )}
-                      {step.readingLinks && step.readingLinks.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-1.5">
-                          {step.readingLinks.map((url) => (
-                            <a
-                              key={url}
-                              href={url}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-[10px] font-mono text-mint hover:underline"
-                            >
-                              Further reading →
-                            </a>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   </div>
                 </Link>
+
+                {step.readingLinks && step.readingLinks.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-1.5 ml-6">
+                    {step.readingLinks.map((url) => (
+                      <a
+                        key={url}
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[10px] font-mono text-mint hover:underline"
+                      >
+                        Further reading →
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             </li>
           );
