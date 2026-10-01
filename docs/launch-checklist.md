@@ -32,7 +32,7 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 | **Correctness Defects** | D1–D12 Base Audit defects | **100% RESOLVED** | Verified: node-based BST/Heap, SVG scaling, dedicated visualizers |
 | **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Lax, Secure cookies; strict sub claim validation |
 | **User Data Isolation** | Server-side user_id filtering authz matrix | **PASSED** | `apps/api/tests/test_authz.py` asserts complete cross-user isolation |
-| **Sandboxed Judge** | Piston runner replacing `new Function()` | **PASSED** | Process sandbox, timeout bounds, zero browser code evaluation |
+| **Sandboxed Judge** | Cloud Run judge service replacing `new Function()` | **PASSED** | Runs in its own container with no secrets/database, zero browser code evaluation |
 | **Content Bank** | 885 Unique verified questions & 42 original problems | **PASSED** | `python3 content/validators/run_all.py` (42/42 AC, 885 verified) |
 | **Adaptive Quizzes** | 50-exposure no-repeat window & server-side snapshots | **PASSED** | `test_quizzes.py` confirms no answer leakage + 404 on unknown topics; 20s auto-advance |
 | **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | Foundation, Targeted, Mastery (summaries + reading links per step) |
@@ -46,7 +46,7 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 ## 2. Invariants & Security Guardrails Verification
 
 - [x] **Invariant 1: User Data Isolation.** Every user-scoped database query filters server-side via `Table.user_id == current_user.id`. No client-supplied user ID is trusted or accepted.
-- [x] **Invariant 2: Eradication of `new Function()`.** All browser code runner execution has been eliminated. Execution is delegated to the isolated Piston judge service with resource limits and exact JSON output equality.
+- [x] **Invariant 2: Eradication of `new Function()`.** All browser code runner execution has been eliminated. Execution is delegated to the isolated Cloud Run judge service with resource limits and exact JSON output equality. See `docs/cloud-run-judge.md`.
 - [x] **Invariant 3: Zero Hand-Typed Expected Outputs.** Every test case expectation in `content/problems/` was verified by executing reference solutions in Python and JavaScript.
 - [x] **Invariant 4: Quiz Answer Secrecy.** `GET /questions` and `POST /quizzes/generate` return question prompts and options only; `correct_index` and `explanation` are withheld until post-submission grading.
 - [x] **Invariant 5: Refresh Token Rotation & Theft Detection.** Every refresh rotation issues a new refresh token and invalidates the prior token. Reuse of a revoked token triggers revocation of all active sessions for that account.
@@ -58,7 +58,7 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 
 ### 3.1 Single-Node Compose Launch
 ```bash
-# 1. Start all containers (Piston, API, Web Nginx)
+# 1. Start all containers (API, Web Nginx)
 docker compose up -d
 
 # 2. Verify container health
@@ -106,7 +106,7 @@ new harness either way.
 # Docker + compose plugin, then host hardening (details: docs/prod.md §5)
 free -h                          # after: expect ~2G swap (swapfile)
 sysctl vm.overcommit_memory      # expect 0 or 1, never 2 without extra swap
-git clone <forge-url> /opt/merit && cd /opt/merit
+git clone <forge-url> /home/ubuntu/merit && cd /home/ubuntu/merit
 git checkout scope/extension
 ```
 
@@ -120,14 +120,16 @@ export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=requ
 # in apps/web/.env, then rebuild web.
 ```
 
-### 5.3 Compose up (1GB budget: api 350m / piston 300m / web 64m + swap)
+### 5.3 Compose up (1GB budget: api 350m / web 64m)
 
 ```bash
 docker compose config   # must parse clean
 docker compose up -d --build
 docker compose ps
-# Slim piston to python + javascript ONLY (longer first install, paid once):
-docker compose exec piston cli/index.js ppman install python javascript
+# Judge runs on Cloud Run and needs no container here. Wire it up first:
+#   ./apps/judge/deploy.sh bootstrap && ./apps/judge/deploy.sh deploy
+#   then set JUDGE_URL + GOOGLE_APPLICATION_CREDENTIALS in the compose-root .env
+# See docs/cloud-run-judge.md.
 curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
 # expect ONLY "python" and "javascript"
 ```
@@ -135,7 +137,7 @@ curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
 ### 5.4 Migrate + seed (Neon is empty at cutover; idempotent re-runs)
 
 ```bash
-cd /opt/merit/apps/api
+cd /home/ubuntu/merit/apps/api
 DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
 DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 ```
@@ -155,7 +157,7 @@ DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 ### 5.6 Automated e2e (configured — run it)
 
 ```bash
-cd /opt/merit/apps/web && npx playwright test
+cd /home/ubuntu/merit/apps/web && npx playwright test
 # expect all specs green (smoke, auth, judge, progress)
 ```
 

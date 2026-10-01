@@ -55,17 +55,37 @@ How it works:
     with a missing/false verified flag it fails with
     `401 OAUTH_EMAIL_UNVERIFIED` (this blocks takeover via a Clerk
     account holding someone else's unverified email).
-6. **Paste keys into env files (never commit — both are gitignored):**
-   - `apps/api/.env`:
-     ```ini
-     CLERK_JWKS_URL=https://<frontend-api-domain>/.well-known/jwks.json
-     CLERK_AUDIENCE=
-     ```
-   - `apps/web/.env` (create next to `package.json`):
-     ```ini
-     VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
-     VITE_CLERK_JWT_TEMPLATE=merit
-     ```
+6. **Paste keys into env files (never commit — a gitignored env is still a
+   secret, so treat the files as sensitive):**
+
+   There are two different `.env` files and they are **not** interchangeable:
+
+   - **`apps/api/.env`** — read by pydantic-settings when the API runs
+     *directly* on the host (local dev, `uvicorn app.main:app`). It is **not**
+     used by `docker compose`, because compose passes each variable into the
+     container explicitly and an explicitly-set (even empty) variable overrides
+     anything pydantic would read from `.env` inside the image. Putting a value
+     here and deploying with compose looks like it worked and does nothing.
+   - **Compose-root `.env`** — a `.env` sitting *next to* `docker-compose.yml`
+     (on the VPS: `/home/ubuntu/merit/.env`). This is what
+     `${VAR}` interpolation in `docker-compose.yml` reads. **This is the file
+     to use for any compose deploy.**
+
+   So for local dev, `apps/api/.env`:
+   ```ini
+   CLERK_JWKS_URL=https://<frontend-api-domain>/.well-known/jwks.json
+   CLERK_AUDIENCE=
+   ```
+   And for the VPS compose deploy, `/home/ubuntu/merit/.env`:
+   ```ini
+   SECRET_KEY=<secure random>
+   CLERK_JWKS_URL=https://<frontend-api-domain>/.well-known/jwks.json
+   CLERK_AUDIENCE=
+   VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+   VITE_CLERK_JWT_TEMPLATE=merit
+   ```
+   `apps/web/.env` (next to `package.json`) applies to the Vite dev server and
+   to the web image build, which takes the `VITE_*` values as build args.
 7. Restart both servers (`uvicorn app.main:app --reload --port 8000` and
    `npm run dev`), hard-refresh the browser, and confirm the
    “or continue with Google / GitHub” block appears on `/login`.
@@ -114,9 +134,10 @@ curl -s -X POST $API/api/v1/auth/oauth/clerk \
 - OAuth-only accounts have `password_hash="oauth$clerk"` and cannot use
   password login (it fails closed with invalid credentials); linking an
   existing password account preserves its password.
-- Secrets live only in `apps/api/.env` / `apps/web/.env` (gitignored).
-  Never commit them, never paste real tokens into tests (tests mock JWKS —
-  no network, no real keys).
+- Secrets live in `apps/api/.env` for local dev and in the compose-root
+  `.env` for VPS deploys (section 1 explains the difference — they are not
+  interchangeable). Never commit them, never paste real tokens into tests
+  (tests mock JWKS — no network, no real keys).
 - Frontend social block renders only on `/login` + `/register`; all other
   routes are unchanged.
 
@@ -147,25 +168,28 @@ server required).
 3. Convert the scheme for the psycopg v3 driver (required):
    `postgresql://` → `postgresql+psycopg://`, keeping the rest identical:
    `postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require`
-4. On the VPS, set it in the API env (never commit it — `.env` is
-   gitignored):
+4. On the VPS, set it in the **compose-root** env file
+   (`/home/ubuntu/merit/.env`), not `apps/api/.env` — see section 1 for why
+   those are not interchangeable:
    ```ini
-   # /opt/merit/apps/api/.env (VPS only)
+   # /home/ubuntu/merit/.env (VPS only, never commit)
    ENVIRONMENT=production
    SECRET_KEY=<output of: python3 -c "import secrets; print(secrets.token_urlsafe(48))">
    DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require
    ```
-   For `docker compose` deploys, export it instead (compose falls back to
-   SQLite when unset — see the `DATABASE_URL` comment in
-   `docker-compose.yml`):
-   ```bash
-   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
-   ```
+   `docker-compose.yml` interpolates this file, so `docker compose up -d`
+   picks it up. Compose falls back to SQLite when unset — see the
+   `DATABASE_URL` comment in `docker-compose.yml`.
+
+   Note `docker compose restart` does **not** re-read `.env`. Use
+   `docker compose up -d --force-recreate api` after changing it.
 
 ### 4.2 Owner steps: cutover commands (owner executes on the VPS)
 
 ```bash
-cd /opt/merit/apps/api
+# Migrations run against the DB, not the app, so a host-side venv is fine
+# here; the deploy itself lives at /home/ubuntu/merit.
+cd /home/ubuntu/merit/apps/api
 
 # 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 9 revisions)
 DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
@@ -174,8 +198,10 @@ DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
 #    idempotent — existing rows are skipped, never duplicated.
 DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 
-# 3. Restart the API so the engine binds the pg URL
-sudo systemctl restart merit-api   # or: docker compose up -d --force-recreate api
+# 3. Recreate the API so the engine binds the pg URL. `restart` does not
+#    re-read the compose-root .env, so `up -d --force-recreate` is required.
+cd /home/ubuntu/merit
+docker compose up -d --force-recreate api
 ```
 
 ### 4.3 Owner verification (prod, after restart)
@@ -253,25 +279,32 @@ That caps each container at ~30MB of logs. If `docker compose config`
 ever shows a service without it, re-add it — unbounded json logs are the
 usual way a 1GB disk/RAM box dies quietly.
 
-### 5.4 Piston slim runtimes (JavaScript + Python ONLY)
+### 5.4 Judge service (Cloud Run — Python + JavaScript today)
 
-Piston has **no env/config knob** for language selection — runtimes are
-packages installed under `/piston/packages` via the `ppman` CLI (or
-`POST /api/v2/packages`). The compose file therefore uses the stock
-`ghcr.io/engineer-man/piston:latest` image (**no Dockerfile change**) plus
-a `merit-piston-packages:/piston/packages` volume, and the owner installs
-exactly the two MVP runtimes once:
+Code execution does **not** run on the VPS. Submissions are sent to a Cloud Run
+service that holds no database, no secrets and no user data, and runs under its
+own service account with no IAM roles at all.
 
-```bash
-docker compose up -d piston
-# Longer first-pull/install here: downloads + unpacks both toolchains.
-docker compose exec piston cli/index.js ppman install python javascript
-curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
-# expect ONLY "python" and "javascript" — never java/c++ (out of MVP scope)
+Set these in the **compose-root** `/home/ubuntu/merit/.env` (see section 1):
+
+```ini
+JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
+GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
+JUDGE_TIMEOUT_SEC=60
 ```
 
-The volume keeps the packages across recreates, so the cost is paid once.
-`PISTON_MAX_CONCURRENT_JOBS=4` (set in compose) matches the single vCPU.
+`GOOGLE_APPLICATION_CREDENTIALS` is the **in-container** path. Compose mounts
+`/home/ubuntu/merit/.judge/` read-only at `/run/secrets/`, so the key lives on
+the host at `.judge/judge-sa.json` and appears in the container as
+`/run/secrets/judge-sa.json`.
+
+Leaving `JUDGE_URL` empty falls back to the local in-process sandbox — that is
+the dev/CI path, not what prod should use.
+
+Full setup, deploy, verification and rollback: `docs/cloud-run-judge.md`.
+
+There is no Piston container. It was removed: nothing called it, it had no
+runtimes installed, and it held 300MB of a 951MB host.
 
 ### 5.5 Backup drill (pointer — procedure lives in the script)
 

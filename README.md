@@ -27,7 +27,7 @@ graph TD
     
     subgraph Application Stack
         API["Merit API (FastAPI + SQLAlchemy 2.0)"]
-        Piston["Piston Code Execution Sandbox (Docker / Isolate)"]
+        Judge["Cloud Run Judge (Python / JavaScript, isolated)"]
         DB[(Neon Serverless Postgres / SQLite)]
     end
     
@@ -40,7 +40,7 @@ graph TD
     Client -->|HTTPS Traffic| Caddy
     Caddy -->|Reverse Proxy| API
     API -->|Dialect-Aware Queries| DB
-    API -->|Isolated Code Runs| Piston
+    API -->|Authenticated Invoke| Judge
     API -->|Sanitized Streaming Proxy| LLM
     API -->|In-App Bug Reports| GitHubAPI
 ```
@@ -86,16 +86,16 @@ graph TD
 
 ## Engineered for Low-Cost Infrastructure
 
-Merit was intentionally architected to operate **100% free of cloud compute costs** on a single Oracle Cloud Free Tier AMD instance (1 vCPU / 1GB RAM) without triggering Linux OOM crashes:
+Merit is intentionally architected to operate **free of cloud compute costs**: the web and API tiers run on a single Oracle Cloud Free Tier AMD instance (1 vCPU / 1GB RAM) without triggering Linux OOM crashes, and code execution is offloaded to Cloud Run's always-free tier with `min-instances=0`, so an idle judge costs nothing.
 
 | Container | Memory Limit | Memory Reservation | Purpose |
 | :--- | :---: | :---: | :--- |
-| **merit-piston** | `300MB` | `150MB` | Sandboxed compiler & runner via Linux namespaces/cgroups |
 | **merit-api** | `350MB` | `200MB` | FastAPI uvicorn worker, SQLAlchemy ORM, and rate-limiting |
 | **merit-web** | `64MB` | `32MB` | Production Nginx serving gzip-compressed single-page app |
-| **OS & Buffer** | `~310MB` | — | Kernel headroom, swap cache, and Caddy TLS terminator |
+| **Cloud Run judge** | — | — | Sandboxed Python/JavaScript execution, off-host in its own container |
+| **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, Caddy TLS terminator, other host apps |
 
-* **Total Memory Budget**: Stack caps itself at **714MB**, leaving ample headroom on a 1GB host.
+* **Total Memory Budget**: Stack caps itself at **414MB**, leaving ample headroom on a 1GB host.
 * **Dialect-Aware Persistence**: Zero-configuration SQLite for local offline development; automatic dialect branching for Neon Serverless PostgreSQL with atomic upserts in production.
 
 ---
