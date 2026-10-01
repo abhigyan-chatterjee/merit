@@ -30,6 +30,16 @@ class Settings(BaseSettings):
     github_token: str = ""
     github_repo: str = "abhigyan-chatterjee/merit"
 
+    # Remote judge (Cloud Run). Empty in dev/CI → submissions run in the local
+    # sandbox instead, so nothing here needs cloud credentials to develop.
+    judge_url: str = ""
+    # Cloud Run cold starts are slow, especially on a heavier image, so this is
+    # far above the judge's own per-submission time limit.
+    judge_timeout_sec: float = 60.0
+    # Path to the service-account JSON used to mint identity tokens for the
+    # judge service. Only read when judge_url is set.
+    google_application_credentials: str = ""
+
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
@@ -82,6 +92,20 @@ class Settings(BaseSettings):
                 values.secret_key = dev_key
 
         return values
+
+    @model_validator(mode="after")
+    def validate_judge_config(self) -> "Settings":
+        """A remote judge without credentials is a broken deploy, not a runtime
+        error — catch it at startup instead of on the first submission."""
+        if self.judge_url and not self.google_application_credentials.strip():
+            raise RuntimeError(
+                "CRITICAL CONFIGURATION ERROR: JUDGE_URL is set but "
+                "GOOGLE_APPLICATION_CREDENTIALS is empty, so identity tokens for the "
+                "judge service cannot be minted.\n"
+                "Set GOOGLE_APPLICATION_CREDENTIALS to the path of the service-account "
+                "JSON, or unset JUDGE_URL to run the local sandbox."
+            )
+        return self
 
     @model_validator(mode="after")
     def normalize_sqlite_url(self) -> "Settings":

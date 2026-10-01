@@ -1,65 +1,22 @@
 # --- 1GB VPS memory budget (shared host) -------------------------------------
 # Host has 1024MB total AND already runs other apps, so the stack caps itself
-# well below that and leaves ~300MB+ headroom for the OS, Docker overhead,
+# well below that and leaves plenty of headroom for the OS, Docker overhead,
 # and the host's existing apps. Limits are hard OOM-kill ceilings;
 # reservations are soft guarantees used for placement.
-#   piston: limit 300m / reserve 150m — Node API + python/node toolchains for
-#           the ONLY two runtimes (python, javascript); burst covers a few
-#           concurrent isolate jobs on 1 vCPU (see PISTON_MAX_CONCURRENT_JOBS).
 #   api:    limit 350m / reserve 200m — single uvicorn worker + SQLAlchemy;
 #           Argon2id hashing spikes per login, hence the higher reservation.
 #   web:    limit 64m  / reserve 32m  — static nginx serving a prebuilt
 #           bundle; RSS is essentially the nginx master + 1 worker.
-# Sum of limits = 714MB -> ~300MB headroom. Sum of reservations = 382MB.
+# Sum of limits = 414MB. Code execution runs on Cloud Run (see JUDGE_URL), so
+# no judge container is needed here.
+#
+# The former `piston` service was removed: nothing ever called it. The API's
+# judge ran submissions in its own container the whole time, and Piston had no
+# runtimes installed, so it was 300MB of idle container on a 951MB host.
 # -----------------------------------------------------------------------------
 
 services:
-  # 1. Sandboxed Judge Execution Service
-  piston:
-    # pinned 2026-09-19, update through review
-    image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
-    container_name: merit-piston
-    restart: unless-stopped
-    # REQUIRED by Piston's entrypoint: it creates its isolate cgroup at boot
-    # (mkdir isolate under /sys/fs/cgroup) and runs jobs in namespaces.
-    # Without this the container crash-loops with "Read-only file system".
-    privileged: true
-    mem_limit: 300m
-    mem_reservation: 150m
-    # No published ports: the API reaches piston:2000 over merit-net.
-    # Publishing the judge publicly would let anyone run code on your box.
-    expose:
-      - "2000"
-    tmpfs:
-      - /tmp:exec,mode=1777
-    environment:
-      # 1 vCPU box: cap concurrent isolate jobs so one quiz rush can't
-      # starve the API container of CPU.
-      - PISTON_MAX_CONCURRENT_JOBS=4
-    volumes:
-      # Slim-piston persistence: Piston selects runtimes ONLY via installed
-      # packages under /piston/packages (no env/config knob exists upstream).
-      # The owner installs exactly python + javascript once (see the ppman
-      # comment below and docs/prod.md §5); this volume keeps them across
-      # recreates so the first-pull/install cost is paid only once.
-      # No Dockerfile change needed: stock image + 2 packages.
-      - merit-piston-packages:/piston/packages
-      # First-time runtime install (owner runs ONCE on the VPS after
-      # `docker compose up -d piston`; downloads + unpacks the two
-      # toolchains, so expect a longer first pull/install of a few minutes):
-      #   docker compose exec piston cli/index.js ppman install python javascript
-      # Verify slim set afterwards:
-      #   curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
-      #   # expect ONLY "python" and "javascript"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - merit-net
-
-  # 2. FastAPI Backend
+  # 1. FastAPI Backend
   api:
     build:
       context: .
@@ -73,8 +30,6 @@ services:
     # the host, so it cannot be used for this (it also counts the API's own
     # threads and stops Node from starting).
     pids_limit: 256
-    depends_on:
-      - piston
     environment:
       - ENVIRONMENT=production
       # Local default stays SQLite (zero friction: no env needed).
@@ -82,7 +37,6 @@ services:
       #   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
       - DATABASE_URL=${DATABASE_URL:-sqlite:////data/merit.db}
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
-      - PISTON_URL=http://piston:2000
       - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
       # OAuth (empty = disabled with 501; set on VPS, never commit).
       - CLERK_JWKS_URL=${CLERK_JWKS_URL:-}
@@ -90,8 +44,19 @@ services:
       # GitHub Issue forwarding for in-app user feedback
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - GITHUB_REPO=${GITHUB_REPO:-abhigyan-chatterjee/merit}
+      # Remote judge on Cloud Run. Leave JUDGE_URL empty to run the local
+      # sandbox instead; setting it requires the service-account path below.
+      - JUDGE_URL=${JUDGE_URL:-}
+      - JUDGE_TIMEOUT_SEC=${JUDGE_TIMEOUT_SEC:-60}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
     volumes:
       - merit-data:/data
+      # Service-account key for the judge identity, read-only. Put the JSON at
+      # .judge/judge-sa.json on the host (gitignored) and set
+      # GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json.
+      # An empty directory here is harmless: it is only read when JUDGE_URL is
+      # set, and startup validation refuses that combination without it.
+      - ${JUDGE_SA_DIR:-./.judge}:/run/secrets:ro
     logging:
       driver: json-file
       options:
@@ -128,7 +93,6 @@ services:
 
 volumes:
   merit-data:
-  merit-piston-packages:
 
 networks:
   merit-net:

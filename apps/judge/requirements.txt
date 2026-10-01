@@ -1,0 +1,5 @@
+# Judge service dependencies. Kept deliberately small: the sandbox is pure
+# stdlib, so the only things here are the web framework and its server.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4

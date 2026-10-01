@@ -1,0 +1,19 @@
+# Cloud Build config for the Merit judge image.
+#
+# The build context is the REPO ROOT, not apps/judge/, because the Dockerfile
+# copies the sandbox directly out of the API so both paths share exactly one
+# implementation of code execution.
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - apps/judge/Dockerfile
+      - -t
+      - ${_IMAGE}
+      - .
+images:
+  - ${_IMAGE}
+options:
+  machineType: E2_HIGHCPU_8   # a bigger builder is free-tier eligible and faster
+timeout: 1200s

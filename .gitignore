@@ -72,3 +72,6 @@ tmp/
 
 # --- Stray duplicate of docs/plans/2026-09-07-algovista-cleanup-extension.md ---
 /2026-09-07-algovista-cleanup-extension.md
+
+# Service-account key for the Cloud Run judge identity (never commit)
+.judge/

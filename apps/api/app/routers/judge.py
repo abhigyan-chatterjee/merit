@@ -17,7 +17,7 @@ from app.schemas.judge import (
     TestCaseResult,
 )
 from app.security import get_current_user, get_optional_current_user
-from app.services.judge import execute_code
+from app.services.judge_backend import execute as execute_code
 from app.services.streak import record_activity
 
 router = APIRouter(prefix="/api/v1/judge", tags=["Judge"])
