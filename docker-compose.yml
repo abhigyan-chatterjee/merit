@@ -68,6 +68,11 @@ services:
     restart: unless-stopped
     mem_limit: 350m
     mem_reservation: 200m
+    # The judge runs untrusted submissions in this container. A PID cap is the
+    # structural backstop against a fork bomb: RLIMIT_NPROC is per-UID across
+    # the host, so it cannot be used for this (it also counts the API's own
+    # threads and stops Node from starting).
+    pids_limit: 256
     depends_on:
       - piston
     environment:

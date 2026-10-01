@@ -25,14 +25,36 @@ export function catalogIdForBaseUrl(baseUrl: string): string | null {
 }
 
 const LS_BASE_URL = "merit_tutor_base_url";
-const LS_API_KEY = "merit_tutor_api_key";
 const LS_MODEL = "merit_tutor_model";
+// The API key never goes in localStorage: that store is readable by any script
+// on the origin and survives the session indefinitely. sessionStorage limits
+// the exposure to a single tab's lifetime. The legacy localStorage key is
+// scrubbed on read below.
+const SS_API_KEY = "merit_tutor_api_key";
+const LEGACY_LS_API_KEY = "merit_tutor_api_key";
+
+function readSS(key: string): string | null {
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
 
 function readLS(key: string): string | null {
   try {
     return window.localStorage.getItem(key);
   } catch {
     return null;
+  }
+}
+
+/** Removes the pre-fix persistent copy so it does not linger after upgrade. */
+function scrubLegacyStoredKey() {
+  try {
+    window.localStorage.removeItem(LEGACY_LS_API_KEY);
+  } catch {
+    // Storage may be unavailable; nothing to scrub in that case.
   }
 }
 
@@ -43,26 +65,34 @@ type TutorSnapshot = {
   remember: boolean;
 };
 
+scrubLegacyStoredKey();
+
 let snapshot: TutorSnapshot = {
   baseUrl: readLS(LS_BASE_URL) ?? TUTOR_DEFAULT_BASE_URL,
-  apiKey: readLS(LS_API_KEY) ?? "",
+  apiKey: readSS(SS_API_KEY) ?? "",
   model: readLS(LS_MODEL) ?? "",
-  remember: readLS(LS_API_KEY) !== null || readLS(LS_BASE_URL) !== null || readLS(LS_MODEL) !== null,
+  remember: readSS(SS_API_KEY) !== null || readLS(LS_BASE_URL) !== null || readLS(LS_MODEL) !== null,
 };
 const listeners = new Set<() => void>();
 
 function update(patch: Partial<TutorSnapshot>) {
   snapshot = { ...snapshot, ...patch };
   try {
+    // Non-secret preferences persist across sessions.
     if (snapshot.remember) {
       window.localStorage.setItem(LS_BASE_URL, snapshot.baseUrl);
-      window.localStorage.setItem(LS_API_KEY, snapshot.apiKey);
       window.localStorage.setItem(LS_MODEL, snapshot.model);
     } else {
       window.localStorage.removeItem(LS_BASE_URL);
-      window.localStorage.removeItem(LS_API_KEY);
       window.localStorage.removeItem(LS_MODEL);
     }
+    // The credential is session-scoped only.
+    if (snapshot.remember && snapshot.apiKey) {
+      window.sessionStorage.setItem(SS_API_KEY, snapshot.apiKey);
+    } else {
+      window.sessionStorage.removeItem(SS_API_KEY);
+    }
+    scrubLegacyStoredKey();
   } catch {
     // Storage is optional; credentials remain memory-only.
   }
@@ -97,7 +127,8 @@ export function useTutorKey(): TutorKeyState {
     () => snapshot,
   );
   useEffect(() => {
-    const storedKey = readLS(LS_API_KEY);
+    // Migrate a key left in a previous session's sessionStorage, if any.
+    const storedKey = readSS(SS_API_KEY);
     if (storedKey !== null && !snapshot.remember) {
       update({
         baseUrl: readLS(LS_BASE_URL) ?? snapshot.baseUrl,

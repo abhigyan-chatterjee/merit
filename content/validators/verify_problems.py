@@ -127,18 +127,37 @@ async def verify_all_problems(problems_dir: Path) -> int:
     # Drafts (e.g. scraped-catalog imports awaiting human verification) are
     # schema-checked but never judge-executed: their expected outputs are
     # placeholders by construction.
+    #
+    # The `scrap-` filename is authoritative, not the status field — a single
+    # deleted key must not be able to promote a quarantined draft into the
+    # verified set. The field is still honoured for files that carry it.
     verified_files: list[Path] = []
     skipped_drafts = 0
     for p_path in problem_files:
+        if p_path.name.startswith("scrap-"):
+            skipped_drafts += 1
+            continue
         try:
             with open(p_path, encoding="utf-8") as f:
-                status = json.load(f).get("reviewStatus", "verified")
+                data = json.load(f)
+            status = data.get("reviewStatus") or data.get("review_status") or "verified"
         except Exception:
             status = "verified"
         if status == "draft":
             skipped_drafts += 1
         else:
             verified_files.append(p_path)
+
+    # An empty verified set is not a pass. Without this the gate reports
+    # "All 0 problems verified 100% AC" and exits 0, so quarantining every
+    # problem would silently satisfy the 100% AC invariant.
+    if not verified_files:
+        print(
+            f"FAILED: no verified problems to check in {problems_dir} "
+            f"({skipped_drafts} drafts skipped, {len(problem_files)} files present). "
+            "The 100% AC invariant cannot be satisfied by an empty set."
+        )
+        return 1
 
     print(
         f"Verifying {len(verified_files)} problems with reference solutions through judge..."

@@ -33,6 +33,7 @@ describe("AiTutor", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     window.localStorage.clear();
+    window.sessionStorage.clear();
   });
 
   it("does not apply a preset catalog to custom providers", () => {
@@ -59,7 +60,9 @@ describe("AiTutor", () => {
 
   it("sends chat with a configured key and clears request errors on the next action", async () => {
     mockFetch();
-    window.localStorage.setItem("merit_tutor_api_key", TEST_KEY);
+    // The credential lives in sessionStorage only; localStorage is reserved for
+    // the non-secret provider preferences.
+    window.sessionStorage.setItem("merit_tutor_api_key", TEST_KEY);
     window.localStorage.setItem("merit_tutor_model", "gpt-4o-mini");
     render(<AiTutor problemSlug="two-sum" code="def solve(): pass" />);
     expandPanel();
@@ -68,5 +71,7 @@ describe("AiTutor", () => {
     fireEvent.click(screen.getByRole("button", { name: /send question/i }));
     await waitFor(() => expect(screen.getByText(REPLY)).toBeInTheDocument());
     expect(screen.getByText("Give me a nudge.")).toBeInTheDocument();
+    // The key must never be written to persistent storage.
+    expect(window.localStorage.getItem("merit_tutor_api_key")).toBeNull();
   });
 });

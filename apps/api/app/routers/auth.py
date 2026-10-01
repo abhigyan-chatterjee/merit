@@ -36,6 +36,21 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 # Dummy hash for timing attack mitigation on missing email lookups
 DUMMY_PASSWORD_HASH = hash_password("dummy_password_timing_pad_123")
 
+# Marker stored in password_hash for accounts that only ever signed in through a
+# provider. Any other value means a real password was set on the row.
+OAUTH_PASSWORD_SENTINEL_PREFIX = "oauth$"
+
+
+def _has_password_credential(user: User) -> bool:
+    """True when a usable password was set on this account.
+
+    An account whose hash is the OAuth sentinel was never claimed with a
+    password, so linking a verified provider identity to it is safe. Anything
+    else means someone chose that password, and ownership has to be proven.
+    """
+    stored = user.password_hash or ""
+    return bool(stored) and not stored.startswith(OAUTH_PASSWORD_SENTINEL_PREFIX)
+
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(
@@ -328,14 +343,34 @@ def clerk_oauth(
     if user is None:
         user = db.scalar(select(User).where(User.email == email))
         if user is not None:
-            # LINK: attach clerk_id, keep password hash and all existing data.
+            # Only auto-link rows that were never claimed with a password.
+            #
+            # Anyone can register any email without proving they own it. If we
+            # linked on an email match, an attacker could register a victim's
+            # address with a password they chose, and then keep that password
+            # (and full access) after the real owner signs in with the verified
+            # provider identity. Ownership of a password-protected row has to be
+            # proven by signing in with it first, then linking deliberately.
+            if _has_password_credential(user):
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail={
+                        "code": "OAUTH_LINK_REQUIRES_PASSWORD",
+                        "message": (
+                            "An account already exists for this email. Sign in with "
+                            "your password first, then connect this provider from "
+                            "your account settings."
+                        ),
+                    },
+                )
+            # LINK: attach clerk_id, keep all existing data.
             user.clerk_id = clerk_id
         else:
             # CREATE: OAuth-only account (no usable password).
             user = User(
                 email=email,
                 display_name=display_name,
-                password_hash="oauth$clerk",
+                password_hash=f"{OAUTH_PASSWORD_SENTINEL_PREFIX}clerk",
                 role="student",
                 is_active=1,
                 clerk_id=clerk_id,

@@ -349,12 +349,16 @@ def test_clerk_link_flow_matrix(client: TestClient, monkeypatch, db_session: Ses
             "email_verified": True,
         },
     )
+    # A password-protected row is never taken over by a provider sign-in: the
+    # registration above proves someone set a password, so linking is refused
+    # until they sign in with it and connect deliberately.
     linked = client.post("/api/v1/auth/oauth/clerk", json=payload)
-    assert linked.status_code == 200
+    assert linked.status_code == 409
+    assert linked.json()["detail"]["code"] == "OAUTH_LINK_REQUIRES_PASSWORD"
     user = db_session.scalar(
         select(User).where(User.email == "dogfood-clerk-link@example.com")
     )
-    assert user.clerk_id == "user_dogfood_link"
+    assert user.clerk_id is None
 
     _mock_claims(
         monkeypatch,

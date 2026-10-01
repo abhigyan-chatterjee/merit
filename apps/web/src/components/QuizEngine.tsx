@@ -95,6 +95,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(perQuestionSec ?? 0);
   const [timedOut, setTimedOut] = useState<Record<string, true>>({});
   // Echo of the topics the server actually sampled from (kept in state for
@@ -411,6 +412,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     if (attemptId) {
       // Server-verified grading
       setIsSubmitting(true);
+      setSubmitError(null);
       try {
         const res = await quizApi.submitQuiz(attemptId, secondsElapsed, selectedAnswers);
         const resultsMap: Record<string, { correctIndex: number; explanation: string; isCorrect: boolean }> = {};
@@ -431,8 +433,13 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         onComplete?.(res.score_pct);
       } catch (err: unknown) {
         console.error('Failed to submit quiz to server:', err);
-        // Fallback local grading if server submission fails
-        gradeLocally();
+        // Server-side questions carry no correctIndex on the client, so local
+        // grading would score every question as if option A were correct and
+        // then persist that fabrication to progress, goals and weakest-topic
+        // stats. Fail loudly instead and keep the answers for a retry.
+        setSubmitError(
+          'Your answers are still here, but the server did not grade this attempt, so no score was recorded. Try submitting again.'
+        );
       } finally {
         setIsSubmitting(false);
       }
@@ -764,6 +771,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
                     <span id="submit-guard-hint" className="text-[11px] text-muted">
                       Answer at least one question to submit.
                     </span>
+                  )}
+                  {submitError && (
+                    <p
+                      role="alert"
+                      className="w-full text-[11px] text-rose leading-relaxed"
+                    >
+                      {submitError}
+                    </p>
                   )}
                 </>
               ) : (

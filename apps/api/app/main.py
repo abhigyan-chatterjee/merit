@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import inspect
+from sqlalchemy import func, select
 from starlette.middleware.base import BaseHTTPMiddleware
 
 import app.models.content  # noqa: F401
@@ -14,6 +14,7 @@ import app.models.submission  # noqa: F401
 import app.models.user  # noqa: F401
 from app.config import settings
 from app.db import Base, SessionLocal, engine
+from app.models.content import Problem
 from app.routers import admin, auth, content, feedback, judge, progress, quizzes, tutor
 from app.seed import seed_all
 
@@ -22,11 +23,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(na
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Ensure database schema and verified seed content exist on startup
+    # Ensure database schema and verified seed content exist on startup.
     Base.metadata.create_all(bind=engine)
-    inspector = inspect(engine)
-    if not inspector.has_table("problems"):
-        with SessionLocal() as db:
+    # Count rows, not tables: create_all() has just created the table, so a
+    # has_table() check is always False and seeding never ran on a fresh DB.
+    with SessionLocal() as db:
+        seeded = db.scalar(select(func.count()).select_from(Problem)) or 0
+        if seeded == 0:
+            logging.getLogger(__name__).info("No problems present, seeding content")
             seed_all(db)
     yield
 

@@ -1,34 +1,15 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
+import { getLoginDestination } from "../utils/redirect";
 
-export const isSafeLoginDestination = (value: string): boolean => {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) return false;
-  if (/[\\\u0000-\u001f\u007f]/.test(value)) return false;
-  try {
-    const parsed = new URL(value, window.location.origin);
-    return (
-      parsed.origin === window.location.origin &&
-      parsed.pathname.startsWith("/") &&
-      !parsed.pathname.startsWith("//")
-    );
-  } catch {
-    return false;
-  }
-};
-
-export const getLoginDestination = (location: { search: string; state: unknown }): string => {
-  const from = (location.state as { from?: string })?.from || "/dashboard";
-  const requestedNext = new URLSearchParams(location.search).get("next");
-  if (requestedNext && isSafeLoginDestination(requestedNext)) return requestedNext;
-  return isSafeLoginDestination(from) ? from : "/dashboard";
-};
+// Re-exported so existing callers and tests keep their import path.
+export { getLoginDestination, isSafeLoginDestination } from "../utils/redirect";
 
 export const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const next = getLoginDestination(location);
@@ -50,7 +31,7 @@ export const LoginPage: React.FC = () => {
 
         <Reveal delay={0.1}>
           {isClerkConfigured() ? (
-            <ClerkOAuthSection mode="signin" onSuccess={() => navigate(next, { replace: true })} />
+            <ClerkOAuthSection mode="signin" next={next} />
           ) : (
             <div className="rounded-lg border border-line bg-surface p-5 text-center">
               <p className="font-mono text-sm font-medium text-ink">

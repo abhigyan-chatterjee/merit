@@ -1,8 +1,12 @@
 import asyncio
 import contextlib
 import json
+import os
+import pwd
 import re
 import shutil
+import signal
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -11,6 +15,104 @@ from typing import Any
 # generated code, so anything beyond a plain identifier must never reach it.
 _FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*\Z")
 _DUNDER_NAME_RE = re.compile(r"^__.*__\Z")
+
+# ---------------------------------------------------------------------------
+# Sandbox isolation
+#
+# User code is untrusted. Without these the child inherits the API's whole
+# environment (SECRET_KEY, DATABASE_URL, GITHUB_TOKEN), runs with the API's
+# privileges, and can read or write the database — one submission could forge
+# any user's session. Everything below narrows the child to "run this file
+# and print its output".
+# ---------------------------------------------------------------------------
+
+# An explicit allowlist. The child gets a PATH and nothing else: no secrets,
+# no database URL, no tokens, no proxy settings.
+JUDGE_ENV: dict[str, str] = {
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "HOME": "/tmp",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "NODE_OPTIONS": "--max-old-space-size=256",
+}
+
+# stdout/stderr beyond this is discarded and the run is failed as overflow.
+# A `while (true) console.log(1)` would otherwise buffer unbounded into the
+# API's own memory and OOM the container.
+MAX_OUTPUT_BYTES = 256 * 1024
+
+# Ceilings applied by the launcher before the interpreter starts.
+_RLIMIT_AS_BYTES = 512 * 1024 * 1024
+_RLIMIT_CPU_SEC = 5
+_RLIMIT_FSIZE_BYTES = 8 * 1024 * 1024
+
+
+def _address_space_limit_for(binary: str) -> int:
+    """RLIMIT_AS for this interpreter, or 0 to leave it alone.
+
+    Node cannot run under an address-space cap: V8 reserves a multi-gigabyte
+    virtual cage for pointer compression that is never committed, so RLIMIT_AS
+    makes thread creation fail at startup. Its heap is bounded through
+    NODE_OPTIONS instead, and the container cgroup remains the backstop.
+    """
+    if "node" in Path(binary).name.lower():
+        return 0
+    return _RLIMIT_AS_BYTES
+
+
+# NOTE: there is deliberately no RLIMIT_NPROC here. On Linux it caps processes
+# per *real UID across the whole host*, not per process tree, so it counts the
+# API worker's own threads and makes Node fail to start. Fork bombs are instead
+# contained by the process-group kill on timeout (below) and by pids_limit on
+# the container in docker-compose.yml.
+_LAUNCHER_SRC = """\
+import os, resource, sys
+
+as_bytes, cpu, fsize = (int(v) for v in sys.argv[1:4])
+for res, lim in (
+    (resource.RLIMIT_CPU, cpu),
+    (resource.RLIMIT_FSIZE, fsize),
+    (resource.RLIMIT_CORE, 0),
+):
+    try:
+        resource.setrlimit(res, (lim, lim))
+    except (ValueError, OSError):
+        pass
+
+# 0 means "no address-space cap" (Node reserves a large virtual cage).
+if as_bytes:
+    try:
+        resource.setrlimit(resource.RLIMIT_AS, (as_bytes, as_bytes))
+    except (ValueError, OSError):
+        pass
+
+os.execvp(sys.argv[4], sys.argv[4:])
+"""
+
+
+def _drop_to_unprivileged() -> tuple[int, int] | None:
+    """The (uid, gid) to run submissions as, or None when not privileged.
+
+    Only meaningful when the API itself is root. In local dev and CI the tests
+    run as a normal user, where dropping again is neither possible nor needed.
+    """
+    if os.geteuid() != 0:
+        return None
+    for name in ("nobody", "nogroup", "daemon"):
+        try:
+            entry = pwd.getpwnam(name)
+        except KeyError:
+            continue
+        if entry.pw_uid != 0:
+            return (entry.pw_uid, entry.pw_gid)
+    return None
+
+
+def _launcher_path(tmp_path: Path) -> Path:
+    launcher = tmp_path / "_launch.py"
+    launcher.write_text(_LAUNCHER_SRC, encoding="utf-8")
+    return launcher
 
 
 class JudgeResult:
@@ -27,35 +129,129 @@ class JudgeResult:
         self.compile_output = compile_output
 
 
+async def _read_capped(stream: asyncio.StreamReader, budget: int) -> tuple[bytes, bool]:
+    """Reads a stream but stops at `budget`, reporting whether it overflowed."""
+    chunks: list[bytes] = []
+    total = 0
+    overflowed = False
+    while True:
+        chunk = await stream.read(65536)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > budget:
+            chunks.append(chunk[: max(0, budget - (total - len(chunk)))])
+            overflowed = True
+            break
+        chunks.append(chunk)
+    return b"".join(chunks), overflowed
+
+
 async def run_in_sandbox(
     cmd: list[str],
     cwd: str,
     timeout_sec: float = 4.0,
 ) -> tuple[int, str, str, bool]:
-    """Runs command with strict timeout and captures stdout/stderr."""
+    """Runs command with strict timeout, scrubbed env, and captured output.
+
+    The child is denied the API's environment, dropped to an unprivileged uid
+    when the parent is root, hard-limited by rlimits, and killed as a process
+    group so nothing outlives the timeout.
+    """
+    identity = _drop_to_unprivileged()
+    # The submission's working directory must be reachable by the unprivileged
+    # child; mkdtemp creates it 0700 owned by root.
+    if identity:
+        with contextlib.suppress(OSError):
+            os.chmod(cwd, 0o777)
+
+    kwargs: dict[str, Any] = {
+        "stdout": asyncio.subprocess.PIPE,
+        "stderr": asyncio.subprocess.PIPE,
+        "cwd": cwd,
+        "env": JUDGE_ENV,
+        # Its own session means the whole tree shares one process group, so a
+        # timeout can kill grandchildren too — a fork bomb cannot outlive it.
+        "start_new_session": True,
+    }
+    if identity:
+        kwargs["user"] = identity[0]
+        kwargs["group"] = identity[1]
+        kwargs["extra_groups"] = []
+
+    # rlimits are applied by a launcher that execs the real interpreter. It
+    # runs on the same interpreter as the API so it is present in every image.
+    launcher = _launcher_path(Path(cwd))
+    launcher_cmd = [
+        sys.executable,
+        str(launcher),
+        str(_address_space_limit_for(cmd[0])),
+        str(_RLIMIT_CPU_SEC),
+        str(_RLIMIT_FSIZE_BYTES),
+        *cmd,
+    ]
+
     try:
-        proc = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            cwd=cwd,
-        )
-        stdout_b, stderr_b = await asyncio.wait_for(
-            proc.communicate(),
-            timeout=timeout_sec,
-        )
-        return (
-            proc.returncode or 0,
-            stdout_b.decode("utf-8", errors="replace"),
-            stderr_b.decode("utf-8", errors="replace"),
-            False,
+        proc = await asyncio.create_subprocess_exec(*launcher_cmd, **kwargs)
+    except (OSError, ValueError) as err:
+        # Falling back is better than a dead judge, but the limits are the
+        # point — surface it rather than silently running unprotected.
+        return (-1, "", f"Sandbox launch failed: {err}", False)
+
+    overflowed = False
+    timed_out = False
+    try:
+        stdout_b, stderr_b, overflowed = await asyncio.wait_for(
+            _collect(proc, MAX_OUTPUT_BYTES), timeout=timeout_sec
         )
     except TimeoutError:
-        with contextlib.suppress(Exception):
-            proc.kill()
-        return (-1, "", "Time Limit Exceeded", True)
+        timed_out = True
+        await _kill_tree(proc)
+        stdout_b, stderr_b = b"", b""
     except Exception as err:
+        await _kill_tree(proc)
         return (-1, "", str(err), False)
+
+    if timed_out:
+        return (-1, "", "Time Limit Exceeded", True)
+
+    if overflowed:
+        return (
+            -1,
+            "",
+            f"Output limit exceeded ({MAX_OUTPUT_BYTES // 1024} KB). "
+            "Reduce what the solution prints.",
+            False,
+        )
+
+    return (
+        proc.returncode or 0,
+        stdout_b.decode("utf-8", errors="replace"),
+        stderr_b.decode("utf-8", errors="replace"),
+        False,
+    )
+
+
+async def _collect(
+    proc: asyncio.subprocess.Process, budget: int
+) -> tuple[bytes, bytes, bool]:
+    out, out_over = await _read_capped(proc.stdout, budget)
+    err, err_over = await _read_capped(proc.stderr, budget)
+    await proc.wait()
+    return out, err, (out_over or err_over)
+
+
+async def _kill_tree(proc: asyncio.subprocess.Process) -> None:
+    """SIGKILLs the child's whole process group, then reaps it."""
+    if proc.returncode is not None:
+        return
+    with contextlib.suppress(ProcessLookupError, PermissionError, OSError):
+        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+    with contextlib.suppress(Exception):
+        proc.kill()
+    # Reaping prevents a zombie lingering for the worker's lifetime.
+    with contextlib.suppress(Exception):
+        await asyncio.wait_for(proc.wait(), timeout=5.0)
 
 
 async def execute_code(

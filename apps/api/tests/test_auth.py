@@ -287,7 +287,15 @@ def test_change_password_flow(client: TestClient):
 # --- Clerk OAuth (Google/GitHub): mocked JWKS verification, no network ---
 
 
-def test_clerk_oauth_links_existing_email_account(client: TestClient, monkeypatch, db_session):
+def test_clerk_oauth_refuses_to_take_over_password_account(
+    client: TestClient, monkeypatch, db_session
+):
+    """A provider sign-in must not inherit an account claimed with a password.
+
+    Anyone can register any email without proving ownership. Auto-linking on an
+    email match would let whoever set that password keep full access after the
+    real owner signs in with their verified provider identity.
+    """
     _configure_clerk(monkeypatch)
     reg_resp = client.post(
         "/api/v1/auth/register",
@@ -310,20 +318,43 @@ def test_clerk_oauth_links_existing_email_account(client: TestClient, monkeypatc
         },
     )
     resp = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
-    assert resp.status_code == 200
-    assert resp.json()["id"] == user_id  # same account, not a duplicate
-    assert "merit_access" in resp.cookies
-    assert "merit_refresh" in resp.cookies
 
+    # Refused, with an actionable reason rather than a silent merge.
+    assert resp.status_code == 409
+    assert resp.json()["detail"]["code"] == "OAUTH_LINK_REQUIRES_PASSWORD"
+    assert "merit_access" not in resp.cookies
+
+    # The account is untouched: no clerk_id attached.
     user = db_session.get(User, user_id)
-    assert user.clerk_id == "user_clerk_link123"
+    db_session.refresh(user)
+    assert user.clerk_id is None
 
-    # Password login still works after linking (password + data kept).
+    # And the password holder still owns it — nothing was handed over.
     login_resp = client.post(
         "/api/v1/auth/login",
         json={"email": "oauthlink@example.com", "password": "Password123456"},
     )
     assert login_resp.status_code == 200
+
+
+def test_clerk_oauth_links_account_created_by_provider(
+    client: TestClient, monkeypatch, db_session
+):
+    """Linking stays available where no password was ever set."""
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_clerk_first",
+            "email": "provideronly@example.com",
+            "display_name": "Provider Only",
+            "email_verified": True,
+        },
+    )
+    first = client.post("/api/v1/auth/oauth/clerk", json=MOCK_TOKEN_PAYLOAD)
+    assert first.status_code in (200, 201)
+    user_id = first.json()["id"]
+    assert db_session.get(User, user_id).password_hash.startswith("oauth$")
 
 
 def test_clerk_oauth_creates_new_user(client: TestClient, monkeypatch, db_session):

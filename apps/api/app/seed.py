@@ -40,12 +40,17 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
 
     # Pass 1: Read problem files, skip drafts entirely, and gather verified problems.
     # Note on field inconsistency: question files use snake_case 'review_status',
-    # while problem files use camelCase 'reviewStatus'. We accept both spellings,
-    # defaulting to 'verified' when absent (verified problem files carry no status field).
+    # while problem files use camelCase 'reviewStatus'. We accept both spellings.
+    # The `scrap-` filename is authoritative for quarantine, so deleting a status
+    # key can never promote a draft into the served set. A missing status on a
+    # non-scrap file means verified, because the 140 curated problems ship
+    # without the field.
     valid_problems: list[dict] = []
     verified_slugs: set[str] = set()
 
     for file_path in sorted(content_dir.glob("*.json")):
+        if file_path.name.startswith("scrap-"):
+            continue
         with open(file_path, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -141,16 +146,97 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
 
             count += 1
         else:
-            # Backfill sequence links + topic on existing rows (taxonomy migration).
+            # Backfill on existing rows. This must keep serving data in sync
+            # with the content files, otherwise a corrected reference solution
+            # or test case never reaches a deployed database.
             existing.topic = data["topic"]
             existing.sequence = data.get("sequence")
             existing.prev_slug = data.get("prevSlug")
             existing.next_slug = data.get("nextSlug")
             existing.review_status = status
+            existing.title = data["title"]
+            existing.statement = data["statement"]
+            existing.difficulty = data["difficulty"]
+            existing.pattern = data["pattern"]
+            existing.examples = json.dumps(data.get("examples", []))
+            existing.constraints_json = json.dumps(data.get("constraints", []))
+            existing.hints = json.dumps(data.get("hints", []))
+            existing.starter_code = json.dumps(starter_dict)
+            existing.function_name = data.get("functionName", "solve")
+            existing.time_limit_ms = data.get("timeLimitMs", 2000)
             if data.get("editorial") is not None:
                 existing.editorial_json = json.dumps(data["editorial"])
             if data.get("reading_links") is not None:
                 existing.reading_links_json = json.dumps(data["reading_links"])
+
+            # Test cases and solutions are compared before replacing, so a
+            # no-op re-seed does not churn rows.
+            desired_cases = [
+                (
+                    tc.get("label", f"Case {i + 1}"),
+                    json.dumps(tc["input"]),
+                    json.dumps(tc["expected"]),
+                )
+                for i, tc in enumerate(data.get("testCases", []))
+            ]
+            current_cases = [
+                (tc.label, tc.input_json, tc.expected_json)
+                for tc in db.scalars(
+                    select(ProblemTestCase)
+                    .where(ProblemTestCase.problem_slug == slug)
+                    .order_by(ProblemTestCase.ordinal)
+                ).all()
+            ]
+            if current_cases != desired_cases:
+                for tc in db.scalars(
+                    select(ProblemTestCase).where(ProblemTestCase.problem_slug == slug)
+                ).all():
+                    db.delete(tc)
+                db.flush()
+                for i, (label, input_json, expected_json) in enumerate(desired_cases):
+                    db.add(
+                        ProblemTestCase(
+                            problem_slug=slug,
+                            ordinal=i,
+                            label=label,
+                            input_json=input_json,
+                            expected_json=expected_json,
+                            is_sample=1 if i < 2 else 0,
+                        )
+                    )
+
+            desired_solutions = [
+                (
+                    sol.get("title", "Solution"),
+                    sol.get("complexity", "O(n)"),
+                    sol.get("language", "javascript"),
+                    sol["code"],
+                )
+                for sol in data.get("solutions", [])
+            ]
+            current_solutions = [
+                (s.title, s.complexity, s.language, s.code)
+                for s in db.scalars(
+                    select(ProblemSolution).where(ProblemSolution.problem_slug == slug)
+                ).all()
+            ]
+            if current_solutions != desired_solutions:
+                for s in db.scalars(
+                    select(ProblemSolution).where(ProblemSolution.problem_slug == slug)
+                ).all():
+                    db.delete(s)
+                db.flush()
+                for title, complexity, language, code in desired_solutions:
+                    db.add(
+                        ProblemSolution(
+                            problem_slug=slug,
+                            title=title,
+                            complexity=complexity,
+                            language=language,
+                            code=code,
+                            is_reference=1,
+                        )
+                    )
 
     db.commit()
     return count
@@ -165,6 +251,10 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
 
     count = 0
     for q_file in sorted(questions_dir.glob("*/*.json")):
+        # `scrap-` is authoritative, same as problems: a missing or edited
+        # status key must not be able to smuggle a draft into the served set.
+        if q_file.name.startswith("scrap-"):
+            continue
         with open(q_file, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -185,7 +275,11 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
                 source=data.get("source", "generated"),
                 generator_key=data.get("generator_key"),
                 content_hash=data["content_hash"],
-                review_status=data.get("review_status", "verified"),
+                # Fail closed: an unlabelled question is a draft. This matches
+                # QuestionSchema and verify_questions, which both default to
+                # draft. It previously defaulted to "verified" here, so a file
+                # missing the key skipped every gate and shipped as verified.
+                review_status=data.get("review_status", "draft"),
             )
             db.add(question)
             count += 1

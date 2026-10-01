@@ -246,7 +246,7 @@ export const ProfilePage: React.FC = () => {
           <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-6">
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
-              <p className="text-xs text-muted mt-1">Your key stays on this device and is sent only to the selected provider through the tutor proxy. It is never stored on our server.</p>
+              <p className="text-xs text-muted mt-1">Your key is kept for this browser session only, never saved to your account. Requests pass through the tutor proxy to reach the provider you selected, so treat it as leaving this device on each call.</p>
             </div>
             <label className="block text-xs font-mono">
               <span className="text-muted">Provider preset</span>

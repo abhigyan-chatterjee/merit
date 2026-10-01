@@ -1,12 +1,14 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
 import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
+import { getLoginDestination } from "../utils/redirect";
 
 export const RegisterPage: React.FC = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const next = getLoginDestination(location);
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
@@ -25,10 +27,7 @@ export const RegisterPage: React.FC = () => {
 
         <Reveal delay={0.1}>
           {isClerkConfigured() ? (
-            <ClerkOAuthSection
-              mode="signup"
-              onSuccess={() => navigate("/dashboard", { replace: true })}
-            />
+            <ClerkOAuthSection mode="signup" next={next} />
           ) : (
             <div className="rounded-lg border border-line bg-surface p-5 text-center">
               <p className="font-mono text-sm font-medium text-ink">

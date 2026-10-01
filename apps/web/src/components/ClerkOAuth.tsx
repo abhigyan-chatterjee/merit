@@ -4,12 +4,16 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
 import { ApiError } from "../utils/api";
+import { isSafeLoginDestination } from "../utils/redirect";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 // Optional custom Clerk JWT template name (must expose an email claim).
 // When unset, the default Clerk session token is exchanged instead.
 const JWT_TEMPLATE = import.meta.env.VITE_CLERK_JWT_TEMPLATE as string | undefined;
 const OAUTH_STATE_KEY = "merit.oauth.state";
+// The destination has to survive a full-page trip to Clerk and back, so it is
+// stashed next to the state nonce rather than passed through the component.
+const OAUTH_NEXT_KEY = "merit.oauth.next";
 
 export const isClerkConfigured = (): boolean => Boolean(PUBLISHABLE_KEY);
 
@@ -50,20 +54,34 @@ const ClerkBridge: React.FC<BridgeProps> = ({ mode }) => {
 
 interface ClerkOAuthSectionProps {
   mode: "signin" | "signup";
-  onSuccess: () => void;
+  /**
+   * Where to land after sign-in. Stashed in sessionStorage because Clerk
+   * redirects through a full page load, so a React callback cannot carry it.
+   */
+  next?: string;
 }
 
 /**
  * Social login via Clerk (Google/GitHub). Rendered ONLY on /login and
- * /register, alongside the untouched password form. Returns null when no
- * `VITE_CLERK_PUBLISHABLE_KEY` is configured, leaving password-only auth.
+ * /register. Returns null when no `VITE_CLERK_PUBLISHABLE_KEY` is configured,
+ * leaving password-only auth.
  */
-export const ClerkOAuthSection: React.FC<ClerkOAuthSectionProps> = ({ mode, onSuccess }) => {
+export const ClerkOAuthSection: React.FC<ClerkOAuthSectionProps> = ({ mode, next }) => {
   if (!isClerkConfigured()) return null;
-  return <ClerkOAuthInner mode={mode} onSuccess={onSuccess} />;
+  return <ClerkOAuthInner mode={mode} next={next} />;
 };
 
-const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode }) => {
+const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, next }) => {
+  // Recorded before the redirect so the callback can restore it. Validated
+  // again on read, since sessionStorage is not a trusted source.
+  useEffect(() => {
+    if (next && isSafeLoginDestination(next)) {
+      sessionStorage.setItem(OAUTH_NEXT_KEY, next);
+    } else {
+      sessionStorage.removeItem(OAUTH_NEXT_KEY);
+    }
+  }, [next]);
+
   return (
     <div className="space-y-4">
       <div className="flex justify-center">
@@ -128,7 +146,14 @@ const ClerkSsoCallbackInner: React.FC = () => {
         throw new Error("Could not retrieve a Clerk session token.");
       }
       await loginWithClerk(token);
-      navigate("/dashboard", { replace: true });
+
+      // Restore the deep link the user arrived with (a problem, an exam, the
+      // code runner). Re-validated here: sessionStorage can be tampered with.
+      const stashedNext = sessionStorage.getItem(OAUTH_NEXT_KEY);
+      sessionStorage.removeItem(OAUTH_NEXT_KEY);
+      const destination =
+        stashedNext && isSafeLoginDestination(stashedNext) ? stashedNext : "/dashboard";
+      navigate(destination, { replace: true });
     })().catch((err: unknown) => {
       setError(oauthErrorMessage(err));
     });
