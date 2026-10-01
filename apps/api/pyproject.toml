@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",
+    # Imported directly by app/main.py (BaseHTTPMiddleware). It currently arrives
+    # transitively through fastapi, but we use it by name, so we declare it —
+    # otherwise a fastapi reshuffle breaks the app with no warning here.
+    "starlette>=0.40.0",
     "uvicorn[standard]>=0.30.0",
     "sqlalchemy>=2.0.35",
     "psycopg[binary]>=3.1.0",  # Neon Postgres prod driver (SQLite stays default for dev/test)
