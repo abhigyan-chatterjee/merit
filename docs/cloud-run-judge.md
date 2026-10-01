@@ -52,7 +52,68 @@ per month. `--max-instances 3` caps worst-case spend.
 period pays container startup: roughly 2–3s for `judge-light`. This is the
 deliberate trade for staying free. `--cpu-boost` recovers a large part of it.
 
-## 1. One-time setup (owner, on a workstation with gcloud)
+## 1. Prerequisites — billing must be enabled first
+
+**Nothing below works without a billing account attached to the project.** Cloud
+Run, Artifact Registry and Cloud Build all require one, and the free tier does
+not exempt you from needing it — the free tier is a discount applied to a
+billing account, not an alternative to having one.
+
+Without it, `deploy.sh bootstrap` fails at the first `gcloud services enable`:
+
+```
+FAILED_PRECONDITION: Billing account for project '...' is not found.
+Billing must be enabled for activation of service(s) 'run.googleapis.com, ...'
+```
+
+### Attach billing
+
+```bash
+gcloud billing accounts list          # find the ACCOUNT_ID
+gcloud billing projects link merit-judge --billing-account=ACCOUNT_ID
+```
+
+If that list is empty, you have no billing account yet — create one at
+<https://console.cloud.google.com/billing>. New accounts are typically offered
+a 90-day credit; that sits on top of the always-free tier, so realistic
+development use costs nothing either way.
+
+### Then set a budget alert, before deploying anything
+
+This is the actual safety net. It will not cap spend on its own, but it will
+email you long before a bill exists:
+
+```bash
+gcloud billing budgets create \
+  --billing-account=ACCOUNT_ID \
+  --display-name="Merit judge guardrail" \
+  --budget-amount=1USD \
+  --threshold-rule=percent=0.5 \
+  --threshold-rule=percent=1.0
+```
+
+Alerts fire at 50¢ and $1.00. Expected spend for this workload is **$0.00**.
+
+### Why $0.00 is the realistic number
+
+The binding limit is the vCPU allowance, not requests:
+
+| Free tier | Equals |
+|---|---|
+| 180,000 vCPU-s | 50 hours of 1-vCPU instance time |
+| 360,000 GiB-s | 100 hours of 1 GiB instance time |
+| 2,000,000 requests | — |
+
+At roughly 1.5s per submission, 50 hours is on the order of **100,000
+submissions per month**. You would need sustained traffic far beyond a
+placement-prep site to leave the free tier.
+
+Two things that *are* billed and worth knowing: **Artifact Registry storage**
+beyond 0.5 GiB (two images ≈ $0.05–0.10/month), and **Cloud Build** beyond 120
+build-minutes/day (a build here takes 2–5 minutes). Neither will realistically
+trigger.
+
+## 2. Project setup
 
 ```bash
 # Install the CLI: https://cloud.google.com/sdk/docs/install
@@ -60,8 +121,7 @@ gcloud auth login
 gcloud projects create merit-judge --name="Merit Judge"   # or reuse a project
 gcloud config set project merit-judge
 
-# Attach a billing account in the console (required even inside free limits):
-#   https://console.cloud.google.com/billing
+# Billing must already be linked — see section 1.
 ```
 
 Then:
@@ -78,7 +138,7 @@ service accounts:
   so a sandbox escape has nothing to authenticate as.
 - `merit-judge-invoker` — what the VPS assumes when calling the judge.
 
-## 2. Deploy
+## 3. Deploy
 
 ```bash
 ./apps/judge/deploy.sh deploy
@@ -102,7 +162,7 @@ the platform before they reach the container.
 It finishes by printing the `JUDGE_URL` and granting the invoker account
 `roles/run.invoker` on this service only.
 
-## 3. Mint the VPS identity key
+## 4. Mint the VPS identity key
 
 ```bash
 ./apps/judge/deploy.sh key
@@ -114,7 +174,7 @@ Writes `.judge/judge-sa.json` (gitignored). Copy it to the VPS:
 scp .judge/judge-sa.json Merit:/home/ubuntu/merit/.judge/judge-sa.json
 ```
 
-## 4. Wire the VPS
+## 5. Wire the VPS
 
 Add to the environment used by `docker compose` on the VPS — `apps/api/.env` or
 an exported env file, never committed:
@@ -143,7 +203,7 @@ docker rm -f merit-piston 2>/dev/null || true
 docker volume rm merit_merit-piston-packages 2>/dev/null || true
 ```
 
-## 5. Verify
+## 6. Verify
 
 ```bash
 # The service should reject an unauthenticated call with 403:
@@ -161,7 +221,7 @@ Server-side confirmation:
 ./apps/judge/deploy.sh logs     # expect one line per run, no code content
 ```
 
-## 6. Rollback
+## 7. Rollback
 
 Unset `JUDGE_URL` and restart the API. Submissions immediately run in the local
 sandbox again — the code path never left. No data migration, no state to undo.

@@ -52,8 +52,41 @@ require_project() {
   echo "Project: $project   Region: $REGION   Service: $SERVICE"
 }
 
+require_billing() {
+  local project account
+  project="$(gcloud config get-value project 2>/dev/null || true)"
+  # If the describe fails outright (missing component, missing permission) we
+  # cannot tell, so we proceed and let the real command surface the error rather
+  # than blocking on a check that might itself be wrong.
+  account="$(gcloud billing projects describe "$project" \
+    --format='value(billingAccountName)' 2>/dev/null || true)"
+  if [[ "$account" == billingAccountName* ]]; then
+    return 0   # command unavailable; fall through to the real error
+  fi
+  if [[ -z "$account" ]]; then
+    cat >&2 <<'MSG'
+Billing is not enabled on this project.
+
+Cloud Run, Artifact Registry and Cloud Build all require a billing account.
+The free tier is a discount applied to a billing account, not a replacement for
+having one, so this is required even though the expected spend is $0.00.
+
+  gcloud billing accounts list                       # find ACCOUNT_ID
+  gcloud billing projects link PROJECT_ID --billing-account=ACCOUNT_ID
+
+If that list is empty, create one at:
+  https://console.cloud.google.com/billing
+
+Then re-run this command. See docs/cloud-run-judge.md section 1.
+MSG
+    exit 1
+  fi
+  echo "Billing: $account"
+}
+
 cmd_bootstrap() {
   require_project
+  require_billing
   local project
   project="$(gcloud config get-value project)"
 
@@ -90,6 +123,7 @@ cmd_bootstrap() {
 
 cmd_deploy() {
   require_project
+  require_billing
   local project
   project="$(gcloud config get-value project)"
 
@@ -129,6 +163,7 @@ cmd_deploy() {
 
 cmd_key() {
   require_project
+  require_billing
   local project
   project="$(gcloud config get-value project)"
   local key_path="${REPO_ROOT}/.judge/judge-sa.json"
