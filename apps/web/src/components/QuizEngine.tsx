@@ -403,6 +403,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     onComplete?.(pct);
   };
 
+  const answeredCount = Object.keys(selectedAnswers).length;
+
   const handleSubmitQuiz = async () => {
     if (submitted || activeQuestions.length === 0) return;
 
@@ -669,15 +671,28 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
                   key={idx}
                   onClick={() => handleSelectOption(idx)}
                   disabled={submitted || isSubmitting || !!timedOut[currentQ.id]}
+                  aria-pressed={isSelected}
                   className={`w-full text-left p-3.5 rounded-lg border text-xs font-mono transition flex items-center justify-between cursor-pointer ${btnClass}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded flex items-center justify-center border border-current text-[11px] shrink-0">
+                    {/* The letter tile doubles as the selection marker: filled
+                        when chosen, so state never rests on hue alone. */}
+                    <span
+                      aria-hidden="true"
+                      className={`w-6 h-6 rounded flex items-center justify-center border text-[11px] shrink-0 ${
+                        isSelected ? 'bg-mint text-canvas border-mint' : 'border-current'
+                      }`}
+                    >
                       {String.fromCharCode(65 + idx)}
                     </span>
                     <span>{opt}</span>
                   </div>
 
+                  {isSelected && !submitted && (
+                    <span className="font-sans text-[10px] uppercase tracking-wider shrink-0">
+                      Selected
+                    </span>
+                  )}
                   {submitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-mint shrink-0" />}
                   {submitted && isSelected && !isCorrect && (
                     <XCircle className="w-4 h-4 text-rose shrink-0" />
@@ -721,25 +736,36 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {!submitted ? (
-                <button
-                  onClick={handleSubmitQuiz}
-                  disabled={isSubmitting}
-                  className="px-4 py-1.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      Grading...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-3.5 h-3.5" />
-                      Submit Quiz ({Object.keys(selectedAnswers).length}/{activeQuestions.length})
-                    </>
+                <>
+                  {/* A score is only meaningful if something was answered. The
+                      control states why it is unavailable rather than sitting
+                      dead, which hides the thing that must be fixed. */}
+                  <button
+                    onClick={handleSubmitQuiz}
+                    disabled={isSubmitting || answeredCount === 0}
+                    aria-describedby={answeredCount === 0 ? 'submit-guard-hint' : undefined}
+                    className="px-4 py-1.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        Grading...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        Submit quiz ({answeredCount}/{activeQuestions.length})
+                      </>
+                    )}
+                  </button>
+                  {answeredCount === 0 && (
+                    <span id="submit-guard-hint" className="text-[11px] text-muted">
+                      Answer at least one question to submit.
+                    </span>
                   )}
-                </button>
+                </>
               ) : (
                 <>
                   {correctCount < activeQuestions.length && (

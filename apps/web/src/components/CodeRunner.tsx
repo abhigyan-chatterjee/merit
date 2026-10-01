@@ -26,6 +26,7 @@ import {
   progressApi,
 } from "../utils/api";
 import { useAuth } from "../store/AuthContext";
+import { useDialogFocus } from "../hooks/useDialogFocus";
 import { AiTutor } from "./AiTutor";
 
 type EditorLang = "javascript" | "python";
@@ -98,6 +99,15 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [showTutor, setShowTutor] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionItem | null>(null);
   const [copied, setCopied] = useState(false);
+  const runSamplesRef = useRef<HTMLButtonElement | null>(null);
+
+  // Same dialog contract as the feedback modal and the search palette: focus
+  // moves in, Tab is trapped, the background goes inert, and focus returns to
+  // the submission row that opened it.
+  const submissionViewerRef = useDialogFocus<HTMLDivElement>(
+    selectedSubmission !== null,
+    () => setSelectedSubmission(null)
+  );
 
   const setCode = (next: string) => {
     setCodeByLang((prev) => ({ ...prev, [language]: next }));
@@ -120,6 +130,15 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // Tab inserts indentation instead of moving focus — a must for any code
   // editor. Plain Tab indents (multiline-aware); Shift+Tab outdents.
   const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Tab indents, which is right for a code editor but traps keyboard focus
+    // inside the textarea. Escape is the standard escape hatch: it hands focus
+    // to the run controls rather than blurring to <body>, which would send the
+    // next Tab all the way back to the top of the page.
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      (runSamplesRef.current ?? editorRef.current)?.focus();
+      return;
+    }
     if (e.key !== 'Tab') return;
     e.preventDefault();
     const el = editorRef.current;
@@ -329,9 +348,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
   const renderVerdictBadge = () => {
     if (!verdict) return null;
+    // The verdict is the single most important state change on this page, so
+    // it arrives rather than appearing. Opt-in: under reduced motion the
+    // badge is simply present, which still reads clearly on its own.
+    const enter =
+      'motion-fade motion-delay-75';
     if (verdict === "AC") {
       return (
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold">
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold ${enter}`}>
           <CheckCircle2 className="w-3.5 h-3.5" />
           <span>Accepted (AC)</span>
           {runtimeMs !== null && <span className="text-[10px] text-muted">· {runtimeMs.toFixed(1)}ms</span>}
@@ -340,7 +364,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     }
     if (verdict === "WA") {
       return (
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold">
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold ${enter}`}>
           <XCircle className="w-3.5 h-3.5" />
           <span>Wrong Answer (WA)</span>
         </div>
@@ -348,7 +372,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     }
     if (verdict === "TLE") {
       return (
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber/40 bg-amber/10 text-amber font-mono text-xs font-semibold">
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber/40 bg-amber/10 text-amber font-mono text-xs font-semibold ${enter}`}>
           <Clock className="w-3.5 h-3.5" />
           <span>Time Limit Exceeded (TLE)</span>
         </div>
@@ -373,7 +397,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
               value={language}
               aria-label="Execution Language"
               onChange={(e) => handleLanguageChange(e.target.value as "javascript" | "python")}
-              className="bg-surface border border-line rounded px-2 py-0.5 text-xs font-mono text-ink focus:outline-none focus:border-mint cursor-pointer"
+              className="bg-surface border border-line rounded px-2 py-0.5 text-base sm:text-xs font-mono text-ink focus:border-mint cursor-pointer"
             >
               <option value="python">Python 3.12</option>
               <option value="javascript">JavaScript (Node.js)</option>
@@ -430,7 +454,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           rows={12}
           spellCheck={false}
           aria-label="Code Editor"
-          className="w-full p-4 bg-canvas text-ink font-mono text-xs leading-relaxed focus:outline-none resize-y border-b border-line"
+          autoCapitalize="off"
+          autoCorrect="off"
+          className="w-full p-4 bg-canvas text-ink font-mono text-base sm:text-xs leading-relaxed resize-y border-b border-line focus:border-mint focus:border-b-2"
         />
       </div>
 
@@ -468,6 +494,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         <div className="flex items-center gap-2">
           {activeView === "results" && renderVerdictBadge()}
           <button
+            ref={runSamplesRef}
             onClick={handleRunSamples}
             disabled={isRunning || isSubmitting}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
@@ -510,12 +537,19 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             )}
 
             {compileError && (
-              <div className="mb-4 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose font-mono text-xs whitespace-pre-wrap">
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="mb-4 p-3 rounded-lg border border-rose/30 bg-rose/10 text-rose font-mono text-xs whitespace-pre-wrap"
+              >
                 <div className="flex items-center gap-1.5 font-bold mb-1">
                   <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>Error Output</span>
+                  <span>Run failed, nothing was graded</span>
                 </div>
                 {compileError}
+                <p className="mt-2 font-sans text-muted normal-case">
+                  Check the judge service is reachable, then run again.
+                </p>
               </div>
             )}
 
@@ -593,6 +627,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                 <p className="text-[11px] text-muted/70">
                   Click &ldquo;Run Samples&rdquo; to test sample cases or &ldquo;Submit&rdquo; to evaluate all test cases.
                 </p>
+                <p className="text-[11px] text-muted/70">
+                  Keyboard: Tab indents inside the editor. Press Escape then Tab to
+                  reach the run buttons.
+                </p>
               </div>
             )}
           </div>
@@ -658,6 +696,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           onClick={() => setSelectedSubmission(null)}
         >
           <div
+            ref={submissionViewerRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Submitted code"
             className="w-full max-w-2xl max-h-[80vh] flex flex-col rounded-xl border border-line bg-surface shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >

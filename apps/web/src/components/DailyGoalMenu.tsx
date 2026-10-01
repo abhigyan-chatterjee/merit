@@ -142,7 +142,7 @@ export const DailyGoalMenu: React.FC = () => {
               onChange={(e) => setCustomLabel(e.target.value)}
               placeholder="Custom, e.g. Revise DP 20 min"
               aria-label="Custom daily goal"
-              className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-canvas border border-line text-xs text-ink placeholder-muted/60 focus:outline-none focus:border-mint"
+              className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-canvas border border-line text-xs text-ink placeholder-muted/60 focus:border-mint"
             />
             <button
               type="submit"

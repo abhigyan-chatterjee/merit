@@ -51,7 +51,7 @@ const DashboardPathCard: React.FC<{ path: (typeof LEARNING_PATHS)[number] }> = (
           {path.steps.length} steps · {done}/{total} complete · {pct}%
         </div>
       </div>
-      <ArrowRight className="w-4 h-4 text-muted group-hover:text-mint group-hover:translate-x-0.5 transition-all shrink-0" />
+      <ArrowRight className="w-4 h-4 text-muted group-hover:text-mint group-hover:translate-x-0.5 transition-[color,transform] duration-150 ease-quart motion-reduce:transition-none shrink-0" />
     </Link>
   );
 };
@@ -187,7 +187,7 @@ export const DashboardPage: React.FC = () => {
                 Start your first problem
               </h3>
               <p className="text-xs text-muted">
-                No activity recorded yet. Pick a problem to begin your practice streak!
+                Nothing recorded yet. Solve one problem to start your streak.
               </p>
             </div>
 
@@ -292,8 +292,8 @@ export const DashboardPage: React.FC = () => {
                     <span className="text-[10px] font-mono text-muted w-16 truncate">{c.name}</span>
                     <span className="flex-1 h-1 rounded-full bg-line overflow-hidden">
                       <span
-                        className="block h-full bg-mint transition-all duration-300"
-                        style={{ width: `${(c.solved / c.total) * 100}%` }}
+                        className="block h-full w-full bg-mint origin-left transition-transform duration-300 ease-quart motion-reduce:transition-none"
+                        style={{ transform: `scaleX(${c.total ? c.solved / c.total : 0})` }}
                       />
                     </span>
                     <span className="text-[10px] font-mono text-ink tnum">
@@ -318,7 +318,7 @@ export const DashboardPage: React.FC = () => {
                 <p className="text-xs text-muted">No assessment scores recorded yet.</p>
                 <Link
                   to="/quiz/arrays-hashing"
-                  className="inline-flex items-center gap-1.5 text-xs text-mint hover:underline font-mono"
+                  className="inline-flex items-center gap-1.5 py-2 text-xs text-mint hover:underline font-mono"
                 >
                   Take a diagnostic quiz →
                 </Link>
@@ -340,8 +340,8 @@ export const DashboardPage: React.FC = () => {
                   </div>
                   <span className="block h-1 rounded-full bg-line overflow-hidden">
                     <span
-                      className={`block h-full transition-all duration-300 ${barTone(score)}`}
-                      style={{ width: `${score}%` }}
+                      className={`block h-full w-full origin-left transition-transform duration-300 ease-quart motion-reduce:transition-none ${barTone(score)}`}
+                      style={{ transform: `scaleX(${score / 100})` }}
                     />
                   </span>
                 </div>

@@ -136,7 +136,7 @@ export const VisualizerDetailPage: React.FC = () => {
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/visualizers" className="hover:text-mint transition-colors">
+        <Link to="/visualizers" className="inline-block py-1.5 hover:text-mint transition-colors">
           visualizers
         </Link>
         <ChevronRight className="w-3 h-3" />
@@ -165,7 +165,10 @@ export const VisualizerDetailPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Wraps rather than overflowing: at 16px on a phone this select is
+            intrinsically wide, and a shrink-0 row pushed the document to
+            391px. min-w-0 lets it give way and the label wraps below. */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 min-w-0">
           <label
             htmlFor="viz-switch"
             className="text-[9px] font-mono uppercase tracking-[0.16em] text-muted"
@@ -176,7 +179,7 @@ export const VisualizerDetailPage: React.FC = () => {
             id="viz-switch"
             value={id}
             onChange={(e) => navigate(`/visualizers/${e.target.value}`)}
-            className="px-2.5 py-1.5 rounded-lg bg-surface border border-line text-[11px] font-mono text-ink hover:border-steel cursor-pointer focus:outline-none"
+            className="min-w-0 max-w-full px-2.5 py-1.5 rounded-lg bg-surface border border-line text-base sm:text-[11px] font-mono text-ink hover:border-steel cursor-pointer"
           >
             {VISUALIZERS.map((v) => (
               <option key={v.id} value={v.id}>
@@ -201,7 +204,7 @@ export const VisualizerDetailPage: React.FC = () => {
                 href={reference.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-mono text-mint hover:underline break-all"
+                className="inline-block py-1 text-xs font-mono text-mint hover:underline break-all"
               >
                 {reference.label}
               </a>

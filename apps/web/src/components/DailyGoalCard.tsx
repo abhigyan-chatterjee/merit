@@ -65,7 +65,7 @@ export const DailyGoalCard: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="flex-1 h-1.5 rounded-full bg-line overflow-hidden">
               <span
-                className={`block h-full transition-all duration-300 ${isDailyGoalDone ? 'bg-mint' : 'bg-amber'}`}
+                className={`block h-full w-full origin-left transition-transform duration-300 ease-quart motion-reduce:transition-none ${isDailyGoalDone ? 'bg-mint' : 'bg-amber'}`}
                 style={{ width: `${pct}%` }}
               />
             </span>
@@ -106,7 +106,7 @@ export const DailyGoalCard: React.FC = () => {
               onChange={(e) => setCustomLabel(e.target.value)}
               placeholder="Custom goal, e.g. Revise DP notes 20 min"
               aria-label="Custom daily goal"
-              className="flex-1 px-3 py-2 rounded-lg bg-canvas border border-line text-xs text-ink placeholder-muted/60 focus:outline-none focus:border-mint"
+              className="flex-1 px-3 py-2 rounded-lg bg-canvas border border-line text-xs text-ink placeholder-muted/60 focus:border-mint"
             />
             <button
               type="submit"

@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   Layers,
@@ -20,6 +20,7 @@ import { UserDropdown } from './UserDropdown';
 import { FeedbackModal } from './FeedbackModal';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import { PROBLEMS } from '../data/problems';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
@@ -32,6 +33,18 @@ export const Navbar: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
+
+  // The palette can be opened by ⌘K from anywhere, so there is no reliable
+  // "previously focused" element to return to. It always returns to the
+  // search button that advertises the shortcut instead of dropping the user
+  // at the top of the document.
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false);
+    requestAnimationFrame(() => searchTriggerRef.current?.focus());
+  }, []);
+
+  const searchRef = useDialogFocus<HTMLDivElement>(searchOpen, closeSearch);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,18 +52,10 @@ export const Navbar: React.FC = () => {
         e.preventDefault();
         setSearchOpen((open) => !open);
       }
-      if (e.key === 'Escape') setSearchOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = searchOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [searchOpen]);
 
   const searchResults = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -105,6 +110,8 @@ export const Navbar: React.FC = () => {
     if (e.key !== 'Enter') return;
     e.preventDefault();
     const { paths, visualizers, problems } = searchResults;
+    // Navigating away: focus should follow the new page, not snap back to the
+    // search button, so this path uses the raw setter rather than closeSearch.
     setSearchOpen(false);
     if (paths.length > 0) navigate(`/learn/${paths[0].id}`);
     else if (visualizers.length > 0) navigate(`/visualizers/${visualizers[0].id}`);
@@ -114,9 +121,9 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2 sm:gap-3">
           {/* Wordmark */}
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link to="/" className="flex items-center gap-2.5 group min-w-0">
             <div className="relative w-8 h-8 rounded-lg border border-line bg-surface grid place-items-center overflow-hidden">
               {/* tiny algorithm glyph */}
               <svg viewBox="0 0 20 20" className="w-4 h-4" aria-hidden="true">
@@ -136,8 +143,13 @@ export const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-0.5">
+          {/* Desktop nav. Recomposed for tablet: the six labels measured 605px,
+              which collided with the 398px rail anywhere below ~1100px and
+              pushed the document past the viewport at 768 and 1024. From md
+              through xl the links collapse to their glyphs, so navigation
+              stays present on a tablet instead of being hidden behind the
+              phone tab bar. Labels return at xl where the width is earned. */}
+          <nav className="hidden md:flex items-center gap-0.5" aria-label="Primary">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActive(link.to);
@@ -145,12 +157,14 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`relative inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-colors duration-200 ${
+                  aria-label={link.label}
+                  title={link.label}
+                  className={`relative inline-flex items-center gap-2 px-3 xl:px-3.5 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
                     active ? 'text-ink' : 'text-muted hover:text-ink'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${active ? 'text-mint' : ''}`} />
-                  {link.label}
+                  <Icon className={`w-3.5 h-3.5 shrink-0 ${active ? 'text-mint' : ''}`} />
+                  <span className="hidden xl:inline">{link.label}</span>
                   {active && (
                     <motion.span
                       layoutId="nav-active"
@@ -163,12 +177,16 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right rail */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Right rail — must be allowed to shrink. At shrink-0 it held
+              290px beside the wordmark and forced a 399px document on every
+              phone-width route, clipping Sign In. Secondary controls now drop
+              out below sm rather than pushing the row wider than the screen. */}
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <button
+              ref={searchTriggerRef}
               onClick={() => setSearchOpen(true)}
               aria-label="Open global search"
-              className="flex items-center gap-2 pl-2.5 pr-2 py-1.5 rounded-lg border border-line bg-surface text-xs text-muted hover:border-steel hover:text-ink transition cursor-pointer"
+              className="relative flex items-center gap-2 pl-2.5 pr-2 py-1.5 rounded-lg border border-line bg-surface text-xs text-muted hover:border-steel hover:text-ink transition cursor-pointer before:absolute before:-inset-2 before:content-['']"
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden lg:inline font-mono">Search…</span>
@@ -180,21 +198,24 @@ export const Navbar: React.FC = () => {
             <Link
               to="/dashboard"
               title={`${currentStreak} day learning streak`}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono hover:border-mint transition"
+              aria-label={`Learning streak: ${currentStreak} days`}
+              className="hidden sm:flex relative items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono hover:border-mint transition before:absolute before:-inset-2 before:content-['']"
             >
               <Flame className="w-3.5 h-3.5 text-mint" />
               <span className="font-bold text-ink tnum">{currentStreak}</span>
-              <span className="hidden sm:inline text-muted text-[10px] uppercase tracking-wider">d</span>
+              <span className="text-muted text-[10px] uppercase tracking-wider">d</span>
             </Link>
 
             <ThemeToggle />
 
+            {/* The bug report lives in the footer on phones, so it is not
+                duplicated into the cramped top rail. */}
             <button
               type="button"
               onClick={() => setFeedbackOpen(true)}
               title="Report Bug / Feedback"
               aria-label="Report Bug or Feedback"
-              className="p-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-mint transition cursor-pointer"
+              className="hidden md:inline-flex relative p-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-mint transition cursor-pointer before:absolute before:-inset-2.5 before:content-['']"
             >
               <Bug className="w-3.5 h-3.5 text-mint" />
             </button>
@@ -206,7 +227,7 @@ export const Navbar: React.FC = () => {
             ) : authLoading ? null : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-ink hover:border-mint hover:text-mint transition"
+                className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-ink hover:border-mint hover:text-mint transition"
               >
                 <LogIn className="w-3.5 h-3.5 text-mint" />
                 <span>Sign In</span>
@@ -239,19 +260,24 @@ export const Navbar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Command palette */}
-      {searchOpen && (
+      {/* AnimatePresence keeps the palette mounted through its exit, so the
+          dismissal is animated rather than an instant disappearance. */}
+      <AnimatePresence>
+        {searchOpen && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4 bg-canvas/80 backdrop-blur-sm"
-          onClick={() => setSearchOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Global search"
+          onClick={closeSearch}
         >
           <motion.div
+            ref={searchRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Global search"
             initial={{ opacity: 0, y: -8, scale: 0.99 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
+            exit={{ opacity: 0, y: -4, scale: 0.99, transition: { duration: 0.12 } }}
+            transition={{ duration: 0.18, ease: [0.25, 1, 0.5, 1] }}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-xl rounded-xl border border-line bg-surface shadow-2xl overflow-hidden"
           >
@@ -264,13 +290,13 @@ export const Navbar: React.FC = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
-                className="flex-1 bg-transparent text-sm text-ink placeholder-muted focus:outline-none"
+                className="flex-1 bg-transparent text-sm text-ink placeholder-muted"
               />
               <span className="text-[10px] font-mono text-muted tnum hidden sm:inline">
                 {totalResults} hits
               </span>
               <button
-                onClick={() => setSearchOpen(false)}
+                onClick={closeSearch}
                 aria-label="Close search"
                 className="text-muted hover:text-ink cursor-pointer"
               >
@@ -357,7 +383,19 @@ export const Navbar: React.FC = () => {
                       className="group w-full text-left px-3 py-2 rounded-lg hover:bg-canvas flex items-center justify-between gap-3 cursor-pointer"
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${difficultyDot(p.difficulty)}`} />
+                        {/* Difficulty carries a word as well as a hue: a
+                            colored dot alone is unreadable to a colorblind
+                            user and vanishes entirely on a high-contrast
+                            display. */}
+                        <span className="flex items-center gap-1.5 shrink-0">
+                          <span
+                            aria-hidden="true"
+                            className={`w-1.5 h-1.5 rounded-full ${difficultyDot(p.difficulty)}`}
+                          />
+                          <span className="text-[10px] font-mono uppercase text-muted">
+                            {p.difficulty}
+                          </span>
+                        </span>
                         <span className="text-xs font-medium text-ink truncate">{p.title}</span>
                         <span className="text-[10px] font-mono text-violet truncate hidden sm:inline">
                           {p.pattern}
@@ -381,7 +419,8 @@ export const Navbar: React.FC = () => {
             </div>
           </motion.div>
         </div>
-      )}
+        )}
+      </AnimatePresence>
 
       <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </>

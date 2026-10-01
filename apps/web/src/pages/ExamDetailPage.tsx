@@ -119,7 +119,7 @@ export const ExamDetailPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/exams" className="hover:text-mint transition-colors">
+        <Link to="/exams" className="inline-block py-1.5 hover:text-mint transition-colors">
           exams
         </Link>
         <span>/</span>

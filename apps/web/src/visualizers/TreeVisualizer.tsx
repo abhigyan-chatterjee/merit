@@ -289,7 +289,8 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Value..."
-            className="w-20 px-2 py-1 bg-surface border border-line rounded text-ink focus:outline-none focus:border-mint"
+            aria-label="Value to insert"
+            className="w-20 px-2 py-1 bg-surface border border-line rounded text-base sm:text-xs text-ink focus:border-mint"
           />
           <button
             type="submit"
@@ -307,7 +308,8 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
               placeholder="Search..."
-              className="w-20 px-2 py-1 bg-surface border border-line rounded text-ink focus:outline-none focus:border-violet"
+              aria-label="Value to search for"
+              className="w-20 px-2 py-1 bg-surface border border-line rounded text-base sm:text-xs text-ink focus:border-violet"
             />
             <button
               type="submit"

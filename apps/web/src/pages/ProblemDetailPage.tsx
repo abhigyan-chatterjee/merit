@@ -121,7 +121,7 @@ export const ProblemDetailPage: React.FC = () => {
               aria-label="Problem Status"
               value={currentStatus}
               onChange={(e) => setProblemStatus(problem.slug, e.target.value as ProblemStatus)}
-              className="bg-transparent text-xs font-mono text-ink focus:outline-none cursor-pointer"
+              className="bg-transparent py-0.5 text-base sm:text-xs font-mono text-ink focus:border-mint rounded cursor-pointer"
             >
               <option value="Todo" className="bg-surface">Todo</option>
               <option value="Doing" className="bg-surface">Doing</option>
@@ -299,7 +299,7 @@ export const ProblemDetailPage: React.FC = () => {
                       href={url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs font-mono text-mint hover:underline break-all"
+                      className="inline-block py-1 text-xs font-mono text-mint hover:underline break-all"
                     >
                       {url}
                     </a>
@@ -322,7 +322,7 @@ export const ProblemDetailPage: React.FC = () => {
               placeholder="Write down edge cases, time complexity notes, or key invariants..."
               value={noteText}
               onChange={(e) => handleNoteChange(e.target.value)}
-              className="w-full p-3 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder-muted focus:outline-none focus:border-mint"
+              className="w-full p-3 rounded-lg bg-canvas border border-line text-base sm:text-xs font-mono text-ink placeholder-muted focus:border-mint"
             />
           </div>
         </div>

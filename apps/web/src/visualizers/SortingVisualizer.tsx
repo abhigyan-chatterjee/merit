@@ -268,8 +268,10 @@ export const SortingVisualizer: React.FC = () => {
             min={5}
             max={50}
             value={arraySize}
+            aria-label="Array size"
+            aria-valuetext={`${arraySize} elements`}
             onChange={(e) => setArraySize(parseInt(e.target.value, 10))}
-            className="w-28 accent-mint cursor-pointer"
+            className="w-28 h-6 accent-mint cursor-pointer"
           />
           <span className="text-xs font-mono font-bold text-mint w-6">{arraySize}</span>
         </div>
@@ -305,7 +307,8 @@ export const SortingVisualizer: React.FC = () => {
             setIsPlaying(false);
             setCurrentFrameIndex(parseInt(e.target.value, 10));
           }}
-          className="flex-1 accent-mint cursor-pointer"
+          aria-valuetext={`Frame ${currentFrameIndex + 1} of ${frames.length}`}
+          className="flex-1 h-6 accent-mint cursor-pointer"
         />
         <span className="text-[11px] font-mono text-ink tnum shrink-0">
           {currentFrameIndex + 1}
@@ -352,14 +355,21 @@ export const SortingVisualizer: React.FC = () => {
                           {val}
                         </span>
                       )}
-                      <div
-                        style={{
-                          height: `${val}%`,
-                          backgroundColor: barColor,
-                          transform: flagged ? 'scaleX(1.06)' : 'scaleX(1)'
-                        }}
-                        className="w-full rounded-t-[3px] origin-bottom transition-all duration-150 ease-out"
-                      />
+                      {/* Height encodes the value, so the bar scales from a
+                          full-height base instead of animating `height`,
+                          which would reflow the column on every frame. */}
+                      <div className="w-full h-full flex items-end">
+                        <div
+                          style={{
+                            height: '100%',
+                            backgroundColor: barColor,
+                            transform: `scaleY(${val / 100})${
+                              flagged ? ' scaleX(1.06)' : ''
+                            }`,
+                          }}
+                          className="w-full rounded-t-[3px] origin-bottom transition-transform duration-150 ease-quart motion-reduce:transition-none"
+                        />
+                      </div>
                     </div>
                   );
                 })}

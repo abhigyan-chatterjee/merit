@@ -137,7 +137,7 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/dashboard" className="hover:text-mint transition-colors">
+        <Link to="/dashboard" className="inline-block py-1.5 hover:text-mint transition-colors">
           dashboard
         </Link>
         <span>/</span>
@@ -195,7 +195,7 @@ export const ProfilePage: React.FC = () => {
                 minLength={2}
                 maxLength={50}
                 aria-label="Display name"
-                className="flex-1 min-w-40 px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink focus:outline-none focus:border-mint"
+                className="flex-1 min-w-40 px-3 py-2 rounded-lg bg-canvas border border-line text-sm text-ink focus:border-mint"
               />
               <button type="submit" className="px-4 py-2 rounded-lg bg-mint text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer">
                 Save

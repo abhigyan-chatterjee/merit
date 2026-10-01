@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bug, X, Send, CheckCircle2, Loader2, ExternalLink } from 'lucide-react';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -41,15 +42,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     }
   }, [isOpen, defaultProblemSlug]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  const dialogRef = useDialogFocus<HTMLDivElement>(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -102,7 +95,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
+      tabIndex={-1}
       aria-modal="true"
       aria-labelledby="feedback-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
@@ -143,7 +138,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-ink">Thank you for your report!</h3>
+              <h3 className="text-sm font-bold text-ink">Thank you for your report</h3>
               <p className="text-xs text-muted max-w-xs mx-auto">
                 {successData.message}
               </p>
@@ -217,7 +212,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                 placeholder="e.g. Empty input test case causes crash in Two Sum"
                 maxLength={150}
                 required
-                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:outline-none focus:border-mint"
+                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint"
               />
             </div>
 
@@ -232,7 +227,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                 placeholder="Provide steps to reproduce or details on what needs fixing..."
                 rows={4}
                 required
-                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:outline-none focus:border-mint resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint resize-none"
               />
             </div>
 
@@ -247,7 +242,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                   value={problemSlug}
                   onChange={(e) => setProblemSlug(e.target.value)}
                   placeholder="e.g. two-sum"
-                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder:text-muted/60 focus:outline-none focus:border-mint"
+                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder:text-muted/60 focus:border-mint"
                 />
               </div>
               <div>
@@ -259,7 +254,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="for follow-up"
-                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:outline-none focus:border-mint"
+                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint"
                 />
               </div>
             </div>

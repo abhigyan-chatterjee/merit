@@ -7,6 +7,7 @@ import {
   Layers,
   Terminal,
   CircleDot,
+  Pause,
   ArrowUpRight,
   Route,
   BrainCircuit,
@@ -108,7 +109,12 @@ const useLiveSortDemo = (enabled: boolean) => {
 export const LandingPage: React.FC = () => {
   const reduce = useReducedMotion();
   const { user } = useAuth();
-  const { arr, pair, sortedFrom, comparisons, swaps, sorted } = useLiveSortDemo(!reduce);
+  // Reduced motion still gets the demo, it just does not autoplay: the reader
+  // starts it deliberately. Autostarting motion is the thing the preference
+  // exists to stop.
+  const [demoPlaying, setDemoPlaying] = useState(!reduce);
+  const { arr, pair, sortedFrom, comparisons, swaps, sorted } =
+    useLiveSortDemo(demoPlaying);
 
   return (
     <div className="pb-10">
@@ -184,10 +190,28 @@ export const LandingPage: React.FC = () => {
                   <span className="w-2.5 h-2.5 rounded-full bg-mint/80" />
                   <span className="ml-1.5 text-[11px] font-mono text-muted">bubble_sort.trace</span>
                 </div>
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-mint">
-                  <CircleDot className="w-3 h-3 animate-pulse-dot" />
-                  live
-                </span>
+                {/* Self-starting motion needs a visible off switch. Pausing
+                    freezes the trace on the current state rather than
+                    resetting it, so the reader keeps whatever they were
+                    looking at. */}
+                <button
+                  type="button"
+                  onClick={() => setDemoPlaying((p) => !p)}
+                  aria-pressed={!demoPlaying}
+                  className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-mint hover:text-ink transition-colors duration-150 ease-quart cursor-pointer"
+                >
+                  {demoPlaying ? (
+                    <>
+                      <Pause className="w-3 h-3 animate-pulse-dot" />
+                      live
+                    </>
+                  ) : (
+                    <>
+                      <CircleDot className="w-3 h-3" />
+                      paused
+                    </>
+                  )}
+                </button>
               </div>
 
               {/* Bars */}
@@ -203,9 +227,12 @@ export const LandingPage: React.FC = () => {
                       : 'bg-steel';
                     return (
                       <div key={idx} className="flex-1 h-full flex items-end">
+                        {/* scaleY from a full-height base rather than an
+                            animated `height`, which would reflow the row on
+                            every tick of the sort. */}
                         <div
-                          style={{ height: `${val}%` }}
-                          className={`w-full rounded-t-[3px] ${color} transition-all duration-150 ease-out`}
+                          style={{ height: '100%', transform: `scaleY(${val / 100})` }}
+                          className={`w-full origin-bottom rounded-t-[3px] ${color} transition-transform duration-150 ease-quart motion-reduce:transition-none`}
                         />
                       </div>
                     );
@@ -248,148 +275,183 @@ export const LandingPage: React.FC = () => {
           <span className="text-[11px] text-muted">One tap to begin</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {[
-            {
-              to: '/learn/foundation',
-              title: 'Start the Foundations path',
-              hint: '8 steps · recommended first',
-              Icon: Route,
-              tone: 'text-mint',
-              accent: true
-            },
-            {
-              to: '/visualizers/sorting',
-              title: 'Watch an algorithm run',
-              hint: 'Step through sorting',
-              Icon: Layers,
-              tone: 'text-violet'
-            },
-            {
-              to: '/problems/arrays-hashing',
-              title: 'Solve a problem',
-              hint: 'Arrays & pointers',
-              Icon: Code2,
-              tone: 'text-amber'
-            },
-            {
-              to: '/quiz/mixed',
-              title: 'Test yourself',
-              hint: '10-question mixed quiz',
-              Icon: BrainCircuit,
-              tone: 'text-violet'
-            },
-            {
-              to: '/dashboard',
-              title: 'Open dashboard',
-              hint: 'Your progress at a glance',
-              Icon: LayoutDashboard,
-              tone: 'text-ink'
-            }
-          ].map((t) => (
-            <Link
-              key={t.to}
-              to={t.to}
-              className={`group relative flex items-start gap-3 p-4 rounded-xl border bg-surface transition-colors duration-200 min-h-[88px] ${
-                t.accent ? 'border-mint/50 hover:border-mint' : 'border-line hover:border-steel'
-              }`}
-            >
-              <div
-                className={`w-9 h-9 rounded-lg border border-line bg-canvas grid place-items-center shrink-0 ${t.tone}`}
-              >
-                <t.Icon className="w-4 h-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+          {/* Primary entry — owns the row. A new user has one question:
+              "where do I start?" and this answers it without competition. */}
+          <Link
+            to="/learn/foundation"
+            className="group relative lg:col-span-5 flex flex-col justify-between gap-6 p-5 rounded-xl border border-mint/40 bg-surface hover:border-mint transition-colors duration-200"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <Route className="w-5 h-5 text-mint shrink-0" />
+              <span className="px-1.5 py-0.5 rounded bg-mint text-canvas text-[9px] font-mono uppercase tracking-widest shrink-0">
+                Start here
+              </span>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-ink group-hover:text-mint transition-colors leading-tight">
+                Start the Foundations path
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-semibold text-ink group-hover:text-mint transition-colors leading-tight">
-                  {t.title}
-                </div>
-                <div className="text-[11px] text-muted mt-0.5 leading-snug">{t.hint}</div>
-              </div>
-              <ArrowRight className="w-4 h-4 text-muted/0 group-hover:text-mint group-hover:opacity-100 opacity-0 -translate-x-1 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-              {t.accent && (
-                <span className="absolute -top-2 left-3 px-1.5 py-0.5 rounded bg-mint text-canvas text-[9px] font-mono uppercase tracking-widest">
-                  Start here
-                </span>
-              )}
-            </Link>
-          ))}
-        </div>
-      </section>
+              <p className="text-xs text-muted mt-1.5 leading-relaxed max-w-xs">
+                Eight steps from empty graph to working BST. Each step pairs a workbench you can drive with a
+                problem you can submit.
+              </p>
+              <span className="inline-flex items-center gap-1.5 mt-3 text-xs font-mono font-semibold text-mint">
+                Begin step 1
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
+              </span>
+            </div>
+          </Link>
 
-      {/* ============ STATS (live counts from the actual content bundle) ============ */}
-      <section className="max-w-7xl mx-auto px-4 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-3 border-t border-l border-line">
-          {[
-            { n: String(VISUALIZERS.length), l: 'Interactive workbenches', c: 'text-mint' },
-            { n: String(PROBLEMS.length), l: 'Practical problems', c: 'text-violet' },
-            { n: String(LEARNING_PATHS.length), l: 'Guided learning paths', c: 'text-amber' }
-          ].map((s, i) => (
-            <Reveal key={s.l} delay={i * 0.05}>
-              <div className="relative flex items-center gap-4 border-r border-b border-line p-6 group hover:bg-surface transition-colors duration-200">
-                <div className="absolute top-0 left-0 w-6 h-px bg-mint opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className={`text-4xl font-bold font-mono tracking-tighter tnum leading-none ${s.c}`}>
-                  {s.n}
+          {/* Secondary destinations — a ranked list, not peer cards. */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              {
+                to: '/visualizers/sorting',
+                title: 'Watch an algorithm run',
+                hint: 'Step through sorting',
+                Icon: Layers,
+                tone: 'text-violet'
+              },
+              {
+                to: '/problems/arrays-hashing',
+                title: 'Solve a problem',
+                hint: 'Arrays & pointers',
+                Icon: Code2,
+                tone: 'text-amber'
+              },
+              {
+                to: '/quiz/mixed',
+                title: 'Test yourself',
+                hint: '10-question mixed quiz',
+                Icon: BrainCircuit,
+                tone: 'text-violet'
+              },
+              {
+                to: '/dashboard',
+                title: 'Open dashboard',
+                hint: 'Your progress at a glance',
+                Icon: LayoutDashboard,
+                tone: 'text-ink'
+              }
+            ].map((t) => (
+              <Link
+                key={t.to}
+                to={t.to}
+                className="group flex items-center gap-3 p-4 rounded-xl border border-line bg-surface hover:border-steel transition-colors duration-200"
+              >
+                <t.Icon className={`w-4 h-4 ${t.tone} shrink-0`} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-semibold text-ink group-hover:text-mint transition-colors leading-tight">
+                    {t.title}
+                  </div>
+                  <div className="text-[11px] text-muted mt-0.5 leading-snug">{t.hint}</div>
                 </div>
-                <span className="text-sm font-medium text-ink leading-snug">{s.l}</span>
-              </div>
-            </Reveal>
-          ))}
+                <ArrowRight className="w-3.5 h-3.5 text-muted opacity-0 group-hover:text-mint group-hover:opacity-100 transition-opacity shrink-0" />
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Counts, demoted to a quiet rail. They are real and sourced from the
+            content bundle, but three numbers cannot carry the product story,
+            and at 36px they were the loudest thing below the hero. The rules
+            between them are real separators rather than "/" glyphs, which sat
+            at 1.17:1 on the light canvas and read as broken. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 pt-1 font-mono text-xs text-muted">
+          <span>
+            <span className="text-mint font-bold tnum">{VISUALIZERS.length}</span> workbenches
+          </span>
+          <span className="text-muted select-none" aria-hidden="true">
+            ·
+          </span>
+          <span>
+            <span className="text-violet font-bold tnum">{PROBLEMS.length}</span> problems
+          </span>
+          <span className="text-muted select-none" aria-hidden="true">
+            ·
+          </span>
+          <span>
+            <span className="text-amber font-bold tnum">{LEARNING_PATHS.length}</span> guided paths
+          </span>
+          <span className="text-muted select-none" aria-hidden="true">
+            ·
+          </span>
+          <span>every problem passes the judge before it ships</span>
         </div>
       </section>
 
       {/* ============ FEATURES ============ */}
-      <section className="max-w-7xl mx-auto px-4 space-y-8">
+      <section className="max-w-7xl mx-auto px-4 pt-6 pb-16 space-y-8">
         <SectionLabel index="01" title="Capabilities" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {[
-            {
-              i: Layers,
-              t: 'Synchronised pseudocode',
-              d: 'The exact executing line highlights as bars swap, queues drain and recursion unwinds — with a scrubbable operation log beside it.',
-              tone: 'text-mint',
-              tag: 'STEP DEBUGGER'
-            },
-            {
-              i: Code2,
-              t: 'Instant code verification',
-              d: 'Write a solution and run it against three test cases. See pass or fail per case, with output diffs and runtime.',
-              tone: 'text-violet',
-              tag: 'RUN & VERIFY'
-            },
-            {
-              i: Terminal,
-              t: 'Guided learning paths',
-              d: 'Follow a managed sequence that mixes problems, quizzes and visualizers into one coherent route to mastery.',
-              tone: 'text-amber',
-              tag: 'GUIDED'
-            }
-          ].map((f, idx) => {
-            const Icon = f.i;
-            return (
-              <Reveal key={f.t} delay={idx * 0.06}>
-                <Panel bracket className="h-full p-5 hover:border-steel transition-colors duration-200">
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div className={`w-9 h-9 rounded-lg border border-line bg-canvas flex items-center justify-center ${f.tone}`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <span className="font-mono text-[10px] tracking-[0.18em] text-muted">
-                        0{idx + 1}
-                      </span>
-                    </div>
-                    <h3 className="text-sm font-bold text-ink">{f.t}</h3>
-                    <p className="text-xs text-muted leading-relaxed">{f.d}</p>
-                    <div className="pt-2 border-t border-line">
-                      <span className={`text-[10px] font-mono uppercase tracking-[0.14em] ${f.tone}`}>
-                        {f.tag}
-                      </span>
-                    </div>
+        {/* Broken grid on purpose. The synchronised pseudocode panel is the
+            thing that makes this product different, so it gets a live
+            miniature and twice the width; the other two earn less space and
+            drop their icon toppers, which were filling a template slot. */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div className="lg:col-span-7 bracketed relative rounded-xl border border-line bg-surface overflow-hidden flex flex-col">
+            <div className="p-5 pb-0">
+              <div className="flex items-center gap-2.5">
+                <Layers className="w-4 h-4 text-mint" />
+                <h3 className="text-sm font-bold text-ink">Synchronised pseudocode</h3>
+              </div>
+              <p className="text-xs text-muted leading-relaxed mt-2 max-w-md">
+                The exact executing line highlights as bars swap, queues drain and recursion unwinds, with a
+                scrubbable operation log beside it.
+              </p>
+            </div>
+
+            {/* Live miniature: the real mechanic, not an illustration of it.
+                Anchored to the panel's bottom edge so the primary panel and the
+                secondary column share one baseline. */}
+            <div className="mt-auto border-t border-line bg-canvas font-mono text-[11px] leading-relaxed">
+              <div className="flex">
+                <div className="flex-1 min-w-0 py-2.5">
+                  <div className="px-4 text-muted select-none">for i in range(n):</div>
+                  <div className="px-4 text-muted select-none pl-4">for j in range(i+1, n):</div>
+                  <div className="px-4 pl-8 bg-mint/5 text-mint border-s-2 border-mint">
+                    if a[j] &lt; a[j-1]: swap
                   </div>
-                </Panel>
-              </Reveal>
-            );
-          })}
+                  <div className="px-4 pl-8 text-muted select-none">pass</div>
+                </div>
+                <div className="w-[38%] shrink-0 border-l border-line px-3 py-2.5 space-y-1">
+                  <div className="text-muted">
+                    <span className="text-amber">cmp</span> a[3] &lt; a[4]
+                  </div>
+                  <div className="text-muted">
+                    <span className="text-mint">swap</span> 31 &harr; 24
+                  </div>
+                  <div className="text-muted">cmp a[2] &lt; a[3]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 grid grid-cols-1 gap-5">
+            {[
+              {
+                i: Code2,
+                t: 'Instant code verification',
+                d: 'Write a solution and run it against three test cases. See pass or fail per case, with output diffs and runtime.',
+                tone: 'text-violet'
+              },
+              {
+                i: Terminal,
+                t: 'Guided learning paths',
+                d: 'Follow a managed sequence that mixes problems, quizzes and visualizers into one coherent route to mastery.',
+                tone: 'text-amber'
+              }
+            ].map((f) => (
+              <Panel key={f.t} className="h-full p-5 hover:border-steel transition-colors duration-200">
+                <div className="flex items-center gap-2.5">
+                  <f.i className={`w-4 h-4 ${f.tone} shrink-0`} />
+                  <h3 className="text-sm font-bold text-ink">{f.t}</h3>
+                </div>
+                <p className="text-xs text-muted leading-relaxed mt-2">{f.d}</p>
+              </Panel>
+            ))}
+          </div>
         </div>
       </section>
 

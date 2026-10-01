@@ -180,7 +180,7 @@ export const GuidedPathDetailPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/learn" className="hover:text-mint transition-colors">
+        <Link to="/learn" className="inline-block py-1.5 hover:text-mint transition-colors">
           learning paths
         </Link>
         <ChevronRight className="w-3 h-3" />
@@ -308,7 +308,7 @@ export const GuidedPathDetailPage: React.FC = () => {
                         href={url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[10px] font-mono text-mint hover:underline"
+                        className="inline-block py-2 text-[10px] font-mono text-mint hover:underline"
                       >
                         Further reading →
                       </a>

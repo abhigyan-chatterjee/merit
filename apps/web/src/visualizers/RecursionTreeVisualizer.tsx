@@ -268,12 +268,13 @@ export const RecursionTreeVisualizer: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex items-center gap-2 border-l border-line pl-3">
+        <div className="flex flex-wrap items-center gap-2 border-l border-line pl-3 min-w-0">
           <label className="text-muted">Parameter n:</label>
           <select
+            aria-label="Parameter n"
             value={inputN}
             onChange={(e) => setInputN(parseInt(e.target.value, 10))}
-            className="px-2 py-1 bg-surface border border-line rounded text-ink"
+            className="min-w-0 max-w-full px-2 py-1 bg-surface border border-line rounded text-base sm:text-xs text-ink"
           >
             {[2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>

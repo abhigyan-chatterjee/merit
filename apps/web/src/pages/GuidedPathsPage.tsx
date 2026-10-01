@@ -106,7 +106,7 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
             </div>
             <span className="block h-1.5 rounded-full bg-line overflow-hidden">
               <span
-                className="block h-full bg-mint transition-all duration-300"
+                className="block h-full w-full bg-mint origin-left transition-transform duration-300 ease-quart motion-reduce:transition-none"
                 style={{ width: `${pct}%` }}
               />
             </span>

@@ -115,7 +115,7 @@ export const ProblemListPage: React.FC = () => {
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search problems or patterns..."
             aria-label="Search problems"
-            className="w-full rounded-xl border border-line bg-surface py-3 pl-10 pr-4 text-sm text-ink placeholder-muted focus:outline-none focus:border-mint"
+            className="w-full rounded-xl border border-line bg-surface py-3 pl-10 pr-4 text-base sm:text-sm text-ink placeholder-muted focus:border-mint"
           />
         </div>
 
@@ -191,7 +191,7 @@ export const ProblemListPage: React.FC = () => {
                   </span>
                   <span className="block h-1.5 rounded-full bg-canvas overflow-hidden">
                     <span
-                      className="block h-full rounded-full bg-mint transition-all"
+                      className="block h-full w-full rounded-full bg-mint origin-left transition-transform duration-300 ease-quart motion-reduce:transition-none"
                       style={{ width: `${progress}%` }}
                     />
                   </span>
@@ -219,7 +219,7 @@ export const ProblemListPage: React.FC = () => {
                           />
                           <Link
                             to={`/problems/${problem.topic}/${problem.slug}`}
-                            className="min-w-0 flex-1 text-sm text-ink hover:text-mint transition"
+                            className="min-w-0 flex-1 py-1 text-sm text-ink hover:text-mint transition"
                           >
                             {problem.title}
                           </Link>

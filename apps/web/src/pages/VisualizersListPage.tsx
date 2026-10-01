@@ -87,7 +87,7 @@ export const VisualizersListPage: React.FC = () => {
                     onClick={() => toggleBookmark(item.id)}
                     aria-label={`${isBookmarked ? 'Remove' : 'Add'} bookmark for ${item.title}`}
                     aria-pressed={isBookmarked}
-                    className={`p-1 rounded transition cursor-pointer ${
+                    className={`relative p-1 rounded transition cursor-pointer before:absolute before:-inset-1.5 before:content-[''] ${
                       isBookmarked ? 'text-amber' : 'text-muted hover:text-muted'
                     }`}
                   >

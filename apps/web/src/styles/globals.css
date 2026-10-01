@@ -28,10 +28,12 @@
   --c-steel: #c3ccda;
   --c-ink: #0b1220;
   --c-muted: #566179;
-  --c-mint: #00835c;
+  /* Mint and rose were 4.41:1 and 4.38:1 on canvas, just under the 4.5:1
+     AA body-text threshold. Darkened to clear it on both canvases. */
+  --c-mint: #00714f;
   --c-violet: #5643de;
   --c-amber: #9a5b00;
-  --c-rose: #d23b3b;
+  --c-rose: #c02f2f;
 
   --grid-rgb: 11, 18, 32;
   --grid-alpha: 0.07;
@@ -192,6 +194,64 @@
 }
 
 /* ============================================================
+   Motion tokens
+   One scale for the whole app so timing stops being per-component
+   guesswork. Durations are deliberately few: 100 / 150 / 250 / 400.
+   Exits run shorter than entrances because the user already
+   understands the object by the time it leaves.
+   ============================================================ */
+:root {
+  --motion-instant: 100ms;
+  --motion-press: 150ms;
+  --motion-surface: 250ms;
+  --motion-stage: 400ms;
+
+  /* Sharp deceleration. No bounce, no elastic: they read as toys. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+
+  --press-scale: 0.975;
+}
+
+@theme inline {
+  --duration-press: var(--motion-press);
+  --duration-surface: var(--motion-surface);
+  --duration-stage: var(--motion-stage);
+  --ease-quart: var(--ease-out-quart);
+  --ease-expo: var(--ease-out-expo);
+}
+
+@layer base {
+  /* Interactive elements get a consistent press response. Scoped to real
+     controls so prose and layout never pick up a transform. */
+  button,
+  a[href],
+  [role='button'],
+  input[type='button'],
+  input[type='submit'] {
+    transition-property: transform, background-color, border-color, color,
+      opacity, fill;
+    transition-duration: var(--motion-press);
+    transition-timing-function: var(--ease-out-quart);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    button:active,
+    a[href]:active,
+    [role='button']:active {
+      transform: scale(var(--press-scale));
+    }
+  }
+
+  /* Press feedback must not fire on a disabled control. */
+  button:disabled:active,
+  button[aria-disabled='true']:active {
+    transform: none;
+  }
+}
+
+/* ============================================================
    Motion
    ============================================================ */
 @keyframes av-pulse-dot {
@@ -207,6 +267,45 @@
 }
 .animate-pulse-dot {
   animation: av-pulse-dot 1.8s ease-in-out infinite;
+}
+
+/* Opt-in reveal: the static version is the default, so the class does
+   nothing at all when the reader asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .motion-rise {
+    animation: av-rise var(--motion-stage) var(--ease-out-expo) both;
+  }
+  .motion-fade {
+    animation: av-fade var(--motion-surface) var(--ease-out-quart) both;
+  }
+  /* Short stagger for staged reveals. Kept small: the eye reads mechanical
+     delay patterns as generated when they run long. */
+  .motion-delay-75 {
+    animation-delay: 75ms;
+  }
+  .motion-delay-150 {
+    animation-delay: 150ms;
+  }
+}
+
+@keyframes av-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes av-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

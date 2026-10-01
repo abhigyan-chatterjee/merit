@@ -21,7 +21,7 @@ export const SpeedControl: React.FC<SpeedControlProps> = ({ speed, onChange }) =
         aria-label="Animation speed multiplier"
         aria-valuetext={`${speed} times`}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-20 accent-mint cursor-pointer"
+        className="w-20 h-6 accent-mint cursor-pointer"
       />
 
       {/* preset stops */}

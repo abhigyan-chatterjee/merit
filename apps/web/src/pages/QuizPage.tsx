@@ -63,7 +63,7 @@ export const QuizPage: React.FC = () => {
           id="quiz-topic"
           value={currentTopic.id}
           onChange={(e) => navigate(`/quiz/${e.target.value}`)}
-          className="px-3 py-2 rounded-lg bg-surface border border-line text-xs font-mono text-ink hover:border-steel cursor-pointer focus:outline-none focus:border-violet"
+          className="px-3 py-2 rounded-lg bg-surface border border-line text-base sm:text-xs font-mono text-ink hover:border-steel cursor-pointer focus:border-violet"
         >
           {QUIZ_TOPICS.map((qt) => (
             <option key={qt.id} value={qt.id}>

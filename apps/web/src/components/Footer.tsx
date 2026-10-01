@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
                 href="https://nullbit.in"
                 target="_blank"
                 rel="noreferrer"
-                className="text-ink hover:text-mint transition-colors"
+                className="relative inline-block text-ink hover:text-mint transition-colors after:absolute after:left-0 after:right-0 after:top-1/2 after:h-6 after:-translate-y-1/2 after:content-['']"
               >
                 Abhigyan Chatterjee
               </a>{' '}
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
                 href="https://github.com/abhigyan-chatterjee"
                 target="_blank"
                 rel="noreferrer"
-                className="text-ink hover:text-mint transition-colors"
+                className="relative inline-block text-ink hover:text-mint transition-colors after:absolute after:left-0 after:right-0 after:top-1/2 after:h-6 after:-translate-y-1/2 after:content-['']"
               >
                 GitHub
               </a>
@@ -100,12 +100,15 @@ export const Footer: React.FC = () => {
               <h3 className="text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
                 {col.title}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-1">
                 {col.links.map((l) => (
                   <li key={l.to}>
+                    {/* Inline-stretched: the link keeps its 12px type but the
+                        hit area grows to the full column width and 24px tall,
+                        so a finger does not have to land on the glyphs. */}
                     <Link
                       to={l.to}
-                      className="text-xs text-muted hover:text-mint transition-colors"
+                      className="relative inline-block text-xs text-muted hover:text-mint transition-colors after:absolute after:left-0 after:right-0 after:top-1/2 after:h-6 after:-translate-y-1/2 after:content-['']"
                     >
                       {l.label}
                     </Link>
@@ -124,7 +127,7 @@ export const Footer: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFeedbackOpen(true)}
-                className="hover:text-mint transition-colors cursor-pointer underline underline-offset-4"
+                className="relative inline-block hover:text-mint transition-colors cursor-pointer underline underline-offset-4 py-2"
               >
                 Report a bug
               </button>

@@ -59,7 +59,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
   };
 
   const selectCls =
-    'px-2.5 py-1.5 rounded-lg bg-surface border border-line text-[11px] font-mono text-ink hover:border-steel cursor-pointer focus:outline-none';
+    'px-2.5 py-1.5 rounded-lg bg-surface border border-line text-[11px] font-mono text-ink hover:border-steel cursor-pointer';
 
   return (
     <div className="space-y-4">
@@ -73,7 +73,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
             aria-label="Filter problems"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-1.5 rounded-lg bg-surface border border-line text-xs text-ink placeholder-muted focus:outline-none focus:border-mint transition-colors"
+            className="w-full pl-9 pr-8 py-1.5 rounded-lg bg-surface border border-line text-base sm:text-xs text-ink placeholder-muted focus:border-mint transition-colors"
           />
           {searchQuery && (
             <button
@@ -159,7 +159,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
                           value={st}
                           aria-label={`Status for ${p.title}`}
                           onChange={(e) => setProblemStatus(p.slug, e.target.value as ProblemStatus)}
-                          className={`px-2 py-0.5 rounded border text-[10px] font-mono font-semibold cursor-pointer focus:outline-none ${STATUS_STYLE[st]}`}
+                          className={`px-2 py-0.5 rounded border text-[10px] font-mono font-semibold cursor-pointer ${STATUS_STYLE[st]}`}
                         >
                           <option value="Todo">Todo</option>
                           <option value="Doing">Doing</option>
@@ -170,7 +170,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
                       <td className="py-2.5 px-4">
                         <Link
                           to={`/problems/${p.topic}/${p.slug}`}
-                          className="flex items-baseline gap-2.5 text-xs font-medium text-ink hover:text-mint transition-colors"
+                          className="flex items-baseline gap-2.5 py-1.5 text-xs font-medium text-ink hover:text-mint transition-colors"
                         >
                           <span className="font-mono text-[10px] text-muted tnum w-4">
                             {String(i + 1).padStart(2, '0')}
@@ -220,7 +220,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
                   <div className="flex items-start justify-between gap-3">
                     <Link
                       to={`/problems/${p.topic}/${p.slug}`}
-                      className="flex-1 text-sm font-semibold text-ink hover:text-mint transition-colors leading-snug min-w-0"
+                      className="flex-1 py-1 text-sm font-semibold text-ink hover:text-mint transition-colors leading-snug min-w-0"
                     >
                       <span className="font-mono text-[10px] text-muted tnum mr-1.5">
                         {String(i + 1).padStart(2, '0')}
@@ -242,7 +242,7 @@ export const ProblemTable: React.FC<ProblemTableProps> = ({ problems }) => {
                       value={st}
                       aria-label={`Status for ${p.title}`}
                       onChange={(e) => setProblemStatus(p.slug, e.target.value as ProblemStatus)}
-                      className={`px-2 py-1 rounded border text-[10px] font-mono font-semibold cursor-pointer focus:outline-none ${STATUS_STYLE[st]}`}
+                      className={`px-2 py-1 rounded border text-[10px] font-mono font-semibold cursor-pointer ${STATUS_STYLE[st]}`}
                     >
                       <option value="Todo">Todo</option>
                       <option value="Doing">Doing</option>

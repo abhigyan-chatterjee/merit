@@ -84,7 +84,7 @@ export const LinearVisualizer: React.FC<LinearVisualizerProps> = ({ id }) => {
             placeholder="Value (e.g. 99)..."
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
-            className="w-36 px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink focus:outline-none focus:border-mint"
+            className="w-36 px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink focus:border-mint"
           />
           <button
             type="submit"
