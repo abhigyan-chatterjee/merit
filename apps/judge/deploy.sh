@@ -24,11 +24,25 @@ SERVICE="${SERVICE:-merit-judge-light}"
 AR_REPO="${AR_REPO:-merit}"
 RUNTIME_SA="${RUNTIME_SA:-merit-judge-runtime}"
 INVOKER_SA="${INVOKER_SA:-merit-judge-invoker}"
-IMAGE="${REGION}-docker.pkg.dev/$(gcloud config get-value project 2>/dev/null)/${AR_REPO}/${SERVICE}:latest"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
+# Deliberately NOT computed at load time: this calls gcloud, and with `set -e`
+# a missing or unauthenticated gcloud would abort the script before it printed
+# anything at all — including for subcommands that do not need it.
+image_ref() {
+  echo "${REGION}-docker.pkg.dev/$(gcloud config get-value project 2>/dev/null)/${AR_REPO}/${SERVICE}:latest"
+}
+
+require_gcloud() {
+  if ! command -v gcloud >/dev/null 2>&1; then
+    echo "gcloud is not installed. See https://cloud.google.com/sdk/docs/install" >&2
+    exit 1
+  fi
+}
+
 require_project() {
+  require_gcloud
   local project
   project="$(gcloud config get-value project 2>/dev/null || true)"
   if [[ -z "$project" || "$project" == "(unset)" ]]; then
@@ -79,16 +93,19 @@ cmd_deploy() {
   local project
   project="$(gcloud config get-value project)"
 
+  local image
+  image="$(image_ref)"
+
   echo "==> Building image with Cloud Build (repo root is the build context)"
   # The build context must be the repo root because the Dockerfile copies the
   # sandbox straight out of the API, so both share one implementation.
   gcloud builds submit "$REPO_ROOT" \
     --config "$REPO_ROOT/apps/judge/cloudbuild.yaml" \
-    --substitutions "_IMAGE=${IMAGE}"
+    --substitutions "_IMAGE=${image}"
 
   echo "==> Deploying to Cloud Run"
   gcloud run deploy "$SERVICE" \
-    --image "$IMAGE" \
+    --image "$image" \
     --region "$REGION" \
     --service-account "${RUNTIME_SA}@${project}.iam.gserviceaccount.com" \
     --memory 1Gi \

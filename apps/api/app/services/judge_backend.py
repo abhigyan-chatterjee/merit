@@ -13,6 +13,7 @@ The return type is identical either way, so routers do not care which path ran.
 """
 
 import asyncio
+import calendar
 import logging
 import time
 from typing import Any
@@ -31,11 +32,28 @@ _cached_token: tuple[str, float] | None = None
 _token_lock = asyncio.Lock()
 
 
+def _expiry_epoch(expiry: Any, fallback_now: float) -> float:
+    """Converts a google-auth expiry to epoch seconds, safely.
+
+    google-auth returns a naive UTC datetime. Calling `.timestamp()` on a naive
+    value reinterprets it as *local* time, so on a non-UTC host the cached
+    expiry would be wrong by the UTC offset and the token could be used after
+    it had already expired.
+    """
+    if expiry is None:
+        return fallback_now + 3600
+    if expiry.tzinfo is None:
+        return float(calendar.timegm(expiry.utctimetuple()))
+    return float(expiry.timestamp())
+
+
 async def _mint_identity_token() -> str | None:
     """Mints a Google-signed ID token for the judge service, with caching.
 
-    Imported lazily so the API does not require google-auth unless a remote
-    judge is actually configured.
+    Cached because the token is valid for an hour: minting per submission would
+    add a round trip to Google on the hot path. The google-auth import is
+    function-local so that importing this module never requires the library,
+    although it is a declared dependency of the API.
     """
     global _cached_token
 
@@ -58,9 +76,7 @@ async def _mint_identity_token() -> str | None:
                 target_audience=settings.judge_url,
             )
             credentials.refresh(Request())
-            # google-auth exposes expiry as datetime; convert to epoch seconds.
-            expires_at = credentials.expiry.timestamp() if credentials.expiry else now + 3600
-            return credentials.token, expires_at
+            return credentials.token, _expiry_epoch(credentials.expiry, now)
 
         try:
             # Blocking network + file IO, so keep it off the event loop.
