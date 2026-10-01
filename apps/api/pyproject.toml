@@ -17,10 +17,12 @@ dependencies = [
     "cryptography>=42.0.0",
     "python-multipart>=0.0.12",
     "httpx>=0.27.0",
-    # Mints the identity token used to call the remote judge service. Only used
-    # when JUDGE_URL is set, but a required dependency so its absence fails at
-    # import time rather than mid-submission.
-    "google-auth>=2.35.0",
+    # Mints the identity token used to call the remote judge service. The
+    # [requests] extra is load-bearing, not decoration: google-auth's default
+    # transport imports `requests` lazily at call time, so without it the app
+    # starts clean, passes every test, and then fails every single submission
+    # with "The code runner is temporarily unavailable."
+    "google-auth[requests]>=2.35.0",
 ]
 
 [project.optional-dependencies]

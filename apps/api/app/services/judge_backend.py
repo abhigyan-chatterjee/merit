@@ -47,6 +47,27 @@ def _expiry_epoch(expiry: Any, fallback_now: float) -> float:
     return float(expiry.timestamp())
 
 
+def _refresh_identity_token(
+    credentials_path: str, audience: str, now: float
+) -> tuple[str, float]:
+    """Blocking token mint. Module-level, not a closure, so a test can drive it.
+
+    google-auth imports its HTTP transport lazily at call time. That means a
+    missing transport dependency is invisible at startup and only appears here —
+    a fact that has already caused one production outage, hence the test that
+    calls this directly rather than trusting the surrounding stub coverage.
+    """
+    from google.auth.transport.requests import Request
+    from google.oauth2 import service_account
+
+    credentials = service_account.IDTokenCredentials.from_service_account_file(
+        credentials_path,
+        target_audience=audience,
+    )
+    credentials.refresh(Request())
+    return credentials.token, _expiry_epoch(credentials.expiry, now)
+
+
 async def _mint_identity_token() -> str | None:
     """Mints a Google-signed ID token for the judge service, with caching.
 
@@ -67,20 +88,14 @@ async def _mint_identity_token() -> str | None:
         if _cached_token and _cached_token[1] - _TOKEN_REFRESH_SKEW_SEC > now:
             return _cached_token[0]
 
-        def _refresh() -> tuple[str, float]:
-            from google.auth.transport.requests import Request
-            from google.oauth2 import service_account
-
-            credentials = service_account.IDTokenCredentials.from_service_account_file(
-                settings.google_application_credentials,
-                target_audience=settings.judge_url,
-            )
-            credentials.refresh(Request())
-            return credentials.token, _expiry_epoch(credentials.expiry, now)
-
         try:
             # Blocking network + file IO, so keep it off the event loop.
-            token, expires_at = await asyncio.to_thread(_refresh)
+            token, expires_at = await asyncio.to_thread(
+                _refresh_identity_token,
+                settings.google_application_credentials,
+                settings.judge_url,
+                now,
+            )
         except Exception:
             logger.exception("Could not mint an identity token for the judge service")
             return None

@@ -5,6 +5,8 @@ around it is testable offline, and those are the paths that decide whether a
 user sees a clean error or a 500.
 """
 
+import time
+
 import pytest
 
 from app.config import Settings
@@ -105,3 +107,67 @@ async def test_unreachable_service_returns_clean_re(settings_snapshot, monkeypat
 
     assert result.verdict == "RE"
     assert "could not be reached" in result.compile_output.lower()
+
+
+def _write_service_account_file(tmp_path):
+    """A structurally valid service-account file backed by a throwaway key.
+
+    Real enough that google-auth parses it and signs a JWT, so the code reaches
+    the HTTP layer instead of stopping at a parse error. `token_uri` points at a
+    dead port so the request fails fast and locally.
+    """
+    import json
+
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    pem = key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ).decode()
+
+    path = tmp_path / "judge-sa.json"
+    path.write_text(
+        json.dumps(
+            {
+                "type": "service_account",
+                "project_id": "merit-test",
+                "private_key_id": "test",
+                "private_key": pem,
+                "client_email": "judge@merit-test.iam.gserviceaccount.com",
+                "client_id": "1",
+                "token_uri": "http://127.0.0.1:9/token",
+            }
+        )
+    )
+    return str(path)
+
+
+def test_minting_reaches_the_network_instead_of_failing_to_import(tmp_path):
+    """Regression guard for a shipped break.
+
+    google-auth imports its HTTP transport lazily, so `google-auth` without the
+    `[requests]` extra let the API boot, pass this entire suite, and then fail
+    every submission in production with "the code runner is temporarily
+    unavailable" — requests appeared nowhere in the traceback until it was
+    already in front of a user.
+
+    The two tests above cannot catch that class of bug: one stubs the minting
+    function outright, the other points at a nonexistent key path. Both
+    short-circuit before the transport is ever imported. This one drives the
+    real function and asserts the failure is the unreachable token endpoint
+    rather than a missing module.
+    """
+    credentials_path = _write_service_account_file(tmp_path)
+
+    with pytest.raises(Exception) as exc:
+        judge_backend._refresh_identity_token(
+            credentials_path, "https://judge.example.run.app", time.time()
+        )
+
+    assert not isinstance(exc.value, (ImportError, ModuleNotFoundError)), (
+        "the token-minting path is missing a dependency; in production this "
+        f"fails every submission. Got: {exc.value!r}"
+    )
