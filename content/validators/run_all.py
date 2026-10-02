@@ -20,6 +20,7 @@ from content.validators.coverage_report import generate_coverage_report
 from content.validators.schema import LearningPathSchema
 from content.validators.verify_problems import verify_all_problems
 from content.validators.verify_questions import verify_all_questions
+from content.validators.verify_signatures import verify_signatures
 
 
 def _collect_problem_slugs(problems_dir: Path) -> set[str]:
@@ -142,32 +143,47 @@ def main() -> int:
         return links_code
 
     # 1. Verify Problems through real judge
-    print("\n--- [1/4] VERIFYING PROBLEMS & REFERENCE SOLUTIONS ---")
+    print("\n--- [1/5] VERIFYING PROBLEMS & REFERENCE SOLUTIONS ---")
     prob_code = asyncio.run(verify_all_problems(problems_dir))
     if prob_code != 0:
         print("\n❌ Problems verification FAILED.")
         return prob_code
 
-    # 2. Verify Question Bank Schemas & Hashes
-    print("\n--- [2/4] VERIFYING QUESTION BANK INTEGRITY ---")
+    # 2. Problem signatures (Java/C++ return + param types)
+    #    Exit 2 means every signature matches the data but some int-vs-double
+    #    decisions still need a human. That is reported, not silently passed.
+    print("\n--- [2/5] VERIFYING PROBLEM SIGNATURES ---")
+    sig_code = verify_signatures(content_dir / "signatures.json", problems_dir)
+    if sig_code == 1:
+        print("\n❌ Signature verification FAILED.")
+        return sig_code
+
+    # 3. Question Bank Schemas & Hashes
+    print("\n--- [3/5] VERIFYING QUESTION BANK INTEGRITY ---")
     q_code = verify_all_questions(questions_dir)
     if q_code != 0:
         print("\n❌ Questions verification FAILED.")
         return q_code
 
-    # 3. Coverage Matrix & Staged Target Report
-    print("\n--- [3/4] CHECKING PLACEMENT CORPUS COVERAGE ---")
+    # 4. Coverage Matrix & Staged Target Report
+    print("\n--- [4/5] CHECKING PLACEMENT CORPUS COVERAGE ---")
     cov_code = generate_coverage_report(questions_dir, target_designs=130)
     if cov_code != 0:
         print("\n❌ Coverage threshold NOT MET.")
         return cov_code
 
-    # 4. Learning path ref integrity (dangling-ref gate)
-    print("\n--- [4/4] VERIFYING PATH REF INTEGRITY ---")
+    # 5. Learning path ref integrity (dangling-ref gate)
+    print("\n--- [5/5] VERIFYING PATH REF INTEGRITY ---")
     ref_code = verify_path_refs(paths_dir, problems_dir, _repo_root)
     if ref_code != 0:
         print("\n❌ Path ref integrity FAILED.")
         return ref_code
+
+    if sig_code == 2:
+        print(
+            "\n⚠ Signatures are consistent with the test data, but int-vs-double "
+            "decisions above are still unconfirmed."
+        )
 
     print("\n" + "=" * 65)
     print(" ✅ ALL CONTENT VERIFICATION CHECKS PASSED SUCCESSFULLY!")

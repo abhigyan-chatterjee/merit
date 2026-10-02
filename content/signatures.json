@@ -1,0 +1,903 @@
+{
+  "add-two-numbers": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "all-paths-from-source-to-target": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "asteroid-collision": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "backspace-string-compare": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "balanced-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "baseball-game": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "int"
+  },
+  "basic-calculator-ii": {
+    "params": [
+      "String"
+    ],
+    "returnType": "double"
+  },
+  "best-time-to-buy-and-sell-stock": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "binary-search": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "binary-tree-level-order-traversal": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "binary-tree-maximum-path-sum": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "binary-tree-right-side-view": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "boats-to-save-people": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "climbing-stairs": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "coin-change": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "combination-sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Object>"
+  },
+  "construct-from-preorder-inorder": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "container-with-most-water": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "contains-duplicate": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "copy-list-with-random-pointer": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "count-good-nodes": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "counting-bits": {
+    "params": [
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "course-schedule": {
+    "params": [
+      "int",
+      "List<List<Integer>>"
+    ],
+    "returnType": "boolean"
+  },
+  "course-schedule-ii": {
+    "params": [
+      "int",
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "daily-temperatures": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "decode-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "decode-ways": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "diameter-of-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "edit-distance": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "evaluate-reverse-polish-notation": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "int"
+  },
+  "find-if-path-exists-in-graph": {
+    "params": [
+      "int",
+      "List<List<Integer>>",
+      "int",
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "find-minimum-in-rotated-sorted-array": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "find-the-town-judge": {
+    "params": [
+      "int",
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "find-words-on-board": {
+    "params": [
+      "List<List<String>>",
+      "List<String>"
+    ],
+    "returnType": "List<String>"
+  },
+  "first-missing-positive": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "flatten-binary-tree-preorder": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "flood-fill": {
+    "params": [
+      "List<List<Integer>>",
+      "int",
+      "int",
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "gas-station": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "group-anagrams": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "List<List<String>>"
+  },
+  "house-robber": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "house-robber-ii": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "insert-interval": {
+    "params": [
+      "List<List<Integer>>",
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "invert-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "jump-game": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "jump-game-ii": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "keys-and-rooms": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "boolean"
+  },
+  "koko-eating-bananas": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "kth-largest-element-in-an-array": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "kth-smallest-element-in-a-bst": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "largest-number": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "String"
+  },
+  "largest-rectangle-in-histogram": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "last-stone-weight": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "letter-combinations-of-a-phone-number": {
+    "params": [
+      "String"
+    ],
+    "returnType": "List<Object>"
+  },
+  "linked-list-cycle": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "longest-common-prefix": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "String"
+  },
+  "longest-consecutive-sequence": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "longest-increasing-subsequence": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "longest-palindromic-substring": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "longest-repeating-character-replacement": {
+    "params": [
+      "String",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "longest-substring-without-repeating": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "lowest-common-ancestor-bst": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "lowest-common-ancestor-of-a-binary-tree": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "majority-element": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "make-the-string-great": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "max-consecutive-ones-iii": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "maximum-depth-of-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "maximum-product-subarray": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "maximum-subarray": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "meeting-rooms": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "boolean"
+  },
+  "meeting-rooms-ii": {
+    "params": [
+      "List<Object>"
+    ],
+    "returnType": "int"
+  },
+  "merge-intervals": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "merge-k-sorted-lists": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "merge-sorted-array": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "merge-two-sorted-lists": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "middle-of-the-linked-list": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "missing-number": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "move-zeroes": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "n-queens-count": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "next-greater-element-i": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "non-overlapping-intervals": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "number-of-1-bits": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "number-of-islands": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "odd-even-linked-list": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "pacific-atlantic-water-flow": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "palindrome-linked-list": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "palindrome-partitioning": {
+    "params": [
+      "String"
+    ],
+    "returnType": "List<List<String>>"
+  },
+  "partition-equal-subset-sum": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "partition-list": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "permutation-in-string": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "permutations": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "pow-x-n": {
+    "params": [
+      "double",
+      "int"
+    ],
+    "returnType": "double"
+  },
+  "power-of-two": {
+    "params": [
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "product-of-array-except-self": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "redundant-connection": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "remove-all-adjacent-duplicates": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "remove-duplicates-sorted": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "remove-linked-list-elements": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "remove-nth-node-from-end": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "reorder-list": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "reverse-bits": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "reverse-linked-list": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "reverse-linked-list-ii": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "reverse-nodes-in-k-group": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "roman-to-integer": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "rotate-list": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "rotting-oranges": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "same-tree": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "search-a-2d-matrix": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "search-in-rotated-sorted-array": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "search-insert-position": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "simplify-path": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "single-number": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "sliding-window-maximum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "sort-an-array": {
+    "params": [
+      "List<Object>"
+    ],
+    "returnType": "List<Object>"
+  },
+  "sort-colors": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "spiral-matrix": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "squares-of-sorted-array": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "subarray-sum-equals-k": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "subsets": {
+    "params": [
+      "List<Object>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "sum-of-two-integers": {
+    "params": [
+      "int",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "sum-root-to-leaf-numbers": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "surrounded-regions": {
+    "params": [
+      "List<List<String>>"
+    ],
+    "returnType": "List<List<String>>"
+  },
+  "swap-nodes-in-pairs": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "symmetric-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "task-scheduler": {
+    "params": [
+      "List<String>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "three-sum": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Object>"
+  },
+  "top-k-frequent-elements": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "trapping-rain-water": {
+    "params": [
+      "List<Object>"
+    ],
+    "returnType": "int"
+  },
+  "two-sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "two-sum-ii-sorted": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "unique-paths": {
+    "params": [
+      "int",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "valid-anagram": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "valid-palindrome": {
+    "params": [
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "valid-palindrome-ii": {
+    "params": [
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "valid-parentheses": {
+    "params": [
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "validate-binary-search-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "boolean"
+  },
+  "wiggle-sort-ii-lite": {
+    "params": [
+      "List<Object>"
+    ],
+    "returnType": "List<Object>"
+  },
+  "word-break": {
+    "params": [
+      "String",
+      "List<String>"
+    ],
+    "returnType": "boolean"
+  },
+  "word-ladder": {
+    "params": [
+      "String",
+      "String",
+      "List<String>"
+    ],
+    "returnType": "int"
+  },
+  "word-search": {
+    "params": [
+      "List<List<String>>",
+      "String"
+    ],
+    "returnType": "boolean"
+  }
+}
