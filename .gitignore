@@ -75,3 +75,6 @@ tmp/
 
 # Service-account key for the Cloud Run judge identity (never commit)
 .judge/
+
+# Scratch output from the signature authoring pipeline (regenerable)
+.signature-batches/

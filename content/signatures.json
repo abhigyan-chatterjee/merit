@@ -41,7 +41,9 @@
     "params": [
       "String"
     ],
-    "returnType": "double"
+    "returnNote": "Reviewed: observed_return_integral_float_only is true: every expected value in the test bank is a whole number (none fractional), so the strict rule mandates int. The not",
+    "returnType": "int",
+    "reviewedIntVsDouble": true
   },
   "best-time-to-buy-and-sell-stock": {
     "params": [
@@ -581,7 +583,8 @@
       "double",
       "int"
     ],
-    "returnType": "double"
+    "returnType": "double",
+    "reviewedIntVsDouble": true
   },
   "power-of-two": {
     "params": [
