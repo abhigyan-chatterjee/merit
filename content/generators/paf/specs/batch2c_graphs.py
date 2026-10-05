@@ -17,7 +17,6 @@ if api_path not in sys.path:
     sys.path.insert(0, api_path)
 
 from content.generators.paf import Algorithm, ProblemSpec, build_verified_problem
-from content.generators.paf.inputs import generate_inputs
 
 
 async def _execute_js(code: str, function_name: str, cases: list[dict]) -> Any:
@@ -1102,7 +1101,7 @@ def _valid_tasks(rng: random.Random, count: int, n: int) -> tuple[list[str], int
 
 def _valid_rooms(rng: random.Random, n: int) -> list[list[int]]:
     rooms: list[list[int]] = []
-    for i in range(n):
+    for _ in range(n):
         keys = []
         for _ in range(rng.randint(0, 3)):
             keys.append(rng.randint(0, n - 1))
@@ -1125,7 +1124,6 @@ def _valid_dag(rng: random.Random, n: int) -> list[list[int]]:
 
 
 def _valid_tree_plus_one(rng: random.Random, n: int) -> list[list[int]]:
-    parent = list(range(n + 1))
     edges: list[list[int]] = []
     for node in range(2, n + 1):
         other = rng.randint(1, node - 1)
@@ -1244,7 +1242,7 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
             [["A", "B", "C"], 5],
             [["A", "A", "B", "B"], 1],
         ]
-        for letter, n in params:
+        for _, n in params:
             for _ in range(2):
                 tasks, cool = _valid_tasks(rng, rng.randint(1, 12), n)
                 custom_inputs.append([tasks, cool])
@@ -1286,7 +1284,6 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
     bespoke = await _build_custom_cases(
         spec, spec.brute_force.code, spec.optimal.code, custom_inputs
     )
-    stock_inputs = generate_inputs(spec, random_cases=16, stress_cases=4)
     generated = await build_verified_problem(spec)
     problem.report.test_cases = bespoke + generated.report.test_cases
     problem.report.brute_force_case_runtimes_ms = []

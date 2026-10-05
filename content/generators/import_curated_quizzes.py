@@ -17,17 +17,7 @@ def import_curated_quizzes(source_file: Path, target_dir: Path) -> int:
     with open(source_file, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Find each topic block: arrays, trees, graphs, dp, mixed
-    blocks = re.findall(r"(\w+):\s*\[(.*?)\]\n\s*(\}|[a-z]+:)", content, re.DOTALL)
     imported = 0
-
-    topic_mapping = {
-        "arrays": "arrays",
-        "trees": "trees",
-        "graphs": "graphs",
-        "dp": "dp",
-        "mixed": "mixed",
-    }
 
     # Match objects: id, question, options, correctIndex, explanation
     obj_pattern = re.compile(

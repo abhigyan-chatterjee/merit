@@ -127,10 +127,7 @@ def _sanitize_tutor_reply(text: str) -> str:
     open_match = re.match(r"<(thought|think)\b[^>]*>", stripped_leading, flags=re.IGNORECASE)
     if open_match:
         after_tag = stripped_leading[open_match.end() :]
-        if "\n\n" in after_tag:
-            cleaned = after_tag.split("\n\n", 1)[1]
-        else:
-            cleaned = ""
+        cleaned = after_tag.split("\n\n", 1)[1] if "\n\n" in after_tag else ""
     cleaned = re.sub(r"<(thought|think)\b[^>]*>[\s\S]*$", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"</(thought|think)>", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(

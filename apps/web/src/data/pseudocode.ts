@@ -115,18 +115,6 @@ export const PSEUDOCODE_MAP: Record<string, PseudoCodeBlock> = {
     timeComplexity: 'O(V + E)',
     spaceComplexity: 'O(V)'
   },
-  tree: {
-    title: 'Binary Tree Traversal (Recursive)',
-    lines: [
-      'function traverse(node):',
-      '  if node == null: return',
-      '  traverse(node.left)    // Left Subtree',
-      '  visit(node.val)        // Process Node',
-      '  traverse(node.right)   // Right Subtree'
-    ],
-    timeComplexity: 'O(n)',
-    spaceComplexity: 'O(h)'
-  },
   'binary-tree': {
     title: 'Binary Tree Traversal (Recursive)',
     lines: [

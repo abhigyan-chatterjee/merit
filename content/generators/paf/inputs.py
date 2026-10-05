@@ -50,7 +50,7 @@ def _annotation_kind(annotation: str) -> tuple[str, str | None]:
         return "list", list_match.group(1)
     if clean in {"int", "integer", "number", "bigint"}:
         return "int", None
-    if clean in {"float", "number"}:
+    if clean in {"float"}:
         return "float", None
     if clean in {"bool", "boolean"}:
         return "bool", None

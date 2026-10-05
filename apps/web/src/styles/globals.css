@@ -272,9 +272,6 @@
 /* Opt-in reveal: the static version is the default, so the class does
    nothing at all when the reader asked for less motion. */
 @media (prefers-reduced-motion: no-preference) {
-  .motion-rise {
-    animation: av-rise var(--motion-stage) var(--ease-out-expo) both;
-  }
   .motion-fade {
     animation: av-fade var(--motion-surface) var(--ease-out-quart) both;
   }
@@ -282,20 +279,6 @@
      delay patterns as generated when they run long. */
   .motion-delay-75 {
     animation-delay: 75ms;
-  }
-  .motion-delay-150 {
-    animation-delay: 150ms;
-  }
-}
-
-@keyframes av-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 

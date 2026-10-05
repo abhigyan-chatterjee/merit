@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 import sys
 from pathlib import Path
@@ -22,10 +21,8 @@ _TOKENS_POOL = ["7", "12", "-4", "9", "+", "-", "*", "/"]
 from content.generators.paf import (
     Algorithm,
     ProblemSpec,
-    build_problem,
     build_verified_problem,
 )
-from content.generators.paf.inputs import generate_inputs
 
 
 def _valid_baseball_ops(rng: Any, count: int) -> list[str]:
@@ -1047,7 +1044,6 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
     bespoke = await _build_custom_cases(
         spec, spec.brute_force.code, spec.optimal.code, custom_inputs
     )
-    stock_inputs = generate_inputs(spec, random_cases=16, stress_cases=4)
     generated = await build_verified_problem(spec)
     problem.report.test_cases = bespoke + generated.report.test_cases
     problem.report.brute_force_case_runtimes_ms = []

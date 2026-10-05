@@ -33,7 +33,6 @@ from content.validators.signature_types import (  # noqa: E402
     LIST_LIST_LIST_INT,
     LIST_LIST_STRING,
     STRING,
-    STRING_LIST,
     UNKNOWN,
     classify,
     infer_problem_types,

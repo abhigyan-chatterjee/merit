@@ -35,7 +35,6 @@ Idempotent: existing scrap-<slug> files are left untouched.
 """
 
 import argparse
-import hashlib
 import json
 import re
 import sys

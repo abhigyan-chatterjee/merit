@@ -143,8 +143,6 @@ def generate_time_complexity_questions(count: int = 120, seed: int = 42) -> list
 
     # 4. Programmatic parameterized loop generator to scale verified questions
     # We parameterize bases, increments, nested depths, and multipliers
-    # 4. Programmatic parameterized loop generator to scale verified questions
-    # We parameterize bases, increments, nested depths, and multipliers
     for step_factor in [2, 3, 4, 5, 6, 8, 10]:
         for power in [1, 2, 3]:
             if power == 1:

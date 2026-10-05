@@ -7,6 +7,7 @@ from app.models.content import (
     Question,
     QuestionReview,
 )
+from app.models.feedback import Feedback
 from app.models.progress import (
     ActivityDay,
     Bookmark,
@@ -23,7 +24,6 @@ from app.models.quiz import (
 )
 from app.models.submission import Submission
 from app.models.user import RefreshToken, User
-from app.models.feedback import Feedback
 
 __all__ = [
     "User",

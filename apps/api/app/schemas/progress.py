@@ -154,6 +154,3 @@ class SettingsUpdate(BaseModel):
 class SettingsResponse(BaseModel):
     preferred_language: str = "python"
     daily_goal: dict[str, Any] | None = None
-
-
-UserSettingsResponse = SettingsResponse

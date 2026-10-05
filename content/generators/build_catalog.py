@@ -15,9 +15,9 @@ What this does:
   3. Splits combo company strings into clean per-company lists, dropping
      scraper artifacts ('Multiple Companies', 'Unknown'), normalizing
      case ('tcs' -> 'TCS'), flagging truncated rows ('+ N more').
-  4. Maps the 173 raw topics onto the 6 Algovista problem topics the
-     frontend actually routes on (18 categories, e.g. arrays-hashing |
-     trees | graphs | dp), keeping raw topics + pattern alongside.
+  4. Maps the 173 raw topics onto the 18 Algovista categories the
+     frontend actually routes on (e.g. arrays-hashing | trees | graphs | dp),
+     keeping raw topics + pattern alongside.
   5. Normalizes difficulty (MEDIUM -> Medium); blanks stay 'Unknown' --
      never invented.
 

@@ -5,10 +5,6 @@ import random
 from content.generators.base import GeneratedQuestion, make_question
 
 
-def usable_hosts_oracle(prefix: int) -> int:
-    return (2 ** (32 - prefix)) - 2
-
-
 def train_meet_oracle(d1: int, s1: int, d2: int, s2: int) -> int:
     """Two trains apart by d1+d2 km approaching at s1+s2 km/h; meet time in minutes."""
     return round(((d1 + d2) / (s1 + s2)) * 60)

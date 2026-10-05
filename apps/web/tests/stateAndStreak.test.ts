@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { getLocalDateString } from '../src/hooks/useStreak';
 import { useLocalStorage } from '../src/hooks/useLocalStorage';
@@ -7,10 +7,6 @@ import { EMPTY_INITIAL_STATE, ProgressStateZodSchema, ProgressStateSchema } from
 describe('State, Streak & Storage Resilience (D4, D7, D8, D9)', () => {
   beforeEach(() => {
     window.localStorage.clear();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   describe('D8: Local-Date Streaks (IST timezone safety)', () => {

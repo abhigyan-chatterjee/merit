@@ -375,7 +375,7 @@ def list_paths(
                 elif s.step_type == "quiz":
                     is_comp = s.ref_id in user_quiz_passed
                 elif s.step_type == "mock":
-                    is_comp = s.id in user_explicit_steps or mock_completed
+                    is_comp = mock_completed
             if is_comp:
                 completed += 1
 
@@ -490,7 +490,7 @@ def get_path(
             elif s.step_type == "quiz":
                 is_completed = s.ref_id in user_quiz_passed
             elif s.step_type == "mock":
-                is_completed = s.id in user_explicit_steps or mock_completed
+                is_completed = mock_completed
 
         if is_completed:
             completed_count += 1

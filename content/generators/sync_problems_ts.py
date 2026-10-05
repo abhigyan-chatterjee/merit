@@ -131,7 +131,7 @@ def wire_sequences() -> int:
         by_topic.setdefault(data["topic"], []).append((fp, data))
 
     total_wired = 0
-    for topic, items in by_topic.items():
+    for items in by_topic.values():
         items.sort(
             key=lambda x: (
                 DIFF_RANK.get(x[1].get("difficulty"), 99),

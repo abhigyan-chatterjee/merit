@@ -276,26 +276,22 @@ describe('QuizEngine Component', () => {
     // load, then fast-forward the countdown.
     const { authApi } = await import('../src/utils/api');
     vi.spyOn(authApi, 'getMe').mockRejectedValue(new Error('NO_SESSION'));
-    try {
-      render(
-        <AuthProvider>
-          <ProgressProvider>
-            <QuizEngine
-              topicTitle="Arrays & Hashing"
-              topicId="arrays-hashing"
-              questions={sampleQuestions}
-              perQuestionSec={2}
-            />
-          </ProgressProvider>
-        </AuthProvider>
-      );
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle="Arrays & Hashing"
+            topicId="arrays-hashing"
+            questions={sampleQuestions}
+            perQuestionSec={2}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
 
-      expect(await screen.findByText(/1. What is the time complexity/i)).toBeInTheDocument();
-      // Let the short per-question clock run out (real timers, tight timeout).
-      expect(await screen.findByText(/2. Which data structure follows LIFO/i, {}, { timeout: 8000 })).toBeInTheDocument();
-    } finally {
-      vi.useRealTimers();
-    }
+    expect(await screen.findByText(/1. What is the time complexity/i)).toBeInTheDocument();
+    // Let the short per-question clock run out (real timers, tight timeout).
+    expect(await screen.findByText(/2. Which data structure follows LIFO/i, {}, { timeout: 8000 })).toBeInTheDocument();
   }, 15000);
 
   it('timeout locks the question: advancing then going back disallows answering', async () => {

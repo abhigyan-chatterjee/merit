@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { authApi, UserProfile, ApiError } from "@/utils/api";
+import { authApi, UserProfile } from "@/utils/api";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -136,5 +136,3 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
-
-export { ApiError };

@@ -99,7 +99,7 @@ def ts_string(value: object) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def render_question(question: dict, index: int) -> str:
+def render_question(question: dict) -> str:
     return "\n".join(
         [
             "    {",
@@ -127,8 +127,8 @@ def render(topic_questions: dict[str, list[dict]]) -> str:
     ]
     for topic_id, _, _ in TOPICS:
         lines.append(f"  {json.dumps(topic_id)}: [")
-        for index, question in enumerate(topic_questions[topic_id]):
-            lines.append(render_question(question, index))
+        for question in topic_questions[topic_id]:
+            lines.append(render_question(question))
         lines.append("  ],")
     lines.extend(
         [

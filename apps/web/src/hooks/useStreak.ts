@@ -11,11 +11,6 @@ export function getLocalDateString(d: Date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Legacy alias for backward compatibility, now returning local date */
-export function getTodayISO(): string {
-  return getLocalDateString(new Date());
-}
-
 export function useStreak(streakDates: string[], recordActivityDate: (date: string) => void) {
   const today = getLocalDateString();
 

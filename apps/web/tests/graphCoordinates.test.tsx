@@ -29,7 +29,7 @@ describe('Graph Visualizer Coordinates (D3)', () => {
 
     // Verify a circle was added with viewBox coordinates within [0, 420] and [0, 350]
     const circles = container.querySelectorAll('circle');
-    // Default nodes: 5 nodes. We expect 6 nodes now.
+    // Default nodes: 6 (ids 0-5). We expect 7 now.
     expect(circles.length).toBeGreaterThanOrEqual(6);
 
     const lastCircle = circles[circles.length - 1];
