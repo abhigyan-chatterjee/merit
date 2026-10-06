@@ -25,4 +25,15 @@ export default defineConfig({
       },
     },
   },
+  // Same-origin /api routing for `vite preview`, mirroring how the
+  // production stack fronts the built bundle with a reverse proxy.
+  preview: {
+    port: 4173,
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:8000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

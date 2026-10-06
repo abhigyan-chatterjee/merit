@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
-    baseURL: "http://127.0.0.1:5173",
+    baseURL: "http://127.0.0.1:4173",
     trace: "on-first-retry",
   },
   projects: [
@@ -25,10 +25,15 @@ export default defineConfig({
       timeout: 30 * 1000,
     },
     {
-      command: "npm run dev -- --host 127.0.0.1 --port 5173",
-      url: "http://127.0.0.1:5173",
+      // Serve the production build — the same artifact prod ships —
+      // instead of the dev server, so e2e exercises what users get.
+      // VITE_* vars for the build come from the environment or
+      // apps/web/.env (gitignored); VITE_CLERK_PUBLISHABLE_KEY
+      // enables the Clerk sign-in UI.
+      command: "npm run build && npx vite preview --host 127.0.0.1 --port 4173",
+      url: "http://127.0.0.1:4173",
       reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
+      timeout: 180 * 1000,
     },
   ],
 });
