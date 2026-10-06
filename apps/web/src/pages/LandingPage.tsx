@@ -30,9 +30,14 @@ const BUBBLE_SEED = [52, 31, 88, 24, 95, 46, 71, 18, 63, 39, 80, 57];
 
 const useLiveSortDemo = (enabled: boolean) => {
   const [arr, setArr] = useState<number[]>(BUBBLE_SEED);
+  // Mirror of `arr` outside React's updater queue: one state-update per tick
+  // is a pure snapshot assignment, so the compare/swap is judged exactly once
+  // against the real array. The previous two-chained-updater form judged the
+  // swap twice against different snapshots; the second check could never fire
+  // a swap, so the counter stayed 0.
+  const arrRef = useRef<number[]>(BUBBLE_SEED);
   const cursor = useRef({ pass: 0, i: 0, holdSorted: 0 });
   const [pair, setPair] = useState<[number, number]>([0, 1]);
-  const [, setPasses] = useState(0);
   const [comparisons, setComparisons] = useState(0);
   const [swaps, setSwaps] = useState(0);
   const [sorted, setSorted] = useState(false);
@@ -51,9 +56,9 @@ const useLiveSortDemo = (enabled: boolean) => {
         c.holdSorted -= 1;
         if (c.holdSorted === 0) {
           cursor.current = { pass: 0, i: 0, holdSorted: 0 };
-          setArr(BUBBLE_SEED);
+          arrRef.current = [...BUBBLE_SEED];
+          setArr([...BUBBLE_SEED]);
           setPair([0, 1]);
-          setPasses(0);
           setSwaps(0);
           setSorted(false);
           setSortedFrom(n);
@@ -61,32 +66,24 @@ const useLiveSortDemo = (enabled: boolean) => {
         return;
       }
 
-      setArr((prev) => {
-        const next = [...prev];
-        const limit = n - 1 - c.pass;
-        if (c.i < limit && next[c.i] > next[c.i + 1]) {
-          [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
-        }
-        return next;
-      });
+      const next = [...arrRef.current];
+      const limit = n - 1 - c.pass;
+      let swapped = false;
+      if (c.i < limit && next[c.i] > next[c.i + 1]) {
+        [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
+        swapped = true;
+      }
+      arrRef.current = next;
+      setArr(next);
       setPair([c.i, Math.min(c.i + 1, n - 1)]);
       setComparisons((x) => x + 1);
-
-      setArr((prev) => {
-        const next = [...prev];
-        if (c.i + 1 < next.length && next[c.i] > next[c.i + 1]) {
-          [next[c.i], next[c.i + 1]] = [next[c.i + 1], next[c.i]];
-          setSwaps((x) => x + 1);
-        }
-        return next;
-      });
+      if (swapped) setSwaps((x) => x + 1);
 
       // Advance the cursor deterministically regardless of batching.
       const advanced = c.i + 1;
       const finishedPass = advanced >= n - 1 - c.pass;
       if (finishedPass) {
         const nextPass = c.pass + 1;
-        setPasses(nextPass);
         // The element just bubbled to position n-1-pass is final.
         setSortedFrom(n - 1 - c.pass);
         if (nextPass >= n - 1) {

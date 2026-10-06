@@ -293,8 +293,6 @@ export const progressApi = {
   async importLocal(data: {
     progress: Record<string, string>;
     notes: Record<string, string>;
-    quizzes: Record<string, number>;
-    streak: number;
     activity_days: string[];
     visited_visualizers: string[];
     local_date?: string;

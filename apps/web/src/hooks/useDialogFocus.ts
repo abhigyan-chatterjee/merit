@@ -22,6 +22,17 @@ export function useDialogFocus<T extends HTMLElement>(
   const ref = useRef<T>(null);
   const returnFocusTo = useRef<HTMLElement | null>(null);
 
+  // The close callback is held in a ref so the open-effect can depend only on
+  // `isOpen`. A parent-created inline `onClose` would otherwise re-run this
+  // whole setup on every parent render while the dialog is open: focus would
+  // bounce out to `returnFocusTo` and back, and the bounce would overwrite
+  // `returnFocusTo` with whatever is focused mid-dialog, so closing returns
+  // focus to the wrong element.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -41,7 +52,7 @@ export function useDialogFocus<T extends HTMLElement>(
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== 'Tab') return;
@@ -97,7 +108,7 @@ export function useDialogFocus<T extends HTMLElement>(
       document.body.style.overflow = prevOverflow;
       returnFocusTo.current?.focus?.();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onCloseRef]);
 
   return ref;
 }

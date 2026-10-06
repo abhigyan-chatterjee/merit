@@ -56,7 +56,7 @@ def generate_all(target_dir: Path, instance_cap: int = 4) -> int:
     all_questions.extend(generate_cs_fundamentals_questions(count=140, seed=107))
 
     print("Generating Arrays & Strings questions...")
-    all_questions.extend(generate_array_string_questions(count=300, seed=108))
+    all_questions.extend(generate_array_string_questions(count=300))
 
     print("Generating Bit Manipulation questions...")
     all_questions.extend(generate_bit_manipulation_questions(count=100, seed=109))

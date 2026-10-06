@@ -13,9 +13,9 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
   const { weeks, monthMarks, activeCount } = useMemo(() => {
     const set = new Set(streakDates);
     const today = new Date();
-    // Anchor to the end of the current week so columns align to Sun..Sat
+    // Anchor to the end of the current UTC week so columns align to Sun..Sat
     const anchor = new Date(today);
-    anchor.setDate(today.getDate() + (6 - today.getDay()));
+    anchor.setUTCDate(today.getUTCDate() + (6 - today.getUTCDay()));
 
     const grid: { date: string; level: number; future: boolean }[][] = [];
     const marks: { col: number; label: string }[] = [];
@@ -27,20 +27,20 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
       for (let d = 6; d >= 0; d--) {
         const offset = w * 7 + d;
         const dt = new Date(anchor);
-        dt.setDate(anchor.getDate() - offset);
+        dt.setUTCDate(anchor.getUTCDate() - offset);
         const iso = dt.toISOString().split('T')[0];
         const active = set.has(iso);
         if (active) count++;
         col.unshift({
           date: iso,
-          level: active ? ((dt.getDate() % 3) + 1) : 0,
+          level: active ? ((dt.getUTCDate() % 3) + 1) : 0,
           future: dt > today
         });
       }
       const colIndex = WEEKS - 1 - w;
       const firstOfCol = new Date(col[0].date);
-      if (firstOfCol.getMonth() !== lastMonth) {
-        lastMonth = firstOfCol.getMonth();
+      if (firstOfCol.getUTCMonth() !== lastMonth) {
+        lastMonth = firstOfCol.getUTCMonth();
         marks.push({ col: colIndex, label: MONTHS[lastMonth] });
       }
       grid.push(col);

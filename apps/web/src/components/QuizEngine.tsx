@@ -115,12 +115,24 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const loadedKeyRef = useRef<string | null>(null);
 
   const changeCurrentIndex = (next: number | ((index: number) => number)) => {
-    setCurrentIndex((previous) => {
-      const updated = typeof next === 'function' ? next(previous) : next;
-      onCurrentIndexChange?.(updated);
-      return updated;
-    });
+    setCurrentIndex(next);
   };
+
+  // Parent notification happens post-commit via effect, never from inside a
+  // state updater (updaters must be pure; StrictMode double-invocation would
+  // fire the callback twice per index change). lastNotifiedIndex keeps the
+  // callback from refiring when a parent echo or unrelated re-render touches
+  // the same index.
+  const indexNotifyRef = useRef(onCurrentIndexChange);
+  const lastNotifiedIndexRef = useRef(currentIndex);
+  useEffect(() => {
+    indexNotifyRef.current = onCurrentIndexChange;
+  });
+  useEffect(() => {
+    if (lastNotifiedIndexRef.current === currentIndex) return;
+    lastNotifiedIndexRef.current = currentIndex;
+    indexNotifyRef.current?.(currentIndex);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (controlledIndex !== undefined && controlledIndex !== currentIndex) {
@@ -330,7 +342,6 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // avoid referencing handleSubmitQuiz before its declaration.
   useEffect(() => {
     if (submitted || isLoading) return;
-    const currentQForTimer = activeQuestions[currentIndex];
     const timer = setInterval(() => {
       setSecondsElapsed((s) => s + 1);
       if (isMock) {
@@ -343,27 +354,35 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           return rem - 1;
         });
       } else if (perQuestionSec && perQuestionSec > 0) {
-        setQuestionTimeLeft((left) => {
-          if (left <= 1) {
-            // Time up on this MCQ: lock it, then advance (or stop on last).
-            if (currentQForTimer) {
-              const timedId = currentQForTimer.id;
-              setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
-            }
-            changeCurrentIndex((i) => {
-              if (i >= activeQuestions.length - 1) {
-                clearInterval(timer);
-              }
-              return Math.min(activeQuestions.length - 1, i + 1);
-            });
-            return perQuestionSec;
-          }
-          return left - 1;
-        });
+        setQuestionTimeLeft((left) => (left <= 1 ? 0 : left - 1));
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [submitted, isLoading, isMock, perQuestionSec, activeQuestions, currentIndex]);
+  }, [submitted, isLoading, isMock]);
+
+  // Time-up handling lives in an effect, not inside the countdown updater:
+  // state updaters must stay pure (StrictMode double-invokes them, so side
+  // effects inside fire twice per transition — a second advance or a duplicate
+  // parent notification). Running at questionTimeLeft === 0 also makes the
+  // "stop at the last question" case emerge from state instead of calling
+  // clearInterval from inside an updater.
+  useEffect(() => {
+    if (submitted || isLoading || isMock) return;
+    if (!perQuestionSec || questionTimeLeft !== 0) return;
+    const currentQuestion = activeQuestions[currentIndex];
+    const atLast = currentIndex >= activeQuestions.length - 1;
+    if (currentQuestion) {
+      const timedId = currentQuestion.id;
+      setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
+    }
+    if (!atLast) {
+      changeCurrentIndex(Math.min(activeQuestions.length - 1, currentIndex + 1));
+      setQuestionTimeLeft(perQuestionSec);
+    }
+    // intentionally not depending on currentQ/changeCurrentIndex identity:
+    // questionTimeLeft transitions drive exactly one advance per question
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionTimeLeft]);
 
   // Reset the per-question clock whenever the question changes.
   useEffect(() => {

@@ -13,7 +13,6 @@ from content.generators.qaf.specs.arrays_strings import ARRAY_STRING_SPECS
 
 def generate_array_string_questions(
     count: int = 150,
-    seed: int = 49,
 ) -> list[GeneratedQuestion]:
     """Generate verified questions for Arrays & Strings designs via QAF."""
     questions = generate_all_qaf(specs=ARRAY_STRING_SPECS, instance_cap=4)

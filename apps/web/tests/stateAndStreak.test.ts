@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { getLocalDateString } from '../src/hooks/useStreak';
+import { getUTCDateString } from '../src/hooks/useStreak';
 import { useLocalStorage } from '../src/hooks/useLocalStorage';
 import { EMPTY_INITIAL_STATE, ProgressStateZodSchema, ProgressStateSchema } from '../src/store/schema';
 
@@ -9,13 +9,18 @@ describe('State, Streak & Storage Resilience (D4, D7, D8, D9)', () => {
     window.localStorage.clear();
   });
 
-  describe('D8: Local-Date Streaks (IST timezone safety)', () => {
-    it('computes local date correctly even when UTC date is different (02:00 IST)', () => {
-      // 2026-09-08 02:00:00 local time
-      // In UTC, this would be 2026-09-07 20:30:00
-      const localDate = new Date(2026, 8, 8, 2, 0, 0); // month is 0-indexed: 8 = September
-      const dateStr = getLocalDateString(localDate);
-      expect(dateStr).toBe('2026-09-08');
+  describe('D8: UTC Day Keys (timezone safety)', () => {
+    it('keys the day by UTC date regardless of machine timezone', () => {
+      // A moment near the UTC day boundary: 2026-09-08T02:00Z.
+      const boundary = new Date(Date.UTC(2026, 8, 8, 2, 0, 0));
+      expect(getUTCDateString(boundary)).toBe('2026-09-08');
+    });
+
+    it('rolls to the next UTC day at midnight UTC', () => {
+      const beforeMidnight = new Date(Date.UTC(2026, 8, 8, 23, 59, 59));
+      expect(getUTCDateString(beforeMidnight)).toBe('2026-09-08');
+      const afterMidnight = new Date(Date.UTC(2026, 8, 9, 0, 0, 0));
+      expect(getUTCDateString(afterMidnight)).toBe('2026-09-09');
     });
   });
 

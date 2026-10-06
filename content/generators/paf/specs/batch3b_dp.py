@@ -1240,7 +1240,6 @@ def _gen_edit_distance_inputs(rng: random.Random) -> list[list[Any]]:
     chars = "abcdefghijklmnopqrstuvwxyz"
     for _ in range(13):
         len1 = rng.randint(3, 25)
-        len2 = rng.randint(3, 25)
         w1 = "".join(rng.choice(chars[:8]) for _ in range(len1))
         # Often make w2 a mutated version of w1
         w2_list = list(w1)

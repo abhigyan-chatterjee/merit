@@ -31,10 +31,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
       if (defaultProblemSlug) {
         setProblemSlug(defaultProblemSlug);
       } else {
-        // Auto-detect problem slug from URL if on problem detail page
-        const match = window.location.pathname.match(/\/problems\/([^/?#]+)/);
-        if (match && match[1] && !['arrays-hashing', 'two-pointers', 'sliding-window', 'stack', 'binary-search', 'linked-list', 'trees', 'tries', 'heap-priority-queue', 'backtracking', 'graphs', 'advanced-graphs', '1d-dynamic-programming', '2d-dynamic-programming', 'greedy', 'intervals', 'math-geometry', 'bit-manipulation'].includes(match[1])) {
-          setProblemSlug(match[1]);
+        // Auto-detect problem slug from URL if on problem detail page.
+        // /problems/:topic is a list page (no slug); only
+        // /problems/:topic/:slug pre-fills.
+        const parts = window.location.pathname.split('/').filter(Boolean);
+        const pos = parts.indexOf('problems');
+        if (pos !== -1 && parts.length >= pos + 3) {
+          setProblemSlug(parts[pos + 2]);
         }
       }
       setErrorMsg(null);

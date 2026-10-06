@@ -21,6 +21,18 @@ describe('FeedbackModal', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('auto-detects the problem slug from a detail URL, never the topic', () => {
+    window.history.replaceState({}, '', '/problems/arrays-hashing/two-sum');
+    render(<FeedbackModal isOpen={true} onClose={vi.fn()} />);
+    expect(screen.getByPlaceholderText(/e\.g\. two-sum/i)).toHaveValue('two-sum');
+  });
+
+  it('leaves the slug empty on a topic list URL', () => {
+    window.history.replaceState({}, '', '/problems/arrays-hashing');
+    render(<FeedbackModal isOpen={true} onClose={vi.fn()} />);
+    expect(screen.getByPlaceholderText(/e\.g\. two-sum/i)).toHaveValue('');
+  });
+
   it('submits feedback successfully to api', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,

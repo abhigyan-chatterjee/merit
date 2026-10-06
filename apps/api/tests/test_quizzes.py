@@ -1,5 +1,7 @@
 """Tests for Dynamic Quiz Engine (sampling, grading, retry-wrong, and user isolation)."""
 
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -7,6 +9,7 @@ from sqlalchemy import select
 from app.db import SessionLocal
 from app.main import app
 from app.models.content import Question
+from app.models.quiz import QuizAttempt
 from app.seed import seed_all
 
 
@@ -191,6 +194,58 @@ def test_generate_difficulty_never_falls_back_to_other_difficulties():
             select(Question).where(Question.id.in_([q["id"] for q in data["questions"]]))
         ).all()
     assert all(row.difficulty == "Hard" for row in rows)
+
+
+def test_generate_difficulty_topic_plan_shell_matches_served_questions():
+    """binary-search has no Easy rows, so the sampler's topic-fallback surfaces
+    Medium/Hard. Those must be dropped before the attempt shell is persisted,
+    not filtered out of the response afterwards — otherwise `attempt.total`
+    counts questions that were never shown and every subsequent submit or
+    detail read silently deflates score_pct."""
+    client = TestClient(app)
+    register_and_login(client, "quiz_plan_shell@merit.org", "Quiz Plan Shell")
+
+    resp = client.post(
+        "/api/v1/quizzes/generate",
+        json={
+            "topics": ["core-cs", "binary-search"],
+            "count": 5,
+            "difficulty": "Easy",
+            "topic_plan": [["core-cs", 5], ["binary-search", 4]],
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert all(q["difficulty"] == "Easy" for q in data["questions"])
+
+    with SessionLocal() as db:
+        attempt = db.get(QuizAttempt, data["attempt_id"])
+        assert attempt is not None
+        assert attempt.total == data["total"]
+        assert json.loads(attempt.question_ids) == [q["id"] for q in data["questions"]]
+
+
+def test_generate_difficulty_empty_survivor_leaves_no_attempt_row():
+    """Filtering happens before commit: a difficulty choice nothing satisfies
+    404s without writing an attempt shell or exposure rows."""
+    client = TestClient(app)
+    register_and_login(client, "quiz_no_orphan@merit.org", "Quiz No Orphan")
+    user_id = client.get("/api/v1/auth/me").json()["id"]
+
+    resp = client.post(
+        "/api/v1/quizzes/generate",
+        json={
+            "topics": ["binary-search"],
+            "count": 4,
+            "difficulty": "Easy",
+            "topic_plan": [["binary-search", 4]],
+        },
+    )
+    assert resp.status_code == 404
+
+    with SessionLocal() as db:
+        orphan = db.scalars(select(QuizAttempt).where(QuizAttempt.user_id == user_id)).all()
+    assert orphan == []
 
 
 def test_generate_topic_plan_section_sizes():

@@ -110,10 +110,11 @@ class ProgressSummaryResponse(BaseModel):
 
 
 class LocalImportRequest(BaseModel):
+    # Only fields this endpoint actually merges. quizzes/streak used to be
+    # declared here and silently discarded; they are omitted on purpose until a
+    # server-side merge target exists.
     progress: dict[str, str] = Field(default_factory=dict)
     notes: dict[str, str] = Field(default_factory=dict)
-    quizzes: dict[str, int] = Field(default_factory=dict)
-    streak: int = 0
     activity_days: list[str] = Field(default_factory=list)
     visited_visualizers: list[str] = Field(default_factory=list)
     local_date: str | None = None

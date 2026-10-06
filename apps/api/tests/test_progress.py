@@ -117,6 +117,26 @@ def test_visualizer_visit_tracking(client: TestClient):
     assert summary["current_streak"] == 1
 
 
+def test_import_local_ignores_unmerged_keys(client: TestClient):
+    """The web client still sends quiz/streak keys it used to; they have no
+    server-side merge target, so sending them must be accepted silently rather
+    than 422-ing the whole import. Stopping the import from accepting them
+    instead is a deliberately separate decision."""
+    register_user(client, "student5@merit.org")
+    res = client.post(
+        "/api/v1/progress/import-local",
+        json={
+            "progress": {"two-sum": "Done"},
+            "quizzes": {"arrays-hashing": 92},
+            "streak": 5,
+            "activity_days": [TODAY],
+        },
+    )
+    assert res.status_code == 200
+    assert res.json()["has_imported_local"] is True
+    assert "two-sum" in res.json()["progress"]
+
+
 def test_import_local_max_wins(client: TestClient):
     register_user(client, "student4@merit.org")
 

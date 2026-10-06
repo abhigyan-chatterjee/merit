@@ -77,8 +77,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           const merged = await progressApi.importLocal({
             progress: state.progress,
             notes: state.notes,
-            quizzes: state.quizzes,
-            streak: currentStreak,
             activity_days: state.streak,
             visited_visualizers: state.visitedVisualizers,
             local_date: today,

@@ -116,6 +116,16 @@ def sample_questions(
             deduped.append(q)
     sampled = deduped
 
+    # The difficulty-less fallback above can surface off-difficulty questions.
+    # Drop them here, before the attempt shell is persisted — the route used to
+    # do this after the commit, which left `total` counting questions that were
+    # never shown and orphaned the attempt when nothing survived.
+    if difficulty:
+        sampled = [q for q in sampled if q.difficulty == difficulty]
+
+    if not sampled:
+        return "", [], None
+
     # 5. Create attempt shell with server-side snapshot of question IDs
     attempt_id = str(uuid.uuid4())
     now_str = utcnow_iso()
