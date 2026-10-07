@@ -145,15 +145,31 @@ service accounts:
 ## 3. Deploy
 
 ```bash
-./apps/judge/deploy.sh deploy           # light: python + javascript
+./apps/judge/deploy.sh plan                # what a deploy would do — no gcloud
+TIER=heavy ./apps/judge/deploy.sh plan     # same, for the Java/C++ tier
+
+./apps/judge/deploy.sh deploy              # light: python + javascript
 TIER=heavy ./apps/judge/deploy.sh deploy   # heavy: java + c++
 ```
 
-The tier selects the image and the memory it needs. The heavy tier defaults to
-`2Gi` rather than `1Gi` because `javac` and `g++` want far more headroom than an
-interpreter; override with `MEMORY=` if you know better. Both services share the
-runtime and invoker service accounts — the invoker is granted
-`roles/run.invoker` on each service it may call.
+`plan` is the dry run: it prints the image, memory, timeout and the exact
+`cloud run deploy` flags for the selected tier without touching gcloud, so you
+can check a change before spending build minutes on it.
+
+The tier selects the image, the memory, and the request timeout:
+
+| | service | image | memory | timeout |
+|---|---|---|---|---|
+| `light` | `merit-judge-light` | `apps/judge/Dockerfile` | 1Gi | 60s |
+| `heavy` | `merit-judge-heavy` | `apps/judge/Dockerfile.heavy` | 2Gi | 180s |
+
+The heavy tier needs both more memory and more time: compiling costs far more
+than running, and `javac` plus a cold JVM alone can take seconds — more than the
+light tier's 60s allows. Override any of them with `MEMORY=`, `TIMEOUT=`, or
+`SERVICE=`. `--cpu` stays at 1 so billed vCPU-seconds stay inside the free tier.
+
+Both services share the runtime and invoker service accounts; the invoker is
+granted `roles/run.invoker` on each service it may call.
 
 Builds via Cloud Build (context is the repo root, because the Dockerfile copies
 the sandbox out of the API so both paths share one implementation), then
@@ -163,6 +179,7 @@ deploys with:
 --min-instances 0      stay in the free tier
 --max-instances 3      cost ceiling
 --concurrency 1        each submission is CPU-bound
+--timeout <tier>       60s light / 180s heavy
 --cpu-boost            free, shortens cold starts
 --no-allow-unauthenticated
 ```
@@ -170,8 +187,20 @@ deploys with:
 The last flag is the important one: unauthenticated requests are rejected by
 the platform before they reach the container.
 
-It finishes by printing the `JUDGE_URL` and granting the invoker account
-`roles/run.invoker` on this service only.
+It finishes by printing this tier's URL variable and granting the invoker
+account `roles/run.invoker` on this service only.
+
+**Then wire it.** `./apps/judge/deploy.sh env` prints both lines for the API
+environment, and reports a tier that is not deployed yet instead of failing:
+
+```
+JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
+JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
+```
+
+Set `JUDGE_TIMEOUT_SEC` at or above the heavy tier's timeout (180s): the client
+gives up before a compiling submission would otherwise finish, which surfaces as
+"could not be reached" rather than a verdict.
 
 ## 4. Mint the VPS identity key
 

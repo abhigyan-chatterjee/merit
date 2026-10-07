@@ -3,17 +3,21 @@
 # Deploy the Merit judge to Cloud Run.
 #
 # Usage:
-#   ./apps/judge/deploy.sh bootstrap        # one-time project setup (needs owner)
-#   ./apps/judge/deploy.sh deploy           # build + deploy the light service
-#   TIER=heavy ./apps/judge/deploy.sh deploy  # build + deploy the Java/C++ service
-#   TIER=heavy ./apps/judge/deploy.sh url    # print the value for JUDGE_HEAVY_URL
-#   ./apps/judge/deploy.sh key              # mint the VPS identity key
-#   ./apps/judge/deploy.sh logs             # tail service logs
+#   ./apps/judge/deploy.sh bootstrap           # one-time project setup (needs owner)
+#   ./apps/judge/deploy.sh deploy              # build + deploy the light service
+#   TIER=heavy ./apps/judge/deploy.sh deploy   # build + deploy the Java/C++ service
+#   ./apps/judge/deploy.sh plan                # show what a deploy would do (no gcloud)
+#   TIER=heavy ./apps/judge/deploy.sh plan     # same, for the heavy tier
+#   ./apps/judge/deploy.sh env                 # print both JUDGE_* lines for .env
+#   ./apps/judge/deploy.sh key                 # mint the VPS identity key
+#   ./apps/judge/deploy.sh logs                # tail this tier's logs
 #
 # Two tiers, because a compile toolchain is ~300 MB of cold start that only
 # Java and C++ should pay for:
-#   light (default) — Python + JavaScript, no toolchain.
+#   light (default) — Python + JavaScript, no toolchain. 1Gi, 60s per request.
 #   heavy           — adds JDK and g++, so a type error is a Compile Error.
+#                     2Gi and 180s, because compiling costs far more than
+#                     running: javac plus a cold JVM alone can take seconds.
 # Each tier is granted only to the invoker SA, and the API routes by language.
 #
 # Design notes:
@@ -23,25 +27,34 @@
 #   * max-instances caps worst-case spend if someone floods the judge.
 #   * cpu-boost is free and recovers a large part of the cold start.
 #   * The service is NOT publicly callable; only the invoker SA can reach it.
+#   * --cpu stays at 1 so billed vCPU-seconds stay inside the free tier; the
+#     heavy tier covers compile wall-time with a larger timeout instead.
 #
 set -euo pipefail
 
 REGION="${REGION:-asia-south1}"          # Mumbai: closest to the Hyderabad VPS
 AR_REPO="${AR_REPO:-merit}"
 
-# The tier selects the image and the memory it needs. javac and g++ want far
-# more headroom than an interpreter, so the heavy tier defaults to 2Gi.
+# Both service names up front so `env` can report the pair regardless of tier.
+LIGHT_SERVICE="${LIGHT_SERVICE:-merit-judge-light}"
+HEAVY_SERVICE="${HEAVY_SERVICE:-merit-judge-heavy}"
+
+# The tier selects the image, the memory, and the request timeout. javac and
+# g++ want far more headroom than an interpreter, and compiling does not fit in
+# the light tier's 60s: the sandbox alone allows 90s for a compile.
 TIER="${TIER:-light}"
 case "$TIER" in
   light)
-    SERVICE="${SERVICE:-merit-judge-light}"
+    SERVICE="${SERVICE:-$LIGHT_SERVICE}"
     DOCKERFILE="${DOCKERFILE:-apps/judge/Dockerfile}"
     MEMORY="${MEMORY:-1Gi}"
+    TIMEOUT="${TIMEOUT:-60}"
     ;;
   heavy)
-    SERVICE="${SERVICE:-merit-judge-heavy}"
+    SERVICE="${SERVICE:-$HEAVY_SERVICE}"
     DOCKERFILE="${DOCKERFILE:-apps/judge/Dockerfile.heavy}"
     MEMORY="${MEMORY:-2Gi}"
+    TIMEOUT="${TIMEOUT:-180}"
     ;;
   *)
     echo "TIER must be 'light' or 'heavy' (got: $TIER)" >&2
@@ -164,6 +177,7 @@ cmd_deploy() {
     --substitutions "_IMAGE=${image},_DOCKERFILE=${DOCKERFILE}"
 
   echo "==> Deploying to Cloud Run"
+  echo "    tier=$TIER service=$SERVICE memory=$MEMORY timeout=${TIMEOUT}s"
   gcloud run deploy "$SERVICE" \
     --image "$image" \
     --region "$REGION" \
@@ -173,7 +187,7 @@ cmd_deploy() {
     --concurrency 1 \
     --min-instances 0 \
     --max-instances 3 \
-    --timeout 60 \
+    --timeout "$TIMEOUT" \
     --cpu-boost \
     --port 8080 \
     --no-allow-unauthenticated
@@ -206,14 +220,60 @@ cmd_key() {
   echo
   echo "Key written to $key_path (gitignored)."
   echo "Copy it to the VPS and set these in the API environment:"
-  echo "  JUDGE_URL=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+  echo "  $(env_var_for_tier)=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
   echo "  GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json"
 }
 
 cmd_url() {
   require_project
   echo
-  echo "JUDGE_URL=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+  echo "${env_var_for_tier}=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+}
+
+# The API env var each tier is wired through (see judge_backend._judge_target_for).
+env_var_for_tier() {
+  if [[ "$TIER" == "heavy" ]]; then
+    echo "JUDGE_HEAVY_URL"
+  else
+    echo "JUDGE_URL"
+  fi
+}
+
+cmd_env() {
+  require_project
+  local pair name var url
+  for pair in "${LIGHT_SERVICE}:JUDGE_URL" "${HEAVY_SERVICE}:JUDGE_HEAVY_URL"; do
+    name="${pair%%:*}"
+    var="${pair##*:}"
+    url="$(gcloud run services describe "$name" --region "$REGION" \
+      --format='value(status.url)' 2>/dev/null || true)"
+    if [[ -n "$url" ]]; then
+      echo "${var}=${url}"
+    else
+      echo "# ${var}: ${name} is not deployed yet"
+    fi
+  done
+}
+
+cmd_plan() {
+  # No gcloud: this is the "what would happen" view, so it works before the
+  # project is configured and prints exactly the flags deploy would pass.
+  cat <<EOF
+tier          : $TIER
+service       : $SERVICE
+Dockerfile    : $DOCKERFILE
+image         : ${REGION}-docker.pkg.dev/<PROJECT>/${AR_REPO}/${SERVICE}:latest
+region        : $REGION
+memory        : $MEMORY
+request timeout: ${TIMEOUT}s
+runtime SA    : ${RUNTIME_SA}
+invoker SA    : ${INVOKER_SA}
+
+cloud run deploy $SERVICE \\
+  --memory $MEMORY --cpu 1 --concurrency 1 \\
+  --min-instances 0 --max-instances 3 --timeout $TIMEOUT --cpu-boost \\
+  --port 8080 --no-allow-unauthenticated
+EOF
 }
 
 cmd_logs() {
@@ -224,11 +284,13 @@ cmd_logs() {
 case "${1:-}" in
   bootstrap) cmd_bootstrap ;;
   deploy) cmd_deploy ;;
+  plan) cmd_plan ;;
+  env) cmd_env ;;
   key) cmd_key ;;
   url) cmd_url ;;
   logs) cmd_logs ;;
   *)
-    sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,32p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
     exit 1
     ;;
 esac

@@ -289,9 +289,15 @@ Set these in the **compose-root** `/home/ubuntu/merit/.env` (see section 1):
 
 ```ini
 JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
+JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
 GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
 JUDGE_TIMEOUT_SEC=60
 ```
+
+`JUDGE_HEAVY_URL` is the Java/C++ tier and is optional — but until it is set,
+compiled-language submissions are routed to the light service and rejected
+there. Raise `JUDGE_TIMEOUT_SEC` to at least the heavy service's timeout (180s)
+once that tier is live, or a compiling submission outlives the client.
 
 `GOOGLE_APPLICATION_CREDENTIALS` is the **in-container** path. Compose mounts
 `/home/ubuntu/merit/.judge/` read-only at `/run/secrets/`, so the key lives on

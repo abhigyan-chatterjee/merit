@@ -46,7 +46,13 @@ services:
       - GITHUB_REPO=${GITHUB_REPO:-abhigyan-chatterjee/merit}
       # Remote judge on Cloud Run. Leave JUDGE_URL empty to run the local
       # sandbox instead; setting it requires the service-account path below.
+      # JUDGE_HEAVY_URL is the Java/C++ tier. Without it, compiled languages are
+      # sent to the light service and rejected there, so set it before offering
+      # Java or C++ in the UI. Keep JUDGE_TIMEOUT_SEC at or above the heavy
+      # service's --timeout (180s), or a compiling submission outlives the
+      # client and surfaces as "could not be reached".
       - JUDGE_URL=${JUDGE_URL:-}
+      - JUDGE_HEAVY_URL=${JUDGE_HEAVY_URL:-}
       - JUDGE_TIMEOUT_SEC=${JUDGE_TIMEOUT_SEC:-60}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
     volumes:
