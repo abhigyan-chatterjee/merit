@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 #
-# Deploy the Merit judge (light tier: Python + JavaScript) to Cloud Run.
+# Deploy the Merit judge to Cloud Run.
 #
 # Usage:
-#   ./apps/judge/deploy.sh bootstrap   # one-time project setup (needs owner)
-#   ./apps/judge/deploy.sh deploy      # build + deploy the service
-#   ./apps/judge/deploy.sh key         # mint the VPS identity key
-#   ./apps/judge/deploy.sh url         # print the value for JUDGE_URL
-#   ./apps/judge/deploy.sh logs        # tail service logs
+#   ./apps/judge/deploy.sh bootstrap        # one-time project setup (needs owner)
+#   ./apps/judge/deploy.sh deploy           # build + deploy the light service
+#   TIER=heavy ./apps/judge/deploy.sh deploy  # build + deploy the Java/C++ service
+#   TIER=heavy ./apps/judge/deploy.sh url    # print the value for JUDGE_HEAVY_URL
+#   ./apps/judge/deploy.sh key              # mint the VPS identity key
+#   ./apps/judge/deploy.sh logs             # tail service logs
+#
+# Two tiers, because a compile toolchain is ~300 MB of cold start that only
+# Java and C++ should pay for:
+#   light (default) — Python + JavaScript, no toolchain.
+#   heavy           — adds JDK and g++, so a type error is a Compile Error.
+# Each tier is granted only to the invoker SA, and the API routes by language.
 #
 # Design notes:
 #   * min-instances=0 keeps the free tier: nothing is billed while idle.
@@ -20,8 +27,27 @@
 set -euo pipefail
 
 REGION="${REGION:-asia-south1}"          # Mumbai: closest to the Hyderabad VPS
-SERVICE="${SERVICE:-merit-judge-light}"
 AR_REPO="${AR_REPO:-merit}"
+
+# The tier selects the image and the memory it needs. javac and g++ want far
+# more headroom than an interpreter, so the heavy tier defaults to 2Gi.
+TIER="${TIER:-light}"
+case "$TIER" in
+  light)
+    SERVICE="${SERVICE:-merit-judge-light}"
+    DOCKERFILE="${DOCKERFILE:-apps/judge/Dockerfile}"
+    MEMORY="${MEMORY:-1Gi}"
+    ;;
+  heavy)
+    SERVICE="${SERVICE:-merit-judge-heavy}"
+    DOCKERFILE="${DOCKERFILE:-apps/judge/Dockerfile.heavy}"
+    MEMORY="${MEMORY:-2Gi}"
+    ;;
+  *)
+    echo "TIER must be 'light' or 'heavy' (got: $TIER)" >&2
+    exit 1
+    ;;
+esac
 RUNTIME_SA="${RUNTIME_SA:-merit-judge-runtime}"
 INVOKER_SA="${INVOKER_SA:-merit-judge-invoker}"
 
@@ -135,14 +161,14 @@ cmd_deploy() {
   # sandbox straight out of the API, so both share one implementation.
   gcloud builds submit "$REPO_ROOT" \
     --config "$REPO_ROOT/apps/judge/cloudbuild.yaml" \
-    --substitutions "_IMAGE=${image}"
+    --substitutions "_IMAGE=${image},_DOCKERFILE=${DOCKERFILE}"
 
   echo "==> Deploying to Cloud Run"
   gcloud run deploy "$SERVICE" \
     --image "$image" \
     --region "$REGION" \
     --service-account "${RUNTIME_SA}@${project}.iam.gserviceaccount.com" \
-    --memory 1Gi \
+    --memory "$MEMORY" \
     --cpu 1 \
     --concurrency 1 \
     --min-instances 0 \

@@ -99,7 +99,7 @@ def wired_to_judge(judge_service, monkeypatch):
     monkeypatch.setattr(settings, "judge_url", judge_service)
     monkeypatch.setattr(settings, "judge_timeout_sec", 30.0)
 
-    async def _stub_token() -> str:
+    async def _stub_token(audience: str) -> str:
         # Google identity is not under test here; its verification is covered
         # in test_judge_backend.py.
         return "test-identity-token"
@@ -205,13 +205,14 @@ async def test_response_shape_matches_the_client_contract(wired_to_judge):
 
 @pytest.mark.asyncio
 async def test_unsupported_language_is_rejected(wired_to_judge):
-    """Java is not supported yet. This asserts the boundary explicitly so that
-    an accidental half-wired language cannot start returning a false verdict."""
+    """An unknown language must be refused at the door, so a typo cannot start
+    returning a false verdict. The four supported languages are python,
+    javascript, java, and cpp."""
     response = httpx.post(
         f"{wired_to_judge}/run",
         json={
-            "language": "java",
-            "code": "class Main {}",
+            "language": "ruby",
+            "code": "def solve; end",
             "function_name": "solve",
             "test_cases": CASES,
             "time_limit_ms": 2000,

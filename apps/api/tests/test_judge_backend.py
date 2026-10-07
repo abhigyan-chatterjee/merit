@@ -72,7 +72,7 @@ async def test_unmintable_token_returns_clean_re(settings_snapshot, monkeypatch)
     settings_snapshot.google_application_credentials = "/nonexistent/key.json"
 
     # Force a cache miss so the refresh path actually runs.
-    judge_backend._cached_token = None
+    judge_backend._cached_tokens.clear()
 
     result = await judge_backend.execute(
         language="python",
@@ -93,7 +93,7 @@ async def test_unreachable_service_returns_clean_re(settings_snapshot, monkeypat
     settings_snapshot.judge_url = "http://127.0.0.1:9"  # nothing listens here
     settings_snapshot.judge_timeout_sec = 2.0
 
-    async def _fake_token() -> str:
+    async def _fake_token(audience: str) -> str:
         return "fake-identity-token"
 
     monkeypatch.setattr(judge_backend, "_mint_identity_token", _fake_token)
@@ -171,3 +171,142 @@ def test_minting_reaches_the_network_instead_of_failing_to_import(tmp_path):
         "the token-minting path is missing a dependency; in production this "
         f"fails every submission. Got: {exc.value!r}"
     )
+
+
+# --- Language routing between the two judge services -------------------------
+
+
+class _CapturingResponse:
+    status_code = 200
+    text = ""
+
+    def json(self) -> dict:
+        return {
+            "verdict": "AC",
+            "runtime_ms": 1.0,
+            "test_results": [],
+            "compile_output": "",
+        }
+
+
+class _CapturingClient:
+    """Stands in for httpx.AsyncClient and records where the request went."""
+
+    posted_urls: list[str] = []
+
+    def __init__(self, *args, **kwargs) -> None:
+        pass
+
+    async def __aenter__(self) -> "_CapturingClient":
+        return self
+
+    async def __aexit__(self, *exc) -> bool:
+        return False
+
+    async def post(self, url: str, **kwargs) -> _CapturingResponse:
+        _CapturingClient.posted_urls.append(url)
+        return _CapturingResponse()
+
+
+@pytest.fixture
+def routing(settings_snapshot, monkeypatch):
+    """Both services configured, with minting and the HTTP call stubbed."""
+
+    async def _fake_token(audience: str) -> str:
+        return "fake-token"
+
+    _CapturingClient.posted_urls = []
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", _fake_token)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", _CapturingClient)
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+    settings_snapshot.judge_url = "https://judge-light.run.app"
+    settings_snapshot.judge_heavy_url = "https://judge-heavy.run.app"
+    return _CapturingClient
+
+
+async def _submit(language: str):
+    return await judge_backend.execute(
+        language=language,
+        code="x",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+
+
+@pytest.mark.asyncio
+async def test_compiled_languages_use_the_heavy_service(routing):
+    for language in ("java", "cpp"):
+        routing.posted_urls.clear()
+        await _submit(language)
+        assert routing.posted_urls == ["https://judge-heavy.run.app/run"]
+
+
+@pytest.mark.asyncio
+async def test_interpreted_languages_use_the_light_service(routing):
+    for language in ("python", "javascript"):
+        routing.posted_urls.clear()
+        await _submit(language)
+        assert routing.posted_urls == ["https://judge-light.run.app/run"]
+
+
+@pytest.mark.asyncio
+async def test_a_single_configured_url_serves_every_language(
+    routing, settings_snapshot
+):
+    """One service is a supported deployment: it is used for all languages."""
+    settings_snapshot.judge_heavy_url = ""
+    await _submit("java")
+    assert routing.posted_urls == ["https://judge-light.run.app/run"]
+
+    routing.posted_urls.clear()
+    settings_snapshot.judge_url = ""
+    settings_snapshot.judge_heavy_url = "https://judge-heavy.run.app"
+    await _submit("python")
+    assert routing.posted_urls == ["https://judge-heavy.run.app/run"]
+
+
+@pytest.mark.asyncio
+async def test_targets_read_settings_at_call_time(settings_snapshot):
+    """The router must not cache a URL captured at import time."""
+    settings_snapshot.judge_url = "https://a.run.app"
+    settings_snapshot.judge_heavy_url = ""
+    assert judge_backend._judge_target_for("python") == "https://a.run.app"
+    settings_snapshot.judge_url = "https://b.run.app"
+    assert judge_backend._judge_target_for("python") == "https://b.run.app"
+
+
+@pytest.mark.asyncio
+async def test_tokens_are_minted_per_audience(settings_snapshot, monkeypatch):
+    """Two services are two token audiences: neither may reuse the other's."""
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+    settings_snapshot.judge_url = "https://judge-light.run.app"
+    settings_snapshot.judge_heavy_url = "https://judge-heavy.run.app"
+    judge_backend._cached_tokens.clear()
+
+    seen: list[str] = []
+
+    def _refresh(credentials_path: str, audience: str, now: float):
+        seen.append(audience)
+        return f"token-for-{audience}", now + 3600
+
+    monkeypatch.setattr(judge_backend, "_refresh_identity_token", _refresh)
+
+    light = await judge_backend._mint_identity_token("https://judge-light.run.app")
+    heavy = await judge_backend._mint_identity_token("https://judge-heavy.run.app")
+
+    assert light == "token-for-https://judge-light.run.app"
+    assert heavy == "token-for-https://judge-heavy.run.app"
+    assert len(seen) == 2, "each audience must mint its own token"
+
+    # A second call per audience is served from cache, not reminted.
+    await judge_backend._mint_identity_token("https://judge-light.run.app")
+    assert len(seen) == 2
+
+
+def test_heavy_judge_url_without_credentials_refuses_to_start():
+    from pydantic import ValidationError
+
+    from app.config import Settings
+
+    with pytest.raises((RuntimeError, ValidationError)):
+        Settings(secret_key="x" * 32, judge_heavy_url="https://judge-heavy.run.app")

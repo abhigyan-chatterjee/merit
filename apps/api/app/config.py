@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     # Remote judge (Cloud Run). Empty in dev/CI → submissions run in the local
     # sandbox instead, so nothing here needs cloud credentials to develop.
     judge_url: str = ""
+    # The Java/C++ judge. Kept as a separate service from judge_url so the
+    # Python/JavaScript path does not pay for a compile toolchain it never uses.
+    judge_heavy_url: str = ""
     # Cloud Run cold starts are slow, especially on a heavier image, so this is
     # far above the judge's own per-submission time limit.
     judge_timeout_sec: float = 60.0
@@ -97,13 +100,18 @@ class Settings(BaseSettings):
     def validate_judge_config(self) -> "Settings":
         """A remote judge without credentials is a broken deploy, not a runtime
         error — catch it at startup instead of on the first submission."""
-        if self.judge_url and not self.google_application_credentials.strip():
+        for env_name, url in (
+            ("JUDGE_URL", self.judge_url),
+            ("JUDGE_HEAVY_URL", self.judge_heavy_url),
+        ):
+            if not url or self.google_application_credentials.strip():
+                continue
             raise RuntimeError(
-                "CRITICAL CONFIGURATION ERROR: JUDGE_URL is set but "
+                f"CRITICAL CONFIGURATION ERROR: {env_name} is set but "
                 "GOOGLE_APPLICATION_CREDENTIALS is empty, so identity tokens for the "
                 "judge service cannot be minted.\n"
                 "Set GOOGLE_APPLICATION_CREDENTIALS to the path of the service-account "
-                "JSON, or unset JUDGE_URL to run the local sandbox."
+                f"JSON, or unset {env_name} to run the local sandbox."
             )
         return self
 

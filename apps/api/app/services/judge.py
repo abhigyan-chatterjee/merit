@@ -49,14 +49,20 @@ _RLIMIT_FSIZE_BYTES = 8 * 1024 * 1024
 
 
 def _address_space_limit_for(binary: str) -> int:
-    """RLIMIT_AS for this interpreter, or 0 to leave it alone.
+    """RLIMIT_AS for this binary, or 0 to leave it alone.
 
     Node cannot run under an address-space cap: V8 reserves a multi-gigabyte
     virtual cage for pointer compression that is never committed, so RLIMIT_AS
     makes thread creation fail at startup. Its heap is bounded through
     NODE_OPTIONS instead, and the container cgroup remains the backstop.
+
+    The JVM has the same shape for a different reason: it reserves its max
+    heap, metaspace, and code cache as virtual address space up front, so a
+    512 MB RLIMIT_AS kills it before `main` runs. Java is bounded with -Xmx
+    instead (see _run_compiled).
     """
-    if "node" in Path(binary).name.lower():
+    name = Path(binary).name.lower()
+    if "node" in name or "java" in name:
         return 0
     return _RLIMIT_AS_BYTES
 
@@ -151,6 +157,7 @@ async def run_in_sandbox(
     cmd: list[str],
     cwd: str,
     timeout_sec: float = 4.0,
+    cpu_sec: int = _RLIMIT_CPU_SEC,
 ) -> tuple[int, str, str, bool]:
     """Runs command with strict timeout, scrubbed env, and captured output.
 
@@ -186,7 +193,7 @@ async def run_in_sandbox(
         sys.executable,
         str(launcher),
         str(_address_space_limit_for(cmd[0])),
-        str(_RLIMIT_CPU_SEC),
+        str(cpu_sec),
         str(_RLIMIT_FSIZE_BYTES),
         *cmd,
     ]
@@ -254,12 +261,584 @@ async def _kill_tree(proc: asyncio.subprocess.Process) -> None:
         await asyncio.wait_for(proc.wait(), timeout=5.0)
 
 
+# Compilation is far heavier than a single test run, so it gets its own budget.
+_COMPILE_TIMEOUT_SEC = 90.0
+_COMPILE_CPU_SEC = 30
+
+
+def _summarise_compile_error(stdout: str, stderr: str) -> str:
+    """First handful of compiler diagnostics, which is where the cause is."""
+    text = (stderr or stdout or "").strip()
+    if not text:
+        return "Compilation failed."
+    lines = [line for line in text.splitlines() if line.strip()]
+    return "\n".join(lines[:20])
+
+
+async def _run_compiled(
+    language: str,
+    code: str,
+    function_name: str,
+    test_cases: list[dict[str, Any]],
+    signature: dict[str, Any] | None,
+    tmp_path: Path,
+    time_limit_ms: int,
+    timeout_sec: float,
+) -> JudgeResult:
+    """Java and C++: compile first, then run.
+
+    The compile step is the point of these languages. A solution whose types
+    disagree with the problem's signature does not build, so it comes back as
+    a Compile Error with the compiler's own message — never a Wrong Answer.
+    """
+    if not signature:
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                f"{language} needs a recorded signature (parameter and return types) "
+                "and this problem does not have one yet."
+            ),
+        )
+
+    params = list(signature.get("params") or [])
+    return_type = signature.get("returnType")
+
+    try:
+        if language == "java":
+            solution_src, driver_src = java_sources(
+                code, function_name, params, return_type, test_cases
+            )
+            (tmp_path / "Solution.java").write_text(solution_src, encoding="utf-8")
+            (tmp_path / "Main.java").write_text(driver_src, encoding="utf-8")
+            compiler = shutil.which("javac")
+            if not compiler:
+                return JudgeResult(
+                    verdict="CE",
+                    runtime_ms=0,
+                    test_results=[],
+                    compile_output="javac is not installed on this runner.",
+                )
+            compile_cmd = [compiler, "-encoding", "UTF-8", "Main.java", "Solution.java"]
+            # -Xmx bounds the heap because RLIMIT_AS cannot (see
+            # _address_space_limit_for); -Xss keeps deep recursion alive.
+            run_cmd = [
+                shutil.which("java") or "java",
+                "-Xmx256m",
+                "-Xss16m",
+                "-XX:+UseSerialGC",
+                "-cp",
+                str(tmp_path),
+                "Main",
+            ]
+        else:
+            source = cpp_source(code, function_name, params, return_type, test_cases)
+            (tmp_path / "solution.cpp").write_text(source, encoding="utf-8")
+            compiler = shutil.which("g++")
+            if not compiler:
+                return JudgeResult(
+                    verdict="CE",
+                    runtime_ms=0,
+                    test_results=[],
+                    compile_output="g++ is not installed on this runner.",
+                )
+            compile_cmd = [compiler, "-std=c++17", "-O2", "-o", "solution", "solution.cpp"]
+            run_cmd = [str(tmp_path / "solution")]
+    except UnsupportedTypeError as err:
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                f"This problem cannot be generated for {language} yet: {err}"
+            ),
+        )
+
+    build_ret, build_out, build_err, build_timed_out = await run_in_sandbox(
+        compile_cmd,
+        cwd=str(tmp_path),
+        timeout_sec=_COMPILE_TIMEOUT_SEC,
+        cpu_sec=_COMPILE_CPU_SEC,
+    )
+    if build_timed_out:
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="Compilation timed out.",
+        )
+    if build_ret != 0:
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=_summarise_compile_error(build_out, build_err),
+        )
+
+    code_ret, stdout, stderr, timed_out = await run_in_sandbox(
+        run_cmd, cwd=str(tmp_path), timeout_sec=timeout_sec
+    )
+
+    if timed_out:
+        return JudgeResult(
+            verdict="TLE",
+            runtime_ms=time_limit_ms,
+            test_results=[],
+            compile_output="Time Limit Exceeded",
+        )
+
+    if code_ret != 0:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=stderr or stdout,
+        )
+
+    try:
+        parsed = json.loads(stdout.strip())
+        results = parsed["results"]
+        total_runtime = parsed.get("totalRuntime", 0.0)
+        all_passed = all(r["passed"] for r in results)
+        return JudgeResult(
+            verdict="AC" if all_passed else "WA",
+            runtime_ms=total_runtime,
+            test_results=results,
+        )
+    except Exception as err:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=f"Output parsing error: {err}\nOutput was: {stdout}",
+        )
+
+
+
+
+# ---------------------------------------------------------------------------
+# Java and C++ harness generation
+#
+# Kept in this file rather than a sibling module: judge.py is copied into the
+# judge image on its own as sandbox.py, so anything it imports would have to
+# be copied and imported a second way too.
+# ---------------------------------------------------------------------------
+# signatures.json type -> per-language spellings.
+_TYPES: dict[str, dict[str, str]] = {
+    "int": {"java": "int", "cpp": "int"},
+    "double": {"java": "double", "cpp": "double"},
+    "boolean": {"java": "boolean", "cpp": "bool"},
+    "String": {"java": "String", "cpp": "std::string"},
+    "List<Integer>": {"java": "int[]", "cpp": "std::vector<int>"},
+    "List<String>": {"java": "String[]", "cpp": "std::vector<std::string>"},
+    "List<List<Integer>>": {"java": "int[][]", "cpp": "std::vector<std::vector<int>>"},
+    "List<List<String>>": {"java": "String[][]", "cpp": "std::vector<std::vector<std::string>>"},
+}
+
+SUPPORTED_TYPES = set(_TYPES)
+
+# Java serializer method names, one per type.
+_JAVA_SER = {
+    "int": "serInt",
+    "double": "serDbl",
+    "boolean": "serBool",
+    "String": "serStr",
+    "List<Integer>": "serInts",
+    "List<String>": "serStrs",
+    "List<List<Integer>>": "serIntGrid",
+    "List<List<String>>": "serStrGrid",
+}
+
+# C++ serializer function names, one per type.
+_CPP_SER = {
+    "int": "serInt",
+    "double": "serDbl",
+    "boolean": "serBool",
+    "String": "serStr",
+    "List<Integer>": "serInts",
+    "List<String>": "serStrs",
+    "List<List<Integer>>": "serIntGrid",
+    "List<List<String>>": "serStrGrid",
+}
+
+
+class UnsupportedTypeError(Exception):
+    """The signature declares something the harness cannot emit yet."""
+
+
+def _check(type_name: str) -> str:
+    if type_name not in _TYPES:
+        raise UnsupportedTypeError(type_name)
+    return type_name
+
+
+def _has_null(value: list[Any]) -> bool:
+    return any(item is None for item in value)
+
+
+# --- Java -------------------------------------------------------------------
+
+
+def _java_literal(type_name: str, value: Any) -> str:
+    _check(type_name)
+    if type_name == "int":
+        return str(int(value))
+    if type_name == "double":
+        return repr(float(value))
+    if type_name == "boolean":
+        return "true" if value else "false"
+    if type_name == "String":
+        return json.dumps(str(value))
+    if type_name == "List<Integer>":
+        # A null inside the list means a tree/linked-list encoding, which is a
+        # node type — refuse it loudly rather than emit code that cannot compile.
+        if _has_null(value):
+            raise UnsupportedTypeError("List<Integer> containing null (node encoding)")
+        return "new int[]{" + ", ".join(str(int(x)) for x in value) + "}"
+    if type_name == "List<String>":
+        return "new String[]{" + ", ".join(json.dumps(str(x)) for x in value) + "}"
+    if type_name == "List<List<Integer>>":
+        rows = ", ".join("new int[]{" + ", ".join(str(int(x)) for x in row) + "}" for row in value)
+        return f"new int[][]{{{rows}}}"
+    if type_name == "List<List<String>>":
+        rows = ", ".join(
+            "new String[]{" + ", ".join(json.dumps(str(x)) for x in row) + "}"
+            for row in value
+        )
+        return f"new String[][]{{{rows}}}"
+    raise UnsupportedTypeError(type_name)
+
+
+_JAVA_HELPERS = """
+  static String esc(String s) {
+    StringBuilder b = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      switch (c) {
+        case '"': b.append("\\\\\\""); break;
+        case '\\\\': b.append("\\\\\\\\"); break;
+        case '\\n': b.append("\\\\n"); break;
+        case '\\r': b.append("\\\\r"); break;
+        case '\\t': b.append("\\\\t"); break;
+        default:
+          if (c < 0x20) b.append(String.format("\\\\u%04x", (int) c));
+          else b.append(c);
+      }
+    }
+    return b.toString();
+  }
+  static String quoted(String s) { return "\\"" + esc(s) + "\\""; }
+  static String serInt(int v) { return String.valueOf(v); }
+  static String serDbl(double v) { return Double.toString(v); }
+  static String serBool(boolean v) { return v ? "true" : "false"; }
+  static String serStr(String v) { return v == null ? "null" : quoted(v); }
+  static String serInts(int[] a) {
+    StringBuilder b = new StringBuilder("[");
+    for (int i = 0; i < a.length; i++) { if (i > 0) b.append(","); b.append(a[i]); }
+    return b.append("]").toString();
+  }
+  static String serStrs(String[] a) {
+    StringBuilder b = new StringBuilder("[");
+    for (int i = 0; i < a.length; i++) { if (i > 0) b.append(","); b.append(serStr(a[i])); }
+    return b.append("]").toString();
+  }
+  static String serIntGrid(int[][] a) {
+    StringBuilder b = new StringBuilder("[");
+    for (int i = 0; i < a.length; i++) { if (i > 0) b.append(","); b.append(serInts(a[i])); }
+    return b.append("]").toString();
+  }
+  static String serStrGrid(String[][] a) {
+    StringBuilder b = new StringBuilder("[");
+    for (int i = 0; i < a.length; i++) { if (i > 0) b.append(","); b.append(serStrs(a[i])); }
+    return b.append("]").toString();
+  }
+  static String serRuntime(double v) {
+    return String.format(java.util.Locale.ROOT, "%.3f", v);
+  }
+"""
+
+
+def _check_arity(params: list[str], args: list[Any]) -> None:
+    """A signature that disagrees with the test data must not generate code.
+
+    Signatures are authored separately from the test cases, so a drift between
+    the two is a real failure mode. Without this the generated call would
+    silently drop arguments and grade the result as if it were correct.
+    """
+    if len(args) != len(params):
+        raise UnsupportedTypeError(
+            f"test case supplies {len(args)} argument(s) but the signature "
+            f"declares {len(params)}"
+        )
+
+
+def java_sources(
+    code: str,
+    function_name: str,
+    params: list[str],
+    return_type: str,
+    test_cases: list[dict[str, Any]],
+) -> tuple[str, str]:
+    """Returns (solution_source, driver_source). The driver is Main.java."""
+    _check(return_type)
+    for param in params:
+        _check(param)
+
+    # Learners are not expected to write imports, and a duplicate import is
+    # legal in Java, so the common ones are prepended unconditionally.
+    solution = "import java.util.*;\nimport java.io.*;\n\n" + code
+
+    java_return = _TYPES[return_type]["java"]
+    serialize_return = _JAVA_SER[return_type]
+
+    blocks: list[str] = []
+    for index, tc in enumerate(test_cases):
+        args = tc.get("input") or []
+        label = tc.get("label") or f"Case {index + 1}"
+        _check_arity(params, args)
+
+        declarations = []
+        call_args = []
+        for position, (type_name, value) in enumerate(zip(params, args, strict=True)):
+            var = f"arg{position}"
+            declarations.append(
+                f"      {_TYPES[type_name]['java']} {var} = {_java_literal(type_name, value)};"
+            )
+            call_args.append(var)
+
+        if params:
+            serialised = ' + "," + '.join(
+                f"{_JAVA_SER[p]}(arg{i})" for i, p in enumerate(params)
+            )
+            args_json = f'"[" + {serialised} + "]"'
+        else:
+            args_json = '"[]"'
+
+        blocks.append(
+            f"""    {{
+{chr(10).join(declarations)}
+      {java_return} expected = {_java_literal(return_type, tc.get("expected"))};
+      long started = System.nanoTime();
+      String actualJson = "null";
+      String error = null;
+      boolean passed = false;
+      try {{
+        {java_return} actual = sol.{function_name}({", ".join(call_args)});
+        actualJson = {serialize_return}(actual);
+        passed = actualJson.equals({serialize_return}(expected));
+      }} catch (Throwable thrown) {{
+        error = thrown.getClass().getSimpleName() + ": " + String.valueOf(thrown.getMessage());
+      }}
+      double runtimeMs = (System.nanoTime() - started) / 1e6;
+      total += runtimeMs;
+      if (caseIndex++ > 0) sb.append(",");
+      sb.append("{{\\"label\\":").append(quoted({json.dumps(label)}))
+        .append(",\\"passed\\":").append(passed)
+        .append(",\\"input\\":").append({args_json})
+        .append(",\\"expected\\":").append({serialize_return}(expected))
+        .append(",\\"actual\\":").append(actualJson)
+        .append(",\\"runtime_ms\\":").append(serRuntime(runtimeMs))
+        .append(",\\"error\\":").append(error == null ? "null" : quoted(error))
+        .append("}}");
+    }}"""
+        )
+
+    driver = f"""import java.util.*;
+
+public class Main {{
+{_JAVA_HELPERS}
+  public static void main(String[] args) {{
+    Solution sol = new Solution();
+    StringBuilder sb = new StringBuilder("{{\\"results\\":[");
+    double total = 0.0;
+    int caseIndex = 0;
+{chr(10).join(blocks)}
+    sb.append("],\\"totalRuntime\\":").append(serRuntime(total)).append("}}");
+    System.out.println(sb);
+  }}
+}}
+"""
+    return solution, driver
+
+
+# --- C++ --------------------------------------------------------------------
+
+
+def _cpp_literal(type_name: str, value: Any) -> str:
+    _check(type_name)
+    if type_name == "int":
+        return str(int(value))
+    if type_name == "double":
+        return repr(float(value))
+    if type_name == "boolean":
+        return "true" if value else "false"
+    if type_name == "String":
+        return json.dumps(str(value))
+    if type_name == "List<Integer>":
+        if _has_null(value):
+            raise UnsupportedTypeError("List<Integer> containing null (node encoding)")
+        return "std::vector<int>{" + ", ".join(str(int(x)) for x in value) + "}"
+    if type_name == "List<String>":
+        return "std::vector<std::string>{" + ", ".join(json.dumps(str(x)) for x in value) + "}"
+    if type_name == "List<List<Integer>>":
+        rows = ", ".join(
+            "std::vector<int>{" + ", ".join(str(int(x)) for x in row) + "}" for row in value
+        )
+        return f"std::vector<std::vector<int>>{{{rows}}}"
+    if type_name == "List<List<String>>":
+        rows = ", ".join(
+            "std::vector<std::string>{" + ", ".join(json.dumps(str(x)) for x in row) + "}"
+            for row in value
+        )
+        return f"std::vector<std::vector<std::string>>{{{rows}}}"
+    raise UnsupportedTypeError(type_name)
+
+
+_CPP_HELPERS = """
+static std::string esc(const std::string& s) {
+  std::string out;
+  for (unsigned char c : s) {
+    switch (c) {
+      case '"': out += "\\\\\\""; break;
+      case '\\\\': out += "\\\\\\\\"; break;
+      case '\\n': out += "\\\\n"; break;
+      case '\\r': out += "\\\\r"; break;
+      case '\\t': out += "\\\\t"; break;
+      default:
+        if (c < 0x20) { char buf[8]; std::snprintf(buf, sizeof(buf), "\\\\u%04x", c); out += buf; }
+        else out += static_cast<char>(c);
+    }
+  }
+  return out;
+}
+static std::string jsonStr(const std::string& s) { return "\\"" + esc(s) + "\\""; }
+static std::string serInt(int v) { return std::to_string(v); }
+static std::string serDbl(double v) {
+  std::ostringstream o;
+  o << std::setprecision(17) << v;
+  return o.str();
+}
+static std::string serBool(bool v) { return v ? "true" : "false"; }
+static std::string serStr(const std::string& v) { return jsonStr(v); }
+static std::string serInts(const std::vector<int>& a) {
+  std::string out = "[";
+  for (size_t i = 0; i < a.size(); i++) { if (i) out += ","; out += std::to_string(a[i]); }
+  return out + "]";
+}
+static std::string serStrs(const std::vector<std::string>& a) {
+  std::string out = "[";
+  for (size_t i = 0; i < a.size(); i++) { if (i) out += ","; out += jsonStr(a[i]); }
+  return out + "]";
+}
+static std::string serIntGrid(const std::vector<std::vector<int>>& a) {
+  std::string out = "[";
+  for (size_t i = 0; i < a.size(); i++) { if (i) out += ","; out += serInts(a[i]); }
+  return out + "]";
+}
+static std::string serStrGrid(const std::vector<std::vector<std::string>>& a) {
+  std::string out = "[";
+  for (size_t i = 0; i < a.size(); i++) { if (i) out += ","; out += serStrs(a[i]); }
+  return out + "]";
+}
+"""
+
+
+def cpp_source(
+    code: str,
+    function_name: str,
+    params: list[str],
+    return_type: str,
+    test_cases: list[dict[str, Any]],
+) -> str:
+    """Returns one translation unit: includes, user code, helpers, driver."""
+    _check(return_type)
+    for param in params:
+        _check(param)
+
+    cpp_return = _TYPES[return_type]["cpp"]
+    serialize_return = _CPP_SER[return_type]
+
+    blocks: list[str] = []
+    for index, tc in enumerate(test_cases):
+        args = tc.get("input") or []
+        label = tc.get("label") or f"Case {index + 1}"
+        _check_arity(params, args)
+
+        declarations = []
+        call_args = []
+        for position, (type_name, value) in enumerate(zip(params, args, strict=True)):
+            var = f"arg{position}"
+            declarations.append(
+                f"    {_TYPES[type_name]['cpp']} {var} = {_cpp_literal(type_name, value)};"
+            )
+            call_args.append(var)
+
+        if params:
+            args_json = " + \",\" + ".join(f"{_CPP_SER[p]}(arg{i})" for i, p in enumerate(params))
+            args_json = f'"[" + {args_json} + "]"'
+        else:
+            args_json = '"[]"'
+
+        blocks.append(
+            f"""  {{
+{chr(10).join(declarations)}
+    {cpp_return} expected = {_cpp_literal(return_type, tc.get("expected"))};
+    auto started = std::chrono::steady_clock::now();
+    std::string actualJson = "null";
+    std::string error;
+    bool passed = false;
+    try {{
+      {cpp_return} actual = sol.{function_name}({", ".join(call_args)});
+      actualJson = {serialize_return}(actual);
+      passed = (actualJson == {serialize_return}(expected));
+    }} catch (const std::exception& thrown) {{
+      error = thrown.what();
+    }} catch (...) {{
+      error = "unknown error";
+    }}
+    double runtimeMs = std::chrono::duration<double, std::milli>(
+        std::chrono::steady_clock::now() - started).count();
+    totalRuntime += runtimeMs;
+    if (caseIndex++ > 0) sb += ",";
+    sb += "{{\\"label\\":" + jsonStr({json.dumps(label)})
+        + ",\\"passed\\":" + std::string(passed ? "true" : "false")
+        + ",\\"input\\":" + {args_json}
+        + ",\\"expected\\":" + {serialize_return}(expected)
+        + ",\\"actual\\":" + actualJson
+        + ",\\"runtime_ms\\":" + std::to_string(runtimeMs)
+        + ",\\"error\\":" + (error.empty() ? std::string("null") : jsonStr(error))
+        + "}}";
+  }}"""
+        )
+
+    return f"""#include <bits/stdc++.h>
+using namespace std;
+
+{code}
+
+{_CPP_HELPERS}
+
+int main() {{
+  Solution sol;
+  string sb = "{{\\"results\\":[";
+  int caseIndex = 0;
+  double totalRuntime = 0.0;
+{chr(10).join(blocks)}
+  sb += "],\\"totalRuntime\\":" + std::to_string(totalRuntime) + "}}";
+  cout << sb << endl;
+  return 0;
+}}
+"""
+
+
 async def execute_code(
     language: str,
     code: str,
     function_name: str,
     test_cases: list[dict[str, Any]],
     time_limit_ms: int = 2000,
+    signature: dict[str, Any] | None = None,
 ) -> JudgeResult:
     """Executes code against test cases in an isolated sandbox."""
     if len(code.encode("utf-8")) > 64 * 1024:
@@ -491,6 +1070,18 @@ print(json.dumps({{'results': results, 'totalRuntime': total_runtime}}))
                     test_results=[],
                     compile_output=f"Output parsing error: {err}\nOutput was: {stdout}",
                 )
+
+        elif language in ("java", "cpp"):
+            return await _run_compiled(
+                language=language,
+                code=code,
+                function_name=function_name,
+                test_cases=test_cases,
+                signature=signature,
+                tmp_path=tmp_path,
+                time_limit_ms=time_limit_ms,
+                timeout_sec=timeout_sec,
+            )
 
         else:
             return JudgeResult(

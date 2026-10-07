@@ -18,7 +18,7 @@ import app.models.submission  # noqa: E402, F401
 import app.models.user  # noqa: E402, F401
 from app.db import Base, get_db  # noqa: E402
 from app.main import app as fastapi_app  # noqa: E402
-from app.seed import _resolve_content_dir as _content_dir  # noqa: E402
+from app.seed import resolve_content_dir as _content_dir  # noqa: E402
 
 app = fastapi_app
 

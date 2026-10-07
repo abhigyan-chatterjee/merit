@@ -9,7 +9,7 @@ from sqlalchemy import select
 from app.db import SessionLocal
 from app.main import app
 from app.models.content import Problem
-from app.seed import _resolve_content_dir, seed_all
+from app.seed import resolve_content_dir, seed_all
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -37,7 +37,7 @@ def test_list_problems_and_filter():
     assert resp.status_code == 200
     problems = resp.json()
 
-    problems_dir = _resolve_content_dir("problems")
+    problems_dir = resolve_content_dir("problems")
     verified_files_count = 0
     for file_path in problems_dir.glob("*.json"):
         with open(file_path, encoding="utf-8") as f:

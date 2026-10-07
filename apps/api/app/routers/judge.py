@@ -18,6 +18,7 @@ from app.schemas.judge import (
 )
 from app.security import get_current_user, get_optional_current_user
 from app.services.judge_backend import execute as execute_code
+from app.services.signatures import get_signature
 from app.services.streak import record_activity
 
 router = APIRouter(prefix="/api/v1/judge", tags=["Judge"])
@@ -106,6 +107,9 @@ async def run_samples(
         function_name=problem.function_name,
         test_cases=cases,
         time_limit_ms=problem.time_limit_ms,
+        # Compiled languages need the recorded types to generate their
+        # harness; the interpreted languages ignore it.
+        signature=get_signature(problem.slug),
     )
 
     return JudgeRunResponse(
@@ -156,6 +160,9 @@ async def submit_solution(
         function_name=problem.function_name,
         test_cases=cases,
         time_limit_ms=problem.time_limit_ms,
+        # Compiled languages need the recorded types to generate their
+        # harness; the interpreted languages ignore it.
+        signature=get_signature(problem.slug),
     )
 
     now_str = utcnow_iso()

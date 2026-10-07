@@ -26,15 +26,19 @@ merit.nullbit.in → Caddy → merit-web (nginx)
                                  │  JUDGE_URL + Google identity token
                                  ▼
                     Cloud Run: merit-judge-light   (python + javascript)
-                    Cloud Run: merit-judge-heavy   (java + c++, later)
+                    Cloud Run: merit-judge-heavy   (java + c++)
 ```
 
 - **`judge-light`** is a straight port of the existing judge: Python and
   JavaScript, same JSON contract, no behaviour change.
-- **`judge-heavy`** is planned for Java and C++. It is a separate service so
-  the heavy image's cold start is only paid by Java/C++ users.
-- When `JUDGE_URL` is **unset**, the API runs the local sandbox exactly as
-  before. Local development, CI, and the test suite need no cloud setup.
+- **`judge-heavy`** serves Java and C++. It is a separate service so the
+  compile toolchain's cold start is only paid by Java/C++ users: the same
+  `main.py` and the same sandbox, with a Dockerfile that adds JDK and g++.
+- The API **routes by language**: Java and C++ to `JUDGE_HEAVY_URL`, everything
+  else to `JUDGE_URL`. Either URL is a valid fallback for the other, so a
+  single-service deployment still works.
+- When both are **unset**, the API runs the local sandbox exactly as before.
+  Local development, CI, and the test suite need no cloud setup.
 
 ### Cost shape (free tier, `min-instances=0`)
 
@@ -141,8 +145,15 @@ service accounts:
 ## 3. Deploy
 
 ```bash
-./apps/judge/deploy.sh deploy
+./apps/judge/deploy.sh deploy           # light: python + javascript
+TIER=heavy ./apps/judge/deploy.sh deploy   # heavy: java + c++
 ```
+
+The tier selects the image and the memory it needs. The heavy tier defaults to
+`2Gi` rather than `1Gi` because `javac` and `g++` want far more headroom than an
+interpreter; override with `MEMORY=` if you know better. Both services share the
+runtime and invoker service accounts — the invoker is granted
+`roles/run.invoker` on each service it may call.
 
 Builds via Cloud Build (context is the repo root, because the Dockerfile copies
 the sandbox out of the API so both paths share one implementation), then
@@ -181,14 +192,19 @@ an exported env file, never committed:
 
 ```ini
 JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
+JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
 GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
 JUDGE_TIMEOUT_SEC=60
 ```
 
+`JUDGE_HEAVY_URL` is optional: with only `JUDGE_URL` set, Java and C++ are sent
+to the light service and come back as a clear Compile Error ("javac is not
+installed on this runner") rather than failing obscurely.
+
 `docker-compose.yml` mounts `.judge/` read-only at `/run/secrets`, so the key is
 never writable from inside the container.
 
-Startup validation refuses to boot when `JUDGE_URL` is set without
+Startup validation refuses to boot when either judge URL is set without
 `GOOGLE_APPLICATION_CREDENTIALS`, so a half-configured deploy fails loudly
 instead of failing on the first submission.
 
@@ -223,26 +239,39 @@ Server-side confirmation:
 
 ## 7. Rollback
 
-Unset `JUDGE_URL` and restart the API. Submissions immediately run in the local
-sandbox again — the code path never left. No data migration, no state to undo.
+Unset `JUDGE_URL` (and `JUDGE_HEAVY_URL`) and restart the API. Submissions
+immediately run in the local sandbox again — the code path never left. No data
+migration, no state to undo. Each tier can also be rolled back on its own: the
+service not mentioned in the environment is simply not used.
 
-## Adding Java (next)
+## Java and C++ — what shipped
 
-Java lands in `judge-heavy`, not here, because the JDK roughly triples the image
-and would slow every Python submission's cold start.
+Both compile the submission before running it, which is the point: a solution
+whose types disagree with the problem's signature does not build, so it comes
+back as a **Compile Error carrying the compiler's message** rather than a Wrong
+Answer. That is the lesson "selecting the proper type of data matters".
 
-The work is:
+- **Harnesses** live with the other languages in
+  `apps/api/app/services/judge.py` (`java_sources`, `cpp_source`). They generate
+  typed source from the problem's recorded signature plus the test data: input
+  values become typed literals, results are serialised and compared exactly as
+  the interpreted languages do.
+- **Signatures** come from `content/signatures.json`, read through
+  `app/services/signatures.py` and gated in CI by
+  `content/validators/verify_signatures.py`. A problem with no signature cannot
+  be generated for a compiled language and returns a clear CE.
+- **Budgets**: compilation gets its own CPU and wall-clock allowance (30s / 90s)
+  separate from the per-submission run limit, since `javac` alone can take
+  seconds. Java's heap is bounded with `-Xmx256m` because `RLIMIT_AS` would kill
+  the JVM before `main` runs.
+- **Node-encoded problems are refused**, not mis-generated: a `List<Integer>`
+  that contains `null` is a linked list or tree in disguise, and the harness says
+  so instead of emitting broken code.
 
-1. A Java harness in `apps/api/app/services/judge.py` alongside the existing
-   Python and JavaScript ones: `javac` the submission plus a generated `Main.java`,
-   then run it and parse the same JSON envelope.
-2. Careful numeric parity with the existing exact-equality comparison — Java
-   prints `1.0` where Python prints `1`.
-3. Raising the per-submission time limit for Java, since `javac` alone can take
-   1–3s on a cold JVM.
-4. A `judge-heavy` service reusing `apps/judge/main.py` with an expanded
-   `SUPPORTED_LANGUAGES` and a Dockerfile that adds the JDK.
+Verify after deploying the heavy tier:
 
-C++ is deferred pending the per-problem type signature schema, since C++ has no
-dynamic types and the harness must know each problem's return type at compile
-time.
+```bash
+# Signed in, open a problem, select Java or C++ and submit a working solution:
+#   expect Accepted. Then change the return type (e.g. int[] → double) and
+#   submit again — expect Compile Error, never Wrong Answer.
+```

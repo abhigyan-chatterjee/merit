@@ -29,7 +29,7 @@ logger = logging.getLogger("merit.judge")
 # Mirrors the API's own limits so a request that could never pass validation
 # still fails fast here rather than spawning a process.
 MAX_CODE_BYTES = 64 * 1024
-SUPPORTED_LANGUAGES = {"python", "javascript"}
+SUPPORTED_LANGUAGES = {"python", "javascript", "java", "cpp"}
 
 app = FastAPI(
     title="Merit Judge",
@@ -42,11 +42,14 @@ app = FastAPI(
 
 
 class RunRequest(BaseModel):
-    language: str = Field(..., description="python | javascript")
+    language: str = Field(..., description="python | javascript | java | cpp")
     code: str
     function_name: str
     test_cases: list[dict[str, Any]]
     time_limit_ms: int = 2000
+    # Parameter and return types from the problem's signature. Compiled
+    # languages need them to emit typed source; the interpreted ones ignore it.
+    signature: dict[str, Any] | None = None
 
 
 class RunResponse(BaseModel):
@@ -82,6 +85,7 @@ async def run(req: RunRequest) -> RunResponse:
         function_name=req.function_name,
         test_cases=req.test_cases,
         time_limit_ms=req.time_limit_ms,
+        signature=req.signature,
     )
 
     # Log the shape of the run, never the submission itself.

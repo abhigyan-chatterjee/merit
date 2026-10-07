@@ -1,4 +1,5 @@
 import json
+import shutil
 
 import pytest
 from fastapi.testclient import TestClient
@@ -6,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models.content import Problem, ProblemTestCase
 from app.seed import seed_problems
+from app.services.judge import execute_code
 
 
 def register_user(client: TestClient, email: str = "judge_student@merit.org") -> str:
@@ -777,3 +779,184 @@ function solve(nums, target) {
     # Should WA because submit runs ALL test cases, not just samples
     assert data["verdict"] == "WA"
     assert len(data["test_results"]) == 3  # All 3 cases were run
+
+
+# --- Compiled languages -------------------------------------------------------
+#
+# Java and C++ grade by compiling first, so a type error is a Compile Error
+# rather than a Wrong Answer. These run the real toolchain and skip where one is
+# not installed (a slim CI image), so the suite stays portable.
+
+_SIG_TWO_SUM = {"returnType": "List<Integer>", "params": ["List<Integer>", "int"]}
+_TWO_SUM_CASES = [
+    {"label": "Case 1", "input": [[2, 7, 11, 15], 9], "expected": [0, 1]},
+    {"label": "Case 2", "input": [[3, 2, 4], 6], "expected": [1, 2]},
+]
+
+_JAVA_OK = """class Solution {
+  public int[] twoSum(int[] nums, int target) {
+    java.util.Map<Integer,Integer> seen = new java.util.HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+      Integer j = seen.get(target - nums[i]);
+      if (j != null) return new int[]{j, i};
+      seen.put(nums[i], i);
+    }
+    return new int[]{};
+  }
+}"""
+
+_JAVA_WRONG = """class Solution {
+  public int[] twoSum(int[] n, int t) { return new int[]{9, 9}; }
+}"""
+
+_JAVA_TYPE_ERROR = """class Solution {
+  public double twoSum(int[] n, int t) { return 3.0; }
+}"""
+
+_CPP_WRONG = """class Solution {
+ public:
+  std::vector<int> twoSum(std::vector<int>&, int) { return {9, 9}; }
+};"""
+
+_CPP_TYPE_ERROR = """class Solution {
+ public:
+  double twoSum(std::vector<int>&, int) { return 3.0; }
+};"""
+
+_CPP_OK = """class Solution {
+ public:
+  std::vector<int> twoSum(std::vector<int>& nums, int target) {
+    std::unordered_map<int,int> seen;
+    for (int i = 0; i < (int)nums.size(); i++) {
+      auto it = seen.find(target - nums[i]);
+      if (it != seen.end()) return {it->second, i};
+      seen[nums[i]] = i;
+    }
+    return {};
+  }
+};"""
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("language", "compiler", "correct", "wrong", "type_error"),
+    [
+        (
+            "java",
+            "javac",
+            _JAVA_OK,
+            _JAVA_WRONG,
+            _JAVA_TYPE_ERROR,
+        ),
+        (
+            "cpp",
+            "g++",
+            _CPP_OK,
+            _CPP_WRONG,
+            _CPP_TYPE_ERROR,
+        ),
+    ],
+)
+async def test_compiled_language_verdicts(
+    language, compiler, correct, wrong, type_error, monkeypatch
+):
+    if shutil.which(compiler) is None:
+        pytest.skip(f"{compiler} is not installed on this runner")
+
+    ok = await execute_code(language, correct, "twoSum", _TWO_SUM_CASES, 5000, _SIG_TWO_SUM)
+    assert ok.verdict == "AC", ok.compile_output
+    assert all(r["passed"] for r in ok.test_results)
+
+    bad = await execute_code(language, wrong, "twoSum", _TWO_SUM_CASES, 5000, _SIG_TWO_SUM)
+    assert bad.verdict == "WA", bad.compile_output
+
+    # The whole point of these languages: the compiler enforces the types, so a
+    # mismatch is a Compile Error carrying the compiler's own message.
+    typed = await execute_code(language, type_error, "twoSum", _TWO_SUM_CASES, 5000, _SIG_TWO_SUM)
+    assert typed.verdict == "CE"
+    assert typed.compile_output.strip(), "a CE must carry the compiler's message"
+
+
+@pytest.mark.asyncio
+async def test_compiled_language_without_signature_is_ce_not_a_crash():
+    """No recorded signature means the language cannot be generated: that is a
+    clear Compile Error, never an exception through the endpoint."""
+    res = await execute_code("java", _JAVA_OK, "twoSum", _TWO_SUM_CASES, 5000, None)
+    assert res.verdict == "CE"
+    assert "signature" in res.compile_output
+
+
+@pytest.mark.asyncio
+async def test_signature_disagreeing_with_test_case_arity_fails_loudly():
+    """An authored signature that does not match the test data must not
+    generate a call that silently drops an argument."""
+    res = await execute_code(
+        "java",
+        _JAVA_OK,
+        "twoSum",
+        [{"input": [[2, 7, 11, 15]], "expected": [0, 1]}],  # one arg, two params
+        5000,
+        _SIG_TWO_SUM,
+    )
+    assert res.verdict == "CE"
+    assert "argument" in res.compile_output
+
+
+# --- Java through the real router --------------------------------------------
+#
+# The unit tests above prove the harness; these prove the chain the user
+# actually hits: router → signature lookup → harness generation → javac →
+# verdict. The problem and its signature are the real seeded ones, so an
+# authored signature that disagreed with the test data would fail here.
+
+_JAVA_TWO_SUM = """class Solution {
+  public int[] solve(int[] nums, int target) {
+    java.util.Map<Integer, Integer> seen = new java.util.HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+      Integer j = seen.get(target - nums[i]);
+      if (j != null) return new int[]{j, i};
+      seen.put(nums[i], i);
+    }
+    return new int[]{};
+  }
+}"""
+
+
+def test_java_solution_is_accepted_through_the_api(client: TestClient):
+    if shutil.which("javac") is None:
+        pytest.skip("javac is not installed on this runner")
+
+    register_user(client)
+    res = client.post(
+        "/api/v1/judge/run",
+        json={"problem_slug": "two-sum", "language": "java", "code": _JAVA_TWO_SUM},
+    )
+
+    assert res.status_code == 200, res.text
+    data = res.json()
+    assert data["verdict"] == "AC", data["compile_output"]
+    assert all(tc["passed"] for tc in data["test_results"])
+
+
+def test_java_type_error_through_the_api_is_a_compile_error(client: TestClient):
+    """The pedagogy, end to end: the compiler rejects a wrong return type, so
+    the student sees a compile error rather than a wrong answer."""
+    if shutil.which("javac") is None:
+        pytest.skip("javac is not installed on this runner")
+
+    register_user(client)
+    wrong_type = (
+        _JAVA_TWO_SUM.replace("public int[] solve", "public double solve")
+        .replace("return new int[]{j, i};", "return 3.0;")
+        .replace("return new int[]{};", "return 3.0;")
+    )
+
+    res = client.post(
+        "/api/v1/judge/run",
+        json={"problem_slug": "two-sum", "language": "java", "code": wrong_type},
+    )
+
+    assert res.status_code == 200, res.text
+    data = res.json()
+    assert data["verdict"] == "CE"
+    assert data["compile_output"].strip()

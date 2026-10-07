@@ -59,12 +59,13 @@ def submit_count(db_session: Session, email: str) -> int:
     )
 
 
-def test_judge_rejects_non_pyjs_languages_without_persisting(
+def test_judge_rejects_unknown_languages_without_persisting(
     client: TestClient, db_session: Session
 ):
-    """AGENTS invariant #1: Python + JavaScript ONLY (app/schemas/judge.py)."""
+    """The allowlist (python, javascript, java, cpp) still refuses anything it
+    cannot run, and a refused submission must never be recorded."""
     register(client, "dogfood-lang@merit.org")
-    for lang in ("cpp", "java", "CPP", "Java"):
+    for lang in ("ruby", "rust", "cobol", "python3", "j ava"):
         res = client.post(
             "/api/v1/judge/submit",
             json={"problem_slug": "two-sum", "language": lang, "code": CORRECT_JS},

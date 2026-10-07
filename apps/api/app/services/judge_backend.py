@@ -2,9 +2,11 @@
 
 Two execution paths, one contract:
 
-- **Remote** — when `JUDGE_URL` is set, submissions are sent to the Cloud Run
+- **Remote** — when a judge URL is set, submissions are sent to the Cloud Run
   judge service, which runs them in its own isolated container with no access
-  to this API's database, secrets, or filesystem.
+  to this API's database, secrets, or filesystem. Java and C++ go to a second
+  service carrying the compile toolchain, so the interpreted languages keep a
+  short cold start.
 - **Local** — otherwise, the in-process sandbox (`services/judge.py`) runs them
   the way it always has. This keeps local development and the test suite
   working with no cloud credentials and no network.
@@ -25,11 +27,30 @@ from app.services.judge import JudgeResult, execute_code
 
 logger = logging.getLogger(__name__)
 
+# Languages that must be compiled before they run, and therefore need the
+# toolchain image rather than the light one.
+_COMPILED_LANGUAGES = frozenset({"java", "cpp"})
+
 # Identity tokens are valid for an hour; refresh a little early so an
 # in-flight request never presents a token that expires mid-call.
 _TOKEN_REFRESH_SKEW_SEC = 300
-_cached_token: tuple[str, float] | None = None
+# Keyed by audience: each judge service is a distinct token audience, so one
+# cached token cannot be presented to the other.
+_cached_tokens: dict[str, tuple[str, float]] = {}
 _token_lock = asyncio.Lock()
+
+
+def _judge_target_for(language: str) -> str:
+    """Which judge service runs this language, or "" for the local sandbox.
+
+    Either service can run any language — both images carry the same sandbox —
+    so a deployment that configures only one URL still works: the preferred
+    service is tried first and the other is the fallback.
+    """
+    light, heavy = settings.judge_url, settings.judge_heavy_url
+    if language in _COMPILED_LANGUAGES:
+        return heavy or light
+    return light or heavy
 
 
 def _expiry_epoch(expiry: Any, fallback_now: float) -> float:
@@ -68,39 +89,39 @@ def _refresh_identity_token(
     return credentials.token, _expiry_epoch(credentials.expiry, now)
 
 
-async def _mint_identity_token() -> str | None:
-    """Mints a Google-signed ID token for the judge service, with caching.
+async def _mint_identity_token(audience: str) -> str | None:
+    """Mints a Google-signed ID token for one judge service, with caching.
 
     Cached because the token is valid for an hour: minting per submission would
     add a round trip to Google on the hot path. The google-auth import is
     function-local so that importing this module never requires the library,
     although it is a declared dependency of the API.
     """
-    global _cached_token
-
     now = time.time()
-    if _cached_token and _cached_token[1] - _TOKEN_REFRESH_SKEW_SEC > now:
-        return _cached_token[0]
+    cached = _cached_tokens.get(audience)
+    if cached and cached[1] - _TOKEN_REFRESH_SKEW_SEC > now:
+        return cached[0]
 
     async with _token_lock:
         # Another coroutine may have refreshed while we waited for the lock.
         now = time.time()
-        if _cached_token and _cached_token[1] - _TOKEN_REFRESH_SKEW_SEC > now:
-            return _cached_token[0]
+        cached = _cached_tokens.get(audience)
+        if cached and cached[1] - _TOKEN_REFRESH_SKEW_SEC > now:
+            return cached[0]
 
         try:
             # Blocking network + file IO, so keep it off the event loop.
             token, expires_at = await asyncio.to_thread(
                 _refresh_identity_token,
                 settings.google_application_credentials,
-                settings.judge_url,
+                audience,
                 now,
             )
         except Exception:
-            logger.exception("Could not mint an identity token for the judge service")
+            logger.exception("Could not mint an identity token for %s", audience)
             return None
 
-        _cached_token = (token, expires_at)
+        _cached_tokens[audience] = (token, expires_at)
         return token
 
 
@@ -110,18 +131,25 @@ async def execute(
     function_name: str,
     test_cases: list[dict[str, Any]],
     time_limit_ms: int = 2000,
+    signature: dict[str, Any] | None = None,
 ) -> JudgeResult:
-    """Runs a submission on the configured backend."""
-    if not settings.judge_url:
+    """Runs a submission on the configured backend.
+
+    `signature` carries the problem's parameter and return types. Interpreted
+    languages ignore it; Java and C++ need it to generate typed source.
+    """
+    target = _judge_target_for(language)
+    if not target:
         return await execute_code(
             language=language,
             code=code,
             function_name=function_name,
             test_cases=test_cases,
             time_limit_ms=time_limit_ms,
+            signature=signature,
         )
 
-    token = await _mint_identity_token()
+    token = await _mint_identity_token(target)
     if token is None:
         return JudgeResult(
             verdict="RE",
@@ -138,6 +166,7 @@ async def execute(
         "function_name": function_name,
         "test_cases": test_cases,
         "time_limit_ms": time_limit_ms,
+        "signature": signature,
     }
 
     try:
@@ -145,7 +174,7 @@ async def execute(
         # this timeout is deliberately far above the judge's own time limit.
         async with httpx.AsyncClient(timeout=settings.judge_timeout_sec) as client:
             resp = await client.post(
-                f"{settings.judge_url.rstrip('/')}/run",
+                f"{target.rstrip('/')}/run",
                 json=payload,
                 headers={"Authorization": f"Bearer {token}"},
             )

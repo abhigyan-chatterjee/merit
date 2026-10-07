@@ -2,18 +2,22 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
+SUPPORTED_LANGUAGES = frozenset({"javascript", "python", "java", "cpp"})
+
 
 class JudgeRunRequest(BaseModel):
     problem_slug: str
-    language: str = Field(..., description="Language: javascript | python")
+    language: str = Field(..., description="Language: javascript | python | java | cpp")
     code: str
 
     @field_validator("language")
     @classmethod
     def validate_lang(cls, v: str) -> str:
         norm = v.lower()
-        if norm not in {"javascript", "python"}:
-            raise ValueError("Unsupported language. Must be javascript or python")
+        if norm not in SUPPORTED_LANGUAGES:
+            raise ValueError(
+                f"Unsupported language. Must be one of: {', '.join(sorted(SUPPORTED_LANGUAGES))}"
+            )
         return norm
 
 

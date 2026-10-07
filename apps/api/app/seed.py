@@ -17,7 +17,7 @@ from app.models.content import (
 )
 
 
-def _resolve_content_dir(subfolder: str) -> Path:
+def resolve_content_dir(subfolder: str) -> Path:
     candidates = [
         Path(__file__).resolve().parent.parent.parent.parent / "content" / subfolder,
         Path(__file__).resolve().parent.parent.parent / "content" / subfolder,
@@ -33,7 +33,7 @@ def _resolve_content_dir(subfolder: str) -> Path:
 
 def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     if content_dir is None:
-        content_dir = _resolve_content_dir("problems")
+        content_dir = resolve_content_dir("problems")
 
     if not content_dir.exists():
         return 0
@@ -244,7 +244,7 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
 
 def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
     if questions_dir is None:
-        questions_dir = _resolve_content_dir("questions")
+        questions_dir = resolve_content_dir("questions")
 
     if not questions_dir.exists():
         return 0
@@ -294,7 +294,7 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
 
 def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
     if paths_dir is None:
-        paths_dir = _resolve_content_dir("paths")
+        paths_dir = resolve_content_dir("paths")
 
     if not paths_dir.exists():
         return 0
