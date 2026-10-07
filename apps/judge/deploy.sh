@@ -227,7 +227,7 @@ cmd_key() {
 cmd_url() {
   require_project
   echo
-  echo "${env_var_for_tier}=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+  echo "$(env_var_for_tier)=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
 }
 
 # The API env var each tier is wired through (see judge_backend._judge_target_for).
