@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useCallback } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useStreak } from '../hooks/useStreak';
 import { useAuth } from './AuthContext';
-import { progressApi } from '../utils/api';
+import { progressApi, ProgressSummary } from '../utils/api';
 import {
   EMPTY_INITIAL_STATE,
   DAILY_GOAL_PRESETS,
@@ -39,6 +39,18 @@ interface ProgressContextType {
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
+
+/**
+ * Maps a progress payload onto the state slice, defaulting every field it
+ * reads. A partial or truncated response must degrade to "no data" rather
+ * than throw inside the provider and blank the whole app.
+ */
+const toStateSlice = (summary: Partial<ProgressSummary>) => ({
+  progress: (summary.progress ?? {}) as Record<string, ProblemStatus>,
+  notes: summary.notes ?? {},
+  streak: Object.keys(summary.activity_days ?? {}),
+  visitedVisualizers: summary.visited_visualizers ?? [],
+});
 
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
@@ -83,10 +95,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           });
           setState((prev) => ({
             ...prev,
-            progress: merged.progress as Record<string, ProblemStatus>,
-            notes: merged.notes,
-            streak: Object.keys(merged.activity_days),
-            visitedVisualizers: merged.visited_visualizers,
+            ...toStateSlice(merged),
           }));
           return;
         }
@@ -95,10 +104,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Update state from server summary
       setState((prev) => ({
         ...prev,
-        progress: summary.progress as Record<string, ProblemStatus>,
-        notes: summary.notes,
-        streak: Object.keys(summary.activity_days),
-        visitedVisualizers: summary.visited_visualizers,
+        ...toStateSlice(summary),
       }));
     } catch {
       // Offline / guest fallback

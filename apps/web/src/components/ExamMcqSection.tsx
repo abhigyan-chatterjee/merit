@@ -48,6 +48,13 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
   const callbacksRef = useRef({ onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange });
   callbacksRef.current = { onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange };
 
+  // `topics`/`topicPlan` can arrive as fresh array literals from the caller.
+  // Listing them directly in the deps below would re-create the loader on every
+  // render, re-fetching and resetting the exam mid-session. Depend on their
+  // serialized contents instead, so the loader only changes when the exam does.
+  const topicsKey = JSON.stringify(topics);
+  const topicPlanKey = JSON.stringify(topicPlan ?? null);
+
   const loadQuestions = useCallback(async () => {
     setIsLoading(true);
     setLoadError(null);
@@ -80,7 +87,10 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [durationSec, difficulty, examId, questionCount, retryKey, topicPlan, topics]);
+    // Reads `topics`/`topicPlan` through the closure, guarded by their
+    // serialized keys above rather than by array identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [durationSec, difficulty, examId, questionCount, retryKey, topicsKey, topicPlanKey]);
 
   useEffect(() => {
     void loadQuestions();

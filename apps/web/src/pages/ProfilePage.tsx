@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ClerkProvider, UserProfile } from '@clerk/clerk-react';
 import { ArrowLeft, User as UserIcon, Code2, Download, Trash2, KeyRound, RefreshCw, Save } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
@@ -14,8 +14,9 @@ type Tab = 'profile' | 'tutor' | 'language' | 'data' | 'danger';
 
 export const ProfilePage: React.FC = () => {
   const { user, updateProfile, deleteAccount } = useAuth();
+  const { search } = useLocation();
   const [tab, setTab] = useState<Tab>(() => {
-    const q = new URLSearchParams(window.location.search).get('tab');
+    const q = new URLSearchParams(search).get('tab');
     return q === 'data' || q === 'danger' || q === 'language' || q === 'tutor' ? q : 'profile';
   });
 

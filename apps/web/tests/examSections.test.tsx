@@ -11,10 +11,6 @@ function json(body: unknown, ok = true, status = 200) {
   return { ok, status, statusText: '', json: async () => body };
 }
 
-// Module-level so the identity is stable across renders: ExamMcqSection lists
-// `topics` in loadQuestions' deps, so an inline array would re-fire the loader.
-const TOPICS = ['arrays-hashing'];
-
 const QUESTIONS = [
   { id: 'q1', topic: 'arrays-hashing', subtopic: 'maps', difficulty: 'Easy', prompt: 'First prompt?', options: ['a1', 'b1'] },
   { id: 'q2', topic: 'arrays-hashing', subtopic: 'maps', difficulty: 'Easy', prompt: 'Second prompt?', options: ['a2', 'b2'] },
@@ -28,7 +24,9 @@ const McqHarness = ({ onComplete }: { onComplete: (pct: number) => void }) => {
     <ExamMcqSection
       examId="ex1"
       examTitle="Foundational DSA"
-      topics={TOPICS}
+      // Deliberately an inline array: the loader must key off the contents,
+      // not the array identity, or it re-fetches and resets the exam.
+      topics={['arrays-hashing']}
       questionCount={2}
       difficulty="Easy"
       durationSec={600}

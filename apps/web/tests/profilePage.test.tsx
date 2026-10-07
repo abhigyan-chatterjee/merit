@@ -61,7 +61,6 @@ describe('ProfilePage', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
-    window.history.replaceState({}, '', '/');
   });
 
   it('shows the signed-in account and the profile tab by default', async () => {
@@ -73,10 +72,8 @@ describe('ProfilePage', () => {
   });
 
   it('opens the language tab from the ?tab= query', async () => {
-    // The page reads the browser URL directly, so drive it that way.
-    window.history.replaceState({}, '', '/profile?tab=language');
     stubFetch();
-    renderProfile();
+    renderProfile('/profile?tab=language');
     expect(await screen.findByText(/Preferred language/i)).toBeInTheDocument();
   });
 
