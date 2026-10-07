@@ -28,6 +28,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@clerk/testing": "^2.2.43",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "4.1.17",

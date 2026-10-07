@@ -13,8 +13,15 @@ export default defineConfig({
   },
   projects: [
     {
+      // Fetches the Clerk testing token once for the whole run. Kept as its own
+      // project so the env vars it exports reach the test workers.
+      name: "clerk-setup",
+      testMatch: /global\.setup\.ts/,
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["clerk-setup"],
     },
   ],
   webServer: [
