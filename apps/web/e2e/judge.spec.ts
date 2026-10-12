@@ -53,3 +53,40 @@ test.describe("judge round-trip", () => {
     ).toBeVisible({ timeout: 30_000 });
   });
 });
+
+test.describe("language selector", () => {
+  // The starter a learner edits must be the signature the judge compiles: a
+  // Java or C++ stub that does not match the generated harness fails for
+  // everyone, and the type is the whole reason those languages are offered.
+  test("offers all four judged languages, each with its own starter", async ({
+    page,
+  }) => {
+    await page.goto(PROBLEM_URL);
+    const select = page.getByLabel("Execution Language");
+    await expect(select.locator("option")).toHaveText([
+      "Python 3.12",
+      "JavaScript (Node.js)",
+      "Java",
+      "C++ (C++17)",
+    ]);
+
+    const editor = page.getByLabel("Code Editor");
+
+    await select.selectOption("java");
+    await expect(editor).toHaveValue(/class Solution[\s\S]*int\[\] solve\(int\[\] nums, int target\)/);
+
+    await select.selectOption("cpp");
+    await expect(editor).toHaveValue(
+      /class Solution[\s\S]*std::vector<int> solve\(std::vector<int> nums, int target\)/,
+    );
+
+    await select.selectOption("javascript");
+    await expect(editor).toHaveValue(/function solve\(nums, target\)/);
+
+    // Switching away and back must not clobber what was typed.
+    await editor.fill("function solve(nums, target) { return [0, 1]; }");
+    await select.selectOption("java");
+    await select.selectOption("javascript");
+    await expect(editor).toHaveValue(/return \[0, 1\]/);
+  });
+});

@@ -11,6 +11,8 @@ interface ExamCodingState {
   examples: ProblemExample[];
   constraints: string[];
   starterCode: string;
+  starterCodeJava: string;
+  starterCodeCpp: string;
   functionName: string;
   testCases: TestCase[];
   topic?: string;
@@ -44,6 +46,8 @@ export const ExamCodingSection: React.FC<{
             examples: local.examples,
             constraints: local.constraints,
             starterCode: local.starterCode,
+            starterCodeJava: local.starterCodeJava,
+            starterCodeCpp: local.starterCodeCpp,
             functionName: local.functionName,
             testCases: local.testCases,
             topic: local.topic,
@@ -54,6 +58,7 @@ export const ExamCodingSection: React.FC<{
         try {
           const remote = await contentApi.getProblem(c.slug);
           const sc = typeof remote.starter_code === 'string' ? remote.starter_code : remote.starter_code?.javascript ?? '';
+          const remoteStarters = typeof remote.starter_code === 'object' && remote.starter_code !== null ? remote.starter_code : {};
           next.push({
             slug: remote.slug,
             title: remote.title,
@@ -61,6 +66,8 @@ export const ExamCodingSection: React.FC<{
             examples: remote.examples ?? [],
             constraints: remote.constraints ?? [],
             starterCode: sc,
+            starterCodeJava: remoteStarters.java ?? '',
+            starterCodeCpp: remoteStarters.cpp ?? '',
             functionName: remote.function_name ?? 'solve',
             testCases: (remote.test_cases ?? []).map((t: { input: unknown[]; expected: unknown; label: string }) => ({
               input: t.input,
@@ -71,7 +78,7 @@ export const ExamCodingSection: React.FC<{
             passed: null,
           });
         } catch {
-          next.push({ slug: c.slug, title: c.title, statement: '', examples: [], constraints: [], starterCode: '', functionName: 'solve', testCases: [], passed: null });
+          next.push({ slug: c.slug, title: c.title, statement: '', examples: [], constraints: [], starterCode: '', starterCodeJava: '', starterCodeCpp: '', functionName: 'solve', testCases: [], passed: null });
         }
       }
       if (active) {
@@ -148,6 +155,8 @@ export const ExamCodingSection: React.FC<{
             <CodeRunner
               problemSlug={item.slug}
               starterCode={item.starterCode}
+              starterCodeJava={item.starterCodeJava}
+              starterCodeCpp={item.starterCodeCpp}
               functionName={item.functionName}
               testCases={item.testCases}
               onVerdict={(passed) => {

@@ -28,15 +28,30 @@ import {
 import { useAuth } from "../store/AuthContext";
 import { useDialogFocus } from "../hooks/useDialogFocus";
 import { AiTutor } from "./AiTutor";
-
-type EditorLang = "javascript" | "python";
+import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from "../data/languages";
 
 const pythonSkeleton = (fn: string): string =>
   `def ${fn}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`;
 
+// Every language opens on the problem's own starter, so the signature a learner
+// edits is the one the judge compiles.
+const starterByLanguage = (
+  starterCode: string,
+  starterCodeJava: string,
+  starterCodeCpp: string,
+  functionName: string
+): Record<EditorLang, string> => ({
+  javascript: starterCode,
+  python: pythonSkeleton(functionName),
+  java: starterCodeJava,
+  cpp: starterCodeCpp,
+});
+
 interface CodeRunnerProps {
   problemSlug: string;
   starterCode: string;
+  starterCodeJava: string;
+  starterCodeCpp: string;
   functionName: string;
   testCases: TestCase[];
   onAllPassed?: () => void;
@@ -47,6 +62,8 @@ interface CodeRunnerProps {
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   problemSlug,
   starterCode,
+  starterCodeJava,
+  starterCodeCpp,
   functionName,
   testCases: _testCases,
   onAllPassed,
@@ -70,7 +87,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           }
         }
       }
-      return saved === 'javascript' ? 'javascript' : 'python';
+      return isEditorLang(saved) ? saved : 'python';
     } catch {
       return 'python';
     }
@@ -80,10 +97,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // single `code` state plus an `editedCode` guard meant the switch was a
   // no-op after any keystroke, so e.g. the JS boilerplate stuck around
   // after selecting Python.
-  const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() => ({
-    javascript: starterCode,
-    python: pythonSkeleton(functionName),
-  }));
+  const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() =>
+    starterByLanguage(starterCode, starterCodeJava, starterCodeCpp, functionName)
+  );
   const code = codeByLang[language];
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
   const [activeTab, setActiveTab] = useState(0);
@@ -116,10 +132,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // Fresh skeletons when navigating between problems: without this the
   // previous problem's code (and function name) lingered in the editor.
   useEffect(() => {
-    setCodeByLang({
-      javascript: starterCode,
-      python: pythonSkeleton(functionName),
-    });
+    setCodeByLang(starterByLanguage(starterCode, starterCodeJava, starterCodeCpp, functionName));
     setResults(null);
     setVerdict(null);
     setCompileError(null);
@@ -213,7 +226,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const handleReset = () => {
     setCodeByLang((prev) => ({
       ...prev,
-      [language]: language === "python" ? pythonSkeleton(functionName) : starterCode,
+      [language]: starterByLanguage(
+        starterCode,
+        starterCodeJava,
+        starterCodeCpp,
+        functionName
+      )[language],
     }));
     setResults(null);
     setVerdict(null);
@@ -241,7 +259,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     progressApi
       .getSettings()
       .then((s) => {
-        if (s.preferred_language === 'python' || s.preferred_language === 'javascript') {
+        if (isEditorLang(s.preferred_language)) {
           setLanguage(s.preferred_language);
         }
       })
@@ -396,11 +414,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             <select
               value={language}
               aria-label="Execution Language"
-              onChange={(e) => handleLanguageChange(e.target.value as "javascript" | "python")}
+              onChange={(e) => handleLanguageChange(e.target.value as EditorLang)}
               className="bg-surface border border-line rounded px-2 py-0.5 text-base sm:text-xs font-mono text-ink focus:border-mint cursor-pointer"
             >
-              <option value="python">Python 3.12</option>
-              <option value="javascript">JavaScript (Node.js)</option>
+              {EDITOR_LANGUAGES.map((l) => (
+                <option key={l.value} value={l.value}>
+                  {l.label}
+                </option>
+              ))}
             </select>
           </div>
           <span className="hidden sm:inline text-[11px] font-mono text-muted">

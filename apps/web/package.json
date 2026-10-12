@@ -17,14 +17,12 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.10",
-    "clsx": "2.1.1",
     "framer-motion": "^13.2.0",
     "lucide-react": "^1.41.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
-    "tailwind-merge": "3.4.0",
     "zod": "^4.5.4"
   },
   "devDependencies": {

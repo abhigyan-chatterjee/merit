@@ -7,6 +7,7 @@ import { authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
 import { isClerkConfigured } from '../components/ClerkOAuth';
 import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
+import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from '../data/languages';
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 
@@ -22,7 +23,7 @@ export const ProfilePage: React.FC = () => {
 
   const [name, setName] = useState('');
   const [nameMsg, setNameMsg] = useState<string | null>(null);
-  const [lang, setLang] = useState<'javascript' | 'python'>('python');
+  const [lang, setLang] = useState<EditorLang>('python');
   const [langMsg, setLangMsg] = useState<string | null>(null);
   const [dataMsg, setDataMsg] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -40,7 +41,7 @@ export const ProfilePage: React.FC = () => {
     progressApi
       .getSettings()
       .then((s) => {
-        if (s.preferred_language === 'python' || s.preferred_language === 'javascript') {
+        if (isEditorLang(s.preferred_language)) {
           setLang(s.preferred_language);
         }
       })
@@ -298,26 +299,26 @@ export const ProfilePage: React.FC = () => {
           <h2 className="text-sm font-bold text-ink flex items-center gap-2">
             <Code2 className="w-4 h-4 text-mint" /> Preferred language
           </h2>
-          <p className="text-xs text-muted">Used as the default in code runners (Python and JS supported).</p>
+          <p className="text-xs text-muted">Used as the default in code runners.</p>
           <div className="flex gap-2">
-            {(['javascript', 'python'] as const).map((l) => (
+            {EDITOR_LANGUAGES.map((l) => (
               <button
-                key={l}
+                key={l.value}
                 onClick={async () => {
-                  setLang(l);
+                  setLang(l.value);
                   setLangMsg(null);
                   try {
-                    await progressApi.saveSettings({ preferred_language: l });
-                    setLangMsg(`Default language: ${l}.`);
+                    await progressApi.saveSettings({ preferred_language: l.value });
+                    setLangMsg(`Default language: ${l.short}.`);
                   } catch {
                     setLangMsg('Could not save (offline?).');
                   }
                 }}
                 className={`px-4 py-2 rounded-lg border text-xs font-mono transition cursor-pointer ${
-                  lang === l ? 'border-mint bg-mint/10 text-mint font-semibold' : 'border-line bg-canvas text-muted hover:text-ink'
+                  lang === l.value ? 'border-mint bg-mint/10 text-mint font-semibold' : 'border-line bg-canvas text-muted hover:text-ink'
                 }`}
               >
-                {l === 'javascript' ? 'JavaScript' : 'Python'}
+                {l.short}
               </button>
             ))}
           </div>

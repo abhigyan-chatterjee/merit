@@ -332,6 +332,8 @@ export const ProblemDetailPage: React.FC = () => {
           <CodeRunner
               problemSlug={problem.slug}
               starterCode={problem.starterCode}
+              starterCodeJava={problem.starterCodeJava}
+              starterCodeCpp={problem.starterCodeCpp}
               functionName={problem.functionName}
               testCases={problem.testCases}
               onAllPassed={() => setProblemStatus(problem.slug, 'Done')}

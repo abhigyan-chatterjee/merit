@@ -5,16 +5,27 @@ import { setupClerkTestingToken } from "@clerk/testing/playwright";
  * Auth e2e against Clerk.
  *
  * Prerequisites:
- *   1. Build with a publishable key — VITE_CLERK_PUBLISHABLE_KEY in the
- *      environment or apps/web/.env (gitignored). Vite only inlines VITE_*
- *      vars, and only from apps/web, so the compose-root .env cannot reach the
- *      build.
- *   2. A test user with a password in the same Clerk instance, exported as
+ *   1. Build with a publishable key from the SAME Clerk instance the API
+ *      verifies against. VITE_CLERK_PUBLISHABLE_KEY is inlined by Vite from the
+ *      environment or apps/web/.env (gitignored); the compose-root .env cannot
+ *      reach the build. A live publishable key paired with the development
+ *      instance's CLERK_JWKS_URL builds a site nobody can sign in to.
+ *   2. A test user with a password in that instance, exported as
  *      CLERK_TEST_EMAIL / CLERK_TEST_PASSWORD.
- *   3. Optional but recommended: CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY, so
- *      e2e/global.setup.ts can fetch a Testing Token and the sign-in is not
- *      blocked by Clerk's bot detection. Without them these specs still run,
- *      just without a token.
+ *   3. CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY, so e2e/global.setup.ts can
+ *      fetch a Testing Token and Clerk's bot detection does not block the form.
+ *
+ * Known blocker, 2026-10-08: with a Testing Token fetched, the flow reaches
+ * Clerk's password factor and is then sent to `factor-two`. The page reads
+ * "You're signing in from a new device. We're asking for verification to keep
+ * your account secure." — that is Clerk's *device verification*, which is a
+ * separate setting from the email-verification requirement and is still on for
+ * the development instance. It also cannot be satisfied by hand: the code goes
+ * to the test user's address, and that address is `test@test.com`.
+ *
+ * Clearing it is an instance setting (Clerk dashboard → User & Authentication →
+ * Attack protection → device verification), not a code change. Alternatively,
+ * point CLERK_TEST_EMAIL at a mailbox that can actually receive the code.
  *
  * The suite skips when CLERK_TEST_EMAIL / CLERK_TEST_PASSWORD are absent, so an
  * environment with no Clerk test instance still runs everything else.
