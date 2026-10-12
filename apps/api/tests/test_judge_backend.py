@@ -109,6 +109,54 @@ async def test_unreachable_service_returns_clean_re(settings_snapshot, monkeypat
     assert "could not be reached" in result.compile_output.lower()
 
 
+@pytest.mark.asyncio
+async def test_judge_4xx_surfaces_the_reason(settings_snapshot, monkeypatch):
+    """A judge-side rejection must carry the judge's own reason.
+
+    Collapsing every response >= 400 into one generic line is what made a stale
+    deployment — one that predated a newly allowed language — look like a fault
+    in the network rather than in the service that was deployed.
+    """
+    settings_snapshot.judge_url = "https://judge.example.run.app"
+
+    class _Response:
+        status_code = 400
+        text = "{\"detail\": \"Unsupported language 'java'\"}"
+
+        def json(self):
+            return {"detail": "Unsupported language 'java'"}
+
+    class _Client:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def post(self, *args, **kwargs):
+            return _Response()
+
+    async def _fake_token(audience: str) -> str:
+        return "fake-identity-token"
+
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", _fake_token)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", _Client)
+
+    result = await judge_backend.execute(
+        language="java",
+        code="class Solution {}",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+
+    assert result.verdict == "RE"
+    assert result.test_results == []
+    assert "Unsupported language 'java'" in result.compile_output
+
+
 def _write_service_account_file(tmp_path):
     """A structurally valid service-account file backed by a throwaway key.
 

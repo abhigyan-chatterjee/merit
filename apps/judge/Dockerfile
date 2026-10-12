@@ -11,9 +11,13 @@ FROM node:20-slim AS node
 
 FROM python:3.12-slim
 
-# Non-root. The sandbox drops privileges further at run time when it can, but
-# the container itself should never be root to begin with.
-RUN useradd --create-home --shell /usr/sbin/nologin judge
+# Two identities, and the server keeps the container's default root so it can
+# hand each submission to a *different* one. Sharing a single account between
+# the server and the code it runs means a submission that escapes the sandbox
+# holds the same privileges as the process it escaped. `sandbox` is that second
+# identity: it owns nothing, and /app stays owned by `judge`.
+RUN useradd --create-home --shell /usr/sbin/nologin judge \
+    && useradd --no-create-home --shell /usr/sbin/nologin sandbox
 
 WORKDIR /app
 
@@ -32,10 +36,10 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # The sandbox writes its scratch files into a temp dir per run.
 RUN chown -R judge:judge /app
 
-USER judge
-
 ENV PORT=8080
 EXPOSE 8080
 
 # One worker: each request is CPU-bound and the platform scales by instance.
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]
+# $PORT is expanded at start so this, deploy.sh's --port, and Cloud Run's
+# PORT all describe the same socket instead of three independent numbers.
+CMD ["sh", "-c", "exec python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080} --workers 1"]

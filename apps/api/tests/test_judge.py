@@ -960,3 +960,40 @@ def test_java_type_error_through_the_api_is_a_compile_error(client: TestClient):
     data = res.json()
     assert data["verdict"] == "CE"
     assert data["compile_output"].strip()
+
+
+@pytest.mark.asyncio
+async def test_sandbox_privilege_drop_runs_in_the_launcher(monkeypatch, tmp_path):
+    """The drop must happen inside the launcher, never as subprocess kwargs.
+
+    asyncio's create_subprocess_exec does not accept Popen's user/group/
+    extra_groups and raises "unexpected kwargs" before the child starts. Passing
+    them therefore fails every submission whenever the parent is root, and the
+    API container has no USER directive — so root is the normal case in
+    production, not an edge case.
+
+    Dropping to the current uid and gid exercises the launcher's drop path
+    without needing privilege: setuid and setgid to one's own ids succeed.
+    """
+    import os
+    import sys
+
+    from app.services import judge as judge_module
+
+    monkeypatch.setattr(
+        judge_module, "_drop_to_unprivileged", lambda: (os.getuid(), os.getgid())
+    )
+
+    probe = "import os; print(os.getuid(), os.getgid())"
+    code, stdout, stderr, timed_out = await judge_module.run_in_sandbox(
+        [sys.executable, "-c", probe],
+        cwd=str(tmp_path),
+        timeout_sec=15.0,
+    )
+
+    assert not timed_out
+    assert code == 0, stderr
+    # The child must report the identity the launcher was asked to drop to,
+    # which proves the drop was applied rather than skipped.
+    assert stdout.split() == [str(os.getuid()), str(os.getgid())]
+

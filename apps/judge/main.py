@@ -21,15 +21,20 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
 
-from sandbox import execute_code
+from sandbox import MAX_CODE_BYTES, execute_code
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("merit.judge")
 
-# Mirrors the API's own limits so a request that could never pass validation
-# still fails fast here rather than spawning a process.
-MAX_CODE_BYTES = 64 * 1024
 SUPPORTED_LANGUAGES = {"python", "javascript", "java", "cpp"}
+
+# Ceiling on a single submission's wall clock. The sandbox multiplies the
+# requested limit by 1.5 to get its asyncio timeout, and a submission that
+# *sleeps* burns wall clock without burning CPU, so the RLIMIT_CPU cap does not
+# bound it. Anything above this could outlive Cloud Run's 60s request timeout,
+# which abandons the HTTP response while the coroutine keeps the single worker
+# busy — the slot is held until the timeout, not released with the request.
+_MAX_TIME_LIMIT_MS = 20_000
 
 app = FastAPI(
     title="Merit Judge",
@@ -84,7 +89,7 @@ async def run(req: RunRequest) -> RunResponse:
         code=req.code,
         function_name=req.function_name,
         test_cases=req.test_cases,
-        time_limit_ms=req.time_limit_ms,
+        time_limit_ms=max(1, min(req.time_limit_ms, _MAX_TIME_LIMIT_MS)),
         signature=req.signature,
     )
 

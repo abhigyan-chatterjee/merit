@@ -108,6 +108,11 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install pydantic pyyaml
+        run: pip install pydantic pyyaml pytest
       - name: Run All Content Validators
         run: python3 content/validators/run_all.py
+      # The content tree has its own unit tests (schema, signatures, the QAF
+      # registry). run_all.py only runs the validators, so without this they were
+      # collected by nothing.
+      - name: Run Content Unit Tests
+        run: python3 -m pytest content/ -q

@@ -113,9 +113,12 @@ submissions per month**. You would need sustained traffic far beyond a
 placement-prep site to leave the free tier.
 
 Two things that *are* billed and worth knowing: **Artifact Registry storage**
-beyond 0.5 GiB (two images ≈ $0.05–0.10/month), and **Cloud Build** beyond 120
-build-minutes/day (a build here takes 2–5 minutes). Neither will realistically
-trigger.
+beyond 0.5 GiB (two images ≈ $0.05–0.10/month), and **Cloud Build beyond the
+free build allowance** (2,500 minutes/month on the default machine type; a build
+here takes 2–5 minutes). The build deliberately does **not** request a larger
+machine type: `E2_HIGHCPU_8` is billed per minute (~$0.008) on every build,
+while the free tier covers the default `e2-standard-2` only. Neither will
+realistically trigger.
 
 ## 2. Project setup
 
@@ -216,14 +219,16 @@ scp .judge/judge-sa.json Merit:/home/ubuntu/merit/.judge/judge-sa.json
 
 ## 5. Wire the VPS
 
-Add to the environment used by `docker compose` on the VPS — `apps/api/.env` or
-an exported env file, never committed:
+Add to the environment used by `docker compose` on the VPS. The file lives at
+the **repository root** and `docker-compose.yml` substitutes from it (compose
+resolves `${VAR}` against a `.env` beside the compose file, not against
+`apps/api/.env`):
 
 ```ini
 JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
 JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
 GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
-JUDGE_TIMEOUT_SEC=60
+JUDGE_TIMEOUT_SEC=180
 ```
 
 `JUDGE_HEAVY_URL` is optional: with only `JUDGE_URL` set, Java and C++ are sent
@@ -287,15 +292,42 @@ Answer. That is the lesson "selecting the proper type of data matters".
   the interpreted languages do.
 - **Signatures** come from `content/signatures.json`, read through
   `app/services/signatures.py` and gated in CI by
-  `content/validators/verify_signatures.py`. A problem with no signature cannot
-  be generated for a compiled language and returns a clear CE.
-- **Budgets**: compilation gets its own CPU and wall-clock allowance (30s / 90s)
+  `content/validators/verify_signatures.py`. All 140 problems carry one, so every
+  problem can be submitted in every language. The vocabulary is intentionally
+  small — `int`, `long`, `double`, `boolean`, `String`, the four `List<…>` shapes,
+  and `TreeNode` — and each entry is checked against the test data rather than
+  against the prose.
+- **`long` and `TreeNode` exist because the data demanded them.** `reverse-bits`
+  and `number-of-1-bits` carry unsigned 32-bit values that no `int` can hold, so
+  the gate derives `long` from the data. Fifteen tree problems encode a tree as a
+  level-order array in which `null` marks an absent child — the index-addressed
+  form (`i`'s children at `2i+1` / `2i+2`) the reference solutions read directly —
+  so the harness builds a real `TreeNode` for the learner and serialises a
+  returned tree back into that same shape.
+- **Budgets**: compilation gets its own CPU and wall-clock allowance (60s / 120s)
   separate from the per-submission run limit, since `javac` alone can take
-  seconds. Java's heap is bounded with `-Xmx256m` because `RLIMIT_AS` would kill
-  the JVM before `main` runs.
-- **Node-encoded problems are refused**, not mis-generated: a `List<Integer>`
-  that contains `null` is a linked list or tree in disguise, and the harness says
-  so instead of emitting broken code.
+  seconds — and the heaviest harness in the bank (`permutations`) takes ~14s to
+  compile. C++ is built at `-O1`, not `-O2`: the two produce the same verdicts on
+  these cases, and `-O2` makes that compile 3.7x more expensive (51s), which is
+  most of a request's budget for no benefit. Compilers are also given 1.5 GiB of
+  address space instead of the 512 MB a submission gets, because `g++` peaks
+  near 540 MB on the largest harness and would otherwise fail with
+  "cc1plus: out of memory" — a Compile Error for correct code. A binary that
+  runs uncapped (the JVM) stays uncapped. Java's heap is bounded with
+  `-Xmx256m` because `RLIMIT_AS` would kill the JVM before `main` runs. The
+  requested `time_limit_ms` is clamped to 20s at the judge boundary: a submission
+  that sleeps burns wall clock without burning CPU, so `RLIMIT_CPU` does not
+  bound it, and Cloud Run's 60s request timeout would abandon the response while
+  the coroutine kept the worker busy.
+- **Test data is embedded per case, one JVM method per case.** A problem whose
+  expected answers are large (every permutation, every subset) overflows the
+  JVM's 64 KB limit on a single method, which would fail to compile regardless of
+  what the learner wrote.
+- **Two identities in the judge container.** The server keeps the container's
+  default root so it can hand each submission to a *different* account
+  (`sandbox`, which owns nothing); the privilege drop happens inside the sandbox
+  launcher, not through subprocess kwargs, because `asyncio.create_subprocess_exec`
+  rejects `user`/`group` and would fail every run.
 
 Verify after deploying the heavy tier:
 

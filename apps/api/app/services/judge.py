@@ -42,6 +42,13 @@ JUDGE_ENV: dict[str, str] = {
 # API's own memory and OOM the container.
 MAX_OUTPUT_BYTES = 256 * 1024
 
+# Submissions larger than this are refused before any process starts. Defined
+# here, next to the executor that enforces it, because this file runs as both
+# the API's executor and the judge service's /app/sandbox.py — the judge's HTTP
+# layer imports this constant rather than declaring a second copy that could
+# drift out of step.
+MAX_CODE_BYTES = 64 * 1024
+
 # Ceilings applied by the launcher before the interpreter starts.
 _RLIMIT_AS_BYTES = 512 * 1024 * 1024
 _RLIMIT_CPU_SEC = 5
@@ -75,7 +82,7 @@ def _address_space_limit_for(binary: str) -> int:
 _LAUNCHER_SRC = """\
 import os, resource, sys
 
-as_bytes, cpu, fsize = (int(v) for v in sys.argv[1:4])
+as_bytes, cpu, fsize, uid, gid = (int(v) for v in sys.argv[1:6])
 for res, lim in (
     (resource.RLIMIT_CPU, cpu),
     (resource.RLIMIT_FSIZE, fsize),
@@ -93,19 +100,38 @@ if as_bytes:
     except (ValueError, OSError):
         pass
 
-os.execvp(sys.argv[4], sys.argv[4:])
+# Drop privileges here, not through subprocess kwargs. asyncio's
+# create_subprocess_exec does not accept Popen's user/group/extra_groups and
+# raises "unexpected kwargs" before the child starts, which fails every
+# submission whenever the parent is root. Order matters: groups first, because
+# after setuid the process can no longer change them.
+if gid:
+    try:
+        os.setgroups([])
+    except OSError:
+        pass
+    os.setgid(gid)
+if uid:
+    os.setuid(uid)
+
+os.execvp(sys.argv[6], sys.argv[6:])
 """
 
 
 def _drop_to_unprivileged() -> tuple[int, int] | None:
     """The (uid, gid) to run submissions as, or None when not privileged.
 
-    Only meaningful when the API itself is root. In local dev and CI the tests
-    run as a normal user, where dropping again is neither possible nor needed.
+    Only meaningful when the caller is root. In local dev and CI the tests run
+    as a normal user, where dropping again is neither possible nor needed.
+
+    `sandbox` is preferred when it exists: the judge image creates it so
+    submissions run under an identity that is not the one serving requests, and
+    that owns nothing. Images without it (the API) fall back to the generic
+    unprivileged accounts.
     """
     if os.geteuid() != 0:
         return None
-    for name in ("nobody", "nogroup", "daemon"):
+    for name in ("sandbox", "nobody", "nogroup", "daemon"):
         try:
             entry = pwd.getpwnam(name)
         except KeyError:
@@ -158,16 +184,23 @@ async def run_in_sandbox(
     cwd: str,
     timeout_sec: float = 4.0,
     cpu_sec: int = _RLIMIT_CPU_SEC,
+    address_space_bytes: int | None = None,
 ) -> tuple[int, str, str, bool]:
     """Runs command with strict timeout, scrubbed env, and captured output.
 
     The child is denied the API's environment, dropped to an unprivileged uid
     when the parent is root, hard-limited by rlimits, and killed as a process
     group so nothing outlives the timeout.
+
+    `address_space_bytes` replaces the per-binary default for compilation. It
+    only applies where there already is a limit: a binary that runs uncapped (the
+    JVM and Node reserve multi-gigabyte virtual address space and are bounded by
+    other means) must stay uncapped, or it fails to start at all.
     """
     identity = _drop_to_unprivileged()
+    uid, gid = identity if identity else (0, 0)
     # The submission's working directory must be reachable by the unprivileged
-    # child; mkdtemp creates it 0700 owned by root.
+    # child; mkdtemp creates it 0700 owned by the caller.
     if identity:
         with contextlib.suppress(OSError):
             os.chmod(cwd, 0o777)
@@ -181,20 +214,24 @@ async def run_in_sandbox(
         # timeout can kill grandchildren too — a fork bomb cannot outlive it.
         "start_new_session": True,
     }
-    if identity:
-        kwargs["user"] = identity[0]
-        kwargs["group"] = identity[1]
-        kwargs["extra_groups"] = []
 
-    # rlimits are applied by a launcher that execs the real interpreter. It
-    # runs on the same interpreter as the API so it is present in every image.
+    # rlimits and the privilege drop are applied by a launcher that execs the
+    # real interpreter. It runs on the same interpreter as the API so it is
+    # present in every image.
     launcher = _launcher_path(Path(cwd))
+    # 0 means "run uncapped" and must stay that way: giving the JVM an
+    # address-space limit stops it before main runs.
+    address_space = _address_space_limit_for(cmd[0])
+    if address_space and address_space_bytes is not None:
+        address_space = address_space_bytes
     launcher_cmd = [
         sys.executable,
         str(launcher),
-        str(_address_space_limit_for(cmd[0])),
+        str(address_space),
         str(cpu_sec),
         str(_RLIMIT_FSIZE_BYTES),
+        str(uid),
+        str(gid),
         *cmd,
     ]
 
@@ -242,8 +279,14 @@ async def run_in_sandbox(
 async def _collect(
     proc: asyncio.subprocess.Process, budget: int
 ) -> tuple[bytes, bytes, bool]:
-    out, out_over = await _read_capped(proc.stdout, budget)
-    err, err_over = await _read_capped(proc.stderr, budget)
+    # Both pipes are drained concurrently. Reading stdout to completion first
+    # wedges a child that fills the stderr buffer (~64 KB) while stdout is still
+    # open; the wait_for then fires and the run is labelled TLE when the real
+    # cause is output overflow.
+    (out, out_over), (err, err_over) = await asyncio.gather(
+        _read_capped(proc.stdout, budget),
+        _read_capped(proc.stderr, budget),
+    )
     await proc.wait()
     return out, err, (out_over or err_over)
 
@@ -262,8 +305,18 @@ async def _kill_tree(proc: asyncio.subprocess.Process) -> None:
 
 
 # Compilation is far heavier than a single test run, so it gets its own budget.
-_COMPILE_TIMEOUT_SEC = 90.0
-_COMPILE_CPU_SEC = 30
+# The heaviest harness in the bank (permutations) compiles in ~14s at -O1 and
+# ~51s at -O2; -O1 keeps optimisation while making the compile 3.7x cheaper, and
+# these caps sit well above it.
+_COMPILE_TIMEOUT_SEC = 120.0
+_COMPILE_CPU_SEC = 60
+
+# Compilers get far more address space than a submission does. `g++` peaks
+# around 540 MB on the largest harness here, so the 512 MB a run is held to
+# turns a valid submission into "cc1plus: out of memory allocating ..." — a
+# Compile Error for code that is correct. The container's own memory limit is
+# the real ceiling; this only has to avoid being the binding constraint.
+_COMPILE_AS_BYTES = 1536 * 1024 * 1024
 
 
 def _summarise_compile_error(stdout: str, stderr: str) -> str:
@@ -343,7 +396,7 @@ async def _run_compiled(
                     test_results=[],
                     compile_output="g++ is not installed on this runner.",
                 )
-            compile_cmd = [compiler, "-std=c++17", "-O2", "-o", "solution", "solution.cpp"]
+            compile_cmd = [compiler, "-std=c++17", "-O1", "-o", "solution", "solution.cpp"]
             run_cmd = [str(tmp_path / "solution")]
     except UnsupportedTypeError as err:
         return JudgeResult(
@@ -360,6 +413,7 @@ async def _run_compiled(
         cwd=str(tmp_path),
         timeout_sec=_COMPILE_TIMEOUT_SEC,
         cpu_sec=_COMPILE_CPU_SEC,
+        address_space_bytes=_COMPILE_AS_BYTES,
     )
     if build_timed_out:
         return JudgeResult(
@@ -427,6 +481,7 @@ async def _run_compiled(
 # signatures.json type -> per-language spellings.
 _TYPES: dict[str, dict[str, str]] = {
     "int": {"java": "int", "cpp": "int"},
+    "long": {"java": "long", "cpp": "long long"},
     "double": {"java": "double", "cpp": "double"},
     "boolean": {"java": "boolean", "cpp": "bool"},
     "String": {"java": "String", "cpp": "std::string"},
@@ -434,6 +489,7 @@ _TYPES: dict[str, dict[str, str]] = {
     "List<String>": {"java": "String[]", "cpp": "std::vector<std::string>"},
     "List<List<Integer>>": {"java": "int[][]", "cpp": "std::vector<std::vector<int>>"},
     "List<List<String>>": {"java": "String[][]", "cpp": "std::vector<std::vector<std::string>>"},
+    "TreeNode": {"java": "TreeNode", "cpp": "TreeNode*"},
 }
 
 SUPPORTED_TYPES = set(_TYPES)
@@ -441,6 +497,7 @@ SUPPORTED_TYPES = set(_TYPES)
 # Java serializer method names, one per type.
 _JAVA_SER = {
     "int": "serInt",
+    "long": "serLong",
     "double": "serDbl",
     "boolean": "serBool",
     "String": "serStr",
@@ -448,11 +505,16 @@ _JAVA_SER = {
     "List<String>": "serStrs",
     "List<List<Integer>>": "serIntGrid",
     "List<List<String>>": "serStrGrid",
+    "TreeNode": "serTree",
 }
 
-# C++ serializer function names, one per type.
+# C++ serializer function names, one per type. The tree helpers are prefixed
+# because the learner's code sits in the same translation unit and `buildTree`
+# is a plausible name for them to pick — in Java the same helpers are members of
+# Main and cannot collide with a method on Solution.
 _CPP_SER = {
     "int": "serInt",
+    "long": "serLong",
     "double": "serDbl",
     "boolean": "serBool",
     "String": "serStr",
@@ -460,6 +522,7 @@ _CPP_SER = {
     "List<String>": "serStrs",
     "List<List<Integer>>": "serIntGrid",
     "List<List<String>>": "serStrGrid",
+    "TreeNode": "meritSerTree",
 }
 
 
@@ -484,6 +547,8 @@ def _java_literal(type_name: str, value: Any) -> str:
     _check(type_name)
     if type_name == "int":
         return str(int(value))
+    if type_name == "long":
+        return f"{int(value)}L"
     if type_name == "double":
         return repr(float(value))
     if type_name == "boolean":
@@ -507,10 +572,65 @@ def _java_literal(type_name: str, value: Any) -> str:
             for row in value
         )
         return f"new String[][]{{{rows}}}"
+    if type_name == "TreeNode":
+        # The level-order encoding, nulls included: a null marks an absent
+        # child, which is exactly what a node type can express and a plain
+        # int[] cannot.
+        items = ", ".join("null" if x is None else str(int(x)) for x in value)
+        return f"buildTree(new Integer[]{{{items}}})"
     raise UnsupportedTypeError(type_name)
 
 
+# Declared at the top level of Main.java, not nested inside Main, because the
+# learner's file is compiled separately: `javac Main.java Solution.java` shares
+# one package, so a nested Main.TreeNode would not resolve from Solution.java.
+_JAVA_NODE_DECL = """
+class TreeNode {
+  int val;
+  TreeNode left, right;
+  TreeNode(int val) { this.val = val; }
+}
+"""
+
 _JAVA_HELPERS = """
+  static TreeNode buildTree(Integer[] a) {
+    if (a.length == 0 || a[0] == null) return null;
+    // Index-addressed, not a BFS queue: the stored encoding places index i's
+    // children at 2i+1 and 2i+2, and every reference solution reads it that
+    // way. A queue that skips nulls decodes a different tree whenever the gaps
+    // are interior, e.g. [1, null, 2, null, null, 3].
+    TreeNode[] nodes = new TreeNode[a.length];
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != null) nodes[i] = new TreeNode(a[i]);
+    }
+    for (int i = 0; i < a.length; i++) {
+      if (nodes[i] == null) continue;
+      int left = 2 * i + 1, right = 2 * i + 2;
+      if (left < a.length) nodes[i].left = nodes[left];
+      if (right < a.length) nodes[i].right = nodes[right];
+    }
+    return nodes[0];
+  }
+  static String serTree(TreeNode root) {
+    if (root == null) return "null";
+    java.util.List<String> parts = new java.util.ArrayList<>();
+    java.util.Deque<Object[]> frontier = new java.util.LinkedList<>();
+    frontier.add(new Object[]{root, 0});
+    while (!frontier.isEmpty()) {
+      Object[] item = frontier.poll();
+      TreeNode node = (TreeNode) item[0];
+      int i = (Integer) item[1];
+      while (parts.size() <= i) parts.add("null");
+      parts.set(i, String.valueOf(node.val));
+      if (node.left != null) frontier.add(new Object[]{node.left, 2 * i + 1});
+      if (node.right != null) frontier.add(new Object[]{node.right, 2 * i + 2});
+    }
+    // Trailing nulls describe positions past the last real node, and the stored
+    // expectations trim exactly those.
+    int end = parts.size();
+    while (end > 0 && parts.get(end - 1).equals("null")) end--;
+    return "[" + String.join(",", parts.subList(0, end)) + "]";
+  }
   static String esc(String s) {
     StringBuilder b = new StringBuilder();
     for (int i = 0; i < s.length(); i++) {
@@ -530,6 +650,7 @@ _JAVA_HELPERS = """
   }
   static String quoted(String s) { return "\\"" + esc(s) + "\\""; }
   static String serInt(int v) { return String.valueOf(v); }
+  static String serLong(long v) { return Long.toString(v); }
   static String serDbl(double v) { return Double.toString(v); }
   static String serBool(boolean v) { return v ? "true" : "false"; }
   static String serStr(String v) { return v == null ? "null" : quoted(v); }
@@ -616,45 +737,62 @@ def java_sources(
             args_json = '"[]"'
 
         blocks.append(
-            f"""    {{
+            f"""  static String runCase{index}() {{
+    Solution sol = new Solution();
 {chr(10).join(declarations)}
-      {java_return} expected = {_java_literal(return_type, tc.get("expected"))};
-      long started = System.nanoTime();
-      String actualJson = "null";
-      String error = null;
-      boolean passed = false;
-      try {{
-        {java_return} actual = sol.{function_name}({", ".join(call_args)});
-        actualJson = {serialize_return}(actual);
-        passed = actualJson.equals({serialize_return}(expected));
-      }} catch (Throwable thrown) {{
-        error = thrown.getClass().getSimpleName() + ": " + String.valueOf(thrown.getMessage());
-      }}
-      double runtimeMs = (System.nanoTime() - started) / 1e6;
-      total += runtimeMs;
-      if (caseIndex++ > 0) sb.append(",");
-      sb.append("{{\\"label\\":").append(quoted({json.dumps(label)}))
-        .append(",\\"passed\\":").append(passed)
-        .append(",\\"input\\":").append({args_json})
-        .append(",\\"expected\\":").append({serialize_return}(expected))
-        .append(",\\"actual\\":").append(actualJson)
-        .append(",\\"runtime_ms\\":").append(serRuntime(runtimeMs))
-        .append(",\\"error\\":").append(error == null ? "null" : quoted(error))
-        .append("}}");
-    }}"""
+    {java_return} expected = {_java_literal(return_type, tc.get("expected"))};
+    long started = System.nanoTime();
+    String actualJson = "null";
+    String error = null;
+    boolean passed = false;
+    try {{
+      {java_return} actual = sol.{function_name}({", ".join(call_args)});
+      actualJson = {serialize_return}(actual);
+      passed = actualJson.equals({serialize_return}(expected));
+    }} catch (Throwable thrown) {{
+      error = thrown.getClass().getSimpleName() + ": " + String.valueOf(thrown.getMessage());
+    }}
+    double runtimeMs = (System.nanoTime() - started) / 1e6;
+    totalRuntime += runtimeMs;
+    StringBuilder sb = new StringBuilder();
+    sb.append("{{\\"label\\":").append(quoted({json.dumps(label)}))
+      .append(",\\"passed\\":").append(passed)
+      .append(",\\"input\\":").append({args_json})
+      .append(",\\"expected\\":").append({serialize_return}(expected))
+      .append(",\\"actual\\":").append(actualJson)
+      .append(",\\"runtime_ms\\":").append(serRuntime(runtimeMs))
+      .append(",\\"error\\":").append(error == null ? "null" : quoted(error))
+      .append("}}");
+    return sb.toString();
+  }}"""
         )
+
+    # One method per case, not one run of blocks inside main. A problem whose
+    # expected answers are large (every permutation, every subset) overflows the
+    # JVM's 64 KB limit on a single method, and the class fails to compile no
+    # matter what the learner wrote. Each case fits comfortably on its own.
+    if test_cases:
+        appends = ["    sb.append(runCase0());"]
+        appends += [
+            f'    sb.append(",").append(runCase{i}());' for i in range(1, len(test_cases))
+        ]
+    else:
+        appends = []
 
     driver = f"""import java.util.*;
 
+{_JAVA_NODE_DECL}
+
 public class Main {{
 {_JAVA_HELPERS}
-  public static void main(String[] args) {{
-    Solution sol = new Solution();
-    StringBuilder sb = new StringBuilder("{{\\"results\\":[");
-    double total = 0.0;
-    int caseIndex = 0;
+  static double totalRuntime = 0.0;
+
 {chr(10).join(blocks)}
-    sb.append("],\\"totalRuntime\\":").append(serRuntime(total)).append("}}");
+
+  public static void main(String[] args) {{
+    StringBuilder sb = new StringBuilder("{{\\"results\\":[");
+{chr(10).join(appends)}
+    sb.append("],\\"totalRuntime\\":").append(serRuntime(totalRuntime)).append("}}");
     System.out.println(sb);
   }}
 }}
@@ -669,6 +807,8 @@ def _cpp_literal(type_name: str, value: Any) -> str:
     _check(type_name)
     if type_name == "int":
         return str(int(value))
+    if type_name == "long":
+        return f"{int(value)}LL"
     if type_name == "double":
         return repr(float(value))
     if type_name == "boolean":
@@ -692,8 +832,62 @@ def _cpp_literal(type_name: str, value: Any) -> str:
             for row in value
         )
         return f"std::vector<std::vector<std::string>>{{{rows}}}"
+    if type_name == "TreeNode":
+        items = ", ".join("std::nullopt" if x is None else str(int(x)) for x in value)
+        return f"meritBuildTree({{{items}}})"
     raise UnsupportedTypeError(type_name)
 
+
+# Emitted before the learner's code, because their signature names TreeNode and
+# C++ needs the declaration above the use.
+_CPP_NODE_DECL = """
+struct TreeNode {
+  int val;
+  TreeNode* left = nullptr;
+  TreeNode* right = nullptr;
+  TreeNode(int v) : val(v) {}
+};
+
+static TreeNode* meritBuildTree(std::initializer_list<std::optional<int>> a) {
+  std::vector<std::optional<int>> v(a);
+  if (v.empty() || !v[0].has_value()) return nullptr;
+  // Index-addressed, matching the stored encoding and every reference solution:
+  // index i's children are at 2i+1 and 2i+2. A BFS queue that skips nulls
+  // decodes a different tree whenever the gaps are interior.
+  std::vector<TreeNode*> nodes(v.size(), nullptr);
+  for (size_t i = 0; i < v.size(); i++) {
+    if (v[i].has_value()) nodes[i] = new TreeNode(*v[i]);
+  }
+  for (size_t i = 0; i < v.size(); i++) {
+    if (!nodes[i]) continue;
+    size_t left = 2 * i + 1, right = 2 * i + 2;
+    if (left < v.size()) nodes[i]->left = nodes[left];
+    if (right < v.size()) nodes[i]->right = nodes[right];
+  }
+  return nodes[0];
+}
+
+static std::string meritSerTree(TreeNode* root) {
+  if (!root) return "null";
+  std::vector<std::string> parts;
+  std::deque<std::pair<TreeNode*, size_t>> frontier;
+  frontier.push_back({root, 0});
+  while (!frontier.empty()) {
+    auto [node, i] = frontier.front();
+    frontier.pop_front();
+    while (parts.size() <= i) parts.push_back("null");
+    parts[i] = std::to_string(node->val);
+    if (node->left) frontier.push_back({node->left, 2 * i + 1});
+    if (node->right) frontier.push_back({node->right, 2 * i + 2});
+  }
+  // Trailing nulls describe positions past the last real node, and the stored
+  // expectations trim exactly those.
+  while (!parts.empty() && parts.back() == "null") parts.pop_back();
+  std::string out = "[";
+  for (size_t k = 0; k < parts.size(); k++) { if (k) out += ","; out += parts[k]; }
+  return out + "]";
+}
+"""
 
 _CPP_HELPERS = """
 static std::string esc(const std::string& s) {
@@ -714,6 +908,7 @@ static std::string esc(const std::string& s) {
 }
 static std::string jsonStr(const std::string& s) { return "\\"" + esc(s) + "\\""; }
 static std::string serInt(int v) { return std::to_string(v); }
+static std::string serLong(long long v) { return std::to_string(v); }
 static std::string serDbl(double v) {
   std::ostringstream o;
   o << std::setprecision(17) << v;
@@ -815,6 +1010,8 @@ def cpp_source(
     return f"""#include <bits/stdc++.h>
 using namespace std;
 
+{_CPP_NODE_DECL}
+
 {code}
 
 {_CPP_HELPERS}
@@ -841,7 +1038,7 @@ async def execute_code(
     signature: dict[str, Any] | None = None,
 ) -> JudgeResult:
     """Executes code against test cases in an isolated sandbox."""
-    if len(code.encode("utf-8")) > 64 * 1024:
+    if len(code.encode("utf-8")) > MAX_CODE_BYTES:
         return JudgeResult(
             verdict="CE",
             runtime_ms=0,

@@ -77,7 +77,7 @@ def _upstream_error() -> HTTPException:
 
 def _bad_url() -> HTTPException:
     return HTTPException(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
         detail={"code": "TUTOR_BAD_URL", "message": "Tutor provider URL is not allowed."},
     )
 

@@ -150,7 +150,7 @@ def review_question(
     action = request.action.lower()
     if action not in {"approved", "rejected", "edited"}:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "code": "INVALID_ACTION",
                 "message": "Action must be approved, rejected, or edited",
@@ -199,7 +199,7 @@ def review_problem(
     action = request.action.lower()
     if action not in {"approved", "rejected"}:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={"code": "INVALID_ACTION", "message": "Action must be approved or rejected"},
         )
 

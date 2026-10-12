@@ -203,11 +203,26 @@ async def execute(
 
     if resp.status_code >= 400:
         logger.warning("Judge service error %s: %s", resp.status_code, resp.text[:200])
+        # FastAPI carries the reason in `detail`, and it is the useful signal:
+        # "Unsupported language 'java'" names a stale service, where a generic
+        # message sends the reader looking in the wrong place. The verdict is
+        # still RE — nothing was graded.
+        detail = ""
+        try:
+            payload = resp.json()
+            if isinstance(payload, dict):
+                detail = str(payload.get("detail") or "")
+        except ValueError:
+            detail = ""
         return JudgeResult(
             verdict="RE",
             runtime_ms=0,
             test_results=[],
-            compile_output="The code runner failed to process this submission.",
+            compile_output=(
+                f"The code runner failed to process this submission ({detail})."
+                if detail
+                else "The code runner failed to process this submission."
+            ),
         )
 
     data = resp.json()

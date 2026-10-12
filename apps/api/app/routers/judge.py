@@ -49,7 +49,7 @@ def _get_verified_problem(db: Session, slug: str) -> Problem:
         or DUNDER_NAME_RE.match(problem.function_name)
     ):
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "code": "INVALID_FUNCTION_NAME",
                 "message": "Problem function name is not a valid identifier.",
@@ -68,7 +68,7 @@ async def run_samples(
 
     if not req.code.strip():
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "code": "EMPTY_CODE",
                 "message": "Code must not be empty.",
@@ -130,7 +130,7 @@ async def submit_solution(
 
     if not req.code.strip():
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail={
                 "code": "EMPTY_CODE",
                 "message": "Submitted code must not be empty.",

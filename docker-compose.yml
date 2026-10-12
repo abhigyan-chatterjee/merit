@@ -37,7 +37,7 @@ services:
       #   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
       - DATABASE_URL=${DATABASE_URL:-sqlite:////data/merit.db}
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
-      - CORS_ORIGINS=["http://localhost", "http://localhost:80", "http://127.0.0.1"]
+      - CORS_ORIGINS=["http://localhost", "http://127.0.0.1", "https://merit.nullbit.in"]
       # OAuth (empty = disabled with 501; set on VPS, never commit).
       - CLERK_JWKS_URL=${CLERK_JWKS_URL:-}
       - CLERK_AUDIENCE=${CLERK_AUDIENCE:-}
@@ -53,7 +53,7 @@ services:
       # client and surfaces as "could not be reached".
       - JUDGE_URL=${JUDGE_URL:-}
       - JUDGE_HEAVY_URL=${JUDGE_HEAVY_URL:-}
-      - JUDGE_TIMEOUT_SEC=${JUDGE_TIMEOUT_SEC:-60}
+      - JUDGE_TIMEOUT_SEC=${JUDGE_TIMEOUT_SEC:-180}
       - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
     volumes:
       - merit-data:/data

@@ -4,6 +4,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.schemas.judge import SUPPORTED_LANGUAGES
+
 
 def validate_local_date(v: str | None) -> str | None:
     if v is None:
@@ -147,8 +149,13 @@ class SettingsUpdate(BaseModel):
     @field_validator("preferred_language")
     @classmethod
     def validate_lang(cls, v: str | None) -> str | None:
-        if v is not None and v not in {"javascript", "python"}:
-            raise ValueError("preferred_language must be javascript or python")
+        # The same set the judge accepts, imported rather than repeated: a
+        # language the editor offers but this rejects would fail on save, and
+        # one this accepts but the judge rejects would fail on submit.
+        if v is not None and v not in SUPPORTED_LANGUAGES:
+            raise ValueError(
+                f"preferred_language must be one of: {', '.join(sorted(SUPPORTED_LANGUAGES))}"
+            )
         return v
 
 

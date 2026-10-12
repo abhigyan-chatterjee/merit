@@ -3,8 +3,8 @@
 > **"Step through the execution, not the explanation. Make the merit list."**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-merit.nullbit.in-00E599?style=flat-square&logo=googlechrome&logoColor=white)](https://merit.nullbit.in)
-[![API Tests](https://img.shields.io/badge/API%20Tests-121%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
-[![Web Tests](https://img.shields.io/badge/Web%20Tests-138%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
+[![API Tests](https://img.shields.io/badge/API%20Tests-153%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
+[![Web Tests](https://img.shields.io/badge/Web%20Tests-223%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
 [![Verified Problems](https://img.shields.io/badge/Problem%20Bank-140%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
@@ -27,7 +27,8 @@ graph TD
     
     subgraph Application Stack
         API["Merit API (FastAPI + SQLAlchemy 2.0)"]
-        Judge["Cloud Run Judge (Python / JavaScript, isolated)"]
+        JudgeLight["Cloud Run judge-light (Python / JavaScript, isolated)"]
+        JudgeHeavy["Cloud Run judge-heavy (Java / C++ — compiles before it runs)"]
         DB[(Neon Serverless Postgres / SQLite)]
     end
     
@@ -40,7 +41,8 @@ graph TD
     Client -->|HTTPS Traffic| Caddy
     Caddy -->|Reverse Proxy| API
     API -->|Dialect-Aware Queries| DB
-    API -->|Authenticated Invoke| Judge
+    API -->|Authenticated Invoke| JudgeLight
+    API -->|Authenticated Invoke| JudgeHeavy
     API -->|Sanitized Streaming Proxy| LLM
     API -->|In-App Bug Reports| GitHubAPI
 ```
@@ -69,7 +71,7 @@ graph TD
   * HackerRank-style sidebar navigator with answered/flagged/visited question states.
 
 ### 3. Curated Problem Bank & Practice Modules
-* **140 Verified Problems**: Spanning 17 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions.
+* **140 Verified Problems**: Spanning 17 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions, and typed starter code for all four judged languages (Python, JavaScript, Java, C++).
 * **Continuous Doubly-Linked Sequences**: Seamless "Next in Category" navigation ordered strictly by pedagogical difficulty (`Easy` $\rightarrow$ `Medium` $\rightarrow$ `Hard`).
 * **539 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
 
@@ -92,7 +94,8 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 | :--- | :---: | :---: | :--- |
 | **merit-api** | `350MB` | `200MB` | FastAPI uvicorn worker, SQLAlchemy ORM, and rate-limiting |
 | **merit-web** | `64MB` | `32MB` | Production Nginx serving gzip-compressed single-page app |
-| **Cloud Run judge** | — | — | Sandboxed Python/JavaScript execution, off-host in its own container |
+| **Cloud Run judge-light** | — | — | Sandboxed Python / JavaScript execution, off-host in its own container |
+| **Cloud Run judge-heavy** | — | — | Adds JDK and g++, so Java and C++ compile before they run |
 | **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, Caddy TLS terminator, other host apps |
 
 * **Total Memory Budget**: Stack caps itself at **414MB**, leaving ample headroom on a 1GB host.
@@ -111,14 +114,14 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 │   │   │   ├── routers/     # Auth, Judge, Quizzes, Tutor, Feedback, Progress
 │   │   │   ├── schemas/     # Pydantic validation schemas
 │   │   │   └── seed.py      # Problem and question seed loaders
-│   │   └── tests/           # 121 Pytest unit and integration tests
+│   │   └── tests/           # 153 Pytest unit and integration tests
 │   └── web/                 # React 19 single-page application
 │       ├── src/
 │       │   ├── components/  # Modals, Navbars, CodeRunner, QuizEngine, Tutor
 │       │   ├── pages/       # Problems, Exams, Dashboard, Profile, Landing
 │       │   ├── visualizers/ # 12 interactive canvas algorithm engines
 │       │   └── store/       # Auth & Progress state contexts
-│       └── tests/           # 138 Vitest component tests
+│       └── tests/           # 223 Vitest component tests
 ├── content/
 │   ├── problems/            # 140 authored problem JSON specifications
 │   ├── questions/           # 539 verified multiple-choice question datasets
@@ -169,13 +172,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Running Test Suites
 
-### Backend Unit & Integration Tests (121 tests)
+### Backend Unit & Integration Tests (153 tests)
 ```bash
 cd apps/api
 pytest -q
 ```
 
-### Frontend Component & Route Tests (138 tests)
+### Frontend Component & Route Tests (223 tests)
 ```bash
 cd apps/web
 npm test

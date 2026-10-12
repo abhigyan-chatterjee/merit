@@ -1,9 +1,9 @@
 # Merit Platform Launch & Hardening Verification Checklist
 
-**Date of Execution:** 2026-09-09
-**Platform Status:** PRODUCTION READY
-**Repository Branch:** `scope/extension`
-**Commit Level:** Verified across scope extension P1–P8
+**Date of Execution:** 2026-09-09, re-verified 2026-10-07
+**Platform Status:** LIVE — `merit.nullbit.in`, judge on Cloud Run (light + heavy)
+**Repository Branch:** `main`
+**Commit Level:** Re-verified after the four-language pass, the two-tier judge split, and the content-integrity sweep
 
 ---
 
@@ -27,13 +27,13 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 
 | Layer | Verification Gate | Status | Evidence / Artifact |
 |---|---|---|---|
-| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 12 tests across visualizers, auth, code runner, quiz engine, admin |
+| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 223 tests across 39 files (visualizers, auth, code runner, quiz engine, admin) |
 | **Frontend Build** | Vite production bundle & Route chunking | **PASSED** | Code-split into lazy route chunks with Suspense fallbacks |
 | **Correctness Defects** | D1–D12 Base Audit defects | **100% RESOLVED** | Verified: node-based BST/Heap, SVG scaling, dedicated visualizers |
 | **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Lax, Secure cookies; strict sub claim validation |
 | **User Data Isolation** | Server-side user_id filtering authz matrix | **PASSED** | `apps/api/tests/test_authz.py` asserts complete cross-user isolation |
 | **Sandboxed Judge** | Cloud Run judge service replacing `new Function()` | **PASSED** | Runs in its own container with no secrets/database, zero browser code evaluation |
-| **Content Bank** | 885 Unique verified questions & 42 original problems | **PASSED** | `python3 content/validators/run_all.py` (42/42 AC, 885 verified) |
+| **Content Bank** | 539 verified questions & 140 original problems | **PASSED** | `content/validators/run_all.py` (140/140 AC, 539 verified / 341 unique) |
 | **Adaptive Quizzes** | 50-exposure no-repeat window & server-side snapshots | **PASSED** | `test_quizzes.py` confirms no answer leakage + 404 on unknown topics; 20s auto-advance |
 | **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | Foundation, Targeted, Mastery (summaries + reading links per step) |
 | **Placement Features** | Spaced-repetition revision queue & Timed mock exam | **PASSED** | 20 MCQ + 2 coding exams (7 types incl. 3h full mock); rolling weak areas |
@@ -93,7 +93,7 @@ Platform is ready for deployment.
 
 ---
 
-## 5. Deploy-day runbook (owner executes on the 1GB VPS — no live deploy yet)
+## 5. Deploy-day runbook (owner executes on the 1GB VPS)
 
 Playwright e2e IS configured in this repo (`apps/web/playwright.config.ts`
 + `apps/web/e2e/*.spec.ts`), so the automated e2e step below stands. If it
@@ -127,11 +127,14 @@ docker compose config   # must parse clean
 docker compose up -d --build
 docker compose ps
 # Judge runs on Cloud Run and needs no container here. Wire it up first:
-#   ./apps/judge/deploy.sh bootstrap && ./apps/judge/deploy.sh deploy
-#   then set JUDGE_URL + GOOGLE_APPLICATION_CREDENTIALS in the compose-root .env
+#   ./apps/judge/deploy.sh bootstrap
+#   ./apps/judge/deploy.sh deploy && TIER=heavy ./apps/judge/deploy.sh deploy
+#   then set JUDGE_URL + JUDGE_HEAVY_URL + GOOGLE_APPLICATION_CREDENTIALS in the
+#   repo-root .env (compose reads that file, not apps/api/.env).
 # See docs/cloud-run-judge.md.
-curl -s localhost:2000/api/v2/runtimes | grep -o '"language":"[a-z+]*"'
-# expect ONLY "python" and "javascript"
+# The deployed tiers must accept the languages the editor offers: an out-of-date
+# light service rejects Java outright with "Unsupported language 'java'".
+curl -s -o /dev/null -w "judge %{http_code}\n" "$JUDGE_URL/health"   # 403 = up, unauthenticated
 ```
 
 ### 5.4 Migrate + seed (Neon is empty at cutover; idempotent re-runs)
@@ -147,7 +150,9 @@ DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 - [ ] `curl -s https://<vps-host>/api/v1/health` → `{"status":"ok",...}`
 - [ ] Register via UI (or `POST /api/v1/auth/register`) → 201 + cookies
 - [ ] Clerk login (Google/GitHub) → linked/created, cookies issued
-- [ ] Solve one problem (Python AND JavaScript) → real verdict row
+- [ ] Solve one problem in Python, JavaScript, Java and C++ → real verdict rows
+      (Java/C++ require `JUDGE_HEAVY_URL`; a wrong return type must come back as a
+      Compile Error, never a Wrong Answer)
 - [ ] Generate + submit a quiz → graded, no answer leakage pre-submit
 - [ ] Start + submit a timed mock exam → score recorded
 - [ ] Tutor panel WITHOUT a key → mocked/offline path, no crash; with a
@@ -158,7 +163,9 @@ DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 
 ```bash
 cd /home/ubuntu/merit/apps/web && npx playwright test
-# expect all specs green (smoke, auth, judge, progress)
+# expects: clerk-setup + chromium projects green across smoke.spec.ts,
+# browse.spec.ts and judge.spec.ts. Neither the judge nor the browser specs need
+# Clerk; auth.spec.ts skips itself unless CLERK_TEST_EMAIL/PASSWORD are exported.
 ```
 
 ### 5.7 Backup drill
