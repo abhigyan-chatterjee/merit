@@ -9,17 +9,12 @@
     {
       "input": "s = \"3+2*2\"",
       "output": "7",
-      "explanation": "Multiplication has higher precedence than addition: 2 * 2 = 4, then 3 + 4 = 7."
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
       "input": "s = \" 3/2 \"",
       "output": "1",
-      "explanation": "Whitespace is ignored, and 3 / 2 evaluates to 1 after truncating toward zero."
-    },
-    {
-      "input": "s = \" 3+5 / 2 \"",
-      "output": "5",
-      "explanation": "Division takes precedence: 5 / 2 truncates to 2, then 3 + 2 = 5."
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -41,7 +36,9 @@
   ],
   "starterCode": {
     "javascript": "function calculate(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def calculate(s):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def calculate(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int calculate(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int calculate(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "calculate",
   "timeLimitMs": 2000,
@@ -227,174 +224,6 @@
         "48 * 71+88+88 * 99"
       ],
       "expected": 12208,
-      "isSample": false
-    },
-    {
-      "label": "edge-min-1",
-      "input": [
-        "b"
-      ],
-      "expected": 0,
-      "isSample": false
-    },
-    {
-      "label": "edge-max-2",
-      "input": [
-        "yx"
-      ],
-      "expected": 0,
-      "isSample": false
-    },
-    {
-      "label": "random-3",
-      "input": [
-        "cb2b0aab"
-      ],
-      "expected": 20,
-      "isSample": false
-    },
-    {
-      "label": "random-4",
-      "input": [
-        "x2a2x20"
-      ],
-      "expected": 2220,
-      "isSample": false
-    },
-    {
-      "label": "random-5",
-      "input": [
-        "1yac0zyc"
-      ],
-      "expected": 10,
-      "isSample": false
-    },
-    {
-      "label": "random-6",
-      "input": [
-        "zbb0bzz"
-      ],
-      "expected": 0,
-      "isSample": false
-    },
-    {
-      "label": "random-7",
-      "input": [
-        "ya12b0b2yzxbaxybxb0y"
-      ],
-      "expected": 12020,
-      "isSample": false
-    },
-    {
-      "label": "random-8",
-      "input": [
-        "zczzxybc2xc10y2"
-      ],
-      "expected": 2102,
-      "isSample": false
-    },
-    {
-      "label": "random-9",
-      "input": [
-        "zaxaz0yb"
-      ],
-      "expected": 0,
-      "isSample": false
-    },
-    {
-      "label": "random-10",
-      "input": [
-        "zx101cy"
-      ],
-      "expected": 101,
-      "isSample": false
-    },
-    {
-      "label": "random-11",
-      "input": [
-        "x22y0"
-      ],
-      "expected": 220,
-      "isSample": false
-    },
-    {
-      "label": "random-12",
-      "input": [
-        "0zxc21babcc0b0012y2"
-      ],
-      "expected": 21000122,
-      "isSample": false
-    },
-    {
-      "label": "random-13",
-      "input": [
-        "2yzby0c1ay2c2by2xczc22"
-      ],
-      "expected": 20122222,
-      "isSample": false
-    },
-    {
-      "label": "random-14",
-      "input": [
-        "z"
-      ],
-      "expected": 0,
-      "isSample": false
-    },
-    {
-      "label": "random-15",
-      "input": [
-        "abzyxaxbb1b2cc12"
-      ],
-      "expected": 1212,
-      "isSample": false
-    },
-    {
-      "label": "random-16",
-      "input": [
-        "y20x2x"
-      ],
-      "expected": 202,
-      "isSample": false
-    },
-    {
-      "label": "random-17",
-      "input": [
-        "y0z121bxxbza2xxabaxbazb"
-      ],
-      "expected": 1212,
-      "isSample": false
-    },
-    {
-      "label": "stress-18",
-      "input": [
-        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
-      ],
-      "expected": 1.211000010210112e+43,
-      "isSample": false
-    },
-    {
-      "label": "stress-19",
-      "input": [
-        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
-      ],
-      "expected": 2.2101202220200005e+37,
-      "isSample": false
-    },
-    {
-      "label": "stress-20",
-      "input": [
-        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
-      ],
-      "expected": 1.1121211001002116e+55,
-      "isSample": false
-    },
-    {
-      "label": "stress-21",
-      "input": [
-        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
-      ],
-      "expected": 1.2110020201010221e+39,
       "isSample": false
     }
   ],

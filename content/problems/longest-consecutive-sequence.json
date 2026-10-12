@@ -31,17 +31,21 @@
     {
       "title": "Sort & Linear Scan",
       "complexity": "Time: O(n log n) | Space: O(n)",
-      "code": "function solve(nums) {\n  if (!nums.length) return 0;\n  const s = [...new Set(nums)].sort((a, b) => a - b);\n  let best = 1, cur = 1;\n  for (let i = 1; i < s.length; i++) {\n    if (s[i] === s[i - 1] + 1) { cur++; best = Math.max(best, cur); }\n    else cur = 1;\n  }\n  return best;\n}"
+      "code": "function solve(nums) {\n  if (!nums.length) return 0;\n  const s = [...new Set(nums)].sort((a, b) => a - b);\n  let best = 1, cur = 1;\n  for (let i = 1; i < s.length; i++) {\n    if (s[i] === s[i - 1] + 1) { cur++; best = Math.max(best, cur); }\n    else cur = 1;\n  }\n  return best;\n}",
+      "language": "javascript"
     },
     {
       "title": "Hash Set Streak Starts",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(nums) {\n  const seen = new Set(nums);\n  let best = 0;\n  for (const n of seen) {\n    if (!seen.has(n - 1)) {\n      let cur = 1, x = n;\n      while (seen.has(x + 1)) { x++; cur++; }\n      best = Math.max(best, cur);\n    }\n  }\n  return best;\n}"
+      "code": "function solve(nums) {\n  const seen = new Set(nums);\n  let best = 0;\n  for (const n of seen) {\n    if (!seen.has(n - 1)) {\n      let cur = 1, x = n;\n      while (seen.has(x + 1)) { x++; cur++; }\n      best = Math.max(best, cur);\n    }\n  }\n  return best;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

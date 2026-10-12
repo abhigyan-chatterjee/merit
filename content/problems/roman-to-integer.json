@@ -32,17 +32,21 @@
     {
       "title": "Right-to-Left Max Tracking",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0, maxSeen = 0;\n  for (let i = s.length - 1; i >= 0; i--) {\n    if (v[s[i]] >= maxSeen) { total += v[s[i]]; maxSeen = v[s[i]]; }\n    else total -= v[s[i]];\n  }\n  return total;\n}"
+      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0, maxSeen = 0;\n  for (let i = s.length - 1; i >= 0; i--) {\n    if (v[s[i]] >= maxSeen) { total += v[s[i]]; maxSeen = v[s[i]]; }\n    else total -= v[s[i]];\n  }\n  return total;\n}",
+      "language": "javascript"
     },
     {
       "title": "Left-to-Right Subtractive Peek",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0;\n  for (let i = 0; i < s.length; i++) {\n    const cur = v[s[i]], next = v[s[i + 1]] || 0;\n    if (cur < next) total -= cur;\n    else total += cur;\n  }\n  return total;\n}"
+      "code": "function solve(s) {\n  const v = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };\n  let total = 0;\n  for (let i = 0; i < s.length; i++) {\n    const cur = v[s[i]], next = v[s[i + 1]] || 0;\n    if (cur < next) total -= cur;\n    else total += cur;\n  }\n  return total;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

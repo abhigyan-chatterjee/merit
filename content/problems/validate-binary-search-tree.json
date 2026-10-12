@@ -28,17 +28,21 @@
     {
       "title": "Recursive Range Validation",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(arr) {\n  function valid(i, min, max) {\n    if (i >= arr.length || arr[i] === null) return true;\n    if (arr[i] <= min || arr[i] >= max) return false;\n    return valid(2 * i + 1, min, arr[i]) && valid(2 * i + 2, arr[i], max);\n  }\n  return valid(0, -Infinity, Infinity);\n}"
+      "code": "function solve(arr) {\n  function valid(i, min, max) {\n    if (i >= arr.length || arr[i] === null) return true;\n    if (arr[i] <= min || arr[i] >= max) return false;\n    return valid(2 * i + 1, min, arr[i]) && valid(2 * i + 2, arr[i], max);\n  }\n  return valid(0, -Infinity, Infinity);\n}",
+      "language": "javascript"
     },
     {
       "title": "Inorder Monotonic Check",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(arr) {\n  const inorder = [];\n  function dfs(i) {\n    if (i >= arr.length || arr[i] === null) return;\n    dfs(2 * i + 1);\n    inorder.push(arr[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  for (let i = 1; i < inorder.length; i++) if (inorder[i] <= inorder[i-1]) return false;\n  return true;\n}"
+      "code": "function solve(arr) {\n  const inorder = [];\n  function dfs(i) {\n    if (i >= arr.length || arr[i] === null) return;\n    dfs(2 * i + 1);\n    inorder.push(arr[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  for (let i = 1; i < inorder.length; i++) if (inorder[i] <= inorder[i-1]) return false;\n  return true;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(tree,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(TreeNode tree) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool solve(TreeNode* tree) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

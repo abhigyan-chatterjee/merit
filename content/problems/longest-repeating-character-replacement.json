@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function characterReplacement(s, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def characterReplacement(s, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def characterReplacement(s, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int characterReplacement(String s, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int characterReplacement(std::string s, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "characterReplacement",
   "timeLimitMs": 2000,

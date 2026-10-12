@@ -86,6 +86,8 @@ export interface Problem {
   hints: string[];
   solutions: ProblemSolution[];
   starterCode: string;
+  starterCodeJava: string;
+  starterCodeCpp: string;
   functionName: string;
   testCases: TestCase[];
   sequence?: number | null;
@@ -155,9 +157,9 @@ def wire_sequences() -> int:
 
 
 def render_problem(data: dict) -> str:
-    starter = data.get("starterCode", "")
-    if isinstance(starter, dict):
-        starter = starter.get("javascript", "")
+    starter_raw = data.get("starterCode", "")
+    starters = starter_raw if isinstance(starter_raw, dict) else {}
+    starter = starters.get("javascript", "") if starters else starter_raw
 
     lines = [
         "  {",
@@ -196,6 +198,14 @@ def render_problem(data: dict) -> str:
         lines.append("      },")
     lines.append("    ],")
     lines.append(f"    starterCode: {ts_string(starter)},")
+    # Required, not optional: the editor offers Java and C++ on every problem, so
+    # a missing starter is a problem with no runnable code in that language.
+    # Failing here names the problem; emitting nothing would surface much later
+    # as an empty editor.
+    for lang, field in (("java", "starterCodeJava"), ("cpp", "starterCodeCpp")):
+        if not starters.get(lang):
+            raise ValueError(f"{data['slug']}: no {lang} starter code to bundle")
+        lines.append(f"    {field}: {ts_string(starters[lang])},")
     lines.append(f"    functionName: {ts_string(data.get('functionName', 'solve'))},")
     if data.get("sequence") is not None:
         lines.append(f"    sequence: {int(data['sequence'])},")

@@ -29,17 +29,21 @@
     {
       "title": "Two-Pass Length Calculation",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(head, n) {\n  const idx = head.length - n;\n  return head.filter((_, i) => i !== idx);\n}"
+      "code": "function solve(head, n) {\n  const idx = head.length - n;\n  return head.filter((_, i) => i !== idx);\n}",
+      "language": "javascript"
     },
     {
       "title": "Single-Pass Two Pointers",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(head, n) {\n  const res = [...head];\n  res.splice(res.length - n, 1);\n  return res;\n}"
+      "code": "function solve(head, n) {\n  const res = [...head];\n  res.splice(res.length - n, 1);\n  return res;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(head, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] head, int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> head, int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

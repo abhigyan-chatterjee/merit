@@ -28,17 +28,21 @@
     {
       "title": "Sort & Scan Neighbor",
       "complexity": "Time: O(n log n) | Space: O(1)",
-      "code": "function solve(nums) {\n  nums.sort((a,b) => a - b);\n  for (let i = 1; i < nums.length; i++) if (nums[i] === nums[i-1]) return true;\n  return false;\n}"
+      "code": "function solve(nums) {\n  nums.sort((a,b) => a - b);\n  for (let i = 1; i < nums.length; i++) if (nums[i] === nums[i-1]) return true;\n  return false;\n}",
+      "language": "javascript"
     },
     {
       "title": "Hash Set Early Exit",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(nums) {\n  return new Set(nums).size !== nums.length;\n}"
+      "code": "function solve(nums) {\n  return new Set(nums).size !== nums.length;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

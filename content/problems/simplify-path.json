@@ -9,17 +9,12 @@
     {
       "input": "path = \"/home/\"",
       "output": "\"/home\"",
-      "explanation": "Trailing slashes are removed in the canonical path format."
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
       "input": "path = \"/../\"",
       "output": "\"/\"",
-      "explanation": "Going up one level from the root directory '/' stays at the root."
-    },
-    {
-      "input": "path = \"/a/./b/../../c/\"",
-      "output": "\"/c\"",
-      "explanation": "'.' means current directory and '..' moves up one level. From '/a/b', going up twice returns to '/', then entering 'c' produces '/c'."
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -41,7 +36,9 @@
   ],
   "starterCode": {
     "javascript": "function simplifyPath(path) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def simplifyPath(path):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def simplifyPath(path):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String simplifyPath(String path) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string simplifyPath(std::string path) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "simplifyPath",
   "timeLimitMs": 2000,
@@ -219,174 +216,6 @@
         "//ab/x/../../y1/"
       ],
       "expected": "/y1",
-      "isSample": false
-    },
-    {
-      "label": "edge-min-1",
-      "input": [
-        "b"
-      ],
-      "expected": "/b",
-      "isSample": false
-    },
-    {
-      "label": "edge-max-2",
-      "input": [
-        "yx"
-      ],
-      "expected": "/yx",
-      "isSample": false
-    },
-    {
-      "label": "random-3",
-      "input": [
-        "cb2b0aab"
-      ],
-      "expected": "/cb2b0aab",
-      "isSample": false
-    },
-    {
-      "label": "random-4",
-      "input": [
-        "x2a2x20"
-      ],
-      "expected": "/x2a2x20",
-      "isSample": false
-    },
-    {
-      "label": "random-5",
-      "input": [
-        "1yac0zyc"
-      ],
-      "expected": "/1yac0zyc",
-      "isSample": false
-    },
-    {
-      "label": "random-6",
-      "input": [
-        "zbb0bzz"
-      ],
-      "expected": "/zbb0bzz",
-      "isSample": false
-    },
-    {
-      "label": "random-7",
-      "input": [
-        "ya12b0b2yzxbaxybxb0y"
-      ],
-      "expected": "/ya12b0b2yzxbaxybxb0y",
-      "isSample": false
-    },
-    {
-      "label": "random-8",
-      "input": [
-        "zczzxybc2xc10y2"
-      ],
-      "expected": "/zczzxybc2xc10y2",
-      "isSample": false
-    },
-    {
-      "label": "random-9",
-      "input": [
-        "zaxaz0yb"
-      ],
-      "expected": "/zaxaz0yb",
-      "isSample": false
-    },
-    {
-      "label": "random-10",
-      "input": [
-        "zx101cy"
-      ],
-      "expected": "/zx101cy",
-      "isSample": false
-    },
-    {
-      "label": "random-11",
-      "input": [
-        "x22y0"
-      ],
-      "expected": "/x22y0",
-      "isSample": false
-    },
-    {
-      "label": "random-12",
-      "input": [
-        "0zxc21babcc0b0012y2"
-      ],
-      "expected": "/0zxc21babcc0b0012y2",
-      "isSample": false
-    },
-    {
-      "label": "random-13",
-      "input": [
-        "2yzby0c1ay2c2by2xczc22"
-      ],
-      "expected": "/2yzby0c1ay2c2by2xczc22",
-      "isSample": false
-    },
-    {
-      "label": "random-14",
-      "input": [
-        "z"
-      ],
-      "expected": "/z",
-      "isSample": false
-    },
-    {
-      "label": "random-15",
-      "input": [
-        "abzyxaxbb1b2cc12"
-      ],
-      "expected": "/abzyxaxbb1b2cc12",
-      "isSample": false
-    },
-    {
-      "label": "random-16",
-      "input": [
-        "y20x2x"
-      ],
-      "expected": "/y20x2x",
-      "isSample": false
-    },
-    {
-      "label": "random-17",
-      "input": [
-        "y0z121bxxbza2xxabaxbazb"
-      ],
-      "expected": "/y0z121bxxbza2xxabaxbazb",
-      "isSample": false
-    },
-    {
-      "label": "stress-18",
-      "input": [
-        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
-      ],
-      "expected": "/xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb",
-      "isSample": false
-    },
-    {
-      "label": "stress-19",
-      "input": [
-        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
-      ],
-      "expected": "/2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay",
-      "isSample": false
-    },
-    {
-      "label": "stress-20",
-      "input": [
-        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
-      ],
-      "expected": "/x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx",
-      "isSample": false
-    },
-    {
-      "label": "stress-21",
-      "input": [
-        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
-      ],
-      "expected": "/zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c",
       "isSample": false
     }
   ],

@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function maxSlidingWindow(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def maxSlidingWindow(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def maxSlidingWindow(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> maxSlidingWindow(std::vector<int> nums, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "maxSlidingWindow",
   "timeLimitMs": 2000,

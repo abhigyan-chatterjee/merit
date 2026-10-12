@@ -29,17 +29,21 @@
     {
       "title": "Visited-Set Walk",
       "complexity": "Time: O(m * n) | Space: O(m * n)",
-      "code": "function solve(matrix) {\n  const out = [];\n  const seen = new Set();\n  const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];\n  let r = 0, c = 0, d = 0;\n  for (let k = 0; k < matrix.length * matrix[0].length; k++) {\n    out.push(matrix[r][c]);\n    seen.add(r + ',' + c);\n    const nr = r + dirs[d][0], nc = c + dirs[d][1];\n    if (nr < 0 || nc < 0 || nr >= matrix.length || nc >= matrix[0].length || seen.has(nr + ',' + nc)) d = (d + 1) % 4;\n    r += dirs[d][0]; c += dirs[d][1];\n  }\n  return out;\n}"
+      "code": "function solve(matrix) {\n  const out = [];\n  const seen = new Set();\n  const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];\n  let r = 0, c = 0, d = 0;\n  for (let k = 0; k < matrix.length * matrix[0].length; k++) {\n    out.push(matrix[r][c]);\n    seen.add(r + ',' + c);\n    const nr = r + dirs[d][0], nc = c + dirs[d][1];\n    if (nr < 0 || nc < 0 || nr >= matrix.length || nc >= matrix[0].length || seen.has(nr + ',' + nc)) d = (d + 1) % 4;\n    r += dirs[d][0]; c += dirs[d][1];\n  }\n  return out;\n}",
+      "language": "javascript"
     },
     {
       "title": "Boundary Shrinking Layers",
       "complexity": "Time: O(m * n) | Space: O(1)",
-      "code": "function solve(matrix) {\n  const out = [];\n  if (!matrix.length) return out;\n  let top = 0, bottom = matrix.length - 1, left = 0, right = matrix[0].length - 1;\n  while (top <= bottom && left <= right) {\n    for (let c = left; c <= right; c++) out.push(matrix[top][c]);\n    top++;\n    for (let r = top; r <= bottom; r++) out.push(matrix[r][right]);\n    right--;\n    if (top <= bottom) {\n      for (let c = right; c >= left; c--) out.push(matrix[bottom][c]);\n      bottom--;\n    }\n    if (left <= right) {\n      for (let r = bottom; r >= top; r--) out.push(matrix[r][left]);\n      left++;\n    }\n  }\n  return out;\n}"
+      "code": "function solve(matrix) {\n  const out = [];\n  if (!matrix.length) return out;\n  let top = 0, bottom = matrix.length - 1, left = 0, right = matrix[0].length - 1;\n  while (top <= bottom && left <= right) {\n    for (let c = left; c <= right; c++) out.push(matrix[top][c]);\n    top++;\n    for (let r = top; r <= bottom; r++) out.push(matrix[r][right]);\n    right--;\n    if (top <= bottom) {\n      for (let c = right; c >= left; c--) out.push(matrix[bottom][c]);\n      bottom--;\n    }\n    if (left <= right) {\n      for (let r = bottom; r >= top; r--) out.push(matrix[r][left]);\n      left++;\n    }\n  }\n  return out;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(matrix) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[][] matrix) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<std::vector<int>> matrix) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

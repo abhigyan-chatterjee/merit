@@ -27,7 +27,7 @@
   },
   "balanced-binary-tree": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "boolean"
   },
@@ -60,19 +60,19 @@
   },
   "binary-tree-level-order-traversal": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "List<List<Integer>>"
   },
   "binary-tree-maximum-path-sum": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "int"
   },
   "binary-tree-right-side-view": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "List<Integer>"
   },
@@ -101,14 +101,14 @@
       "List<Integer>",
       "int"
     ],
-    "returnType": "List<Object>"
+    "returnType": "List<List<Integer>>"
   },
   "construct-from-preorder-inorder": {
     "params": [
       "List<Integer>",
       "List<Integer>"
     ],
-    "returnType": "List<Integer>"
+    "returnType": "TreeNode"
   },
   "container-with-most-water": {
     "params": [
@@ -130,7 +130,7 @@
   },
   "count-good-nodes": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "int"
   },
@@ -228,7 +228,7 @@
   },
   "flatten-binary-tree-preorder": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "List<Integer>"
   },
@@ -313,7 +313,7 @@
   },
   "kth-smallest-element-in-a-bst": {
     "params": [
-      "List<Integer>",
+      "TreeNode",
       "int"
     ],
     "returnType": "int"
@@ -340,7 +340,7 @@
     "params": [
       "String"
     ],
-    "returnType": "List<Object>"
+    "returnType": "List<String>"
   },
   "linked-list-cycle": {
     "params": [
@@ -388,7 +388,7 @@
   },
   "lowest-common-ancestor-bst": {
     "params": [
-      "List<Integer>",
+      "TreeNode",
       "int",
       "int"
     ],
@@ -396,7 +396,7 @@
   },
   "lowest-common-ancestor-of-a-binary-tree": {
     "params": [
-      "List<Integer>",
+      "TreeNode",
       "int",
       "int"
     ],
@@ -423,7 +423,7 @@
   },
   "maximum-depth-of-binary-tree": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "int"
   },
@@ -447,7 +447,7 @@
   },
   "meeting-rooms-ii": {
     "params": [
-      "List<Object>"
+      "List<List<Integer>>"
     ],
     "returnType": "int"
   },
@@ -518,7 +518,7 @@
   },
   "number-of-1-bits": {
     "params": [
-      "int"
+      "long"
     ],
     "returnType": "int"
   },
@@ -638,9 +638,9 @@
   },
   "reverse-bits": {
     "params": [
-      "int"
+      "long"
     ],
-    "returnType": "int"
+    "returnType": "long"
   },
   "reverse-linked-list": {
     "params": [
@@ -684,8 +684,8 @@
   },
   "same-tree": {
     "params": [
-      "List<Integer>",
-      "List<Integer>"
+      "TreeNode",
+      "TreeNode"
     ],
     "returnType": "boolean"
   },
@@ -731,9 +731,9 @@
   },
   "sort-an-array": {
     "params": [
-      "List<Object>"
+      "List<Integer>"
     ],
-    "returnType": "List<Object>"
+    "returnType": "List<Integer>"
   },
   "sort-colors": {
     "params": [
@@ -762,7 +762,7 @@
   },
   "subsets": {
     "params": [
-      "List<Object>"
+      "List<Integer>"
     ],
     "returnType": "List<List<Integer>>"
   },
@@ -775,7 +775,7 @@
   },
   "sum-root-to-leaf-numbers": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "int"
   },
@@ -793,7 +793,7 @@
   },
   "symmetric-tree": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "boolean"
   },
@@ -808,7 +808,7 @@
     "params": [
       "List<Integer>"
     ],
-    "returnType": "List<Object>"
+    "returnType": "List<List<Integer>>"
   },
   "top-k-frequent-elements": {
     "params": [
@@ -819,7 +819,7 @@
   },
   "trapping-rain-water": {
     "params": [
-      "List<Object>"
+      "List<Integer>"
     ],
     "returnType": "int"
   },
@@ -871,15 +871,15 @@
   },
   "validate-binary-search-tree": {
     "params": [
-      "List<Integer>"
+      "TreeNode"
     ],
     "returnType": "boolean"
   },
   "wiggle-sort-ii-lite": {
     "params": [
-      "List<Object>"
+      "List<Integer>"
     ],
-    "returnType": "List<Object>"
+    "returnType": "List<Integer>"
   },
   "word-break": {
     "params": [

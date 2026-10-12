@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function search(nums, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def search(nums, target):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def search(nums, target):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int search(int[] nums, int target) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int search(std::vector<int> nums, int target) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "search",
   "timeLimitMs": 2000,

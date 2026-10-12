@@ -30,17 +30,21 @@
     {
       "title": "Quadratic Prefix Sums",
       "complexity": "Time: O(n\u00b2) | Space: O(1)",
-      "code": "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}"
+      "code": "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}",
+      "language": "javascript"
     },
     {
       "title": "Kadane's Linear Scan",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(nums) {\n  let curr = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    best = Math.max(best, curr);\n  }\n  return best;\n}"
+      "code": "function solve(nums) {\n  let curr = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    best = Math.max(best, curr);\n  }\n  return best;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

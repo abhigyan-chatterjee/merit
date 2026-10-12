@@ -28,17 +28,21 @@
     {
       "title": "Level-by-Level Reversal",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(arr) {\n  const res = [];\n  let levelSize = 1, idx = 0;\n  while (idx < arr.length) {\n    const slice = arr.slice(idx, idx + levelSize).reverse();\n    res.push(...slice);\n    idx += levelSize;\n    levelSize *= 2;\n  }\n  return res;\n}"
+      "code": "function solve(arr) {\n  const res = [];\n  let levelSize = 1, idx = 0;\n  while (idx < arr.length) {\n    const slice = arr.slice(idx, idx + levelSize).reverse();\n    res.push(...slice);\n    idx += levelSize;\n    levelSize *= 2;\n  }\n  return res;\n}",
+      "language": "javascript"
     },
     {
       "title": "DFS Swap Children",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}"
+      "code": "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(treeArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

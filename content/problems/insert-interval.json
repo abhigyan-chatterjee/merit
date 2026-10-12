@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function insert(intervals, newInterval) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def insert(intervals, newInterval):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def insert(intervals, newInterval):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> insert(std::vector<std::vector<int>> intervals, std::vector<int> newInterval) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "insert",
   "timeLimitMs": 2000,

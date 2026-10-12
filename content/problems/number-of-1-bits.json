@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function hammingWeight(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def hammingWeight(n):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def hammingWeight(n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int hammingWeight(long n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int hammingWeight(long long n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "hammingWeight",
   "timeLimitMs": 2000,

@@ -17,7 +17,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from content.validators.signature_types import load_problems  # noqa: E402
-from content.validators.verify_signatures import _check_one  # noqa: E402
+from content.validators.verify_signatures import check_one  # noqa: E402
 
 BATCH_DIR = _REPO_ROOT / ".signature-batches"
 PROBLEMS_DIR = _REPO_ROOT / "content" / "problems"
@@ -45,15 +45,11 @@ def main() -> int:
     for slug in sorted(set(problems) & set(authored)):
         errors: list[str] = []
         ambiguous: list[str] = []
-        _check_one(slug, problems[slug], authored[slug], errors, ambiguous)
+        check_one(slug, problems[slug], authored[slug], errors, ambiguous)
         if errors:
             gate_errors[slug] = errors
 
-    notes = {s: e["note"] for s, e in authored.items() if e.get("note")}
-    review_flagged = sorted(
-        s for s, e in authored.items()
-        if e.get("note")
-    )
+    review_flagged = sorted(s for s, e in authored.items() if e.get("note"))
 
     out = {
         "authored": authored,
@@ -66,7 +62,7 @@ def main() -> int:
     for slug, errs in list(gate_errors.items())[:20]:
         for e in errs:
             print(f"  - {slug}: {e}")
-    print(f"author flags a note: {len(notes)} -> {review_flagged}")
+    print(f"author flags a note: {len(review_flagged)} -> {review_flagged}")
     print(f"\nwrote {BATCH_DIR / 'validation_input.json'}")
     return 0
 

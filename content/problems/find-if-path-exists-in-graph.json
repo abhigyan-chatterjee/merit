@@ -28,17 +28,21 @@
     {
       "title": "BFS Shortest Path Queue",
       "complexity": "Time: O(V + E) | Space: O(V + E)",
-      "code": "function solve(n, edges, source, destination) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) { adj[u].push(v); adj[v].push(u); }\n  const visited = new Set([source]);\n  const q = [source];\n  while (q.length) {\n    const curr = q.shift();\n    if (curr === destination) return true;\n    for (const next of adj[curr]) {\n      if (!visited.has(next)) { visited.add(next); q.push(next); }\n    }\n  }\n  return false;\n}"
+      "code": "function solve(n, edges, source, destination) {\n  const adj = Array.from({ length: n }, () => []);\n  for (const [u, v] of edges) { adj[u].push(v); adj[v].push(u); }\n  const visited = new Set([source]);\n  const q = [source];\n  while (q.length) {\n    const curr = q.shift();\n    if (curr === destination) return true;\n    for (const next of adj[curr]) {\n      if (!visited.has(next)) { visited.add(next); q.push(next); }\n    }\n  }\n  return false;\n}",
+      "language": "javascript"
     },
     {
       "title": "Disjoint Set Union (DSU)",
       "complexity": "Time: O(E \u03b1(V)) | Space: O(V)",
-      "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}"
+      "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(n, edges, source, destination) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(int n, int[][] edges, int source, int destination) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool solve(int n, std::vector<std::vector<int>> edges, int source, int destination) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

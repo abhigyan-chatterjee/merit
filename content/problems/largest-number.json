@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function largestNumber(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def largestNumber(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def largestNumber(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String largestNumber(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::string largestNumber(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "largestNumber",
   "timeLimitMs": 2000,

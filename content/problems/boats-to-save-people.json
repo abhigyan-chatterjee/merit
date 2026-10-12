@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function numRescueBoats(people, limit) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def numRescueBoats(people, limit):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def numRescueBoats(people, limit):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int numRescueBoats(int[] people, int limit) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int numRescueBoats(std::vector<int> people, int limit) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "numRescueBoats",
   "timeLimitMs": 2000,

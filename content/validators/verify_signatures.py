@@ -40,8 +40,10 @@ from content.validators.signature_types import (  # noqa: E402
     LIST_LIST_INT,
     LIST_LIST_STRING,
     LIST_LIST_LIST_INT,
+    LONG,
     STRING,
     STRING_LIST,
+    TREE_NODE,
     UNKNOWN,
     ObservedType,
     infer_problem_types,
@@ -52,6 +54,7 @@ from content.validators.signature_types import (  # noqa: E402
 # `int` is NOT compatible with `double`: that strictness is the point.
 _COMPATIBLE: dict[str, set[str]] = {
     INT: {INT},
+    LONG: {LONG},
     DOUBLE: {DOUBLE},
     BOOLEAN: {BOOLEAN},
     STRING: {STRING},
@@ -61,6 +64,12 @@ _COMPATIBLE: dict[str, set[str]] = {
     LIST_LIST_STRING: {LIST_LIST_STRING},
     LIST_LIST_LIST_INT: {LIST_LIST_LIST_INT},
     "List<Object>": {"List<Object>"},
+    # A tree is compatible with data seen as a plain int list: a tree with no
+    # absent children serialises without a single null, so the node decoding is
+    # correct there too. The reverse does not hold — declaring List<Integer> for
+    # data that does contain a null is what made the tree problems unrunnable,
+    # and must keep failing.
+    TREE_NODE: {TREE_NODE, INT_LIST},
 }
 
 KNOWN_TYPES = set(_COMPATIBLE) | {UNKNOWN}
@@ -80,7 +89,7 @@ def _describe(t: ObservedType) -> str:
     return t.name
 
 
-def _check_one(
+def check_one(
     slug: str,
     problem: dict[str, Any],
     sig: Any,
@@ -214,7 +223,7 @@ def verify_signatures(signatures_path: Path, problems_dir: Path) -> int:
         errors.append(f"{slug}: signature declared but no such verified problem exists")
 
     for slug in sorted(set(signatures) & set(problems)):
-        _check_one(slug, problems[slug], signatures[slug], errors, ambiguous)
+        check_one(slug, problems[slug], signatures[slug], errors, ambiguous)
 
     total = len(problems)
     if errors:

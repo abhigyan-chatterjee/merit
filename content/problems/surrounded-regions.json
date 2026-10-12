@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function solve(board) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def solve(board):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(board):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String[][] solve(String[][] board) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<std::string>> solve(std::vector<std::vector<std::string>> board) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "timeLimitMs": 2000,
@@ -254,21 +256,19 @@
       "input": [
         [
           [
-            [
-              "X",
-              "X",
-              "O"
-            ],
-            [
-              "X",
-              "X",
-              "X"
-            ],
-            [
-              "X",
-              "X",
-              "O"
-            ]
+            "X",
+            "X",
+            "O"
+          ],
+          [
+            "X",
+            "X",
+            "X"
+          ],
+          [
+            "X",
+            "X",
+            "O"
           ]
         ]
       ],
@@ -276,7 +276,17 @@
         [
           "X",
           "X",
+          "O"
+        ],
+        [
+          "X",
+          "X",
           "X"
+        ],
+        [
+          "X",
+          "X",
+          "O"
         ]
       ],
       "isSample": false
@@ -286,25 +296,31 @@
       "input": [
         [
           [
-            [
-              "X",
-              "X",
-              "X",
-              "X"
-            ],
-            [
-              "X",
-              "X",
-              "X",
-              "O"
-            ]
+            "X",
+            "X",
+            "X",
+            "X"
+          ],
+          [
+            "X",
+            "X",
+            "X",
+            "O"
           ]
         ]
       ],
       "expected": [
         [
           "X",
+          "X",
+          "X",
           "X"
+        ],
+        [
+          "X",
+          "X",
+          "X",
+          "O"
         ]
       ],
       "isSample": false
@@ -314,39 +330,55 @@
       "input": [
         [
           [
-            [
-              "X",
-              "O",
-              "O",
-              "X"
-            ],
-            [
-              "X",
-              "O",
-              "O",
-              "O"
-            ],
-            [
-              "X",
-              "X",
-              "O",
-              "X"
-            ],
-            [
-              "X",
-              "O",
-              "X",
-              "O"
-            ]
+            "X",
+            "O",
+            "O",
+            "X"
+          ],
+          [
+            "X",
+            "O",
+            "O",
+            "O"
+          ],
+          [
+            "X",
+            "X",
+            "O",
+            "X"
+          ],
+          [
+            "X",
+            "O",
+            "X",
+            "O"
           ]
         ]
       ],
       "expected": [
         [
           "X",
-          "X",
-          "X",
+          "O",
+          "O",
           "X"
+        ],
+        [
+          "X",
+          "O",
+          "O",
+          "O"
+        ],
+        [
+          "X",
+          "X",
+          "O",
+          "X"
+        ],
+        [
+          "X",
+          "O",
+          "X",
+          "O"
         ]
       ],
       "isSample": false
@@ -356,18 +388,19 @@
       "input": [
         [
           [
-            [
-              "O",
-              "O",
-              "X",
-              "O"
-            ]
+            "O",
+            "O",
+            "X",
+            "O"
           ]
         ]
       ],
       "expected": [
         [
-          "X"
+          "O",
+          "O",
+          "X",
+          "O"
         ]
       ],
       "isSample": false
@@ -377,27 +410,31 @@
       "input": [
         [
           [
-            [
-              "X"
-            ],
-            [
-              "O"
-            ],
-            [
-              "X"
-            ],
-            [
-              "O"
-            ]
+            "X"
+          ],
+          [
+            "O"
+          ],
+          [
+            "X"
+          ],
+          [
+            "O"
           ]
         ]
       ],
       "expected": [
         [
-          "X",
-          "X",
-          "X",
           "X"
+        ],
+        [
+          "O"
+        ],
+        [
+          "X"
+        ],
+        [
+          "O"
         ]
       ],
       "isSample": false
@@ -407,51 +444,77 @@
       "input": [
         [
           [
-            [
-              "O",
-              "X",
-              "X",
-              "X",
-              "X"
-            ],
-            [
-              "O",
-              "X",
-              "X",
-              "X",
-              "O"
-            ],
-            [
-              "O",
-              "O",
-              "O",
-              "X",
-              "O"
-            ],
-            [
-              "O",
-              "X",
-              "O",
-              "X",
-              "X"
-            ],
-            [
-              "X",
-              "X",
-              "O",
-              "O",
-              "O"
-            ]
+            "O",
+            "X",
+            "X",
+            "X",
+            "X"
+          ],
+          [
+            "O",
+            "X",
+            "X",
+            "X",
+            "O"
+          ],
+          [
+            "O",
+            "O",
+            "O",
+            "X",
+            "O"
+          ],
+          [
+            "O",
+            "X",
+            "O",
+            "X",
+            "X"
+          ],
+          [
+            "X",
+            "X",
+            "O",
+            "O",
+            "O"
           ]
         ]
       ],
       "expected": [
         [
-          "X",
+          "O",
           "X",
           "X",
           "X",
           "X"
+        ],
+        [
+          "O",
+          "X",
+          "X",
+          "X",
+          "O"
+        ],
+        [
+          "O",
+          "O",
+          "O",
+          "X",
+          "O"
+        ],
+        [
+          "O",
+          "X",
+          "O",
+          "X",
+          "X"
+        ],
+        [
+          "X",
+          "X",
+          "O",
+          "O",
+          "O"
         ]
       ],
       "isSample": false

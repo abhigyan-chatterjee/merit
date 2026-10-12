@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function jump(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def jump(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def jump(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int jump(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int jump(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "jump",
   "timeLimitMs": 2000,

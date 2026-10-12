@@ -28,17 +28,21 @@
     {
       "title": "Recursive Structural Check",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) if (p[i] !== q[i]) return false;\n  return true;\n}"
+      "code": "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) if (p[i] !== q[i]) return false;\n  return true;\n}",
+      "language": "javascript"
     },
     {
       "title": "JSON Serialization Check",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}"
+      "code": "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(TreeNode p, TreeNode q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool solve(TreeNode* p, TreeNode* q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

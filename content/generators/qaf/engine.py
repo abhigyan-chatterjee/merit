@@ -64,14 +64,11 @@ def generate_instances_for_spec(
             prefix = spec.id_prefix or spec.key.replace(".", "-")
             qid = f"{prefix}-{len(questions) + 1}"
 
-        # Execute oracle
-        try:
-            computed_answer = oracle_fn(**clean_params)
-        except TypeError:
-            if len(clean_params) == 1:
-                computed_answer = oracle_fn(next(iter(clean_params.values())))
-            else:
-                raise
+        # Execute oracle. Keyword-only: specs must name their parameters, because
+        # a fallback that re-tries a single argument positionally silently
+        # rebinds an intended keyword argument for any oracle with optional
+        # parameters, and the generated answer then comes from the wrong call.
+        computed_answer = oracle_fn(**clean_params)
 
         answer_str = str(computed_answer).strip()
 

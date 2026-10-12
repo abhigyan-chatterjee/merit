@@ -28,17 +28,21 @@
     {
       "title": "1D DP Table",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(nums) {\n  if (!nums.length) return 0;\n  const dp = [0, nums[0]];\n  for (let i = 1; i < nums.length; i++) {\n    dp[i + 1] = Math.max(dp[i], dp[i - 1] + nums[i]);\n  }\n  return dp[nums.length];\n}"
+      "code": "function solve(nums) {\n  if (!nums.length) return 0;\n  const dp = [0, nums[0]];\n  for (let i = 1; i < nums.length; i++) {\n    dp[i + 1] = Math.max(dp[i], dp[i - 1] + nums[i]);\n  }\n  return dp[nums.length];\n}",
+      "language": "javascript"
     },
     {
       "title": "Two Variable Rolling DP",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}"
+      "code": "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(nums,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

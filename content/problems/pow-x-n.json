@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function myPow(x, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def myPow(x, n):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def myPow(x, n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public double myPow(double x, int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    double myPow(double x, int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "myPow",
   "timeLimitMs": 2000,

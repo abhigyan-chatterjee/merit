@@ -24,17 +24,21 @@
     {
       "title": "Recursive DFS Fill",
       "complexity": "Time: O(N) | Space: O(N)",
-      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const startColor = img[sr][sc];\n  if (startColor === color) return img;\n  function dfs(r, c) {\n    if (r<0 || c<0 || r>=img.length || c>=img[0].length || img[r][c] !== startColor) return;\n    img[r][c] = color;\n    dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n  }\n  dfs(sr, sc);\n  return img;\n}"
+      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const startColor = img[sr][sc];\n  if (startColor === color) return img;\n  function dfs(r, c) {\n    if (r<0 || c<0 || r>=img.length || c>=img[0].length || img[r][c] !== startColor) return;\n    img[r][c] = color;\n    dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n  }\n  dfs(sr, sc);\n  return img;\n}",
+      "language": "javascript"
     },
     {
       "title": "Iterative BFS Fill",
       "complexity": "Time: O(N) | Space: O(N)",
-      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  const q = [[sr, sc]]; img[sr][sc] = color;\n  while (q.length) {\n    const [r, c] = q.shift();\n    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n      const nr = r + dr, nc = c + dc;\n      if (nr>=0 && nc>=0 && nr<img.length && nc<img[0].length && img[nr][nc]===orig) {\n        img[nr][nc] = color; q.push([nr, nc]);\n      }\n    }\n  }\n  return img;\n}"
+      "code": "function solve(image, sr, sc, color) {\n  const img = image.map(r => [...r]);\n  const orig = img[sr][sc];\n  if (orig === color) return img;\n  const q = [[sr, sc]]; img[sr][sc] = color;\n  while (q.length) {\n    const [r, c] = q.shift();\n    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {\n      const nr = r + dr, nc = c + dc;\n      if (nr>=0 && nc>=0 && nr<img.length && nc<img[0].length && img[nr][nc]===orig) {\n        img[nr][nc] = color; q.push([nr, nc]);\n      }\n    }\n  }\n  return img;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(image, sr, sc, color) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] solve(int[][] image, int sr, int sc, int color) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<std::vector<int>> image, int sr, int sc, int color) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

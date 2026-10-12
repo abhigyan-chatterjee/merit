@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function levelOrder(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def levelOrder(root):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def levelOrder(root):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] levelOrder(TreeNode root) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> levelOrder(TreeNode* root) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "levelOrder",
   "timeLimitMs": 2000,

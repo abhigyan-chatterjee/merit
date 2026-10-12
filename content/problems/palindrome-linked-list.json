@@ -28,17 +28,21 @@
     {
       "title": "Array Copy Two Pointers",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(head) {\n  let l = 0, r = head.length - 1;\n  while (l < r) if (head[l++] !== head[r--]) return false;\n  return true;\n}"
+      "code": "function solve(head) {\n  let l = 0, r = head.length - 1;\n  while (l < r) if (head[l++] !== head[r--]) return false;\n  return true;\n}",
+      "language": "javascript"
     },
     {
       "title": "In-Place Half Reversal",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(head) {\n  return head.join(',') === [...head].reverse().join(',');\n}"
+      "code": "function solve(head) {\n  return head.join(',') === [...head].reverse().join(',');\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(head,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(int[] head) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::vector<int> head) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

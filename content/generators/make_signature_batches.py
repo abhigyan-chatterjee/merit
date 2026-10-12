@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -49,6 +50,20 @@ def evidence(problem: dict) -> dict:
     def shape(v):
         return classify(v).name
 
+    # A problem with no test cases has nothing to sample from. Emitting null says
+    # so; indexing `tcs[0]` would traceback mid-batch and hide every problem
+    # behind it.
+    sample_shapes: list[str] | None = None
+    sample_expected: Any = None
+    if tcs:
+        sample_shapes = [shape(a) for a in (tcs[0].get("input") or [])]
+        raw_expected = tcs[0].get("expected")
+        sample_expected = (
+            raw_expected
+            if isinstance(raw_expected, (int, float, str, bool))
+            else str(raw_expected)[:60]
+        )
+
     return {
         "slug": problem.get("slug"),
         "functionName": problem.get("functionName", "solve"),
@@ -62,10 +77,8 @@ def evidence(problem: dict) -> dict:
         "observed_params": [t.name for t in inferred["params"]],
         # A few concrete samples so the author can see the real shape rather
         # than infer it from a type name.
-        "sample_input_shapes": [shape(a) for a in (tcs[0].get("input") or [])],
-        "sample_expected": (tcs[0].get("expected")
-                            if isinstance(tcs[0].get("expected"), (int, float, str, bool))
-                            else str(tcs[0].get("expected"))[:60]),
+        "sample_input_shapes": sample_shapes,
+        "sample_expected": sample_expected,
         "has_ambiguous_int_double": inferred["returnType"].is_ambiguous_int_double,
     }
 

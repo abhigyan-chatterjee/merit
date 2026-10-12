@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function findKthLargest(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def findKthLargest(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def findKthLargest(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int findKthLargest(int[] nums, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int findKthLargest(std::vector<int> nums, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "findKthLargest",
   "timeLimitMs": 2000,

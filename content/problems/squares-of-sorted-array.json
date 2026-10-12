@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function sortedSquares(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def sortedSquares(nums):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def sortedSquares(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] sortedSquares(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> sortedSquares(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "sortedSquares",
   "timeLimitMs": 2000,

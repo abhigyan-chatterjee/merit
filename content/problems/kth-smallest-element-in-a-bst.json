@@ -28,17 +28,21 @@
     {
       "title": "Inorder Array Collection",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(tree, k) {\n  const vals = tree.filter(x => x !== null).sort((a,b) => a - b);\n  return vals[k - 1];\n}"
+      "code": "function solve(tree, k) {\n  const vals = tree.filter(x => x !== null).sort((a,b) => a - b);\n  return vals[k - 1];\n}",
+      "language": "javascript"
     },
     {
       "title": "Early-Stopping Inorder DFS",
       "complexity": "Time: O(H + k) | Space: O(H)",
-      "code": "function solve(tree, k) {\n  const sorted = [];\n  function dfs(i) {\n    if (i >= tree.length || tree[i] === null) return;\n    dfs(2 * i + 1);\n    sorted.push(tree[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  return sorted[k - 1];\n}"
+      "code": "function solve(tree, k) {\n  const sorted = [];\n  function dfs(i) {\n    if (i >= tree.length || tree[i] === null) return;\n    dfs(2 * i + 1);\n    sorted.push(tree[i]);\n    dfs(2 * i + 2);\n  }\n  dfs(0);\n  return sorted[k - 1];\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(tree, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(TreeNode tree, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(TreeNode* tree, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

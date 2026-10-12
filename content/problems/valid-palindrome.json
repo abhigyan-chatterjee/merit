@@ -28,17 +28,21 @@
     {
       "title": "Reverse String Compare",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return clean === clean.split('').reverse().join('');\n}"
+      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  return clean === clean.split('').reverse().join('');\n}",
+      "language": "javascript"
     },
     {
       "title": "Two Pointers In-Place",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) if (clean[l++] !== clean[r--]) return false;\n  return true;\n}"
+      "code": "function solve(s) {\n  const clean = s.toLowerCase().replace(/[^a-z0-9]/g, '');\n  let l = 0, r = clean.length - 1;\n  while (l < r) if (clean[l++] !== clean[r--]) return false;\n  return true;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(s,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

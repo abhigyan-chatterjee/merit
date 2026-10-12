@@ -31,17 +31,21 @@
     {
       "title": "Recursive Descent",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(s) {\n  let i = 0;\n  function decode() {\n    let out = '', num = 0;\n    while (i < s.length && s[i] !== ']') {\n      if (s[i] >= '0' && s[i] <= '9') num = num * 10 + +s[i++];\n      else if (s[i] === '[') { i++; out += decode().repeat(num); num = 0; }\n      else out += s[i++];\n    }\n    i++;\n    return out;\n  }\n  return decode();\n}"
+      "code": "function solve(s) {\n  let i = 0;\n  function decode() {\n    let out = '', num = 0;\n    while (i < s.length && s[i] !== ']') {\n      if (s[i] >= '0' && s[i] <= '9') num = num * 10 + +s[i++];\n      else if (s[i] === '[') { i++; out += decode().repeat(num); num = 0; }\n      else out += s[i++];\n    }\n    i++;\n    return out;\n  }\n  return decode();\n}",
+      "language": "javascript"
     },
     {
       "title": "Dual Stack Iteration",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(s) {\n  const countStack = [], strStack = [];\n  let cur = '', k = 0;\n  for (const ch of s) {\n    if (ch >= '0' && ch <= '9') k = k * 10 + +ch;\n    else if (ch === '[') { countStack.push(k); strStack.push(cur); cur = ''; k = 0; }\n    else if (ch === ']') { const prev = strStack.pop(), n = countStack.pop(); cur = prev + cur.repeat(n); }\n    else cur += ch;\n  }\n  return cur;\n}"
+      "code": "function solve(s) {\n  const countStack = [], strStack = [];\n  let cur = '', k = 0;\n  for (const ch of s) {\n    if (ch >= '0' && ch <= '9') k = k * 10 + +ch;\n    else if (ch === '[') { countStack.push(k); strStack.push(cur); cur = ''; k = 0; }\n    else if (ch === ']') { const prev = strStack.pop(), n = countStack.pop(); cur = prev + cur.repeat(n); }\n    else cur += ch;\n  }\n  return cur;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function lowestCommonAncestor(root, p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def lowestCommonAncestor(root, p, q):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def lowestCommonAncestor(root, p, q):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int lowestCommonAncestor(TreeNode root, int p, int q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int lowestCommonAncestor(TreeNode* root, int p, int q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "lowestCommonAncestor",
   "timeLimitMs": 2000,

@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function checkInclusion(s1, s2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def checkInclusion(s1, s2):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def checkInclusion(s1, s2):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean checkInclusion(String s1, String s2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool checkInclusion(std::string s1, std::string s2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "checkInclusion",
   "timeLimitMs": 2000,

@@ -28,17 +28,21 @@
     {
       "title": "Degree Difference Array",
       "complexity": "Time: O(V + E) | Space: O(V)",
-      "code": "function solve(n, trust) {\n  const score = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) { score[a]--; score[b]++; }\n  for (let i = 1; i <= n; i++) if (score[i] === n - 1) return i;\n  return -1;\n}"
+      "code": "function solve(n, trust) {\n  const score = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) { score[a]--; score[b]++; }\n  for (let i = 1; i <= n; i++) if (score[i] === n - 1) return i;\n  return -1;\n}",
+      "language": "javascript"
     },
     {
       "title": "Separate In/Out Arrays",
       "complexity": "Time: O(V + E) | Space: O(V)",
-      "code": "function solve(n, trust) {\n  const inD = new Array(n + 1).fill(0), outD = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) { outD[a]++; inD[b]++; }\n  for (let i = 1; i <= n; i++) if (inD[i] === n - 1 && outD[i] === 0) return i;\n  return -1;\n}"
+      "code": "function solve(n, trust) {\n  const inD = new Array(n + 1).fill(0), outD = new Array(n + 1).fill(0);\n  for (const [a, b] of trust) { outD[a]++; inD[b]++; }\n  for (let i = 1; i <= n; i++) if (inD[i] === n - 1 && outD[i] === 0) return i;\n  return -1;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(n, trust) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int n, int[][] trust) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(int n, std::vector<std::vector<int>> trust) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

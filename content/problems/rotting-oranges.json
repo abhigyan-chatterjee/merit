@@ -41,7 +41,9 @@
   ],
   "starterCode": {
     "javascript": "function orangesRotting(grid) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def orangesRotting(grid):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def orangesRotting(grid):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int orangesRotting(int[][] grid) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int orangesRotting(std::vector<std::vector<int>> grid) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "orangesRotting",
   "timeLimitMs": 2000,
@@ -172,25 +174,23 @@
       "input": [
         [
           [
-            [
-              2,
-              0,
-              0
-            ],
-            [
-              2,
-              1,
-              0
-            ],
-            [
-              0,
-              0,
-              2
-            ]
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            2
           ]
         ]
       ],
-      "expected": 0,
+      "expected": 1,
       "isSample": false
     },
     {
@@ -198,22 +198,20 @@
       "input": [
         [
           [
-            [
-              0,
-              2,
-              2,
-              2
-            ],
-            [
-              0,
-              2,
-              1,
-              0
-            ]
+            0,
+            2,
+            2,
+            2
+          ],
+          [
+            0,
+            2,
+            1,
+            0
           ]
         ]
       ],
-      "expected": 0,
+      "expected": 1,
       "isSample": false
     },
     {
@@ -221,22 +219,20 @@
       "input": [
         [
           [
-            [
-              0,
-              0
-            ],
-            [
-              0,
-              0
-            ],
-            [
-              2,
-              2
-            ],
-            [
-              0,
-              2
-            ]
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            2
           ]
         ]
       ],
@@ -248,13 +244,11 @@
       "input": [
         [
           [
-            [
-              0,
-              2,
-              2,
-              2,
-              2
-            ]
+            0,
+            2,
+            2,
+            2,
+            2
           ]
         ]
       ],
@@ -266,25 +260,23 @@
       "input": [
         [
           [
-            [
-              1
-            ],
-            [
-              0
-            ],
-            [
-              1
-            ],
-            [
-              2
-            ],
-            [
-              1
-            ]
+            1
+          ],
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            1
           ]
         ]
       ],
-      "expected": 0,
+      "expected": -1,
       "isSample": false
     },
     {
@@ -292,34 +284,32 @@
       "input": [
         [
           [
-            [
-              0,
-              0,
-              2,
-              1
-            ],
-            [
-              1,
-              1,
-              0,
-              0
-            ],
-            [
-              1,
-              0,
-              0,
-              1
-            ],
-            [
-              0,
-              1,
-              1,
-              2
-            ]
+            0,
+            0,
+            2,
+            1
+          ],
+          [
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1,
+            2
           ]
         ]
       ],
-      "expected": 0,
+      "expected": -1,
       "isSample": false
     },
     {
@@ -327,18 +317,16 @@
       "input": [
         [
           [
-            [
-              1,
-              0
-            ],
-            [
-              2,
-              1
-            ]
+            1,
+            0
+          ],
+          [
+            2,
+            1
           ]
         ]
       ],
-      "expected": 0,
+      "expected": 1,
       "isSample": false
     },
     {
@@ -346,31 +334,29 @@
       "input": [
         [
           [
-            [
-              2,
-              0,
-              1,
-              0,
-              2
-            ],
-            [
-              1,
-              2,
-              2,
-              1,
-              2
-            ],
-            [
-              0,
-              2,
-              0,
-              0,
-              2
-            ]
+            2,
+            0,
+            1,
+            0,
+            2
+          ],
+          [
+            1,
+            2,
+            2,
+            1,
+            2
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            2
           ]
         ]
       ],
-      "expected": 0,
+      "expected": 1,
       "isSample": false
     },
     {

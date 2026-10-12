@@ -30,17 +30,21 @@
     {
       "title": "BigInt Conversion",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(l1, l2) {\n  const toBig = (d) => BigInt([...d].reverse().join('') || '0');\n  const sum = (toBig(l1) + toBig(l2)).toString().split('').reverse().map(Number);\n  return sum;\n}"
+      "code": "function solve(l1, l2) {\n  const toBig = (d) => BigInt([...d].reverse().join('') || '0');\n  const sum = (toBig(l1) + toBig(l2)).toString().split('').reverse().map(Number);\n  return sum;\n}",
+      "language": "javascript"
     },
     {
       "title": "Single-Pass Carry",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(l1, l2) {\n  const out = [];\n  let carry = 0, i = 0;\n  while (i < l1.length || i < l2.length || carry) {\n    const s = (l1[i] || 0) + (l2[i] || 0) + carry;\n    carry = Math.floor(s / 10);\n    out.push(s % 10);\n    i++;\n  }\n  return out;\n}"
+      "code": "function solve(l1, l2) {\n  const out = [];\n  let carry = 0, i = 0;\n  while (i < l1.length || i < l2.length || carry) {\n    const s = (l1[i] || 0) + (l2[i] || 0) + carry;\n    carry = Math.floor(s / 10);\n    out.push(s % 10);\n    i++;\n  }\n  return out;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(l1, l2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] l1, int[] l2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> l1, std::vector<int> l2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

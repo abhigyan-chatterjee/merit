@@ -29,17 +29,21 @@
     {
       "title": "Quadratic DP Tabulation",
       "complexity": "Time: O(n\u00b2) | Space: O(n)",
-      "code": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}"
+      "code": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}",
+      "language": "javascript"
     },
     {
       "title": "Binary Search Patience Piles",
       "complexity": "Time: O(n log n) | Space: O(n)",
-      "code": "function solve(nums) {\n  const tails = [];\n  for (const x of nums) {\n    let l = 0, r = tails.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (tails[m] < x) l = m + 1; else r = m;\n    }\n    tails[l] = x;\n  }\n  return tails.length;\n}"
+      "code": "function solve(nums) {\n  const tails = [];\n  for (const x of nums) {\n    let l = 0, r = tails.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (tails[m] < x) l = m + 1; else r = m;\n    }\n    tails[l] = x;\n  }\n  return tails.length;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(nums,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

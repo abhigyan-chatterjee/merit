@@ -28,17 +28,21 @@
     {
       "title": "Recursive DFS",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(arr) {\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(depth(2 * i + 1), depth(2 * i + 2));\n  }\n  return depth(0);\n}"
+      "code": "function solve(arr) {\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(depth(2 * i + 1), depth(2 * i + 2));\n  }\n  return depth(0);\n}",
+      "language": "javascript"
     },
     {
       "title": "Iterative Level Counting",
       "complexity": "Time: O(n) | Space: O(w)",
-      "code": "function solve(arr) {\n  if (!arr.length) return 0;\n  return Math.floor(Math.log2(arr.length)) + 1;\n}"
+      "code": "function solve(arr) {\n  if (!arr.length) return 0;\n  return Math.floor(Math.log2(arr.length)) + 1;\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(treeArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(TreeNode treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(TreeNode* treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

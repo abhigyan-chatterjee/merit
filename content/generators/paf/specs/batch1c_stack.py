@@ -56,8 +56,18 @@ def _valid_baseball_ops(rng: Any, count: int) -> list[str]:
 
 
 def _valid_rpn_tokens(rng: Any, operand_count: int) -> list[str]:
-    operands = [rng.choice(_NUMBERS_POOL) for _ in range(operand_count)]
-    operators = [rng.choice(["+", "-", "*", "/"]) for _ in range(operand_count - 1)]
+    # Small operands on purpose: the tokens are shuffled, so a chain of `*` can
+    # multiply many of them together, and the problem's stated range is a signed
+    # 32-bit result. Drawing from the wide pool used elsewhere overflows it.
+    pool = [str(n) for n in range(1, 13)]
+    operands = [rng.choice(pool) for _ in range(operand_count)]
+    # No `/`: operands are shuffled, so integer division can land a zero
+    # denominator mid-expression, and the two reference implementations then
+    # disagree — JavaScript's `Math.trunc(a / 0)` is ±Infinity and folds away to
+    # a finite answer, while the Python reference returns None. Such a case has
+    # no shared answer to grade against. Division stays covered by the
+    # hand-written tokens above, where the result is known.
+    operators = [rng.choice(["+", "-", "*"]) for _ in range(operand_count - 1)]
     tokens: list[str] = [rng.choice(operands)]
     remaining_operands = operands[1:]
     remaining_ops = operators[:]
@@ -106,6 +116,31 @@ async def _build_custom_cases(
         if result.get("error") is not None or "actual" not in result:
             raise ValueError(f"Optimal implementation failed for {spec.slug}: {result.get('error')}")
         case["expected"] = result["actual"]
+
+    # A derived expectation that is absent means the harness serialised a
+    # non-JSON number: JSON has no NaN or Infinity, so both arrive as null, and
+    # a value outside the signed 32-bit range the declared return type covers is
+    # just as unusable. The generator cannot see intermediate values, so a
+    # structurally valid input can still reach one — the RPN builder emits a
+    # divide-by-zero whenever integer division produces a zero denominator, and
+    # a long enough chain of multiplications leaves the int range entirely.
+    # Such a case has no gradeable answer, so it is dropped rather than stored.
+    def gradeable(value: Any) -> bool:
+        if value is None:
+            return False
+        if isinstance(value, list):
+            return all(gradeable(v) for v in value)
+        if isinstance(value, bool):
+            return True
+        if isinstance(value, int):
+            return -(2**31) <= value <= 2**31 - 1
+        return True
+
+    dropped = [c for c in pending if not gradeable(c["expected"])]
+    if dropped:
+        print(f"  dropped {len(dropped)} ungradeable case(s) in {spec.slug}")
+        pending = [c for c in pending if gradeable(c["expected"])]
+
     check_pending = [
         {"label": c["label"], "input": list(c["input"]), "expected": c["expected"], "isSample": False}
         for c in pending
@@ -960,6 +995,16 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
             [_valid_baseball_ops(rng, 5)],
             [_valid_baseball_ops(rng, 16)],
             [_valid_baseball_ops(rng, 24)],
+            [_valid_baseball_ops(rng, 9)],
+            [_valid_baseball_ops(rng, 7)],
+            [_valid_baseball_ops(rng, 14)],
+            [_valid_baseball_ops(rng, 18)],
+            [_valid_baseball_ops(rng, 22)],
+            [_valid_baseball_ops(rng, 26)],
+            [_valid_baseball_ops(rng, 10)],
+            [_valid_baseball_ops(rng, 15)],
+            [_valid_baseball_ops(rng, 17)],
+            [_valid_baseball_ops(rng, 19)],
         ]
     elif spec.slug == "evaluate-reverse-polish-notation":
         custom_inputs = [
@@ -975,6 +1020,16 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
             [_valid_rpn_tokens(rng, 3)],
             [_valid_rpn_tokens(rng, 10)],
             [_valid_rpn_tokens(rng, 5)],
+            [_valid_rpn_tokens(rng, 7)],
+            [_valid_rpn_tokens(rng, 9)],
+            [_valid_rpn_tokens(rng, 12)],
+            [_valid_rpn_tokens(rng, 2)],
+            [_valid_rpn_tokens(rng, 11)],
+            [_valid_rpn_tokens(rng, 13)],
+            [_valid_rpn_tokens(rng, 14)],
+            [_valid_rpn_tokens(rng, 15)],
+            [_valid_rpn_tokens(rng, 16)],
+            [_valid_rpn_tokens(rng, 17)],
         ]
     elif spec.slug == "next-greater-element-i":
         universe = [-3, -1, 0, 2, 5, 9]
@@ -1044,8 +1099,16 @@ async def _build_paf_problem(spec: ProblemSpec) -> Any:
     bespoke = await _build_custom_cases(
         spec, spec.brute_force.code, spec.optimal.code, custom_inputs
     )
-    generated = await build_verified_problem(spec)
-    problem.report.test_cases = bespoke + generated.report.test_cases
+    # `problem` already holds the generic set built at the top of this function,
+    # so it is not rebuilt here. That generic set is discarded for these slugs:
+    # generate_inputs derives inputs from the declared types alone, so for a
+    # constrained domain — baseball entries, RPN tokens, an absolute path, a
+    # valid arithmetic expression, a subset relation — it emits inputs the
+    # problem itself forbids. Those cases are worse than absent: Number("c2xc…")
+    # is NaN, JSON.stringify writes NaN as "null", and the case silently grades
+    # undefined behaviour. custom_inputs exists to supply valid inputs, so it
+    # replaces the generic set rather than being prepended to it.
+    problem.report.test_cases = bespoke
     problem.report.brute_force_case_runtimes_ms = []
     problem.report.optimal_case_runtimes_ms = []
     merged: list[dict] = []

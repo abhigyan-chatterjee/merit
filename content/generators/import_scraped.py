@@ -227,6 +227,4 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--topic", type=str, default=None)
     args = ap.parse_args()
-    import hashlib  # noqa: F401 (kept for future salted ids)
-
     import_scraped(limit=args.limit, topic=args.topic)

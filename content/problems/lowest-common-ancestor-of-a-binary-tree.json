@@ -31,17 +31,21 @@
     {
       "title": "Path Lists Compare",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(arr, p, q) {\n  function findPath(i, target, path) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    const next = [...path, arr[i]];\n    if (arr[i] === target) return next;\n    return findPath(2 * i + 1, target, next) || findPath(2 * i + 2, target, next);\n  }\n  const P = findPath(0, p, []), Q = findPath(0, q, []);\n  let lca = null;\n  for (let i = 0; i < Math.min(P.length, Q.length); i++) {\n    if (P[i] === Q[i]) lca = P[i];\n    else break;\n  }\n  return lca;\n}"
+      "code": "function solve(arr, p, q) {\n  function findPath(i, target, path) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    const next = [...path, arr[i]];\n    if (arr[i] === target) return next;\n    return findPath(2 * i + 1, target, next) || findPath(2 * i + 2, target, next);\n  }\n  const P = findPath(0, p, []), Q = findPath(0, q, []);\n  let lca = null;\n  for (let i = 0; i < Math.min(P.length, Q.length); i++) {\n    if (P[i] === Q[i]) lca = P[i];\n    else break;\n  }\n  return lca;\n}",
+      "language": "javascript"
     },
     {
       "title": "Recursive Subtree Search",
       "complexity": "Time: O(n) | Space: O(h)",
-      "code": "function solve(arr, p, q) {\n  function lca(i) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    if (arr[i] === p || arr[i] === q) return arr[i];\n    const l = lca(2 * i + 1), r = lca(2 * i + 2);\n    if (l !== null && r !== null) return arr[i];\n    return l !== null ? l : r;\n  }\n  return lca(0);\n}"
+      "code": "function solve(arr, p, q) {\n  function lca(i) {\n    if (i >= arr.length || arr[i] === null || arr[i] === undefined) return null;\n    if (arr[i] === p || arr[i] === q) return arr[i];\n    const l = lca(2 * i + 1), r = lca(2 * i + 2);\n    if (l !== null && r !== null) return arr[i];\n    return l !== null ? l : r;\n  }\n  return lca(0);\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(treeArray, p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(TreeNode treeArray, int p, int q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(TreeNode* treeArray, int p, int q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

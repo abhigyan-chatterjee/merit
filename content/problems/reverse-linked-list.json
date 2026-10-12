@@ -28,17 +28,21 @@
     {
       "title": "Iterative Three Pointers",
       "complexity": "Time: O(n) | Space: O(1)",
-      "code": "function solve(arr) {\n  const res = [];\n  for (let i = arr.length - 1; i >= 0; i--) res.push(arr[i]);\n  return res;\n}"
+      "code": "function solve(arr) {\n  const res = [];\n  for (let i = arr.length - 1; i >= 0; i--) res.push(arr[i]);\n  return res;\n}",
+      "language": "javascript"
     },
     {
       "title": "Recursive Reversal",
       "complexity": "Time: O(n) | Space: O(n)",
-      "code": "function solve(arr) {\n  return [...arr].reverse();\n}"
+      "code": "function solve(arr) {\n  return [...arr].reverse();\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(headArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] headArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> headArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

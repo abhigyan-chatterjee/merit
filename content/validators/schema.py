@@ -100,6 +100,12 @@ class ProblemSchema(BaseModel):
             self.test_cases[0].is_sample = True
         if self.topic not in CATEGORY_SLUGS:
             raise ValueError(f"Unknown problem topic: {self.topic}")
+        # The two languages every problem carries. Java and C++ starters are also
+        # required, but only where it is enforceable: the bundle sync
+        # (content/generators/sync_problems_ts.py) refuses to publish a problem
+        # without them, because that is what the editor reads. It cannot be
+        # required here, because a PAF spec declared in JavaScript carries no
+        # type annotations and no typed starter can be derived from it.
         for lang in ("javascript", "python"):
             sc = self.starter_code
             if isinstance(sc, dict) and lang not in sc:

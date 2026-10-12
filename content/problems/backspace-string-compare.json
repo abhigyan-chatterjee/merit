@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function backspaceCompare(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def backspaceCompare(s, t):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def backspaceCompare(s, t):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean backspaceCompare(String s, String t) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    bool backspaceCompare(std::string s, std::string t) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "backspaceCompare",
   "timeLimitMs": 2000,

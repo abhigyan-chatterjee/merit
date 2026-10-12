@@ -24,6 +24,7 @@ from typing import Any
 # Canonical type names. These are the strings that appear in signatures.json,
 # chosen to be readable in both Java and C++ contexts.
 INT = "int"
+LONG = "long"
 DOUBLE = "double"
 BOOLEAN = "boolean"
 STRING = "String"
@@ -36,7 +37,23 @@ LIST_LIST_STRING = "List<List<String>>"
 LIST_LIST_LIST_INT = "List<List<List<Integer>>>"
 EMPTY_LIST = "List<Object>"
 MAP = "Map<String, Object>"
+TREE_NODE = "TreeNode"
 UNKNOWN = "unknown"
+
+# Types that carry a definite shape, as opposed to EMPTY_LIST (nothing observed
+# at all) and UNKNOWN (observed and contradictory). Two different members of
+# this set across test cases means the data supports neither alone.
+_CONCRETE_CONTAINERS = frozenset(
+    {
+        INT_LIST,
+        DOUBLE_LIST,
+        STRING_LIST,
+        LIST_LIST_INT,
+        LIST_LIST_STRING,
+        LIST_LIST_LIST_INT,
+        TREE_NODE,
+    }
+)
 
 
 @dataclass
@@ -103,6 +120,12 @@ def classify(value: Any) -> ObservedType:
         return ObservedType(BOOLEAN)
 
     if isinstance(value, int):
+        # A value outside signed 32-bit cannot be held by a Java int, so the
+        # declared type has to be wider. The data settles this; there is no
+        # authoring judgement to make. Unsigned 32-bit results (reverse-bits,
+        # number-of-1-bits) are exactly this case.
+        if value < -(2**31) or value > 2**31 - 1:
+            return ObservedType(LONG, samples=[value])
         return ObservedType(INT, saw_int=True, samples=[value])
 
     if isinstance(value, float):
@@ -133,10 +156,14 @@ def classify(value: Any) -> ObservedType:
         saw_int = False
         saw_double = False
         saw_integral_float = False
+        saw_null = False
 
         def walk(node: Any) -> None:
-            nonlocal saw_int, saw_double, saw_integral_float
-            if isinstance(node, bool) or node is None:
+            nonlocal saw_int, saw_double, saw_integral_float, saw_null
+            if isinstance(node, bool):
+                return
+            if node is None:
+                saw_null = True
                 return
             if isinstance(node, int):
                 saw_int = True
@@ -161,6 +188,22 @@ def classify(value: Any) -> ObservedType:
             DOUBLE if saw_double else None,
         }
         scalars = {s for s in scalars if s}
+
+        if not scalars:
+            # Every element was an empty container: nothing about the element
+            # type was observed. Falling through to the depth-appropriate int
+            # type would be a guess, and a guess here is what pins a String
+            # board to List<List<Integer>> — a signature no compiled language
+            # can emit and the data cannot justify. Report no evidence and let a
+            # case that has some decide.
+            return ObservedType(EMPTY_LIST, samples=value[:2])
+
+        if saw_null and scalars <= {INT}:
+            # An integer list holding nulls is a node encoding: the level-order
+            # form of a binary tree marks an absent child with null, and no plain
+            # int array can express that. It is the only reading under which the
+            # data has a type a compiled language can declare a parameter of.
+            return ObservedType(TREE_NODE, saw_int=True, samples=value[:2])
 
         if scalars <= {INT}:
             base = {1: INT_LIST, 2: LIST_LIST_INT, 3: LIST_LIST_LIST_INT}.get(depth)
@@ -200,6 +243,12 @@ def _merge(target: ObservedType, other: ObservedType) -> ObservedType:
     merged observation must be `double`, not whichever type happened to arrive
     first. Keeping the first name would let a genuinely-float problem be signed
     as `int`, which would reject every correct Java `double` solution.
+
+    The same reasoning applies to containers. An empty list carries no element
+    type at all, so it must never outrank a case that does supply one: `[]` on
+    the first case and `[[0]]` on the third is a List<List<Integer>> problem.
+    Letting the empty case win would pin the signature to List<Object>, which
+    no compiled language can emit a parameter type for.
     """
     target.saw_int |= other.saw_int
     target.saw_double |= other.saw_double
@@ -210,6 +259,27 @@ def _merge(target: ObservedType, other: ObservedType) -> ObservedType:
     # is representable as one, but not the reverse.
     if target.saw_double:
         target.name = DOUBLE
+    elif LONG in (target.name, other.name) and {target.name, other.name} <= {INT, LONG}:
+        # Wider wins, exactly as double wins over int: an int literal is always
+        # representable as a long, and one case needing the wider type settles it.
+        target.name = LONG
+    elif {target.name, other.name} == {TREE_NODE, INT_LIST}:
+        # A tree whose nodes all have both children serialises with no nulls at
+        # all, so the same parameter legitimately arrives as a plain int list in
+        # some cases and a null-bearing one in others. Both are the tree.
+        target.name = TREE_NODE
+    elif target.name == EMPTY_LIST and other.name not in (EMPTY_LIST, UNKNOWN):
+        # Nothing observed yet versus something observed: the observation wins.
+        target.name = other.name
+    elif (
+        other.name != EMPTY_LIST
+        and target.name != other.name
+        and target.name in _CONCRETE_CONTAINERS
+        and other.name in _CONCRETE_CONTAINERS
+    ):
+        # Two different concrete container shapes across cases: the data does
+        # not support either one alone, so say so rather than over-claim.
+        target.name = UNKNOWN
 
     for s in other.samples[:2]:
         if s not in target.samples and len(target.samples) < 3:

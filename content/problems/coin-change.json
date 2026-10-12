@@ -30,17 +30,21 @@
     {
       "title": "Bottom-Up DP Array",
       "complexity": "Time: O(amount * coins) | Space: O(amount)",
-      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}"
+      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (let a = 1; a <= amount; a++) {\n    for (const c of coins) {\n      if (a - c >= 0) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n    }\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+      "language": "javascript"
     },
     {
       "title": "BFS Shortest Coin Path",
       "complexity": "Time: O(amount * coins) | Space: O(amount)",
-      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (const c of coins) {\n    for (let a = c; a <= amount; a++) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}"
+      "code": "function solve(coins, amount) {\n  const dp = new Array(amount + 1).fill(Infinity);\n  dp[0] = 0;\n  for (const c of coins) {\n    for (let a = c; a <= amount; a++) dp[a] = Math.min(dp[a], 1 + dp[a - c]);\n  }\n  return dp[amount] === Infinity ? -1 : dp[amount];\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(coins, amount) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] coins, int amount) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> coins, int amount) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

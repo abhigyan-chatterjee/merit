@@ -28,17 +28,21 @@
     {
       "title": "Iterative Dummy Node Merge",
       "complexity": "Time: O(n + m) | Space: O(1)",
-      "code": "function solve(l1, l2) {\n  const res = [];\n  let i = 0, j = 0;\n  while (i < l1.length && j < l2.length) {\n    if (l1[i] <= l2[j]) res.push(l1[i++]);\n    else res.push(l2[j++]);\n  }\n  return res.concat(l1.slice(i)).concat(l2.slice(j));\n}"
+      "code": "function solve(l1, l2) {\n  const res = [];\n  let i = 0, j = 0;\n  while (i < l1.length && j < l2.length) {\n    if (l1[i] <= l2[j]) res.push(l1[i++]);\n    else res.push(l2[j++]);\n  }\n  return res.concat(l1.slice(i)).concat(l2.slice(j));\n}",
+      "language": "javascript"
     },
     {
       "title": "Recursive Merge",
       "complexity": "Time: O(n + m) | Space: O(n + m)",
-      "code": "function solve(l1, l2) {\n  return [...l1, ...l2].sort((a,b) => a - b);\n}"
+      "code": "function solve(l1, l2) {\n  return [...l1, ...l2].sort((a,b) => a - b);\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(l1, l2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] l1, int[] l2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> l1, std::vector<int> l2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
   "functionName": "solve",
   "testCases": [

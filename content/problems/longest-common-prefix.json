@@ -28,17 +28,21 @@
     {
       "title": "Vertical Character Scan",
       "complexity": "Time: O(S) | Space: O(1)",
-      "code": "function solve(strs) {\n  if (!strs.length) return \"\";\n  for (let i = 0; i < strs[0].length; i++) {\n    for (let j = 1; j < strs.length; j++) {\n      if (strs[j][i] !== strs[0][i]) return strs[0].slice(0, i);\n    }\n  }\n  return strs[0];\n}"
+      "code": "function solve(strs) {\n  if (!strs.length) return \"\";\n  for (let i = 0; i < strs[0].length; i++) {\n    for (let j = 1; j < strs.length; j++) {\n      if (strs[j][i] !== strs[0][i]) return strs[0].slice(0, i);\n    }\n  }\n  return strs[0];\n}",
+      "language": "javascript"
     },
     {
       "title": "Sorted First/Last Match",
       "complexity": "Time: O(n log n) | Space: O(1)",
-      "code": "function solve(strs) {\n  strs.sort();\n  const first = strs[0], last = strs[strs.length - 1];\n  let i = 0;\n  while (i < first.length && first[i] === last[i]) i++;\n  return first.slice(0, i);\n}"
+      "code": "function solve(strs) {\n  strs.sort();\n  const first = strs[0], last = strs[strs.length - 1];\n  let i = 0;\n  while (i < first.length && first[i] === last[i]) i++;\n  return first.slice(0, i);\n}",
+      "language": "javascript"
     }
   ],
   "starterCode": {
     "javascript": "function solve(strs,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String[] strs) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::vector<std::string> strs) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "solve",
   "testCases": [

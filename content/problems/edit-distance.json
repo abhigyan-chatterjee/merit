@@ -42,7 +42,9 @@
   ],
   "starterCode": {
     "javascript": "function minDistance(word1, word2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    "python": "def minDistance(word1, word2):\n    # Write your solution here\n    raise NotImplementedError\n"
+    "python": "def minDistance(word1, word2):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int minDistance(String word1, String word2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    "cpp": "class Solution {\npublic:\n    int minDistance(std::string word1, std::string word2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
   "functionName": "minDistance",
   "timeLimitMs": 2000,
