@@ -4,7 +4,7 @@
   "topic": "graphs",
   "difficulty": "Medium",
   "pattern": "graphs / Border DFS",
-  "statement": "# Surrounded Regions\n\nA rectangular board `board` holds the strings `'X'` and `'O'`. Any `'O'` cell that is not connected to the border of the board through a chain of orthogonally adjacent `'O'` cells is captured and flipped to `'X'`.\n\nAn `'O'` region survives exactly when at least one of its cells touches the border, or reaches the border through neighbouring `'O'` cells. Every other `'O'` becomes `'X'`.\n\nReturn the board after all captures are applied.\n\nConstraints: `1 <= board.length <= 8`. Every row holds only `'X'` and `'O'` strings.\n",
+  "statement": "A rectangular board `board` holds the strings `'X'` and `'O'`. Any `'O'` cell that is not connected to the border of the board through a chain of orthogonally adjacent `'O'` cells is captured and flipped to `'X'`.\n\nAn `'O'` region survives exactly when at least one of its cells touches the border, or reaches the border through neighbouring `'O'` cells. Every other `'O'` becomes `'X'`.\n\nReturn the board after all captures are applied.\n\nConstraints: `1 <= board.length <= 8`. Every row holds only `'X'` and `'O'` strings.\n",
   "examples": [
     {
       "input": "board = [[\"X\", \"X\", \"X\", \"X\"], [\"X\", \"O\", \"O\", \"X\"], [\"X\", \"X\", \"O\", \"X\"], [\"X\", \"O\", \"X\", \"X\"]]",
@@ -2609,7 +2609,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O((R * C)\u00b2) | Space: O(R * C)",
+      "complexity": "Time: O((R * C)²) | Space: O(R * C)",
       "language": "javascript",
       "code": "function solve(board) {\n  if (board.length === 0) return [];\n  const orig = board.map((row) => row.slice());\n  const g = board.map((row) => row.slice());\n  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];\n  function reachesBorder(sr, sc) {\n    const seen = new Set([sr + ',' + sc]);\n    const queue = [[sr, sc]];\n    let head = 0;\n    while (head < queue.length) {\n      const cell = queue[head++];\n      const r = cell[0];\n      const c = cell[1];\n      if (r === 0 || c === 0 || r === orig.length - 1 || c === orig[r].length - 1) return true;\n      for (const d of dirs) {\n        const nr = r + d[0];\n        const nc = c + d[1];\n        if (nr >= 0 && nc >= 0 && nr < orig.length && nc < orig[nr].length && orig[nr][nc] === 'O') {\n          const key = nr + ',' + nc;\n          if (!seen.has(key)) {\n            seen.add(key);\n            queue.push([nr, nc]);\n          }\n        }\n      }\n    }\n    return false;\n  }\n  for (let r = 0; r < orig.length; r++) {\n    for (let c = 0; c < orig[r].length; c++) {\n      if (orig[r][c] === 'O' && !reachesBorder(r, c)) g[r][c] = 'X';\n    }\n  }\n  for (let r = 0; r < g.length; r++) {\n    for (let c = 0; c < g[r].length; c++) {\n      if (g[r][c] !== 'O') g[r][c] = 'X';\n    }\n  }\n  return g;\n}",
       "isReference": false

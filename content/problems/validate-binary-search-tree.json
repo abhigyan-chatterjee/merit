@@ -94,5 +94,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"
-  ]
+  ],
+  "editorial": {
+    "approach": "Recursive DFS with range bounds (min_val, max_val): a node is valid if its value satisfies min_val < node.val < max_val. Recursively check that the left child satisfies (min_val, node.val) and the right child satisfies (node.val, max_val). Base case is null returning true. Initial bounds are (-infinity, +infinity).",
+    "why_optimal": "Verifies all subtree invariants in O(N) time with O(H) call stack space, validating the global BST property rather than merely local child comparisons.",
+    "pitfalls": "Only checking that node.left.val < node.val < node.right.val locally, which fails when a descendant violates an ancestor's bound (e.g. [5, 4, 6, null, null, 3, 7] where 3 is in 5's right subtree). Using fixed integer min/max constants as initial bounds instead of null or infinity, failing when node values equal INT_MIN or INT_MAX."
+  }
 }

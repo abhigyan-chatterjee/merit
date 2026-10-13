@@ -4,7 +4,7 @@
   "topic": "binary-search",
   "difficulty": "Medium",
   "pattern": "binary-search / Answer space",
-  "statement": "# Koko Eating Bananas\n\nKoko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
+  "statement": "Koko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
   "examples": [
     {
       "input": "piles = [3, 6, 7, 11], h = 8",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "Binary search the answer space for eating speed k between 1 and the largest pile size. For each candidate speed, compute total hours required by summing ceiling division across all piles.",
-    "why_optimal": "Brute-force linear checking tests each speed sequentially taking O(m \u00b7 n) time, whereas binary search over the monotonic answer space runs in O(n log m) time and O(1) extra space. On the 30 verified test cases, the optimal implementation took 0.54 ms compared to 3.44 ms for brute force.",
+    "why_optimal": "Brute-force linear checking tests each speed sequentially taking O(m · n) time, whereas binary search over the monotonic answer space runs in O(n log m) time and O(1) extra space. On the 30 verified test cases, the optimal implementation took 0.54 ms compared to 3.44 ms for brute force.",
     "pitfalls": "Ensure integer ceiling division when calculating hours for each pile. Watch for off-by-one errors when updating search boundaries low and high."
   },
   "reading_links": [
@@ -988,7 +988,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "complexity": "Time: O(m · n) | Space: O(1)",
       "language": "javascript",
       "code": "function minEatingSpeed(piles, h) {\n  let maxPile = 0;\n  for (let i = 0; i < piles.length; i++) {\n    if (piles[i] > maxPile) maxPile = piles[i];\n  }\n  for (let k = 1; k <= maxPile; k++) {\n    let hours = 0;\n    for (let i = 0; i < piles.length; i++) {\n      hours += Math.ceil(piles[i] / k);\n    }\n    if (hours <= h) return k;\n  }\n  return maxPile;\n}",
       "isReference": false
@@ -1002,7 +1002,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "complexity": "Time: O(m · n) | Space: O(1)",
       "language": "python",
       "code": "def minEatingSpeed(piles: list[int], h: int) -> int:\n    import math\n    max_pile = max(piles)\n    for k in range(1, max_pile + 1):\n        hours = sum(math.ceil(p / k) for p in piles)\n        if hours <= h:\n            return k\n    return max_pile\n",
       "isReference": false

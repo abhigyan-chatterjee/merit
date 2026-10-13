@@ -29,7 +29,7 @@
   "solutions": [
     {
       "title": "Quadratic Prefix Sums",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}",
       "language": "javascript"
     },
@@ -93,5 +93,10 @@
   "nextSlug": "partition-equal-subset-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
-  ]
+  ],
+  "editorial": {
+    "approach": "Kadane's algorithm: maintain a running current sum curr and a global maximum best. For each number x, decide whether to extend the previous subarray or start a new subarray at x: curr = max(x, curr + x). Update best = max(best, curr). Initialize best = nums[0] to handle all-negative arrays correctly.",
+    "why_optimal": "Computes the optimal contiguous sum in a single O(n) pass with O(1) space, avoiding all O(n^2) subarray evaluations.",
+    "pitfalls": "Initializing best = 0, which fails on arrays containing only negative numbers (e.g. [-5, -2, -8] would incorrectly return 0 instead of -2)."
+  }
 }

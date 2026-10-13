@@ -98,5 +98,10 @@
   "nextSlug": "number-of-islands",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "Model courses and prerequisites as a directed graph where an edge u -> v means course u must be completed before v. Compute the in-degree of every vertex and initialize a queue with all nodes having in-degree 0. Repeatedly dequeue a course, append it to the topological order list, and decrement the in-degree of its outgoing neighbours, pushing newly zero-degree nodes into the queue.",
+    "why_optimal": "Kahn's algorithm processes every vertex and directed edge exactly once in O(V + E) time and O(V + E) space, producing a valid linear execution sequence if and only if no directed cycle exists.",
+    "pitfalls": "Returning a partial list when a cycle prevents completing all courses instead of returning an empty list []. Misorienting prerequisite edges (e.g. treating [a, b] as a -> b instead of b -> a)."
+  }
 }

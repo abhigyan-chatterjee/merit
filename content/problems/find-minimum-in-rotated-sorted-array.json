@@ -4,7 +4,7 @@
   "topic": "binary-search",
   "difficulty": "Medium",
   "pattern": "binary-search / Inflection",
-  "statement": "# Find Minimum in Rotated Sorted Array\n\nSuppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
+  "statement": "Suppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
   "examples": [
     {
       "input": "nums = [3, 4, 5, 1, 2]",

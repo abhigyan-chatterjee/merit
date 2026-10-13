@@ -98,5 +98,10 @@
   "nextSlug": "palindrome-linked-list",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
-  ]
+  ],
+  "editorial": {
+    "approach": "Two-pointer technique (Tortoise and Hare): start slow and fast pointers at the head. Advance slow by 1 node and fast by 2 nodes per step. When fast reaches null (even length) or fast.next reaches null (odd length), slow sits precisely at the middle node (or second middle node for even lengths).",
+    "why_optimal": "Finds the middle node in a single O(n) pass with O(1) space without requiring an initial count pass or array buffering.",
+    "pitfalls": "Checking fast.next.next before confirming fast.next is non-null, leading to null pointer exceptions on odd-length lists."
+  }
 }

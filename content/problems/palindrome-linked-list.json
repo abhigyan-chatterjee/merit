@@ -85,5 +85,10 @@
   "nextSlug": "remove-linked-list-elements",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
-  ]
+  ],
+  "editorial": {
+    "approach": "Three-phase in-place technique: 1) Find the middle of the list using fast and slow pointers. 2) Reverse the second half of the linked list in-place. 3) Compare nodes from the head and the reversed second half node-by-node. Optionally restore the list before returning.",
+    "why_optimal": "Checks palindrome property in O(n) time and O(1) auxiliary space, unlike copying to an array which uses O(n) memory.",
+    "pitfalls": "Uneven list length termination: on odd-length lists, the middle node belongs to the first half and should not cause mismatch errors. Pointer disconnection during the second-half reversal."
+  }
 }

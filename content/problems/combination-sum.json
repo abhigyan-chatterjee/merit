@@ -4,7 +4,7 @@
   "topic": "backtracking",
   "difficulty": "Medium",
   "pattern": "backtracking / Unbounded pick",
-  "statement": "# Combination Sum\n\nGiven an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
+  "statement": "Given an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
   "examples": [
     {
       "input": "candidates = [2, 3, 6, 7], target = 7",

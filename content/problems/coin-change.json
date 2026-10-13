@@ -86,5 +86,10 @@
   "nextSlug": "decode-ways",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
-  ]
+  ],
+  "editorial": {
+    "approach": "A greedy approach fails because larger denominations can block valid smaller combinations that reach the exact target. Instead, use 1D bottom-up dynamic programming: let dp[a] be the minimum coins to make amount a, initialized to infinity with dp[0] = 0. For each amount from 1 to amount, test each coin c <= a and update dp[a] = min(dp[a], 1 + dp[a - c]).",
+    "why_optimal": "Evaluates each sub-amount in O(amount * len(coins)) time with O(amount) space, avoiding redundant exponential search while guaranteeing the absolute minimum coin count.",
+    "pitfalls": "Initializing dp with values that overflow when adding 1 (e.g. 2^31 - 1 + 1 wrapping to negative in Java/C++). Failing to return -1 when dp[amount] remains unreachable infinity."
+  }
 }

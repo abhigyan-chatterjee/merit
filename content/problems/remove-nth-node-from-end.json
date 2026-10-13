@@ -95,5 +95,10 @@
   "nextSlug": "three-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
-  ]
+  ],
+  "editorial": {
+    "approach": "Fast and slow pointers with gap n: prepend a dummy node before the head. Advance a fast pointer n + 1 steps ahead of slow. Then advance both pointers one step at a time until fast reaches null. At this point, slow points directly to the node preceding the target node; remove the target by updating slow.next = slow.next.next.",
+    "why_optimal": "Removes the target node in a single O(L) pass with O(1) auxiliary space without calculating list length in advance.",
+    "pitfalls": "Deleting the head node (e.g. n == length) without using a dummy node leading to null dereferences or lost references."
+  }
 }

@@ -4,7 +4,7 @@
   "topic": "trees",
   "difficulty": "Medium",
   "pattern": "trees / Path accumulate",
-  "statement": "# Root-to-Leaf Numbers\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
+  "statement": "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
   "examples": [
     {
       "input": "root = [1,2,3]",
@@ -29,7 +29,7 @@
   "hints": [
     "Carry the prefix number downward, not upward.",
     "Each step multiplies the prefix by 10 before adding the digit.",
-    "Add to the total only at leaves \u2014 nodes with no present children."
+    "Add to the total only at leaves — nodes with no present children."
   ],
   "editorial": {
     "approach": "Depth-first walk carrying the number built so far; each step multiplies by ten and adds the digit, adding the total at every leaf.",
@@ -701,7 +701,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b7h) | Space: O(n\u00b7h)",
+      "complexity": "Time: O(n·h) | Space: O(n·h)",
       "language": "javascript",
       "code": "function sumNumbers(root) {\n  const paths = [];\n  (function build(i, cur) {\n    if (i >= root.length || root[i] === null) return;\n    const next = cur.concat([root[i]]);\n    const l = 2 * i + 1;\n    const r = 2 * i + 2;\n    const hasL = l < root.length && root[l] !== null;\n    const hasR = r < root.length && root[r] !== null;\n    if (!hasL && !hasR) {\n      paths.push(next);\n      return;\n    }\n    build(l, next);\n    build(r, next);\n  })(0, []);\n  let total = 0;\n  for (const digits of paths) {\n    let value = 0;\n    for (const d of digits) value = value * 10 + d;\n    total += value;\n  }\n  return total;\n}",
       "isReference": false
@@ -715,7 +715,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b7h) | Space: O(n\u00b7h)",
+      "complexity": "Time: O(n·h) | Space: O(n·h)",
       "language": "python",
       "code": "def sumNumbers(root: list) -> int:\n    paths = []\n    def build(i, cur):\n        if i >= len(root) or root[i] is None:\n            return\n        nxt = cur + [root[i]]\n        l, r = 2 * i + 1, 2 * i + 2\n        has_l = l < len(root) and root[l] is not None\n        has_r = r < len(root) and root[r] is not None\n        if not has_l and not has_r:\n            paths.append(nxt)\n            return\n        build(l, nxt)\n        build(r, nxt)\n    build(0, [])\n    total = 0\n    for digits in paths:\n        value = 0\n        for d in digits:\n            value = value * 10 + d\n        total += value\n    return total\n",
       "isReference": false

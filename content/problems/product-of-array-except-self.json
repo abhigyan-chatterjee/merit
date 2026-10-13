@@ -102,5 +102,10 @@
   "nextSlug": "sort-colors",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
-  ]
+  ],
+  "editorial": {
+    "approach": "Without division, compute prefix and suffix products. Allocate an output array ans of length n. First pass (left to right): compute prefix products such that ans[i] holds the product of all elements to the left of i. Second pass (right to left): maintain a running suffix product suff, multiplying ans[i] *= suff and updating suff *= nums[i].",
+    "why_optimal": "Computes all product combinations in O(n) time and O(1) extra auxiliary space (excluding the returned result array), satisfying the strict zero-division constraint.",
+    "pitfalls": "Attempting division by zero when an array contains 0. Off-by-one errors on prefix/suffix loop indices."
+  }
 }

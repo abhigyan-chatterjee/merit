@@ -115,5 +115,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"
-  ]
+  ],
+  "editorial": {
+    "approach": "Scan the 2D grid cell by cell. Whenever an unvisited land cell '1' is encountered, increment the island counter and launch a BFS or DFS flood-fill from that coordinate. The flood-fill traverses all orthogonally connected land cells, marking them as visited (or flipping them in-place to '0') to ensure no cell is counted twice.",
+    "why_optimal": "Every cell is inspected and marked at most once, yielding optimal O(M * N) time and O(min(M, N)) queue space for BFS or O(M * N) recursion depth for DFS.",
+    "pitfalls": "Forgetting to mark cells as visited before pushing them to a BFS queue, causing duplicate insertions and queue memory blowup. Diagonal connections are not islands (only 4-directional moves allowed)."
+  }
 }

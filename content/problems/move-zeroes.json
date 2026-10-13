@@ -4,7 +4,7 @@
   "topic": "arrays-hashing",
   "difficulty": "Easy",
   "pattern": "arrays-hashing / Stable partition",
-  "statement": "# Move Zeroes\n\nGiven an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements.\n\nReturn the resulting array containing all transformed elements. Do not return an empty array unless the input itself is empty.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+  "statement": "Given an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements.\n\nReturn the resulting array containing all transformed elements. Do not return an empty array unless the input itself is empty.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
   "examples": [
     {
       "input": "nums = [-100]",

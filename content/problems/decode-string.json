@@ -76,5 +76,10 @@
   "nextSlug": "evaluate-reverse-polish-notation",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
-  ]
+  ],
+  "editorial": {
+    "approach": "Maintain two stacks or a combined frame stack: one for repeat counts k and one for partially accumulated string prefixes. When encountering digits, accumulate the multi-digit number k. On '[', push k and the current string onto the stack, resetting both. On ']', pop the previous string and repeat count, appending k repetitions of the current string to the popped prefix. Plain characters append directly to the current string.",
+    "why_optimal": "Processes each character of the input string and repeats decoded segments in linear O(output_length) time and O(depth + output_length) space, naturally handling arbitrary nested bracket depths.",
+    "pitfalls": "Multi-digit counts (e.g. 100[a]) being parsed as single digits if k = k * 10 + digit is not accumulated across consecutive digit characters. Forgetting to reset the current string buffer upon entering a new bracket level."
+  }
 }

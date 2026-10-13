@@ -118,5 +118,10 @@
   "nextSlug": "copy-list-with-random-pointer",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
-  ]
+  ],
+  "editorial": {
+    "approach": "Simulate elementary addition column by column with a running carry starting from the least significant digit (head of lists). Traverse both digit sequences simultaneously, adding digits plus the carry to form the new node value (sum % 10) and updating carry = sum // 10. Continue while either list has remaining digits or the carry is non-zero.",
+    "why_optimal": "Runs in linear O(max(N, M)) time and O(max(N, M)) auxiliary space for the output array, which is optimal since every digit must be inspected at least once to compute the exact sum.",
+    "pitfalls": "Forgetting to append a final digit node when a carry remains after both input sequences are exhausted (e.g. 5 + 5 = 10 resulting in [0] instead of [0, 1]). Assuming lists are of equal length without handling missing digits."
+  }
 }

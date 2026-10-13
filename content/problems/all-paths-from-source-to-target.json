@@ -4,7 +4,7 @@
   "topic": "graphs",
   "difficulty": "Medium",
   "pattern": "graphs / DAG DFS",
-  "statement": "# All Paths from Source to Target\n\nA directed acyclic graph with `n` nodes is given as an adjacency list `graph`, where `graph[i]` lists the neighbours of node `i` in ascending order and every edge points from a smaller node to a larger one.\n\nEnumerate every directed path from node `0` to node `n - 1`. Each path is written as the sequence of visited node ids. Return the full list of paths sorted lexicographically.\n\nA single direct edge yields exactly one path `[[0, 1]]`.\n\nConstraints: `2 <= graph.length <= 6` and `0 <= graph[i] <= 5`.\n",
+  "statement": "A directed acyclic graph with `n` nodes is given as an adjacency list `graph`, where `graph[i]` lists the neighbours of node `i` in ascending order and every edge points from a smaller node to a larger one.\n\nEnumerate every directed path from node `0` to node `n - 1`. Each path is written as the sequence of visited node ids. Return the full list of paths sorted lexicographically.\n\nA single direct edge yields exactly one path `[[0, 1]]`.\n\nConstraints: `2 <= graph.length <= 6` and `0 <= graph[i] <= 5`.\n",
   "examples": [
     {
       "input": "graph = [[1, 2], [3], [3], []]",

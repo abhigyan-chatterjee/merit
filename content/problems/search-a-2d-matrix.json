@@ -4,7 +4,7 @@
   "topic": "binary-search",
   "difficulty": "Medium",
   "pattern": "binary-search / Flattened",
-  "statement": "# Search a 2D Matrix\n\nYou are given an `m x n` integer matrix `matrix` with the following two properties:\n1. Each row is sorted in non-decreasing order.\n2. The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix` or `false` otherwise.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[0].length <= 50`, `-10000 <= matrix[i][j] <= 10000`, and `-10000 <= target <= 10000`.\n",
+  "statement": "You are given an `m x n` integer matrix `matrix` with the following two properties:\n1. Each row is sorted in non-decreasing order.\n2. The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix` or `false` otherwise.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[0].length <= 50`, `-10000 <= matrix[i][j] <= 10000`, and `-10000 <= target <= 10000`.\n",
   "examples": [
     {
       "input": "matrix = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target = 3",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "Treat the m x n grid as a virtual flattened 1D array of length m * n. Convert a 1D index to matrix coordinates via r = Math.floor(idx / n) and c = idx % n, then apply standard binary search.",
-    "why_optimal": "Scanning all matrix cells takes O(m \u00b7 n) time, whereas binary searching the flattened index takes O(log(m \u00b7 n)) time and O(1) space. On the 28 verified test cases, optimal binary search completed in 0.11 ms versus 0.12 ms for brute force.",
+    "why_optimal": "Scanning all matrix cells takes O(m · n) time, whereas binary searching the flattened index takes O(log(m · n)) time and O(1) space. On the 28 verified test cases, optimal binary search completed in 0.11 ms versus 0.12 ms for brute force.",
     "pitfalls": "Be careful to divide and modulo by the column count n (not row count m) when mapping 1D indices to 2D coordinates."
   },
   "reading_links": [
@@ -1735,28 +1735,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "complexity": "Time: O(m · n) | Space: O(1)",
       "language": "javascript",
       "code": "function searchMatrix(matrix, target) {\n  const m = matrix.length;\n  const n = matrix[0].length;\n  for (let r = 0; r < m; r++) {\n    for (let c = 0; c < n; c++) {\n      if (matrix[r][c] === target) return true;\n    }\n  }\n  return false;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(log(m \u00b7 n)) | Space: O(1)",
+      "complexity": "Time: O(log(m · n)) | Space: O(1)",
       "language": "javascript",
       "code": "function searchMatrix(matrix, target) {\n  const m = matrix.length;\n  const n = matrix[0].length;\n  let low = 0;\n  let high = m * n - 1;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    const r = Math.floor(mid / n);\n    const c = mid % n;\n    const val = matrix[r][c];\n    if (val === target) return true;\n    if (val < target) {\n      low = mid + 1;\n    } else {\n      high = mid - 1;\n    }\n  }\n  return false;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
+      "complexity": "Time: O(m · n) | Space: O(1)",
       "language": "python",
       "code": "def searchMatrix(matrix: list[list[int]], target: int) -> bool:\n    for row in matrix:\n        for val in row:\n            if val == target:\n                return True\n    return False\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(log(m \u00b7 n)) | Space: O(1)",
+      "complexity": "Time: O(log(m · n)) | Space: O(1)",
       "language": "python",
       "code": "def searchMatrix(matrix: list[list[int]], target: int) -> bool:\n    m, n = len(matrix), len(matrix[0])\n    low, high = 0, m * n - 1\n    while low <= high:\n        mid = (low + high) // 2\n        r, c = mid // n, mid % n\n        val = matrix[r][c]\n        if val == target:\n            return True\n        if val < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return False\n",
       "isReference": true

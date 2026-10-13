@@ -4,22 +4,22 @@
   "topic": "math-matrices",
   "difficulty": "Medium",
   "pattern": "math-matrices / Fast pow",
-  "statement": "# Pow(x, n)\n\nImplement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `x\u207f`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
+  "statement": "Implement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `xⁿ`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
   "examples": [
     {
       "input": "x = 2.0, n = 10",
       "output": "1024",
-      "explanation": "2\u00b9\u2070 = 1024."
+      "explanation": "2¹⁰ = 1024."
     },
     {
       "input": "x = 2.1, n = 3",
       "output": "9.261",
-      "explanation": "2.1\u00b3 = 9.261."
+      "explanation": "2.1³ = 9.261."
     },
     {
       "input": "x = 2.0, n = -2",
       "output": "0.25",
-      "explanation": "2\u207b\u00b2 = 1 / (2\u00b2) = 1 / 4 = 0.25."
+      "explanation": "2⁻² = 1 / (2²) = 1 / 4 = 0.25."
     }
   ],
   "constraints": [
@@ -27,7 +27,7 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "If n is even, x\u207f = (x\u00b2)^(n/2). If n is odd, x\u207f = x \u00b7 (x\u00b2)^((n-1)/2).",
+    "If n is even, xⁿ = (x²)^(n/2). If n is odd, xⁿ = x · (x²)^((n-1)/2).",
     "When n is negative, transform the problem to (1/x)^(-n).",
     "This reduces the number of multiplications from O(n) to O(log n)."
   ],

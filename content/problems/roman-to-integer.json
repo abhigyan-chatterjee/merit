@@ -77,5 +77,10 @@
   "nextSlug": "pow-x-n",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Matrix_(mathematics)"
-  ]
+  ],
+  "editorial": {
+    "approach": "Map each Roman symbol to its numerical value (I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000). Scan the string left to right: if the current symbol has a value strictly smaller than the symbol immediately following it (e.g. IV, IX, XL), subtract its value from the total; otherwise add its value to the total.",
+    "why_optimal": "Single pass processes the string in O(n) time with O(1) lookup table space, handling both standard and subtractive notations deterministically.",
+    "pitfalls": "Checking i + 1 out-of-bounds without an index guard on the final character. Treating combinations that are not subtractive pairs improperly."
+  }
 }

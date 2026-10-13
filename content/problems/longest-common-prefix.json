@@ -85,5 +85,10 @@
   "nextSlug": "find-words-on-board",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Trie"
-  ]
+  ],
+  "editorial": {
+    "approach": "Vertical scanning: inspect character by character across all strings at the same column index j. Compare character strs[0][j] against strs[i][j] for every string i. If j == strs[i].length or characters mismatch, return the prefix accumulated up to j. If all characters match, continue to column j + 1.",
+    "why_optimal": "Stops at the very first mismatch, scanning at most O(S) total characters where S is the sum of characters across all strings in the worst case (and far fewer on average), with O(1) extra space.",
+    "pitfalls": "Accessing strs[i][j] when string i is shorter than j, causing out-of-bounds errors if length check is not evaluated first. Empty input array or empty first string."
+  }
 }

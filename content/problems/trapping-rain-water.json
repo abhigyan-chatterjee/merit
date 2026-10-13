@@ -4,7 +4,7 @@
   "topic": "two-pointers",
   "difficulty": "Hard",
   "pattern": "two-pointers / Precompute max",
-  "statement": "# Trapping Rain Water\n\nGiven an elevation map represented by an array of non-negative integers `height` where the width of each bar is `1`, compute the total volume of rainwater it can retain after raining.\n\nConstraints: `0 <= height.length <= 100` and `0 <= height[i] <= 100`.\n",
+  "statement": "Given an elevation map represented by an array of non-negative integers `height` where the width of each bar is `1`, compute the total volume of rainwater it can retain after raining.\n\nConstraints: `0 <= height.length <= 100` and `0 <= height[i] <= 100`.\n",
   "examples": [
     {
       "input": "height = []",
@@ -29,11 +29,11 @@
   "hints": [
     "Water at index i is min(max to the left, max to the right) minus height[i].",
     "Precompute left-max and right-max arrays, or use two pointers converging inward.",
-    "Advance the pointer on the shorter side\u2014its water level is already bounded by the opposite max."
+    "Advance the pointer on the shorter side—its water level is already bounded by the opposite max."
   ],
   "editorial": {
     "approach": "For each index, the water held equals min(max-left, max-right) - height[i] if positive. The brute force re-scans for left and right maxima at every position (O(n^2)). The optimal uses two pointers converging inward, tracking leftMax and rightMax so each bar is processed in O(1).",
-    "why_optimal": "Brute force is O(n^2): each of the n positions rescans up to n predecessors. The two-pointer variant visits each bar once\u2014O(n). On 22 cases the optimal ran in 0.25 ms versus 0.89 ms (~3.5x faster).",
+    "why_optimal": "Brute force is O(n^2): each of the n positions rescans up to n predecessors. The two-pointer variant visits each bar once—O(n). On 22 cases the optimal ran in 0.25 ms versus 0.89 ms (~3.5x faster).",
     "pitfalls": "Decide which pointer to advance based on height[left] < height[right], not on which max is larger. Processing the shorter side guarantees the current water level is bounded by the known shorter maximum, so accumulating is correct."
   },
   "reading_links": [
@@ -910,7 +910,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function trap(height) {\n  const n = height.length;\n  if (n === 0) return 0;\n\n  let totalWater = 0;\n  for (let i = 0; i < n; i++) {\n    let maxLeft = 0;\n    for (let l = 0; l <= i; l++) {\n      if (height[l] > maxLeft) maxLeft = height[l];\n    }\n    let maxRight = 0;\n    for (let r = i; r < n; r++) {\n      if (height[r] > maxRight) maxRight = height[r];\n    }\n    const waterAtI = Math.min(maxLeft, maxRight) - height[i];\n    if (waterAtI > 0) {\n      totalWater += waterAtI;\n    }\n  }\n\n  return totalWater;\n}",
       "isReference": false
@@ -924,7 +924,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "python",
       "code": "def trap(height):\n    n = len(height)\n    if n == 0:\n        return 0\n    totalWater = 0\n    for i in range(n):\n        maxLeft = 0\n        for l in range(i + 1):\n            if height[l] > maxLeft:\n                maxLeft = height[l]\n        maxRight = 0\n        for r in range(i, n):\n            if height[r] > maxRight:\n                maxRight = height[r]\n        waterAtI = min(maxLeft, maxRight) - height[i]\n        if waterAtI > 0:\n            totalWater += waterAtI\n    return totalWater\n",
       "isReference": false

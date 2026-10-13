@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Easy",
   "pattern": "stack / Collapse",
-  "statement": "# Collapse Adjacent Duplicates\n\nGiven a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
+  "statement": "Given a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
   "examples": [
     {
       "input": "s = \"x22y0\"",
@@ -227,7 +227,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function removeDuplicatesString(s) {\n  const chars = s.split('');\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i < chars.length - 1; i++) {\n      if (chars[i] === chars[i + 1]) {\n        chars.splice(i, 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return chars.join('');\n}",
       "isReference": false
@@ -241,7 +241,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "python",
       "code": "def removeDuplicatesString(s: str) -> str:\n    chars = list(s)\n    changed = True\n    while changed:\n        changed = False\n        for i in range(len(chars) - 1):\n            if chars[i] == chars[i + 1]:\n                del chars[i:i + 2]\n                changed = True\n                break\n    return \"\".join(chars)\n",
       "isReference": false

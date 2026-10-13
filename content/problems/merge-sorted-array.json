@@ -4,7 +4,7 @@
   "topic": "sorting",
   "difficulty": "Easy",
   "pattern": "sorting / Back-fill",
-  "statement": "# Merge Sorted Array\n\nYou are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
+  "statement": "You are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
   "examples": [
     {
       "input": "nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3",

@@ -4,7 +4,7 @@
   "topic": "trees",
   "difficulty": "Medium",
   "pattern": "trees / Level last",
-  "statement": "# Right Side View\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "statement": "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
   "examples": [
     {
       "input": "root = [1,2,3,null,5,null,4]",

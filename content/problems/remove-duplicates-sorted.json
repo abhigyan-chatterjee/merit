@@ -4,7 +4,7 @@
   "topic": "arrays-hashing",
   "difficulty": "Easy",
   "pattern": "arrays-hashing / Two pointers",
-  "statement": "# Remove Duplicates from Sorted Array\n\nGiven an integer array `nums`, sort the elements in non-decreasing order and remove any duplicate occurrences so that each unique element appears exactly once.\n\nReturn the resulting array containing only the unique elements in sorted ascending order.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+  "statement": "Given an integer array `nums`, sort the elements in non-decreasing order and remove any duplicate occurrences so that each unique element appears exactly once.\n\nReturn the resulting array containing only the unique elements in sorted ascending order.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
   "examples": [
     {
       "input": "nums = [-100]",

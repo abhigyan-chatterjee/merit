@@ -159,5 +159,10 @@
   "nextSlug": null,
   "reading_links": [
     "https://en.wikipedia.org/wiki/Matrix_(mathematics)"
-  ]
+  ],
+  "editorial": {
+    "approach": "Boundary shrinking simulation: maintain four boundaries: top = 0, bottom = m - 1, left = 0, right = n - 1. Traverse in order: 1) Left to right along top, then increment top. 2) Top to bottom along right, then decrement right. 3) Right to left along bottom (if top <= bottom), then decrement bottom. 4) Bottom to top along left (if left <= right), then increment left. Repeat while top <= bottom and left <= right.",
+    "why_optimal": "Visits each matrix element exactly once in O(M * N) time with O(1) extra space beyond the output array.",
+    "pitfalls": "Failing to re-check top <= bottom and left <= right before the backward bottom and left traversal sweeps, causing duplicate element insertions on non-square matrices."
+  }
 }

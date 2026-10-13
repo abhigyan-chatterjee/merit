@@ -73,5 +73,10 @@
   "nextSlug": "valid-palindrome-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
-  ]
+  ],
+  "editorial": {
+    "approach": "Two pointers converging inward: place pointers at left = 0 and right = s.length - 1. Advance left and decrement right while characters are not alphanumeric. When both point to alphanumeric characters, compare them case-insensitively; if they differ, return false. Continue while left < right.",
+    "why_optimal": "Operates in-place in O(n) time and O(1) auxiliary space without creating filtered intermediate string copies.",
+    "pitfalls": "Failing to skip non-alphanumeric characters or skipping out-of-bounds when consecutive spaces/punctuations occur. Comparing characters before converting to lowercase."
+  }
 }

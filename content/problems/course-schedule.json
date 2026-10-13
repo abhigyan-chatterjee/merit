@@ -107,5 +107,10 @@
   "nextSlug": "course-schedule-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "Determine whether the directed dependency graph contains any directed cycle. Using Kahn's BFS algorithm: build an adjacency list and in-degree table for all courses. Enqueue all courses with in-degree 0. Dequeue nodes, counting visited courses, and decrement in-degrees of successors. If the final visited count equals total courses, all courses can be finished.",
+    "why_optimal": "Runs in optimal O(V + E) time and O(V + E) auxiliary space, detecting cycles without deep recursive stack depth that could risk recursion limits in DFS.",
+    "pitfalls": "Off-by-one errors in course indexing (0-indexed vs 1-indexed). Incomplete graph construction when isolated courses with zero prerequisites are ignored."
+  }
 }

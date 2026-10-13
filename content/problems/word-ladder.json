@@ -4,7 +4,7 @@
   "topic": "graphs",
   "difficulty": "Hard",
   "pattern": "graphs / BFS shortest",
-  "statement": "# Word Ladder\n\nA start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
+  "statement": "A start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
   "examples": [
     {
       "input": "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\", \"cog\"]",
@@ -914,7 +914,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(N\u00b2 * L) | Space: O(N * L)",
+      "complexity": "Time: O(N² * L) | Space: O(N * L)",
       "language": "javascript",
       "code": "function ladderLength(beginWord, endWord, wordList) {\n  const dict = new Set(wordList);\n  if (!dict.has(endWord)) return 0;\n  if (beginWord === endWord) return 1;\n  function differsByOne(a, b) {\n    if (a.length !== b.length) return false;\n    let diff = 0;\n    for (let i = 0; i < a.length; i++) {\n      if (a[i] !== b[i]) {\n        diff++;\n        if (diff > 1) return false;\n      }\n    }\n    return diff === 1;\n  }\n  const queue = [beginWord];\n  const seen = new Set([beginWord]);\n  let steps = 1;\n  let head = 0;\n  while (head < queue.length) {\n    const size = queue.length - head;\n    for (let i = 0; i < size; i++) {\n      const word = queue[head++];\n      if (word === endWord) return steps;\n      for (const cand of wordList) {\n        if (!seen.has(cand) && differsByOne(word, cand)) {\n          seen.add(cand);\n          queue.push(cand);\n        }\n      }\n    }\n    steps++;\n  }\n  return 0;\n}",
       "isReference": false

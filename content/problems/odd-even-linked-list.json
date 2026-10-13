@@ -4,7 +4,7 @@
   "topic": "linked-lists",
   "difficulty": "Medium",
   "pattern": "linked-list / Index parity",
-  "statement": "# Odd Even Linked List\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nGroup all nodes at 1-indexed odd positions together first, followed by all nodes at 1-indexed even positions. The relative order within the odd-indexed group and within the even-indexed group must be maintained.\n\nNote that the grouping is based on the 1-indexed position in the sequence, not on the numerical value of the nodes.\n\nReturn the reordered sequence of node values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+  "statement": "You are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nGroup all nodes at 1-indexed odd positions together first, followed by all nodes at 1-indexed even positions. The relative order within the odd-indexed group and within the even-indexed group must be maintained.\n\nNote that the grouping is based on the 1-indexed position in the sequence, not on the numerical value of the nodes.\n\nReturn the reordered sequence of node values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
   "examples": [
     {
       "input": "nums = [1, 2, 3, 4, 5]",

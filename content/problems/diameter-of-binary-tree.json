@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All-Pairs Path Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(h)",
+      "complexity": "Time: O(n²) | Space: O(h)",
       "code": "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}",
       "language": "javascript"
     },
@@ -83,5 +83,10 @@
   "nextSlug": "invert-binary-tree",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "The diameter is the length of the longest path between any two nodes, which may or may not pass through the root. Compute the max depth of each subtree recursively using post-order DFS. At each node, the longest path passing through that node is left_depth + right_depth. Update a global maximum diameter at each node, while returning 1 + max(left_depth, right_depth) to the caller.",
+    "why_optimal": "Visits each node in the tree exactly once in O(N) time with O(H) call stack space, computing height and path length simultaneously in a bottom-up pass.",
+    "pitfalls": "Confusing the count of nodes on the path with the count of edges (diameter is measured in edges, so a single node has diameter 0). Assuming the diameter must pass through the tree root."
+  }
 }

@@ -33,7 +33,7 @@
     },
     {
       "title": "Disjoint Set Union (DSU)",
-      "complexity": "Time: O(E \u03b1(V)) | Space: O(V)",
+      "complexity": "Time: O(E α(V)) | Space: O(V)",
       "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}",
       "language": "javascript"
     }
@@ -117,5 +117,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Breadth-first_search"
-  ]
+  ],
+  "editorial": {
+    "approach": "Construct an adjacency list from the undirected edge list. Traverse the graph starting from source using BFS (with a queue) or DFS (with a stack or recursion), maintaining a visited set to avoid infinite loops across cycles. Return true as soon as destination is visited, or false if the traversal finishes without reaching it.",
+    "why_optimal": "Explores only the connected component containing source in O(V + E) time and O(V + E) space, providing an early exit the instant the target node is touched.",
+    "pitfalls": "Re-visiting nodes without a visited boolean array or set, causing infinite loops on cyclic graphs. Failing to handle source == destination when no edges exist (should immediately return true)."
+  }
 }

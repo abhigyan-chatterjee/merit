@@ -4,7 +4,7 @@
   "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "dp / Reachability",
-  "statement": "# Word Break\n\nGiven a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
+  "statement": "Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
   "examples": [
     {
       "input": "s = 'applepenapple', wordDict = ['apple', 'pen']",
@@ -33,8 +33,8 @@
   ],
   "editorial": {
     "approach": "### Dynamic Programming: Prefix Reachability\n\nTo decide if a string s of length n can be partitioned into valid dictionary words, we determine reachability for each prefix of s from left to right.\n\n#### 1. DP State Definition\nLet dp[i] be a boolean value indicating whether the prefix s[0...i - 1] of length i can be completely segmented into words from wordDict.\n\n#### 2. Recurrence Relation & State Transition\nFor each length i from 1 to n, dp[i] is true if there exists some split point j (0 <= j < i) such that:\n1. Prefix s[0...j - 1] is segmentable: dp[j] == true.\n2. Suffix substring s[j...i - 1] is a dictionary word: s[j...i - 1] in wordDict.\n\ndp[i] = OR_{j = max(0, i - L)}^{i - 1} (dp[j] and (s[j...i - 1] in wordDictSet))\n\nwhere L = max_{w in wordDict} length(w) is the maximum length of any word in the dictionary. Limiting j to [i - L, i - 1] bounds the inner loop to at most L steps instead of i steps.\n\n#### 3. Base Cases\n- dp[0] = true: An empty prefix requires zero words and is valid by definition.\n- All dp[i] = false for i > 0 initially.\n\n#### 4. Answer Extraction\nans = dp[n].",
-    "why_optimal": "Converting wordDict into a hash set enables O(1) word lookups, and bounding the inner loop search by the maximum word length L reduces the time complexity from O(n\u00b2 \u00b7 m) to O(n \u00b7 L). On 30 verified test cases, the optimized set-based DP completed in 0.52 ms compared to 2.59 ms for linear dictionary scans.",
-    "pitfalls": "Scanning all 0 <= j < i with array.includes takes O(n\u00b2 \u00b7 m) time and can time out on long strings. Bounding j >= i - L and using a hash set avoids redundant comparisons."
+    "why_optimal": "Converting wordDict into a hash set enables O(1) word lookups, and bounding the inner loop search by the maximum word length L reduces the time complexity from O(n² · m) to O(n · L). On 30 verified test cases, the optimized set-based DP completed in 0.52 ms compared to 2.59 ms for linear dictionary scans.",
+    "pitfalls": "Scanning all 0 <= j < i with array.includes takes O(n² · m) time and can time out on long strings. Bounding j >= i - L and using a hash set avoids redundant comparisons."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming",
@@ -495,28 +495,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2 \u00b7 m) | Space: O(n)",
+      "complexity": "Time: O(n² · m) | Space: O(n)",
       "language": "javascript",
       "code": "function wordBreak(s, wordDict) {\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (dp[j]) {\n        const sub = s.slice(j, i);\n        if (wordDict.includes(sub)) {\n          dp[i] = true;\n          break;\n        }\n      }\n    }\n  }\n  return dp[n];\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 L) | Space: O(n + W)",
+      "complexity": "Time: O(n · L) | Space: O(n + W)",
       "language": "javascript",
       "code": "function wordBreak(s, wordDict) {\n  const wordSet = new Set(wordDict);\n  let maxLen = 0;\n  for (const w of wordDict) {\n    if (w.length > maxLen) maxLen = w.length;\n  }\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    const start = Math.max(0, i - maxLen);\n    for (let j = i - 1; j >= start; j--) {\n      if (dp[j] && wordSet.has(s.slice(j, i))) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n  return dp[n];\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2 \u00b7 m) | Space: O(n)",
+      "complexity": "Time: O(n² · m) | Space: O(n)",
       "language": "python",
       "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in wordDict:\n                dp[i] = True\n                break\n    return dp[n]\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 L) | Space: O(n + W)",
+      "complexity": "Time: O(n · L) | Space: O(n + W)",
       "language": "python",
       "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    word_set = set(wordDict)\n    max_len = max(len(w) for w in wordDict) if wordDict else 0\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        start = max(0, i - max_len)\n        for j in range(i - 1, start - 1, -1):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[n]\n",
       "isReference": true

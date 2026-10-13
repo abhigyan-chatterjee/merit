@@ -4,7 +4,7 @@
   "topic": "linked-lists",
   "difficulty": "Medium",
   "pattern": "linked-list / Stable partition",
-  "statement": "# Partition List\n\nYou are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+  "statement": "You are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
   "examples": [
     {
       "input": "nums = [1, 4, 3, 2, 5, 2], x = 3",

@@ -4,7 +4,7 @@
   "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "dp / Subset sum",
-  "statement": "# Partition Equal Subset Sum\n\nGiven an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
+  "statement": "Given an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
   "examples": [
     {
       "input": "nums = [1, 5, 11, 5]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Dynamic Programming: 0/1 Knapsack Reduction\n\nThe problem asks if a subset of nums has a sum equal to exactly half of the total sum: target = sum(nums) / 2.\n\n#### 1. DP State Definition\nLet dp[w] be a boolean indicating whether a subset sum of exactly w can be formed using a subset of the numbers processed so far, for 0 <= w <= target.\n\n#### 2. Recurrence Relation & State Transition\nFor each number x in nums, iterate the weight w backwards from target down to x:\ndp[w] = dp[w] or dp[w - x]\n\nIterating backwards guarantees that each element x is used at most once (0/1 knapsack property), avoiding unbounded reuse.\n\n#### 3. Base Cases\n- If sum(nums) is odd, return false immediately.\n- If max(nums) > target, return false immediately.\n- dp[0] = true: A subset sum of 0 is always achievable (the empty subset).\n- dp[w] = false for all w > 0.\n\n#### 4. Answer Extraction\nans = dp[target].",
-    "why_optimal": "A full 2D DP matrix requires O(n \u00b7 target) memory, whereas rolling a 1D boolean array backwards reduces auxiliary memory to O(target) while retaining O(n \u00b7 target) pseudo-polynomial time. On 30 verified test cases, the 1D rolling DP finished in 0.84 ms versus 2.32 ms for the 2D table allocation.",
+    "why_optimal": "A full 2D DP matrix requires O(n · target) memory, whereas rolling a 1D boolean array backwards reduces auxiliary memory to O(target) while retaining O(n · target) pseudo-polynomial time. On 30 verified test cases, the 1D rolling DP finished in 0.84 ms versus 2.32 ms for the 2D table allocation.",
     "pitfalls": "Looping forwards over weights in the 1D array would allow an element to be added multiple times, turning it into an unbounded knapsack. Always loop backwards from target down to num."
   },
   "reading_links": [
@@ -956,28 +956,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n \u00b7 target) | Space: O(n \u00b7 target)",
+      "complexity": "Time: O(n · target) | Space: O(n · target)",
       "language": "javascript",
       "code": "function canPartition(nums) {\n  let sum = 0;\n  for (let i = 0; i < nums.length; i++) sum += nums[i];\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  const n = nums.length;\n  const dp = Array.from({ length: n + 1 }, () => new Array(target + 1).fill(false));\n  for (let i = 0; i <= n; i++) dp[i][0] = true;\n  for (let i = 1; i <= n; i++) {\n    const val = nums[i - 1];\n    for (let w = 1; w <= target; w++) {\n      dp[i][w] = dp[i - 1][w] || (w >= val ? dp[i - 1][w - val] : false);\n    }\n  }\n  return dp[n][target];\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 target) | Space: O(target)",
+      "complexity": "Time: O(n · target) | Space: O(target)",
       "language": "javascript",
       "code": "function canPartition(nums) {\n  let sum = 0;\n  let maxVal = 0;\n  for (let i = 0; i < nums.length; i++) {\n    sum += nums[i];\n    if (nums[i] > maxVal) maxVal = nums[i];\n  }\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  if (maxVal > target) return false;\n  const dp = new Array(target + 1).fill(false);\n  dp[0] = true;\n  for (let i = 0; i < nums.length; i++) {\n    const num = nums[i];\n    for (let w = target; w >= num; w--) {\n      if (dp[w - num]) dp[w] = true;\n    }\n    if (dp[target]) return true;\n  }\n  return dp[target];\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n \u00b7 target) | Space: O(n \u00b7 target)",
+      "complexity": "Time: O(n · target) | Space: O(n · target)",
       "language": "python",
       "code": "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    n = len(nums)\n    dp = [[False] * (target + 1) for _ in range(n + 1)]\n    for i in range(n + 1):\n        dp[i][0] = True\n    for i in range(1, n + 1):\n        val = nums[i - 1]\n        for w in range(1, target + 1):\n            dp[i][w] = dp[i - 1][w] or (dp[i - 1][w - val] if w >= val else False)\n    return dp[n][target]\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 target) | Space: O(target)",
+      "complexity": "Time: O(n · target) | Space: O(target)",
       "language": "python",
       "code": "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    if max(nums) > target:\n        return False\n    dp = [False] * (target + 1)\n    dp[0] = True\n    for num in nums:\n        for w in range(target, num - 1, -1):\n            if dp[w - num]:\n                dp[w] = True\n        if dp[target]:\n            return True\n    return dp[target]\n",
       "isReference": true

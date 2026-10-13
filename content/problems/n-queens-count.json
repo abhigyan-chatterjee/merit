@@ -4,7 +4,7 @@
   "topic": "backtracking",
   "difficulty": "Hard",
   "pattern": "backtracking / Constraint place",
-  "statement": "# N-Queens Count\n\nThe n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
+  "statement": "The n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
   "examples": [
     {
       "input": "n = 4",

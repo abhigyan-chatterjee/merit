@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Hard",
   "pattern": "stack / Monotonic increasing",
-  "statement": "# Largest Rectangle in Histogram\n\nGiven an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
+  "statement": "Given an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
   "examples": [
     {
       "input": "heights = [31, 95, 71, 68, 33]",
@@ -915,7 +915,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function largestRectangleArea(heights) {\n  let best = 0;\n  const n = heights.length;\n  for (let i = 0; i < n; i++) {\n    let minHeight = heights[i];\n    for (let j = i; j < n; j++) {\n      if (heights[j] < minHeight) {\n        minHeight = heights[j];\n      }\n      const area = minHeight * (j - i + 1);\n      if (area > best) {\n        best = area;\n      }\n    }\n  }\n  return best;\n}",
       "isReference": false
@@ -929,7 +929,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "python",
       "code": "def largestRectangleArea(heights: list[int]) -> int:\n    best = 0\n    n = len(heights)\n    for i in range(n):\n        min_height = heights[i]\n        for j in range(i, n):\n            if heights[j] < min_height:\n                min_height = heights[j]\n            area = min_height * (j - i + 1)\n            if area > best:\n                best = area\n    return best\n",
       "isReference": false

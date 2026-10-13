@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Medium",
   "pattern": "stack / Simulate",
-  "statement": "# Asteroid Collision\n\nYou are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
+  "statement": "You are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
   "examples": [
     {
       "input": "asteroids = [648, -354]",
@@ -1313,7 +1313,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function asteroidCollision(asteroids) {\n  const rocks = asteroids.slice();\n  let collided = true;\n  while (collided) {\n    collided = false;\n    for (let i = 0; i < rocks.length - 1; i++) {\n      if (rocks[i] > 0 && rocks[i + 1] < 0) {\n        const rightSize = rocks[i];\n        const leftSize = -rocks[i + 1];\n        if (rightSize === leftSize) {\n          rocks.splice(i, 2);\n        } else if (rightSize > leftSize) {\n          rocks.splice(i + 1, 1);\n        } else {\n          rocks.splice(i, 1);\n        }\n        collided = true;\n        break;\n      }\n    }\n  }\n  return rocks;\n}",
       "isReference": false
@@ -1327,7 +1327,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "python",
       "code": "def asteroidCollision(asteroids: list[int]) -> list[int]:\n    rocks = list(asteroids)\n    collided = True\n    while collided:\n        collided = False\n        for i in range(len(rocks) - 1):\n            if rocks[i] > 0 and rocks[i + 1] < 0:\n                right_size = rocks[i]\n                left_size = -rocks[i + 1]\n                if right_size == left_size:\n                    del rocks[i:i + 2]\n                elif right_size > left_size:\n                    del rocks[i + 1]\n                else:\n                    del rocks[i]\n                collided = True\n                break\n    return rocks\n",
       "isReference": false

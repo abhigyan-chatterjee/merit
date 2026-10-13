@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Easy",
   "pattern": "stack / Record-ops",
-  "statement": "# Baseball Scorebook\n\nYou are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
+  "statement": "You are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
   "examples": [
     {
       "input": "operations = [\"5\", \"2\", \"C\", \"D\", \"+\"]",

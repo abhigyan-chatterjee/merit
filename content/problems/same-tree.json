@@ -100,5 +100,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"
-  ]
+  ],
+  "editorial": {
+    "approach": "Simultaneous recursive DFS comparison: given roots p and q, if both are null, they are identical (true). If only one is null, they differ (false). If their values differ (p.val != q.val), return false. Otherwise, return sameTree(p.left, q.left) && sameTree(p.right, q.right).",
+    "why_optimal": "Traverses both trees in lockstep in O(min(N, M)) time and O(min(H_p, H_q)) stack space, terminating at the earliest structural or value discrepancy.",
+    "pitfalls": "Comparing node values before verifying that neither node is null, raising null dereference errors."
+  }
 }

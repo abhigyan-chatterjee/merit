@@ -4,7 +4,7 @@
   "topic": "backtracking",
   "difficulty": "Medium",
   "pattern": "backtracking / DFS grid",
-  "statement": "# Word Search\n\nGiven an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
+  "statement": "Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
   "examples": [
     {
       "input": "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'abcced'",
@@ -496,28 +496,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(m · n)",
       "language": "javascript",
       "code": "function exist(board, word) {\n  const m = board.length, n = board[0].length;\n  const visited = Array.from({ length: m }, () => new Array(n).fill(false));\n  function dfs(r, c, k) {\n    if (k === word.length) return true;\n    if (r < 0 || r >= m || c < 0 || c >= n || visited[r][c] || board[r][c] !== word[k]) {\n      return false;\n    }\n    visited[r][c] = true;\n    const found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n    visited[r][c] = false;\n    return found;\n  }\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      if (dfs(i, j, 0)) return true;\n    }\n  }\n  return false;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(L)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(L)",
       "language": "javascript",
       "code": "function exist(board, word) {\n  const m = board.length, n = board[0].length;\n  if (word.length > m * n) return false;\n  const boardCount = {};\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      boardCount[board[i][j]] = (boardCount[board[i][j]] || 0) + 1;\n    }\n  }\n  const wordCount = {};\n  for (let i = 0; i < word.length; i++) {\n    wordCount[word[i]] = (wordCount[word[i]] || 0) + 1;\n    if ((boardCount[word[i]] || 0) < wordCount[word[i]]) return false;\n  }\n  let targetWord = word;\n  if ((boardCount[word[0]] || 0) > (boardCount[word[word.length - 1]] || 0)) {\n    targetWord = word.split(\"\").reverse().join(\"\");\n  }\n  function dfs(r, c, k) {\n    if (k === targetWord.length) return true;\n    if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] !== targetWord[k]) return false;\n    const saved = board[r][c];\n    board[r][c] = \"#\";\n    const found = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n    board[r][c] = saved;\n    return found;\n  }\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      if (board[i][j] === targetWord[0] && dfs(i, j, 0)) return true;\n    }\n  }\n  return false;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(m · n)",
       "language": "python",
       "code": "def exist(board: list[list[str]], word: str) -> bool:\n    m, n = len(board), len(board[0])\n    visited = [[False] * n for _ in range(m)]\n\n    def dfs(r: int, c: int, k: int) -> bool:\n        if k == len(word):\n            return True\n        if r < 0 or r >= m or c < 0 or c >= n or visited[r][c] or board[r][c] != word[k]:\n            return False\n        visited[r][c] = True\n        found = (\n            dfs(r + 1, c, k + 1)\n            or dfs(r - 1, c, k + 1)\n            or dfs(r, c + 1, k + 1)\n            or dfs(r, c - 1, k + 1)\n        )\n        visited[r][c] = False\n        return found\n\n    for i in range(m):\n        for j in range(n):\n            if dfs(i, j, 0):\n                return True\n    return False\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(L)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(L)",
       "language": "python",
       "code": "def exist(board: list[list[str]], word: str) -> bool:\n    m, n = len(board), len(board[0])\n    if len(word) > m * n:\n        return False\n    from collections import Counter\n    board_cnt = Counter(ch for row in board for ch in row)\n    word_cnt = Counter(word)\n    for ch, count in word_cnt.items():\n        if board_cnt[ch] < count:\n            return False\n    target = word\n    if board_cnt[word[0]] > board_cnt[word[-1]]:\n        target = word[::-1]\n\n    def dfs(r: int, c: int, k: int) -> bool:\n        if k == len(target):\n            return True\n        if r < 0 or r >= m or c < 0 or c >= n or board[r][c] != target[k]:\n            return False\n        saved = board[r][c]\n        board[r][c] = \"#\"\n        found = (\n            dfs(r + 1, c, k + 1)\n            or dfs(r - 1, c, k + 1)\n            or dfs(r, c + 1, k + 1)\n            or dfs(r, c - 1, k + 1)\n        )\n        board[r][c] = saved\n        return found\n\n    for i in range(m):\n        for j in range(n):\n            if board[i][j] == target[0] and dfs(i, j, 0):\n                return True\n    return False\n",
       "isReference": true

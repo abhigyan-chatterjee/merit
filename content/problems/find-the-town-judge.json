@@ -103,5 +103,10 @@
   "nextSlug": "flood-fill",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "The town judge trusts nobody (out-degree 0) and is trusted by everyone else (in-degree n - 1). Compute the net trust score in_degree - out_degree for each person using a single array of size n + 1. For each trust pair [a, b], decrement score of a and increment score of b. The judge is the unique person with score n - 1.",
+    "why_optimal": "Requires only a single pass over the trust array and one scan over people, taking O(N + E) time and O(N) space without needing full adjacency list structures.",
+    "pitfalls": "Off-by-one errors from 1-based person indices. Forgetting that there can be at most one judge, and if multiple people satisfy the condition or none do, -1 must be returned."
+  }
 }

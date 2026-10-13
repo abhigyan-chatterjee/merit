@@ -76,5 +76,10 @@
   "nextSlug": "word-break",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
-  ]
+  ],
+  "editorial": {
+    "approach": "2D Grid DP with space optimization: let dp[c] be the number of unique paths to column c in the current row. Since moving is restricted to down and right, dp[c] = dp[c] + dp[c - 1]. Initialize a 1D array of size n with all 1s (top row). Iterate through the remaining m - 1 rows, updating dp[c] += dp[c - 1] for each column from 1 to n - 1.",
+    "why_optimal": "Computes path counts in O(m * n) time and O(n) space, avoiding full 2D grid allocation while computing the combinatorial equivalent of C(m+n-2, m-1).",
+    "pitfalls": "Off-by-one errors in row/column iterations. Using floating-point combinations for large m, n which causes precision inaccuracies."
+  }
 }

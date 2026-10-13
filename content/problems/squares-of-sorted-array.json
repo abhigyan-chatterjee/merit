@@ -4,7 +4,7 @@
   "topic": "two-pointers",
   "difficulty": "Easy",
   "pattern": "two-pointers / Converge ends",
-  "statement": "# Squares of a Sorted Array\n\nGiven an integer array `nums` arranged in non-decreasing numerical order, return a new array containing the squares of each number, also sorted in non-decreasing order.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+  "statement": "Given an integer array `nums` arranged in non-decreasing numerical order, return a new array containing the squares of each number, also sorted in non-decreasing order.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
   "examples": [
     {
       "input": "nums = [-1000]",
@@ -19,7 +19,7 @@
     {
       "input": "nums = [232, -946, 149, -593, 466, 330, 436, 116, -141, -549, -81, 206, -431, 657, 780, -987, 554]",
       "output": "[6561, 13456, 19881, 22201, 42436, 53824, 108900, 185761, 190096, 217156, 301401, 306916, 351649, 431649, 608400, 894916, 974169]",
-      "explanation": "Mixed signs produce a non-trivial interleaving of squared values\u2014large negatives like -987 and -946 contribute the largest squares."
+      "explanation": "Mixed signs produce a non-trivial interleaving of squared values—large negatives like -987 and -946 contribute the largest squares."
     }
   ],
   "constraints": [
@@ -34,7 +34,7 @@
   "editorial": {
     "approach": "Square each element then sort (brute). The optimal exploits that the input is sorted: the negatives produce a decreasing run of squares and positives an increasing run, so the two-pointer merge produces the sorted result in one pass.",
     "why_optimal": "Brute force is O(n log n) due to the re-sort. The two-pointer merge is O(n) since each element is visited once. On 22 cases the measured times were 0.84 ms (brute) vs 1.95 ms (optimal); Python's Timsort is fast on tiny partially-sorted arrays, so the optimal only pulls ahead at larger n.",
-    "pitfalls": "The input is sorted by value, not by absolute value\u2014large negative numbers dominate. Fill the result from the end (largest square first) so you never need a reversal."
+    "pitfalls": "The input is sorted by value, not by absolute value—large negative numbers dominate. Fill the result from the end (largest square first) so you never need a reversal."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Sorting_algorithm"

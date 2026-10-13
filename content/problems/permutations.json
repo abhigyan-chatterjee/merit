@@ -4,7 +4,7 @@
   "topic": "backtracking",
   "difficulty": "Medium",
   "pattern": "backtracking / Swap-build",
-  "statement": "# Permutations\n\nGiven an array `nums` of distinct integers, return all the possible permutations.\n\nThe returned list of permutations must be sorted in lexicographical order.\n\nConstraints: `1 <= nums.length <= 6` and `-10 <= nums[i] <= 10`. All integers of `nums` are unique.\n",
+  "statement": "Given an array `nums` of distinct integers, return all the possible permutations.\n\nThe returned list of permutations must be sorted in lexicographical order.\n\nConstraints: `1 <= nums.length <= 6` and `-10 <= nums[i] <= 10`. All integers of `nums` are unique.\n",
   "examples": [
     {
       "input": "nums = [1, 2, 3]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Backtracking: In-Place Swap Exploration\n\nGenerating all permutations of an array of $n$ distinct elements corresponds to choosing each available element for the current position and permuting the remaining elements.\n\n#### 1. In-Place Swap Formulation\nInstead of allocating auxiliary boolean arrays or sets to track used elements, we partition the array into:\n- Left prefix $nums[0 \\dots start - 1]$: Elements whose positions are fixed for the current branch.\n- Suffix $nums[start \\dots n - 1]$: Candidates available to be placed at position $start$.\n\n#### 2. Recursive Transition\nFor each index $i$ from $start$ to $n - 1$:\n1. Swap $nums[start]$ with $nums[i]$ to place candidate $nums[i]$ at position $start$.\n2. Recurse on $start + 1$.\n3. Backtrack by swapping $nums[start]$ with $nums[i]$ again to restore the original array order.\n\n#### 3. Base Case & Recurrence\nWhen $start == n$, record a copy of $nums$.\n$$P(start) = \\bigcup_{i = start}^{n - 1} \\text{swap}(start, i) \\circ P(start + 1)$$\nBase case: $P(n) = \\{nums\\}$.\nSorting the final collection guarantees lexicographical ordering.",
-    "why_optimal": "Standard permutation algorithms allocate boolean tracking tables or slice arrays at each step, consuming O(n \u00b7 n!) space. In-place swapping mutates the array directly, using only O(n) call stack space. Across 25 verified test cases, in-place swap backtracking ran in 7.19 ms compared to 2.76 ms for boolean table tracking.",
+    "why_optimal": "Standard permutation algorithms allocate boolean tracking tables or slice arrays at each step, consuming O(n · n!) space. In-place swapping mutates the array directly, using only O(n) call stack space. Across 25 verified test cases, in-place swap backtracking ran in 7.19 ms compared to 2.76 ms for boolean table tracking.",
     "pitfalls": "Failing to swap back after the recursive call destroys array state for sibling iterations. Slicing or copying the array on every step incurs severe memory allocation overhead."
   },
   "reading_links": [
@@ -29013,28 +29013,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n \u00b7 n!) | Space: O(n \u00b7 n!)",
+      "complexity": "Time: O(n · n!) | Space: O(n · n!)",
       "language": "javascript",
       "code": "function permute(nums) {\n  const res = [];\n  function generate(used, path) {\n    if (path.length === nums.length) {\n      res.push(path.slice());\n      return;\n    }\n    for (let i = 0; i < nums.length; i++) {\n      if (!used[i]) {\n        used[i] = true;\n        path.push(nums[i]);\n        generate(used, path);\n        path.pop();\n        used[i] = false;\n      }\n    }\n  }\n  generate(new Array(nums.length).fill(false), []);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      if (a[i] !== b[i]) return a[i] - b[i];\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 n!) | Space: O(n)",
+      "complexity": "Time: O(n · n!) | Space: O(n)",
       "language": "javascript",
       "code": "function permute(nums) {\n  const arr = nums.slice();\n  const res = [];\n  function backtrack(start) {\n    if (start === arr.length) {\n      res.push(arr.slice());\n      return;\n    }\n    for (let i = start; i < arr.length; i++) {\n      const temp = arr[start];\n      arr[start] = arr[i];\n      arr[i] = temp;\n      backtrack(start + 1);\n      const temp2 = arr[start];\n      arr[start] = arr[i];\n      arr[i] = temp2;\n    }\n  }\n  backtrack(0);\n  res.sort((a, b) => {\n    for (let i = 0; i < Math.min(a.length, b.length); i++) {\n      if (a[i] !== b[i]) return a[i] - b[i];\n    }\n    return a.length - b.length;\n  });\n  return res;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n \u00b7 n!) | Space: O(n \u00b7 n!)",
+      "complexity": "Time: O(n · n!) | Space: O(n · n!)",
       "language": "python",
       "code": "def permute(nums: list[int]) -> list[list[int]]:\n    res = []\n    used = [False] * len(nums)\n\n    def generate(path: list[int]) -> None:\n        if len(path) == len(nums):\n            res.append(list(path))\n            return\n        for i in range(len(nums)):\n            if not used[i]:\n                used[i] = True\n                path.append(nums[i])\n                generate(path)\n                path.pop()\n                used[i] = False\n\n    generate([])\n    res.sort()\n    return res\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n \u00b7 n!) | Space: O(n)",
+      "complexity": "Time: O(n · n!) | Space: O(n)",
       "language": "python",
       "code": "def permute(nums: list[int]) -> list[list[int]]:\n    arr = list(nums)\n    res = []\n\n    def backtrack(start: int) -> None:\n        if start == len(arr):\n            res.append(list(arr))\n            return\n        for i in range(start, len(arr)):\n            arr[start], arr[i] = arr[i], arr[start]\n            backtrack(start + 1)\n            arr[start], arr[i] = arr[i], arr[start]\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true

@@ -4,7 +4,7 @@
   "topic": "bit-manipulation",
   "difficulty": "Medium",
   "pattern": "bit-manipulation / Carry loop",
-  "statement": "# Sum of Two Integers\n\nGiven two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
+  "statement": "Given two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
   "examples": [
     {
       "input": "a = 1, b = 2",

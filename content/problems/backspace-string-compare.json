@@ -4,7 +4,7 @@
   "topic": "two-pointers",
   "difficulty": "Easy",
   "pattern": "two-pointers / Reverse scan",
-  "statement": "# Backspace String Compare\n\nGiven two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
+  "statement": "Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
   "examples": [
     {
       "input": "s = \"ab#c\", t = \"ad#c\"",
@@ -32,9 +32,9 @@
     "Compare the rightmost surviving character of each string; advance both pointers only when they match."
   ],
   "editorial": {
-    "approach": "Process each string through a stack\u2014push non-'#' characters, pop on '#'. The optimal variant scans both strings backward with two pointers and skip-counts, never materializing the reduced strings.",
-    "why_optimal": "The stack approach runs O(n + m) time and O(n + m) space. The two-pointer scan keeps the same time bound but O(1) extra space. On the problem's 22 generated cases the optimal ran in 0.10 ms versus 0.31 ms for brute force\u2014a ~3x gap.",
-    "pitfalls": "A '#' at the start of a string must be a no-op; never pop past empty. Both pointers must fully consume their respective strings\u2014do not return early on length mismatch alone."
+    "approach": "Process each string through a stack—push non-'#' characters, pop on '#'. The optimal variant scans both strings backward with two pointers and skip-counts, never materializing the reduced strings.",
+    "why_optimal": "The stack approach runs O(n + m) time and O(n + m) space. The two-pointer scan keeps the same time bound but O(1) extra space. On the problem's 22 generated cases the optimal ran in 0.10 ms versus 0.31 ms for brute force—a ~3x gap.",
+    "pitfalls": "A '#' at the start of a string must be a no-op; never pop past empty. Both pointers must fully consume their respective strings—do not return early on length mismatch alone."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",

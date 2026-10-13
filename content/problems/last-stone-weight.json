@@ -4,7 +4,7 @@
   "topic": "heap",
   "difficulty": "Easy",
   "pattern": "heap / Max simulate",
-  "statement": "# Last Stone Weight\n\nA row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
+  "statement": "A row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
   "examples": [
     {
       "input": "stones = [2, 7, 4, 1, 8, 1]",
@@ -898,7 +898,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2 log n) | Space: O(n)",
+      "complexity": "Time: O(n² log n) | Space: O(n)",
       "language": "javascript",
       "code": "function lastStoneWeight(stones) {\n  let piles = stones.slice();\n  while (piles.length > 1) {\n    piles.sort((a, b) => a - b);\n    const y = piles.pop();\n    const x = piles.pop();\n    if (y !== x) piles.push(y - x);\n  }\n  return piles.length === 0 ? 0 : piles[0];\n}",
       "isReference": false

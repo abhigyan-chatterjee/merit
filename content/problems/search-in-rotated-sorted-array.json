@@ -4,7 +4,7 @@
   "topic": "binary-search",
   "difficulty": "Medium",
   "pattern": "binary-search / Half sorted",
-  "statement": "# Search in Rotated Sorted Array\n\nGiven an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
+  "statement": "Given an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
   "examples": [
     {
       "input": "nums = [4, 5, 6, 7, 0, 1, 2], target = 0",

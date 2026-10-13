@@ -4,7 +4,7 @@
   "topic": "graphs",
   "difficulty": "Easy",
   "pattern": "graphs / DFS reachability",
-  "statement": "# Keys and Rooms\n\nThere are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
+  "statement": "There are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
   "examples": [
     {
       "input": "rooms = [[1], [2], [3], []]",

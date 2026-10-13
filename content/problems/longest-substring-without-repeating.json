@@ -75,5 +75,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Sliding_window_protocol",
     "https://www.geeksforgeeks.org/window-sliding-technique/"
-  ]
+  ],
+  "editorial": {
+    "approach": "Sliding window with hash map: maintain a window [left, right] and a map storing the last seen index of each character. As right advances, if s[right] was seen at index last_idx >= left, contract the window by updating left = last_idx + 1. Record the current index map[s[right]] = right and update max_len = max(max_len, right - left + 1).",
+    "why_optimal": "Both left and right pointers advance monotonically from left to right, processing the string in O(n) time and O(min(m, n)) space where m is the alphabet size.",
+    "pitfalls": "Moving left backward if last_idx < left when the character was seen in an earlier, already-closed window; left must only move forward (left = max(left, last_idx + 1))."
+  }
 }

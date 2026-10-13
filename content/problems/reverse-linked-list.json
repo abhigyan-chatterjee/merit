@@ -91,5 +91,10 @@
   "nextSlug": "add-two-numbers",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
-  ]
+  ],
+  "editorial": {
+    "approach": "Iterative in-place three-pointer reversal: maintain prev = null and curr = head. In each step, store next_node = curr.next, point curr.next = prev, advance prev = curr, and curr = next_node. Continue until curr is null, then return prev as the new head.",
+    "why_optimal": "Inverts all link directions in a single O(n) pass with O(1) space, avoiding recursion overhead and stack memory.",
+    "pitfalls": "Forgetting to save curr.next before breaking the pointer link, severing the rest of the list. Returning curr instead of prev at the end of the loop."
+  }
 }

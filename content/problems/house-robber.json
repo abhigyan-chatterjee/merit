@@ -89,5 +89,10 @@
   "nextSlug": "house-robber-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
-  ]
+  ],
+  "editorial": {
+    "approach": "At each house i, you either rob house i (adding its value to the maximum looted up to house i-2) or skip house i (keeping the maximum looted up to house i-1). This yields recurrence dp[i] = max(dp[i-1], dp[i-2] + nums[i]). Maintain two rolling variables representing prev1 (best up to previous house) and prev2 (best up to house before that).",
+    "why_optimal": "Runs in O(n) time and O(1) auxiliary space, compressing the 1D DP table into two scalar variables without auxiliary array allocation.",
+    "pitfalls": "Edge cases with empty arrays or single-element arrays returning incorrect indices. Forgetting to update the rolling state variables in atomic sequence."
+  }
 }

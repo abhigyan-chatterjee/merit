@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Medium",
   "pattern": "stack / Token parse",
-  "statement": "# Simplify Path\n\nGiven an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
+  "statement": "Given an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
   "examples": [
     {
       "input": "path = \"/home/\"",
@@ -222,7 +222,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function simplifyPath(path) {\n  const parts = path.split('/');\n  let idx = parts.indexOf('..');\n  while (idx !== -1) {\n    parts.splice(idx, 1);\n    for (let j = idx - 1; j >= 0; j--) {\n      if (parts[j] !== '' && parts[j] !== '.' && parts[j] !== '..') {\n        parts.splice(j, 1);\n        break;\n      }\n    }\n    idx = parts.indexOf('..');\n  }\n  const names = [];\n  for (let i = 0; i < parts.length; i++) {\n    if (parts[i] !== '' && parts[i] !== '.' && parts[i] !== '..') {\n      names.push(parts[i]);\n    }\n  }\n  return '/' + names.join('/');\n}",
       "isReference": false
@@ -236,7 +236,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "python",
       "code": "def simplifyPath(path: str) -> str:\n    parts = path.split('/')\n    while '..' in parts:\n        idx = parts.index('..')\n        del parts[idx]\n        for j in range(idx - 1, -1, -1):\n            if parts[j] != '' and parts[j] != '.' and parts[j] != '..':\n                del parts[j]\n                break\n    names = [p for p in parts if p != '' and p != '.' and p != '..']\n    return '/' + '/'.join(names)\n",
       "isReference": false

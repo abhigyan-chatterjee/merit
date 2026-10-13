@@ -23,14 +23,14 @@
     "Only one valid answer exists."
   ],
   "hints": [
-    "A brute force approach inspects all pairs (i, j) in O(n\u00b2) time.",
+    "A brute force approach inspects all pairs (i, j) in O(n²) time.",
     "Can we look up the complement (target - nums[i]) in O(1) time?",
     "Store previously visited numbers and their indices in a Map."
   ],
   "solutions": [
     {
       "title": "Brute Force Nested Loops",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(nums, target) {\n  for (let i = 0; i < nums.length; i++) {\n    for (let j = i + 1; j < nums.length; j++) {\n      if (nums[i] + nums[j] === target) return [i, j];\n    }\n  }\n  return [];\n}",
       "language": "javascript"
     },
@@ -101,5 +101,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"
-  ]
+  ],
+  "editorial": {
+    "approach": "Single-pass hash map: maintain a map of visited numbers to their indices. For each element nums[i], compute its complement target - nums[i]. If the complement exists in the map, return [map[complement], i]. Otherwise, record the current element and its index map[nums[i]] = i.",
+    "why_optimal": "Reduces time from quadratic O(n^2) to linear O(n) with O(n) space using O(1) hash map lookups, terminating on the exact matching pair in a single pass.",
+    "pitfalls": "Adding the current element to the map before checking for its complement, which allows an element to pair with itself if 2 * nums[i] == target."
+  }
 }

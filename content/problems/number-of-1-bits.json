@@ -4,7 +4,7 @@
   "topic": "bit-manipulation",
   "difficulty": "Easy",
   "pattern": "bit-manipulation / n&(n-1)",
-  "statement": "# Number of 1 Bits\n\nGiven a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
+  "statement": "Given a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
   "examples": [
     {
       "input": "n = 11",

@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "Quadratic DP Tabulation",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "code": "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}",
       "language": "javascript"
     },
@@ -96,5 +96,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming",
     "https://visualgo.net/en/sorting"
-  ]
+  ],
+  "editorial": {
+    "approach": "Patience sorting / Binary search: maintain an array tails where tails[i] stores the smallest tail of all increasing subsequences of length i + 1. For each number x in nums, use binary search (bisect_left) to find the first index in tails with value >= x. If found, replace that value with x; if not found, append x to tails. The length of tails is the LIS length.",
+    "why_optimal": "Achieves O(n log n) time and O(n) space, fundamentally outperforming traditional O(n^2) DP tabulation.",
+    "pitfalls": "Mistaking tails for the actual increasing subsequence (the elements in tails represent candidate boundary endpoints, not the verbatim sequence elements). Using non-strict < vs <= when strictly increasing is required."
+  }
 }

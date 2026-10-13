@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Easy",
   "pattern": "stack / Case-cancel",
-  "statement": "# Tidy the String\n\nGiven a string `s`, repeatedly delete any adjacent pair of characters that show the same alphabet letter in opposite cases (one uppercase, the other lowercase). Each deletion may bring two new neighbours together, which must then be examined again.\n\nReturn the shortest string reachable once no such clashing pair remains anywhere in it.\n\nConstraints: `1 <= s.length <= 100`.\n",
+  "statement": "Given a string `s`, repeatedly delete any adjacent pair of characters that show the same alphabet letter in opposite cases (one uppercase, the other lowercase). Each deletion may bring two new neighbours together, which must then be examined again.\n\nReturn the shortest string reachable once no such clashing pair remains anywhere in it.\n\nConstraints: `1 <= s.length <= 100`.\n",
   "examples": [
     {
       "input": "s = \"b\"",
@@ -222,7 +222,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function makeGood(s) {\n  const chars = s.split('');\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i < chars.length - 1; i++) {\n      const a = chars[i];\n      const b = chars[i + 1];\n      if (a !== b && a.toLowerCase() === b.toLowerCase()) {\n        chars.splice(i, 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return chars.join('');\n}",
       "isReference": false

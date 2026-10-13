@@ -4,7 +4,7 @@
   "topic": "dynamic-programming",
   "difficulty": "Medium",
   "pattern": "dp / Min-max track",
-  "statement": "# Maximum Product Subarray\n\nGiven an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
+  "statement": "Given an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
   "examples": [
     {
       "input": "nums = [2, 3, -2, 4]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Dynamic Programming: Dual Extremum Tracking (Kadane Extension)\n\nUnlike maximum sum subarray where adding negative numbers strictly decreases the sum, multiplying two negative numbers creates a positive product. Therefore, a very small negative product can become a large positive product when multiplied by another negative number.\n\n#### 1. DP State Definition\nFor prefix ending at index i:\n- maxProd[i]: Maximum product of a non-empty contiguous subarray ending at index i.\n- minProd[i]: Minimum product of a non-empty contiguous subarray ending at index i.\n\n#### 2. Recurrence Relation & State Transition\nAt index i, the new subarray ending at i can either start at nums[i] alone, or extend the previous maximum or minimum:\ncandidates = {nums[i], maxProd[i - 1] * nums[i], minProd[i - 1] * nums[i]}\nmaxProd[i] = max(candidates)\nminProd[i] = min(candidates)\n\nWhen nums[i] < 0, multiplying by a negative number inverts order, so swapping curMax and curMin before multiplying cleanly handles the sign flip.\n\nSince only the previous index's values are needed, we maintain two scalar variables curMax and curMin, reducing space to O(1).\n\n#### 3. Base Cases\ncurMax = nums[0], curMin = nums[0], globalMax = nums[0].\n\n#### 4. Answer Extraction\nans = max_{0 <= i < n} maxProd[i] (tracked in globalMax).",
-    "why_optimal": "Brute force checks all O(n\u00b2) contiguous subarrays and computes their products, taking O(n\u00b2) time. Tracking running minimum and maximum products in a single pass achieves O(n) linear time with O(1) auxiliary space. Across 30 verified test cases, the linear DP finished in 0.16 ms compared to 0.77 ms for the quadratic search.",
+    "why_optimal": "Brute force checks all O(n²) contiguous subarrays and computes their products, taking O(n²) time. Tracking running minimum and maximum products in a single pass achieves O(n) linear time with O(1) auxiliary space. Across 30 verified test cases, the linear DP finished in 0.16 ms compared to 0.77 ms for the quadratic search.",
     "pitfalls": "Do not discard minimum products: when a negative number appears, the current minimum (most negative) product multiplied by that number yields a large positive candidate. Also, be sure to update curMax and curMin simultaneously or swap them when num < 0 so the new curMax does not overwrite the value needed to compute curMin."
   },
   "reading_links": [
@@ -968,7 +968,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function maxProduct(nums) {\n  let maxProd = nums[0];\n  for (let i = 0; i < nums.length; i++) {\n    let current = 1;\n    for (let j = i; j < nums.length; j++) {\n      current *= nums[j];\n      if (current > maxProd) {\n        maxProd = current;\n      }\n    }\n  }\n  return maxProd;\n}",
       "isReference": false
@@ -982,7 +982,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "python",
       "code": "def maxProduct(nums: list[int]) -> int:\n    max_prod = nums[0]\n    for i in range(len(nums)):\n        current = 1\n        for j in range(i, len(nums)):\n            current *= nums[j]\n            if current > max_prod:\n                max_prod = current\n    return max_prod\n",
       "isReference": false

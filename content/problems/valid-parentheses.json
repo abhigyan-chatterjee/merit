@@ -96,5 +96,10 @@
   "nextSlug": "basic-calculator-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
-  ]
+  ],
+  "editorial": {
+    "approach": "Stack-based bracket matching: iterate through characters in string s. When an opening bracket (, {, [ is seen, push its corresponding closing bracket onto a stack. When a closing bracket is seen, pop from the stack and verify that the popped character matches. If the stack is empty or the characters mismatch, return false. After the loop, return true if the stack is empty.",
+    "why_optimal": "Scans the string in a single O(n) pass with O(n) space in the worst case, enforcing proper nesting order (LIFO).",
+    "pitfalls": "Popping from an empty stack when a closing bracket appears without an opening bracket. Forgetting to verify stack.length == 0 at the end (e.g. s = '(' leaving an unclosed bracket)."
+  }
 }

@@ -4,7 +4,7 @@
   "topic": "linked-lists",
   "difficulty": "Medium",
   "pattern": "linked-list / Range reverse",
-  "statement": "# Reverse Linked List II\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence, and two integers `left` and `right` with `1 <= left <= right <= nums.length`.\n\nReverse the nodes of the list from 1-indexed position `left` to 1-indexed position `right` (both endpoints inclusive), keeping the rest of the list unchanged.\n\nReturn the modified sequence of node values.\n\nConstraints: `1 <= nums.length <= 100`, `1 <= left <= right <= nums.length`, and `-1000 <= nums[i] <= 1000`.\n",
+  "statement": "You are given an integer array `nums` representing the node values of a singly linked list in sequence, and two integers `left` and `right` with `1 <= left <= right <= nums.length`.\n\nReverse the nodes of the list from 1-indexed position `left` to 1-indexed position `right` (both endpoints inclusive), keeping the rest of the list unchanged.\n\nReturn the modified sequence of node values.\n\nConstraints: `1 <= nums.length <= 100`, `1 <= left <= right <= nums.length`, and `-1000 <= nums[i] <= 1000`.\n",
   "examples": [
     {
       "input": "nums = [1, 2, 3, 4, 5], left = 2, right = 4",

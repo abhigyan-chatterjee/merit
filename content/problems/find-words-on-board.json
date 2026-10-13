@@ -4,7 +4,7 @@
   "topic": "trie",
   "difficulty": "Hard",
   "pattern": "trie / Prefix prune",
-  "statement": "# Find Words on Board\n\nGiven an `m x n` board of characters and a list of strings `words`, return all words found on the board.\n\nEach word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nThe returned list of words must be sorted in lexicographical order.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= words.length <= 20`, and `1 <= words[i].length <= 10`. `board` and `words[i]` consist only of lowercase English letters. All strings in `words` are unique.\n",
+  "statement": "Given an `m x n` board of characters and a list of strings `words`, return all words found on the board.\n\nEach word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nThe returned list of words must be sorted in lexicographical order.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= words.length <= 20`, and `1 <= words[i].length <= 10`. `board` and `words[i]` consist only of lowercase English letters. All strings in `words` are unique.\n",
   "examples": [
     {
       "input": "board = [['o', 'a', 'a', 'n'], ['e', 't', 'a', 'e'], ['i', 'h', 'k', 'r'], ['i', 'f', 'l', 'v']], words = ['oath', 'pea', 'eat', 'rain']",
@@ -464,28 +464,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(W \u00b7 m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n + W)",
+      "complexity": "Time: O(W · m · n · 4ᴸ) | Space: O(m · n + W)",
       "language": "javascript",
       "code": "function findWords(board, words) {\n  const m = board.length, n = board[0].length;\n  const found = new Set();\n  function checkWord(word) {\n    function dfs(r, c, k) {\n      if (k === word.length) return true;\n      if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] !== word[k]) return false;\n      const saved = board[r][c];\n      board[r][c] = \"#\";\n      const res = dfs(r + 1, c, k + 1) || dfs(r - 1, c, k + 1) || dfs(r, c + 1, k + 1) || dfs(r, c - 1, k + 1);\n      board[r][c] = saved;\n      return res;\n    }\n    for (let i = 0; i < m; i++) {\n      for (let j = 0; j < n; j++) {\n        if (dfs(i, j, 0)) return true;\n      }\n    }\n    return false;\n  }\n  for (let w = 0; w < words.length; w++) {\n    if (checkWord(words[w])) {\n      found.add(words[w]);\n    }\n  }\n  return Array.from(found).sort();\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(\u03a3|word|)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(Σ|word|)",
       "language": "javascript",
       "code": "function findWords(board, words) {\n  const root = {};\n  for (let i = 0; i < words.length; i++) {\n    const word = words[i];\n    let node = root;\n    for (let j = 0; j < word.length; j++) {\n      const ch = word[j];\n      if (!node[ch]) node[ch] = {};\n      node = node[ch];\n    }\n    node.word = word;\n  }\n  const m = board.length, n = board[0].length;\n  const result = [];\n  function dfs(r, c, parent) {\n    const ch = board[r][c];\n    const currNode = parent[ch];\n    if (!currNode) return;\n    if (currNode.word) {\n      result.push(currNode.word);\n      currNode.word = null;\n    }\n    board[r][c] = \"#\";\n    if (r + 1 < m && board[r + 1][c] !== \"#\") dfs(r + 1, c, currNode);\n    if (r - 1 >= 0 && board[r - 1][c] !== \"#\") dfs(r - 1, c, currNode);\n    if (c + 1 < n && board[r][c + 1] !== \"#\") dfs(r, c + 1, currNode);\n    if (c - 1 >= 0 && board[r][c - 1] !== \"#\") dfs(r, c - 1, currNode);\n    board[r][c] = ch;\n  }\n  for (let i = 0; i < m; i++) {\n    for (let j = 0; j < n; j++) {\n      if (root[board[i][j]]) {\n        dfs(i, j, root);\n      }\n    }\n  }\n  return result.sort();\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(W \u00b7 m \u00b7 n \u00b7 4\u1d38) | Space: O(m \u00b7 n + W)",
+      "complexity": "Time: O(W · m · n · 4ᴸ) | Space: O(m · n + W)",
       "language": "python",
       "code": "def findWords(board: list[list[str]], words: list[str]) -> list[str]:\n    m, n = len(board), len(board[0])\n    found = set()\n\n    def check_word(word: str) -> bool:\n        def dfs(r: int, c: int, k: int) -> bool:\n            if k == len(word):\n                return True\n            if r < 0 or r >= m or c < 0 or c >= n or board[r][c] != word[k]:\n                return False\n            saved = board[r][c]\n            board[r][c] = \"#\"\n            ok = (\n                dfs(r + 1, c, k + 1)\n                or dfs(r - 1, c, k + 1)\n                or dfs(r, c + 1, k + 1)\n                or dfs(r, c - 1, k + 1)\n            )\n            board[r][c] = saved\n            return ok\n\n        for i in range(m):\n            for j in range(n):\n                if dfs(i, j, 0):\n                    return True\n        return False\n\n    for word in words:\n        if check_word(word):\n            found.add(word)\n    return sorted(found)\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m \u00b7 n \u00b7 4\u1d38) | Space: O(\u03a3|word|)",
+      "complexity": "Time: O(m · n · 4ᴸ) | Space: O(Σ|word|)",
       "language": "python",
       "code": "def findWords(board: list[list[str]], words: list[str]) -> list[str]:\n    root = {}\n    for word in words:\n        node = root\n        for ch in word:\n            node = node.setdefault(ch, {})\n        node[\"$\"] = word\n\n    m, n = len(board), len(board[0])\n    result = []\n\n    def dfs(r: int, c: int, parent: dict) -> None:\n        ch = board[r][c]\n        curr_node = parent.get(ch)\n        if not curr_node:\n            return\n        if \"$\" in curr_node:\n            result.append(curr_node.pop(\"$\"))\n        board[r][c] = \"#\"\n        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < m and 0 <= nc < n and board[nr][nc] != \"#\":\n                dfs(nr, nc, curr_node)\n        board[r][c] = ch\n\n    for i in range(m):\n        for j in range(n):\n            if board[i][j] in root:\n                dfs(i, j, root)\n\n    result.sort()\n    return result\n",
       "isReference": true

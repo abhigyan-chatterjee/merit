@@ -4,7 +4,7 @@
   "topic": "heap",
   "difficulty": "Medium",
   "pattern": "heap / Frequency math",
-  "statement": "# Task Scheduler\n\nA list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
+  "statement": "A list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
   "examples": [
     {
       "input": "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 2",

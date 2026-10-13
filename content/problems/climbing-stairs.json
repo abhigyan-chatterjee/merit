@@ -73,5 +73,10 @@
   "nextSlug": "coin-change",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
-  ]
+  ],
+  "editorial": {
+    "approach": "At step n, you can only arrive from step n-1 (taking 1 step) or step n-2 (taking 2 steps), yielding the recurrence ways[n] = ways[n-1] + ways[n-2] with base cases ways[1] = 1 and ways[2] = 2. Rather than recursive exponential branching or allocating an O(n) array, maintain two rolling variables holding the counts for the previous two steps.",
+    "why_optimal": "Reduces time from exponential O(2^n) recursion down to O(n) time with O(1) space, computing the nth Fibonacci-equivalent number iteratively in a single loop.",
+    "pitfalls": "Integer overflow in languages with fixed integer widths for large n. Off-by-one index mistakes with base cases when n = 1 or n = 2."
+  }
 }

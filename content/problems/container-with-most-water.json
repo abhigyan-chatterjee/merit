@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(height) {\n  let max = 0;\n  for (let i = 0; i < height.length; i++) {\n    for (let j = i + 1; j < height.length; j++) {\n      max = Math.max(max, (j - i) * Math.min(height[i], height[j]));\n    }\n  }\n  return max;\n}",
       "language": "javascript"
     },
@@ -93,5 +93,10 @@
   "nextSlug": "remove-nth-node-from-end",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
-  ]
+  ],
+  "editorial": {
+    "approach": "Place two pointers at the outermost boundaries (left = 0, right = n - 1). The water volume is (right - left) * min(height[left], height[right]). To find a larger container, only moving the pointer pointing to the shorter wall can potentially increase volume, because moving the taller wall reduces width while remaining constrained by the shorter wall.",
+    "why_optimal": "Narrows the search interval in O(n) time with O(1) space, avoiding all O(n^2) pair evaluations without missing any candidate container capable of exceeding the current area.",
+    "pitfalls": "Moving the taller pointer or moving both pointers inward simultaneously when walls have different heights, potentially skipping the optimal container. Not handling identical wall heights."
+  }
 }

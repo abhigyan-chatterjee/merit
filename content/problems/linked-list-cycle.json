@@ -100,5 +100,10 @@
   "nextSlug": "middle-of-the-linked-list",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"
-  ]
+  ],
+  "editorial": {
+    "approach": "Floyd's Cycle-Finding Algorithm (Tortoise and Hare): initialize two pointers, slow moving one step and fast moving two steps per iteration. If a cycle exists, fast will enter the cycle and eventually lap and collide with slow. If fast or fast.next reaches null, no cycle exists.",
+    "why_optimal": "Operates in O(N) time with strict O(1) space, avoiding hash set pointer tracking that consumes linear heap memory.",
+    "pitfalls": "Dereferencing fast.next.next without first validating that fast and fast.next are both non-null. Initializing pointers such that slow == fast evaluates to true before the first iteration begins."
+  }
 }

@@ -4,7 +4,7 @@
   "topic": "sliding-windows",
   "difficulty": "Medium",
   "pattern": "sliding-window / Frequency max",
-  "statement": "# Longest Repeating Character Replacement\n\nYou are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
+  "statement": "You are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
   "examples": [
     {
       "input": "s = \"b\", k = 0",
@@ -257,28 +257,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(\u03a3)",
+      "complexity": "Time: O(n²) | Space: O(Σ)",
       "language": "javascript",
       "code": "function characterReplacement(s, k) {\n  let maxLen = 0;\n  const n = s.length;\n\n  for (let i = 0; i < n; i++) {\n    const counts = {};\n    let maxFreq = 0;\n\n    for (let j = i; j < n; j++) {\n      const ch = s[j];\n      counts[ch] = (counts[ch] || 0) + 1;\n      if (counts[ch] > maxFreq) {\n        maxFreq = counts[ch];\n      }\n\n      const windowLen = j - i + 1;\n      if (windowLen - maxFreq <= k) {\n        if (windowLen > maxLen) {\n          maxLen = windowLen;\n        }\n      }\n    }\n  }\n\n  return maxLen;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n) | Space: O(\u03a3)",
+      "complexity": "Time: O(n) | Space: O(Σ)",
       "language": "javascript",
       "code": "function characterReplacement(s, k) {\n  const counts = {};\n  let left = 0;\n  let maxLen = 0;\n\n  for (let right = 0; right < s.length; right++) {\n    const ch = s[right];\n    counts[ch] = (counts[ch] || 0) + 1;\n\n    let maxFreq = 0;\n    for (const key in counts) {\n      if (counts[key] > maxFreq) {\n        maxFreq = counts[key];\n      }\n    }\n\n    while ((right - left + 1) - maxFreq > k) {\n      counts[s[left]]--;\n      left++;\n      maxFreq = 0;\n      for (const key in counts) {\n        if (counts[key] > maxFreq) {\n          maxFreq = counts[key];\n        }\n      }\n    }\n\n    const windowLen = right - left + 1;\n    if (windowLen > maxLen) {\n      maxLen = windowLen;\n    }\n  }\n\n  return maxLen;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(\u03a3)",
+      "complexity": "Time: O(n²) | Space: O(Σ)",
       "language": "python",
       "code": "def characterReplacement(s, k):\n    maxLen = 0\n    n = len(s)\n    for i in range(n):\n        counts = {}\n        maxFreq = 0\n        for j in range(i, n):\n            ch = s[j]\n            counts[ch] = counts.get(ch, 0) + 1\n            if counts[ch] > maxFreq:\n                maxFreq = counts[ch]\n            windowLen = j - i + 1\n            if windowLen - maxFreq <= k:\n                if windowLen > maxLen:\n                    maxLen = windowLen\n    return maxLen\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n) | Space: O(\u03a3)",
+      "complexity": "Time: O(n) | Space: O(Σ)",
       "language": "python",
       "code": "def characterReplacement(s, k):\n    counts = {}\n    left = 0\n    maxLen = 0\n    for right in range(len(s)):\n        ch = s[right]\n        counts[ch] = counts.get(ch, 0) + 1\n        maxFreq = 0\n        for key in counts:\n            if counts[key] > maxFreq:\n                maxFreq = counts[key]\n        while (right - left + 1) - maxFreq > k:\n            counts[s[left]] -= 1\n            left += 1\n            maxFreq = 0\n            for key in counts:\n                if counts[key] > maxFreq:\n                    maxFreq = counts[key]\n        windowLen = right - left + 1\n        if windowLen > maxLen:\n            maxLen = windowLen\n    return maxLen\n",
       "isReference": true

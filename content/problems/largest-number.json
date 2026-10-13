@@ -4,7 +4,7 @@
   "topic": "sorting",
   "difficulty": "Medium",
   "pattern": "sorting / Custom comparator",
-  "statement": "# Largest Number\n\nGiven a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10\u2079`.\n",
+  "statement": "Given a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10⁹`.\n",
   "examples": [
     {
       "input": "nums = [10, 2]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Greedy Sorting with Custom Pairwise Concatenation Comparator\n\nTo form the largest number by concatenating strings, we determine the relative ordering of any two numbers $A$ and $B$.\n\n#### 1. Comparator Invariant\nFor any two string representations $A$ and $B$:\n- Concatenation $A + B$ puts $A$ before $B$.\n- Concatenation $B + A$ puts $B$ before $A$.\nWe define our ordering such that $A$ should precede $B$ if and only if $A + B > B + A$.\nThis relation defines a total ordering over non-negative integer strings, proving transitivity and guaranteeing global optimality.\n\n#### 2. Edge Case Handling\nSort strings according to this comparator in descending order.\nIf the first element after sorting is `\"0\"`, all elements must be `\"0\"`, so return `\"0\"` immediately rather than `\"00...0\"`. Otherwise, join the sorted strings.",
-    "why_optimal": "Bubble sort with pairwise comparisons takes O(n\u00b2 \u00b7 k) time. Using an O(n log n) sorting algorithm with the pairwise concatenation comparator achieves optimal O(n log n \u00b7 k) complexity. On 23 verified test cases, custom comparator sorting completed in 12.48 ms compared to 16.35 ms for bubble sort.",
+    "why_optimal": "Bubble sort with pairwise comparisons takes O(n² · k) time. Using an O(n log n) sorting algorithm with the pairwise concatenation comparator achieves optimal O(n log n · k) complexity. On 23 verified test cases, custom comparator sorting completed in 12.48 ms compared to 16.35 ms for bubble sort.",
     "pitfalls": "Numerical comparison a - b fails for numbers with different digit lengths (e.g. 3 vs 30: '330' > '303'). Always compare concatenated strings (b + a) vs (a + b)."
   },
   "reading_links": [
@@ -383,28 +383,28 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2 \u00b7 k) | Space: O(n \u00b7 k)",
+      "complexity": "Time: O(n² · k) | Space: O(n · k)",
       "language": "javascript",
       "code": "function largestNumber(nums) {\n  const strs = nums.map(String);\n  for (let i = 0; i < strs.length; i++) {\n    for (let j = 0; j < strs.length - 1; j++) {\n      if ((strs[j + 1] + strs[j]).localeCompare(strs[j] + strs[j + 1]) > 0) {\n        const temp = strs[j];\n        strs[j] = strs[j + 1];\n        strs[j + 1] = temp;\n      }\n    }\n  }\n  if (strs[0] === \"0\") return \"0\";\n  return strs.join(\"\");\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n log n \u00b7 k) | Space: O(n \u00b7 k)",
+      "complexity": "Time: O(n log n · k) | Space: O(n · k)",
       "language": "javascript",
       "code": "function largestNumber(nums) {\n  const strs = nums.map(String);\n  strs.sort((a, b) => (b + a).localeCompare(a + b));\n  if (strs[0] === \"0\") return \"0\";\n  return strs.join(\"\");\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2 \u00b7 k) | Space: O(n \u00b7 k)",
+      "complexity": "Time: O(n² · k) | Space: O(n · k)",
       "language": "python",
       "code": "def largestNumber(nums: list[int]) -> str:\n    strs = [str(x) for x in nums]\n    for i in range(len(strs)):\n        for j in range(len(strs) - 1):\n            if strs[j + 1] + strs[j] > strs[j] + strs[j + 1]:\n                strs[j], strs[j + 1] = strs[j + 1], strs[j]\n    if strs[0] == \"0\":\n        return \"0\"\n    return \"\".join(strs)\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n log n \u00b7 k) | Space: O(n \u00b7 k)",
+      "complexity": "Time: O(n log n · k) | Space: O(n · k)",
       "language": "python",
       "code": "def largestNumber(nums: list[int]) -> str:\n    from functools import cmp_to_key\n\n    strs = [str(x) for x in nums]\n\n    def cmp(a: str, b: str) -> int:\n        if a + b > b + a:\n            return -1\n        elif a + b < b + a:\n            return 1\n        return 0\n\n    strs.sort(key=cmp_to_key(cmp))\n    if strs[0] == \"0\":\n        return \"0\"\n    return \"\".join(strs)\n",
       "isReference": true

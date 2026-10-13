@@ -4,7 +4,7 @@
   "topic": "linked-lists",
   "difficulty": "Easy",
   "pattern": "linked-list / Filter",
-  "statement": "# Remove Linked List Elements\n\nYou are given an integer array `nums` representing the sequence of values in a singly linked list, and an integer `val`.\n\nRemove all nodes of the linked list that have value equal to `val`, preserving the relative order of all remaining elements.\n\nReturn the filtered sequence of values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= val <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+  "statement": "You are given an integer array `nums` representing the sequence of values in a singly linked list, and an integer `val`.\n\nRemove all nodes of the linked list that have value equal to `val`, preserving the relative order of all remaining elements.\n\nReturn the filtered sequence of values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= val <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
   "examples": [
     {
       "input": "nums = [1, 2, 6, 3, 4, 5, 6], val = 6",

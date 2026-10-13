@@ -94,5 +94,10 @@
   "nextSlug": "product-of-array-except-self",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
-  ]
+  ],
+  "editorial": {
+    "approach": "Insert all elements into a hash set for O(1) membership lookups. For each number x in the set, check if x - 1 is also in the set. If x - 1 is present, x is not the start of a streak and is skipped. If x - 1 is NOT present, x is a streak root: iteratively count x + 1, x + 2, ... while present in the set to determine the length of the streak.",
+    "why_optimal": "Because inner streak expansion only initiates on streak roots, each number is visited at most twice (once in the outer loop, once in streak expansion), ensuring strict O(n) overall time with O(n) space.",
+    "pitfalls": "Starting streak expansion from every number rather than only streak roots, degrading runtime from O(n) to quadratic O(n^2). Duplicate elements creating redundant checks if not deduped by a set."
+  }
 }

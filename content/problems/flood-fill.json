@@ -151,5 +151,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Breadth-first_search"
-  ]
+  ],
+  "editorial": {
+    "approach": "From the starting cell (sr, sc), record the original color c = image[sr][sc]. If c == color, the grid is already filled and can be returned immediately to prevent infinite recursion. Otherwise, perform BFS or DFS: recolor the current cell to color, then recursively visit any of its 4 orthogonal neighbours that currently match the original color c.",
+    "why_optimal": "Modifies the image in-place in O(M * N) time in the worst case, visiting each reachable connected pixel at most once.",
+    "pitfalls": "Omitting the guard check for original_color == new_color, which causes infinite recursive loops on already-visited pixels. Boundary check slips allowing negative coordinates or coordinates >= rows/cols."
+  }
 }

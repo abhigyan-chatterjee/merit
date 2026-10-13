@@ -95,5 +95,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"
-  ]
+  ],
+  "editorial": {
+    "approach": "Brute-force pairwise checking takes O(n^2) time, and sorting takes O(n log n). The optimal approach uses a hash set: scan the array element by element, checking if the current element is already present in the set. If found, return true immediately; otherwise insert it into the set.",
+    "why_optimal": "Average-case O(1) set lookups yield O(n) time and O(n) space, allowing early termination on the very first duplicate encountered.",
+    "pitfalls": "In languages without proper hashing on negative integers or composite objects, using array lookups instead of true hash tables leading to accidental quadratic degradation."
+  }
 }

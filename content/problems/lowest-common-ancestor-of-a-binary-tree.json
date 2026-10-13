@@ -109,5 +109,10 @@
   "nextSlug": "flatten-binary-tree-preorder",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "Post-order recursive DFS: at each node, if the node is null, p, or q, return the node itself. Recursively search left and right subtrees. If both recursive calls return non-null, p and q lie in separate subtrees of the current node, so the current node is the LCA. If only one call returns non-null, return that non-null result upward.",
+    "why_optimal": "Explores each node once in O(N) time with O(H) stack space, bubbling the ancestor target directly upward without storing path arrays.",
+    "pitfalls": "Searching full subtrees repeatedly from every node, causing O(N^2) time instead of passing information bottom-up in a single pass. Forgetting that a node can be an ancestor of itself (e.g. p is an ancestor of q)."
+  }
 }

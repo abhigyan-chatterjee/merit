@@ -76,5 +76,10 @@
   "nextSlug": "group-anagrams",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
-  ]
+  ],
+  "editorial": {
+    "approach": "Frequency counter: if strings have different lengths, return false immediately. Count character occurrences using a fixed-size frequency array of 26 integers (or a hash map). Increment for characters in string s and decrement for characters in string t. If all frequencies return to 0, the strings are anagrams.",
+    "why_optimal": "Runs in O(n) time and O(1) auxiliary space (fixed 26-character array), beating sorting-based O(n log n) approaches.",
+    "pitfalls": "Assuming ASCII-only lowercase characters without verifying constraints. Early return before validating all count bins are zero."
+  }
 }

@@ -4,7 +4,7 @@
   "topic": "heap",
   "difficulty": "Medium",
   "pattern": "heap / Quickselect",
-  "statement": "# Kth Largest Element in an Array\n\nAn unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
+  "statement": "An unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
   "examples": [
     {
       "input": "nums = [3, 2, 1, 5, 6, 4], k = 2",

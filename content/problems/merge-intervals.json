@@ -30,7 +30,7 @@
   "solutions": [
     {
       "title": "Pairwise Overlap Scan",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "code": "function solve(intervals) {\n  const ivs = intervals.map(x => x.slice()).sort((a, b) => a[0] - b[0]);\n  const out = [];\n  for (const cur of ivs) {\n    let merged = false;\n    for (const prev of out) {\n      if (cur[0] <= prev[1] && prev[0] <= cur[1]) {\n        prev[0] = Math.min(prev[0], cur[0]);\n        prev[1] = Math.max(prev[1], cur[1]);\n        merged = true;\n        break;\n      }\n    }\n    if (!merged) out.push(cur.slice());\n  }\n  return out.sort((a, b) => a[0] - b[0]);\n}",
       "language": "javascript"
     },
@@ -155,5 +155,10 @@
   "nextSlug": "non-overlapping-intervals",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Interval_scheduling"
-  ]
+  ],
+  "editorial": {
+    "approach": "Sort intervals by their start times. Initialize the result list with the first interval. For each subsequent interval [start, end], if start <= last_interval.end, they overlap: merge them by updating last_interval.end = max(last_interval.end, end). Otherwise, append the current interval as a new non-overlapping range.",
+    "why_optimal": "Sorting takes O(n log n) and the linear sweep takes O(n), giving O(n log n) time and O(n) output space. Sorting guarantees intervals are ordered so overlaps only occur with the most recently merged segment.",
+    "pitfalls": "Comparing with start < last.end instead of start <= last.end (intervals touching at boundaries like [1, 4] and [4, 5] must merge). Forgetting max(last.end, end) when an interval is completely swallowed inside an earlier wider interval."
+  }
 }

@@ -4,7 +4,7 @@
   "topic": "sliding-windows",
   "difficulty": "Medium",
   "pattern": "sliding-window / At-most-K",
-  "statement": "# Max Consecutive Ones III\n\nGiven a binary array `nums` and an integer `k`, return the maximum number of consecutive `1`s in the array if you can flip at most `k` zeros to ones.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`, and `0 <= k <= 50`.\n",
+  "statement": "Given a binary array `nums` and an integer `k`, return the maximum number of consecutive `1`s in the array if you can flip at most `k` zeros to ones.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`, and `0 <= k <= 50`.\n",
   "examples": [
     {
       "input": "nums = [0], k = 0",
@@ -34,7 +34,7 @@
   "editorial": {
     "approach": "The brute force tries every starting position, counting zeros in an inner loop and breaking when they exceed k. The optimal uses a grow-shrink sliding window: count zeros in the current window and advance the left edge when the count exceeds k.",
     "why_optimal": "Brute force is O(n^2) because each new start re-scans from scratch. The sliding window is O(n) since each index enters and leaves once. On 22 cases the optimal ran in 0.11 ms versus 0.42 ms (~3.7x faster).",
-    "pitfalls": "Don't reset left to right when shrinking\u2014advance it incrementally. The window length grows monotonically even as left slides; record best at every right step to catch the true maximum."
+    "pitfalls": "Don't reset left to right when shrinking—advance it incrementally. The window length grows monotonically even as left slides; record best at every right step to catch the true maximum."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
@@ -903,7 +903,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function longestOnes(nums, k) {\n  let best = 0;\n  const n = nums.length;\n\n  for (let i = 0; i < n; i++) {\n    let zeroCount = 0;\n    for (let j = i; j < n; j++) {\n      if (nums[j] === 0) {\n        zeroCount++;\n      }\n      if (zeroCount <= k) {\n        const currentLength = j - i + 1;\n        if (currentLength > best) {\n          best = currentLength;\n        }\n      } else {\n        break;\n      }\n    }\n  }\n\n  return best;\n}",
       "isReference": false
@@ -917,7 +917,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "python",
       "code": "def longestOnes(nums, k):\n    best = 0\n    n = len(nums)\n    for i in range(n):\n        zeroCount = 0\n        for j in range(i, n):\n            if nums[j] == 0:\n                zeroCount += 1\n            if zeroCount <= k:\n                currentLength = j - i + 1\n                if currentLength > best:\n                    best = currentLength\n            else:\n                break\n    return best\n",
       "isReference": false

@@ -31,7 +31,7 @@
   "solutions": [
     {
       "title": "All Start-End Pairs",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(nums, k) {\n  let count = 0;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      if (sum === k) count++;\n    }\n  }\n  return count;\n}",
       "language": "javascript"
     },
@@ -93,5 +93,10 @@
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure",
     "https://en.wikipedia.org/wiki/Hash_table"
-  ]
+  ],
+  "editorial": {
+    "approach": "Prefix sums with hash map: let prefix_sum be the running sum of elements up to index i. Any contiguous subarray summing to k satisfies prefix_sum - previous_prefix_sum = k, which rearranges to previous_prefix_sum = prefix_sum - k. Maintain a hash map recording frequencies of each prefix sum seen so far, initialized with {0: 1}. For each element, accumulate prefix_sum, add map.get(prefix_sum - k, 0) to the total count, and increment map[prefix_sum].",
+    "why_optimal": "Solves in O(n) time with O(n) space, eliminating quadratic O(n^2) subarray scanning.",
+    "pitfalls": "Omitting {0: 1} base case in the frequency map, failing to count subarrays that sum to k starting directly from index 0. Looking up prefix_sum - k after incrementing map[prefix_sum] when k == 0, counting an empty interval."
+  }
 }

@@ -30,7 +30,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(prices) {\n  let best = 0;\n  for (let i = 0; i < prices.length; i++) {\n    for (let j = i + 1; j < prices.length; j++) {\n      best = Math.max(best, prices[j] - prices[i]);\n    }\n  }\n  return best;\n}",
       "language": "javascript"
     },
@@ -92,5 +92,10 @@
   "nextSlug": "contains-duplicate",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
-  ]
+  ],
+  "editorial": {
+    "approach": "The brute-force check examines every pair of buying and selling days in O(n^2) time. The optimal approach maintains the minimum price seen so far in a single left-to-right pass. At each day i, calculate the potential profit prices[i] - min_price and update the global maximum profit.",
+    "why_optimal": "A single pass achieves O(n) time and O(1) space, reducing quadratic comparisons down to a single streaming scan with zero extra heap allocations.",
+    "pitfalls": "Resetting the minimum price without tracking the maximum profit achieved prior to that drop. Allowing selling before buying (e.g. taking max(prices) - min(prices) regardless of index ordering). Returning negative profit when prices strictly decrease instead of 0."
+  }
 }

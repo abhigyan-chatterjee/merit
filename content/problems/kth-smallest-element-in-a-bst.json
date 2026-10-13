@@ -95,5 +95,10 @@
   "nextSlug": "binary-tree-level-order-traversal",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "An in-order traversal (Left, Root, Right) of a Binary Search Tree visits values in strictly non-decreasing sorted order. Perform an iterative in-order traversal using an explicit stack: traverse as far left as possible, then pop the node, decrement k, and if k == 0, return that node's value. Otherwise advance to its right child.",
+    "why_optimal": "Stops early as soon as the kth element is reached, running in O(H + k) time instead of visiting all N nodes, using O(H) stack space.",
+    "pitfalls": "Collecting all elements into an array before indexing, which wastes O(N) memory and forces traversing the entire tree even when k = 1."
+  }
 }

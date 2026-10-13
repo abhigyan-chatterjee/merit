@@ -4,7 +4,7 @@
   "topic": "intervals",
   "difficulty": "Easy",
   "pattern": "intervals / Sort+scan",
-  "statement": "# Meeting Rooms\n\nGiven an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, determine if a person could attend all meetings.\n\nTouching boundaries are allowed: a meeting ending at time `t` does not conflict with another meeting beginning at time `t`.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
+  "statement": "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, determine if a person could attend all meetings.\n\nTouching boundaries are allowed: a meeting ending at time `t` does not conflict with another meeting beginning at time `t`.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
   "examples": [
     {
       "input": "intervals = [[0, 30], [5, 10], [15, 20]]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "Sort meetings by start time. Then scan adjacent pairs to verify that no meeting begins before the prior meeting has completed.",
-    "why_optimal": "Pairwise all-pairs collision checking takes O(n\u00b2) time, whereas sorting followed by an adjacent-neighbor scan runs in O(n log n) time and O(n) auxiliary space. On 28 verified test cases, the sorted scan executed in 0.29 ms compared to 0.69 ms for pairwise checking.",
+    "why_optimal": "Pairwise all-pairs collision checking takes O(n²) time, whereas sorting followed by an adjacent-neighbor scan runs in O(n log n) time and O(n) auxiliary space. On 28 verified test cases, the sorted scan executed in 0.29 ms compared to 0.69 ms for pairwise checking.",
     "pitfalls": "Touching endpoints (start[i] === end[i-1]) are valid and do not cause a collision. Handle empty arrays gracefully."
   },
   "reading_links": [
@@ -1891,7 +1891,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "javascript",
       "code": "function canAttendMeetings(intervals) {\n  for (let i = 0; i < intervals.length; i++) {\n    for (let j = i + 1; j < intervals.length; j++) {\n      const s1 = intervals[i][0], e1 = intervals[i][1];\n      const s2 = intervals[j][0], e2 = intervals[j][1];\n      if (Math.max(s1, s2) < Math.min(e1, e2)) {\n        return false;\n      }\n    }\n  }\n  return true;\n}",
       "isReference": false
@@ -1905,7 +1905,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "language": "python",
       "code": "def canAttendMeetings(intervals: list[list[int]]) -> bool:\n    for i in range(len(intervals)):\n        for j in range(i + 1, len(intervals)):\n            s1, e1 = intervals[i]\n            s2, e2 = intervals[j]\n            if max(s1, s2) < min(e1, e2):\n                return False\n    return True\n",
       "isReference": false

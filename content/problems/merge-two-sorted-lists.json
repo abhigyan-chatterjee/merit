@@ -108,5 +108,10 @@
   "nextSlug": "squares-of-sorted-array",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
-  ]
+  ],
+  "editorial": {
+    "approach": "Two-pointer simulation: create a dummy head node. Compare the current elements of list1 and list2; attach whichever has the smaller value to the current merged tail and advance that list's pointer. Repeat until one list is exhausted, then append the remainder of the non-empty list directly.",
+    "why_optimal": "Walks each element of both lists at most once in O(N + M) time and O(1) extra space (relinking existing pointers or building output array in-place).",
+    "pitfalls": "Losing the head reference by advancing without a dummy node. Failing to attach remaining elements after one list runs out."
+  }
 }

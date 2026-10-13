@@ -4,7 +4,7 @@
   "topic": "sliding-windows",
   "difficulty": "Hard",
   "pattern": "sliding-window / Monotonic deque",
-  "statement": "# Sliding Window Maximum\n\nYou are given an integer array `nums` and a sliding window of size `k` that traverses from the left of the array to the right. You can only observe the `k` numbers in the window at each position. Each time, the window advances to the right by one position.\n\nReturn an array containing the maximum value inside the sliding window at each step.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `1 <= k <= nums.length`.\n",
+  "statement": "You are given an integer array `nums` and a sliding window of size `k` that traverses from the left of the array to the right. You can only observe the `k` numbers in the window at each position. Each time, the window advances to the right by one position.\n\nReturn an array containing the maximum value inside the sliding window at each step.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `1 <= k <= nums.length`.\n",
   "examples": [
     {
       "input": "nums = [-1000], k = 1",
@@ -29,11 +29,11 @@
   "hints": [
     "Maintain a deque of indices whose corresponding values are in decreasing order.",
     "Evict indices from the front when they leave the current window [i - k + 1, i].",
-    "Before pushing a new index, pop all smaller values from the back\u2014they can never be the maximum again."
+    "Before pushing a new index, pop all smaller values from the back—they can never be the maximum again."
   ],
   "editorial": {
     "approach": "The brute force scans each k-window independently for its maximum, costing O(n * k). The optimal uses a monotonic deque storing indices in decreasing value order, so the front is always the current window's maximum.",
-    "why_optimal": "Brute force is O(n*k) which degrades to O(n^2) when k ~ n. The deque processes each element at most twice (push once, pop once), giving O(n). On the 22 generated cases the optimal measured 0.35 ms vs 0.14 ms for brute; deque overhead exceeds the brute scan on tiny inputs but wins asymptotically\u2014k=1 is the trivial crossover.",
+    "why_optimal": "Brute force is O(n*k) which degrades to O(n^2) when k ~ n. The deque processes each element at most twice (push once, pop once), giving O(n). On the 22 generated cases the optimal measured 0.35 ms vs 0.14 ms for brute; deque overhead exceeds the brute scan on tiny inputs but wins asymptotically—k=1 is the trivial crossover.",
     "pitfalls": "Store indices (not values) so you can evict elements that fall out of the window. Pop from the back while the tail value <= the current element to keep the deque strictly decreasing."
   },
   "reading_links": [

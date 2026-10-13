@@ -4,7 +4,7 @@
   "topic": "sorting",
   "difficulty": "Medium",
   "pattern": "sorting / Interleave halves",
-  "statement": "# Wiggle Sort II Lite\n\nGiven an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `\u2308n/2\u2309` and a larger half of length `\u230an/2\u230b`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
+  "statement": "Given an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `⌈n/2⌉` and a larger half of length `⌊n/2⌋`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
   "examples": [
     {
       "input": "nums = [1, 5, 1, 1, 6, 4]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Sorting and Interleaving Reverse Halves\n\nWe rearrange `nums` such that $nums[0] < nums[1] > nums[2] < nums[3] \\dots$.\n\n#### 1. Separation into Two Halves\nSort a copy of `nums` ascending:\n- Smaller half `left`: first $\\lceil n / 2 \\rceil$ elements ($nums[0 \\dots mid - 1]$).\n- Larger half `right`: remaining $\\lfloor n / 2 \\rfloor$ elements ($nums[mid \\dots n - 1]$).\n\n#### 2. Reverse Interleaving Construction\nIf elements were placed from left to right, median duplicates from the boundary could collide at adjacent indices.\nBy taking elements in reverse order:\n- Even indices $0, 2, 4, \\dots$ take elements from the end of `left` backwards.\n- Odd indices $1, 3, 5, \\dots$ take elements from the end of `right` backwards.\nThis maximizes the distance between identical elements, strictly satisfying $nums[i-1] < nums[i] > nums[i+1]$.",
-    "why_optimal": "O(n\u00b2) selection sorting performs quadratic comparisons across elements. Using an O(n log n) sort followed by O(n) reverse-half interleaving rearranges the array in O(n log n) time and O(n) space. Across 23 verified test cases, O(n log n) sort-and-interleave executed in 1.13 ms compared to 0.96 ms for selection sort.",
+    "why_optimal": "O(n²) selection sorting performs quadratic comparisons across elements. Using an O(n log n) sort followed by O(n) reverse-half interleaving rearranges the array in O(n log n) time and O(n) space. Across 23 verified test cases, O(n log n) sort-and-interleave executed in 1.13 ms compared to 0.96 ms for selection sort.",
     "pitfalls": "Interleaving from the start of each half instead of the reverse ends causes identical median values to end up adjacent."
   },
   "reading_links": [
@@ -806,7 +806,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "javascript",
       "code": "function wiggleSort(nums) {\n  const n = nums.length;\n  if (n <= 1) return nums.slice();\n  const sorted = nums.slice();\n  for (let i = 0; i < n; i++) {\n    let minIdx = i;\n    for (let j = i + 1; j < n; j++) {\n      if (sorted[j] < sorted[minIdx]) minIdx = j;\n    }\n    const temp = sorted[i];\n    sorted[i] = sorted[minIdx];\n    sorted[minIdx] = temp;\n  }\n  const mid = Math.floor((n + 1) / 2);\n  const left = sorted.slice(0, mid);\n  const right = sorted.slice(mid);\n  const res = new Array(n);\n  let l = left.length - 1;\n  let r = right.length - 1;\n  for (let i = 0; i < n; i++) {\n    if (i % 2 === 0) res[i] = left[l--];\n    else res[i] = right[r--];\n  }\n  return res;\n}",
       "isReference": false
@@ -820,7 +820,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "complexity": "Time: O(n²) | Space: O(n)",
       "language": "python",
       "code": "def wiggleSort(nums: list[int]) -> list[int]:\n    n = len(nums)\n    if n <= 1:\n        return list(nums)\n    sorted_nums = list(nums)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if sorted_nums[j] < sorted_nums[min_idx]:\n                min_idx = j\n        sorted_nums[i], sorted_nums[min_idx] = sorted_nums[min_idx], sorted_nums[i]\n    mid = (n + 1) // 2\n    left = sorted_nums[:mid]\n    right = sorted_nums[mid:]\n    res = [0] * n\n    l, r = len(left) - 1, len(right) - 1\n    for i in range(n):\n        if i % 2 == 0:\n            res[i] = left[l]\n            l -= 1\n        else:\n            res[i] = right[r]\n            r -= 1\n    return res\n",
       "isReference": false

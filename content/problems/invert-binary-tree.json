@@ -97,5 +97,10 @@
   "nextSlug": "maximum-depth-of-binary-tree",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Tree_traversal"
-  ]
+  ],
+  "editorial": {
+    "approach": "Inverting a binary tree requires swapping the left and right subtrees for every node. Perform a post-order or pre-order recursive DFS: at each node, swap node.left and node.right, and recursively call invert on both children. Base case is a null node returning null.",
+    "why_optimal": "Visits every node in the tree exactly once in O(N) time with O(H) auxiliary space on the call stack, mutating tree pointers in-place.",
+    "pitfalls": "Overwriting a child reference before recurring on it without a temporary swap variable. Not handling null root nodes gracefully."
+  }
 }

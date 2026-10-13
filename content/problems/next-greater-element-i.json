@@ -4,7 +4,7 @@
   "topic": "stack",
   "difficulty": "Easy",
   "pattern": "stack / Monotonic map",
-  "statement": "# Next Greater Element I\n\nYou are given two arrays `nums1` and `nums2` where every value of `nums1` also appears in `nums2`.\n\nFor each value `x` in `nums1`, find the first position where `x` occurs in `nums2`, then report the first value strictly greater than `x` that appears after that position. When no larger value follows, report `-1` for that entry.\n\nReturn an array holding one answer per entry of `nums1`, in order.\n\nConstraints: `1 <= nums1.length <= 20`, `1 <= nums2.length <= 50`, `-100 <= nums1[i] <= 100`, and `-100 <= nums2[i] <= 100`.\n",
+  "statement": "You are given two arrays `nums1` and `nums2` where every value of `nums1` also appears in `nums2`.\n\nFor each value `x` in `nums1`, find the first position where `x` occurs in `nums2`, then report the first value strictly greater than `x` that appears after that position. When no larger value follows, report `-1` for that entry.\n\nReturn an array holding one answer per entry of `nums1`, in order.\n\nConstraints: `1 <= nums1.length <= 20`, `1 <= nums2.length <= 50`, `-100 <= nums1[i] <= 100`, and `-100 <= nums2[i] <= 100`.\n",
   "examples": [
     {
       "input": "nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]",

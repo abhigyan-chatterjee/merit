@@ -4,7 +4,7 @@
   "topic": "trees",
   "difficulty": "Easy",
   "pattern": "trees / Mirror compare",
-  "statement": "# Mirror Check\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "statement": "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
   "examples": [
     {
       "input": "root = [1,2,2,3,4,4,3]",
@@ -34,7 +34,7 @@
   "editorial": {
     "approach": "Check the two subtrees as mirror images: values must match, outer index pairs recurse together and inner index pairs recurse together.",
     "why_optimal": "Each index pair is visited once, so the check is linear in the array size with recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.27 ms and the optimal at 0.14 ms (about 1.9x faster).",
-    "pitfalls": "Missing children are significant \u2014 a value facing a hole breaks symmetry just as surely as two different values."
+    "pitfalls": "Missing children are significant — a value facing a hole breaks symmetry just as surely as two different values."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Binary_tree"

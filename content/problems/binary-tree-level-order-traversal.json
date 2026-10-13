@@ -4,7 +4,7 @@
   "topic": "trees",
   "difficulty": "Medium",
   "pattern": "trees / BFS levels",
-  "statement": "# Level Order Listing\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+  "statement": "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
   "examples": [
     {
       "input": "root = [3,9,20,null,null,15,7]",
