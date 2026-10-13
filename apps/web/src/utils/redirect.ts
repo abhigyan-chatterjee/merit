@@ -8,6 +8,7 @@
 
 export const isSafeLoginDestination = (value: string): boolean => {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return false;
+  // eslint-disable-next-line no-control-regex
   if (/[\\\u0000-\u001f\u007f]/.test(value)) return false;
   try {
     const parsed = new URL(value, window.location.origin);

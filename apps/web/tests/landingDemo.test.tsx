@@ -34,6 +34,6 @@ describe('LandingPage live sort demo', () => {
     const counters = screen
       .getAllByText(/swaps/)
       .map((node) => node.textContent ?? '');
-    expect(counters.some((t) => /^[0-9,\[\]]* · [1-9] swaps/.test(t))).toBe(true);
+    expect(counters.some((t) => /^[0-9,[\]]* · [1-9] swaps/.test(t))).toBe(true);
   }, 15000);
 });

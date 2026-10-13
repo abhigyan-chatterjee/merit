@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PROBLEMS } from '../data/problems';
 import { contentApi } from '../utils/api';
 import { CodeRunner } from '../components/CodeRunner';
+import { MarkdownStatement } from './MarkdownStatement';
 import { ProblemExample, TestCase } from '../data/problems';
 
 interface ExamCodingState {
@@ -121,7 +122,12 @@ export const ExamCodingSection: React.FC<{
             </div>
           </div>
           <div className="p-3 rounded-lg border border-line bg-surface space-y-3">
-            {item.statement && <p className="text-xs text-ink leading-relaxed">{item.statement}</p>}
+            {item.statement && (
+              <MarkdownStatement
+                statement={item.statement}
+                className="text-xs text-ink leading-relaxed space-y-2"
+              />
+            )}
             {item.examples.length > 0 && (
               <div className="space-y-2">
                 {item.examples.map((ex, idx) => (

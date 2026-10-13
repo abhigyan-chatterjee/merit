@@ -17,6 +17,7 @@ import {
 import { useProgress, ProblemStatus } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
 import { LessonNav } from '../components/LessonNav';
+import { MarkdownStatement } from '../components/MarkdownStatement';
 
 export const ProblemDetailPage: React.FC = () => {
   const { topic = 'arrays-hashing', slug = 'two-sum' } = useParams<{ topic: string; slug: string }>();
@@ -147,7 +148,7 @@ export const ProblemDetailPage: React.FC = () => {
         <div className="lg:col-span-5 space-y-5">
           {/* Statement & Examples Card */}
           <div className="p-5 rounded-xl border border-line bg-surface space-y-4">
-            <p className="text-sm text-ink leading-relaxed">{problem.statement}</p>
+            <MarkdownStatement statement={problem.statement} />
 
             {/* Examples */}
             <div className="space-y-3 pt-2">

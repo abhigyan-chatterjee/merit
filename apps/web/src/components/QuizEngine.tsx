@@ -468,7 +468,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     }
   };
   const handleSubmitQuizRef = useRef(handleSubmitQuiz);
-  handleSubmitQuizRef.current = handleSubmitQuiz;
+  useEffect(() => {
+    handleSubmitQuizRef.current = handleSubmitQuiz;
+  });
 
   const handleRetryWrongOnly = async () => {
     if (attemptId) {

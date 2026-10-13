@@ -94,6 +94,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[7, 6, 4, 3, 1]], expected: 0, label: "[7,6,4,3,1]" },
       { input: [[1, 2]], expected: 1, label: "[1,2]" },
     ],
+    editorial: {
+      approach: "The brute-force check examines every pair of buying and selling days in O(n^2) time. The optimal approach maintains the minimum price seen so far in a single left-to-right pass. At each day i, calculate the potential profit prices[i] - min_price and update the global maximum profit.",
+      why_optimal: "A single pass achieves O(n) time and O(1) space, reducing quadratic comparisons down to a single streaming scan with zero extra heap allocations.",
+      pitfalls: "Resetting the minimum price without tracking the maximum profit achieved prior to that drop. Allowing selling before buying (e.g. taking max(prices) - min(prices) regardless of index ordering). Returning negative profit when prices strictly decrease instead of 0.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
     ],
@@ -142,6 +147,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 4]], expected: false, label: "[1,2,3,4]" },
       { input: [[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]], expected: true, label: "[1,1,1,3,3...]" },
     ],
+    editorial: {
+      approach: "Brute-force pairwise checking takes O(n^2) time, and sorting takes O(n log n). The optimal approach uses a hash set: scan the array element by element, checking if the current element is already present in the set. If found, return true immediately; otherwise insert it into the set.",
+      why_optimal: "Average-case O(1) set lookups yield O(n) time and O(n) space, allowing early termination on the very first duplicate encountered.",
+      pitfalls: "In languages without proper hashing on negative integers or composite objects, using array lookups instead of true hash tables leading to accidental quadratic degradation.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
       "https://en.wikipedia.org/wiki/Hash_table",
@@ -154,7 +164,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Bit manipulation",
-    statement: "# Counting Bits\n\nGiven an integer `n`, compute and return an array `ans` of length `n + 1` such that for every integer `i` in the range `0 <= i <= n`, `ans[i]` represents the total number of `1` bits in the binary representation of `i`.\n\nConstraints: `0 <= n <= 500`.\n",
+    statement: "Given an integer `n`, compute and return an array `ans` of length `n + 1` such that for every integer `i` in the range `0 <= i <= n`, `ans[i]` represents the total number of `1` bits in the binary representation of `i`.\n\nConstraints: `0 <= n <= 500`.\n",
     examples: [
       { input: "n = 0", output: "[0]", explanation: "0 has no 1-bits in its binary representation, so the result is a single-element array [0]." },
       { input: "n = 12", output: "[0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2]", explanation: "For n=12, each entry ans[i] is the popcount of i. For example, 5 = 0b101 has two 1-bits, and 12 = 0b1100 also has two 1-bits." },
@@ -235,7 +245,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Boyer-Moore",
-    statement: "# Majority Element\n\nGiven an integer array `nums` containing `n` elements, find and return the majority element.\n\nThe majority element is defined as the element that appears more than `⌊n / 2⌋` times in the array. When an input does not contain a strict majority element (> n/2 occurrences), the algorithm returns the candidate produced by majority voting cancellation.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+    statement: "Given an integer array `nums` containing `n` elements, find and return the majority element.\n\nThe majority element is defined as the element that appears more than `⌊n / 2⌋` times in the array. When an input does not contain a strict majority element (> n/2 occurrences), the algorithm returns the candidate produced by majority voting cancellation.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "-100", explanation: "A single-element array has only one value, which trivially appears more than half the time: the answer is -100." },
       { input: "nums = [-72, -94, 89, -30, -38, -43, -65, 88, -74, 73, 89, 39, -78, 51, 8, -92, -93, -77, -45, -41, 29]", output: "29", explanation: "Among 21 mixed values, the Boyer-Moore pass converges on 29 as the element with the net positive surplus of votes." },
@@ -319,7 +329,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Index placement",
-    statement: "# Missing Number\n\nGiven an array `nums` containing `n` integers, find and return the smallest non-negative integer in the range `[0, n]` that is absent from `nums`.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+    statement: "Given an array `nums` containing `n` integers, find and return the smallest non-negative integer in the range `[0, n]` that is absent from `nums`.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "0", explanation: "The array [-100] has length 1, so n=1. The value 0 is absent from the range [0, 1], making 0 the missing number." },
       { input: "nums = [-100, 100, -100, 0, 0, -100, 0, -100, -100, -100, 0, 0, -100, -100, -100, -100, 100, -100, 0, -100, 100, 0, 100, -100, 0, -100, 0, 0, 0, 100, -100, 100, 100, -100, -100, -100, 0, 100, 100, 100, 100, 100, 0, -100, 0, 0, 0, -100, -100, 100, 0, 100, -100, -100, -100, -100, 0, 100, -100, 100, -100, 100, 100, -100, -100, 100, 0, -100, -100, 0, 0, -100, -100, -100, -100, 100, 100, 100, -100, 100, -100, -100, 100, -100, 100, 100, 100, 100, 100, 0, 0, 0, 0, 0, 100, -100, -100, 100, -100, -100]", output: "1", explanation: "The stress array contains 0 and 100 among its 100 elements, but the integer 1 never appears, so 1 is the smallest missing number." },
@@ -404,7 +414,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Stable partition",
-    statement: "# Move Zeroes\n\nGiven an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements.\n\nReturn the resulting array containing all transformed elements. Do not return an empty array unless the input itself is empty.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+    statement: "Given an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements.\n\nReturn the resulting array containing all transformed elements. Do not return an empty array unless the input itself is empty.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "[-100]", explanation: "A single-element array [-100] has no zeros, so nothing needs to move: the output is [-100]." },
       { input: "nums = [0, 0, 0, -100, 0, 100, -100, -100, 0, 100, 0, 0, -100, -100, 0, -100, -100, -100, 0, -100, 0, -100, 100, -100, 0, -100, 0, 0, -100, 0, -100, 100, 0, 0, 0, 0, 100, 100, -100, 0, 0, 100, -100, 100, 100, -100, 0, 0, 100, 100, 100, -100, -100, 100, 0, 0, -100, -100, 0, -100, 0, 100, -100, 100, -100, -100, 100, 100, -100, 100, 0, 0, 100, 0, 0, 0, -100, 0, 0, 100, 0, -100, -100, 100, -100, -100, 0, 0, -100, 100, 100, 0, -100, 0, 100, -100, 0, 0, 100, 0]", output: "[-100, 100, -100, -100, 100, -100, -100, -100, -100, -100, -100, -100, 100, -100, -100, -100, -100, 100, 100, 100, -100, 100, -100, 100, 100, -100, 100, 100, 100, -100, -100, 100, -100, -100, -100, 100, -100, 100, -100, -100, 100, 100, -100, 100, 100, -100, 100, -100, -100, 100, -100, -100, -100, 100, 100, -100, 100, -100, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]", explanation: "The stress array interleaves zeros and non-zeros throughout; the optimal solution compacts all non-zeros first and moves every zero to the tail." },
@@ -489,7 +499,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Two pointers",
-    statement: "# Remove Duplicates from Sorted Array\n\nGiven an integer array `nums`, sort the elements in non-decreasing order and remove any duplicate occurrences so that each unique element appears exactly once.\n\nReturn the resulting array containing only the unique elements in sorted ascending order.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
+    statement: "Given an integer array `nums`, sort the elements in non-decreasing order and remove any duplicate occurrences so that each unique element appears exactly once.\n\nReturn the resulting array containing only the unique elements in sorted ascending order.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "[-100]", explanation: "A single-element array has no duplicates to remove: the output is [-100]." },
       { input: "nums = [-72, -94, 89, -30, -38, -43, -65, 88, -74, 73, 89, 39, -78, 51, 8, -92, -93, -77, -45, -41, 29]", output: "[-94, -93, -92, -78, -77, -74, -72, -65, -45, -43, -41, -38, -30, 8, 29, 39, 51, 73, 88, 89]", explanation: "After sorting [-72, -94, 89, -30, -38, -43, -65, 88, -74, 73, 89, ...] into ascending order, all 21 values are already unique, so the output is the full sorted list." },
@@ -611,6 +621,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[3, 2, 4], 6], expected: [1, 2], label: "nums=[3,2,4], target=6" },
       { input: [[3, 3], 6], expected: [0, 1], label: "nums=[3,3], target=6" },
     ],
+    editorial: {
+      approach: "Single-pass hash map: maintain a map of visited numbers to their indices. For each element nums[i], compute its complement target - nums[i]. If the complement exists in the map, return [map[complement], i]. Otherwise, record the current element and its index map[nums[i]] = i.",
+      why_optimal: "Reduces time from quadratic O(n^2) to linear O(n) with O(n) space using O(1) hash map lookups, terminating on the exact matching pair in a single pass.",
+      pitfalls: "Adding the current element to the map before checking for its complement, which allows an element to pair with itself if 2 * nums[i] == target.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
       "https://en.wikipedia.org/wiki/Hash_table",
@@ -623,7 +638,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Two pointers",
-    statement: "# Two Sum II - Input Array Is Sorted\n\nGiven an array of integers `numbers` and an integer `target`, sort the array in ascending order and find two distinct elements that add up to `target`.\n\nReturn the 1-based indices `[index1, index2]` (`index1 < index2`) corresponding to the outermost pair whose sum equals `target`. If no such pair exists, return an empty array `[]`.\n\nConstraints: `2 <= numbers.length <= 100`, `-100 <= numbers[i] <= 100`, and `-200 <= target <= 200`.\n",
+    statement: "Given an array of integers `numbers` and an integer `target`, sort the array in ascending order and find two distinct elements that add up to `target`.\n\nReturn the 1-based indices `[index1, index2]` (`index1 < index2`) corresponding to the outermost pair whose sum equals `target`. If no such pair exists, return an empty array `[]`.\n\nConstraints: `2 <= numbers.length <= 100`, `-100 <= numbers[i] <= 100`, and `-200 <= target <= 200`.\n",
     examples: [
       { input: "numbers = [-100, -100], target = -200", output: "[1, 2]", explanation: "The sorted array [-100, -100] sums to -200 at positions 1 and 2 (1-based indices), so the answer is [1, 2]." },
       { input: "numbers = [-50, 83, 66, 79, 39, 7, -44, 14, 50, -29, -99, 94, -60, 78, 8, -13, -29, -61, -45], target = 190", output: "[]", explanation: "No two elements in this array sum to 190, so the function correctly returns an empty array []." },
@@ -746,6 +761,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["rat", "car"], expected: false, label: "\"rat\", \"car\"" },
       { input: ["listen", "silent"], expected: true, label: "\"listen\", \"silent\"" },
     ],
+    editorial: {
+      approach: "Frequency counter: if strings have different lengths, return false immediately. Count character occurrences using a fixed-size frequency array of 26 integers (or a hash map). Increment for characters in string s and decrement for characters in string t. If all frequencies return to 0, the strings are anagrams.",
+      why_optimal: "Runs in O(n) time and O(1) auxiliary space (fixed 26-character array), beating sorting-based O(n log n) approaches.",
+      pitfalls: "Assuming ASCII-only lowercase characters without verifying constraints. Early return before validating all count bins are zero.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
     ],
@@ -757,7 +777,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Hash key",
-    statement: "# Group Anagrams\n\nGiven an array of strings `strs`, group all anagrams together into sub-arrays.\n\nAn anagram is a word formed by rearranging the letters of another word using all original letters exactly once.\n\nTo ensure deterministic output, sort each group of anagrams lexicographically, and sort the list of groups lexicographically by their null-delimited joined representations.\n\nConstraints: `1 <= strs.length <= 30`. Each string consists of lowercase English letters.\n",
+    statement: "Given an array of strings `strs`, group all anagrams together into sub-arrays.\n\nAn anagram is a word formed by rearranging the letters of another word using all original letters exactly once.\n\nTo ensure deterministic output, sort each group of anagrams lexicographically, and sort the list of groups lexicographically by their null-delimited joined representations.\n\nConstraints: `1 <= strs.length <= 30`. Each string consists of lowercase English letters.\n",
     examples: [
       { input: "strs = [\"b\"]", output: "[[\"b\"]]", explanation: "A single string 'b' forms one anagram group: [['b']]." },
       { input: "strs = [\"yx\", \"cb\", \"2b\", \"0a\", \"bx\", \"2a\", \"x2\", \"x1\", \"ya\", \"0z\", \"cx\", \"bb\", \"bz\", \"ya\", \"12\", \"0b\", \"yz\", \"xb\", \"xy\", \"xb\", \"y1\", \"zc\", \"zx\", \"yb\"]", output: "[[\"0a\"], [\"0b\"], [\"0z\"], [\"12\"], [\"2a\"], [\"2b\"], [\"bb\"], [\"bx\", \"xb\", \"xb\"], [\"bz\"], [\"cb\"], [\"cx\"], [\"x1\"], [\"x2\"], [\"xy\", \"yx\"], [\"y1\"], [\"ya\", \"ya\"], [\"yb\"], [\"yz\"], [\"zc\"], [\"zx\"]]", explanation: "The array contains anagrams like 'xy'/'yx' and 'bx'/'xb'/'xb' that group together, while unique strings like '0a', '0b', and '0z' each form their own singleton group." },
@@ -879,6 +899,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[0, 3, 7, 2, 5, 8, 4, 6, 0, 1]], expected: 9, label: "[0,3,7,2,5,8,4,6,0,1]" },
       { input: [[]], expected: 0, label: "[] empty" },
     ],
+    editorial: {
+      approach: "Insert all elements into a hash set for O(1) membership lookups. For each number x in the set, check if x - 1 is also in the set. If x - 1 is present, x is not the start of a streak and is skipped. If x - 1 is NOT present, x is a streak root: iteratively count x + 1, x + 2, ... while present in the set to determine the length of the streak.",
+      why_optimal: "Because inner streak expansion only initiates on streak roots, each number is visited at most twice (once in the outer loop, once in streak expansion), ensuring strict O(n) overall time with O(n) space.",
+      pitfalls: "Starting streak expansion from every number rather than only streak roots, degrading runtime from O(n) to quadratic O(n^2). Duplicate elements creating redundant checks if not deduped by a set.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
     ],
@@ -927,6 +952,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[-1, 1, 0, -3, 3]], expected: [0, 0, 9, 0, 0], label: "[-1,1,0,-3,3]" },
       { input: [[2, 5]], expected: [5, 2], label: "[2,5]" },
     ],
+    editorial: {
+      approach: "Without division, compute prefix and suffix products. Allocate an output array ans of length n. First pass (left to right): compute prefix products such that ans[i] holds the product of all elements to the left of i. Second pass (right to left): maintain a running suffix product suff, multiplying ans[i] *= suff and updating suff *= nums[i].",
+      why_optimal: "Computes all product combinations in O(n) time and O(1) extra auxiliary space (excluding the returned result array), satisfying the strict zero-division constraint.",
+      pitfalls: "Attempting division by zero when an array contains 0. Off-by-one errors on prefix/suffix loop indices.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
     ],
@@ -938,7 +968,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Dutch flag",
-    statement: "# Sort Colors\n\nGiven an array `nums` containing `n` elements colored red, white, or blue (represented as `0`, `1`, and `2` respectively), sort them in-place so that objects of the same color are adjacent, in the order `0`, `1`, and `2`.\n\nReturn the sorted array.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 2`.\n",
+    statement: "Given an array `nums` containing `n` elements colored red, white, or blue (represented as `0`, `1`, and `2` respectively), sort them in-place so that objects of the same color are adjacent, in the order `0`, `1`, and `2`.\n\nReturn the sorted array.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 2`.\n",
     examples: [
       { input: "nums = [0]", output: "[0]", explanation: "A single-element array [0] is already sorted: the output is [0]." },
       { input: "nums = [2, 1, 0]", output: "[0, 1, 2]", explanation: "The input [2, 1, 0] is the reverse of the target order; the three-way partition swaps 2 to the right, 0 to the left, and leaves 1 in the middle, producing [0, 1, 2]." },
@@ -1060,6 +1090,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3], 3], expected: 2, label: "[1,2,3], k=3" },
       { input: [[1, -1, 0], 0], expected: 3, label: "[1,-1,0], k=0" },
     ],
+    editorial: {
+      approach: "Prefix sums with hash map: let prefix_sum be the running sum of elements up to index i. Any contiguous subarray summing to k satisfies prefix_sum - previous_prefix_sum = k, which rearranges to previous_prefix_sum = prefix_sum - k. Maintain a hash map recording frequencies of each prefix sum seen so far, initialized with {0: 1}. For each element, accumulate prefix_sum, add map.get(prefix_sum - k, 0) to the total count, and increment map[prefix_sum].",
+      why_optimal: "Solves in O(n) time with O(n) space, eliminating quadratic O(n^2) subarray scanning.",
+      pitfalls: "Omitting {0: 1} base case in the frequency map, failing to count subarrays that sum to k starting directly from index 0. Looking up prefix_sum - k after incrementing map[prefix_sum] when k == 0, counting an empty interval.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Array_data_structure",
       "https://en.wikipedia.org/wiki/Hash_table",
@@ -1072,7 +1107,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Bucket sort",
-    statement: "# Top K Frequent Elements\n\nGiven an integer array `nums` and an integer `k`, return the `k` most frequent elements in the array.\n\nIf two or more elements have the same frequency, break ties deterministically by selecting the smaller value first.\n\nConstraints: `1 <= nums.length <= 100`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
+    statement: "Given an integer array `nums` and an integer `k`, return the `k` most frequent elements in the array.\n\nIf two or more elements have the same frequency, break ties deterministically by selecting the smaller value first.\n\nConstraints: `1 <= nums.length <= 100`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [-100], k = 1", output: "[-100]", explanation: "A single-element array [-100] has one value with frequency 1; asking for the top 1 returns [-100]." },
       { input: "nums = [66, 79, 39, 7, -44, 14, 50, -29, -99, 94, -60, 78, 8, -13, -29, -61, -45, 95, -14, -74, -77, -3, -76], k = 1", output: "[-29]", explanation: "The array contains 23 values where -29 appears twice and every other value appears once; with k=1, the most frequent element -29 is returned." },
@@ -1157,7 +1192,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Hard",
     pattern: "arrays-hashing / Index placement",
-    statement: "# First Missing Positive\n\nGiven an unsorted integer array `nums`, find and return the smallest positive integer that is missing from `nums`.\n\nA positive integer is any integer strictly greater than zero (`1, 2, 3, ...`).\n\nConstraints: `1 <= nums.length <= 100` and `-50 <= nums[i] <= 50`.\n",
+    statement: "Given an unsorted integer array `nums`, find and return the smallest positive integer that is missing from `nums`.\n\nA positive integer is any integer strictly greater than zero (`1, 2, 3, ...`).\n\nConstraints: `1 <= nums.length <= 100` and `-50 <= nums[i] <= 50`.\n",
     examples: [
       { input: "nums = [-50]", output: "1", explanation: "The only element is -50, a negative number, so the smallest positive integer 1 is missing." },
       { input: "nums = [-9, 48, 49, -43, -21, -46, -10, 1, -16, -42, -23, 22, 41, -10, -23, 33, 13, 0, 32, 8, -32, -17]", output: "2", explanation: "The value 1 is present in the array, but 2 never appears, so the first missing positive is 2." },
@@ -1243,7 +1278,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / Reverse scan",
-    statement: "# Backspace String Compare\n\nGiven two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
+    statement: "Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
     examples: [
       { input: "s = \"ab#c\", t = \"ad#c\"", output: "true", explanation: "Both strings reduce to \"ac\": '#' deletes 'b' from s and 'd' from t." },
       { input: "s = \"ab##\", t = \"c\"", output: "false", explanation: "s reduces to an empty string (two consecutive backspaces), while t stays \"c\"." },
@@ -1365,6 +1400,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[], [0]], expected: [0], label: "[], [0]" },
       { input: [[2, 5], [1, 3, 6]], expected: [1, 2, 3, 5, 6], label: "[2,5], [1,3,6]" },
     ],
+    editorial: {
+      approach: "Two-pointer simulation: create a dummy head node. Compare the current elements of list1 and list2; attach whichever has the smaller value to the current merged tail and advance that list's pointer. Repeat until one list is exhausted, then append the remainder of the non-empty list directly.",
+      why_optimal: "Walks each element of both lists at most once in O(N + M) time and O(1) extra space (relinking existing pointers or building output array in-place).",
+      pitfalls: "Losing the head reference by advancing without a dummy node. Failing to attach remaining elements after one list runs out.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
@@ -1376,7 +1416,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / Converge ends",
-    statement: "# Squares of a Sorted Array\n\nGiven an integer array `nums` arranged in non-decreasing numerical order, return a new array containing the squares of each number, also sorted in non-decreasing order.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "Given an integer array `nums` arranged in non-decreasing numerical order, return a new array containing the squares of each number, also sorted in non-decreasing order.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [-1000]", output: "[1000000]", explanation: "A single negative element squares to 1000000, the largest possible output value." },
       { input: "nums = [429, -135, -304, -431, -682, -560]", output: "[18225, 92416, 184041, 185761, 313600, 465124]", explanation: "All inputs are negative except 429; the largest absolute values (-682, -560, -431) produce the largest squares at the end of the sorted output." },
@@ -1498,6 +1538,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["race a car"], expected: false, label: "\"race a car\"" },
       { input: [" "], expected: true, label: "\" \"" },
     ],
+    editorial: {
+      approach: "Two pointers converging inward: place pointers at left = 0 and right = s.length - 1. Advance left and decrement right while characters are not alphanumeric. When both point to alphanumeric characters, compare them case-insensitively; if they differ, return false. Continue while left < right.",
+      why_optimal: "Operates in-place in O(n) time and O(1) auxiliary space without creating filtered intermediate string copies.",
+      pitfalls: "Failing to skip non-alphanumeric characters or skipping out-of-bounds when consecutive spaces/punctuations occur. Comparing characters before converting to lowercase.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
@@ -1509,7 +1554,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / One deletion",
-    statement: "# Valid Palindrome II\n\nGiven a string `s`, return `true` if `s` can be made a palindrome after deleting at most one character from it, or `false` otherwise.\n\nA sequence is a palindrome when it reads identically forwards and backwards.\n\nConstraints: `1 <= s.length <= 100`.\n",
+    statement: "Given a string `s`, return `true` if `s` can be made a palindrome after deleting at most one character from it, or `false` otherwise.\n\nA sequence is a palindrome when it reads identically forwards and backwards.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"b\"", output: "true", explanation: "A single character is trivially a palindrome—no deletions needed." },
       { input: "s = \"cb2b0aab\"", output: "false", explanation: "The first mismatch (c vs b) leaves no single-deletion path that yields a palindrome: deleting the left or right endpoint at each mismatch never converges." },
@@ -1594,7 +1639,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "two-pointers / Greedy pairing",
-    statement: "# Boats to Save People\n\nYou are provided an array of integers `people` where `people[i]` denotes the weight of the `i`-th person, alongside an integer `limit` representing the maximum capacity of each rescue boat.\n\nEach boat can carry at most two people simultaneously, provided the sum of their weights does not exceed `limit`.\n\nReturn the minimum number of boats required to carry every person.\n\nConstraints: `1 <= people.length <= 100`, `1 <= people[i] <= 50`, and `50 <= limit <= 100`.\n",
+    statement: "You are provided an array of integers `people` where `people[i]` denotes the weight of the `i`-th person, alongside an integer `limit` representing the maximum capacity of each rescue boat.\n\nEach boat can carry at most two people simultaneously, provided the sum of their weights does not exceed `limit`.\n\nReturn the minimum number of boats required to carry every person.\n\nConstraints: `1 <= people.length <= 100`, `1 <= people[i] <= 50`, and `50 <= limit <= 100`.\n",
     examples: [
       { input: "people = [1], limit = 50", output: "1", explanation: "A single person weighing 1 with limit 50 needs exactly one boat." },
       { input: "people = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50], limit = 100", output: "12", explanation: "Twenty-four people each weighing 50 with a limit of 100: each boat carries a pair, giving 12 boats." },
@@ -1716,6 +1761,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 1]], expected: 1, label: "[1,1]" },
       { input: [[4, 3, 2, 1, 4]], expected: 16, label: "[4,3,2,1,4]" },
     ],
+    editorial: {
+      approach: "Place two pointers at the outermost boundaries (left = 0, right = n - 1). The water volume is (right - left) * min(height[left], height[right]). To find a larger container, only moving the pointer pointing to the shorter wall can potentially increase volume, because moving the taller wall reduces width while remaining constrained by the shorter wall.",
+      why_optimal: "Narrows the search interval in O(n) time with O(1) space, avoiding all O(n^2) pair evaluations without missing any candidate container capable of exceeding the current area.",
+      pitfalls: "Moving the taller pointer or moving both pointers inward simultaneously when walls have different heights, potentially skipping the optimal container. Not handling identical wall heights.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
@@ -1764,6 +1814,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1], 1], expected: [], label: "[1], n=1" },
       { input: [[1, 2], 1], expected: [1], label: "[1,2], n=1" },
     ],
+    editorial: {
+      approach: "Fast and slow pointers with gap n: prepend a dummy node before the head. Advance a fast pointer n + 1 steps ahead of slow. Then advance both pointers one step at a time until fast reaches null. At this point, slow points directly to the node preceding the target node; remove the target by updating slow.next = slow.next.next.",
+      why_optimal: "Removes the target node in a single O(L) pass with O(1) auxiliary space without calculating list length in advance.",
+      pitfalls: "Deleting the head node (e.g. n == length) without using a dummy node leading to null dereferences or lost references.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Two-pointer_technique",
     ],
@@ -1775,7 +1830,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "two-pointers / Sort+scan",
-    statement: "# Three Sum\n\nGiven an array of integers `nums`, find all unique triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.\n\nThe solution set must not contain duplicate triplets. Each individual triplet must be sorted in non-decreasing order, and the outer list of triplets must be sorted in lexicographical order.\n\nConstraints: `3 <= nums.length <= 50` and `-20 <= nums[i] <= 20`.\n",
+    statement: "Given an array of integers `nums`, find all unique triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.\n\nThe solution set must not contain duplicate triplets. Each individual triplet must be sorted in non-decreasing order, and the outer list of triplets must be sorted in lexicographical order.\n\nConstraints: `3 <= nums.length <= 50` and `-20 <= nums[i] <= 20`.\n",
     examples: [
       { input: "nums = [-20, -20, -20]", output: "[]", explanation: "Three identical negative values sum to -60, not zero, so no triplet qualifies." },
       { input: "nums = [8, 17, -3, -20, -10, 7, 1, -3, -11, -7]", output: "[[-10, -7, 17]]", explanation: "Exactly one triplet sums to zero: -10 + -7 + 17 = 0. The values are returned in ascending sorted order within each triplet." },
@@ -1860,7 +1915,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Hard",
     pattern: "two-pointers / Precompute max",
-    statement: "# Trapping Rain Water\n\nGiven an elevation map represented by an array of non-negative integers `height` where the width of each bar is `1`, compute the total volume of rainwater it can retain after raining.\n\nConstraints: `0 <= height.length <= 100` and `0 <= height[i] <= 100`.\n",
+    statement: "Given an elevation map represented by an array of non-negative integers `height` where the width of each bar is `1`, compute the total volume of rainwater it can retain after raining.\n\nConstraints: `0 <= height.length <= 100` and `0 <= height[i] <= 100`.\n",
     examples: [
       { input: "height = []", output: "0", explanation: "An empty elevation map traps no water." },
       { input: "height = [77, 3, 71, 25, 91, 83, 89, 69, 53, 28, 57, 75, 35, 0, 97, 20]", output: "462", explanation: "Tall bars at heights 91 and 97 trap water between them and across lower valleys." },
@@ -1946,7 +2001,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / Frequency max",
-    statement: "# Longest Repeating Character Replacement\n\nYou are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
+    statement: "You are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
     examples: [
       { input: "s = \"b\", k = 0", output: "1", explanation: "A single character needs zero replacements, so the longest valid window is length 1." },
       { input: "s = \"cb2b0aab\", k = 13", output: "8", explanation: "With 13 replacements out of 8 characters, every character can be unified, so the whole 8-character string is the answer." },
@@ -2067,6 +2122,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["bbbbb"], expected: 1, label: "\"bbbbb\"" },
       { input: ["pwwkew"], expected: 3, label: "\"pwwkew\"" },
     ],
+    editorial: {
+      approach: "Sliding window with hash map: maintain a window [left, right] and a map storing the last seen index of each character. As right advances, if s[right] was seen at index last_idx >= left, contract the window by updating left = last_idx + 1. Record the current index map[s[right]] = right and update max_len = max(max_len, right - left + 1).",
+      why_optimal: "Both left and right pointers advance monotonically from left to right, processing the string in O(n) time and O(min(m, n)) space where m is the alphabet size.",
+      pitfalls: "Moving left backward if last_idx < left when the character was seen in an earlier, already-closed window; left must only move forward (left = max(left, last_idx + 1)).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Sliding_window_protocol",
       "https://www.geeksforgeeks.org/window-sliding-technique/",
@@ -2079,7 +2139,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / At-most-K",
-    statement: "# Max Consecutive Ones III\n\nGiven a binary array `nums` and an integer `k`, return the maximum number of consecutive `1`s in the array if you can flip at most `k` zeros to ones.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`, and `0 <= k <= 50`.\n",
+    statement: "Given a binary array `nums` and an integer `k`, return the maximum number of consecutive `1`s in the array if you can flip at most `k` zeros to ones.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`, and `0 <= k <= 50`.\n",
     examples: [
       { input: "nums = [0], k = 0", output: "0", explanation: "The only element is 0 and zero flips are allowed, so the longest run of 1s is 0." },
       { input: "nums = [1, 1, 1, 0, 0, 1], k = 6", output: "6", explanation: "With 6 flips allowed, both zeros become 1s, making the entire 6-element array a contiguous run of 1s." },
@@ -2164,7 +2224,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / Fixed window",
-    statement: "# Permutation in String\n\nGiven two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
+    statement: "Given two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
     examples: [
       { input: "s1 = \"ba\", s2 = \"aaab\"", output: "true", explanation: "The substring \"ab\" at position 2 is a permutation of \"ba\" (same character counts: one 'a', one 'b')." },
       { input: "s1 = \"0a\", s2 = \"x2b\"", output: "false", explanation: "No character of s1 appears in s2, so no window can match." },
@@ -2250,7 +2310,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Hard",
     pattern: "sliding-window / Monotonic deque",
-    statement: "# Sliding Window Maximum\n\nYou are given an integer array `nums` and a sliding window of size `k` that traverses from the left of the array to the right. You can only observe the `k` numbers in the window at each position. Each time, the window advances to the right by one position.\n\nReturn an array containing the maximum value inside the sliding window at each step.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `1 <= k <= nums.length`.\n",
+    statement: "You are given an integer array `nums` and a sliding window of size `k` that traverses from the left of the array to the right. You can only observe the `k` numbers in the window at each position. Each time, the window advances to the right by one position.\n\nReturn an array containing the maximum value inside the sliding window at each step.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [-1000], k = 1", output: "[-1000]", explanation: "A single-element window reports the only value -1000." },
       { input: "nums = [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000], k = 24", output: "[1000]", explanation: "A window spanning the entire uniform array of 24 elements always reports 1000." },
@@ -2336,7 +2396,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Record-ops",
-    statement: "# Baseball Scorebook\n\nYou are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
+    statement: "You are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
     examples: [
       { input: "operations = [\"5\", \"2\", \"C\", \"D\", \"+\"]", output: "30", explanation: "Generated from the verified optimal implementation." },
       { input: "operations = [\"5\", \"-2\", \"4\", \"C\", \"D\", \"9\", \"+\", \"+\"]", output: "27", explanation: "Generated from the verified optimal implementation." },
@@ -2419,7 +2479,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Case-cancel",
-    statement: "# Tidy the String\n\nGiven a string `s`, repeatedly delete any adjacent pair of characters that show the same alphabet letter in opposite cases (one uppercase, the other lowercase). Each deletion may bring two new neighbours together, which must then be examined again.\n\nReturn the shortest string reachable once no such clashing pair remains anywhere in it.\n\nConstraints: `1 <= s.length <= 100`.\n",
+    statement: "Given a string `s`, repeatedly delete any adjacent pair of characters that show the same alphabet letter in opposite cases (one uppercase, the other lowercase). Each deletion may bring two new neighbours together, which must then be examined again.\n\nReturn the shortest string reachable once no such clashing pair remains anywhere in it.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"b\"", output: "\"b\"", explanation: "Generated from the verified optimal implementation." },
       { input: "s = \"yx\"", output: "\"yx\"", explanation: "Generated from the verified optimal implementation." },
@@ -2490,7 +2550,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Monotonic map",
-    statement: "# Next Greater Element I\n\nYou are given two arrays `nums1` and `nums2` where every value of `nums1` also appears in `nums2`.\n\nFor each value `x` in `nums1`, find the first position where `x` occurs in `nums2`, then report the first value strictly greater than `x` that appears after that position. When no larger value follows, report `-1` for that entry.\n\nReturn an array holding one answer per entry of `nums1`, in order.\n\nConstraints: `1 <= nums1.length <= 20`, `1 <= nums2.length <= 50`, `-100 <= nums1[i] <= 100`, and `-100 <= nums2[i] <= 100`.\n",
+    statement: "You are given two arrays `nums1` and `nums2` where every value of `nums1` also appears in `nums2`.\n\nFor each value `x` in `nums1`, find the first position where `x` occurs in `nums2`, then report the first value strictly greater than `x` that appears after that position. When no larger value follows, report `-1` for that entry.\n\nReturn an array holding one answer per entry of `nums1`, in order.\n\nConstraints: `1 <= nums1.length <= 20`, `1 <= nums2.length <= 50`, `-100 <= nums1[i] <= 100`, and `-100 <= nums2[i] <= 100`.\n",
     examples: [
       { input: "nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]", output: "[-1, 3, -1]", explanation: "Generated from the verified optimal implementation." },
       { input: "nums1 = [2, 4], nums2 = [1, 2, 3, 4]", output: "[3, -1]", explanation: "Generated from the verified optimal implementation." },
@@ -2574,7 +2634,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Collapse",
-    statement: "# Collapse Adjacent Duplicates\n\nGiven a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
+    statement: "Given a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"x22y0\"", output: "\"xy0\"", explanation: "The adjacent duplicate pair '22' is removed, leaving 'xy0' with no further duplicates." },
       { input: "s = \"zbb0bzz\"", output: "\"z0b\"", explanation: "The adjacent duplicates 'bb' and 'zz' are removed, leaving 'z0b'." },
@@ -2708,6 +2768,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["(]"], expected: false, label: "\"(]\"" },
       { input: ["{[]}"], expected: true, label: "\"{[]}\"" },
     ],
+    editorial: {
+      approach: "Stack-based bracket matching: iterate through characters in string s. When an opening bracket (, {, [ is seen, push its corresponding closing bracket onto a stack. When a closing bracket is seen, pop from the stack and verify that the popped character matches. If the stack is empty or the characters mismatch, return false. After the loop, return true if the stack is empty.",
+      why_optimal: "Scans the string in a single O(n) pass with O(n) space in the worst case, enforcing proper nesting order (LIFO).",
+      pitfalls: "Popping from an empty stack when a closing bracket appears without an opening bracket. Forgetting to verify stack.length == 0 at the end (e.g. s = '(' leaving an unclosed bracket).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
     ],
@@ -2719,7 +2784,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Simulate",
-    statement: "# Asteroid Collision\n\nYou are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
+    statement: "You are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
     examples: [
       { input: "asteroids = [648, -354]", output: "[648]", explanation: "Asteroid 648 moves right and -354 moves left. They collide; since 648 > 354, -354 explodes, leaving [648]." },
       { input: "asteroids = [763, -776]", output: "[-776]", explanation: "Asteroid 763 moves right and -776 moves left. Since 776 > 763, 763 explodes, leaving [-776]." },
@@ -2804,7 +2869,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Deferred ops",
-    statement: "# Basic Calculator II\n\nGiven a string `s` holding an arithmetic expression with non-negative integers, the binary operators `+`, `-`, `*`, `/`, and optional spaces, evaluate it and return the integer result.\n\nMultiplication and division bind tighter than addition and subtraction; operators sharing a precedence level apply left to right. There are no parentheses. Division between integers truncates toward zero.\n\nConstraints: `1 <= s.length <= 100`.\n",
+    statement: "Given a string `s` holding an arithmetic expression with non-negative integers, the binary operators `+`, `-`, `*`, `/`, and optional spaces, evaluate it and return the integer result.\n\nMultiplication and division bind tighter than addition and subtraction; operators sharing a precedence level apply left to right. There are no parentheses. Division between integers truncates toward zero.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"3+2*2\"", output: "7", explanation: "Generated from the verified optimal implementation." },
       { input: "s = \" 3/2 \"", output: "1", explanation: "Generated from the verified optimal implementation." },
@@ -2888,7 +2953,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Next greater",
-    statement: "# Daily Temperatures\n\nGiven an array `temperatures` where `temperatures[i]` is the temperature of day `i`, compute for every day how many days pass before a strictly warmer temperature occurs. When no future day is warmer, record `0` for that day.\n\nReturn an array of the same length holding one waiting time per day.\n\nConstraints: `1 <= temperatures.length <= 100` and `30 <= temperatures[i] <= 100`.\n",
+    statement: "Given an array `temperatures` where `temperatures[i]` is the temperature of day `i`, compute for every day how many days pass before a strictly warmer temperature occurs. When no future day is warmer, record `0` for that day.\n\nReturn an array of the same length holding one waiting time per day.\n\nConstraints: `1 <= temperatures.length <= 100` and `30 <= temperatures[i] <= 100`.\n",
     examples: [
       { input: "temperatures = [95, 60, 65]", output: "[0, 1, 0]", explanation: "Day 0 (95) has no future warmer day (0). Day 1 (60) sees warmer temperature 65 on day 2 (wait of 1 day). Day 2 (65) is the last day (0)." },
       { input: "temperatures = [58, 30, 39, 37, 59, 38, 34, 72]", output: "[4, 1, 2, 1, 3, 2, 1, 0]", explanation: "For 58 at index 0, the next warmer temperature is 59 at index 4 (wait of 4 days). For 30 at index 1, the next warmer is 39 at index 2 (wait of 1 day)." },
@@ -3010,6 +3075,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["3[a2[c]]"], expected: "accaccacc", label: "\"3[a2[c]]\"" },
       { input: ["2[abc]3[cd]ef"], expected: "abcabccdcdcdef", label: "\"2[abc]3[cd]ef\"" },
     ],
+    editorial: {
+      approach: "Maintain two stacks or a combined frame stack: one for repeat counts k and one for partially accumulated string prefixes. When encountering digits, accumulate the multi-digit number k. On '[', push k and the current string onto the stack, resetting both. On ']', pop the previous string and repeat count, appending k repetitions of the current string to the popped prefix. Plain characters append directly to the current string.",
+      why_optimal: "Processes each character of the input string and repeats decoded segments in linear O(output_length) time and O(depth + output_length) space, naturally handling arbitrary nested bracket depths.",
+      pitfalls: "Multi-digit counts (e.g. 100[a]) being parsed as single digits if k = k * 10 + digit is not accumulated across consecutive digit characters. Forgetting to reset the current string buffer upon entering a new bracket level.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
     ],
@@ -3021,7 +3091,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Postfix eval",
-    statement: "# Evaluate Postfix Notation\n\nGiven an array of strings `tokens` written in postfix order, evaluate the expression it denotes and return the integer result.\n\nEach token is either a decimal integer (possibly negative) or one of the four operators `+`, `-`, `*`, `/`. Every operator consumes its two nearest preceding values: the earlier value is the left operand and the later value is the right operand. Division between integers truncates toward zero.\n\nConstraints: `1 <= tokens.length <= 100`.\n",
+    statement: "Given an array of strings `tokens` written in postfix order, evaluate the expression it denotes and return the integer result.\n\nEach token is either a decimal integer (possibly negative) or one of the four operators `+`, `-`, `*`, `/`. Every operator consumes its two nearest preceding values: the earlier value is the left operand and the later value is the right operand. Division between integers truncates toward zero.\n\nConstraints: `1 <= tokens.length <= 100`.\n",
     examples: [
       { input: "tokens = [\"2\", \"1\", \"+\", \"3\", \"*\"]", output: "9", explanation: "Generated from the verified optimal implementation." },
       { input: "tokens = [\"4\", \"13\", \"5\", \"/\", \"+\"]", output: "6", explanation: "Generated from the verified optimal implementation." },
@@ -3105,7 +3175,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Token parse",
-    statement: "# Simplify Path\n\nGiven an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
+    statement: "Given an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
     examples: [
       { input: "path = \"/home/\"", output: "\"/home\"", explanation: "Generated from the verified optimal implementation." },
       { input: "path = \"/../\"", output: "\"/\"", explanation: "Generated from the verified optimal implementation." },
@@ -3188,7 +3258,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "stack / Monotonic increasing",
-    statement: "# Largest Rectangle in Histogram\n\nGiven an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
+    statement: "Given an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
     examples: [
       { input: "heights = [31, 95, 71, 68, 33]", output: "204", explanation: "Bars at indices 1 to 3 have heights [95, 71, 68]. The minimum height across these 3 bars is 68, forming a rectangle of area 68 * 3 = 204." },
       { input: "heights = [47, 97, 20, 69, 99]", output: "138", explanation: "Bars at indices 3 and 4 have heights [69, 99] with minimum height 69, forming a rectangle of area 69 * 2 = 138." },
@@ -3311,6 +3381,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1], -1], expected: false, label: "[1], pos=-1" },
       { input: [[1], 0], expected: true, label: "[1], pos=0 self-loop" },
     ],
+    editorial: {
+      approach: "Floyd's Cycle-Finding Algorithm (Tortoise and Hare): initialize two pointers, slow moving one step and fast moving two steps per iteration. If a cycle exists, fast will enter the cycle and eventually lap and collide with slow. If fast or fast.next reaches null, no cycle exists.",
+      why_optimal: "Operates in O(N) time with strict O(1) space, avoiding hash set pointer tracking that consumes linear heap memory.",
+      pitfalls: "Dereferencing fast.next.next without first validating that fast and fast.next are both non-null. Initializing pointers such that slow == fast evaluates to true before the first iteration begins.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Linked_list",
     ],
@@ -3359,6 +3434,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2, 3, 4, 5, 6]], expected: [4, 5, 6], label: "[1,2,3,4,5,6]" },
       { input: [[1]], expected: [1], label: "[1]" },
     ],
+    editorial: {
+      approach: "Two-pointer technique (Tortoise and Hare): start slow and fast pointers at the head. Advance slow by 1 node and fast by 2 nodes per step. When fast reaches null (even length) or fast.next reaches null (odd length), slow sits precisely at the middle node (or second middle node for even lengths).",
+      why_optimal: "Finds the middle node in a single O(n) pass with O(1) space without requiring an initial count pass or array buffering.",
+      pitfalls: "Checking fast.next.next before confirming fast.next is non-null, leading to null pointer exceptions on odd-length lists.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Linked_list",
     ],
@@ -3407,6 +3487,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2]], expected: false, label: "[1,2]" },
       { input: [[1, 3, 1]], expected: true, label: "[1,3,1]" },
     ],
+    editorial: {
+      approach: "Three-phase in-place technique: 1) Find the middle of the list using fast and slow pointers. 2) Reverse the second half of the linked list in-place. 3) Compare nodes from the head and the reversed second half node-by-node. Optionally restore the list before returning.",
+      why_optimal: "Checks palindrome property in O(n) time and O(1) auxiliary space, unlike copying to an array which uses O(n) memory.",
+      pitfalls: "Uneven list length termination: on odd-length lists, the middle node belongs to the first half and should not cause mismatch errors. Pointer disconnection during the second-half reversal.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Linked_list",
     ],
@@ -3418,7 +3503,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "linked-list / Filter",
-    statement: "# Remove Linked List Elements\n\nYou are given an integer array `nums` representing the sequence of values in a singly linked list, and an integer `val`.\n\nRemove all nodes of the linked list that have value equal to `val`, preserving the relative order of all remaining elements.\n\nReturn the filtered sequence of values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= val <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the sequence of values in a singly linked list, and an integer `val`.\n\nRemove all nodes of the linked list that have value equal to `val`, preserving the relative order of all remaining elements.\n\nReturn the filtered sequence of values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= val <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 6, 3, 4, 5, 6], val = 6", output: "[1, 2, 3, 4, 5]", explanation: "Both occurrences of 6 (at indices 2 and 6) are removed, leaving [1, 2, 3, 4, 5]." },
       { input: "nums = [7, 7, 7, 7], val = 7", output: "[]", explanation: "Every element in the list matches val = 7, resulting in an empty list." },
@@ -3545,6 +3630,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2]], expected: [2, 1], label: "[1,2]" },
       { input: [[]], expected: [], label: "[]" },
     ],
+    editorial: {
+      approach: "Iterative in-place three-pointer reversal: maintain prev = null and curr = head. In each step, store next_node = curr.next, point curr.next = prev, advance prev = curr, and curr = next_node. Continue until curr is null, then return prev as the new head.",
+      why_optimal: "Inverts all link directions in a single O(n) pass with O(1) space, avoiding recursion overhead and stack memory.",
+      pitfalls: "Forgetting to save curr.next before breaking the pointer link, severing the rest of the list. Returning curr instead of prev at the end of the loop.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Linked_list",
     ],
@@ -3593,6 +3683,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[0], [0]], expected: [0], label: "[0] + [0]" },
       { input: [[9, 9, 9, 9, 9, 9, 9], [9, 9, 9, 9]], expected: [8, 9, 9, 9, 0, 0, 0, 1], label: "carry cascade" },
     ],
+    editorial: {
+      approach: "Simulate elementary addition column by column with a running carry starting from the least significant digit (head of lists). Traverse both digit sequences simultaneously, adding digits plus the carry to form the new node value (sum % 10) and updating carry = sum // 10. Continue while either list has remaining digits or the carry is non-zero.",
+      why_optimal: "Runs in linear O(max(N, M)) time and O(max(N, M)) auxiliary space for the output array, which is optimal since every digit must be inspected at least once to compute the exact sum.",
+      pitfalls: "Forgetting to append a final digit node when a carry remains after both input sequences are exhausted (e.g. 5 + 5 = 10 resulting in [0] instead of [0, 1]). Assuming lists are of equal length without handling missing digits.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Linked_list",
     ],
@@ -3604,7 +3699,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Deep copy",
-    statement: "# Copy List with Random Pointer\n\nA linked list of length `n` is given such that each node contains an additional random pointer, which could point to any node in the list, or `null`.\n\nIn this problem, the linked list is represented as an array of pairs `nodes`, where each entry `nodes[i] = [val, randomIndex]` specifies the `i`-th node:\n- `val`: an integer value stored in the node.\n- `randomIndex`: the 0-indexed position of the node that the random pointer references, or `-1` if it points to `null`.\n\nConstruct and return a deep copy of the list represented in the exact same format `[[val, randomIndex], ...]`. None of the inner pairs or the outer container in the returned copy should share reference identity with the input.\n\nConstraints: `0 <= nodes.length <= 100`, `-1000 <= nodes[i][0] <= 1000`, and each `nodes[i][1]` is either `-1` or satisfies `0 <= nodes[i][1] < nodes.length`.\n",
+    statement: "A linked list of length `n` is given such that each node contains an additional random pointer, which could point to any node in the list, or `null`.\n\nIn this problem, the linked list is represented as an array of pairs `nodes`, where each entry `nodes[i] = [val, randomIndex]` specifies the `i`-th node:\n- `val`: an integer value stored in the node.\n- `randomIndex`: the 0-indexed position of the node that the random pointer references, or `-1` if it points to `null`.\n\nConstruct and return a deep copy of the list represented in the exact same format `[[val, randomIndex], ...]`. None of the inner pairs or the outer container in the returned copy should share reference identity with the input.\n\nConstraints: `0 <= nodes.length <= 100`, `-1000 <= nodes[i][0] <= 1000`, and each `nodes[i][1]` is either `-1` or satisfies `0 <= nodes[i][1] < nodes.length`.\n",
     examples: [
       { input: "nodes = [[7, -1], [13, 0], [11, 4], [10, 2], [1, 0]]", output: "[[7, -1], [13, 0], [11, 4], [10, 2], [1, 0]]", explanation: "A 5-node list where node 0 has no random target (-1), node 1 points to node 0, node 2 points to node 4, node 3 points to node 2, and node 4 points to node 0. A distinct deep copy with identical structure is created." },
       { input: "nodes = [[1, 1], [2, 1]]", output: "[[1, 1], [2, 1]]", explanation: "Node 0 points to node 1 as random, and node 1 points to itself as random (index 1). A deep copy mirroring these pointers is returned." },
@@ -3693,7 +3788,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Index parity",
-    statement: "# Odd Even Linked List\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nGroup all nodes at 1-indexed odd positions together first, followed by all nodes at 1-indexed even positions. The relative order within the odd-indexed group and within the even-indexed group must be maintained.\n\nNote that the grouping is based on the 1-indexed position in the sequence, not on the numerical value of the nodes.\n\nReturn the reordered sequence of node values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nGroup all nodes at 1-indexed odd positions together first, followed by all nodes at 1-indexed even positions. The relative order within the odd-indexed group and within the even-indexed group must be maintained.\n\nNote that the grouping is based on the 1-indexed position in the sequence, not on the numerical value of the nodes.\n\nReturn the reordered sequence of node values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5]", output: "[1, 3, 5, 2, 4]", explanation: "Nodes at 1-indexed positions 1, 3, 5 are values [1, 3, 5]. Nodes at positions 2, 4 are [2, 4]. Connecting odds then evens yields [1, 3, 5, 2, 4]." },
       { input: "nums = [2, 1, 3, 5, 6, 4, 7]", output: "[2, 3, 6, 7, 1, 5, 4]", explanation: "Odd positions (1st, 3rd, 5th, 7th) have values [2, 3, 6, 7]; even positions (2nd, 4th, 6th) have values [1, 5, 4]." },
@@ -3782,7 +3877,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Stable partition",
-    statement: "# Partition List\n\nYou are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 4, 3, 2, 5, 2], x = 3", output: "[1, 2, 2, 4, 3, 5]", explanation: "Elements strictly less than 3 are [1, 2, 2]. Elements greater than or equal to 3 are [4, 3, 5]. Combining them while preserving relative order gives [1, 2, 2, 4, 3, 5]." },
       { input: "nums = [2, 1], x = 2", output: "[1, 2]", explanation: "1 is less than 2 and placed first; 2 is greater than or equal to 2 and placed second." },
@@ -3871,7 +3966,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Fold ends",
-    statement: "# Reorder List\n\nYou are given an array of integers `nums` representing the node values of a singly linked list in sequence: `[L_0, L_1, ..., L_{n-1}]`.\n\nReorder the list such that the elements follow the interwoven fold pattern:\n`[L_0, L_{n-1}, L_1, L_{n-2}, L_2, L_{n-3}, ...]`\n\nYou must construct and return the reordered list of values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an array of integers `nums` representing the node values of a singly linked list in sequence: `[L_0, L_1, ..., L_{n-1}]`.\n\nReorder the list such that the elements follow the interwoven fold pattern:\n`[L_0, L_{n-1}, L_1, L_{n-2}, L_2, L_{n-3}, ...]`\n\nYou must construct and return the reordered list of values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4]", output: "[1, 4, 2, 3]", explanation: "With four elements, the first element 1 is paired with the last element 4, followed by the second element 2 paired with the second-to-last element 3." },
       { input: "nums = [1, 2, 3, 4, 5]", output: "[1, 5, 2, 4, 3]", explanation: "With an odd length of five, 1 pairs with 5, then 2 pairs with 4, and the solitary middle element 3 is placed at the end." },
@@ -3960,7 +4055,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Range reverse",
-    statement: "# Reverse Linked List II\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence, and two integers `left` and `right` with `1 <= left <= right <= nums.length`.\n\nReverse the nodes of the list from 1-indexed position `left` to 1-indexed position `right` (both endpoints inclusive), keeping the rest of the list unchanged.\n\nReturn the modified sequence of node values.\n\nConstraints: `1 <= nums.length <= 100`, `1 <= left <= right <= nums.length`, and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence, and two integers `left` and `right` with `1 <= left <= right <= nums.length`.\n\nReverse the nodes of the list from 1-indexed position `left` to 1-indexed position `right` (both endpoints inclusive), keeping the rest of the list unchanged.\n\nReturn the modified sequence of node values.\n\nConstraints: `1 <= nums.length <= 100`, `1 <= left <= right <= nums.length`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], left = 2, right = 4", output: "[1, 4, 3, 2, 5]", explanation: "The subsegment from 1-indexed position 2 to 4 corresponds to values [2, 3, 4]. Reversing this segment gives [4, 3, 2], producing the final sequence [1, 4, 3, 2, 5]." },
       { input: "nums = [1, 2, 3, 4], left = 1, right = 4", output: "[4, 3, 2, 1]", explanation: "Here left = 1 and right = 4 spans the entire list, reversing all elements." },
@@ -4049,7 +4144,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Rotation",
-    statement: "# Rotate List\n\nYou are given an integer array `nums` representing the sequence of values in a singly linked list, and a non-negative integer `k`.\n\nRotate the list to the right by `k` places. In each rotation step, the last element moves to the very front of the list, shifting all other elements one position to the right.\n\nReturn the list of values after applying the `k` rotations.\n\nConstraints: `0 <= nums.length <= 100`, `0 <= k <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the sequence of values in a singly linked list, and a non-negative integer `k`.\n\nRotate the list to the right by `k` places. In each rotation step, the last element moves to the very front of the list, shifting all other elements one position to the right.\n\nReturn the list of values after applying the `k` rotations.\n\nConstraints: `0 <= nums.length <= 100`, `0 <= k <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], k = 2", output: "[4, 5, 1, 2, 3]", explanation: "Rotating right by 2 shifts 5 and 4 to the front, followed by the remaining elements 1, 2, and 3." },
       { input: "nums = [0, 1, 2], k = 4", output: "[2, 0, 1]", explanation: "Here k = 4 exceeds length 3. The effective rotation is 4 % 3 = 1 step to the right, moving 2 to the front." },
@@ -4138,7 +4233,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Adjacent swap",
-    statement: "# Swap Nodes in Pairs\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nSwap every two adjacent nodes from left to right. If the total number of elements is odd, the final lone element should remain in its original position.\n\nReturn the modified sequence of node values after performing the swaps.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nSwap every two adjacent nodes from left to right. If the total number of elements is odd, the final lone element should remain in its original position.\n\nReturn the modified sequence of node values after performing the swaps.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4]", output: "[2, 1, 4, 3]", explanation: "Elements 1 and 2 swap positions to become [2, 1], and elements 3 and 4 swap positions to become [4, 3]." },
       { input: "nums = [1, 2, 3, 4, 5]", output: "[2, 1, 4, 3, 5]", explanation: "Pairs (1, 2) and (3, 4) swap, leaving the odd 5th element 5 at the end untouched." },
@@ -4227,7 +4322,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Hard",
     pattern: "linked-list / Heap merge",
-    statement: "# Merge k Sorted Lists\n\nYou are given an array of `k` sorted integer arrays `lists`, where each individual array represents a singly linked list sorted in non-decreasing order.\n\nMerge all `k` linked lists into a single consolidated list sorted in non-decreasing order, and return the resulting array.\n\nConstraints: `0 <= lists.length <= 30`, each list satisfies `0 <= lists[i].length <= 50`, and `-1000 <= lists[i][j] <= 1000`.\n",
+    statement: "You are given an array of `k` sorted integer arrays `lists`, where each individual array represents a singly linked list sorted in non-decreasing order.\n\nMerge all `k` linked lists into a single consolidated list sorted in non-decreasing order, and return the resulting array.\n\nConstraints: `0 <= lists.length <= 30`, each list satisfies `0 <= lists[i].length <= 50`, and `-1000 <= lists[i][j] <= 1000`.\n",
     examples: [
       { input: "lists = [[1, 4, 5], [1, 3, 4], [2, 6]]", output: "[1, 1, 2, 3, 4, 4, 5, 6]", explanation: "Merging the three sorted lists yields all elements in ascending order: [1, 1, 2, 3, 4, 4, 5, 6]." },
       { input: "lists = [[], [1, 5], [2, 3, 8], []]", output: "[1, 2, 3, 5, 8]", explanation: "Empty sublists contribute no elements. Merging [1, 5] and [2, 3, 8] produces [1, 2, 3, 5, 8]." },
@@ -4316,7 +4411,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Hard",
     pattern: "linked-list / Chunk reverse",
-    statement: "# Reverse Nodes in k-Group\n\nYou are given an integer array `nums` representing the node values of a singly linked list in sequence, and a positive integer `k`.\n\nReverse the nodes of the list `k` at a time from left to right, and return the modified sequence. If the number of nodes remaining at the end is less than `k`, those leftover nodes must remain in their original order.\n\nConstraints: `0 <= nums.length <= 100`, `1 <= k <= 100`, and `-1000 <= nums[i] <= 1000`.\n",
+    statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence, and a positive integer `k`.\n\nReverse the nodes of the list `k` at a time from left to right, and return the modified sequence. If the number of nodes remaining at the end is less than `k`, those leftover nodes must remain in their original order.\n\nConstraints: `0 <= nums.length <= 100`, `1 <= k <= 100`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], k = 2", output: "[2, 1, 4, 3, 5]", explanation: "The first chunk [1, 2] is reversed to [2, 1]; the second chunk [3, 4] is reversed to [4, 3]; the lone remaining element [5] is left unchanged." },
       { input: "nums = [1, 2, 3, 4, 5], k = 3", output: "[3, 2, 1, 4, 5]", explanation: "The first chunk [1, 2, 3] of length 3 is reversed to [3, 2, 1]; the remaining 2 elements [4, 5] form an incomplete chunk (< k) and remain in original order." },
@@ -4442,6 +4537,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2]], expected: 1, label: "[1,2]" },
       { input: [[]], expected: 0, label: "[]" },
     ],
+    editorial: {
+      approach: "The diameter is the length of the longest path between any two nodes, which may or may not pass through the root. Compute the max depth of each subtree recursively using post-order DFS. At each node, the longest path passing through that node is left_depth + right_depth. Update a global maximum diameter at each node, while returning 1 + max(left_depth, right_depth) to the caller.",
+      why_optimal: "Visits each node in the tree exactly once in O(N) time with O(H) call stack space, computing height and path length simultaneously in a bottom-up pass.",
+      pitfalls: "Confusing the count of nodes on the path with the count of edges (diameter is measured in edges, so a single node has diameter 0). Assuming the diameter must pass through the tree root.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
     ],
@@ -4490,6 +4590,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 1, 3]], expected: [2, 3, 1], label: "[2,1,3]" },
       { input: [[]], expected: [], label: "[]" },
     ],
+    editorial: {
+      approach: "Inverting a binary tree requires swapping the left and right subtrees for every node. Perform a post-order or pre-order recursive DFS: at each node, swap node.left and node.right, and recursively call invert on both children. Base case is a null node returning null.",
+      why_optimal: "Visits every node in the tree exactly once in O(N) time with O(H) auxiliary space on the call stack, mutating tree pointers in-place.",
+      pitfalls: "Overwriting a child reference before recurring on it without a temporary swap variable. Not handling null root nodes gracefully.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
     ],
@@ -4538,6 +4643,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, null, 2]], expected: 2, label: "[1,null,2]" },
       { input: [[]], expected: 0, label: "[]" },
     ],
+    editorial: {
+      approach: "Bottom-up post-order DFS: the maximum depth of an empty tree is 0. For any node, the depth is 1 + max(maxDepth(node.left), maxDepth(node.right)). Recursively evaluate left and right depths and combine.",
+      why_optimal: "Single traversal visits all N nodes in O(N) time and O(H) space, corresponding to the height of the tree.",
+      pitfalls: "Stack overflow on skewed tree paths in deep call stacks without proper base case termination.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
       "https://en.wikipedia.org/wiki/Depth-first_search",
@@ -4587,6 +4697,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1, 2], [1, null, 2]], expected: false, label: "p=[1,2], q=[1,null,2]" },
       { input: [[1, 2, 1], [1, 1, 2]], expected: false, label: "p=[1,2,1], q=[1,1,2]" },
     ],
+    editorial: {
+      approach: "Simultaneous recursive DFS comparison: given roots p and q, if both are null, they are identical (true). If only one is null, they differ (false). If their values differ (p.val != q.val), return false. Otherwise, return sameTree(p.left, q.left) && sameTree(p.right, q.right).",
+      why_optimal: "Traverses both trees in lockstep in O(min(N, M)) time and O(min(H_p, H_q)) stack space, terminating at the earliest structural or value discrepancy.",
+      pitfalls: "Comparing node values before verifying that neither node is null, raising null dereference errors.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
       "https://en.wikipedia.org/wiki/Depth-first_search",
@@ -4599,7 +4714,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Easy",
     pattern: "trees / Mirror compare",
-    statement: "# Mirror Check\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [1,2,2,3,4,4,3]", output: "true", explanation: "The two 2s match, the outer 3s match each other, and the inner 4s match each other." },
       { input: "root = [1,2,2,null,3,null,3]", output: "false", explanation: "The inner pair pits 3 against a hole: the left 2 has a right child while the right 2 has no left child." },
@@ -4691,7 +4806,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Height diff",
-    statement: "# Height-Balanced Check\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree is height-balanced when, at every present node, the heights of its left and right subtrees differ by at most one. Height counts nodes along the longest downward path: a leaf has height 1 and an absent child has height 0. An empty tree counts as balanced.\n\nReturn `true` when every node passes this test, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree is height-balanced when, at every present node, the heights of its left and right subtrees differ by at most one. Height counts nodes along the longest downward path: a leaf has height 1 and an absent child has height 0. An empty tree counts as balanced.\n\nReturn `true` when every node passes this test, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,9,20,null,null,15,7]", output: "true", explanation: "The left subtree has height 1 and the right has height 2, and every smaller subtree is even tighter." },
       { input: "root = [1,2,2,3,3,null,null,4,4]", output: "false", explanation: "The left subtree reaches height 3 through its double chain while the right subtree has height 1." },
@@ -4783,7 +4898,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / BFS levels",
-    statement: "# Level Order Listing\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,9,20,null,null,15,7]", output: "[[3],[9,20],[15,7]]", explanation: "Depth 0 holds 3; depth 1 holds 9 and 20 left to right; depth 2 holds 15 and 7 under node 20." },
       { input: "root = [1]", output: "[[1]]", explanation: "A single node forms one level containing just itself." },
@@ -4875,7 +4990,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Level last",
-    statement: "# Right Side View\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [1,2,3,null,5,null,4]", output: "[1,3,4]", explanation: "Depth 0 shows 1; at depth 1 the rightmost node is 3; at depth 2 the candidates are 5 and 4, so 4 wins." },
       { input: "root = [1,null,3]", output: "[1,3]", explanation: "The missing left child changes nothing on the right: 1 then 3 are visible." },
@@ -4967,7 +5082,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Partition",
-    statement: "# Rebuild from Two Traversals\n\nYou are given the preorder and inorder traversals of one binary tree whose values are all distinct. In preorder the root of every subtree comes first, followed by its left subtree then its right subtree; in inorder the left subtree comes first, then the root, then the right subtree.\n\nRebuild the original tree and return it as a level-order array using the bank-standard heap encoding: the children of the entry at index `i` live at `2i+1` and `2i+2`, absent children are written as `null`, and trailing `null` entries are trimmed. Both inputs are non-empty and describe the same set of values.\n\nConstraints: `1 <= preorder.length <= 20`, `1 <= inorder.length <= 20`, `preorder.length == inorder.length`, `-100 <= preorder[i] <= 100`, and all values are unique.\n",
+    statement: "You are given the preorder and inorder traversals of one binary tree whose values are all distinct. In preorder the root of every subtree comes first, followed by its left subtree then its right subtree; in inorder the left subtree comes first, then the root, then the right subtree.\n\nRebuild the original tree and return it as a level-order array using the bank-standard heap encoding: the children of the entry at index `i` live at `2i+1` and `2i+2`, absent children are written as `null`, and trailing `null` entries are trimmed. Both inputs are non-empty and describe the same set of values.\n\nConstraints: `1 <= preorder.length <= 20`, `1 <= inorder.length <= 20`, `preorder.length == inorder.length`, `-100 <= preorder[i] <= 100`, and all values are unique.\n",
     examples: [
       { input: "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]", output: "[3,9,20,null,null,15,7]", explanation: "3 is the root; 9 forms the left subtree; in the right subtree 20 is the root with 15 left and 7 right." },
       { input: "preorder = [1,2], inorder = [2,1]", output: "[1,2]", explanation: "The root 1 sits after 2 in inorder, so 2 is its left child." },
@@ -5054,7 +5169,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Max-path",
-    statement: "# Record Nodes on Root Paths\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA node earns the title of record node when its value is greater than or equal to every value on the path from the root down to (but excluding) itself. The root has no ancestors above it, so it always qualifies.\n\nReturn how many present nodes are record nodes.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA node earns the title of record node when its value is greater than or equal to every value on the path from the root down to (but excluding) itself. The root has no ancestors above it, so it always qualifies.\n\nReturn how many present nodes are record nodes.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,1,4,3,null,1,5]", output: "4", explanation: "3 starts the record; 1 falls short of it; 4 sets a new record; the lower 3 ties the root's record and counts; 1 stays below 4; 5 tops everything." },
       { input: "root = [3,3,null,3]", output: "3", explanation: "Every node ties the ancestral best of 3, and ties qualify, so all three present nodes count." },
@@ -5146,7 +5261,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Preorder sequence",
-    statement: "# Preorder Flatten Order\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nFlattening rewires the tree into a right-leaning chain that visits every present node exactly once in preorder (node, then left subtree, then right subtree). Because the judge compares returned values rather than pointer surgery, this task asks for the flattened order directly.\n\nReturn the preorder traversal of the present nodes as a flat array.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nFlattening rewires the tree into a right-leaning chain that visits every present node exactly once in preorder (node, then left subtree, then right subtree). Because the judge compares returned values rather than pointer surgery, this task asks for the flattened order directly.\n\nReturn the preorder traversal of the present nodes as a flat array.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [1,2,5,3,4,null,6]", output: "[1,2,3,4,5,6]", explanation: "Preorder visits 1, then the left subtree as 2, 3, 4, then the right subtree as 5, 6." },
       { input: "root = [1,null,2]", output: "[1,2]", explanation: "The missing left child is skipped, leaving the node followed by its right child." },
@@ -5275,6 +5390,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[5, 3, 6, 2, 4, null, null, 1], 3], expected: 3, label: "root=[5,3,6,2,4...], k=3" },
       { input: [[2, 1, 3], 2], expected: 2, label: "root=[2,1,3], k=2" },
     ],
+    editorial: {
+      approach: "An in-order traversal (Left, Root, Right) of a Binary Search Tree visits values in strictly non-decreasing sorted order. Perform an iterative in-order traversal using an explicit stack: traverse as far left as possible, then pop the node, decrement k, and if k == 0, return that node's value. Otherwise advance to its right child.",
+      why_optimal: "Stops early as soon as the kth element is reached, running in O(H + k) time instead of visiting all N nodes, using O(H) stack space.",
+      pitfalls: "Collecting all elements into an array before indexing, which wastes O(N) memory and forces traversing the entire tree even when k = 1.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
     ],
@@ -5286,7 +5406,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / BST descend",
-    statement: "# Ancestor Query in a Search Tree\n\nA binary search tree is handed to you as a level-order array `root`. The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing. Every present value obeys the search-tree order: all values in a left subtree are smaller than their parent, and all values in a right subtree are larger.\n\nGiven two distinct values `p` and `q` that both occur somewhere in the tree, return the value of their lowest common ancestor: the deepest node whose subtree contains both values. Either target may itself be the ancestor of the other, and the root may be the answer.\n\nConstraints: `0 <= root.length <= 30`, `-100 <= root[i] <= 100`, `-100 <= p <= 100`, `-100 <= q <= 100`, `p != q`, and both `p` and `q` are present in a valid search tree.\n",
+    statement: "A binary search tree is handed to you as a level-order array `root`. The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing. Every present value obeys the search-tree order: all values in a left subtree are smaller than their parent, and all values in a right subtree are larger.\n\nGiven two distinct values `p` and `q` that both occur somewhere in the tree, return the value of their lowest common ancestor: the deepest node whose subtree contains both values. Either target may itself be the ancestor of the other, and the root may be the answer.\n\nConstraints: `0 <= root.length <= 30`, `-100 <= root[i] <= 100`, `-100 <= p <= 100`, `-100 <= q <= 100`, `p != q`, and both `p` and `q` are present in a valid search tree.\n",
     examples: [
       { input: "root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 8", output: "6", explanation: "2 lives in the left subtree of 6 and 8 lives in the right subtree, so the paths split at the root itself." },
       { input: "root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 4", output: "2", explanation: "4 sits inside the subtree rooted at 2, so 2 is an ancestor of the other target and is the answer." },
@@ -5409,6 +5529,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 4], expected: 5, label: "p=5, q=4 -> 5" },
       { input: [[1, 2], 1, 2], expected: 1, label: "p=1, q=2 -> 1" },
     ],
+    editorial: {
+      approach: "Post-order recursive DFS: at each node, if the node is null, p, or q, return the node itself. Recursively search left and right subtrees. If both recursive calls return non-null, p and q lie in separate subtrees of the current node, so the current node is the LCA. If only one call returns non-null, return that non-null result upward.",
+      why_optimal: "Explores each node once in O(N) time with O(H) stack space, bubbling the ancestor target directly upward without storing path arrays.",
+      pitfalls: "Searching full subtrees repeatedly from every node, causing O(N^2) time instead of passing information bottom-up in a single pass. Forgetting that a node can be an ancestor of itself (e.g. p is an ancestor of q).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
     ],
@@ -5420,7 +5545,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Path accumulate",
-    statement: "# Root-to-Leaf Numbers\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
     examples: [
       { input: "root = [1,2,3]", output: "25", explanation: "The paths spell 12 and 13, which sum to 25." },
       { input: "root = [4,9,0,5,1]", output: "1026", explanation: "The paths spell 495, 491, and 40; together they total 1026." },
@@ -5548,6 +5673,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[5, 1, 4, null, null, 3, 6]], expected: false, label: "[5,1,4,null,null,3,6]" },
       { input: [[10, 5, 15, null, null, 6, 20]], expected: false, label: "[10,5,15,null,null,6,20]" },
     ],
+    editorial: {
+      approach: "Recursive DFS with range bounds (min_val, max_val): a node is valid if its value satisfies min_val < node.val < max_val. Recursively check that the left child satisfies (min_val, node.val) and the right child satisfies (node.val, max_val). Base case is null returning true. Initial bounds are (-infinity, +infinity).",
+      why_optimal: "Verifies all subtree invariants in O(N) time with O(H) call stack space, validating the global BST property rather than merely local child comparisons.",
+      pitfalls: "Only checking that node.left.val < node.val < node.right.val locally, which fails when a descendant violates an ancestor's bound (e.g. [5, 4, 6, null, null, 3, 7] where 3 is in 5's right subtree). Using fixed integer min/max constants as initial bounds instead of null or infinity, failing when node values equal INT_MIN or INT_MAX.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Tree_traversal",
       "https://en.wikipedia.org/wiki/Depth-first_search",
@@ -5560,7 +5690,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Hard",
     pattern: "trees / Gain clamp",
-    statement: "# Best Downward Chain\n\nThe tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA path is any non-empty sequence of present nodes linked parent-to-child, travelled in either direction; it may bend once at its highest node but never branches. Negative values are allowed, and a single node alone qualifies as a path.\n\nReturn the largest achievable sum of values along any such path. Because paths must be non-empty, an all-negative tree answers with its least-negative value.\n\nConstraints: `1 <= root.length <= 30` and `-100 <= root[i] <= 100`, with `root[0]` present.\n",
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA path is any non-empty sequence of present nodes linked parent-to-child, travelled in either direction; it may bend once at its highest node but never branches. Negative values are allowed, and a single node alone qualifies as a path.\n\nReturn the largest achievable sum of values along any such path. Because paths must be non-empty, an all-negative tree answers with its least-negative value.\n\nConstraints: `1 <= root.length <= 30` and `-100 <= root[i] <= 100`, with `root[0]` present.\n",
     examples: [
       { input: "root = [1,2,3]", output: "6", explanation: "The bent path 2 -> 1 -> 3 collects all three values, beating any single-side chain." },
       { input: "root = [-10,9,20,null,null,15,7]", output: "42", explanation: "The clamped gains from 15 and 7 lift 20 to 42; routing through the -10 root would only lose value." },
@@ -5653,7 +5783,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Easy",
     pattern: "binary-search / Classic",
-    statement: "# Binary Search\n\nGiven an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, then return its index. Otherwise, return `-1`.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All the integers in `nums` are unique and sorted in ascending order.\n",
+    statement: "Given an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, then return its index. Otherwise, return `-1`.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All the integers in `nums` are unique and sorted in ascending order.\n",
     examples: [
       { input: "nums = [-1, 0, 3, 5, 9, 12], target = 9", output: "4", explanation: "9 exists in nums and its index is 4." },
       { input: "nums = [-1, 0, 3, 5, 9, 12], target = 2", output: "-1", explanation: "2 does not exist in nums so -1 is returned." },
@@ -5745,7 +5875,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Easy",
     pattern: "binary-search / Lower bound",
-    statement: "# Search Insert Position\n\nGiven a sorted array of distinct integers `nums` and a target value `target`, return the index if the target is found. If not, return the index where it would be if it were inserted in order.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. `nums` contains distinct values sorted in ascending order.\n",
+    statement: "Given a sorted array of distinct integers `nums` and a target value `target`, return the index if the target is found. If not, return the index where it would be if it were inserted in order.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. `nums` contains distinct values sorted in ascending order.\n",
     examples: [
       { input: "nums = [1, 3, 5, 6], target = 5", output: "2", explanation: "5 is found at index 2." },
       { input: "nums = [1, 3, 5, 6], target = 2", output: "1", explanation: "2 is not present; inserting at index 1 maintains ascending order: [1, 2, 3, 5, 6]." },
@@ -5838,7 +5968,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Inflection",
-    statement: "# Find Minimum in Rotated Sorted Array\n\nSuppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
+    statement: "Suppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
     examples: [
       { input: "nums = [3, 4, 5, 1, 2]", output: "1", explanation: "The original sorted array was [1, 2, 3, 4, 5] rotated 3 positions, giving minimum element 1." },
       { input: "nums = [4, 5, 6, 7, 0, 1, 2]", output: "0", explanation: "The inflection point contains 0 at index 4, which is the global minimum." },
@@ -5931,7 +6061,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Answer space",
-    statement: "# Koko Eating Bananas\n\nKoko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
+    statement: "Koko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
     examples: [
       { input: "piles = [3, 6, 7, 11], h = 8", output: "4", explanation: "At eating speed 4, Koko requires 1 + 2 + 2 + 3 = 8 hours to finish all piles, which fits within the guard limit of 8 hours." },
       { input: "piles = [30, 11, 23, 4, 20], h = 5", output: "30", explanation: "Because h equals the number of piles (5), Koko has exactly 1 hour per pile, forcing her speed to match the largest pile size (30)." },
@@ -6024,7 +6154,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Flattened",
-    statement: "# Search a 2D Matrix\n\nYou are given an `m x n` integer matrix `matrix` with the following two properties:\n1. Each row is sorted in non-decreasing order.\n2. The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix` or `false` otherwise.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[0].length <= 50`, `-10000 <= matrix[i][j] <= 10000`, and `-10000 <= target <= 10000`.\n",
+    statement: "You are given an `m x n` integer matrix `matrix` with the following two properties:\n1. Each row is sorted in non-decreasing order.\n2. The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix` or `false` otherwise.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[0].length <= 50`, `-10000 <= matrix[i][j] <= 10000`, and `-10000 <= target <= 10000`.\n",
     examples: [
       { input: "matrix = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target = 3", output: "true", explanation: "Target 3 exists at row 0, column 1." },
       { input: "matrix = [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target = 13", output: "false", explanation: "13 is not present anywhere in the matrix." },
@@ -6116,7 +6246,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Half sorted",
-    statement: "# Search in Rotated Sorted Array\n\nGiven an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
+    statement: "Given an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
     examples: [
       { input: "nums = [4, 5, 6, 7, 0, 1, 2], target = 0", output: "4", explanation: "Target 0 is located at index 4 in the rotated array." },
       { input: "nums = [4, 5, 6, 7, 0, 1, 2], target = 3", output: "-1", explanation: "Target 3 is not present in nums, so the function returns -1." },
@@ -6212,7 +6342,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Easy",
     pattern: "heap / Max simulate",
-    statement: "# Last Stone Weight\n\nA row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
+    statement: "A row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
     examples: [
       { input: "stones = [2, 7, 4, 1, 8, 1]", output: "1", explanation: "Smash 8+7 -> 1 ([2,4,1,1,1]), then 4+2 -> 2 ([1,1,1,2]), then 2+1 -> 1 ([1,1,1]), then 1+1 -> 0 ([1]): one stone of weight 1 survives." },
       { input: "stones = [2, 2]", output: "0", explanation: "The equal pair destroys itself completely, leaving nothing: 0." },
@@ -6316,7 +6446,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "heap / Quickselect",
-    statement: "# Kth Largest Element in an Array\n\nAn unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
+    statement: "An unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [3, 2, 1, 5, 6, 4], k = 2", output: "5", explanation: "Sorted descending the array reads [6, 5, 4, 3, 2, 1]; the element in position 2 is 5." },
       { input: "nums = [3, 2, 3, 1, 2, 4, 5, 5, 6], k = 4", output: "4", explanation: "Sorted descending: [6, 5, 5, 4, 3, 3, 2, 2, 1]; duplicates count separately, so position 4 holds 4." },
@@ -6423,7 +6553,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "heap / Frequency math",
-    statement: "# Task Scheduler\n\nA list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
+    statement: "A list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
     examples: [
       { input: "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 2", output: "8", explanation: "Each type appears 3 times: frame (3-1)*(2+1)+2 = 8 slots, e.g. A B idle A B idle A B." },
       { input: "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 0", output: "6", explanation: "With no cooldown every task runs back to back, so six tasks take six units." },
@@ -6565,6 +6695,11 @@ export const PROBLEMS: Problem[] = [
       { input: [6, [[0, 1], [0, 2], [3, 5], [5, 4], [4, 3]], 0, 5], expected: false, label: "n=6, disconnected" },
       { input: [1, [], 0, 0], expected: true, label: "n=1, same source/dest" },
     ],
+    editorial: {
+      approach: "Construct an adjacency list from the undirected edge list. Traverse the graph starting from source using BFS (with a queue) or DFS (with a stack or recursion), maintaining a visited set to avoid infinite loops across cycles. Return true as soon as destination is visited, or false if the traversal finishes without reaching it.",
+      why_optimal: "Explores only the connected component containing source in O(V + E) time and O(V + E) space, providing an early exit the instant the target node is touched.",
+      pitfalls: "Re-visiting nodes without a visited boolean array or set, causing infinite loops on cyclic graphs. Failing to handle source == destination when no edges exist (should immediately return true).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
       "https://en.wikipedia.org/wiki/Breadth-first_search",
@@ -6614,6 +6749,11 @@ export const PROBLEMS: Problem[] = [
       { input: [3, [[1, 3], [2, 3]]], expected: 3, label: "n=3, judge=3" },
       { input: [3, [[1, 3], [2, 3], [3, 1]]], expected: -1, label: "n=3, no judge" },
     ],
+    editorial: {
+      approach: "The town judge trusts nobody (out-degree 0) and is trusted by everyone else (in-degree n - 1). Compute the net trust score in_degree - out_degree for each person using a single array of size n + 1. For each trust pair [a, b], decrement score of a and increment score of b. The judge is the unique person with score n - 1.",
+      why_optimal: "Requires only a single pass over the trust array and one scan over people, taking O(N + E) time and O(N) space without needing full adjacency list structures.",
+      pitfalls: "Off-by-one errors from 1-based person indices. Forgetting that there can be at most one judge, and if multiple people satisfy the condition or none do, -1 must be returned.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
     ],
@@ -6661,6 +6801,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[[0, 0, 0], [0, 0, 0]], 0, 0, 0], expected: [[0, 0, 0], [0, 0, 0]], label: "Same color no-op" },
       { input: [[[1, 0], [0, 1]], 0, 0, 5], expected: [[5, 0], [0, 1]], label: "Single isolated cell" },
     ],
+    editorial: {
+      approach: "From the starting cell (sr, sc), record the original color c = image[sr][sc]. If c == color, the grid is already filled and can be returned immediately to prevent infinite recursion. Otherwise, perform BFS or DFS: recolor the current cell to color, then recursively visit any of its 4 orthogonal neighbours that currently match the original color c.",
+      why_optimal: "Modifies the image in-place in O(M * N) time in the worst case, visiting each reachable connected pixel at most once.",
+      pitfalls: "Omitting the guard check for original_color == new_color, which causes infinite recursive loops on already-visited pixels. Boundary check slips allowing negative coordinates or coordinates >= rows/cols.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
       "https://en.wikipedia.org/wiki/Breadth-first_search",
@@ -6673,7 +6818,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Easy",
     pattern: "graphs / DFS reachability",
-    statement: "# Keys and Rooms\n\nThere are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
+    statement: "There are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
     examples: [
       { input: "rooms = [[1], [2], [3], []]", output: "true", explanation: "Key chain 0 -> 1 -> 2 -> 3 opens every room in order." },
       { input: "rooms = [[1, 3], [3, 0, 1], [2], [0]]", output: "false", explanation: "Rooms 0, 1, 3 form a connected group but room 2 is only reachable from itself, so it stays locked." },
@@ -6777,7 +6922,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / DAG DFS",
-    statement: "# All Paths from Source to Target\n\nA directed acyclic graph with `n` nodes is given as an adjacency list `graph`, where `graph[i]` lists the neighbours of node `i` in ascending order and every edge points from a smaller node to a larger one.\n\nEnumerate every directed path from node `0` to node `n - 1`. Each path is written as the sequence of visited node ids. Return the full list of paths sorted lexicographically.\n\nA single direct edge yields exactly one path `[[0, 1]]`.\n\nConstraints: `2 <= graph.length <= 6` and `0 <= graph[i] <= 5`.\n",
+    statement: "A directed acyclic graph with `n` nodes is given as an adjacency list `graph`, where `graph[i]` lists the neighbours of node `i` in ascending order and every edge points from a smaller node to a larger one.\n\nEnumerate every directed path from node `0` to node `n - 1`. Each path is written as the sequence of visited node ids. Return the full list of paths sorted lexicographically.\n\nA single direct edge yields exactly one path `[[0, 1]]`.\n\nConstraints: `2 <= graph.length <= 6` and `0 <= graph[i] <= 5`.\n",
     examples: [
       { input: "graph = [[1, 2], [3], [3], []]", output: "[[0, 1, 3], [0, 2, 3]]", explanation: "From node 0 the path forks to 1 and 2, and both rejoin at target 3, giving two lexicographically ordered paths." },
       { input: "graph = [[1], []]", output: "[[0, 1]]", explanation: "The single direct edge is the only path from source to target." },
@@ -6915,6 +7060,11 @@ export const PROBLEMS: Problem[] = [
       { input: [2, [[1, 0], [0, 1]]], expected: false, label: "2 courses, mutual cycle" },
       { input: [4, [[1, 0], [2, 0], [3, 1], [3, 2]]], expected: true, label: "4 courses DAG" },
     ],
+    editorial: {
+      approach: "Determine whether the directed dependency graph contains any directed cycle. Using Kahn's BFS algorithm: build an adjacency list and in-degree table for all courses. Enqueue all courses with in-degree 0. Dequeue nodes, counting visited courses, and decrement in-degrees of successors. If the final visited count equals total courses, all courses can be finished.",
+      why_optimal: "Runs in optimal O(V + E) time and O(V + E) auxiliary space, detecting cycles without deep recursive stack depth that could risk recursion limits in DFS.",
+      pitfalls: "Off-by-one errors in course indexing (0-indexed vs 1-indexed). Incomplete graph construction when isolated courses with zero prerequisites are ignored.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
     ],
@@ -6963,6 +7113,11 @@ export const PROBLEMS: Problem[] = [
       { input: [1, []], expected: [0], label: "1 course, no prereqs" },
       { input: [2, [[1, 0], [0, 1]]], expected: [], label: "2 courses, cycle" },
     ],
+    editorial: {
+      approach: "Model courses and prerequisites as a directed graph where an edge u -> v means course u must be completed before v. Compute the in-degree of every vertex and initialize a queue with all nodes having in-degree 0. Repeatedly dequeue a course, append it to the topological order list, and decrement the in-degree of its outgoing neighbours, pushing newly zero-degree nodes into the queue.",
+      why_optimal: "Kahn's algorithm processes every vertex and directed edge exactly once in O(V + E) time and O(V + E) space, producing a valid linear execution sequence if and only if no directed cycle exists.",
+      pitfalls: "Returning a partial list when a cycle prevents completing all courses instead of returning an empty list []. Misorienting prerequisite edges (e.g. treating [a, b] as a -> b instead of b -> a).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
     ],
@@ -7011,6 +7166,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[[1, 1, 1], [0, 1, 0], [1, 1, 1]]], expected: 1, label: "3x3 connected island" },
       { input: [[[0, 0], [0, 0]]], expected: 0, label: "All water" },
     ],
+    editorial: {
+      approach: "Scan the 2D grid cell by cell. Whenever an unvisited land cell '1' is encountered, increment the island counter and launch a BFS or DFS flood-fill from that coordinate. The flood-fill traverses all orthogonally connected land cells, marking them as visited (or flipping them in-place to '0') to ensure no cell is counted twice.",
+      why_optimal: "Every cell is inspected and marked at most once, yielding optimal O(M * N) time and O(min(M, N)) queue space for BFS or O(M * N) recursion depth for DFS.",
+      pitfalls: "Forgetting to mark cells as visited before pushing them to a BFS queue, causing duplicate insertions and queue memory blowup. Diagonal connections are not islands (only 4-directional moves allowed).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Graph_traversal",
       "https://en.wikipedia.org/wiki/Depth-first_search",
@@ -7023,7 +7183,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Dual DFS",
-    statement: "# Pacific Atlantic Water Flow\n\nA rectangular island is described by `heights`, where `heights[r][c]` is the elevation of cell `(r, c)`. Rain falling on a cell flows to each orthogonal neighbour whose height is less than or equal to the current cell.\n\nThe Pacific ocean touches the top and left edges of the island; the Atlantic ocean touches the bottom and right edges. A cell drains to an ocean when a non-increasing path of heights leads from the cell to that ocean edge.\n\nReturn every `[row, col]` coordinate whose rain reaches both oceans, sorted lexicographically by row then column.\n\nConstraints: `1 <= heights.length <= 8` and `0 <= heights[i] <= 20`.\n",
+    statement: "A rectangular island is described by `heights`, where `heights[r][c]` is the elevation of cell `(r, c)`. Rain falling on a cell flows to each orthogonal neighbour whose height is less than or equal to the current cell.\n\nThe Pacific ocean touches the top and left edges of the island; the Atlantic ocean touches the bottom and right edges. A cell drains to an ocean when a non-increasing path of heights leads from the cell to that ocean edge.\n\nReturn every `[row, col]` coordinate whose rain reaches both oceans, sorted lexicographically by row then column.\n\nConstraints: `1 <= heights.length <= 8` and `0 <= heights[i] <= 20`.\n",
     examples: [
       { input: "heights = [[1, 2, 2, 3, 5], [3, 2, 3, 4, 4], [2, 4, 5, 3, 1], [6, 7, 1, 4, 5], [5, 1, 1, 2, 4]]", output: "[[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]]", explanation: "Seven cells drain both ways: the ridge through (2,2) flows down to each ocean, and the border peaks like (0,4) and (3,0) each reach their far ocean via non-increasing paths." },
       { input: "heights = [[5]]", output: "[[0, 0]]", explanation: "The lone cell touches every edge, so it trivially drains to both oceans." },
@@ -7120,7 +7280,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Union-find",
-    statement: "# Redundant Connection\n\nA connected undirected graph with `n` labelled nodes `1..n` began as a tree with `n - 1` edges; one extra edge was then appended, creating exactly one cycle. The input `edges` lists all `n` edges in the order they were added.\n\nReturn the extra edge `[u, v]` whose removal restores a tree. Because exactly one cycle exists, this is the last edge in input order whose endpoints are already connected by the earlier edges.\n\nConstraints: `3 <= edges.length <= 15` and `1 <= edges[i] <= 8`. Each edge joins two distinct node labels.\n",
+    statement: "A connected undirected graph with `n` labelled nodes `1..n` began as a tree with `n - 1` edges; one extra edge was then appended, creating exactly one cycle. The input `edges` lists all `n` edges in the order they were added.\n\nReturn the extra edge `[u, v]` whose removal restores a tree. Because exactly one cycle exists, this is the last edge in input order whose endpoints are already connected by the earlier edges.\n\nConstraints: `3 <= edges.length <= 15` and `1 <= edges[i] <= 8`. Each edge joins two distinct node labels.\n",
     examples: [
       { input: "edges = [[1, 2], [1, 3], [2, 3]]", output: "[2, 3]", explanation: "Edges [1,2] and [1,3] form a tree; [2,3] joins two already-connected vertices and closes the triangle, so it is redundant." },
       { input: "edges = [[1, 2], [2, 3], [3, 4], [1, 4], [1, 5]]", output: "[1, 4]", explanation: "The chain 1-2-3-4 already connects 1 and 4, so edge [1,4] creates the cycle 1-2-3-4-1 and is the extra edge; [1,5] only extends the tree." },
@@ -7226,7 +7386,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Multi-source BFS",
-    statement: "# Rotting Oranges\n\nA crate of oranges is arranged in a rectangular grid `grid`. Each cell holds `0` for an empty slot, `1` for a fresh orange, or `2` for a rotten orange.\n\nEvery minute, each rotten orange spoils its four orthogonal neighbours (up, down, left, right) that currently hold a fresh orange. Empty slots never change and never transmit rot.\n\nReturn the number of minutes until no fresh orange remains. Return `-1` when at least one fresh orange can never rot, and `0` when there is nothing fresh to begin with.\n\nConstraints: `1 <= grid.length <= 8` and `0 <= grid[i] <= 2`.\n",
+    statement: "A crate of oranges is arranged in a rectangular grid `grid`. Each cell holds `0` for an empty slot, `1` for a fresh orange, or `2` for a rotten orange.\n\nEvery minute, each rotten orange spoils its four orthogonal neighbours (up, down, left, right) that currently hold a fresh orange. Empty slots never change and never transmit rot.\n\nReturn the number of minutes until no fresh orange remains. Return `-1` when at least one fresh orange can never rot, and `0` when there is nothing fresh to begin with.\n\nConstraints: `1 <= grid.length <= 8` and `0 <= grid[i] <= 2`.\n",
     examples: [
       { input: "grid = [[2, 1, 1], [1, 1, 0], [0, 1, 1]]", output: "4", explanation: "Rot spreads from (0,0) one layer per minute: neighbours rot at minute 1, their neighbours at minute 2, and the last cell (2,2) rots at minute 4." },
       { input: "grid = [[2, 1, 1], [0, 1, 1], [1, 0, 1]]", output: "-1", explanation: "The fresh orange at (2,0) is sealed off by empty slots and can never be reached, so the answer is -1 despite all other oranges rotting." },
@@ -7324,7 +7484,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Border DFS",
-    statement: "# Surrounded Regions\n\nA rectangular board `board` holds the strings `'X'` and `'O'`. Any `'O'` cell that is not connected to the border of the board through a chain of orthogonally adjacent `'O'` cells is captured and flipped to `'X'`.\n\nAn `'O'` region survives exactly when at least one of its cells touches the border, or reaches the border through neighbouring `'O'` cells. Every other `'O'` becomes `'X'`.\n\nReturn the board after all captures are applied.\n\nConstraints: `1 <= board.length <= 8`. Every row holds only `'X'` and `'O'` strings.\n",
+    statement: "A rectangular board `board` holds the strings `'X'` and `'O'`. Any `'O'` cell that is not connected to the border of the board through a chain of orthogonally adjacent `'O'` cells is captured and flipped to `'X'`.\n\nAn `'O'` region survives exactly when at least one of its cells touches the border, or reaches the border through neighbouring `'O'` cells. Every other `'O'` becomes `'X'`.\n\nReturn the board after all captures are applied.\n\nConstraints: `1 <= board.length <= 8`. Every row holds only `'X'` and `'O'` strings.\n",
     examples: [
       { input: "board = [[\"X\", \"X\", \"X\", \"X\"], [\"X\", \"O\", \"O\", \"X\"], [\"X\", \"X\", \"O\", \"X\"], [\"X\", \"O\", \"X\", \"X\"]]", output: "[[\"X\", \"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\", \"X\"], [\"X\", \"O\", \"X\", \"X\"]]", explanation: "The three connected O cells in the middle never touch the border and are captured, while the lone O at (3,1) sits on the border and survives." },
       { input: "board = [[\"X\", \"X\", \"X\"], [\"X\", \"O\", \"X\"], [\"X\", \"X\", \"X\"]]", output: "[[\"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\"]]", explanation: "The single central O has no orthogonal path to any border cell, so it is flipped to X." },
@@ -7421,7 +7581,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "graphs / BFS shortest",
-    statement: "# Word Ladder\n\nA start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
+    statement: "A start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
     examples: [
       { input: "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\", \"cog\"]", output: "5", explanation: "Shortest chain hit -> hot -> dot -> dog -> cog uses five words; each step changes exactly one letter and every intermediate word is in the dictionary." },
       { input: "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\"]", output: "0", explanation: "The target cog is absent from the dictionary, so no ladder exists and the answer is 0." },
@@ -7529,7 +7689,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Easy",
     pattern: "intervals / Sort+scan",
-    statement: "# Meeting Rooms\n\nGiven an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, determine if a person could attend all meetings.\n\nTouching boundaries are allowed: a meeting ending at time `t` does not conflict with another meeting beginning at time `t`.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
+    statement: "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, determine if a person could attend all meetings.\n\nTouching boundaries are allowed: a meeting ending at time `t` does not conflict with another meeting beginning at time `t`.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[0, 30], [5, 10], [15, 20]]", output: "false", explanation: "Meeting [0, 30] overlaps with both [5, 10] and [15, 20], making it impossible for one person to attend all." },
       { input: "intervals = [[7, 10], [2, 4]]", output: "true", explanation: "Sorting reveals disjoint meetings [[2, 4], [7, 10]] with no conflict." },
@@ -7620,7 +7780,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Merge scan",
-    statement: "# Insert Interval\n\nYou are given an array of non-overlapping intervals `intervals` where `intervals[i] = [start_i, end_i]` represents the start and the end of the `i`-th interval, and `intervals` is sorted in ascending order by `start_i`. You are also given an interval `newInterval = [start, end]` representing the start and end of another interval.\n\nInsert `newInterval` into `intervals` such that `intervals` is still sorted in ascending order by start time and `intervals` still contains no overlapping intervals (merge overlapping intervals if necessary).\n\nReturn `intervals` after the insertion.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, `newInterval.length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
+    statement: "You are given an array of non-overlapping intervals `intervals` where `intervals[i] = [start_i, end_i]` represents the start and the end of the `i`-th interval, and `intervals` is sorted in ascending order by `start_i`. You are also given an interval `newInterval = [start, end]` representing the start and end of another interval.\n\nInsert `newInterval` into `intervals` such that `intervals` is still sorted in ascending order by start time and `intervals` still contains no overlapping intervals (merge overlapping intervals if necessary).\n\nReturn `intervals` after the insertion.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, `newInterval.length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[1, 3], [6, 9]], newInterval = [2, 5]", output: "[[1, 5], [6, 9]]", explanation: "The interval [2, 5] overlaps with [1, 3], merging them into [1, 5]." },
       { input: "intervals = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], newInterval = [4, 8]", output: "[[1, 2], [3, 10], [12, 16]]", explanation: "[4, 8] overlaps with [3, 5], [6, 7], and [8, 10], combining all four into a single merged interval [3, 10]." },
@@ -7711,7 +7871,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Heap sweep",
-    statement: "# Meeting Rooms II\n\nGiven an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10⁶`.\n",
+    statement: "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10⁶`.\n",
     examples: [
       { input: "intervals = [[0, 30], [5, 10], [15, 20]]", output: "2", explanation: "Meeting [0, 30] conflicts with [5, 10] and [15, 20]. At least 2 rooms are required." },
       { input: "intervals = [[7, 10], [2, 4]]", output: "1", explanation: "The two meetings do not overlap in time, requiring only 1 room." },
@@ -7837,6 +7997,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[[4, 7], [1, 4]]], expected: [[1, 7]], label: "[[4,7],[1,4]] unsorted" },
       { input: [[[1, 4], [2, 3]]], expected: [[1, 4]], label: "[[1,4],[2,3]] nested" },
     ],
+    editorial: {
+      approach: "Sort intervals by their start times. Initialize the result list with the first interval. For each subsequent interval [start, end], if start <= last_interval.end, they overlap: merge them by updating last_interval.end = max(last_interval.end, end). Otherwise, append the current interval as a new non-overlapping range.",
+      why_optimal: "Sorting takes O(n log n) and the linear sweep takes O(n), giving O(n log n) time and O(n) output space. Sorting guarantees intervals are ordered so overlaps only occur with the most recently merged segment.",
+      pitfalls: "Comparing with start < last.end instead of start <= last.end (intervals touching at boundaries like [1, 4] and [4, 5] must merge). Forgetting max(last.end, end) when an interval is completely swallowed inside an earlier wider interval.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Interval_scheduling",
     ],
@@ -7848,7 +8013,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Greedy end-sort",
-    statement: "# Non-overlapping Intervals\n\nGiven an array of intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.\n\nNote that intervals which touch at a single point (such as `[1, 2]` and `[2, 3]`) are considered non-overlapping.\n\nConstraints: `1 <= intervals.length <= 100`, `intervals[i].length == 2`, and `-10000 <= start_i < end_i <= 10000`.\n",
+    statement: "Given an array of intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.\n\nNote that intervals which touch at a single point (such as `[1, 2]` and `[2, 3]`) are considered non-overlapping.\n\nConstraints: `1 <= intervals.length <= 100`, `intervals[i].length == 2`, and `-10000 <= start_i < end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[1, 2], [2, 3], [3, 4], [1, 3]]", output: "1", explanation: "Removing interval [1, 3] leaves [[1, 2], [2, 3], [3, 4]], which are all mutually non-overlapping." },
       { input: "intervals = [[1, 2], [1, 2], [1, 2]]", output: "2", explanation: "Two identical copies must be eliminated so that no overlaps remain." },
@@ -7977,6 +8142,11 @@ export const PROBLEMS: Problem[] = [
       { input: [3], expected: 3, label: "n = 3" },
       { input: [5], expected: 8, label: "n = 5" },
     ],
+    editorial: {
+      approach: "At step n, you can only arrive from step n-1 (taking 1 step) or step n-2 (taking 2 steps), yielding the recurrence ways[n] = ways[n-1] + ways[n-2] with base cases ways[1] = 1 and ways[2] = 2. Rather than recursive exponential branching or allocating an O(n) array, maintain two rolling variables holding the counts for the previous two steps.",
+      why_optimal: "Reduces time from exponential O(2^n) recursion down to O(n) time with O(1) space, computing the nth Fibonacci-equivalent number iteratively in a single loop.",
+      pitfalls: "Integer overflow in languages with fixed integer widths for large n. Off-by-one index mistakes with base cases when n = 1 or n = 2.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
@@ -8025,6 +8195,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[2], 3], expected: -1, label: "coins=[2], amount=3" },
       { input: [[1], 0], expected: 0, label: "coins=[1], amount=0" },
     ],
+    editorial: {
+      approach: "A greedy approach fails because larger denominations can block valid smaller combinations that reach the exact target. Instead, use 1D bottom-up dynamic programming: let dp[a] be the minimum coins to make amount a, initialized to infinity with dp[0] = 0. For each amount from 1 to amount, test each coin c <= a and update dp[a] = min(dp[a], 1 + dp[a - c]).",
+      why_optimal: "Evaluates each sub-amount in O(amount * len(coins)) time with O(amount) space, avoiding redundant exponential search while guaranteeing the absolute minimum coin count.",
+      pitfalls: "Initializing dp with values that overflow when adding 1 (e.g. 2^31 - 1 + 1 wrapping to negative in Java/C++). Failing to return -1 when dp[amount] remains unreachable infinity.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
@@ -8036,7 +8211,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Prefix count",
-    statement: "# Decode Ways\n\nA message containing letters from `A-Z` can be encoded into numbers using the following mapping:\n- `'A'` -> `\"1\"`\n- `'B'` -> `\"2\"`\n- ...\n- `'Z'` -> `\"26\"`\n\nTo decode an encoded message, all the digits must be grouped and mapped back into letters using the reverse mapping. There may be multiple valid groupings. For example, `\"11106\"` can be mapped into:\n- `\"AAJF\"` with grouping `(1, 1, 10, 6)`\n- `\"KJF\"` with grouping `(11, 10, 6)`\n\nNote that the grouping `(1, 11, 06)` is invalid because `\"06\"` cannot be mapped into `'F'` since `'6'` is different from `\"06\"`.\n\nGiven a string `s` containing only digits, return the number of ways to decode it.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of digits. The test cases are generated so that the answer fits in a 32-bit integer.\n",
+    statement: "A message containing letters from `A-Z` can be encoded into numbers using the following mapping:\n- `'A'` -> `\"1\"`\n- `'B'` -> `\"2\"`\n- ...\n- `'Z'` -> `\"26\"`\n\nTo decode an encoded message, all the digits must be grouped and mapped back into letters using the reverse mapping. There may be multiple valid groupings. For example, `\"11106\"` can be mapped into:\n- `\"AAJF\"` with grouping `(1, 1, 10, 6)`\n- `\"KJF\"` with grouping `(11, 10, 6)`\n\nNote that the grouping `(1, 11, 06)` is invalid because `\"06\"` cannot be mapped into `'F'` since `'6'` is different from `\"06\"`.\n\nGiven a string `s` containing only digits, return the number of ways to decode it.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of digits. The test cases are generated so that the answer fits in a 32-bit integer.\n",
     examples: [
       { input: "s = '226'", output: "3", explanation: "It could be decoded as 'BZ' (2, 26), 'VF' (22, 6), or 'BBF' (2, 2, 6)." },
       { input: "s = '10'", output: "1", explanation: "It can only be decoded as 'J' (10). Digits '0' cannot be parsed independently." },
@@ -8167,6 +8342,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[2, 7, 9, 3, 1]], expected: 12, label: "[2,7,9,3,1]" },
       { input: [[2, 1, 1, 2]], expected: 4, label: "[2,1,1,2]" },
     ],
+    editorial: {
+      approach: "At each house i, you either rob house i (adding its value to the maximum looted up to house i-2) or skip house i (keeping the maximum looted up to house i-1). This yields recurrence dp[i] = max(dp[i-1], dp[i-2] + nums[i]). Maintain two rolling variables representing prev1 (best up to previous house) and prev2 (best up to house before that).",
+      why_optimal: "Runs in O(n) time and O(1) auxiliary space, compressing the 1D DP table into two scalar variables without auxiliary array allocation.",
+      pitfalls: "Edge cases with empty arrays or single-element arrays returning incorrect indices. Forgetting to update the rolling state variables in atomic sequence.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
@@ -8178,7 +8358,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Circular split",
-    statement: "# House Robber II\n\nYou are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 1000`.\n",
+    statement: "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [2, 3, 2]", output: "3", explanation: "You cannot rob house 1 (money = 2) and house 3 (money = 2) because they are adjacent in the circular street. Robbing house 2 yields 3." },
       { input: "nums = [1, 2, 3, 1]", output: "4", explanation: "Rob house 1 (money = 1) and house 3 (money = 3). Total amount robbed is 1 + 3 = 4. Note that house 1 and house 4 cannot both be robbed." },
@@ -8309,6 +8489,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[0, 1, 0, 3, 2, 3]], expected: 4, label: "[0,1,0,3,2,3]" },
       { input: [[7, 7, 7, 7]], expected: 1, label: "[7,7,7,7]" },
     ],
+    editorial: {
+      approach: "Patience sorting / Binary search: maintain an array tails where tails[i] stores the smallest tail of all increasing subsequences of length i + 1. For each number x in nums, use binary search (bisect_left) to find the first index in tails with value >= x. If found, replace that value with x; if not found, append x to tails. The length of tails is the LIS length.",
+      why_optimal: "Achieves O(n log n) time and O(n) space, fundamentally outperforming traditional O(n^2) DP tabulation.",
+      pitfalls: "Mistaking tails for the actual increasing subsequence (the elements in tails represent candidate boundary endpoints, not the verbatim sequence elements). Using non-strict < vs <= when strictly increasing is required.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
       "https://visualgo.net/en/sorting",
@@ -8321,7 +8506,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Expand center",
-    statement: "# Longest Palindromic Substring\n\nGiven a string `s`, return the longest palindromic substring in `s`.\n\nIf there are multiple palindromic substrings of the same maximum length, return the one that appears earliest (smallest start index) in `s`.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of lowercase English letters.\n",
+    statement: "Given a string `s`, return the longest palindromic substring in `s`.\n\nIf there are multiple palindromic substrings of the same maximum length, return the one that appears earliest (smallest start index) in `s`.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of lowercase English letters.\n",
     examples: [
       { input: "s = 'babad'", output: "'bab'", explanation: "Both 'bab' and 'aba' are palindromic substrings of length 3. Because 'bab' begins at index 0 and 'aba' begins at index 1, the tie is broken by the earliest start index, yielding 'bab'." },
       { input: "s = 'cbbd'", output: "'bb'", explanation: "The longest palindromic substring is 'bb' with length 2 starting at index 1." },
@@ -8415,7 +8600,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Min-max track",
-    statement: "# Maximum Product Subarray\n\nGiven an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
+    statement: "Given an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
     examples: [
       { input: "nums = [2, 3, -2, 4]", output: "6", explanation: "[2, 3] has the largest product 6." },
       { input: "nums = [-2, 0, -1]", output: "0", explanation: "The result cannot be 2, because [-2, -1] is not a contiguous subarray. The maximum product subarray is [0] with product 0." },
@@ -8546,6 +8731,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[1]], expected: 1, label: "[1]" },
       { input: [[5, 4, -1, 7, 8]], expected: 23, label: "[5,4,-1,7,8]" },
     ],
+    editorial: {
+      approach: "Kadane's algorithm: maintain a running current sum curr and a global maximum best. For each number x, decide whether to extend the previous subarray or start a new subarray at x: curr = max(x, curr + x). Update best = max(best, curr). Initialize best = nums[0] to handle all-negative arrays correctly.",
+      why_optimal: "Computes the optimal contiguous sum in a single O(n) pass with O(1) space, avoiding all O(n^2) subarray evaluations.",
+      pitfalls: "Initializing best = 0, which fails on arrays containing only negative numbers (e.g. [-5, -2, -8] would incorrectly return 0 instead of -2).",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
@@ -8557,7 +8747,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Subset sum",
-    statement: "# Partition Equal Subset Sum\n\nGiven an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
+    statement: "Given an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [1, 5, 11, 5]", output: "true", explanation: "The total sum is 22. The array can be partitioned into [1, 5, 5] and [11], each with sum 11." },
       { input: "nums = [1, 2, 3, 5]", output: "false", explanation: "The total sum is 11, which is odd. It cannot be partitioned into two equal integer subsets." },
@@ -8688,6 +8878,11 @@ export const PROBLEMS: Problem[] = [
       { input: [3, 2], expected: 3, label: "m=3, n=2" },
       { input: [1, 1], expected: 1, label: "m=1, n=1" },
     ],
+    editorial: {
+      approach: "2D Grid DP with space optimization: let dp[c] be the number of unique paths to column c in the current row. Since moving is restricted to down and right, dp[c] = dp[c] + dp[c - 1]. Initialize a 1D array of size n with all 1s (top row). Iterate through the remaining m - 1 rows, updating dp[c] += dp[c - 1] for each column from 1 to n - 1.",
+      why_optimal: "Computes path counts in O(m * n) time and O(n) space, avoiding full 2D grid allocation while computing the combinatorial equivalent of C(m+n-2, m-1).",
+      pitfalls: "Off-by-one errors in row/column iterations. Using floating-point combinations for large m, n which causes precision inaccuracies.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Dynamic_programming",
     ],
@@ -8699,7 +8894,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Reachability",
-    statement: "# Word Break\n\nGiven a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
+    statement: "Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
     examples: [
       { input: "s = 'applepenapple', wordDict = ['apple', 'pen']", output: "true", explanation: "'applepenapple' can be segmented as 'apple pen apple'. Dictionary words can be reused." },
       { input: "s = 'catsandog', wordDict = ['cats', 'dog', 'sand', 'and', 'cat']", output: "false", explanation: "The string cannot be segmented into dictionary words because the remaining 'og' is not in wordDict." },
@@ -8793,7 +8988,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Hard",
     pattern: "dp / 2D table",
-    statement: "# Edit Distance\n\nGiven two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`.\n\nYou have the following three operations permitted on a word:\n- Insert a character\n- Delete a character\n- Replace a character\n\nConstraints: `0 <= word1.length, word2.length <= 100` and `word1` and `word2` consist only of lowercase English letters.\n",
+    statement: "Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`.\n\nYou have the following three operations permitted on a word:\n- Insert a character\n- Delete a character\n- Replace a character\n\nConstraints: `0 <= word1.length, word2.length <= 100` and `word1` and `word2` consist only of lowercase English letters.\n",
     examples: [
       { input: "word1 = 'horse', word2 = 'ros'", output: "3", explanation: "horse -> rorse (replace 'h' with 'r') -> rose (remove 'r') -> ros (remove 'e')." },
       { input: "word1 = 'intention', word2 = 'execution'", output: "5", explanation: "intention -> inention (remove 't') -> enention (replace 'i' with 'e') -> exention (replace 'n' with 'x') -> exection (replace 'n' with 'c') -> execution (insert 'u')." },
@@ -8888,7 +9083,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Surplus",
-    statement: "# Gas Station\n\nThere are `n` gas stations along a circular route, where the amount of gas at the `i`-th station is `gas[i]`.\n\nYou have a car with an unlimited gas tank and it costs `cost[i]` of gas to travel from the `i`-th station to its next `(i + 1)`-th station. You begin the journey with an empty tank at one of the gas stations.\n\nGiven two integer arrays `gas` and `cost`, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, or `-1` if it is impossible. If there exists a solution, it is guaranteed to be unique.\n\nConstraints: `gas.length == cost.length`, `1 <= gas.length <= 100`, and `0 <= gas[i], cost[i] <= 1000`.\n",
+    statement: "There are `n` gas stations along a circular route, where the amount of gas at the `i`-th station is `gas[i]`.\n\nYou have a car with an unlimited gas tank and it costs `cost[i]` of gas to travel from the `i`-th station to its next `(i + 1)`-th station. You begin the journey with an empty tank at one of the gas stations.\n\nGiven two integer arrays `gas` and `cost`, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, or `-1` if it is impossible. If there exists a solution, it is guaranteed to be unique.\n\nConstraints: `gas.length == cost.length`, `1 <= gas.length <= 100`, and `0 <= gas[i], cost[i] <= 1000`.\n",
     examples: [
       { input: "gas = [1, 2, 3, 4, 5], cost = [3, 4, 5, 1, 2]", output: "3", explanation: "Start at station 3 (index 3). Fill with 4 gas. Tank = 4. Cost to next is 1. Tank = 3. Fill 5, cost 2. Tank = 6. Wrap around to station 0, fill 1, cost 3. Tank = 4. Continue through stations 1 and 2, completing the circuit with 0 gas remaining." },
       { input: "gas = [2, 3, 4], cost = [3, 4, 3]", output: "-1", explanation: "Total gas = 9, total cost = 10. Because total gas < total cost, it is impossible to complete the circuit regardless of where you start." },
@@ -8981,7 +9176,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Max reach",
-    statement: "# Jump Game\n\nYou are given an integer array `nums`. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.\n\nReturn `true` if you can reach the last index, or `false` otherwise.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 100`.\n",
+    statement: "You are given an integer array `nums`. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.\n\nReturn `true` if you can reach the last index, or `false` otherwise.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [2, 3, 1, 1, 4]", output: "true", explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index." },
       { input: "nums = [3, 2, 1, 0, 4]", output: "false", explanation: "You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index." },
@@ -9075,7 +9270,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Window expand",
-    statement: "# Jump Game II\n\nYou are given a 0-indexed array of integers `nums` of length `n`. You are initially positioned at `nums[0]`.\n\nEach element `nums[i]` represents the maximum length of a forward jump from index `i`.\n\nReturn the minimum number of jumps to reach index `n - 1`. It is guaranteed that you can always reach the last index.\n\nConstraints: `1 <= nums.length <= 1000` and `0 <= nums[i] <= 1000`.\n",
+    statement: "You are given a 0-indexed array of integers `nums` of length `n`. You are initially positioned at `nums[0]`.\n\nEach element `nums[i]` represents the maximum length of a forward jump from index `i`.\n\nReturn the minimum number of jumps to reach index `n - 1`. It is guaranteed that you can always reach the last index.\n\nConstraints: `1 <= nums.length <= 1000` and `0 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [2, 3, 1, 1, 4]", output: "2", explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index." },
       { input: "nums = [2, 3, 0, 1, 4]", output: "2", explanation: "Minimum jumps to index 4 is 2." },
@@ -9164,7 +9359,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Unbounded pick",
-    statement: "# Combination Sum\n\nGiven an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
+    statement: "Given an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
     examples: [
       { input: "candidates = [2, 3, 6, 7], target = 7", output: "[[2, 2, 3], [7]]", explanation: "2 + 2 + 3 = 7 and 7 = 7. 2 can be chosen multiple times." },
       { input: "candidates = [2, 3, 5], target = 8", output: "[[2, 2, 2, 2], [2, 3, 3], [3, 5]]", explanation: "All three combinations sum to 8." },
@@ -9252,7 +9447,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Digit map",
-    statement: "# Letter Combinations of a Phone Number\n\nGiven a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent according to standard telephone keypad mappings:\n- `2`: `a, b, c`\n- `3`: `d, e, f`\n- `4`: `g, h, i`\n- `5`: `j, k, l`\n- `6`: `m, n, o`\n- `7`: `p, q, r, s`\n- `8`: `t, u, v`\n- `9`: `w, x, y, z`\n\nIf the input string is empty, return an empty array `[]`. Return the combinations in lexicographical order.\n\nConstraints: `0 <= digits.length <= 4`. `digits[i]` is a digit in the range `['2', '9']`.\n",
+    statement: "Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent according to standard telephone keypad mappings:\n- `2`: `a, b, c`\n- `3`: `d, e, f`\n- `4`: `g, h, i`\n- `5`: `j, k, l`\n- `6`: `m, n, o`\n- `7`: `p, q, r, s`\n- `8`: `t, u, v`\n- `9`: `w, x, y, z`\n\nIf the input string is empty, return an empty array `[]`. Return the combinations in lexicographical order.\n\nConstraints: `0 <= digits.length <= 4`. `digits[i]` is a digit in the range `['2', '9']`.\n",
     examples: [
       { input: "digits = '23'", output: "['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']", explanation: "Digit 2 maps to 'abc' and 3 maps to 'def', yielding 3 × 3 = 9 combinations." },
       { input: "digits = ''", output: "[]", explanation: "An empty input produces an empty output array." },
@@ -9341,7 +9536,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Cut positions",
-    statement: "# Palindrome Partitioning\n\nGiven a string `s`, partition `s` such that every substring of the partition is a palindrome.\n\nReturn all possible palindrome partitionings of `s`. The partitions must be returned sorted in lexicographical order.\n\nConstraints: `1 <= s.length <= 16`. `s` contains only lowercase English letters.\n",
+    statement: "Given a string `s`, partition `s` such that every substring of the partition is a palindrome.\n\nReturn all possible palindrome partitionings of `s`. The partitions must be returned sorted in lexicographical order.\n\nConstraints: `1 <= s.length <= 16`. `s` contains only lowercase English letters.\n",
     examples: [
       { input: "s = 'aab'", output: "[['a', 'a', 'b'], ['aa', 'b']]", explanation: "'aab' can be partitioned into ['a', 'a', 'b'] and ['aa', 'b'] where all components are palindromes." },
       { input: "s = 'a'", output: "[['a']]", explanation: "A single character string is a palindrome itself." },
@@ -9430,7 +9625,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Swap-build",
-    statement: "# Permutations\n\nGiven an array `nums` of distinct integers, return all the possible permutations.\n\nThe returned list of permutations must be sorted in lexicographical order.\n\nConstraints: `1 <= nums.length <= 6` and `-10 <= nums[i] <= 10`. All integers of `nums` are unique.\n",
+    statement: "Given an array `nums` of distinct integers, return all the possible permutations.\n\nThe returned list of permutations must be sorted in lexicographical order.\n\nConstraints: `1 <= nums.length <= 6` and `-10 <= nums[i] <= 10`. All integers of `nums` are unique.\n",
     examples: [
       { input: "nums = [1, 2, 3]", output: "[[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]", explanation: "All 3! = 6 permutations are generated and returned in lexicographical order." },
       { input: "nums = [0, 1]", output: "[[0, 1], [1, 0]]", explanation: "The 2! = 2 permutations of two elements." },
@@ -9519,7 +9714,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Choose-skip",
-    statement: "# Subsets\n\nGiven an integer array `nums` of unique elements, return all possible subsets (the power set).\n\nThe solution set must not contain duplicate subsets. Each individual subset must be sorted in ascending numerical order, and the outer list of subsets must be sorted in lexicographical order.\n\nConstraints: `0 <= nums.length <= 10` and `-10 <= nums[i] <= 10`. All elements of `nums` are unique.\n",
+    statement: "Given an integer array `nums` of unique elements, return all possible subsets (the power set).\n\nThe solution set must not contain duplicate subsets. Each individual subset must be sorted in ascending numerical order, and the outer list of subsets must be sorted in lexicographical order.\n\nConstraints: `0 <= nums.length <= 10` and `-10 <= nums[i] <= 10`. All elements of `nums` are unique.\n",
     examples: [
       { input: "nums = [1, 2, 3]", output: "[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]", explanation: "All 2³ = 8 possible subsets are generated, with each subset sorted ascending and the full collection sorted lexicographically." },
       { input: "nums = [0]", output: "[[], [0]]", explanation: "A single element array produces the empty set and the singleton set." },
@@ -9608,7 +9803,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / DFS grid",
-    statement: "# Word Search\n\nGiven an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
+    statement: "Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
     examples: [
       { input: "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'abcced'", output: "true", explanation: "The word 'abcced' can be traced along cells (0,0)->(0,1)->(0,2)->(1,2)->(2,2)->(2,1)." },
       { input: "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'see'", output: "true", explanation: "'see' is found at (1,3)->(2,3)->(2,2)." },
@@ -9692,7 +9887,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Hard",
     pattern: "backtracking / Constraint place",
-    statement: "# N-Queens Count\n\nThe n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
+    statement: "The n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
     examples: [
       { input: "n = 4", output: "2", explanation: "There are 2 distinct configurations to place 4 non-attacking queens on a 4x4 board." },
       { input: "n = 1", output: "1", explanation: "A 1x1 board has trivially 1 valid queen placement." },
@@ -9777,7 +9972,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / n&(n-1)",
-    statement: "# Number of 1 Bits\n\nGiven a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
+    statement: "Given a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
     examples: [
       { input: "n = 11", output: "3", explanation: "11 in binary is 1011, which has three '1' bits." },
       { input: "n = 128", output: "1", explanation: "128 in binary is 10000000, which has one '1' bit." },
@@ -9864,7 +10059,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / n&(n-1)",
-    statement: "# Power of Two\n\nGiven an integer `n`, return `true` if it is a power of two. Otherwise, return `false`.\n\nAn integer `n` is a power of two if there exists an integer `x` such that `n == 2ˣ`.\n\nConstraints: `-2³¹ <= n <= 2³¹ - 1`.\n",
+    statement: "Given an integer `n`, return `true` if it is a power of two. Otherwise, return `false`.\n\nAn integer `n` is a power of two if there exists an integer `x` such that `n == 2ˣ`.\n\nConstraints: `-2³¹ <= n <= 2³¹ - 1`.\n",
     examples: [
       { input: "n = 1", output: "true", explanation: "2⁰ = 1." },
       { input: "n = 16", output: "true", explanation: "2⁴ = 16." },
@@ -9953,7 +10148,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / Mirror",
-    statement: "# Reverse Bits\n\nReverse the bits of a given 32-bit unsigned integer and return the resulting 32-bit unsigned integer.\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
+    statement: "Reverse the bits of a given 32-bit unsigned integer and return the resulting 32-bit unsigned integer.\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
     examples: [
       { input: "n = 43261596", output: "964176192", explanation: "43261596 represented in binary is 00000010100101000001111010011100; reversed it is 00111001011110000010100101000000 = 964176192." },
       { input: "n = 1", output: "2147483648", explanation: "1 with bit 0 set becomes bit 31 set, which is 2³¹ = 2147483648." },
@@ -10041,7 +10236,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / XOR cancel",
-    statement: "# Single Number\n\nGiven a non-empty array of integers `nums`, every element appears twice except for one. Find that single element.\n\nYou must implement a solution with linear runtime complexity and use only constant extra space.\n\nConstraints: `1 <= nums.length <= 101` (`nums.length` is odd) and `-30000 <= nums[i] <= 30000`. Each element appears twice except one which appears once.\n",
+    statement: "Given a non-empty array of integers `nums`, every element appears twice except for one. Find that single element.\n\nYou must implement a solution with linear runtime complexity and use only constant extra space.\n\nConstraints: `1 <= nums.length <= 101` (`nums.length` is odd) and `-30000 <= nums[i] <= 30000`. Each element appears twice except one which appears once.\n",
     examples: [
       { input: "nums = [2, 2, 1]", output: "1", explanation: "2 appears twice; 1 appears once." },
       { input: "nums = [4, 1, 2, 1, 2]", output: "4", explanation: "1 and 2 appear twice; 4 appears once." },
@@ -10128,7 +10323,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Medium",
     pattern: "bit-manipulation / Carry loop",
-    statement: "# Sum of Two Integers\n\nGiven two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
+    statement: "Given two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
     examples: [
       { input: "a = 1, b = 2", output: "3", explanation: "1 + 2 = 3 calculated with bitwise operators." },
       { input: "a = 2, b = 3", output: "5", explanation: "2 + 3 = 5 without using + or -." },
@@ -10219,7 +10414,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Easy",
     pattern: "sorting / Back-fill",
-    statement: "# Merge Sorted Array\n\nYou are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
+    statement: "You are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
     examples: [
       { input: "nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3", output: "[1, 2, 2, 3, 5, 6]", explanation: "nums2 is merged into nums1 in-place producing a fully sorted array." },
       { input: "nums1 = [1], m = 1, nums2 = [], n = 0", output: "[1]", explanation: "nums2 is empty, so nums1 remains [1]." },
@@ -10303,7 +10498,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Custom comparator",
-    statement: "# Largest Number\n\nGiven a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10⁹`.\n",
+    statement: "Given a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10⁹`.\n",
     examples: [
       { input: "nums = [10, 2]", output: "'210'", explanation: "'210' > '102'." },
       { input: "nums = [3, 30, 34, 5, 9]", output: "'9534330'", explanation: "'9' followed by '5', '34', '3', '30' yields the maximum concatenated string." },
@@ -10390,7 +10585,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Merge sort",
-    statement: "# Sort an Array\n\nGiven an array of integers `nums`, sort the array in ascending numerical order and return it.\n\nYou must solve the problem with an efficient divide-and-conquer comparison sorting algorithm (such as merge sort) with `O(n log n)` time complexity.\n\nConstraints: `0 <= nums.length <= 1000` and `-50000 <= nums[i] <= 50000`.\n",
+    statement: "Given an array of integers `nums`, sort the array in ascending numerical order and return it.\n\nYou must solve the problem with an efficient divide-and-conquer comparison sorting algorithm (such as merge sort) with `O(n log n)` time complexity.\n\nConstraints: `0 <= nums.length <= 1000` and `-50000 <= nums[i] <= 50000`.\n",
     examples: [
       { input: "nums = [5, 2, 3, 1]", output: "[1, 2, 3, 5]", explanation: "The array sorted in non-decreasing order." },
       { input: "nums = [5, 1, 1, 2, 0, 0]", output: "[0, 0, 1, 1, 2, 5]", explanation: "Duplicates are maintained in sorted order." },
@@ -10478,7 +10673,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Interleave halves",
-    statement: "# Wiggle Sort II Lite\n\nGiven an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `⌈n/2⌉` and a larger half of length `⌊n/2⌋`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
+    statement: "Given an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `⌈n/2⌉` and a larger half of length `⌊n/2⌋`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
     examples: [
       { input: "nums = [1, 5, 1, 1, 6, 4]", output: "[1, 6, 1, 5, 1, 4]", explanation: "1 < 6 > 1 < 5 > 1 < 4 satisfies nums[0] < nums[1] > nums[2] < nums[3]..." },
       { input: "nums = [1, 3, 2, 2, 3, 1]", output: "[2, 3, 1, 3, 1, 2]", explanation: "2 < 3 > 1 < 3 > 1 < 2 satisfies the wiggle requirement." },
@@ -10602,6 +10797,11 @@ export const PROBLEMS: Problem[] = [
       { input: ["LVIII"], expected: 58, label: "\"LVIII\"" },
       { input: ["MCMXCIV"], expected: 1994, label: "\"MCMXCIV\"" },
     ],
+    editorial: {
+      approach: "Map each Roman symbol to its numerical value (I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000). Scan the string left to right: if the current symbol has a value strictly smaller than the symbol immediately following it (e.g. IV, IX, XL), subtract its value from the total; otherwise add its value to the total.",
+      why_optimal: "Single pass processes the string in O(n) time with O(1) lookup table space, handling both standard and subtractive notations deterministically.",
+      pitfalls: "Checking i + 1 out-of-bounds without an index guard on the final character. Treating combinations that are not subtractive pairs improperly.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Matrix_(mathematics)",
     ],
@@ -10613,7 +10813,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "math-matrices / Fast pow",
-    statement: "# Pow(x, n)\n\nImplement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `xⁿ`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
+    statement: "Implement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `xⁿ`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
     examples: [
       { input: "x = 2.0, n = 10", output: "1024", explanation: "2¹⁰ = 1024." },
       { input: "x = 2.1, n = 3", output: "9.261", explanation: "2.1³ = 9.261." },
@@ -10740,6 +10940,11 @@ export const PROBLEMS: Problem[] = [
       { input: [[[1]]], expected: [1], label: "1x1 single" },
       { input: [[[1, 2], [3, 4]]], expected: [1, 2, 4, 3], label: "2x2 square" },
     ],
+    editorial: {
+      approach: "Boundary shrinking simulation: maintain four boundaries: top = 0, bottom = m - 1, left = 0, right = n - 1. Traverse in order: 1) Left to right along top, then increment top. 2) Top to bottom along right, then decrement right. 3) Right to left along bottom (if top <= bottom), then decrement bottom. 4) Bottom to top along left (if left <= right), then increment left. Repeat while top <= bottom and left <= right.",
+      why_optimal: "Visits each matrix element exactly once in O(M * N) time with O(1) extra space beyond the output array.",
+      pitfalls: "Failing to re-check top <= bottom and left <= right before the backward bottom and left traversal sweeps, causing duplicate element insertions on non-square matrices.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Matrix_(mathematics)",
     ],
@@ -10789,6 +10994,11 @@ export const PROBLEMS: Problem[] = [
       { input: [["dog", "racecar", "car"]], expected: "", label: "[\"dog\",\"racecar\",\"car\"]" },
       { input: [["interstellar", "internet", "internal"]], expected: "inter", label: "[\"interstellar\",...]" },
     ],
+    editorial: {
+      approach: "Vertical scanning: inspect character by character across all strings at the same column index j. Compare character strs[0][j] against strs[i][j] for every string i. If j == strs[i].length or characters mismatch, return the prefix accumulated up to j. If all characters match, continue to column j + 1.",
+      why_optimal: "Stops at the very first mismatch, scanning at most O(S) total characters where S is the sum of characters across all strings in the worst case (and far fewer on average), with O(1) extra space.",
+      pitfalls: "Accessing strs[i][j] when string i is shorter than j, causing out-of-bounds errors if length check is not evaluated first. Empty input array or empty first string.",
+    },
     readingLinks: [
       "https://en.wikipedia.org/wiki/Trie",
     ],
@@ -10800,7 +11010,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Hard",
     pattern: "trie / Prefix prune",
-    statement: "# Find Words on Board\n\nGiven an `m x n` board of characters and a list of strings `words`, return all words found on the board.\n\nEach word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nThe returned list of words must be sorted in lexicographical order.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= words.length <= 20`, and `1 <= words[i].length <= 10`. `board` and `words[i]` consist only of lowercase English letters. All strings in `words` are unique.\n",
+    statement: "Given an `m x n` board of characters and a list of strings `words`, return all words found on the board.\n\nEach word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nThe returned list of words must be sorted in lexicographical order.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= words.length <= 20`, and `1 <= words[i].length <= 10`. `board` and `words[i]` consist only of lowercase English letters. All strings in `words` are unique.\n",
     examples: [
       { input: "board = [['o', 'a', 'a', 'n'], ['e', 't', 'a', 'e'], ['i', 'h', 'k', 'r'], ['i', 'f', 'l', 'v']], words = ['oath', 'pea', 'eat', 'rain']", output: "['eat', 'oath']", explanation: "'eat' and 'oath' exist on the board; 'pea' and 'rain' cannot be formed." },
       { input: "board = [['a', 'b'], ['c', 'd']], words = ['abcb']", output: "[]", explanation: "Cell reuse is disallowed, so 'abcb' cannot be formed." },

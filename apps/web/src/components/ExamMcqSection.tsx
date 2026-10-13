@@ -46,7 +46,9 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
   const [retryKey, setRetryKey] = useState(0);
   const submitStartedRef = useRef(false);
   const callbacksRef = useRef({ onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange });
-  callbacksRef.current = { onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange };
+  useEffect(() => {
+    callbacksRef.current = { onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange };
+  });
 
   // `topics`/`topicPlan` can arrive as fresh array literals from the caller.
   // Listing them directly in the deps below would re-create the loader on every
