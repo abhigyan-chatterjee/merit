@@ -1,0 +1,368 @@
+{
+  "slug": "burst-balloons",
+  "title": "Burst Balloons",
+  "topic": "dynamic-programming",
+  "difficulty": "Hard",
+  "pattern": "interval DP (choose the last balloon in a range)",
+  "statement": "A row of `n` balloons carries the numbers `nums[0]` through `nums[n-1]`. You burst every balloon exactly once, in whatever order you like.\n\nBursting one balloon pays `left * value * right`, where `value` is the number on that balloon and `left` and `right` are the numbers on the balloons still standing immediately to its left and right at that moment. The row closes up after each burst, so a burst balloon is never a neighbour again. Picture one extra balloon printed with `1` fixed just beyond each end of the row: those two are always standing, never burst, and are the neighbours used whenever a burst has nothing on one side.\n\nReturn the largest total number of coins you can collect. Every order is a permutation of the row, so the order is the only choice you make, and the largest total is a single number even when several orders reach it.\n\nConstraints: `1 <= nums.length <= 8` and `0 <= nums[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "nums = [0]",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "nums = [3]",
+      "output": "3",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Trying every first burst branches into n! orders. Look instead for a decision about a range that cleanly separates the row into two pieces that never affect each other again.",
+    "Pick the balloon that bursts last inside a range. At that moment the only balloons left around it are the two boundaries of the range, so its coins are simply boundary times value times boundary, and the two sides can be solved separately.",
+    "Pad the row with a 1 at each end, let `dp[i][j]` be the best coins for the range strictly between `i` and `j`, and loop over interval length from 2 upward, trying every balloon strictly inside as the one that bursts last."
+  ],
+  "editorial": {
+    "approach": "The brute force tries every burst order directly: recurse over which balloon bursts next, walk left and right from it skipping the balloons already gone to find its two live neighbours (falling back to the virtual 1 at each end), add the coins for that burst and keep the best total. There are n! orders and each burst costs O(n) to find its neighbours, so it is O(n! * n), which only works because the row is capped at 8 balloons. The interval DP changes the question from which balloon bursts first to which balloon bursts last. The array is padded with a 1 at each end; for a range whose surviving boundaries are positions `i` and `j`, if `k` is the balloon that bursts last inside it, then at that moment `k` is surrounded by exactly `arr[i]` and `arr[j]`, so it pays `arr[i]*arr[k]*arr[j]` and the problem splits into the two independent ranges `(i,k)` and `(k,j)`. Filling intervals in increasing order of length makes every needed sub-answer available, and the padded range `(0, n+1)` holds the answer.",
+    "why_optimal": "There are O(n^2) ranges and each tries O(n) candidates for the last balloon, so O(n^3) time and O(n^2) space, and the space is genuinely needed because the transitions look at every shorter range. Choosing the last balloon is what makes the decomposition valid: after the last burst inside a range, the two sides never interact again, whereas choosing the first balloon leaves the two sides coupled through neighbours that change as more balloons disappear.",
+    "pitfalls": "- Recurring on the balloon that bursts first. After that burst the two sides still share the changing neighbour positions, so the subproblems are not independent and the recurrence overcounts.\n- Dropping the virtual 1 at the ends, which undercounts every burst that happens at the current edge of the row (for example `[2,3]` pays 6, not 6 with 3 + 3 with 2).\n- Filling intervals in the wrong order, such as by start index alone or by decreasing length, so `dp[i][k]` or `dp[k][j]` is still zero when it is read.\n- Looping the split balloon over `i..j` inclusive instead of strictly inside, which lets an empty range or a boundary balloon act as the last burst.\n- Ignoring zeros: `nums[i] = 0` is allowed, and an all-zero row must return 0 rather than a negative sentinel value."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Matrix_chain_multiplication",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 26.996536999999982,
+    "optimalRuntimeMs": 0.3239079999999923,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": 6010100,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          3,
+          94
+        ]
+      ],
+      "expected": 376,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          31,
+          28,
+          17,
+          94,
+          13
+        ]
+      ],
+      "expected": 164652,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          75,
+          54
+        ]
+      ],
+      "expected": 4125,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          3
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          27,
+          29
+        ]
+      ],
+      "expected": 812,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          71
+        ]
+      ],
+      "expected": 71,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          91,
+          83,
+          89,
+          69
+        ]
+      ],
+      "expected": 1237418,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          28,
+          57,
+          75,
+          35,
+          0,
+          97,
+          20
+        ]
+      ],
+      "expected": 879020,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          43,
+          35,
+          19,
+          27,
+          97,
+          43,
+          13
+        ]
+      ],
+      "expected": 464243,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          48,
+          12
+        ]
+      ],
+      "expected": 624,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          44,
+          77,
+          33,
+          5,
+          93,
+          58
+        ]
+      ],
+      "expected": 866110,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          48,
+          10
+        ]
+      ],
+      "expected": 528,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          80,
+          79,
+          46,
+          73,
+          24
+        ]
+      ],
+      "expected": 868802,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          5,
+          84
+        ]
+      ],
+      "expected": 504,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          98,
+          37,
+          10,
+          29
+        ]
+      ],
+      "expected": 118824,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          48,
+          35
+        ]
+      ],
+      "expected": 1728,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          100,
+          100,
+          0,
+          100,
+          100,
+          0,
+          100,
+          0
+        ]
+      ],
+      "expected": 3010100,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          100,
+          100,
+          0,
+          100
+        ]
+      ],
+      "expected": 2010100,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          100,
+          100,
+          100,
+          0,
+          0
+        ]
+      ],
+      "expected": 1010100,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          0,
+          100,
+          100,
+          100,
+          0,
+          100,
+          0
+        ]
+      ],
+      "expected": 3010100,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n! * n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(nums) {\n  const n = nums.length;\n  let best = 0;\n  const used = new Array(n).fill(false);\n\n  function rec(done, coins) {\n    if (done === n) {\n      if (coins > best) best = coins;\n      return;\n    }\n    for (let i = 0; i < n; i++) {\n      if (used[i]) continue;\n      used[i] = true;\n      let left = 1;\n      for (let l = i - 1; l >= 0; l--) {\n        if (!used[l]) { left = nums[l]; break; }\n      }\n      let right = 1;\n      for (let r = i + 1; r < n; r++) {\n        if (!used[r]) { right = nums[r]; break; }\n      }\n      rec(done + 1, coins + left * nums[i] * right);\n      used[i] = false;\n    }\n  }\n\n  rec(0, 0);\n  return best;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n^3) | Space: O(n^2)",
+      "language": "javascript",
+      "code": "function solve(nums) {\n  const n = nums.length;\n  if (n === 0) return 0;\n  const arr = [1].concat(nums, [1]);\n  const m = n + 2;\n  const dp = [];\n  for (let i = 0; i < m; i++) dp.push(new Array(m).fill(0));\n  for (let len = 2; len < m; len++) {\n    for (let i = 0; i + len < m; i++) {\n      const j = i + len;\n      let best = 0;\n      for (let k = i + 1; k < j; k++) {\n        const val = dp[i][k] + dp[k][j] + arr[i] * arr[k] * arr[j];\n        if (val > best) best = val;\n      }\n      dp[i][j] = best;\n    }\n  }\n  return dp[0][m - 1];\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 22,
+  "prevSlug": "best-time-to-buy-and-sell-stock-iv",
+  "nextSlug": "edit-distance"
+}

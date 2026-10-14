@@ -1262,7 +1262,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
+  "sequence": 5,
   "prevSlug": "palindrome-linked-list",
   "nextSlug": "reverse-linked-list"
 }

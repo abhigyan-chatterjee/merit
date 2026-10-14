@@ -1,0 +1,251 @@
+{
+  "slug": "reverse-words-in-a-string",
+  "title": "Reverse Words in a String",
+  "topic": "two-pointers",
+  "difficulty": "Medium",
+  "pattern": "string scanning / converging scan from the right",
+  "statement": "A string `s` holds a sentence: words made of lowercase English letters, separated by one or more spaces. The string may also begin or end with spaces, and it may contain runs of several spaces between two words.\n\nReturn a new string containing the same words in reverse order, joined by exactly one space, with no leading or trailing spaces. If `s` contains no letter at all, return the empty string `\"\"`.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\"",
+      "output": "\"d\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"xi\"",
+      "output": "\"xi\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Do not think about splitting and splitting again: ask what a single look at the string from its right end can tell you.",
+    "One pointer is enough. Skip spaces while moving left, then collect characters until you hit a space again: that is one whole word, with no bookkeeping.",
+    "Appending the words in the order a right-to-left scan finds them already reverses the sentence. Join with one space and make sure an all-spaces input gives the empty string."
+  ],
+  "editorial": {
+    "approach": "The brute force never builds a list of words. It first counts the words by re-scanning the whole string for every index it tries, then writes the answer by asking for word number W-1, W-2, ... , 0 from the left, and each of those requests walks the string from the beginning until it reaches that word. With W words each costing a full scan, the work is O(n \u00b7 W), which is O(n\u00b2) on a string of a single long word repeated with spaces. The optimal pass walks the string once from the right with one pointer: skip spaces backwards, remember the index just past the last letter of the word, keep walking left to the first letter, and push that slice onto a list. Because the scan moves right to left, the list is already in reversed order, so joining it with a single space is the answer, in O(n) time.",
+    "why_optimal": "Every character must be looked at at least once to know which words exist, so \u03a9(n) is a lower bound for this problem and the single reverse pass meets it. With `s.length \u2264 200` the quadratic version is still fast, but it re-reads the same characters once per word, and that repeated reading is exactly the factor the one-pass scan removes.",
+    "pitfalls": "Splitting on a single space, which turns a run of three spaces into two empty words that end up in the output. Appending the separator after each word, which leaves a trailing space (prepend it, or join a list). Assuming the string is trimmed, so a leading or trailing space adds a phantom word. And returning \" \" instead of \"\" when the input is nothing but spaces, because the join of an empty list is the empty string but a hand-rolled loop can easily emit one space."
+  },
+  "reading_links": [
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split",
+    "https://en.wikipedia.org/wiki/In-place_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 1.6005749999999992,
+    "optimalRuntimeMs": 0.1491390000000088,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d"
+      ],
+      "expected": "d",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xi"
+      ],
+      "expected": "xi",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "hexdvxrc"
+      ],
+      "expected": "hexdvxrc",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "nbacghqtargwuwrnhos"
+      ],
+      "expected": "nbacghqtargwuwrnhos",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "zayzfwnki"
+      ],
+      "expected": "zayzfwnki",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "gykdc"
+      ],
+      "expected": "gykdc",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "dlltizbxordmc"
+      ],
+      "expected": "dlltizbxordmc",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "j utlsgwcbvhyjchdm"
+      ],
+      "expected": "utlsgwcbvhyjchdm j",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "ou lfllgv"
+      ],
+      "expected": "lfllgv ou",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "wvuctufrx"
+      ],
+      "expected": "wvuctufrx",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "fomiuwrh"
+      ],
+      "expected": "fomiuwrh",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "k yybh bzkmicgswkgupmu"
+      ],
+      "expected": "bzkmicgswkgupmu yybh k",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "eiehxrrixsnsmlh"
+      ],
+      "expected": "eiehxrrixsnsmlh",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "qpcyb"
+      ],
+      "expected": "qpcyb",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "eufz"
+      ],
+      "expected": "eufz",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "ntcmmtoqiravxdvryiyukd"
+      ],
+      "expected": "ntcmmtoqiravxdvryiyukd",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "nfoaxxiqyf"
+      ],
+      "expected": "nfoaxxiqyf",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "duj uqtgelyfryqat"
+      ],
+      "expected": "uqtgelyfryqat duj",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "padl zjhbhsccxp cyryeevprfiqtngryxwgwjmvuloqodhhckasrhshacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdbur acyh"
+      ],
+      "expected": "acyh cyryeevprfiqtngryxwgwjmvuloqodhhckasrhshacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdbur zjhbhsccxp padl",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "nppgmbfmamizzojnwxzrvwpegjgbsxrbxkbbspqqfbqcfctcvhmdshstbtcnvssqkigvwkhimevujokycaotsdcrgqielchljfo rwjtzuqav rjvdeiddxreijtgwkg"
+      ],
+      "expected": "rjvdeiddxreijtgwkg rwjtzuqav nppgmbfmamizzojnwxzrvwpegjgbsxrbxkbbspqqfbqcfctcvhmdshstbtcnvssqkigvwkhimevujokycaotsdcrgqielchljfo",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "uiqpibcun ibakyeuifxorwnradcwerb lsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphg olj zhhavgmkicyiluqmv rkadifsibdtnlxzkntqdm"
+      ],
+      "expected": "rkadifsibdtnlxzkntqdm zhhavgmkicyiluqmv olj lsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphg ibakyeuifxorwnradcwerb uiqpibcun",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "gibwnaqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmr ajjgnzstukooovgqpzzxfvcjqvutkc yhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoez"
+      ],
+      "expected": "yhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoez ajjgnzstukooovgqpzzxfvcjqvutkc gibwnaqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmr",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  function nthWord(idx) {\n    let i = 0;\n    let count = 0;\n    while (i < s.length) {\n      while (i < s.length && s[i] === ' ') i++;\n      if (i >= s.length) return null;\n      const start = i;\n      while (i < s.length && s[i] !== ' ') i++;\n      if (count === idx) return [start, i];\n      count++;\n    }\n    return null;\n  }\n\n  let total = 0;\n  while (nthWord(total) !== null) total++;\n\n  let out = '';\n  for (let k = total - 1; k >= 0; k--) {\n    const w = nthWord(k);\n    if (out !== '') out += ' ';\n    out += s.slice(w[0], w[1]);\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let i = s.length - 1;\n  const words = [];\n  while (i >= 0) {\n    while (i >= 0 && s[i] === ' ') i--;\n    if (i < 0) break;\n    const end = i;\n    while (i >= 0 && s[i] !== ' ') i--;\n    words.push(s.slice(i + 1, end + 1));\n  }\n  return words.join(' ');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 16,
+  "prevSlug": "remove-nth-node-from-end",
+  "nextSlug": "string-compression"
+}

@@ -36,7 +36,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(image, sr, sc, color) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(image, sr, sc, color):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[][] solve(int[][] image, int sr, int sc, int color) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<std::vector<int>> image, int sr, int sc, int color) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

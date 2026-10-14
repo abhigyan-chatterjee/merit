@@ -19,7 +19,7 @@
     {
       "input": "root = [3,1,null,2]",
       "output": "[3,1,2]",
-      "explanation": "Node 3 comes first, then 1, then 1's left child 2 — even though 2 sits two levels down."
+      "explanation": "Node 3 comes first, then 1, then 1's left child 2 \u2014 even though 2 sits two levels down."
     }
   ],
   "constraints": [
@@ -1144,7 +1144,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function flatten(root) {\n  function pre(i) {\n    if (i >= root.length || root[i] === null) return [];\n    return [root[i]].concat(pre(2 * i + 1), pre(2 * i + 2));\n  }\n  return pre(0);\n}",
       "isReference": false
@@ -1158,7 +1158,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def flatten(root: list) -> list:\n    def pre(i):\n        if i >= len(root) or root[i] is None:\n            return []\n        return [root[i]] + pre(2 * i + 1) + pre(2 * i + 2)\n    return pre(0)\n",
       "isReference": false
@@ -1171,7 +1171,7 @@
       "isReference": true
     }
   ],
-  "sequence": 11,
+  "sequence": 14,
   "prevSlug": "lowest-common-ancestor-of-a-binary-tree",
   "nextSlug": "construct-from-preorder-inorder"
 }

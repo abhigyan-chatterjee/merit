@@ -1131,7 +1131,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n · k) | Space: O(n)",
+      "complexity": "Time: O(n \u00b7 k) | Space: O(n)",
       "language": "javascript",
       "code": "function reverseKGroup(nums, k) {\n  if (k <= 1 || nums.length <= 1) return nums.slice();\n  const result = [];\n  let i = 0;\n  while (i < nums.length) {\n    if (i + k <= nums.length) {\n      const chunk = [];\n      for (let j = i; j < i + k; j++) {\n        chunk.unshift(nums[j]);\n      }\n      for (let j = 0; j < chunk.length; j++) {\n        result.push(chunk[j]);\n      }\n    } else {\n      for (let j = i; j < nums.length; j++) {\n        result.push(nums[j]);\n      }\n    }\n    i += k;\n  }\n  return result;\n}",
       "isReference": false
@@ -1145,7 +1145,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n · k) | Space: O(n)",
+      "complexity": "Time: O(n \u00b7 k) | Space: O(n)",
       "language": "python",
       "code": "def reverseKGroup(nums: list[int], k: int) -> list[int]:\n    if k <= 1 or len(nums) <= 1:\n        return list(nums)\n    result = []\n    i = 0\n    while i < len(nums):\n        if i + k <= len(nums):\n            chunk = []\n            for j in range(i, i + k):\n                chunk.insert(0, nums[j])\n            result.extend(chunk)\n        else:\n            result.extend(nums[i:])\n        i += k\n    return result\n",
       "isReference": false
@@ -1158,7 +1158,7 @@
       "isReference": true
     }
   ],
-  "sequence": 15,
+  "sequence": 16,
   "prevSlug": "merge-k-sorted-lists",
   "nextSlug": null
 }

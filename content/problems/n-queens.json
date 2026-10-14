@@ -1,0 +1,139 @@
+{
+  "slug": "n-queens",
+  "title": "N-Queens Placements",
+  "topic": "backtracking",
+  "difficulty": "Hard",
+  "pattern": "backtracking with bitmask conflict sets",
+  "statement": "Place `n` queens on an `n \u00d7 n` chessboard so that no two queens share a row, a column, or a diagonal. Return how many distinct placements exist, where two placements are distinct when the sets of occupied squares differ. For `n = 1` the answer is 1, for `n = 2` and `n = 3` the answer is 0 because no placement exists, for `n = 4` it is 2, and for `n = 8` it is 92.\n\nConstraints: `1 <= n <= 10`.\n",
+  "examples": [
+    {
+      "input": "n = 1",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "n = 2",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Place queens one row at a time. For each candidate square in the next row, compare it against every queen already placed and reject it when the column or a diagonal is shared.",
+    "Prune early rather than checking at the end: a square in row `r` and column `c` conflicts with an earlier queen when its column matches, or when a diagonal identifier matches. The two diagonals through a square are identified by `r - c` and `r + c`.",
+    "Represent those three conflict sets as bitmasks so the test is O(1): one bit per column, one mask per diagonal direction, each shifted by one on the way down. The legal squares for a row are `full & ~(cols | down | up)`, and `x & -x` isolates the next one to try."
+  ],
+  "editorial": {
+    "approach": "The brute force is a plain row-by-row backtracker: for each square of the next row it rescans every queen placed so far and rejects the square when a column or a diagonal is shared, recursing when the square is safe and counting a placement once all `n` rows are filled. The recursion stack holds one column per row. The optimal walks exactly the same search tree but keeps the conflict information in three bitmasks: `cols` for occupied columns, one mask for the `row + col` diagonals and one for the `row - col` diagonals, each shifted by one bit on the way down a row. The columns still legal for a row are `full & ~(cols | diagDown | diagUp)` with `full = (1 << n) - 1`, and each set bit is isolated with `x & -x`, recursed on, and cleared from the candidate set.",
+    "why_optimal": "The n-queens count has no closed form and no polynomial algorithm is known for it, so the answer has to come from exploring the tree of partial placements, which is exponential; the only lever left is the cost per node. The bitmask version makes that cost O(1) with three integers instead of a scan over the queens already placed, while the recursion depth stays n. The bound `n <= 10` keeps the tree small enough that even the O(n) per candidate version finishes well inside a second, and the counts for `n = 1..10` are 1, 0, 0, 2, 10, 4, 40, 92, 352, 724.",
+    "pitfalls": "Forgetting that `n = 2` and `n = 3` have no placement at all makes a return of 0 look like a bug, though it is the correct count. In the bitmask version, shifting both diagonals the same way inverts the conflicts, and omitting `& full` after the left shift lets bits wrap around above the board and reject legal squares; the mask arithmetic is only sound while `1 << n` fits in a 32-bit integer, which is why the bound stays small. In the backtracking version the state must be restored exactly on the way out, by popping the last column or clearing the bit. Both versions must also handle `n = 1`, where the first placement already fills the board and the `full` test fires immediately."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Eight_queens_puzzle",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function solve(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 8,
+    "bruteForceRuntimeMs": 16.264654,
+    "optimalRuntimeMs": 1.997925999999996,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        1
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10
+      ],
+      "expected": 724,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        2
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        5
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        4
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        3
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        9
+      ],
+      "expected": 352,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        7
+      ],
+      "expected": 40,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n \u00b7 n!) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  if (n <= 0) return 0;\n  const placed = [];\n  let count = 0;\n  function safe(row, col) {\n    for (let i = 0; i < placed.length; i++) {\n      if (placed[i] === col) return false;\n      if (Math.abs(placed[i] - col) === Math.abs(i - row)) return false;\n    }\n    return true;\n  }\n  function place(row) {\n    if (row === n) {\n      count++;\n      return;\n    }\n    for (let col = 0; col < n; col++) {\n      if (safe(row, col)) {\n        placed.push(col);\n        place(row + 1);\n        placed.pop();\n      }\n    }\n  }\n  place(0);\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n!) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  if (n <= 0) return 0;\n  const full = (1 << n) - 1;\n  let count = 0;\n  function place(cols, diagDown, diagUp) {\n    if (cols === full) {\n      count++;\n      return;\n    }\n    let options = full & ~(cols | diagDown | diagUp);\n    while (options !== 0) {\n      const bit = options & -options;\n      options -= bit;\n      place(cols | bit, ((diagDown | bit) << 1) & full, (diagUp | bit) >> 1);\n    }\n  }\n  place(0, 0, 0);\n  return count;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 11,
+  "prevSlug": "n-queens-count",
+  "nextSlug": "sudoku-solver"
+}

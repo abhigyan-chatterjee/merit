@@ -39,8 +39,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(s,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    bool solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -68,7 +68,7 @@
       "label": "\" \""
     }
   ],
-  "sequence": 4,
+  "sequence": 8,
   "prevSlug": "squares-of-sorted-array",
   "nextSlug": "valid-palindrome-ii",
   "reading_links": [

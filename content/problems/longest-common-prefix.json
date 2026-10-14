@@ -39,8 +39,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(strs,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(strs) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(strs):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public String solve(String[] strs) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    std::string solve(std::vector<std::string> strs) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -82,7 +82,7 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "find-words-on-board",
+  "nextSlug": "implement-trie-prefix-tree",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Trie"
   ],

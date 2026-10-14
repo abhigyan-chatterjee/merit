@@ -1,0 +1,273 @@
+{
+  "slug": "remove-all-adjacent-duplicates-in-string-ii",
+  "title": "Remove All Adjacent Duplicates in String II",
+  "topic": "stack",
+  "difficulty": "Medium",
+  "pattern": "stack with run-length pairs",
+  "statement": "You are given a string `s` built only from the letters `'a'`, `'b'` and `'c'`, and an integer `k` that is at least 2.\n\nKeep applying this operation while it is possible: find a maximal run of equal letters whose length is `k` or more, delete exactly `k` of those letters, and close the gap so that the letters which stood on either side of the run become neighbours. The join can put two identical letters next to each other and start a fresh run, so collapses chain. A run longer than `k` also survives a single deletion: five copies of the same letter with `k = 2` shrink to one letter, not to three.\n\nReturn the string that remains once no run of length `k` or more is left.\n\nWorked cases:\n\n- `s = \"abba\"`, `k = 2`: deleting `\"bb\"` welds the two `a` letters into a run of two, which then disappears, so the answer is `\"\"`.\n- `s = \"aabcaa\"`, `k = 2`: deleting the first `\"aa\"` gives `\"bcaa\"`, and deleting the `\"aa\"` at the end gives `\"bc\"`, which is the answer.\n\nThe surviving string does not depend on the order in which qualifying runs are chosen.\n\nConstraints: `1 <= s.length <= 200` and `2 <= k <= 5`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\", k = 2",
+      "output": "\"a\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"cb\", k = 5",
+      "output": "\"cb\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, k: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Only the trailing run of the collapsed prefix can ever change when a new letter arrives, so you never need the whole string in hand at once.",
+    "Store the prefix as a stack of pairs, one pair per run: the letter and how many times it repeats at the end of the prefix.",
+    "When the top pair's length reaches `k`, pop it. The pair below it is now adjacent to the next letter, which is how two separated runs of the same letter get merged."
+  ],
+  "editorial": {
+    "approach": "The brute force walks the current string, finds the leftmost run of at least `k` equal letters, cuts exactly `k` of them out with two slices, and restarts the walk from the beginning, because the join may have created a new run behind the cursor. Each cut costs O(n) and up to O(n) cuts happen, so the loop is O(n\u00b2). The optimal pass keeps the collapsed prefix as a stack of `[letter, run length]` pairs. A new letter either extends the top pair or is pushed as a pair of length 1; as soon as the top pair reaches length `k` it is popped, so the letter underneath it immediately becomes the neighbour of whatever comes next, which is exactly the weld the problem asks for.",
+    "why_optimal": "Every letter is read once and each is pushed and popped at most once, so the stack pass is O(n), and no correct method can beat that because the answer depends on every letter. With `s.length <= 200` and `k <= 5` the brute force performs roughly 4\u00d710^4 character touches, which the judge absorbs easily, while the stack costs a single pass; the stack is the version that keeps scaling.",
+    "pitfalls": "The dangerous cases are all about long runs and empty answers. A run of five equal letters with `k = 2` must end as one letter, so the pair must be popped every time its length reaches `k` and a later equal letter must open a fresh pair; a version that removes the whole run at once returns the wrong string. The slice indices matter: the surviving tail starts at `i + k`, not at the end of the run, otherwise the letters that should have stayed are thrown away. Finally the answer may be the empty string, as in `\"abba\"` with `k = 2`, so nothing may assume at least one character is left, and `k > s.length` must return `s` untouched."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
+    "https://www.geeksforgeeks.org/stack-data-structure/"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.6076259999999962,
+    "optimalRuntimeMs": 0.317305999999995,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a",
+        2
+      ],
+      "expected": "a",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "cb",
+        5
+      ],
+      "expected": "cb",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "aacaccca",
+        5
+      ],
+      "expected": "aacaccca",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "aa",
+        3
+      ],
+      "expected": "aa",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "ccacaccc",
+        5
+      ],
+      "expected": "ccacaccc",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "bcbaacbb",
+        4
+      ],
+      "expected": "bcbaacbb",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "abaab",
+        2
+      ],
+      "expected": "a",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "bcbacbcabacb",
+        4
+      ],
+      "expected": "bcbacbcabacb",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "acaacabaaabbbcbabba",
+        4
+      ],
+      "expected": "acaacabaaabbbcbabba",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "ccaccaccaabbbcccacbaaab",
+        5
+      ],
+      "expected": "ccaccaccaabbbcccacbaaab",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "aaccbacbb",
+        5
+      ],
+      "expected": "aaccbacbb",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "baacc",
+        4
+      ],
+      "expected": "baacc",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "cbcbbaacbaaaacacbcabbcbc",
+        4
+      ],
+      "expected": "cbcbbaacbcacbcabbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "accaccbcbabbabaccb",
+        3
+      ],
+      "expected": "accaccbcbabbabaccb",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "acbcccaabaccacbba",
+        2
+      ],
+      "expected": "acbcbca",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "baaacaacbaca",
+        3
+      ],
+      "expected": "bcaacbaca",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "bcabccbacccacbbccbbcba",
+        3
+      ],
+      "expected": "bcabccbaacbbccbbcba",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "abaccaca",
+        2
+      ],
+      "expected": "abca",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "ccaaaabacabcbacacccbabbaaacbbbbbcacccaabcbaaaacbababbaabcaaccaaaabbbabaababbbbbcccccbaabaacccacbaacbccaacaaacacabacaccacabccccbb",
+        2
+      ],
+      "expected": "bacabcbacacbcbcacbcbcbababcacbcbcacaca",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "cbabbaccbbbaabccaacacbabaabbabccbcccaccbcaabaaccabbcacbaccbcbbaacbbaabacbacbccbcaaacacabccabaabbabacacabcbccaaaabaacbbccabacabab",
+        2
+      ],
+      "expected": "cbcacbabacabcbacacbcbcacabababacacababacabab",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "bbbaaacabbbabbccbccbaabacbaacbbcbbccabcabacbacccccccabbacbcbcacbcbcbbbcbcaabcbccaccbbcabbabcccbbbbcacbcacabccccbaacbaaaaaabcabbc",
+        2
+      ],
+      "expected": "bacababacbabcabacbabcbcacbcbcbcbcbcbacbacbca",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "cbbbaaccaabaaccbacaababccccbbcccbcbacbbbacbcbcabbacbabbbcaaaabcacaabbbcbbaabbccacbbabbbbcccccababbbabbccbcabaccabcccaacbabaabbba",
+        5
+      ],
+      "expected": "cbbbaaccaabaaccbacaababccccbbcccbcbacbbbacbcbcabbacbabbbcaaaabcacaabbbcbbaabbccacbbabbbbababbbabbccbcabaccabcccaacbabaabbba",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s, k) {\n  if (k <= 0) return s;\n  if (k === 1) return \"\";\n  let cur = s;\n  while (true) {\n    let removed = false;\n    let i = 0;\n    while (i < cur.length) {\n      let j = i;\n      while (j < cur.length && cur[j] === cur[i]) j++;\n      if (j - i >= k) {\n        cur = cur.slice(0, i) + cur.slice(i + k);\n        removed = true;\n        break;\n      }\n      i = j;\n    }\n    if (!removed) return cur;\n  }\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s, k) {\n  if (k <= 0) return s;\n  if (k === 1) return \"\";\n  const stack = [];\n  for (const ch of s) {\n    const top = stack[stack.length - 1];\n    if (top !== undefined && top[0] === ch) {\n      top[1] += 1;\n      if (top[1] >= k) stack.pop();\n    } else {\n      stack.push([ch, 1]);\n    }\n  }\n  let res = \"\";\n  for (const pair of stack) res += pair[0].repeat(pair[1]);\n  return res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 15,
+  "prevSlug": "next-greater-element-ii",
+  "nextSlug": "remove-k-digits"
+}

@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "code": "function solve(height) {\n  let max = 0;\n  for (let i = 0; i < height.length; i++) {\n    for (let j = i + 1; j < height.length; j++) {\n      max = Math.max(max, (j - i) * Math.min(height[i], height[j]));\n    }\n  }\n  return max;\n}",
       "language": "javascript"
     },
@@ -41,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(height) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(height):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] height) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> height) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -88,9 +88,9 @@
       "label": "[4,3,2,1,4]"
     }
   ],
-  "sequence": 7,
+  "sequence": 13,
   "prevSlug": "boats-to-save-people",
-  "nextSlug": "remove-nth-node-from-end",
+  "nextSlug": "palindromic-substrings",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ],

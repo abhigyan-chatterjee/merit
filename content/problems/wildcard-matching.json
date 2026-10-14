@@ -1,0 +1,273 @@
+{
+  "slug": "wildcard-matching",
+  "title": "Wildcard Matching",
+  "topic": "dynamic-programming",
+  "difficulty": "Hard",
+  "pattern": "state DP over (i, j) / greedy two-pointer with star rewind",
+  "statement": "Given an input string `s` and a pattern `p`, decide whether `p` matches all of `s`.\n\nThe pattern is built from lowercase English letters, `?` which matches exactly one character, and `*` which matches any sequence of characters including the empty sequence. A match has to cover `s` from its first character to its last; matching only a prefix or only a suffix is not enough.\n\nReturn `true` when the pattern matches the whole input string, otherwise `false`.\n\nConstraints: `0 <= s.length <= 100` and `0 <= p.length <= 100`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\", p = \"c\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"aa\", p = \"a*\"",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, p: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Ask what a '*' can consume: nothing at all, or one more character of the input, and it can keep consuming characters after that.",
+    "For the table solution, define f(i, j) as whether the suffix s[i:] matches the pattern suffix p[j:], and derive the transitions from the character at p[j].",
+    "For the constant-memory solution, remember where the most recent '*' sits and how much of the input it currently covers, then stretch that star by one character whenever the two pointers disagree."
+  ],
+  "editorial": {
+    "approach": "The brute force is a recursive matcher carrying a memo keyed by the pair (index in s, index in p). From a state it either consumes one character of the input when the pattern character is a letter that agrees or a '?', or, on a '*', it tries both expansions: the star matching nothing (advance the pattern) and the star matching one more character (advance the input). The optimal solution drops the table: it keeps one pointer per string plus the position of the most recent '*'. While the characters agree it advances both pointers; when they disagree it rewinds the pattern to just after that star and lets the star swallow one extra character of the input.",
+    "why_optimal": "The memoized recursion stores a boolean for every pair of indices, so it needs O(n * m) cells, up to 100 * 100 = 10000 for the given bounds. The two-pointer scan needs O(1) extra memory because the only state it keeps is the position of the last star and the input position it began covering. Its worst case is still O(n * m) when each rewind only advances by one character, which is the honest bound to quote, but it avoids both the table and the recursion stack. The greedy rewind is safe because a later mismatch can always be repaired by widening the most recent star; there is never a reason to revisit an earlier star.",
+    "pitfalls": "Skipping the trailing-star cleanup after the input runs out, so 'abc' against 'abc*' wrongly reports false. Recording the input position after advancing the pointer instead of before, which double counts the character the star starts covering. Treating '?' as a literal, or letting '*' match only zero characters. Forgetting both empty cases: an empty pattern matches only an empty string, while a pattern of stars matches an empty string."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Glob_(programming)",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, p) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, p):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s, String p) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s, std::string p) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.4538349999999838,
+    "optimalRuntimeMs": 0.10544100000000256,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a",
+        "c"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "aa",
+        "a*"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cba",
+        "a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "accacac",
+        "*?b?*cab?ccbbcaa?acc*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "acbcabacb",
+        "*c*baabcaba?c?cbccbca"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "caccaabbbcccacbaaabb",
+        "ab*cb???b"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "aacccbccb",
+        "?cbb*?aaabb?*a??*?*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "caccaccbc",
+        "ac?b?ac*b*a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "bcccaabaccacbbaabbaaa",
+        "aa?a*bb?*bc**?b*bc?"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "cbbcbaaaabaccacaaaccaa",
+        "aca"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "abcbacacccbabbaaa",
+        "?c???aaa?cabbb*?b?bc?b"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "bca",
+        "*a"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "aab",
+        "?b?ab?a?c?c?*?bb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "aacccacbaa",
+        "?**ba*aba*ab?a*b**a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "abccccbbaccbabbaccbb",
+        "aa?**aa*b*c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "baabb",
+        "?*c**a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "cbcaabaaccabbcacbaccbc",
+        "caa?caacbcb?*?*a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "acac",
+        "c*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "abaabbabacacabcbccaaaabaacbbccabacababaabbbaaacabbbabbccbccbaabacbaacbbcbbccabcabacbacccccccabbacbcb",
+        "ac*c?c?c*bb??b**c?*accb?**c???b*?bac**cabcbbbaab?*a??*b???bbaa?bb*?a*ba?b?***c?**?*?b??cbc*?bc?acbcc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "caaaabcacaabbbcbbaabbccacbbabbbbcccccababbbabbccbcabaccabcccaacbabaabbbabbbbbbbabaccabacacaaaaacaaab",
+        "a*b?ccb**abca*ac*??ba*bac*a*ac*?ca*ca??a?c?b?b*c**???*ccbac?b?**?ca?cb?bcccc*c*a*bab??*b???aacb?bc*c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "ccbbccbbcbbbbaacabacccaaacbbccccbaabababaccabaacbcacbaacbbbbbaabbaabbacccaaacbaaacbcccacbbbbcbbccacc",
+        "bbcabbb*aba??*?cabcc?abc*b?a*bbcbaabc**c?a?c?c**??a*a?c*caab**ac*ab?*?cb*??a?c?ccabc??c?*a?accca?*a*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "baacbcbcbaabcabbcbaaccacabcacbaaabacabcbccbbbbabcabacccaabbbcbabcbcccbabcbbbccbbbacacbababcbcbbccaba",
+        "**ca?a*?ab?ba?cc*?ac*?c?*a*abcba?aa?bcaacaccc?bb*?*bbba*?*b?*bb?c?ca?c*ba?c*c?c?cb??ab?*c*cca?ca*a*?"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n * m) | Space: O(n * m)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  const n = s.length, m = p.length;\n  const memo = new Map();\n  function go(i, j) {\n    const key = i * (m + 1) + j;\n    if (memo.has(key)) return memo.get(key);\n    let res;\n    if (j === m) {\n      res = (i === n);\n    } else if (p[j] === '*') {\n      res = go(i, j + 1) || (i < n && go(i + 1, j));\n    } else if (i < n && (p[j] === '?' || p[j] === s[i])) {\n      res = go(i + 1, j + 1);\n    } else {\n      res = false;\n    }\n    memo.set(key, res);\n    return res;\n  }\n  return go(0, 0);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n * m) worst case, O(n + m) typical | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  let i = 0, j = 0, star = -1, mark = 0;\n  while (i < s.length) {\n    if (j < p.length && (p[j] === '?' || p[j] === s[i])) {\n      i++; j++;\n    } else if (j < p.length && p[j] === '*') {\n      star = j; mark = i; j++;\n    } else if (star !== -1) {\n      j = star + 1; mark++; i = mark;\n    } else {\n      return false;\n    }\n  }\n  while (j < p.length && p[j] === '*') j++;\n  return j === p.length;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 27,
+  "prevSlug": "regular-expression-matching",
+  "nextSlug": null
+}

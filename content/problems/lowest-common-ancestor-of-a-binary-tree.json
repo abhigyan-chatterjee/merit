@@ -43,7 +43,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(treeArray, p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(treeArray, p, q):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(TreeNode treeArray, int p, int q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(TreeNode* treeArray, int p, int q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -104,7 +104,7 @@
       "label": "p=1, q=2 -> 1"
     }
   ],
-  "sequence": 10,
+  "sequence": 13,
   "prevSlug": "binary-tree-level-order-traversal",
   "nextSlug": "flatten-binary-tree-preorder",
   "reading_links": [

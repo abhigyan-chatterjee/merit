@@ -521,7 +521,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
-  "prevSlug": "remove-all-adjacent-duplicates",
-  "nextSlug": "make-the-string-great"
+  "sequence": 4,
+  "prevSlug": "implement-queue-using-stacks",
+  "nextSlug": "remove-all-adjacent-duplicates-in-string"
 }

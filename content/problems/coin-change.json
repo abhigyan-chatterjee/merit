@@ -42,7 +42,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(coins, amount) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(coins, amount):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] coins, int amount) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> coins, int amount) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -81,8 +81,8 @@
       "label": "coins=[1], amount=0"
     }
   ],
-  "sequence": 2,
-  "prevSlug": "climbing-stairs",
+  "sequence": 4,
+  "prevSlug": "pascal-s-triangle",
   "nextSlug": "decode-ways",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"

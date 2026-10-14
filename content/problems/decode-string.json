@@ -43,7 +43,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -71,7 +71,7 @@
       "label": "\"2[abc]3[cd]ef\""
     }
   ],
-  "sequence": 9,
+  "sequence": 11,
   "prevSlug": "asteroid-collision",
   "nextSlug": "evaluate-reverse-polish-notation",
   "reading_links": [

@@ -1,0 +1,243 @@
+{
+  "slug": "basic-calculator",
+  "title": "Basic Calculator",
+  "topic": "stack",
+  "difficulty": "Hard",
+  "pattern": "single-pass expression evaluation with a sign stack (Shunting-yard style)",
+  "statement": "Evaluate a simple arithmetic expression. It is built from integer literals of one or more digits, the binary operators + and -, parentheses, and spaces; spaces may appear anywhere and are ignored entirely.\n\nA well-formed expression is a term followed by any number of pairs of an operator and another term, where a term is either an integer literal or a parenthesised well-formed expression. Both operators are binary, so an expression always begins with a digit or an opening parenthesis, always ends with a digit or a closing parenthesis, never places two operators side by side, never has an empty pair of parentheses, and never leaves a parenthesis unmatched.\n\nValues can grow far beyond what a 64-bit integer holds, so all arithmetic is carried out modulo 1,000,000,007 and the reported value is the least non-negative residue of the expression under that modulus: 0-5 is reported as 1000000002. If s is not well-formed, including when it is empty or contains any character outside digits, the two operators, parentheses and spaces, return -1 instead.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"0\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"+3\"",
+      "output": "-1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Two pieces of state carry the whole evaluation: the total accumulated so far and the sign waiting to be applied to the number you are reading right now.",
+    "An opening parenthesis means the current total and sign are not needed until the group ends, so park them and start the group from zero.",
+    "When the group closes, its finished value is scaled by the sign you parked and then added to the total you parked; keep the totals reduced modulo 1,000,000,007 as you go."
+  ],
+  "editorial": {
+    "approach": "Both versions first validate the space-stripped expression with one scan, tracking the previous character class and the bracket depth, and return -1 when the shape is illegal. The brute force then evaluates the way the grammar is written: it scans the expression, and on an opening parenthesis it rescans ahead to find the matching close, slices out the inner substring and recurses on it, adding the finished group value with the currently pending sign. Because a nested group is rescanned and re-sliced at every level, deep nesting costs O(n) work per level, so O(n^2) overall. The optimal drops the rescanning: inside each parenthesis the running total and the pending sign are pushed onto a stack, and the matching closing parenthesis multiplies the finished group value by the popped sign and adds the popped total.",
+    "why_optimal": "Each character is read a constant number of times and the only auxiliary storage is the stack, whose depth equals the nesting depth, so O(n) time and O(n) space are the floor for an expression that must be read end to end. The brute force pays the extra factor because it re-walks the interior of every group to find the matching bracket and to build the substring; the stack makes that pairing implicit, since the value between the brackets is already accumulated when the bracket is closed.",
+    "pitfalls": "Treating a minus as anything other than binary, which makes the sign bookkeeping ambiguous and diverges between the two strategies. Forgetting to flush the number currently being accumulated when a parenthesis closes, so the last operand of a group is lost. Applying the popped sign and the popped total in the wrong order: the group value must first be multiplied by the saved sign and only then added to the saved total. Validating the raw string rather than the space-stripped one, which wrongly rejects every expression containing a space. Letting a multi-digit literal be consumed one digit at a time instead of a run, and letting the running total grow without the modulus so the two languages round large values differently."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Shunting_yard_algorithm",
+    "https://en.wikipedia.org/wiki/Recursive_descent_parser"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.296638999999999,
+    "optimalRuntimeMs": 0.24777699999999214,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "0"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "+3"
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "21+09+)7"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "85 "
+      ],
+      "expected": 85,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "278 72+"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "+752683-( --1+54312-4"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "0504"
+      ],
+      "expected": 504,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "83- +670)507"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "(98)(482+0"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "92"
+      ],
+      "expected": 92,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "0(2(05369("
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "144293+)9908"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "17+21653)9+7294(-- 2("
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "-4"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "302)8)+42965)"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "61312+773+85)85421760"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "(0"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "91-95805586737( 9+09)7-3-9403516 +)+37-17)0(93(978214-17-)7) 846 0)4)(-32 2)800+6(0-7-11967137(852)7-++2+359946)7602204 87282 0+"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        " 20) (4072396271+))8862-6-5200954556(+ 9990 5+4-(022276151362()06-((70 97( 0)-(215662(5) 15 53)--635++-79+61232 8+7 +4  867)(71 "
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "0(10809(250)8288 80598874)329+4235199364)-)0 6880072731)4)0)24316(7+38-97 9(73)90)130)0+713382+4299(3763))( 095(3  4-1931+67+57 "
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "0)+)17 (487151 34))-( )4292904-7)(58+1))2(1--1)5 1+)4-)5-9(+-231-+05( (622()643(-(22 92543(0-349759(74 0)3183 0854+-458705)823 +"
+      ],
+      "expected": -1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n^2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const t = s.split(' ').join('');\n  let depth = 0;\n  let prev = 'start';\n  for (const c of t) {\n    if (c >= '0' && c <= '9') {\n      if (prev === 'close') return -1;\n      prev = 'num';\n    } else if (c === '+' || c === '-') {\n      if (prev !== 'num' && prev !== 'close') return -1;\n      prev = 'op';\n    } else if (c === '(') {\n      if (prev !== 'start' && prev !== 'op' && prev !== 'open') return -1;\n      depth++;\n      prev = 'open';\n    } else if (c === ')') {\n      if (prev !== 'num' && prev !== 'close') return -1;\n      depth--;\n      if (depth < 0) return -1;\n      prev = 'close';\n    } else {\n      return -1;\n    }\n  }\n  if (prev !== 'num' && prev !== 'close') return -1;\n  if (depth !== 0) return -1;\n\n  const MOD = 1000000007;\n  const norm = (x) => ((x % MOD) + MOD) % MOD;\n\n  const evaluate = (part) => {\n    let res = 0;\n    let sign = 1;\n    let num = 0;\n    let i = 0;\n    while (i < part.length) {\n      const c = part[i];\n      if (c >= '0' && c <= '9') {\n        num = (num * 10 + (c.charCodeAt(0) - 48)) % MOD;\n        i++;\n      } else if (c === '+' || c === '-') {\n        res = norm(res + sign * num);\n        num = 0;\n        sign = c === '+' ? 1 : -1;\n        i++;\n      } else {\n        let d = 0;\n        let j = i;\n        while (j < part.length) {\n          if (part[j] === '(') d++;\n          else if (part[j] === ')') {\n            d--;\n            if (d === 0) break;\n          }\n          j++;\n        }\n        res = norm(res + sign * num);\n        num = 0;\n        res = norm(res + sign * evaluate(part.slice(i + 1, j)));\n        sign = 1;\n        i = j + 1;\n      }\n    }\n    return norm(res + sign * num);\n  };\n\n  return evaluate(t);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const t = s.split(' ').join('');\n  let depth = 0;\n  let prev = 'start';\n  for (const c of t) {\n    if (c >= '0' && c <= '9') {\n      if (prev === 'close') return -1;\n      prev = 'num';\n    } else if (c === '+' || c === '-') {\n      if (prev !== 'num' && prev !== 'close') return -1;\n      prev = 'op';\n    } else if (c === '(') {\n      if (prev !== 'start' && prev !== 'op' && prev !== 'open') return -1;\n      depth++;\n      prev = 'open';\n    } else if (c === ')') {\n      if (prev !== 'num' && prev !== 'close') return -1;\n      depth--;\n      if (depth < 0) return -1;\n      prev = 'close';\n    } else {\n      return -1;\n    }\n  }\n  if (prev !== 'num' && prev !== 'close') return -1;\n  if (depth !== 0) return -1;\n\n  const MOD = 1000000007;\n  const norm = (x) => ((x % MOD) + MOD) % MOD;\n  let res = 0;\n  let sign = 1;\n  let num = 0;\n  const stack = [];\n  for (const c of t) {\n    if (c >= '0' && c <= '9') {\n      num = (num * 10 + (c.charCodeAt(0) - 48)) % MOD;\n    } else if (c === '+') {\n      res = norm(res + sign * num);\n      num = 0;\n      sign = 1;\n    } else if (c === '-') {\n      res = norm(res + sign * num);\n      num = 0;\n      sign = -1;\n    } else if (c === '(') {\n      stack.push(res);\n      stack.push(sign);\n      res = 0;\n      sign = 1;\n      num = 0;\n    } else {\n      res = norm(res + sign * num);\n      num = 0;\n      res = norm(res * stack.pop());\n      res = norm(res + stack.pop());\n    }\n  }\n  return norm(res + sign * num);\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 19,
+  "prevSlug": "daily-temperatures",
+  "nextSlug": "basic-calculator-iii"
+}

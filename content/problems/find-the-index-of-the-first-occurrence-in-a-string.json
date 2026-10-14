@@ -1,0 +1,273 @@
+{
+  "slug": "find-the-index-of-the-first-occurrence-in-a-string",
+  "title": "Find the Index of the First Occurrence in a String",
+  "topic": "sliding-windows",
+  "difficulty": "Easy",
+  "pattern": "string matching / prefix function (KMP)",
+  "statement": "You are given two strings, `haystack` and `needle`, both made of lowercase English letters, where `needle` is never longer than `haystack`. Return the index of the first character of the earliest occurrence of `needle` as a contiguous block inside `haystack`. If `needle` does not occur in `haystack`, return `-1`.\n\nFor example, when `haystack` is `\"butterfly\"` and `needle` is `\"fly\"`, the answer is `6`, the index of the `f`.\n\nConstraints: `1 <= haystack.length <= 200` and `1 <= needle.length <= haystack.length`.\n",
+  "examples": [
+    {
+      "input": "haystack = \"d\", needle = \"x\"",
+      "output": "-1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "haystack = \"hh\", needle = \"xd\"",
+      "output": "-1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(haystack: string, needle: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Write the honest O(n*m) version first: for every start position, compare characters and stop at the first mismatch.",
+    "After a mismatch the naive scan forgets everything it just matched; ask how much of the matched prefix is still a valid prefix of the pattern.",
+    "Precompute for each prefix of needle the length of the longest proper prefix that is also a suffix, and jump back to that length on a mismatch instead of restarting."
+  ],
+  "editorial": {
+    "approach": "The brute force tries each start position from 0 to `n - m` and compares characters until a mismatch or the end of `needle`, which costs O(n*m) time in the worst case and uses no auxiliary space. The optimal version is KMP: first build the prefix-function array of `needle` in O(m) by tracking, for each position, the length of the longest proper prefix that is also a suffix; then scan `haystack` once, and on a mismatch fall back to `fail[j - 1]` instead of restarting. The haystack pointer only ever moves forward, so the search is O(n) and the whole solution O(n + m) with O(m) extra space.",
+    "why_optimal": "Every algorithm must read at least the part of `haystack` that it matches, so \u03a9(n) is a hard floor, and \u03a9(m) is needed just to read the pattern; KMP hits O(n + m) with a single forward pass and a failure table of size m. The naive scan is fast enough at `haystack.length <= 200`, but it degrades to O(n*m) on adversarial inputs such as a long run of `a` followed by a mismatch, which is exactly what the failure table eliminates.",
+    "pitfalls": "The start loop must run while `start + m <= n`; using `start < n` reads past the end of `haystack`. In the prefix-function construction the fallback inside the while loop is `fail[j - 1]`, not `fail[i - 1]`, and `fail[0]` must stay 0. A match found at haystack index `i` starts at `i - m + 1`, a classic off-by-one when reporting the answer. The construction loop begins at `i = 1`, so a single-character `needle` never enters it and must still work through the search loop alone - verify that case explicitly. An empty `needle` is a match at index 0 and the KMP variant must return 0 explicitly, because its search loop would otherwise report the first position as a match of length 0."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Knuth\u2013Morris\u2013Pratt_algorithm",
+    "https://cp-algorithms.com/string/prefix-function.html"
+  ],
+  "starterCode": {
+    "javascript": "function solve(haystack, needle) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(haystack, needle):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String haystack, String needle) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string haystack, std::string needle) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.08105000000001894,
+    "optimalRuntimeMs": 0.19359100000000495,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": -1,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjc"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngr"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hi"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxb"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdbu"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbb"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrg"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjv"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibw",
+        "aqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmhe"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "wayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzthphinpamkvvzmxfoetramssvacune",
+        "fbimkgokkymiynicpaxrblhucyubyahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluo"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "enfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpryhwpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfggxpixsyqtjdgjhlfjawreibbrjwe",
+        "ypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdygugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueie"
+      ],
+      "expected": -1,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "bfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqavronbgqltypuoybgirejowpdautzhwfjrarnchdoduepwj",
+        "winpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecpziktwmuckvrmkuwyp"
+      ],
+      "expected": -1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n*m) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(haystack, needle) {\n  const n = haystack.length;\n  const m = needle.length;\n  for (let start = 0; start + m <= n; start++) {\n    let matched = 0;\n    while (matched < m && haystack[start + matched] === needle[matched]) {\n      matched++;\n    }\n    if (matched === m) return start;\n  }\n  return -1;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n+m) | Space: O(m)",
+      "language": "javascript",
+      "code": "function solve(haystack, needle) {\n  const n = haystack.length;\n  const m = needle.length;\n  if (m === 0) return 0;\n  const fail = new Array(m).fill(0);\n  for (let i = 1; i < m; i++) {\n    let j = fail[i - 1];\n    while (j > 0 && needle[i] !== needle[j]) j = fail[j - 1];\n    if (needle[i] === needle[j]) j++;\n    fail[i] = j;\n  }\n  let j = 0;\n  for (let i = 0; i < n; i++) {\n    while (j > 0 && haystack[i] !== needle[j]) j = fail[j - 1];\n    if (haystack[i] === needle[j]) j++;\n    if (j === m) return i - m + 1;\n  }\n  return -1;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "contains-duplicate-ii",
+  "nextSlug": "find-all-anagrams-in-a-string"
+}

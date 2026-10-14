@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
+import { TOPICS } from '../data/curriculum';
 import { CodeRunner } from '../components/CodeRunner';
 import {
   ArrowLeft,
@@ -100,7 +101,7 @@ export const ProblemDetailPage: React.FC = () => {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-muted hover:text-ink"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Back to {topic}
+            Back to {TOPICS.find((t) => t.slug === topic)?.title ?? topic}
           </Link>
 
           <div>
@@ -333,6 +334,7 @@ export const ProblemDetailPage: React.FC = () => {
           <CodeRunner
               problemSlug={problem.slug}
               starterCode={problem.starterCode}
+              starterCodePython={problem.starterCodePython}
               starterCodeJava={problem.starterCodeJava}
               starterCodeCpp={problem.starterCodeCpp}
               functionName={problem.functionName}

@@ -12,6 +12,7 @@ interface ExamCodingState {
   examples: ProblemExample[];
   constraints: string[];
   starterCode: string;
+  starterCodePython: string;
   starterCodeJava: string;
   starterCodeCpp: string;
   functionName: string;
@@ -47,6 +48,7 @@ export const ExamCodingSection: React.FC<{
             examples: local.examples,
             constraints: local.constraints,
             starterCode: local.starterCode,
+            starterCodePython: local.starterCodePython,
             starterCodeJava: local.starterCodeJava,
             starterCodeCpp: local.starterCodeCpp,
             functionName: local.functionName,
@@ -67,6 +69,7 @@ export const ExamCodingSection: React.FC<{
             examples: remote.examples ?? [],
             constraints: remote.constraints ?? [],
             starterCode: sc,
+            starterCodePython: remoteStarters.python ?? '',
             starterCodeJava: remoteStarters.java ?? '',
             starterCodeCpp: remoteStarters.cpp ?? '',
             functionName: remote.function_name ?? 'solve',
@@ -79,7 +82,7 @@ export const ExamCodingSection: React.FC<{
             passed: null,
           });
         } catch {
-          next.push({ slug: c.slug, title: c.title, statement: '', examples: [], constraints: [], starterCode: '', starterCodeJava: '', starterCodeCpp: '', functionName: 'solve', testCases: [], passed: null });
+          next.push({ slug: c.slug, title: c.title, statement: '', examples: [], constraints: [], starterCode: '', starterCodePython: '', starterCodeJava: '', starterCodeCpp: '', functionName: 'solve', testCases: [], passed: null });
         }
       }
       if (active) {
@@ -161,6 +164,7 @@ export const ExamCodingSection: React.FC<{
             <CodeRunner
               problemSlug={item.slug}
               starterCode={item.starterCode}
+              starterCodePython={item.starterCodePython}
               starterCodeJava={item.starterCodeJava}
               starterCodeCpp={item.starterCodeCpp}
               functionName={item.functionName}

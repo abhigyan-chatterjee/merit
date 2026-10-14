@@ -1,0 +1,278 @@
+{
+  "slug": "find-all-anagrams-in-a-string",
+  "title": "Find All Anagram Windows",
+  "topic": "sliding-windows",
+  "difficulty": "Medium",
+  "pattern": "fixed-size sliding window with character counts",
+  "statement": "Two strings are anagrams of each other when one can be rearranged into the other, so they hold exactly the same letters with the same multiplicities. Given `s` and `p`, return every start index `i` for which the substring `s[i ... i + p.length - 1]` is an anagram of `p`, in increasing index order. Only windows that fit entirely inside `s` count, so return an empty list when no window matches. Both strings contain lowercase English letters only.\n\nConstraints: `1 <= s.length <= 200`, `1 <= p.length <= s.length`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\", p = \"x\"",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"hh\", p = \"xd\"",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, p: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The window length never changes, it is always p.length, so the only decision is where the window starts.",
+    "Comparing sorted windows repeats work, because two neighbouring windows share all but one character. Track how many of each letter the current window holds instead.",
+    "Keep a running count of letters whose window frequency already equals the pattern's frequency; the moment that count reaches 26 the window is an anagram, and only the entering and leaving characters need updating."
+  ],
+  "editorial": {
+    "approach": "The brute force slices each window of length m out of s, sorts its characters and compares the sorted string with the sorted pattern, which costs O(n * m log m) time and O(m) extra space per window. The optimal solution keeps the window length fixed at m and slides it one position at a time while maintaining two 26-slot frequency tables, one for p and one for the current window. A counter records how many letters already have matching frequencies; each character that enters the window and each one that leaves updates that counter in constant time, so the window is an anagram exactly when all 26 counters match, giving O(n) time with 52 counters of extra space.",
+    "why_optimal": "Every character of s must be read at least once, and each one enters and leaves the window exactly once, so O(n) is the floor for this scan; the 26 letter comparisons are a constant independent of n. The brute force re-sorts a whole window per position even though consecutive windows share m - 1 characters, which is the repeated work the sliding window removes. With m and n capped at 200 both versions finish quickly, but the counting version stays flat as the strings grow.",
+    "pitfalls": "Forgetting to remove the character at i - m before testing the window, which tests windows of length m + 1 and reports wrong starts; updating the match counter only when a count becomes equal and not when it drops one below; recomputing counts from scratch each step, which silently turns the solution back into the brute force; and assuming p is shorter than s instead of guarding the m > n case."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Anagram",
+    "https://en.wikipedia.org/wiki/Letter_frequency"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, p) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, p):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(String s, String p) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::string s, std::string p) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 2.4193260000000016,
+    "optimalRuntimeMs": 0.3094280000000005,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjc"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngr"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": [
+        10
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hi"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxb"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdbu"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbb"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": [
+        6,
+        7
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrg"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjv"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibw",
+        "aqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmhe"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "wayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzthphinpamkvvzmxfoetramssvacune",
+        "fbimkgokkymiynicpaxrblhucyubyahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluo"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "enfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpryhwpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfggxpixsyqtjdgjhlfjawreibbrjwe",
+        "ypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdygugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueie"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "bfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqavronbgqltypuoybgirejowpdautzhwfjrarnchdoduepwj",
+        "winpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecpziktwmuckvrmkuwyp"
+      ],
+      "expected": [],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n * m log m) | Space: O(m)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  const res = [];\n  const m = p.length;\n  if (m > s.length) return res;\n  const target = p.split('').sort().join('');\n  for (let i = 0; i + m <= s.length; i++) {\n    const window = s.slice(i, i + m).split('').sort().join('');\n    if (window === target) res.push(i);\n  }\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  const res = [];\n  const n = s.length;\n  const m = p.length;\n  if (m > n) return res;\n  const need = new Array(26).fill(0);\n  const have = new Array(26).fill(0);\n  for (let i = 0; i < m; i++) need[p.charCodeAt(i) - 97]++;\n  let matches = 0;\n  for (let c = 0; c < 26; c++) if (need[c] === 0) matches++;\n  for (let i = 0; i < n; i++) {\n    const ci = s.charCodeAt(i) - 97;\n    have[ci]++;\n    if (have[ci] === need[ci]) matches++;\n    else if (have[ci] === need[ci] + 1) matches--;\n    if (i >= m) {\n      const cj = s.charCodeAt(i - m) - 97;\n      have[cj]--;\n      if (have[cj] === need[cj]) matches++;\n      else if (have[cj] === need[cj] - 1) matches--;\n    }\n    if (matches === 26) res.push(i - m + 1);\n  }\n  return res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 3,
+  "prevSlug": "find-the-index-of-the-first-occurrence-in-a-string",
+  "nextSlug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit"
+}

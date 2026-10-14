@@ -7,19 +7,14 @@
   "statement": "Given a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
   "examples": [
     {
-      "input": "s = \"x22y0\"",
-      "output": "\"xy0\"",
-      "explanation": "The adjacent duplicate pair '22' is removed, leaving 'xy0' with no further duplicates."
+      "input": "s = \"b\"",
+      "output": "\"b\"",
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
-      "input": "s = \"zbb0bzz\"",
-      "output": "\"z0b\"",
-      "explanation": "The adjacent duplicates 'bb' and 'zz' are removed, leaving 'z0b'."
-    },
-    {
-      "input": "s = \"zczzxybc2xc10y2\"",
-      "output": "\"zcxybc2xc10y2\"",
-      "explanation": "The duplicate pair 'zz' is deleted, leaving no further adjacent duplicates."
+      "input": "s = \"yx\"",
+      "output": "\"yx\"",
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -51,8 +46,8 @@
   "pafVerification": {
     "seed": 42,
     "generatedCaseCount": 21,
-    "bruteForceRuntimeMs": 0.3238149999999962,
-    "optimalRuntimeMs": 0.19843500000001768
+    "bruteForceRuntimeMs": 0.2415790000000051,
+    "optimalRuntimeMs": 0.16830700000000576
   },
   "testCases": [
     {
@@ -194,40 +189,40 @@
     {
       "label": "stress-18",
       "input": [
-        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1z"
       ],
-      "expected": "xy1x2c1x10x0z1aba0zbx21c0cy1xb12ba2abxc0x0ac0a0y1y021cxyxa2az1ca2bcx0bxab02zyxzxy0cy1zba12x2yczbxzyc12y2a2ybcy",
+      "expected": "xy1x2c1x10x0z1aba0zbx21c0cy1xb12ba2abxc0x0ac0a0y1y021cxyxa2az1ca2bcx0bxab02zyxzxy0cy1z",
       "isSample": false
     },
     {
       "label": "stress-19",
       "input": [
-        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+        "a1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0"
       ],
-      "expected": "2cxzxy21yab0yzcyc1202ac2az2c0cayzazbz20cx0acz0xycb0azyax0zybyz202zabycyab2b0xya0axz0y2y0z0y2cxcy02ay",
+      "expected": "a12x2yczbxzyc12y2a2ybcy2cxzxy21yab0yzcyc1202ac2az2c0cayzazbz20cx0acz0xycb0azyax0",
       "isSample": false
     },
     {
       "label": "stress-20",
       "input": [
-        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+        "ybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1"
       ],
-      "expected": "x0z1x21cby2zbxycx1b10x010xcab0xc21a2xb1c1z12021cyxy21xy1byxy2bx0cxbz210axa01azyx1xy01a0z0c1c2a0ab0c1cay0zx",
+      "expected": "ybyz202zabycyab2b0xya0axz0y2y0z0y2cxcy02ax0z1x21cby2zbxycx1b10x010xcab0xc21a2xb1",
       "isSample": false
     },
     {
       "label": "stress-21",
       "input": [
-        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+        "122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaax"
       ],
-      "expected": "0y0yb1a2azxbacxc1bx1yzcbcybayxbxbybaz20zb2za01b0z1c0c2y20yzxby1x10za1zc1xzyz2a2xbx012x1abyx0xyz1z021yxbxzb2c",
+      "expected": "1z12021cyxy21xy1byxy2bx0cxbz210axa01azyx1xy01a0z0c1c2a0ab0c1cay0zx10y0yb1a2azxbx",
       "isSample": false
     }
   ],
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function removeDuplicatesString(s) {\n  const chars = s.split('');\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i < chars.length - 1; i++) {\n      if (chars[i] === chars[i + 1]) {\n        chars.splice(i, 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return chars.join('');\n}",
       "isReference": false
@@ -241,7 +236,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def removeDuplicatesString(s: str) -> str:\n    chars = list(s)\n    changed = True\n    while changed:\n        changed = False\n        for i in range(len(chars) - 1):\n            if chars[i] == chars[i + 1]:\n                del chars[i:i + 2]\n                changed = True\n                break\n    return \"\".join(chars)\n",
       "isReference": false
@@ -256,5 +251,5 @@
   ],
   "sequence": 2,
   "prevSlug": "baseball-game",
-  "nextSlug": "next-greater-element-i"
+  "nextSlug": "implement-queue-using-stacks"
 }

@@ -1,0 +1,482 @@
+{
+  "slug": "word-ladder-ii",
+  "title": "Word Ladder II",
+  "topic": "graphs",
+  "difficulty": "Hard",
+  "pattern": "BFS distance labelling + level-graph DFS reconstruction",
+  "statement": "One transformation turns a word into another by replacing exactly one letter, so both words have the same number of letters, and the resulting word must appear in `wordList`.\n\nGiven `beginWord`, `endWord` and `wordList`, return every transformation sequence of minimum length that starts at `beginWord`, ends at `endWord`, and uses only words from `wordList` as intermediate steps. A sequence lists the words in order from `beginWord` to `endWord`, inclusive of both ends, and every consecutive pair in it must differ in exactly one letter. Sequences that are longer than the minimum are not returned.\n\nReturn the sequences sorted in ascending lexicographic order, comparing them element by element. Return an empty list when `endWord` cannot be reached, and return `[[beginWord]]` when `beginWord` equals `endWord`.\n\nConstraints: `1 <= wordList.length <= 12` and `1 <= beginWord.length <= 6` and `1 <= endWord.length <= 6` and `1 <= wordList[i].length <= 6`.\n",
+  "examples": [
+    {
+      "input": "beginWord = \"a\", endWord = \"c\", wordList = [\"a\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "beginWord = \"ccbabb\", endWord = \"ccbbb\", wordList = [\"b\", \"caacac\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(beginWord: string, endWord: string, wordList: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Every valid sequence is one step longer than a valid sequence that ends at a neighbouring word, so all shortest sequences live on layers of a single graph.",
+    "Run a BFS from `beginWord` first and label each word with its distance; only words whose distance grows by exactly one from step to step can appear in a shortest sequence.",
+    "Do not carry whole paths through the BFS queue: once the distances are known, a DFS that walks only distance-plus-one edges rebuilds every shortest sequence."
+  ],
+  "editorial": {
+    "approach": "The brute force is a level-by-level BFS that carries the whole partial path inside the queue: it expands one full level, stops the moment any path has reached `endWord`, and therefore every path it returns has minimum length. The optimal version splits the two jobs. A first BFS from `beginWord` labels each reachable word with its distance from the start, and a DFS then follows only those edges that raise the distance by exactly one, rebuilding all shortest sequences from the small distance table.",
+    "why_optimal": "Storing the full path in the queue makes the brute force cost proportional to the number of partial paths it keeps alive, which can be exponential even when only a single shortest sequence exists, and it re-walks every stored word on each comparison. The distance map holds one integer per reachable word, so the BFS step costs O(n^2 * L) with n words of length L, and the DFS only visits words that can sit on a shortest sequence, which keeps the reconstruction proportional to the answer size T. Because no sequence may repeat a word, the level graph is acyclic, so the DFS terminates without any visited set.",
+    "pitfalls": "Forgetting that `endWord` must be present in `wordList`, and that `beginWord` is a legal starting point but is never used as an intermediate step. Continuing the BFS one level past the level where `endWord` appears, which lets longer sequences into the answer. Comparing words of different lengths and counting them as one letter apart, or counting the differing positions with a flag instead of a counter. Sorting with JavaScript's default Array.sort, which stringifies the arrays and compares their comma-joined text instead of the words themselves, and forgetting the `beginWord` equals `endWord` case where the answer is the single one-word sequence."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Breadth-first_search",
+    "https://en.wikipedia.org/wiki/Shortest_path_problem"
+  ],
+  "starterCode": {
+    "javascript": "function solve(beginWord, endWord, wordList) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(beginWord, endWord, wordList):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String[][] solve(String beginWord, String endWord, String[] wordList) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<std::string>> solve(std::string beginWord, std::string endWord, std::vector<std::string> wordList) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.1768050000000052,
+    "optimalRuntimeMs": 0.33301600000000064,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a",
+        "c",
+        [
+          "a"
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "ac",
+        "cc",
+        [
+          "ac",
+          "aa",
+          "aa",
+          "ca",
+          "ac",
+          "cc",
+          "ab",
+          "ba",
+          "cb",
+          "ba",
+          "ba",
+          "ba"
+        ]
+      ],
+      "expected": [
+        [
+          "ac",
+          "cc"
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "bcbacb",
+        "abacbc",
+        [
+          "cacaac",
+          "baaabb",
+          "cbabba",
+          "bcccac",
+          "accaab",
+          "bcccac",
+          "aaabbb",
+          "acc",
+          "acbbcb",
+          "baacc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "bccbcb",
+        "aacbaa",
+        [
+          "cacbc",
+          "bbc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "cbcacc",
+        "ccbc",
+        [
+          "bbab",
+          "c",
+          "bcacac",
+          "cccaab",
+          "ccacbb",
+          "a"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "baaaca",
+        "cba",
+        [
+          "acbca",
+          "ccbacc",
+          "acbbcc",
+          "bcbaaa",
+          "bac",
+          "acaaac",
+          "aaaaba",
+          "abcbac",
+          "cccba"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "baaacb",
+        "bbbcac",
+        [
+          "aabcba",
+          "aacbab",
+          "bbaabc",
+          "acca",
+          "aab",
+          "babaab",
+          "b",
+          "bbbccc",
+          "cbaaba",
+          "cc",
+          "acbaac"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "ccaaca",
+        "acacab",
+        [
+          "accaca",
+          "ccccbb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "ccbabb",
+        "ccbbb",
+        [
+          "b",
+          "caacac"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "abaabb",
+        "bccbcc",
+        [
+          "c",
+          "bcaaba",
+          "ccab",
+          "cacbac",
+          "bcbbaa",
+          "bbaaba",
+          "bacbcc",
+          "caaaca",
+          "abccab"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "abbab",
+        "cacabc",
+        [
+          "caaaab",
+          "a",
+          "bbccab",
+          "cababa",
+          "bbbaaa",
+          "abbbab",
+          "ccbccb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "a",
+        "acbaac",
+        [
+          "cbbcca",
+          "cabacb",
+          "c",
+          "ccccca",
+          "bacbcb",
+          "acbcbc",
+          "bbcbca"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "bcbcca",
+        "cbbcab",
+        [
+          "bcccbb",
+          "bcacbc",
+          "cabccc",
+          "baacba",
+          "aaaabc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "bbc",
+        "accbbb",
+        [
+          "ccaab",
+          "accbac",
+          "ababcc",
+          "cbbccc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "cbacbb",
+        "acbcbc",
+        [
+          "bacbab",
+          "bcaaaa",
+          "cacaab",
+          "bcbbaa"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "bccacb",
+        "abbbbc",
+        [
+          "ccabab",
+          "babbcc",
+          "cabacc",
+          "b",
+          "ccaacb",
+          "baabb",
+          "abbbbb",
+          "babacc",
+          "ba",
+          "acaaaa",
+          "c",
+          "aabca"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "abcbba",
+        "cccaab",
+        [
+          "abccbb",
+          "aaccca"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "cbcc",
+        "cabc",
+        [
+          "baccba",
+          "babbcb",
+          "abaccc",
+          "ccbbbc",
+          "bbaabb",
+          "bcccbb",
+          "b"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "ababbb",
+        "ccbcac",
+        [
+          "aacbbc",
+          "cbccbb",
+          "ababca",
+          "ccbbcc",
+          "bccbbc",
+          "bbbaac",
+          "baccca",
+          "acbbcc",
+          "cbaaba",
+          "abacca",
+          "aacbca",
+          "baacbb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "bbaabb",
+        "abbacc",
+        [
+          "aaacba",
+          "acbccc",
+          "cbbbbc",
+          "bccacc",
+          "acabca",
+          "aacaaa",
+          "bccbba",
+          "bcbcba",
+          "abccca",
+          "acacab",
+          "aaabcc",
+          "bbabcb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "bbccbb",
+        "cabcbc",
+        [
+          "aaaccc",
+          "cbcaab",
+          "cbbacb",
+          "babbbb",
+          "caabbc",
+          "bcbcab",
+          "bbbabc",
+          "ccbbaa",
+          "bcbcba",
+          "bcabbc",
+          "aaccac",
+          "bcacba"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "abacab",
+        "bccbbb",
+        [
+          "abcaba",
+          "ccaabb",
+          "cbabcb",
+          "ccbabc",
+          "bbccbb",
+          "acacba",
+          "abcbcb",
+          "ccabaa",
+          "cbabac",
+          "acabca",
+          "bbbccb",
+          "abccbb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(P * n * L), P = number of partial paths expanded | Space: O(P * L)",
+      "language": "javascript",
+      "code": "function solve(beginWord, endWord, wordList) {\n  if (beginWord === endWord) return [[beginWord]];\n  if (wordList.indexOf(endWord) === -1) return [];\n  function differs(a, b) {\n    if (a.length !== b.length) return false;\n    let c = 0;\n    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) c++;\n    return c === 1;\n  }\n  function compare(a, b) {\n    for (let i = 0; i < a.length && i < b.length; i++) {\n      if (a[i] < b[i]) return -1;\n      if (a[i] > b[i]) return 1;\n    }\n    return a.length - b.length;\n  }\n  let frontier = [[beginWord]];\n  let result = [];\n  while (frontier.length > 0) {\n    const next = [];\n    for (const path of frontier) {\n      const last = path[path.length - 1];\n      for (const w of wordList) {\n        if (path.indexOf(w) !== -1) continue;\n        if (differs(last, w)) next.push(path.concat([w]));\n      }\n    }\n    const found = next.filter((path) => path[path.length - 1] === endWord);\n    if (found.length > 0) {\n      result = found;\n      break;\n    }\n    frontier = next;\n  }\n  result.sort(compare);\n  return result;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n^2 * L + T), T = total size of the returned sequences | Space: O(n * L + T)",
+      "language": "javascript",
+      "code": "function solve(beginWord, endWord, wordList) {\n  if (beginWord === endWord) return [[beginWord]];\n  const words = [];\n  const seen = new Set();\n  for (const w of wordList) {\n    if (!seen.has(w)) { seen.add(w); words.push(w); }\n  }\n  if (!seen.has(endWord)) return [];\n  function differs(a, b) {\n    if (a.length !== b.length) return false;\n    let c = 0;\n    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) c++;\n    return c === 1;\n  }\n  function compare(a, b) {\n    for (let i = 0; i < a.length && i < b.length; i++) {\n      if (a[i] < b[i]) return -1;\n      if (a[i] > b[i]) return 1;\n    }\n    return a.length - b.length;\n  }\n  const dist = new Map();\n  dist.set(beginWord, 0);\n  let frontier = [beginWord];\n  while (frontier.length > 0) {\n    const next = [];\n    for (const w of frontier) {\n      for (const x of words) {\n        if (!dist.has(x) && differs(w, x)) {\n          dist.set(x, dist.get(w) + 1);\n          next.push(x);\n        }\n      }\n    }\n    frontier = next;\n  }\n  if (!dist.has(endWord)) return [];\n  const res = [];\n  function dfs(word, path) {\n    if (word === endWord) {\n      res.push(path.slice());\n      return;\n    }\n    for (const x of words) {\n      if (dist.has(x) && dist.get(x) === dist.get(word) + 1 && differs(word, x)) {\n        path.push(x);\n        dfs(x, path);\n        path.pop();\n      }\n    }\n  }\n  dfs(beginWord, [beginWord]);\n  res.sort(compare);\n  return res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 29,
+  "prevSlug": "word-ladder",
+  "nextSlug": null
+}

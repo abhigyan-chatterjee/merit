@@ -1255,7 +1255,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function reorderList(nums) {\n  if (nums.length <= 2) return nums.slice();\n  const queue = nums.slice();\n  const result = [];\n  let fromStart = true;\n  while (queue.length > 0) {\n    if (fromStart) {\n      result.push(queue.shift());\n    } else {\n      result.push(queue.pop());\n    }\n    fromStart = !fromStart;\n  }\n  return result;\n}",
       "isReference": false
@@ -1269,7 +1269,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def reorderList(nums: list[int]) -> list[int]:\n    if len(nums) <= 2:\n        return list(nums)\n    copy = list(nums)\n    res = []\n    take_left = True\n    while copy:\n        if take_left:\n            res.append(copy.pop(0))\n        else:\n            res.append(copy.pop())\n        take_left = not take_left\n    return res\n",
       "isReference": false
@@ -1282,7 +1282,7 @@
       "isReference": true
     }
   ],
-  "sequence": 10,
+  "sequence": 11,
   "prevSlug": "partition-list",
   "nextSlug": "reverse-linked-list-ii"
 }

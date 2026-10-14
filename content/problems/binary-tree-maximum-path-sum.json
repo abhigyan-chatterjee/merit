@@ -34,7 +34,7 @@
   "editorial": {
     "approach": "Post-order pass: each subtree reports the best downward gain it can offer its parent (negative gains clamped to zero), while a global best tracks the top bent path seen anywhere.",
     "why_optimal": "Each node is processed once with constant work, giving linear time and recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.52 ms and the optimal at 0.21 ms (about 2.5x faster).",
-    "pitfalls": "Clamp negative child gains to zero when extending, but never force the global answer down to zero — an all-negative tree still returns its least-negative node."
+    "pitfalls": "Clamp negative child gains to zero when extending, but never force the global answer down to zero \u2014 an all-negative tree still returns its least-negative node."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Depth-first_search"
@@ -724,7 +724,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n·h) | Space: O(h)",
+      "complexity": "Time: O(n\u00b7h) | Space: O(h)",
       "language": "javascript",
       "code": "function maxPathSum(root) {\n  const present = [];\n  (function collect(i) {\n    if (i >= root.length || root[i] === null) return;\n    present.push(i);\n    collect(2 * i + 1);\n    collect(2 * i + 2);\n  })(0);\n  function bestDown(i) {\n    if (i >= root.length || root[i] === null) return -Infinity;\n    return root[i] + Math.max(0, bestDown(2 * i + 1), bestDown(2 * i + 2));\n  }\n  let best = -Infinity;\n  for (const t of present) {\n    const l = bestDown(2 * t + 1);\n    const r = bestDown(2 * t + 2);\n    const through = root[t] + Math.max(0, l) + Math.max(0, r);\n    if (through > best) best = through;\n  }\n  return best;\n}",
       "isReference": false
@@ -738,7 +738,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n·h) | Space: O(h)",
+      "complexity": "Time: O(n\u00b7h) | Space: O(h)",
       "language": "python",
       "code": "def maxPathSum(root: list) -> int:\n    present = []\n    def collect(i):\n        if i >= len(root) or root[i] is None:\n            return\n        present.append(i)\n        collect(2 * i + 1)\n        collect(2 * i + 2)\n    collect(0)\n    def best_down(i):\n        if i >= len(root) or root[i] is None:\n            return float('-inf')\n        return root[i] + max(0, best_down(2 * i + 1), best_down(2 * i + 2))\n    best = float('-inf')\n    for t in present:\n        l, r = best_down(2 * t + 1), best_down(2 * t + 2)\n        through = root[t] + max(0, l) + max(0, r)\n        best = max(best, through)\n    return best\n",
       "isReference": false
@@ -751,7 +751,7 @@
       "isReference": true
     }
   ],
-  "sequence": 17,
+  "sequence": 20,
   "prevSlug": "validate-binary-search-tree",
-  "nextSlug": null
+  "nextSlug": "binary-tree-cameras"
 }

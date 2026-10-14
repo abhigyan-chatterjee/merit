@@ -47,6 +47,14 @@ class Settings(BaseSettings):
         "env_file": ".env",
         "env_file_encoding": "utf-8",
         "case_sensitive": False,
+        # Ignore, rather than reject, environment variables this service does
+        # not define. The default is to forbid them, which makes the API refuse
+        # to boot whenever it shares an environment with anything else: sourced
+        # from the repository root it dies on the web bundle's own keys
+        # (VITE_CLERK_*, CLERK_TEST_EMAIL), and on the VPS the project-root
+        # .env carries both services' values. A service must not fail to start
+        # over a variable that belongs to a sibling.
+        "extra": "ignore",
     }
 
     @model_validator(mode="before")

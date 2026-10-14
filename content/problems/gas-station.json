@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Greedy Prefix Surplus Analysis\n\nThe net fuel gain or loss at station i is delta_i = gas[i] - cost[i].\n\n#### 1. Solvability Condition (Global Invariant)\nIf the total net fuel over the entire circular route is negative (sum_{i=0}^{n-1} delta_i < 0), no starting station can ever complete the circuit because the journey demands more fuel than is available. Conversely, if total surplus >= 0, a valid starting station is guaranteed to exist.\n\n#### 2. Greedy Reset Property (State Transition)\nSuppose we start at station S and run out of gas at station K (where sum_{i=S}^K delta_i < 0). Could any intermediate station S <= j <= K serve as a valid start?\n- Because the car successfully reached station j from S, the accumulated fuel arriving at j was non-negative: sum_{i=S}^{j-1} delta_i >= 0.\n- Starting fresh at j with 0 fuel would have even less fuel than arriving at j from S.\n- Therefore, no station between S and K can complete the circuit.\n\nThus, when the running tank dips below 0 at station i, we greedily discard all candidates up to i and reset:\nstart = i + 1, currentTank = 0\n\n#### 3. Base Cases\ntotalSurplus = 0, currentTank = 0, start = 0.\n\n#### 4. Answer Extraction\nans = start if totalSurplus >= 0 else -1.",
-    "why_optimal": "Brute force simulates a full circular trip from every station in O(n²) time. By leveraging the greedy reset property, the candidate starting station is identified in a single O(n) pass with O(1) extra space. Across 30 verified test cases, the greedy approach executed in 0.12 ms compared to 0.17 ms for quadratic simulation.",
+    "why_optimal": "Brute force simulates a full circular trip from every station in O(n\u00b2) time. By leveraging the greedy reset property, the candidate starting station is identified in a single O(n) pass with O(1) extra space. Across 30 verified test cases, the greedy approach executed in 0.12 ms compared to 0.17 ms for quadratic simulation.",
     "pitfalls": "Do not run a second loop to verify the start station if totalSurplus >= 0: the mathematical property ensures that whenever total gas >= total cost, the uniquely surviving start candidate from the first pass is guaranteed to succeed."
   },
   "reading_links": [
@@ -1716,7 +1716,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "javascript",
       "code": "function canCompleteCircuit(gas, cost) {\n  const n = gas.length;\n  for (let start = 0; start < n; start++) {\n    let tank = 0;\n    let possible = true;\n    for (let step = 0; step < n; step++) {\n      const idx = (start + step) % n;\n      tank += gas[idx] - cost[idx];\n      if (tank < 0) {\n        possible = false;\n        break;\n      }\n    }\n    if (possible) return start;\n  }\n  return -1;\n}",
       "isReference": false
@@ -1730,7 +1730,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "python",
       "code": "def canCompleteCircuit(gas: list[int], cost: list[int]) -> int:\n    n = len(gas)\n    for start in range(n):\n        tank = 0\n        possible = True\n        for step in range(n):\n            idx = (start + step) % n\n            tank += gas[idx] - cost[idx]\n            if tank < 0:\n                possible = False\n                break\n        if possible:\n            return start\n    return -1\n",
       "isReference": false
@@ -1743,7 +1743,7 @@
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
-  "nextSlug": "jump-game"
+  "sequence": 3,
+  "prevSlug": "best-time-to-buy-and-sell-stock-ii",
+  "nextSlug": "integer-to-roman"
 }

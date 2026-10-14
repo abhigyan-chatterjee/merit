@@ -39,8 +39,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(nums,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -84,8 +84,8 @@
       "label": "[2,1,1,2]"
     }
   ],
-  "sequence": 4,
-  "prevSlug": "decode-ways",
+  "sequence": 7,
+  "prevSlug": "delete-and-earn",
   "nextSlug": "house-robber-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"

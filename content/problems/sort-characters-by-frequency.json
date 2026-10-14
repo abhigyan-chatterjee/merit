@@ -1,0 +1,243 @@
+{
+  "slug": "sort-characters-by-frequency",
+  "title": "Sort Characters By Frequency",
+  "topic": "arrays-hashing",
+  "difficulty": "Medium",
+  "pattern": "counting / bucket sort by frequency",
+  "statement": "You are given a string `s` built from lowercase English letters and digits. Rearrange its characters so that characters that occur more often come first, and return the rearranged string.\n\nCharacters with the same number of occurrences must be ordered by character code in ascending order, so `'0'` comes before `'9'` and `'9'` comes before `'a'`. Every character of `s` must appear exactly as many times in the returned string as it does in `s`, which makes the answer a single determined string.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"7\"",
+      "output": "\"7\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"k\"",
+      "output": "\"k\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The whole output is decided by one number per character. What is the cheapest way to compute each character's count?",
+    "Counts are small integers between 1 and n. Which sorting method exploits a small integer key range rather than comparing keys against each other?",
+    "Build bucket[f] = the characters that occur exactly f times, then walk f from n down to 1, sorting each bucket's characters in ascending code order and appending each character f times."
+  ],
+  "editorial": {
+    "approach": "The brute force keeps a hand-built list of the distinct characters seen so far plus their counts, locating each character's slot with a linear search through that list, so counting costs O(n \u00b7 d) where d is the number of distinct characters. It then insertion-sorts the (character, count) pairs by descending count with the character code breaking ties, and concatenates each character count-many times. The optimal solution fills a 128-slot frequency table in one pass. Because a count is an integer between 1 and n, it can bucket sort: bucket f collects every character occurring exactly f times. Walking f from n down to 1 and emitting each bucket in character-code order produces the answer directly, with a small sort inside each bucket to fix the tie order.",
+    "why_optimal": "Comparison-sorting d distinct characters costs O(d log d); the counts are small integers in a known range, so bucket sort removes that log factor and the string falls out in O(n) time. Every character has to be written into the output at least once, so O(n) is the floor, and O(n) space is the output itself.",
+    "pitfalls": "Sorting ties by descending character code when the statement asks for ascending, which reverses every equal-frequency group; note that `'a'` (97) must come after the digits `'0'` to `'9'` (48 to 57). Trusting dictionary or object insertion order for ties, which follows first appearance instead of character code. Allocating only n buckets indexed 0 to n-1 when a character may occur all n times, so the bucket for count n falls off the end. Emitting each character once instead of count-many times. On the brute side, an insertion that does not test both sides of the comparator, which leaves equal-count characters in the wrong internal order."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Bucket_sort",
+    "https://en.wikipedia.org/wiki/Counting_sort"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.9905839999999912,
+    "optimalRuntimeMs": 0.5921230000000044,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "7"
+      ],
+      "expected": "7",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hf"
+      ],
+      "expected": "fh",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "86y5r215"
+      ],
+      "expected": "551268ry",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "ew1zcyq"
+      ],
+      "expected": "1ceqwyz",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "sh0arlh9"
+      ],
+      "expected": "hh09alrs",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "l65o6mm"
+      ],
+      "expected": "66mm5lo",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "g2ty7o5zinc42ei5e6oh"
+      ],
+      "expected": "2255eeiioo467cghntyz",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "nanmdh4ayfatohz"
+      ],
+      "expected": "aaahhnn4dfmotyz",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "k3e2kph4"
+      ],
+      "expected": "kk234ehp",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "kdvpt9g"
+      ],
+      "expected": "9dgkptv",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "fzygr"
+      ],
+      "expected": "fgryz",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "pne8wv5379ar4ootxgz"
+      ],
+      "expected": "oo345789aegnprtvwxz",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "yhl7irat0gwbw6jwc9nayx"
+      ],
+      "expected": "wwwaayy0679bcghijlnrtx",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "k"
+      ],
+      "expected": "k",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "17njf3f55v4y88uz"
+      ],
+      "expected": "5588ff1347jnuvyz",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "gxrdyc"
+      ],
+      "expected": "cdgrxy",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "jpnsxs7fe4l1zee043e42l4"
+      ],
+      "expected": "4444eeeellss01237fjnpxz",
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "fhvdy8ufuqc66rmrqt363pl6fccys8rbhtf4sz63y05faqvudp3ao0ogtirzv9cid3y3k33uwxa3w5b44fp7f25qxkgdkfgp8jtk40t64ydwg8m4fniasyjx0zj68g76"
+      ],
+      "expected": "333333333fffffffff66666666444444yyyyyy88888dddddgggggttttt0000aaaacccckkkkppppqqqqrrrruuuu555iiijjjsssvvvwwwxxxzzz77bbhhmmoo29ln",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "z9hidldgwvg35rh20l8gaszrz0749y2nz9r82jn2mdf6mzq9fabq1blqfha6o2uectmjee1cplh4hmwpyl17gbg26rmkrw7ocg2r0xycnr4lk7jwjqkpiz8cqobjpz0j"
+      ],
+      "expected": "2222222rrrrrrrzzzzzzzggggggjjjjjjllllllccccchhhhhmmmmmqqqqq000077779999bbbbppppwwww111444666888aaadddeeefffkkknnnoooyyyii35stuvx",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "drktssdwua5iwl5fjec912fu4tqcovpf906rebxt3zf7t8txzkswrzsausgfhxvfhs4ifhlky589eo9d4qqlytq3dqo1ou0mjoqyyevehrv1olpat8y1p15r8tb3gokd"
+      ],
+      "expected": "ttttttttfffffffoooooooqqqqqqssssss11111dddddeeeeerrrrryyyyy555588889999hhhhkkkklllluuuuvvvv333444aaapppwwwxxxzzz00bbccggiijj267m",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "klohqg5u1y3me421fc19f8u7dtgna7aj61jopc4f6j72myrn4wl0qv6rnt9rbxhyutrhkf5hsftol1vkbvdmglhhz0xc5fqvzfuvs15iepfjnuzxmrzlmthjge7ck7yb"
+      ],
+      "expected": "ffffffffhhhhhhh11111177777jjjjjlllllmmmmmrrrrrtttttuuuuuvvvvv5555ccccggggkkkknnnnyyyyzzzz444666bbbeeeoooqqqxxx002299aaddppss38iw",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const chars = [];\n  const counts = [];\n  for (let i = 0; i < s.length; i++) {\n    let found = -1;\n    for (let t = 0; t < chars.length; t++) {\n      if (chars[t] === s[i]) {\n        found = t;\n        break;\n      }\n    }\n    if (found === -1) {\n      chars.push(s[i]);\n      counts.push(1);\n    } else {\n      counts[found]++;\n    }\n  }\n  const order = [];\n  for (let i = 0; i < chars.length; i++) order.push([chars[i], counts[i]]);\n  for (let i = 1; i < order.length; i++) {\n    const cur = order[i];\n    let j = i - 1;\n    while (j >= 0 && (order[j][1] < cur[1] || (order[j][1] === cur[1] && order[j][0] > cur[0]))) {\n      order[j + 1] = order[j];\n      j--;\n    }\n    order[j + 1] = cur;\n  }\n  let out = \"\";\n  for (let i = 0; i < order.length; i++) {\n    for (let r = 0; r < order[i][1]; r++) out += order[i][0];\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  const counts = new Array(128).fill(0);\n  for (let i = 0; i < n; i++) counts[s.charCodeAt(i)]++;\n  const buckets = [];\n  for (let f = 0; f <= n; f++) buckets.push([]);\n  for (let code = 0; code < 128; code++) {\n    if (counts[code] > 0) buckets[counts[code]].push(code);\n  }\n  let out = \"\";\n  for (let f = n; f >= 1; f--) {\n    const bucket = buckets[f];\n    bucket.sort((a, b) => a - b);\n    for (let t = 0; t < bucket.length; t++) {\n      for (let r = 0; r < f; r++) out += String.fromCharCode(bucket[t]);\n    }\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 28,
+  "prevSlug": "second-highest-salary",
+  "nextSlug": "sort-colors"
+}

@@ -1,0 +1,1029 @@
+{
+  "slug": "4sum",
+  "title": "4Sum",
+  "topic": "two-pointers",
+  "difficulty": "Medium",
+  "pattern": "sort + two anchored loops + two-pointer tail",
+  "statement": "You are given an integer array `nums` and an integer `target`. A valid quadruple is a choice of four different positions `i < j < k < l` with `nums[i] + nums[j] + nums[k] + nums[l] == target`. Return every distinct quadruple of values reachable that way.\n\nQuadruples with the same four values count only once. Write each quadruple's values in non-decreasing order, and order the quadruples themselves in ascending lexicographic order, comparing the smallest values first and moving to the next value only on a tie. When no valid quadruple exists, including whenever `nums` holds fewer than four elements, return an empty list.\n\nConstraints: `1 <= nums.length <= 60`, `-100 <= nums[i] <= 100` and `-400 <= target <= 400`.\n",
+  "examples": [
+    {
+      "input": "nums = [43], target = -197",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "nums = [-100], target = -400",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(nums: number[], target: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Two fixed values turn the task into finding two remaining values with a prescribed sum on the tail. Ask how an ordered tail makes that search linear.",
+    "Sort first, then use two nested loops to pick the first two values and a left/right pointer pair for the last two.",
+    "Guard the sweep: after recording a hit advance both pointers past equal neighbours, and skip any anchor that repeats its immediate predecessor at either of the two fixed positions."
+  ],
+  "editorial": {
+    "approach": "The brute force tests all C(n,4) position quadruples, normalises each hit by sorting the four values, deduplicates through a hash set, and sorts the survivors lexicographically at the end. The optimal sorts the values once, chooses the first two values with two nested loops over the distinct values, and then treats the task as a two-value target problem on the sorted tail: the required tail sum is the target minus the two anchors, and two converging pointers find it, because a sum that is too small can only be raised by moving the left pointer inward and a sum that is too large can only be lowered by moving the right pointer inward.",
+    "why_optimal": "Three levels of enumeration are standard here: the anchor pair plus a linear tail sweep replaces the two innermost loops, so the cost is O(n\u00b3) after the O(n log n) sort. The tail sweep cannot be replaced by a constant-time lookup on a hash map while preserving the lexicographic emission order without extra bookkeeping, and the anchor pair is unavoidable because the target is arbitrary. Working space is the O(n) sorted copy; the returned list is excluded from the count.",
+    "pitfalls": "Assuming a quadruple exists: with fewer than four elements the answer is empty, so the outer loop bounds must be written so they simply do not execute. Comparing an anchor against the wrong neighbour, `a[j] == a[j + 1]` or against `a[i]` instead of `a[j - 1]`, drops valid quadruples. Starting the pointer sweep at `j` rather than `j + 1` reuses a position, which the index condition forbids. Failing to step past equal neighbours after a hit duplicates results. Using the default JavaScript `sort()` without a numeric comparator orders values as text and breaks the monotonic pointer moves. Sorting the caller's array in place mutates it."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Subset_sum_problem",
+    "https://en.wikipedia.org/wiki/3SUM"
+  ],
+  "starterCode": {
+    "javascript": "function solve(nums, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(nums, target):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] solve(int[] nums, int target) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<int> nums, int target) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 44.66083599999999,
+    "optimalRuntimeMs": 0.9462790000000076,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          -100
+        ],
+        -400
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        400
+      ],
+      "expected": [
+        [
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -72,
+          -94,
+          89,
+          -30,
+          -38,
+          -43,
+          -65,
+          88,
+          -74,
+          73,
+          89,
+          39,
+          -78,
+          51,
+          8,
+          -92,
+          -93,
+          -77,
+          -45,
+          -41,
+          29
+        ],
+        216
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          43
+        ],
+        -197
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          66,
+          79,
+          39,
+          7,
+          -44,
+          14,
+          50,
+          -29,
+          -99,
+          94,
+          -60,
+          78,
+          8,
+          -13,
+          -29,
+          -61,
+          -45,
+          95,
+          -14,
+          -74,
+          -77,
+          -3,
+          -76
+        ],
+        -33
+      ],
+      "expected": [
+        [
+          -99,
+          -14,
+          14,
+          66
+        ],
+        [
+          -77,
+          -74,
+          39,
+          79
+        ],
+        [
+          -77,
+          -61,
+          39,
+          66
+        ],
+        [
+          -77,
+          -45,
+          39,
+          50
+        ],
+        [
+          -77,
+          -29,
+          7,
+          66
+        ],
+        [
+          -77,
+          -14,
+          8,
+          50
+        ],
+        [
+          -77,
+          -13,
+          7,
+          50
+        ],
+        [
+          -77,
+          -3,
+          8,
+          39
+        ],
+        [
+          -76,
+          -74,
+          39,
+          78
+        ],
+        [
+          -76,
+          -60,
+          8,
+          95
+        ],
+        [
+          -76,
+          -44,
+          8,
+          79
+        ],
+        [
+          -76,
+          -14,
+          7,
+          50
+        ],
+        [
+          -76,
+          -3,
+          7,
+          39
+        ],
+        [
+          -74,
+          -61,
+          7,
+          95
+        ],
+        [
+          -74,
+          -61,
+          8,
+          94
+        ],
+        [
+          -74,
+          -60,
+          7,
+          94
+        ],
+        [
+          -74,
+          -45,
+          7,
+          79
+        ],
+        [
+          -74,
+          -45,
+          8,
+          78
+        ],
+        [
+          -74,
+          -44,
+          7,
+          78
+        ],
+        [
+          -61,
+          -45,
+          7,
+          66
+        ],
+        [
+          -61,
+          -29,
+          7,
+          50
+        ],
+        [
+          -45,
+          -14,
+          -13,
+          39
+        ],
+        [
+          -45,
+          -3,
+          7,
+          8
+        ],
+        [
+          -29,
+          -29,
+          -14,
+          39
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          54,
+          -33,
+          -89,
+          86,
+          17,
+          37,
+          -69,
+          -4,
+          -80,
+          41,
+          -25,
+          60
+        ],
+        233
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          47,
+          -51,
+          80,
+          -83,
+          -89,
+          69,
+          -42,
+          97,
+          -26,
+          -80,
+          -41,
+          -75
+        ],
+        -11
+      ],
+      "expected": [
+        [
+          -80,
+          -75,
+          47,
+          97
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          16,
+          62,
+          -7,
+          -59,
+          -6,
+          -10,
+          -47,
+          71,
+          -32
+        ],
+        318
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          65,
+          -82,
+          55,
+          62,
+          -57,
+          36,
+          86,
+          -38,
+          -59,
+          18,
+          -3,
+          -31,
+          63,
+          76,
+          42,
+          -44,
+          75,
+          -17,
+          96,
+          98,
+          -86,
+          -42
+        ],
+        -368
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          2,
+          -32,
+          -84,
+          -46,
+          45,
+          83,
+          -20,
+          -46,
+          67,
+          27,
+          1
+        ],
+        258
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          -64,
+          -33,
+          -65,
+          -37,
+          90,
+          43,
+          37,
+          -33,
+          91,
+          49,
+          9,
+          49,
+          2,
+          -8,
+          -44
+        ],
+        -259
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          26,
+          -77,
+          93,
+          -88,
+          -72,
+          -61,
+          60,
+          -60,
+          74,
+          8,
+          52,
+          -84,
+          -2,
+          -3,
+          52,
+          19,
+          35
+        ],
+        -143
+      ],
+      "expected": [
+        [
+          -88,
+          -72,
+          -2,
+          19
+        ],
+        [
+          -88,
+          -61,
+          -2,
+          8
+        ],
+        [
+          -88,
+          -60,
+          -3,
+          8
+        ],
+        [
+          -84,
+          -72,
+          -61,
+          74
+        ],
+        [
+          -77,
+          -72,
+          -2,
+          8
+        ],
+        [
+          -77,
+          -61,
+          -3,
+          -2
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          -98,
+          74,
+          84,
+          -71,
+          74,
+          37,
+          92,
+          -32,
+          96,
+          64,
+          -13,
+          -72,
+          -25,
+          11,
+          -60,
+          16,
+          -100,
+          84
+        ],
+        336
+      ],
+      "expected": [
+        [
+          64,
+          84,
+          92,
+          96
+        ],
+        [
+          74,
+          74,
+          92,
+          96
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          28,
+          95,
+          -55,
+          29,
+          -73,
+          60,
+          -24,
+          63,
+          29
+        ],
+        223
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          -61,
+          -5,
+          95,
+          -59,
+          38,
+          99,
+          35
+        ],
+        -400
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -18,
+          25,
+          -96,
+          -72,
+          -8,
+          -22,
+          -39,
+          -86,
+          -39,
+          45,
+          -80,
+          -79,
+          87,
+          24,
+          -83,
+          94,
+          36,
+          96,
+          -68,
+          -68
+        ],
+        275
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          40,
+          -58,
+          -33,
+          35,
+          55,
+          8,
+          -46,
+          38,
+          93,
+          86,
+          76,
+          -49,
+          82,
+          -21,
+          2,
+          71
+        ],
+        265
+      ],
+      "expected": [
+        [
+          35,
+          55,
+          82,
+          93
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          12,
+          32,
+          15,
+          -70,
+          -37,
+          -43,
+          -84,
+          -14,
+          -95,
+          50,
+          41,
+          -42
+        ],
+        202
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          -100,
+          -100,
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          -100,
+          100,
+          0,
+          100,
+          -100,
+          -100,
+          -100,
+          -100,
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0
+        ],
+        -400
+      ],
+      "expected": [
+        [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          -100,
+          0,
+          0,
+          -100,
+          -100,
+          -100,
+          -100,
+          100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          -100,
+          0,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          0,
+          0
+        ],
+        -400
+      ],
+      "expected": [
+        [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          -100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          100,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          -100,
+          100,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          0,
+          0,
+          -100,
+          -100,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          100,
+          -100,
+          100,
+          0,
+          0,
+          100,
+          0,
+          0,
+          0,
+          -100,
+          0,
+          0,
+          100,
+          0,
+          -100,
+          -100,
+          100,
+          -100,
+          -100,
+          0,
+          0,
+          -100
+        ],
+        400
+      ],
+      "expected": [
+        [
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          0,
+          -100,
+          0,
+          100,
+          -100,
+          0,
+          0,
+          100,
+          0,
+          100,
+          100,
+          -100,
+          -100,
+          0,
+          100,
+          100,
+          -100,
+          -100,
+          100,
+          -100,
+          0,
+          100,
+          -100,
+          0,
+          100,
+          0,
+          0,
+          100,
+          0,
+          -100,
+          -100,
+          -100,
+          0,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          0,
+          -100,
+          100,
+          -100,
+          -100,
+          100,
+          100,
+          -100,
+          100,
+          -100,
+          0,
+          -100,
+          0,
+          -100,
+          100,
+          0,
+          100,
+          0,
+          0,
+          -100,
+          -100
+        ],
+        -400
+      ],
+      "expected": [
+        [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u2074 + t log t) | Space: O(t)",
+      "language": "javascript",
+      "code": "function solve(nums, target) {\n  const n = nums.length;\n  const seen = new Set();\n  const out = [];\n  for (let i = 0; i < n; i++) {\n    for (let j = i + 1; j < n; j++) {\n      for (let k = j + 1; k < n; k++) {\n        for (let l = k + 1; l < n; l++) {\n          if (nums[i] + nums[j] + nums[k] + nums[l] !== target) continue;\n          const q = [nums[i], nums[j], nums[k], nums[l]].sort((x, y) => x - y);\n          const key = q.join(',');\n          if (!seen.has(key)) {\n            seen.add(key);\n            out.push(q);\n          }\n        }\n      }\n    }\n  }\n  out.sort((p, q) => p[0] - q[0] || p[1] - q[1] || p[2] - q[2] || p[3] - q[3]);\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n\u00b3) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(nums, target) {\n  const a = nums.slice().sort((x, y) => x - y);\n  const n = a.length;\n  const out = [];\n  for (let i = 0; i + 3 < n; i++) {\n    if (i > 0 && a[i] === a[i - 1]) continue;\n    for (let j = i + 1; j + 2 < n; j++) {\n      if (j > i + 1 && a[j] === a[j - 1]) continue;\n      let l = j + 1;\n      let r = n - 1;\n      while (l < r) {\n        const s = a[i] + a[j] + a[l] + a[r];\n        if (s === target) {\n          out.push([a[i], a[j], a[l], a[r]]);\n          while (l < r && a[l] === a[l + 1]) l++;\n          while (l < r && a[r] === a[r - 1]) r--;\n          l++;\n          r--;\n        } else if (s < target) {\n          l++;\n        } else {\n          r--;\n        }\n      }\n    }\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 11,
+  "prevSlug": "3sum",
+  "nextSlug": "boats-to-save-people"
+}

@@ -86,6 +86,7 @@ export interface Problem {
   hints: string[];
   solutions: ProblemSolution[];
   starterCode: string;
+  starterCodePython: string;
   starterCodeJava: string;
   starterCodeCpp: string;
   functionName: string;
@@ -198,6 +199,12 @@ def render_problem(data: dict) -> str:
         lines.append("      },")
     lines.append("    ],")
     lines.append(f"    starterCode: {ts_string(starter)},")
+    # The Python starter is optional: the editor falls back to a `def fn(*args)`
+    # skeleton when it is absent, which is correct for the problems whose stored
+    # starter is that same skeleton, and wrong for the ones carrying their real
+    # signature. Emitting whatever the problem actually has keeps the editor from
+    # showing a signature the judge does not compile.
+    lines.append(f"    starterCodePython: {ts_string(starters.get('python', ''))},")
     # Required, not optional: the editor offers Java and C++ on every problem, so
     # a missing starter is a problem with no runnable code in that language.
     # Failing here names the problem; emitting nothing would surface much later

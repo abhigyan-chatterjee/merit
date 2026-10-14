@@ -29,12 +29,12 @@
   "hints": [
     "At each node, compare both targets against the node value.",
     "Both smaller means the answer hides in the left subtree; both larger means the right.",
-    "A split — or a direct hit on p or q — stops the descent."
+    "A split \u2014 or a direct hit on p or q \u2014 stops the descent."
   ],
   "editorial": {
     "approach": "Walk down from the root, steering left when both targets are smaller and right when both are larger; the first node that splits them (or equals one of them) is the answer.",
     "why_optimal": "Each step discards a whole subtree, so the walk costs time proportional to the height with constant extra space. On 23 PAF-verified cases the judge measured the brute force at 0.18 ms and the optimal at 0.07 ms (about 2.6x faster).",
-    "pitfalls": "When one target is an ancestor of the other, that ancestor itself is the answer — do not descend past it."
+    "pitfalls": "When one target is an ancestor of the other, that ancestor itself is the answer \u2014 do not descend past it."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Binary_search_tree"
@@ -585,7 +585,7 @@
       "isReference": true
     }
   ],
-  "sequence": 6,
-  "prevSlug": "same-tree",
-  "nextSlug": "balanced-binary-tree"
+  "sequence": 8,
+  "prevSlug": "amount-of-time-for-binary-tree-to-be-infected",
+  "nextSlug": "binary-tree-zigzag-level-order-traversal"
 }

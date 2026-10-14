@@ -1,0 +1,227 @@
+{
+  "slug": "palindrome-number",
+  "title": "Palindrome Number",
+  "topic": "math-matrices",
+  "difficulty": "Easy",
+  "pattern": "math / half digit reversal",
+  "statement": "An integer is a palindrome when its decimal representation, as written without leading zeros, reads the same from left to right as from right to left. A negative number is never a palindrome, because the leading minus sign cannot appear at the other end.\n\nGiven an integer `x`, return `true` if `x` is a palindrome and `false` otherwise.\n\nConstraints: `-10000 <= x <= 10000`.\n",
+  "examples": [
+    {
+      "input": "x = 0",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "x = -988",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(x: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Settle the impossible cases first: negatives, and every nonzero number whose last digit is 0, since a palindrome cannot start with 0.",
+    "You do not have to reverse all the digits. Reversing the second half is enough, and the two halves can be compared in place.",
+    "Peel digits from the right until the reversed part is not smaller than what remains. Then an even digit count means the halves must match, and an odd count means the remaining left part matches the reversed part without its last digit."
+  ],
+  "editorial": {
+    "approach": "The brute force turns the number into its decimal string, builds the reversed string and compares the two, which needs O(d) extra memory for d digits. The optimal version never builds a string: it rejects negatives and, apart from zero, numbers whose last digit is 0, then peels digits off the right of the number into a reversed value until that value catches up with what is left, and finally compares the two halves.",
+    "why_optimal": "Both the brute force and the optimal version read the digits once each, and a number is fully determined by its d = O(log x) digits, so O(log x) time is the floor. The improvement is space: reversing only half the digits with integer arithmetic keeps the extra memory at O(1) and, in fixed width languages, avoids overflowing when the full reversal would not fit.",
+    "pitfalls": "Negative input must return false even though the digits themselves match. Numbers ending in 0 such as 10 are not palindromes, but 0 itself is, so that check needs the `x != 0` exception. With an odd digit count the loop stops with one middle digit left inside the unreversed half, so comparing `cur` with `rev // 10` handles it. Dividing a negative number with truncation instead of flooring, or comparing the whole reversal rather than the halves, are the other common slips."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Palindromic_number",
+    "https://en.wikipedia.org/wiki/Positional_notation"
+  ],
+  "starterCode": {
+    "javascript": "function solve(x) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(x):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(int x) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(int x) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 19,
+    "bruteForceRuntimeMs": 0.06517300000000859,
+    "optimalRuntimeMs": 0.05034899999999709,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        -10000
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10000
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        -6352
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        -9181
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        -988
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        -1976
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        -2686
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        -5428
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        -6642
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        7870
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        -7152
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        9349
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        3825
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        -8959
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        -9024
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        -6930
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        -2836
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        -2377
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        0
+      ],
+      "expected": true,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(log x) | Space: O(log x)",
+      "language": "javascript",
+      "code": "function solve(x) {\n  const s = String(x);\n  let rev = '';\n  for (let i = s.length - 1; i >= 0; i--) {\n    rev += s[i];\n  }\n  return s === rev;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(log x) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(x) {\n  if (x < 0) return false;\n  if (x !== 0 && x % 10 === 0) return false;\n  let cur = x;\n  let rev = 0;\n  while (cur > rev) {\n    rev = rev * 10 + (cur % 10);\n    cur = (cur - (cur % 10)) / 10;\n  }\n  return cur === rev || cur === (rev - (rev % 10)) / 10;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 4,
+  "prevSlug": "fizz-buzz",
+  "nextSlug": "roman-to-integer"
+}

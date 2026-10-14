@@ -39,8 +39,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(grid,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(grid) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(grid):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[][] grid) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> grid) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -109,9 +109,9 @@
       "label": "All water"
     }
   ],
-  "sequence": 8,
-  "prevSlug": "course-schedule-ii",
-  "nextSlug": "pacific-atlantic-water-flow",
+  "sequence": 13,
+  "prevSlug": "max-area-of-island",
+  "nextSlug": "open-the-lock",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal",
     "https://en.wikipedia.org/wiki/Depth-first_search"

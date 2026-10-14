@@ -44,7 +44,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(values, pos) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(values, pos):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(int[] values, int pos) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    bool solve(std::vector<int> values, int pos) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -95,8 +95,8 @@
       "label": "[1], pos=0 self-loop"
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
+  "sequence": 2,
+  "prevSlug": "intersection-of-two-linked-lists",
   "nextSlug": "middle-of-the-linked-list",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Linked_list"

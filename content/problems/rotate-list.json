@@ -28,7 +28,7 @@
   ],
   "editorial": {
     "approach": "Compute effective rotations using modulo arithmetic k % n. Split the array at n - (k % n) and concatenate the two segments.",
-    "why_optimal": "Direct slice and concatenation runs in O(n) time, whereas repeatedly rotating one step at a time costs O(n · (k mod n)). Measured PAF benchmark runtimes: Optimal 0.08ms vs Brute Force 0.27ms across 26 test cases.",
+    "why_optimal": "Direct slice and concatenation runs in O(n) time, whereas repeatedly rotating one step at a time costs O(n \u00b7 (k mod n)). Measured PAF benchmark runtimes: Optimal 0.08ms vs Brute Force 0.27ms across 26 test cases.",
     "pitfalls": "Handle division by zero when the input list is empty (nums.length === 0), and handle k % n === 0 where no movement is required."
   },
   "reading_links": [
@@ -1041,7 +1041,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n · (k mod n)) | Space: O(n)",
+      "complexity": "Time: O(n \u00b7 (k mod n)) | Space: O(n)",
       "language": "javascript",
       "code": "function rotateRight(nums, k) {\n  if (nums.length <= 1 || k === 0) return nums.slice();\n  const arr = nums.slice();\n  const effectiveK = k % arr.length;\n  for (let step = 0; step < effectiveK; step++) {\n    const last = arr.pop();\n    arr.unshift(last);\n  }\n  return arr;\n}",
       "isReference": false
@@ -1055,7 +1055,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n · (k mod n)) | Space: O(n)",
+      "complexity": "Time: O(n \u00b7 (k mod n)) | Space: O(n)",
       "language": "python",
       "code": "def rotateRight(nums: list[int], k: int) -> list[int]:\n    if len(nums) <= 1 or k == 0:\n        return list(nums)\n    arr = list(nums)\n    eff_k = k % len(arr)\n    for _ in range(eff_k):\n        last = arr.pop()\n        arr.insert(0, last)\n    return arr\n",
       "isReference": false
@@ -1068,7 +1068,7 @@
       "isReference": true
     }
   ],
-  "sequence": 12,
+  "sequence": 13,
   "prevSlug": "reverse-linked-list-ii",
   "nextSlug": "swap-nodes-in-pairs"
 }

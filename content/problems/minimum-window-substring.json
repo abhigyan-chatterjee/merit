@@ -1,0 +1,273 @@
+{
+  "slug": "minimum-window-substring",
+  "title": "Smallest Window Covering a Multiset",
+  "topic": "sliding-windows",
+  "difficulty": "Hard",
+  "pattern": "frequency map + variable sliding window",
+  "statement": "Given two strings `s` and `t`, find the shortest contiguous substring of `s` that contains every character of `t` as many times as `t` contains it. When several substrings share the minimal length, return the one that starts earliest. Return an empty string `\"\"` when no such substring exists.\n\nFor `s = 'cbaabcab'` and `t = 'abc'` the answer is `'cba'`, the window at index 0 through 2; the window `'abc'` at index 3 through 5 has the same length but starts later. For `s = 'aaaa'` and `t = 'aa'` the answer is `'aa'`, and for `s = 'abc'` and `t = 'abcd'` the answer is `\"\"`.\n\nConstraints: `1 <= s.length <= 200`, `1 <= t.length <= 200`, and every character of `s` and `t` is a lowercase English letter.\n",
+  "examples": [
+    {
+      "input": "s = \"d\", t = \"x\"",
+      "output": "\"\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"hh\", t = \"xd\"",
+      "output": "\"\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, t: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "For every possible start position, stretch the end until the window holds all the characters `t` needs. That O(n\u00b2) enumeration is the brute force, and it gives the earliest shortest window if you keep the first of the tie-length windows.",
+    "Keep a count of what `t` requires and a count of what the current window holds, plus the number of distinct required characters whose count is fully satisfied. The window is valid exactly when that number equals the number of distinct characters in `t`.",
+    "Never move the left pointer backwards: advance the right pointer, then while the window is valid record it and advance the left pointer, dropping the character that leaves. Compare lengths with strict `<` so equal length ties keep the leftmost window."
+  ],
+  "editorial": {
+    "approach": "The brute force fixes the left end `l` and stretches the right end until the window covers the required multiset; the first valid `r` for a given `l` is the shortest window starting there, and scanning `l` from left to right while replacing the answer only on a strictly shorter window returns the earliest of the minimal windows. It costs O(n\u00b2) window checks against a 26 character alphabet, with only the two counters as extra memory. The optimal keeps a single window that only ever moves forward: the right pointer advances one character at a time, adding it to a `have` frequency map, and while every needed character has reached its required count the window is recorded and the left pointer advances one step, dropping the character that leaves. Validity is tracked with a `formed` counter, the number of distinct characters of `t` whose count in the window equals their requirement, compared against the number of distinct characters in `t`.",
+    "why_optimal": "Both pointers move forward at most n times and each move touches one counter, so the scan is O(n + m) with O(1) extra state, since the maps hold at most 26 entries. That is optimal up to constants: a character of `s` can be the only copy of a needed letter, so in the worst case every character has to be read, and reading each exactly once is the best possible. The shrinking step never needs to look backwards, because a window that stops being valid can only become valid again after `r` advances, and that is what keeps the cost linear instead of quadratic.",
+    "pitfalls": "Counting with a set instead of a multiset makes `t = 'aa'` match a window holding a single `'a'`. The `formed` counter must be increased only when a count becomes exactly the requirement (`have[c] === need[c]`) and decreased only when a needed count falls below its requirement, otherwise windows are declared valid too early or stay valid too long. Recording the answer after shrinking the left pointer, rather than before, can store a window one character longer than necessary. Tie handling decides whether the brute force and the optimal agree: updating on `<=` returns the rightmost of the equal length windows while the brute force returns the leftmost, so the comparison must be strict `<`. Finally, `t` longer than `s` or a character of `t` missing from `s` must return `\"\"` instead of throwing, and the answer must be cut with `slice(bestStart, bestStart + bestLen)` (a Python slice in the other implementation) rather than by the raw indices."
+  },
+  "reading_links": [
+    "https://www.geeksforgeeks.org/window-sliding-technique/",
+    "https://en.wikipedia.org/wiki/Hash_table"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, t):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s, String t) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s, std::string t) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 16.467866,
+    "optimalRuntimeMs": 0.7387470000000143,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": "",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": "",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjchdmioulfl"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngryxwg"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": "hc",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hivpgrexssphzpzng"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxbvuudbmxkzd"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdburacyhfn"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbbsp"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": "ct",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrgqielchlj"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjvdeiddxreijtgwkg"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibw",
+        "aqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtky"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "txqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzthphinpamkvvzmxfoetramssvacuneofbimkgokkymiynicpaxrblhucyu",
+        "yahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluowenfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpry"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "wpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfggxpixsyqtjdgjhlfjawreibbrjweuypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdy",
+        "ugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueiecbfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqav"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "onbgqltypuoybgirejowpdautzhwfjrarnchdoduepwjqwinpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecp",
+        "ktwmuckvrmkuwyprbtchuvjhxcndyuwdofwjabkzbjllnehqnsvzfffctmtvhpsehouioivazojvrfcolsjunwiojgmpdhmslsjwjavmiasvyxbtxpjyzhtzlhugtivy"
+      ],
+      "expected": "",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  if (t.length === 0 || t.length > s.length) return \"\";\n  const need = {};\n  for (let i = 0; i < t.length; i++) need[t[i]] = (need[t[i]] || 0) + 1;\n  const keys = Object.keys(need);\n  let bestLen = -1;\n  let bestStart = -1;\n  for (let l = 0; l < s.length; l++) {\n    const have = {};\n    for (let r = l; r < s.length; r++) {\n      have[s[r]] = (have[s[r]] || 0) + 1;\n      let ok = true;\n      for (let k = 0; k < keys.length; k++) {\n        const ch = keys[k];\n        if ((have[ch] || 0) < need[ch]) { ok = false; break; }\n      }\n      if (ok) {\n        const len = r - l + 1;\n        if (bestLen === -1 || len < bestLen) { bestLen = len; bestStart = l; }\n        break;\n      }\n    }\n  }\n  if (bestStart === -1) return \"\";\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n + m) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  if (t.length === 0 || t.length > s.length) return \"\";\n  const need = {};\n  for (let i = 0; i < t.length; i++) need[t[i]] = (need[t[i]] || 0) + 1;\n  const required = Object.keys(need).length;\n  const have = {};\n  let formed = 0;\n  let bestLen = s.length + 1;\n  let bestStart = -1;\n  let l = 0;\n  for (let r = 0; r < s.length; r++) {\n    const ch = s[r];\n    have[ch] = (have[ch] || 0) + 1;\n    if (need[ch] !== undefined && have[ch] === need[ch]) formed++;\n    while (formed === required) {\n      if (r - l + 1 < bestLen) { bestLen = r - l + 1; bestStart = l; }\n      const lc = s[l];\n      have[lc]--;\n      if (need[lc] !== undefined && have[lc] < need[lc]) formed--;\n      l++;\n    }\n  }\n  if (bestStart === -1) return \"\";\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 12,
+  "prevSlug": "sliding-window-maximum",
+  "nextSlug": "subarrays-with-k-different-integers"
+}

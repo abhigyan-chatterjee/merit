@@ -328,6 +328,29 @@ def _summarise_compile_error(stdout: str, stderr: str) -> str:
     return "\n".join(lines[:20])
 
 
+# V8 reports heap exhaustion as a fatal native crash: a GC log, a FATAL ERROR
+# line, and a native stack trace naming the node binary and its shared objects.
+# None of that tells a learner anything about their own code, and it leaks
+# container paths into the response. Recognise it and say what happened, the way
+# a timeout is already reported in plain words.
+_NODE_MEMORY_MARKERS = (
+    "JavaScript heap out of memory",
+    "Ineffective mark-compacts near heap limit",
+)
+
+
+def _summarise_runtime_error(stdout: str, stderr: str) -> str:
+    """A readable reason for a non-zero exit, without the runtime's internals."""
+    text = (stderr or stdout or "").strip()
+    if any(marker in text for marker in _NODE_MEMORY_MARKERS):
+        return (
+            "Memory limit exceeded: your solution used more memory than the "
+            "sandbox allows. Reduce what it stores, or avoid materialising the "
+            "whole input."
+        )
+    return text
+
+
 async def _run_compiled(
     language: str,
     code: str,
@@ -447,7 +470,7 @@ async def _run_compiled(
             verdict="RE",
             runtime_ms=0,
             test_results=[],
-            compile_output=stderr or stdout,
+            compile_output=_summarise_runtime_error(stderr, stdout),
         )
 
     try:
@@ -1147,7 +1170,7 @@ console.log(JSON.stringify({{ results, totalRuntime }}));
                     verdict="RE",
                     runtime_ms=0,
                     test_results=[],
-                    compile_output=stderr or stdout,
+                    compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
             try:
@@ -1245,7 +1268,7 @@ print(json.dumps({{'results': results, 'totalRuntime': total_runtime}}))
                     verdict="RE",
                     runtime_ms=0,
                     test_results=[],
-                    compile_output=stderr or stdout,
+                    compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
             try:

@@ -1,0 +1,250 @@
+{
+  "slug": "remove-all-adjacent-duplicates-in-string",
+  "title": "Remove All Adjacent Duplicates In String",
+  "topic": "stack",
+  "difficulty": "Easy",
+  "pattern": "monotonic stack / cancellation on insert",
+  "statement": "You are given a string `s` made of lowercase English letters. Repeat the following operation until it no longer applies: pick two neighbouring characters that are equal and erase both of them from the string.\n\nErasing a pair can pull together characters that were not neighbours before, so one left-to-right pass is not enough to finish the job. Stop when no two neighbouring characters are equal, then return the resulting string. The final string is unique, no matter which valid pair is erased first, and it may be empty. When it is empty, return an empty string.\n\nConstraints: `1 <= s.length <= 200`, and every character of `s` is a lowercase English letter.\n",
+  "examples": [
+    {
+      "input": "s = \"d\"",
+      "output": "\"d\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"xi\"",
+      "output": "\"xi\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Erasing a pair does not end the process. Think about where the damage travels after two characters disappear.",
+    "Instead of rescanning, keep the characters you have decided to survive. How many of them can an incoming character possibly interact with?",
+    "Keep the survivors in a stack: equal to the top means pop, different means push, and the stack you are left with is the answer."
+  ],
+  "editorial": {
+    "approach": "The brute force rescans the string from the front after every successful erasure, restarting whenever a pair is found. Each erased pair costs a fresh O(n) sweep plus a new string allocation, which totals O(n\u00b2). The optimal makes a single left-to-right pass and keeps the characters that survive so far in a stack. The key invariant is that no two adjacent entries of the stack are equal, so an incoming character can only ever cancel with the entry on top of the stack, never with anything deeper down. If the incoming character equals the top, pop it; otherwise push it. Joining the stack at the end is exactly the reduced string.",
+    "why_optimal": "Some character must be read for every position, so O(n) time is a lower bound, and inputs such as `aabb...` leave an output of size O(n), so O(n) space for the returned string is unavoidable. The stack pass reaches both bounds in one sweep. With s.length up to 200 the constants are irrelevant; the technique is the point.",
+    "pitfalls": "A forward-only single pass is wrong: for `abba` the inner `bb` disappears first, and only then do the two `a` characters become neighbours. Treating an empty result as an error (returning null, or raising) breaks inputs like `aa` that reduce to nothing. Keeping an index into the shrinking string instead of the surviving stack top misses cascading cancellations when several pairs collapse in a row. In Python, rebinding the string inside a `for i in range(len(cur))` loop compares stale positions; that is why the brute force restarts the scan instead."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.25122000000001066,
+    "optimalRuntimeMs": 0.19336200000000758,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d"
+      ],
+      "expected": "d",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xi"
+      ],
+      "expected": "xi",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "hexdvxrc"
+      ],
+      "expected": "hexdvxrc",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "nbacghqtargwuwrnhos"
+      ],
+      "expected": "nbacghqtargwuwrnhos",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "zayzfwnki"
+      ],
+      "expected": "zayzfwnki",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "gykdc"
+      ],
+      "expected": "gykdc",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "dlltizbxordmc"
+      ],
+      "expected": "dtizbxordmc",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "jutlsgwcbvhyjchdmi"
+      ],
+      "expected": "jutlsgwcbvhyjchdmi",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "ulfllgviwvuctuf"
+      ],
+      "expected": "ulfgviwvuctuf",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "xhfomiuwrhvkyybhbz"
+      ],
+      "expected": "xhfomiuwrhvkbhbz",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "micgswkgupm"
+      ],
+      "expected": "micgswkgupm",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "oeiehxrrixsnsmlheqpcy"
+      ],
+      "expected": "oeiehxixsnsmlheqpcy",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "de"
+      ],
+      "expected": "de",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "fzvntcmmtoqiravxdvryi"
+      ],
+      "expected": "fzvntctoqiravxdvryi",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg"
+      ],
+      "expected": "kdjnfoaiqyfqdujuqtg",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "lyfry"
+      ],
+      "expected": "lyfry",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "atkpadlzjhbhsccxp"
+      ],
+      "expected": "atkpadlzjhbhsxp",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "yry"
+      ],
+      "expected": "yry",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "evprfiqtngryxwgwjmvuloqodhhckasrhshacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdburacyhfnppgmbfmamizzojnwxzrv"
+      ],
+      "expected": "evprfiqtngryxwgwjmvuloqodckasrhshacwubhcbkcqhivpgrexphzpzngvnloxbvdbmxkzdhroenfiohcozrdburacyhfngmbfmamiojnwxzrv",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "pegjgbsxrbxkbbspqqfbqcfctcvhmdshstbtcnvssqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeiddxreijtgwkgvuiqpibcunibakyeuifxorwn"
+      ],
+      "expected": "pegjgbsxrbxkspfbqcfctcvhmdshstbtcnvqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeixreijtgwkgvuiqpibcunibakyeuifxorwn",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "adcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqj"
+      ],
+      "expected": "adcwerblsrenebjlzblgvhvdlyrntxehnafxkznzvxzhifzwdmbphgoljzavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxvglncvktkvdxjqj",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "nkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhio"
+      ],
+      "expected": "nkmwjregnvmvxftsjmragnzstukovgqpxfvcjqvutkcyhvjhzgeabhptyconusgmpmheuwadynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiqpuhio",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let cur = s;\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i + 1 < cur.length; i++) {\n      if (cur[i] === cur[i + 1]) {\n        cur = cur.slice(0, i) + cur.slice(i + 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return cur;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const st = [];\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (st.length > 0 && st[st.length - 1] === ch) {\n      st.pop();\n    } else {\n      st.push(ch);\n    }\n  }\n  return st.join('');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 5,
+  "prevSlug": "next-greater-element-i",
+  "nextSlug": "make-the-string-great"
+}

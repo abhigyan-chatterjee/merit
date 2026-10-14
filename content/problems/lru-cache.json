@@ -1,0 +1,690 @@
+{
+  "slug": "lru-cache",
+  "title": "LRU Cache",
+  "topic": "data-structures",
+  "difficulty": "Medium",
+  "pattern": "hash map plus doubly linked recency list",
+  "statement": "A cache holds at most `capacity` distinct keys and starts empty. You are given a stream of accesses in `keys`, one per cell, in order. Each access behaves like this:\n\n- if the key is already cached it is a hit, and the key becomes the most recently used one;\n- if the key is not cached it is a miss, the key is stored as the most recently used one, and if the cache is now over `capacity` the least recently used key is evicted.\n\nA capacity of `0` means nothing is ever retained, so every access is a miss.\n\nReturn one entry per access, in order: `1` when the access was a hit and `0` when it was a miss.\n\nFor example, with `capacity = 2` and `keys = [1, 2, 1, 3]` the first two accesses miss, the third is a hit that makes `1` the most recently used key, and the fourth misses and evicts `2`, which had become the least recently used key. The result is `[0, 0, 1, 0]`.\n\nConstraints: `0 <= capacity <= 20`, `1 <= keys.length <= 200` and `0 <= keys[i] <= 20`.\n",
+  "examples": [
+    {
+      "input": "capacity = 0, keys = [0]",
+      "output": "[0]",
+      "explanation": "Generated from the verified optimal implementation."
+    },
+    {
+      "input": "capacity = 20, keys = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]",
+      "output": "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]",
+      "explanation": "Generated from the verified optimal implementation."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(capacity: number, keys: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The cache has to answer two different questions: is this key stored, and which stored key is the oldest.",
+    "The first question is a hash map; the second is an ordered list you can edit in place at both ends.",
+    "A doubly linked list with the newest key at one end and the oldest at the other makes both questions constant time."
+  ],
+  "editorial": {
+    "approach": "The brute force stores the cached keys in one array ordered by recency, most recently used first. Every access scans that array: finding the key means a hit, moving it to the front means a splice plus an unshift, and a miss means an unshift followed by a pop from the back, which is the least recently used key. All of that is linear in the cache size, so n accesses cost O(n\u00b7capacity). The optimal solution splits the two jobs that structure is doing. A hash map answers 'is this key cached?' in constant time and hands back the node holding it; a doubly linked list keeps the recency order, with the most recently used key at the head and the least recently used at the tail. A hit unlinks its node and relinks it at the head, a miss creates a node at the head, and eviction unlinks the tail. Both the lookup and the relink are pointer updates, so each access is O(1).",
+    "why_optimal": "A hash map alone gives the O(1) lookup but cannot say which key is oldest, and a linked list alone gives O(1) reordering but O(capacity) lookup, so a cache needs both: the map supplies the node and the list supplies the order. Each access is examined once, which is the O(n) floor, and only the map and the list carry the working set, which is at most `capacity` entries, so the space bound follows. The brute force is slower by exactly the factor it spends scanning a structure it does not need.",
+    "pitfalls": "Detaching a node must repair the neighbours and also reset the node's own pointers, otherwise relinking it at the head leaves a cycle or a dangling tail. Eviction must remove the key from the map as well as the list, or the map grows past `capacity` and later hits resurrect an evicted key. The tail pointer has to be maintained on both ends: deleting the current tail moves the tail to its predecessor, and `capacity = 0` means every insert is immediately evicted, so head and tail must both fall back to empty. Also remember that a hit counts as a use, so a repeated access keeps a key alive rather than letting it age out."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Cache_replacement_policies",
+    "https://en.wikipedia.org/wiki/Doubly_linked_list"
+  ],
+  "starterCode": {
+    "javascript": "function solve(capacity, keys) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(capacity, keys):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int capacity, int[] keys) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(int capacity, std::vector<int> keys) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 19,
+    "bruteForceRuntimeMs": 0.15288800000000435,
+    "optimalRuntimeMs": 0.3959649999999826,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        0,
+        [
+          0
+        ]
+      ],
+      "expected": [
+        0
+      ],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        20,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        20,
+        [
+          0,
+          5,
+          10,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        4,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        13,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        8,
+        [
+          0,
+          10
+        ]
+      ],
+      "expected": [
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        3,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        7,
+        [
+          0,
+          5,
+          10,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        11,
+        [
+          0,
+          3,
+          6,
+          9,
+          12,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        19,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        6,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        1,
+        [
+          0,
+          5,
+          10,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        19,
+        [
+          0,
+          6,
+          12
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        14,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        16,
+        [
+          0,
+          5,
+          10,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        19,
+        [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        10,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        17,
+        [
+          0,
+          3,
+          6,
+          9,
+          12,
+          15
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        0,
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b7capacity) | Space: O(capacity)",
+      "language": "javascript",
+      "code": "function solve(capacity, keys) {\n  const recent = [];\n  const out = [];\n  for (let i = 0; i < keys.length; i++) {\n    const key = keys[i];\n    const at = recent.indexOf(key);\n    if (at !== -1) {\n      recent.splice(at, 1);\n      recent.unshift(key);\n      out.push(1);\n    } else {\n      recent.unshift(key);\n      if (recent.length > capacity) recent.pop();\n      out.push(0);\n    }\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(capacity)",
+      "language": "javascript",
+      "code": "function solve(capacity, keys) {\n  const nodes = new Map();\n  let head = null;\n  let tail = null;\n  const out = [];\n  const placeAtFront = (node) => {\n    node.prev = null;\n    node.next = head;\n    if (head) head.prev = node;\n    head = node;\n    if (!tail) tail = node;\n  };\n  const unlink = (node) => {\n    if (node.prev) node.prev.next = node.next;\n    else head = node.next;\n    if (node.next) node.next.prev = node.prev;\n    else tail = node.prev;\n    node.prev = null;\n    node.next = null;\n  };\n  for (let i = 0; i < keys.length; i++) {\n    const key = keys[i];\n    const node = nodes.get(key);\n    if (node) {\n      unlink(node);\n      placeAtFront(node);\n      out.push(1);\n    } else {\n      const fresh = { key: key, prev: null, next: null };\n      nodes.set(key, fresh);\n      placeAtFront(fresh);\n      if (nodes.size > capacity) {\n        const victim = tail;\n        unlink(victim);\n        nodes.delete(victim.key);\n      }\n      out.push(0);\n    }\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 4,
+  "prevSlug": "flatten-nested-list-iterator",
+  "nextSlug": "simple-bank-system"
+}

@@ -4,17 +4,17 @@
   "topic": "bit-manipulation",
   "difficulty": "Easy",
   "pattern": "bit-manipulation / n&(n-1)",
-  "statement": "Given an integer `n`, return `true` if it is a power of two. Otherwise, return `false`.\n\nAn integer `n` is a power of two if there exists an integer `x` such that `n == 2ˣ`.\n\nConstraints: `-2³¹ <= n <= 2³¹ - 1`.\n",
+  "statement": "Given an integer `n`, return `true` if it is a power of two. Otherwise, return `false`.\n\nAn integer `n` is a power of two if there exists an integer `x` such that `n == 2\u02e3`.\n\nConstraints: `-2\u00b3\u00b9 <= n <= 2\u00b3\u00b9 - 1`.\n",
   "examples": [
     {
       "input": "n = 1",
       "output": "true",
-      "explanation": "2⁰ = 1."
+      "explanation": "2\u2070 = 1."
     },
     {
       "input": "n = 16",
       "output": "true",
-      "explanation": "2⁴ = 16."
+      "explanation": "2\u2074 = 16."
     },
     {
       "input": "n = 3",

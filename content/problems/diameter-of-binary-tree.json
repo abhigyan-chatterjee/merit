@@ -28,7 +28,7 @@
   "solutions": [
     {
       "title": "All-Pairs Path Check",
-      "complexity": "Time: O(n²) | Space: O(h)",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
       "code": "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}",
       "language": "javascript"
     },
@@ -41,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

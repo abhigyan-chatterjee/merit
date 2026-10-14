@@ -1271,7 +1271,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O((R * C)²) | Space: O(R * C)",
+      "complexity": "Time: O((R * C)\u00b2) | Space: O(R * C)",
       "language": "javascript",
       "code": "function orangesRotting(grid) {\n  const g = grid.map((row) => row.slice());\n  if (g.length === 0) return 0;\n  function freshCount() {\n    let total = 0;\n    for (let r = 0; r < g.length; r++) {\n      for (let c = 0; c < g[r].length; c++) {\n        if (g[r][c] === 1) total++;\n      }\n    }\n    return total;\n  }\n  if (freshCount() === 0) return 0;\n  let minutes = 0;\n  while (true) {\n    const toRot = [];\n    for (let r = 0; r < g.length; r++) {\n      for (let c = 0; c < g[r].length; c++) {\n        if (g[r][c] !== 1) continue;\n        const near =\n          (r > 0 && g[r - 1][c] === 2) ||\n          (r + 1 < g.length && g[r + 1][c] === 2) ||\n          (c > 0 && g[r][c - 1] === 2) ||\n          (c + 1 < g[r].length && g[r][c + 1] === 2);\n        if (near) toRot.push([r, c]);\n      }\n    }\n    if (toRot.length === 0) return -1;\n    for (const pair of toRot) g[pair[0]][pair[1]] = 2;\n    minutes++;\n    if (freshCount() === 0) return minutes;\n  }\n}",
       "isReference": false
@@ -1298,7 +1298,7 @@
       "isReference": true
     }
   ],
-  "sequence": 11,
+  "sequence": 17,
   "prevSlug": "redundant-connection",
-  "nextSlug": "surrounded-regions"
+  "nextSlug": "shortest-bridge"
 }

@@ -1,0 +1,219 @@
+{
+  "slug": "happy-number",
+  "title": "Happy Number",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "Floyd's cycle detection (tortoise and hare)",
+  "statement": "A number is **happy** when repeatedly replacing it with the sum of the squares of its base-10 digits eventually reaches `1`. Otherwise the process loops forever in a cycle and the number is unhappy.\n\nGiven a positive integer `n`, return `true` if `n` is happy and `false` otherwise. Each step replaces the current value `x` with the sum of the squares of its decimal digits, and `1` maps to itself.\n\nConstraints: `1 <= n <= 10000`.\n",
+  "examples": [
+    {
+      "input": "n = 1",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "n = 410",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Write the sequence for n = 19: 19, 82, 68, 100, 1. Now try n = 2 and see where it goes instead.",
+    "If the sequence ever repeats a value it is trapped in a cycle and can never reach 1. How do you detect a repeat while remembering only two numbers?",
+    "Run two walkers on the sequence, one taking one step per round and the other taking two. Answer true if the fast walker hits 1; answer false if the two ever meet."
+  ],
+  "editorial": {
+    "approach": "The brute force walks the sequence n, f(n), f(f(n)), ... where f is the digit-square sum, and keeps every value it has already produced in a list; before each new step it scans that list and stops with false the moment a value repeats, because a repeat starts a cycle that can never contain 1. It stops with true when the walk produces 1. The optimal replaces the remembered list with Floyd's tortoise and hare: a slow pointer takes one step while a fast pointer takes two, so a cyclic walk forces the two to collide, and a walk that reaches 1 is caught by the fast pointer. That removes the O(S) visit list, leaving two integers.",
+    "why_optimal": "Every correct algorithm must follow the sequence until it either reaches 1 or repeats a value, since skipping steps could hide the repeat, so \u03a9(S) steps are necessary where S is the number of distinct values on the path before it repeats. Floyd's runs in exactly O(S) time with O(1) extra space, which is the best possible because the answer depends only on the two pointer positions. Because n \u2264 10^4, every value after the first step is at most 4\u00b781 = 324, so S never exceeds 326 and even the quadratic brute force stays fast at these bounds.",
+    "pitfalls": "Testing for the collision before testing for 1, which reports n = 1 as unhappy because 1 maps to itself; computing the digit-square sum with `while x >= 0`, which never terminates on x = 0 (use `x > 0`); dividing by 10 in JavaScript without `Math.floor`, which yields fractional digits and a wrong square sum; advancing the fast pointer only one step per iteration, so the two pointers move in lockstep and a cycle is never detected."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Happy_number",
+    "https://en.wikipedia.org/wiki/Cycle_detection"
+  ],
+  "starterCode": {
+    "javascript": "function solve(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 18,
+    "bruteForceRuntimeMs": 0.8934730000000037,
+    "optimalRuntimeMs": 0.2001589999999993,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        1
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10000
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        1825
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        410
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        4507
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        4013
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        3658
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        2287
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        1680
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        8936
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        1425
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        9675
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        6913
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        521
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        489
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        1536
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        3583
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        3812
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(S\u00b2) | Space: O(S)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  const digitSquareSum = (x) => {\n    let total = 0;\n    while (x > 0) {\n      const d = x % 10;\n      total += d * d;\n      x = Math.floor(x / 10);\n    }\n    return total;\n  };\n\n  const seen = [];\n  let cur = n;\n  while (cur !== 1) {\n    for (let i = 0; i < seen.length; i++) {\n      if (seen[i] === cur) return false;\n    }\n    seen.push(cur);\n    cur = digitSquareSum(cur);\n  }\n  return true;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(S) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  const digitSquareSum = (x) => {\n    let total = 0;\n    while (x > 0) {\n      const d = x % 10;\n      total += d * d;\n      x = Math.floor(x / 10);\n    }\n    return total;\n  };\n\n  let slow = n;\n  let fast = n;\n  while (true) {\n    slow = digitSquareSum(slow);\n    fast = digitSquareSum(digitSquareSum(fast));\n    if (fast === 1) return true;\n    if (slow === fast) return false;\n  }\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 3,
+  "prevSlug": "count-binary-substrings",
+  "nextSlug": "is-subsequence"
+}

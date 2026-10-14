@@ -1,0 +1,274 @@
+{
+  "slug": "add-strings",
+  "title": "Add Strings",
+  "topic": "math-matrices",
+  "difficulty": "Easy",
+  "pattern": "digit-column carry simulation / two pointers from the least significant digit",
+  "statement": "A ledger export stores two non-negative amounts as strings of decimal digits, `num1` and `num2`. Every character is a digit from `'0'` to `'9'`, and either operand may carry leading zeros.\n\nReturn the sum of the two amounts as a decimal string with no leading zeros, where the value zero is written as `\"0\"`.\n\nFor example, `num1 = \"9137\"` and `num2 = \"846\"` give `\"9983\"`.\n\nConstraints: `1 <= num1.length <= 100`, `1 <= num2.length <= 100`, and both strings consist only of the characters `'0'`-`'9'`.\n",
+  "examples": [
+    {
+      "input": "num1 = \"1\", num2 = \"4\"",
+      "output": "\"5\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "num1 = \"32\", num2 = \"18\"",
+      "output": "\"50\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(num1: string, num2: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Imagine both numbers padded on the left with zeros so their last digits line up, then work one column at a time from the right.",
+    "You only need one extra variable: the carry. A column total of 14 writes 4 and carries 1.",
+    "The answer may be one digit longer than the longer operand, and leading zeros in the inputs must not survive into the output."
+  ],
+  "editorial": {
+    "approach": "The brute force first materializes the raw column sums: an array whose index i holds the sum of the digits sitting in the 10^i column of both operands, with no carry applied yet. It then fixes the array by repeatedly scanning from the least significant column, subtracting 10 from the first column that overflows and adding 1 to the next column, restarting the scan after each single fix. A long carry chain such as `\"999...9\" + \"1\"` therefore costs one full scan per carry, which is O(n\u00b2). The optimal does the same addition as a single right-to-left merge: one index per operand walks backwards, the carry is kept in a variable, each column writes `total % 10` and passes `total / 10` on.",
+    "why_optimal": "Each digit of both operands has to be read at least once and each resulting digit written once, so the O(n1 + n2) merge is the floor for producing the sum text; the fix-up style of the brute force redoes O(n) work for each carry, which is strictly more than the input size. Only the returned string is allocated, so space is O(n1 + n2).",
+    "pitfalls": "Leaving leading zeros in the result: `\"0001\" + \"1\"` is `\"2\"`, and `\"000\" + \"000\"` must collapse to `\"0\"` rather than an empty string. Overflowing the result by one digit and dropping the leftover carry when the operands differ in length. Building the answer left to right and forgetting that the least significant digit is computed first, so the digits must be reversed at the end."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Addition",
+    "https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number"
+  ],
+  "starterCode": {
+    "javascript": "function solve(num1, num2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(num1, num2):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String num1, String num2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string num1, std::string num2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.7931699999999999,
+    "optimalRuntimeMs": 0.32193800000000294,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "1",
+        "4"
+      ],
+      "expected": "5",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "32",
+        "18"
+      ],
+      "expected": "50",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "960",
+        "1"
+      ],
+      "expected": "961",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "3890838",
+        "37940265423511"
+      ],
+      "expected": "37940269314349",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1559407816184",
+        "959310341316475255341"
+      ],
+      "expected": "959310342875883071525",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "28327648350305641395",
+        "7672423"
+      ],
+      "expected": "28327648350313313818",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "884969653287101226916697",
+        "48018451462704828"
+      ],
+      "expected": "884969701305552689621525",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "4893",
+        "52880"
+      ],
+      "expected": "57773",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "57015430391171822782",
+        "896383465"
+      ],
+      "expected": "57015430392068206247",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "871331509839301",
+        "03105183473829973763116"
+      ],
+      "expected": "3105184345161483602417",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "667010651333",
+        "726247317810801326"
+      ],
+      "expected": "726247984821452659",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "7360260647468723",
+        "3098050097"
+      ],
+      "expected": "7360263745518820",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "82081219136193990",
+        "16998543534624751079"
+      ],
+      "expected": "17080624753760945069",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "1183842513542784980",
+        "8412411824493534874016"
+      ],
+      "expected": "8413595667007077658996",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "005242786",
+        "011280598262045053"
+      ],
+      "expected": "11280598267287839",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "3158692322602563421607",
+        "37543303"
+      ],
+      "expected": "3158692322602600964910",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "5414586850142",
+        "4019655698169340608"
+      ],
+      "expected": "4019661112756190750",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "356159514846564823",
+        "62994680443699"
+      ],
+      "expected": "356222509527008522",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "5777387214895134332003791769367632016328708317278895798687277434873471434558122362316658760366909670",
+        "4668893734670656272980699016272046537556464170805310033092327193745299124190496631931491905865185067"
+      ],
+      "expected": "10446280949565790604984490785639678553885172488084205831779604628618770558748618994248150666232094737",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "6572628498776945314737996507527354549480831367837770143634957885685574443135182337498941343524082400",
+        "4271094777520471167190229413186999386774964990913341232812067974034471349361832421024994717464887719"
+      ],
+      "expected": "10843723276297416481928225920714353936255796358751111376447025859720045792497014758523936060988970119",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "6594013990490278742967175655125674680715451680876038597703482477109324808613171274846773782639821465",
+        "4044997278755886753396360576627028951718702621745961586578091343161172400504556238692221969379237474"
+      ],
+      "expected": "10639011269246165496363536231752703632434154302622000184281573820270497209117727513538995752019058939",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "0748217594647436713695944064090974395339421047095214562328588424745171236851604817549651370985931746",
+        "2004711382675869261796405377351585064317139005329318393352904228421020539502402681177589178390847007"
+      ],
+      "expected": "2752928977323305975492349441442559459656560052424532955681492653166191776354007498727240549376778753",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(num1, num2) {\n  const n = Math.max(num1.length, num2.length);\n  const raw = new Array(n + 2).fill(0);\n  for (let i = 0; i < num1.length; i++) raw[i] += num1.charCodeAt(num1.length - 1 - i) - 48;\n  for (let i = 0; i < num2.length; i++) raw[i] += num2.charCodeAt(num2.length - 1 - i) - 48;\n  let settled = false;\n  while (!settled) {\n    settled = true;\n    for (let i = 0; i < raw.length - 1; i++) {\n      if (raw[i] >= 10) {\n        raw[i] -= 10;\n        raw[i + 1] += 1;\n        settled = false;\n        break;\n      }\n    }\n  }\n  const digits = raw.reverse().join('');\n  const trimmed = digits.replace(/^0+(?=[0-9])/, '');\n  return trimmed;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(num1, num2) {\n  let i = num1.length - 1;\n  let j = num2.length - 1;\n  let carry = 0;\n  const out = [];\n  while (i >= 0 || j >= 0 || carry > 0) {\n    let total = carry;\n    if (i >= 0) total += num1.charCodeAt(i--) - 48;\n    if (j >= 0) total += num2.charCodeAt(j--) - 48;\n    out.push(total % 10);\n    carry = Math.floor(total / 10);\n  }\n  return out.reverse().join('').replace(/^0+(?=[0-9])/, '');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "add-binary",
+  "nextSlug": "fizz-buzz"
+}

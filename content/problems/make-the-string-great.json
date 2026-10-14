@@ -46,8 +46,8 @@
   "pafVerification": {
     "seed": 42,
     "generatedCaseCount": 21,
-    "bruteForceRuntimeMs": 0.23063999999999396,
-    "optimalRuntimeMs": 0.30652700000001687
+    "bruteForceRuntimeMs": 0.19121800000000277,
+    "optimalRuntimeMs": 0.230043000000002
   },
   "testCases": [
     {
@@ -189,40 +189,40 @@
     {
       "label": "stress-18",
       "input": [
-        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb"
+        "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1z"
       ],
-      "expected": "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb",
+      "expected": "xy1x2c1x10xbb0z001aba0zbxxx21c0cy1xb12ba2abxc011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1z",
       "isSample": false
     },
     {
       "label": "stress-19",
       "input": [
-        "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay"
+        "a1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0"
       ],
-      "expected": "2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ay",
+      "expected": "a1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0",
       "isSample": false
     },
     {
       "label": "stress-20",
       "input": [
-        "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx"
+        "ybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1"
       ],
-      "expected": "x0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx",
+      "expected": "ybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1",
       "isSample": false
     },
     {
       "label": "stress-21",
       "input": [
-        "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c"
+        "122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaax"
       ],
-      "expected": "zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2c",
+      "expected": "122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaax",
       "isSample": false
     }
   ],
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function makeGood(s) {\n  const chars = s.split('');\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let i = 0; i < chars.length - 1; i++) {\n      const a = chars[i];\n      const b = chars[i + 1];\n      if (a !== b && a.toLowerCase() === b.toLowerCase()) {\n        chars.splice(i, 2);\n        changed = true;\n        break;\n      }\n    }\n  }\n  return chars.join('');\n}",
       "isReference": false
@@ -235,7 +235,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
-  "prevSlug": "next-greater-element-i",
+  "sequence": 6,
+  "prevSlug": "remove-all-adjacent-duplicates-in-string",
   "nextSlug": "valid-parentheses"
 }

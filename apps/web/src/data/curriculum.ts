@@ -16,7 +16,6 @@ export interface TopicItem {
   slug: string;
   title: string;
   description: string;
-  problemCount: number;
   iconName: string;
 }
 
@@ -25,120 +24,109 @@ export const TOPICS: TopicItem[] = [
     slug: 'arrays-hashing',
     title: 'Arrays & Hashing',
     description: 'Contiguous storage, frequency maps, prefix products, and complement lookups.',
-    problemCount: 17,
     iconName: 'LayoutGrid'
   },
   {
     slug: 'two-pointers',
     title: 'Two Pointers',
     description: 'Converging and parallel pointers on sorted data and linked structures.',
-    problemCount: 10,
     iconName: 'MoveHorizontal'
   },
   {
     slug: 'sliding-windows',
     title: 'Sliding Windows',
     description: 'Fixed and variable windows for subarrays and substrings.',
-    problemCount: 5,
     iconName: 'PanelRight'
   },
   {
     slug: 'stack',
     title: 'Stack',
     description: 'LIFO matching, monotonic stacks, and expression evaluation.',
-    problemCount: 12,
     iconName: 'Layers'
   },
   {
     slug: 'linked-lists',
     title: 'Linked Lists',
-    description: 'Pointer rewiring, fast-slow cycle detection, and in-place reversal.',
-    problemCount: 15,
+    description: 'Pointer rewiring, fast-slow detection, and in-place reversal.',
     iconName: 'GitCommit'
   },
   {
     slug: 'trees',
     title: 'Trees',
     description: 'DFS traversals, BST invariants, and path/diameter reasoning.',
-    problemCount: 17,
     iconName: 'Network'
   },
   {
     slug: 'binary-search',
     title: 'Binary Search',
     description: 'Halving invariants on sorted arrays, rotated data, and answer spaces.',
-    problemCount: 6,
     iconName: 'Search'
   },
   {
     slug: 'heap',
     title: 'Heap',
     description: 'Priority queues, k-way merges, and top-k selection.',
-    problemCount: 3,
     iconName: 'ChevronsUp'
   },
   {
     slug: 'graphs',
     title: 'Graphs',
     description: 'BFS/DFS, connectivity, topological sort, and shortest paths.',
-    problemCount: 13,
     iconName: 'Share2'
   },
   {
     slug: 'intervals',
     title: 'Intervals',
     description: 'Merging, inserting, and scheduling overlapping ranges.',
-    problemCount: 5,
     iconName: 'AlignHorizontalDistributeCenter'
   },
   {
     slug: 'dynamic-programming',
     title: 'Dynamic Programming',
     description: '1D and 2D memoization and tabulation over optimal substructure.',
-    problemCount: 13,
     iconName: 'Cpu'
   },
   {
     slug: 'greedy',
     title: 'Greedy',
     description: 'Locally optimal choices with exchange arguments and intervals.',
-    problemCount: 3,
     iconName: 'Zap'
   },
   {
     slug: 'backtracking',
     title: 'Backtracking',
     description: 'Choice trees, pruning, permutations, and constraint search.',
-    problemCount: 7,
     iconName: 'Split'
   },
   {
     slug: 'bit-manipulation',
     title: 'Bit Manipulation',
     description: 'Masks, shifts, popcounts, and XOR invariants.',
-    problemCount: 5,
     iconName: 'Binary'
   },
   {
     slug: 'sorting',
     title: 'Sorting',
     description: 'Comparison sorts, partitioning, and order statistics.',
-    problemCount: 4,
     iconName: 'ArrowDownWideNarrow'
   },
   {
     slug: 'math-matrices',
     title: 'Math & Matrices',
     description: 'Number theory, combinatorics, and matrix traversal/rotation.',
-    problemCount: 3,
     iconName: 'Sigma'
   },
   {
     slug: 'trie',
     title: 'Trie',
     description: 'Prefix trees for word sets, autocomplete, and XOR queries.',
-    problemCount: 2,
     iconName: 'ListTree'
+  },
+  {
+    slug: 'data-structures',
+    title: 'Data Structures',
+    description: 'Design problems composing maps, queues, and caches.',
+    iconName: 'Database'
   },
 ];
 

@@ -42,7 +42,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(l1, l2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(l1, l2):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[] l1, int[] l2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> l1, std::vector<int> l2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -113,7 +113,7 @@
       "label": "carry cascade"
     }
   ],
-  "sequence": 6,
+  "sequence": 7,
   "prevSlug": "reverse-linked-list",
   "nextSlug": "copy-list-with-random-pointer",
   "reading_links": [

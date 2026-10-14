@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "Sort intervals by their ending times ascending. Greedily keep intervals that finish earliest to leave maximum remaining time for subsequent intervals, incrementing the removal count whenever an overlap occurs.",
-    "why_optimal": "Dynamic programming over sorted intervals takes O(n²) time, whereas greedy interval scheduling by end time runs in O(n log n) time and O(n) space. Across 28 verified test cases, optimal greedy selection executed in 0.26 ms versus 0.87 ms for the quadratic approach.",
+    "why_optimal": "Dynamic programming over sorted intervals takes O(n\u00b2) time, whereas greedy interval scheduling by end time runs in O(n log n) time and O(n) space. Across 28 verified test cases, optimal greedy selection executed in 0.26 ms versus 0.87 ms for the quadratic approach.",
     "pitfalls": "Remember that touching boundaries (e.g. [1, 2] and [2, 3]) do not conflict; only strictly overlapping intervals (start < prevEnd) should be counted for removal."
   },
   "reading_links": [
@@ -1924,7 +1924,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function eraseOverlapIntervals(intervals) {\n  if (intervals.length <= 1) return 0;\n  const sorted = intervals.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);\n  const n = sorted.length;\n  const dp = new Array(n).fill(1);\n  let maxKeep = 1;\n  for (let i = 1; i < n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (sorted[j][1] <= sorted[i][0]) {\n        if (dp[j] + 1 > dp[i]) dp[i] = dp[j] + 1;\n      }\n    }\n    if (dp[i] > maxKeep) maxKeep = dp[i];\n  }\n  return n - maxKeep;\n}",
       "isReference": false
@@ -1938,7 +1938,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def eraseOverlapIntervals(intervals: list[list[int]]) -> int:\n    if len(intervals) <= 1:\n        return 0\n    sorted_intervals = sorted(intervals, key=lambda x: (x[0], x[1]))\n    n = len(sorted_intervals)\n    dp = [1] * n\n    for i in range(1, n):\n        for j in range(i):\n            if sorted_intervals[j][1] <= sorted_intervals[i][0]:\n                dp[i] = max(dp[i], dp[j] + 1)\n    return n - max(dp)\n",
       "isReference": false

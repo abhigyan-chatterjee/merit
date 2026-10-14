@@ -41,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(head, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(head, n):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[] head, int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> head, int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -90,9 +90,9 @@
       "label": "[1,2], n=1"
     }
   ],
-  "sequence": 8,
-  "prevSlug": "container-with-most-water",
-  "nextSlug": "three-sum",
+  "sequence": 15,
+  "prevSlug": "palindromic-substrings",
+  "nextSlug": "reverse-words-in-a-string",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ],

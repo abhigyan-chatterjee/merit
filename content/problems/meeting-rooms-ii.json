@@ -4,7 +4,7 @@
   "topic": "intervals",
   "difficulty": "Medium",
   "pattern": "intervals / Heap sweep",
-  "statement": "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10⁶`.\n",
+  "statement": "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10\u2076`.\n",
   "examples": [
     {
       "input": "intervals = [[0, 30], [5, 10], [15, 20]]",
@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Sweep-Line / Two-Pointer Coordinate Discretization\n\nThe minimum number of conference rooms required equals the maximum number of concurrent meetings occurring at any point in time.\n\n#### 1. Decoupling Starts and Ends\nA meeting interval $[start, end]$ indicates that at time $start$ a room is claimed (+1), and at time $end$ a room is released (-1).\nBecause each room release is interchangeable across all active meetings, start times and end times can be extracted and sorted into two separate arrays:\n- `starts = intervals.map(iv => iv[0]).sort()`\n- `ends = intervals.map(iv => iv[1]).sort()`\n\n#### 2. Two-Pointer Scan\nMaintain pointers $s$ (current start) and $e$ (current end), and tracking variables `rooms` and `maxRooms`:\n- If $starts[s] < ends[e]$: A meeting starts before the earliest ending meeting finishes. Increment `rooms++`, update `maxRooms = max(maxRooms, rooms)`, and advance $s++$.\n- Else: A meeting has ended. Decrement `rooms--` and advance $e++$.\nTerminates when all meetings have started ($s == n$).",
-    "why_optimal": "Checking all pairwise overlaps for each interval takes O(n²) time. Decoupling start and end coordinates into two sorted arrays allows a linear two-pointer scan, reducing time complexity to O(n log n). On 24 verified test cases, the two-pointer sweep line ran in 1.75 ms compared to 0.92 ms for pairwise overlap checks.",
+    "why_optimal": "Checking all pairwise overlaps for each interval takes O(n\u00b2) time. Decoupling start and end coordinates into two sorted arrays allows a linear two-pointer scan, reducing time complexity to O(n log n). On 24 verified test cases, the two-pointer sweep line ran in 1.75 ms compared to 0.92 ms for pairwise overlap checks.",
     "pitfalls": "A meeting ending at time t does NOT conflict with a meeting starting at time t. Use strictly less than (starts[s] < ends[e]) so the ended room is freed."
   },
   "reading_links": [
@@ -1291,7 +1291,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "javascript",
       "code": "function minMeetingRooms(intervals) {\n  if (!intervals || intervals.length === 0) return 0;\n  let maxRooms = 0;\n  for (let i = 0; i < intervals.length; i++) {\n    const time = intervals[i][0];\n    let count = 0;\n    for (let j = 0; j < intervals.length; j++) {\n      if (intervals[j][0] <= time && time < intervals[j][1]) {\n        count++;\n      }\n    }\n    if (count > maxRooms) maxRooms = count;\n  }\n  return maxRooms;\n}",
       "isReference": false
@@ -1305,7 +1305,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(1)",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
       "language": "python",
       "code": "def minMeetingRooms(intervals: list[list[int]]) -> int:\n    if not intervals:\n        return 0\n    max_rooms = 0\n    for i in range(len(intervals)):\n        time = intervals[i][0]\n        count = sum(1 for iv in intervals if iv[0] <= time < iv[1])\n        if count > max_rooms:\n            max_rooms = count\n    return max_rooms\n",
       "isReference": false

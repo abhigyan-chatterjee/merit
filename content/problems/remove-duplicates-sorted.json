@@ -1196,7 +1196,7 @@
     "https://en.wikipedia.org/wiki/Sorting_algorithm",
     "https://en.wikipedia.org/wiki/In-place_algorithm"
   ],
-  "sequence": 7,
+  "sequence": 12,
   "prevSlug": "move-zeroes",
   "nextSlug": "two-sum"
 }

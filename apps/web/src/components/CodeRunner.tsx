@@ -34,15 +34,18 @@ const pythonSkeleton = (fn: string): string =>
   `def ${fn}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`;
 
 // Every language opens on the problem's own starter, so the signature a learner
-// edits is the one the judge compiles.
+// edits is the one the judge compiles. A problem whose stored Python starter is
+// missing or is only the bare skeleton falls back to that skeleton, which still
+// runs (the judge calls the function positionally).
 const starterByLanguage = (
   starterCode: string,
+  starterCodePython: string,
   starterCodeJava: string,
   starterCodeCpp: string,
   functionName: string
 ): Record<EditorLang, string> => ({
   javascript: starterCode,
-  python: pythonSkeleton(functionName),
+  python: starterCodePython || pythonSkeleton(functionName),
   java: starterCodeJava,
   cpp: starterCodeCpp,
 });
@@ -50,6 +53,7 @@ const starterByLanguage = (
 interface CodeRunnerProps {
   problemSlug: string;
   starterCode: string;
+  starterCodePython: string;
   starterCodeJava: string;
   starterCodeCpp: string;
   functionName: string;
@@ -62,6 +66,7 @@ interface CodeRunnerProps {
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   problemSlug,
   starterCode,
+  starterCodePython,
   starterCodeJava,
   starterCodeCpp,
   functionName,
@@ -98,7 +103,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // no-op after any keystroke, so e.g. the JS boilerplate stuck around
   // after selecting Python.
   const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() =>
-    starterByLanguage(starterCode, starterCodeJava, starterCodeCpp, functionName)
+    starterByLanguage(
+      starterCode,
+      starterCodePython,
+      starterCodeJava,
+      starterCodeCpp,
+      functionName
+    )
   );
   const code = codeByLang[language];
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
@@ -132,7 +143,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // Fresh skeletons when navigating between problems: without this the
   // previous problem's code (and function name) lingered in the editor.
   useEffect(() => {
-    setCodeByLang(starterByLanguage(starterCode, starterCodeJava, starterCodeCpp, functionName));
+    setCodeByLang(starterByLanguage(
+      starterCode,
+      starterCodePython,
+      starterCodeJava,
+      starterCodeCpp,
+      functionName
+    ));
     setResults(null);
     setVerdict(null);
     setCompileError(null);
@@ -228,6 +245,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       ...prev,
       [language]: starterByLanguage(
         starterCode,
+        starterCodePython,
         starterCodeJava,
         starterCodeCpp,
         functionName

@@ -1,0 +1,273 @@
+{
+  "slug": "longest-common-subsequence",
+  "title": "Longest Common Subsequence",
+  "topic": "dynamic-programming",
+  "difficulty": "Medium",
+  "pattern": "2D DP reduced to two rolling rows",
+  "statement": "Deleting zero or more characters from a string without reordering what is left produces a subsequence of it. The characters that are kept do not have to be adjacent. Both `a` and `b` are made of lowercase English letters. Return the length of the longest string that is a subsequence of `a` and also a subsequence of `b`.\n\nThat common string is not needed, only its length. For example, `a = \"abcde\"` and `b = \"ace\"` share the subsequence `\"ace\"`, so the answer is `3`; `a = \"abc\"` and `b = \"def\"` share only the empty subsequence, so the answer is `0`.\n\nConstraints: `1 <= a.length <= 200` and `1 <= b.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "a = \"d\", b = \"x\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "a = \"hh\", b = \"xd\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(a: string, b: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Think about the longest common subsequence of two prefixes, and what the last pair of characters tells you about it.",
+    "Equal characters can be matched immediately; different characters mean one of them is not used, and you may try dropping either.",
+    "Each row of that table only needs the row above it, so two rows are enough if you decide which string indexes the columns."
+  ],
+  "editorial": {
+    "approach": "Name the states by a suffix pair: `table[i][j]` is the answer for the first `i` characters of `a` and the first `j` of `b`. If the two characters being compared are equal, they can be matched for free and the answer is `table[i-1][j-1] + 1`; if they differ, one of them is unusable in the best solution either way, so the answer is `max(table[i-1][j], table[i][j-1])`. The brute force fills the whole (m+1) x (n+1) table with those two rules and reads the bottom-right cell; the plain recursion behind it would be exponential, and memoising it is exactly this table. The optimal solution keeps the same recurrence but notices that row `i` needs only row `i-1`, so two rolling rows of the shorter string's length are enough, and the loop can iterate the longer string as the outer dimension so the rows stay as short as possible.",
+    "why_optimal": "The recurrence has m\u00b7n distinct states and each is constant work, so O(m\u00b7n) time is the floor for this table, and with both strings capped at 200 the optimal does about 40,000 cell updates. Space drops from the full table to O(min(m,n)) because a state only ever reads the cell above, the cell to the left and the cell diagonally above-left; those three live in the previous row and the current one, so everything older can be discarded. Swapping the roles of the two strings so the shorter one indexes the rows is what makes the bound min(m,n) rather than n.",
+    "pitfalls": "Create the columns from the shorter string, or the rolling rows waste memory and the `max` access can go out of bounds when the shorter string is the outer one. `current[0]` must stay 0 and must be reset on every row, since it stands for the empty prefix and the cell to the left of the first column. The equal-character branch must read the diagonal `above[j-1]`, not `above[j]` or `current[j-1]`, or the length of a match is double-counted. When the two strings share no character the answer is 0, and an empty string on either side must return 0 instead of crashing on an index of -1."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Longest_common_subsequence",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function solve(a, b) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String a, String b) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string a, std::string b) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 4.15386800000001,
+    "optimalRuntimeMs": 2.252076000000013,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjchdmioulfl"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngryxwg"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hivpgrexssphzpzng"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxbvuudbmxkzd"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdburacyhfn"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbbsp"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrgqielchlj"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjvdeiddxreijtgwkg"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibw",
+        "aqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtky"
+      ],
+      "expected": 34,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "txqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzthphinpamkvvzmxfoetramssvacuneofbimkgokkymiynicpaxrblhucyu",
+        "yahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluowenfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpry"
+      ],
+      "expected": 36,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "wpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfggxpixsyqtjdgjhlfjawreibbrjweuypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdy",
+        "ugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueiecbfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqav"
+      ],
+      "expected": 40,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "onbgqltypuoybgirejowpdautzhwfjrarnchdoduepwjqwinpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecp",
+        "ktwmuckvrmkuwyprbtchuvjhxcndyuwdofwjabkzbjllnehqnsvzfffctmtvhpsehouioivazojvrfcolsjunwiojgmpdhmslsjwjavmiasvyxbtxpjyzhtzlhugtivy"
+      ],
+      "expected": 37,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m\u00b7n) | Space: O(m\u00b7n)",
+      "language": "javascript",
+      "code": "function solve(a, b) {\n  const table = [];\n  for (let i = 0; i <= a.length; i++) table.push(new Array(b.length + 1).fill(0));\n  for (let i = 1; i <= a.length; i++) {\n    for (let j = 1; j <= b.length; j++) {\n      if (a[i - 1] === b[j - 1]) table[i][j] = table[i - 1][j - 1] + 1;\n      else table[i][j] = Math.max(table[i - 1][j], table[i][j - 1]);\n    }\n  }\n  return table[a.length][b.length];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(m\u00b7n) | Space: O(min(m,n))",
+      "language": "javascript",
+      "code": "function solve(a, b) {\n  let wide = a;\n  let narrow = b;\n  if (narrow.length > wide.length) {\n    const held = wide;\n    wide = narrow;\n    narrow = held;\n  }\n  let above = new Array(narrow.length + 1).fill(0);\n  let current = new Array(narrow.length + 1).fill(0);\n  for (let i = 1; i <= wide.length; i++) {\n    const char = wide[i - 1];\n    for (let j = 1; j <= narrow.length; j++) {\n      if (char === narrow[j - 1]) current[j] = above[j - 1] + 1;\n      else current[j] = Math.max(above[j], current[j - 1]);\n    }\n    const held = above;\n    above = current;\n    current = held;\n  }\n  return above[narrow.length];\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 9,
+  "prevSlug": "house-robber-ii",
+  "nextSlug": "longest-increasing-subsequence"
+}

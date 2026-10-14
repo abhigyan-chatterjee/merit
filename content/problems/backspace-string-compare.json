@@ -7,19 +7,14 @@
   "statement": "Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
   "examples": [
     {
-      "input": "s = \"ab#c\", t = \"ad#c\"",
-      "output": "true",
-      "explanation": "Both strings reduce to \"ac\": '#' deletes 'b' from s and 'd' from t."
-    },
-    {
-      "input": "s = \"ab##\", t = \"c\"",
+      "input": "s = \"b\", t = \"y\"",
       "output": "false",
-      "explanation": "s reduces to an empty string (two consecutive backspaces), while t stays \"c\"."
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
-      "input": "s = \"a##c\", t = \"#a#c\"",
-      "output": "true",
-      "explanation": "Both reduce to \"c\": leading and mid-string '#'s cancel preceding characters, including the no-op leading '#'."
+      "input": "s = \"xc\", t = \"b2\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -32,9 +27,9 @@
     "Compare the rightmost surviving character of each string; advance both pointers only when they match."
   ],
   "editorial": {
-    "approach": "Process each string through a stack—push non-'#' characters, pop on '#'. The optimal variant scans both strings backward with two pointers and skip-counts, never materializing the reduced strings.",
-    "why_optimal": "The stack approach runs O(n + m) time and O(n + m) space. The two-pointer scan keeps the same time bound but O(1) extra space. On the problem's 22 generated cases the optimal ran in 0.10 ms versus 0.31 ms for brute force—a ~3x gap.",
-    "pitfalls": "A '#' at the start of a string must be a no-op; never pop past empty. Both pointers must fully consume their respective strings—do not return early on length mismatch alone."
+    "approach": "Process each string through a stack\u2014push non-'#' characters, pop on '#'. The optimal variant scans both strings backward with two pointers and skip-counts, never materializing the reduced strings.",
+    "why_optimal": "The stack approach runs O(n + m) time and O(n + m) space. The two-pointer scan keeps the same time bound but O(1) extra space. On the problem's 22 generated cases the optimal ran in 0.10 ms versus 0.31 ms for brute force\u2014a ~3x gap.",
+    "pitfalls": "A '#' at the start of a string must be a no-op; never pop past empty. Both pointers must fully consume their respective strings\u2014do not return early on length mismatch alone."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)",
@@ -52,8 +47,8 @@
   "pafVerification": {
     "seed": 42,
     "generatedCaseCount": 22,
-    "bruteForceRuntimeMs": 0.31490300000000104,
-    "optimalRuntimeMs": 0.10431400000000579
+    "bruteForceRuntimeMs": 0.2545880000000018,
+    "optimalRuntimeMs": 0.08209199999999939
   },
   "testCases": [
     {
@@ -221,8 +216,8 @@
     {
       "label": "stress-19",
       "input": [
-        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1",
-        "bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1"
+        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1ca",
+        "0zx1zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx01"
       ],
       "expected": false,
       "isSample": false
@@ -230,8 +225,8 @@
     {
       "label": "stress-20",
       "input": [
-        "ay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca011yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax",
-        "z11axy2cy11baxcy2a20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz0cx20cccb0"
+        "x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1bay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca",
+        "11yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax2z11axy2cy11baxcy2"
       ],
       "expected": false,
       "isSample": false
@@ -239,8 +234,8 @@
     {
       "label": "stress-21",
       "input": [
-        "x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2zxb1y0bcaay1bbx2c01z20c0b10yazx11xzbz",
-        "za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b11bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xb"
+        "20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz",
+        "cx20cccb0x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2"
       ],
       "expected": false,
       "isSample": false
@@ -248,8 +243,8 @@
     {
       "label": "stress-22",
       "input": [
-        "2zbyx022ayacyyzzacc0bcab2x001zczyzbaccaby10110yx2bz0by12yax0aaxyxcyyzba10cc02x22zb0a0a1bz000yb0azc1zb0bx002b0yzxzcb2b22xzzcxbcyx",
-        "cbc111zzc1b11yyaz2by11aazybb2012a1xz12ca1bzb2cax1122czzy00zazbzb20yyczbczy0cby20zc2b02zazycxz1xxccbyb222azc0cccc1a0zx1y1x2xy1xz1"
+        "xb1y0bcaay1bbx2c01z20c0b10yazx11xzbz2za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b",
+        "1bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xbz2zbyx022ayacyyzzacc0bcab2x001zczyzb"
       ],
       "expected": false,
       "isSample": false
@@ -287,5 +282,5 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "merge-two-sorted-lists"
+  "nextSlug": "count-binary-substrings"
 }

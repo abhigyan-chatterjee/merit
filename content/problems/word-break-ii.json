@@ -1,0 +1,486 @@
+{
+  "slug": "word-break-ii",
+  "title": "Word Break II",
+  "topic": "backtracking",
+  "difficulty": "Hard",
+  "pattern": "memoized backtracking over string prefixes",
+  "statement": "You are given a string `s` and a dictionary `wordDict`. Cut `s` into one or more dictionary words joined by single spaces, so that the concatenation of the chosen words is exactly `s`. A word from the dictionary may be reused any number of times.\n\nReturn every distinct valid sentence as a string, sorted in ascending lexicographic order. Return an empty list when no sentence can be formed.\n\nConstraints: `1 <= s.length <= 12` and `1 <= wordDict.length <= 12` and `1 <= wordDict[i].length <= 6`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\", wordDict = [\"c\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"dbcdb\", wordDict = [\"aaaabb\", \"ddbdab\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, wordDict: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Build a sentence word by word: at each position you only have to choose where the current word ends.",
+    "Only dictionary words that match the next characters of the string are candidates, so try each of them and recurse on whatever follows.",
+    "The set of sentences that can be built from index i never changes no matter how you arrived at i, so compute it once and store it."
+  ],
+  "editorial": {
+    "approach": "The brute force is plain backtracking: at position i it tries every dictionary word that matches the next slice of s, recurses from the end of that word with the word pushed onto the current list, and pops it on the way back. Finished sentences are collected and sorted. The optimal version memoizes the list of sentences that can be built from each starting index, so the answer for a suffix is computed once and reused by every prefix path that reaches it.",
+    "why_optimal": "Without caching, the same suffix is re-expanded once for every prefix combination that arrives at it, which is why the backtracking becomes exponential on inputs such as twelve 'a' characters with a dictionary of 'a' through 'aaaaaa'. Memoizing per index collapses that to one expansion per index plus the cost of building the sentences themselves. That last cost cannot be avoided, because every returned sentence is part of the output, so the honest bound is the per-state work O(n * K^2) for the slice checks plus T, the total size of the answer. With |s| <= 12 both versions finish instantly, but the memo keeps the work proportional to the output instead of to the number of ways to reach each position.",
+    "pitfalls": "Using the empty suffix as a base case without separating it from a real dictionary word, which produces a stray leading or trailing space in the joined sentence. Forgetting to sort the sentences, so the output order depends on the order words were tried. Caching a mutable list and then sorting or appending to it later, which corrupts the memo for other callers. Returning the same sentence twice when two different splits produce identical text, and slicing s from the wrong end of the candidate word."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Memoization",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, wordDict) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, wordDict):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String[] solve(String s, String[] wordDict) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::string> solve(std::string s, std::vector<std::string> wordDict) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.24835300000000515,
+    "optimalRuntimeMs": 0.2874060000000007,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a",
+        [
+          "c"
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "bb",
+        [
+          "aa",
+          "da",
+          "ab",
+          "ab",
+          "db",
+          "ca",
+          "dc",
+          "bb",
+          "aa",
+          "ac",
+          "ca",
+          "da"
+        ]
+      ],
+      "expected": [
+        "bb"
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "accbaabcabad",
+        [
+          "cbccbc",
+          "abbbdd",
+          "bcabac",
+          "cabcbd",
+          "dbcbbc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "ddcbbdaaabbd",
+        [
+          "ddd",
+          "caacca",
+          "dbdacb",
+          "acbbcb",
+          "acdaac",
+          "babaad",
+          "bbd",
+          "bcdbbc",
+          "cddabb",
+          "cab"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "baaabaacabcd",
+        [
+          "bdbddb",
+          "adcd",
+          "daaadc",
+          "bbbd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "dbcdb",
+        [
+          "aaaabb",
+          "ddbdab"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "adcdcddbbcba",
+        [
+          "acaadb",
+          "ab",
+          "abd",
+          "baad",
+          "ccbcbc",
+          "bcdcaa",
+          "aabcbc",
+          "bcc",
+          "dcacab",
+          "aabccb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "cbcdcaadcaac",
+        [
+          "cbddaa",
+          "bac",
+          "bdbacc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "cb",
+        [
+          "acdbbb",
+          "dabcdb",
+          "badadb",
+          "dccbba",
+          "bdccac",
+          "dcaacb",
+          "caadcc",
+          "adbcad",
+          "b",
+          "daccac",
+          "cdcdcb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "ddbcdac",
+        [
+          "dcdddb",
+          "dbacca",
+          "cbbbaa",
+          "daddbd",
+          "dbbaad"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "bdabadbd",
+        [
+          "cdddbd",
+          "cbcdbc",
+          "acbccc",
+          "abbbdb",
+          "baddcd",
+          "abddad",
+          "accddb",
+          "bcddad",
+          "dbdbad",
+          "aadbdb",
+          "cd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "bdccdcdcada",
+        [
+          "acbaaa",
+          "babbbd",
+          "abdccb",
+          "abcaac",
+          "ddbaba",
+          "caacdc",
+          "cad",
+          "adcdbd",
+          "cdddcc",
+          "acdbdd",
+          "adcbdb",
+          "ccccab"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "bdd",
+        [
+          "dddaac",
+          "dbccdc",
+          "ccdccc",
+          "abcabb",
+          "dccabc",
+          "cbcabc",
+          "ac",
+          "bdaacd",
+          "dcbacd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "adda",
+        [
+          "abbcab",
+          "dbdd",
+          "cdcaab",
+          "bcabbb",
+          "abaddd",
+          "abccda",
+          "bcbdab",
+          "bcbaab",
+          "cdadcd",
+          "ddaadc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "caabacabddcb",
+        [
+          "dadcdc",
+          "abcddc",
+          "dadacc",
+          "adadda",
+          "cddabc",
+          "bcddaa",
+          "bbcada",
+          "adabdc",
+          "cdddbd",
+          "bdbbac"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "ccaccdbddccd",
+        [
+          "bbdbda",
+          "dddbda",
+          "cadad",
+          "b",
+          "badccd",
+          "acdcda",
+          "abcbad",
+          "adbc"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "a",
+        [
+          "cc",
+          "dbbdbb",
+          "adbdbb",
+          "cdcadc",
+          "badccd",
+          "cdcbdd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "bdcc",
+        [
+          "adcaad",
+          "bcbbcb",
+          "aacdac",
+          "baccdb",
+          "bccbcd",
+          "cadabb",
+          "dcadac",
+          "adccdc",
+          "bdac",
+          "badcda",
+          "aacda",
+          "bbdd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "dbdaddcacbdd",
+        [
+          "caccad",
+          "badaba",
+          "cbbbab",
+          "bbcbac",
+          "bcbaab",
+          "cbcabc",
+          "bdaadd",
+          "adbacd",
+          "aaddda",
+          "daacba",
+          "ccdcdd",
+          "abddbd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "dddacdcccbda",
+        [
+          "aadacb",
+          "acadcd",
+          "acccab",
+          "dbacca",
+          "bdacab",
+          "cccabb",
+          "dabaab",
+          "ddcbcc",
+          "caabba",
+          "acdddd",
+          "cbacda",
+          "dcabda"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "bcbbcccaaddb",
+        [
+          "dbcada",
+          "adacdd",
+          "dcadac",
+          "dcadab",
+          "dadccb",
+          "baabcc",
+          "bbabcb",
+          "babddd",
+          "ccbdad",
+          "ccacac",
+          "daacca",
+          "addadb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "dbadacababdd",
+        [
+          "bcccdd",
+          "acacad",
+          "cbcabc",
+          "dbacdc",
+          "adcacc",
+          "bcdbbb",
+          "acaacb",
+          "dbbbbd",
+          "dcbdcd",
+          "bcdbcd",
+          "cddbbb",
+          "adcaac"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^n) worst case, one recursion node per split point | Space: O(n) recursion depth",
+      "language": "javascript",
+      "code": "function solve(s, wordDict) {\n  const words = new Set();\n  for (const w of wordDict) if (w !== '') words.add(w);\n  const n = s.length;\n  const res = [];\n  function go(i, parts) {\n    if (i === n) {\n      res.push(parts.join(' '));\n      return;\n    }\n    for (let j = i + 1; j <= n; j++) {\n      const w = s.slice(i, j);\n      if (words.has(w)) {\n        parts.push(w);\n        go(j, parts);\n        parts.pop();\n      }\n    }\n  }\n  go(0, []);\n  res.sort();\n  return res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n * K^2 + T), K = longest dictionary word, T = total length of all sentences | Space: O(n + T)",
+      "language": "javascript",
+      "code": "function solve(s, wordDict) {\n  const words = new Set();\n  for (const w of wordDict) if (w !== '') words.add(w);\n  const n = s.length;\n  const memo = new Map();\n  function go(i) {\n    if (memo.has(i)) return memo.get(i);\n    const out = [];\n    if (i === n) {\n      out.push('');\n    } else {\n      for (let j = i + 1; j <= n; j++) {\n        const w = s.slice(i, j);\n        if (words.has(w)) {\n          for (const tail of go(j)) {\n            out.push(tail === '' ? w : w + ' ' + tail);\n          }\n        }\n      }\n    }\n    memo.set(i, out);\n    return out;\n  }\n  const res = go(0);\n  res.sort();\n  return res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 13,
+  "prevSlug": "sudoku-solver",
+  "nextSlug": null
+}

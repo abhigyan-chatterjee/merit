@@ -997,3 +997,62 @@ async def test_sandbox_privilege_drop_runs_in_the_launcher(monkeypatch, tmp_path
     # which proves the drop was applied rather than skipped.
     assert stdout.split() == [str(os.getuid()), str(os.getgid())]
 
+
+def test_heap_exhaustion_is_reported_in_words_not_as_a_native_dump():
+    """V8's heap crash must not reach the learner verbatim.
+
+    Node answers heap exhaustion with a GC log, a FATAL ERROR line and a native
+    stack trace naming the binary and its shared objects. That used to be passed
+    straight through as the run's message: it explains nothing about the
+    learner's code and leaks container paths into the response.
+    """
+    from app.services.judge import _summarise_runtime_error
+
+    dump = (
+        "<--- Last few GCs --->\n\n"
+        "[1:0x1]      867 ms: Mark-Compact 263.3 (267.2) -> 263.3 (267.2) MB, "
+        "allocation failure; GC in old space requested\n\n"
+        "FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - "
+        "JavaScript heap out of memory\n"
+        "----- Native stack trace -----\n\n"
+        " 1: 0x82153b node::OOMErrorHandler(char const*, v8::OOMDetails const&)\n"
+    )
+
+    message = _summarise_runtime_error("", dump)
+
+    assert "Memory limit exceeded" in message
+    assert "FATAL ERROR" not in message
+    assert "0x82153b" not in message
+
+
+def test_a_normal_runtime_error_keeps_the_message_the_runtime_gave():
+    """Only the heap dump is rewritten; a genuine error still names itself."""
+    from app.services.judge import _summarise_runtime_error
+
+    assert (
+        _summarise_runtime_error("", "TypeError: x is not a function")
+        == "TypeError: x is not a function"
+    )
+
+
+@pytest.mark.asyncio
+async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
+    """End-to-end: the summary is wired into the interpreted-language path."""
+    code = (
+        "function solve(n) {\n"
+        "  const a = [];\n"
+        "  while (true) a.push(new Array(100000).fill(n));\n"
+        "}\n"
+    )
+
+    result = await execute_code(
+        language="javascript",
+        code=code,
+        function_name="solve",
+        test_cases=[{"label": "c1", "input": [1], "expected": 1}],
+        time_limit_ms=5000,
+    )
+
+    assert result.verdict == "RE"
+    assert "Memory limit exceeded" in result.compile_output
+

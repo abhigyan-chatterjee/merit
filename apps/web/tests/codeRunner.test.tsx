@@ -45,6 +45,31 @@ describe('CodeRunner Component (Phase 4)', () => {
     expect(textarea).toHaveValue('function solve() {}');
   });
 
+  it("opens each language on the problem's own starter, Python included", () => {
+    // Regression: the Python tab used to show a bare `def solve(*args)` skeleton
+    // no matter what the problem carried, while Java and C++ got their real
+    // signatures — so the Python signature a learner edited was not the one the
+    // judge ran.
+    renderRunner({
+      problemSlug: 'add-binary',
+      starterCode: 'function solve(a, b) {}',
+      starterCodePython: 'def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n',
+      starterCodeJava: 'class Solution {\n    public String solve(String a, String b) {}\n}',
+      starterCodeCpp: 'class Solution {};',
+      functionName: 'solve',
+      testCases: mockTestCases,
+    });
+
+    const textarea = screen.getByLabelText(/Code Editor/i);
+    expect(textarea).toHaveValue(
+      'def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n'
+    );
+
+    const select = screen.getByLabelText(/Execution Language/i);
+    fireEvent.change(select, { target: { value: 'java' } });
+    expect(textarea).toHaveValue('class Solution {\n    public String solve(String a, String b) {}\n}');
+  });
+
   it('places the tutor above the editor and actions in the results bar', () => {
     renderRunner({
       problemSlug: 'two-sum',

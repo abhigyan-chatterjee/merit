@@ -1,0 +1,228 @@
+{
+  "slug": "reverse-integer",
+  "title": "Reverse Integer",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "digit extraction with overflow guard",
+  "statement": "You are given a signed 32-bit integer `x`. Reverse the order of its decimal digits and return the result with its sign, dropping zeros that end up at the front: reversing `120` gives `21`, and reversing `-120` gives `-21`.\n\nA signed 32-bit integer only holds values from `-2147483648` to `2147483647`. If the reversed value falls outside that range, return `0` instead. The value of `x` itself is always inside the range.\n\nExamples: `x = 123` gives `321`, `x = -123` gives `-321`, and `x = 1534236469` reverses to `9646324351`, which no 32-bit integer can hold, so the answer is `0`.\n\nConstraints: `-2147483648 <= x <= 2147483647`.\n",
+  "examples": [
+    {
+      "input": "x = 0",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "x = 10000",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(x: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Build the reversed value with arithmetic: pull the last digit off with `% 10` and push it onto the result with `rev = rev * 10 + digit`.",
+    "Handle the sign once, outside the loop, by working with the absolute value, and remember that reversing `120` must give `21` rather than `021`.",
+    "Test the 32-bit range on the reversed value before returning it: `9646324351` is exact even in a JavaScript double, so a plain numeric comparison works, and `x = -2147483648` is the case that breaks naive absolute values."
+  ],
+  "editorial": {
+    "approach": "The brute force turns the absolute value into a decimal string, reverses the characters, parses the result back into a number and only then tests the 32-bit range, which needs a temporary string of O(d) characters. The optimal never leaves integer arithmetic: peel the last digit with `n % 10`, push it onto an accumulator with `rev = rev * 10 + digit`, and shrink `n` with `n // 10` (or `Math.floor(n / 10)`), then compare the accumulator against 2147483647 before applying the sign.",
+    "why_optimal": "A number with `d` digits has to have each digit moved, so O(d) time is the floor, and the accumulator version reaches it with O(1) extra space instead of the brute force's O(d) string. With `d <= 10` the practical difference is allocation rather than asymptotics, but the accumulator is also the version that can test the range before a fixed-width 32-bit register overflows, which is what makes it the expected answer in an interview.",
+    "pitfalls": "The range test belongs to the reversed value, not to the input, and it must be strict: 2147483647 is allowed while 7463847412 is not. The trap value is `x = -2147483648`, whose absolute value is 2147483648, one past the positive limit; its reversal 8463847412 must return `0`, and taking the absolute value in a 32-bit C `int` would itself overflow. Trailing zeros have to vanish, so `120` gives `21` and `-120` gives `-21`; a string reversal gets this from stripping the leading zeros it creates, a digit accumulator gets it for free. Watch the sign too: `n % 10` on a negative `n` is negative in many languages, so normalise the sign before the loop, and never build the reversal with floating point logarithms or powers of ten, which drift for large values."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Integer_overflow",
+    "https://en.wikipedia.org/wiki/Two%27s_complement",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER"
+  ],
+  "starterCode": {
+    "javascript": "function solve(x) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(x):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int x) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(int x) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 19,
+    "bruteForceRuntimeMs": 0.11339000000000965,
+    "optimalRuntimeMs": 0.08742399999998796,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        -2147483648
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10000
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        -1669320321
+      ],
+      "expected": -1230239661,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        -2040063279
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        -966241705
+      ],
+      "expected": -507142669,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        -1095681136
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        -1188800802
+      ],
+      "expected": -2080088811,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        -1548172823
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        -1707270233
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        -1774084222
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        -335343207
+      ],
+      "expected": -702343533,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        -2010978061
+      ],
+      "expected": -1608790102,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        -2019505554
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        -1745065638
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        -1208440693
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        -1148212712
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        -2033512525
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        -1293482455
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        0
+      ],
+      "expected": 0,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(d) (d = digit count, at most 10) | Space: O(d)",
+      "language": "javascript",
+      "code": "function solve(x) {\n  const negative = x < 0;\n  const text = String(Math.abs(x)).split(\"\").reverse().join(\"\");\n  let value = Number(text);\n  if (negative) value = -value;\n  if (value < -2147483648 || value > 2147483647) return 0;\n  return value;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(d) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(x) {\n  let rev = 0;\n  let n = x < 0 ? -x : x;\n  while (n > 0) {\n    rev = rev * 10 + (n % 10);\n    n = Math.floor(n / 10);\n  }\n  if (rev > 2147483647) return 0;\n  return x < 0 ? -rev : rev;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 9,
+  "prevSlug": "pow-x-n",
+  "nextSlug": "rotate-image"
+}

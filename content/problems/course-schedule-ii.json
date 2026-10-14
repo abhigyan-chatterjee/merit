@@ -43,7 +43,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(numCourses, prerequisites) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(numCourses, prerequisites):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int numCourses, int[][] prerequisites) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(int numCourses, std::vector<std::vector<int>> prerequisites) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -93,9 +93,9 @@
       "label": "2 courses, cycle"
     }
   ],
-  "sequence": 7,
+  "sequence": 10,
   "prevSlug": "course-schedule",
-  "nextSlug": "number-of-islands",
+  "nextSlug": "evaluate-division",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"
   ],

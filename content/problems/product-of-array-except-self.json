@@ -41,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -97,9 +97,9 @@
       "label": "[2,5]"
     }
   ],
-  "sequence": 13,
-  "prevSlug": "longest-consecutive-sequence",
-  "nextSlug": "sort-colors",
+  "sequence": 24,
+  "prevSlug": "peak-element",
+  "nextSlug": "rotate-array",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ],

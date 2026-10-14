@@ -1,0 +1,274 @@
+{
+  "slug": "add-binary",
+  "title": "Add Binary",
+  "topic": "math-matrices",
+  "difficulty": "Easy",
+  "pattern": "carry simulation over bits / two pointers from the least significant bit",
+  "statement": "Two telemetry packets arrive as strings of bits, `a` and `b`. Every character is either `'0'` or `'1'`, and the leftmost character is the most significant bit. Either operand may carry leading zeros.\n\nReturn the sum of the two values in the same format, written canonically: no leading zeros, and the value zero is written as `\"0\"`.\n\nFor example, `a = \"1011\"` and `b = \"1101\"` give `\"11000\"`.\n\nConstraints: `1 <= a.length <= 100`, `1 <= b.length <= 100`, and both strings consist only of the characters `'0'` and `'1'`.\n",
+  "examples": [
+    {
+      "input": "a = \"0\", b = \"1\"",
+      "output": "\"1\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "a = \"00\", b = \"00\"",
+      "output": "\"0\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(a: string, b: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Column by column, right to left, is how you would add these by hand: line up the two rightmost bits and move leftwards.",
+    "Two bits plus the incoming carry give a value from 0 to 3. The bit you write is value % 2 and the carry you pass left is value // 2.",
+    "The sum can be one bit longer than either input, and inputs may carry leading zeros, so trim the result but keep at least one character."
+  ],
+  "editorial": {
+    "approach": "The brute force stores the first operand as a little-endian array of bits and then processes the second operand one bit at a time: for every set bit of `b` at position j it performs a full carry-propagating increment starting at index j, walking right until the carry dies. One increment touches O(n) positions and there can be O(n) set bits, so a second operand like `\"111...1\"` costs O(n\u00b2). The optimal merges the whole thing into a single walk: two indices start at the last character of each string and move left together, adding the two current bits plus the carry, emitting one output bit per step and stopping only when both indices and the carry are exhausted. The bit array is then trimmed of leading zeros so the result is canonical whatever leading zeros the inputs carried.",
+    "why_optimal": "With n = max(a.length, b.length), the sum has at most n + 1 bits, so at least n input bits must be read and n output characters written; the single left-to-right merge does exactly that with O(1) work per column, giving O(n) time and O(n) space for the returned string. The brute force re-walks already-settled columns once per set bit, which is what pushes it to O(n\u00b2).",
+    "pitfalls": "Losing the final carry when both operands have the same length: `\"1\" + \"1\"` must be `\"10\"`, not `\"0\"`. Stopping the loop when the longer index runs out instead of when both indices and the carry are done. Forgetting that the operands may contain leading zeros, so the merge can emit a leading `0` that must be stripped, while `\"0\" + \"0\"` must still return the single character `\"0\"` and not an empty string."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Binary_number#Addition",
+    "https://en.wikipedia.org/wiki/Carry_(arithmetic)",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt"
+  ],
+  "starterCode": {
+    "javascript": "function solve(a, b) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String a, String b) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string a, std::string b) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.28885600000000267,
+    "optimalRuntimeMs": 0.29521499999999534,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "0",
+        "1"
+      ],
+      "expected": "1",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "00",
+        "00"
+      ],
+      "expected": "0",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "1000000010110011100",
+        "00101110101"
+      ],
+      "expected": "1000000011100010001",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "110",
+        "00010001111011010000111"
+      ],
+      "expected": "10001111011010001101",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "010001110010111010011",
+        "1100100000101111001"
+      ],
+      "expected": "11110010011101001100",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "101101010010010011001",
+        "0000010001"
+      ],
+      "expected": "101101010010010101010",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "011001111100001000",
+        "0"
+      ],
+      "expected": "11001111100001000",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "00001001100101100011111",
+        "000110000101011001000000"
+      ],
+      "expected": "111010010000101011111",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "11010010111111",
+        "01000"
+      ],
+      "expected": "11010011000111",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "100100000001000011101011",
+        "11100"
+      ],
+      "expected": "100100000001000100000111",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "000101001101101",
+        "0010001101011100110010"
+      ],
+      "expected": "10001110000110011111",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "101100000101001101000",
+        "100001001101"
+      ],
+      "expected": "101100001001010110101",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "010100",
+        "110000111011110"
+      ],
+      "expected": "110000111110010",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "1010",
+        "1111"
+      ],
+      "expected": "11001",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "01010100110110111111",
+        "001101101101111101"
+      ],
+      "expected": "1100010100100111100",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "001100100000010110111000",
+        "1001"
+      ],
+      "expected": "1100100000010111000001",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "00",
+        "011111011101101"
+      ],
+      "expected": "11111011101101",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "010111000010001",
+        "11100110110111"
+      ],
+      "expected": "110011111001000",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "0101110111010010010100111011111110100100000000001001110001001110000100111010110111010111111001101110",
+        "1010111110000110111001010111111111110001000011100101010010010100111110011001100001000101111110000100"
+      ],
+      "expected": "10000110101011001001110010011111110010101000011101111000011100011000011010100011000011101110111110010",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "0000111100111001010001000011101111110011100001001110110111110011111010111010110011100101110000101000",
+        "0011111101010001111011101111111001010111101001010100100111101111000100100101001011110010000101001111"
+      ],
+      "expected": "100111010001011001100110011101001001011001010100011011111100010111111011111111111010111110101110111",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "0110011111110110011110110011010010001101001110001101111010001101010111110010100111000011000011110101",
+        "1101011010110110010000100000001001001000001010010010011101001100111011001000111111000110111110111110"
+      ],
+      "expected": "10011111010101100101111010011011011010101011000100000010111011010010010111011100110001010000010110011",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "1000010100101110111000100110101010011110001000001111011100000011111110011011100100010011100110010101",
+        "0101011111010101101001101110100001100001000001111101011110101110011001101011001010000110111111010101"
+      ],
+      "expected": "1101110100000100100010010101001011111111001010001100111010110010011000000110101110011010100101101010",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(a, b) {\n  const acc = [];\n  for (let i = a.length - 1; i >= 0; i--) acc.push(a[i] === '1' ? 1 : 0);\n  for (let j = 0; j < b.length; j++) {\n    if (b[b.length - 1 - j] !== '1') continue;\n    let idx = j;\n    while (idx >= acc.length) acc.push(0);\n    let carry = 1;\n    while (carry > 0) {\n      if (idx === acc.length) acc.push(0);\n      const total = acc[idx] + carry;\n      acc[idx] = total & 1;\n      carry = total >> 1;\n      idx++;\n    }\n  }\n  while (acc.length > 1 && acc[acc.length - 1] === 0) acc.pop();\n  return acc.reverse().join('');\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(a, b) {\n  let i = a.length - 1;\n  let j = b.length - 1;\n  let carry = 0;\n  const out = [];\n  while (i >= 0 || j >= 0 || carry > 0) {\n    let total = carry;\n    if (i >= 0) total += a[i--] === '1' ? 1 : 0;\n    if (j >= 0) total += b[j--] === '1' ? 1 : 0;\n    out.push(total & 1);\n    carry = total >> 1;\n  }\n  return out.reverse().join('').replace(/^0+(?=[0-9])/, '');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 1,
+  "prevSlug": null,
+  "nextSlug": "add-strings"
+}

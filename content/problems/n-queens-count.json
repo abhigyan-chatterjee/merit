@@ -247,7 +247,7 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
+  "sequence": 10,
   "prevSlug": "word-search",
-  "nextSlug": null
+  "nextSlug": "n-queens"
 }

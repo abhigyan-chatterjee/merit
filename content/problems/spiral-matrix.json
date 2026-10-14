@@ -41,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(matrix) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(matrix):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[][] matrix) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<std::vector<int>> matrix) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -154,9 +154,9 @@
       "label": "2x2 square"
     }
   ],
-  "sequence": 3,
-  "prevSlug": "pow-x-n",
-  "nextSlug": null,
+  "sequence": 12,
+  "prevSlug": "set-matrix-zeroes",
+  "nextSlug": "string-to-integer-atoi",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Matrix_(mathematics)"
   ],

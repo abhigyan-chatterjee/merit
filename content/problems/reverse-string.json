@@ -1,0 +1,243 @@
+{
+  "slug": "reverse-string",
+  "title": "Reverse String",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "two pointers / in-place swap",
+  "statement": "You are given a string `s` built from lowercase English letters and decimal digits. Return a new string holding the same characters in the opposite order: the last character of `s` becomes the first character of the answer, the second-to-last becomes the second, and so on until the first character of `s` ends up last.\n\nThe answer must contain exactly the same multiset of characters as `s`, repeats included. The input string does not need to be modified.\n\nConstraints: `1 <= s.length <= 200`, and every character of `s` is a lowercase English letter or a decimal digit.\n",
+  "examples": [
+    {
+      "input": "s = \"h\"",
+      "output": "\"h\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"u\"",
+      "output": "\"u\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The first character and the last character trade places. Which two positions can you settle with one operation?",
+    "After the outer pair is settled, the untouched region is the same problem one step smaller. Move both indices inward and repeat.",
+    "Stop when the two indices meet or cross, and remember that a string of odd length has a centre character that must stay put."
+  ],
+  "editorial": {
+    "approach": "The brute force builds the answer by prepending each character to an accumulator. Strings are immutable in both languages, so every prepend copies the accumulator and the whole loop costs O(n\u00b2) character copies. The optimal copies the characters into a mutable buffer once, then holds two indices, one at the far left and one at the far right, swaps the pair they point at, and walks both indices one step toward the centre. Each swap finalises two characters, and the loop stops as soon as the indices meet or cross.",
+    "why_optimal": "The output depends on every character of the input and writes every character of the result, so O(n) time and O(n) space for the produced string are floor values. The two-index pass touches each character exactly once, which is the best possible. With n up to 200 the constant factor is invisible, but the index discipline is what transfers to longer inputs.",
+    "pitfalls": "An odd-length string has a centre character with no partner; the loop must use `i < j`, and it must not keep going after the indices cross. Writing the swap as two consecutive assignments without a temporary loses a character. In the brute force, prepending inside a loop is correct but quadratic, and reaching for it on a long string is the usual accidental slowdown; a single pass appending in reverse index order is the middle ground."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/In-place_algorithm",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.10582699999999079,
+    "optimalRuntimeMs": 0.13168399999999636,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "h"
+      ],
+      "expected": "h",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "rp"
+      ],
+      "expected": "pr",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "ig8f1cbf"
+      ],
+      "expected": "fbc1f8gi",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "o6b9m80"
+      ],
+      "expected": "08m9b6o",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "2rak1vrj"
+      ],
+      "expected": "jrv1kar2",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "vgfygww"
+      ],
+      "expected": "wwgyfgv",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "qc38hyf9sxmecosfogyr"
+      ],
+      "expected": "rygofsocemxs9fyh83cq",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "xkxwnrek8pk3yr9"
+      ],
+      "expected": "9ry3kp8kernwxkx",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "udocuzre"
+      ],
+      "expected": "erzucodu",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "un5z3jq"
+      ],
+      "expected": "qj3z5nu",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "p98q1"
+      ],
+      "expected": "1q89p",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "zxoi65fdhjk1eyy37q9"
+      ],
+      "expected": "9q73yye1kjhdf56ioxz",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "8rvhs1k3aq6l6gt6mjxk87"
+      ],
+      "expected": "78kxjm6tg6l6qa3k1shvr8",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "u"
+      ],
+      "expected": "u",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "bhxtpdpff5e8ii49"
+      ],
+      "expected": "94ii8e5ffpdptxhb",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "q71n8m"
+      ],
+      "expected": "m8n17q",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "tzx272hpoevb9ooaedoecve"
+      ],
+      "expected": "evceodeaoo9bveoph272xzt",
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "pr5n8i4p40mgg1w103dgdzvgpmm82i1lr3pe29gd8afpk054nzdkyayq3s195jmsnd8dudd467kd6fleepzhpcf07uqnupqzit3uea3ge8n6qiwepxsk28t7a9tgiqhg"
+      ],
+      "expected": "ghqigt9a7t82ksxpewiq6n8eg3aeu3tizqpunqu70fcphzpeelf6dk764ddud8dnsmj591s3qyaykdzn450kpfa8dg92ep3rl1i28mmpgvzdgd301w1ggm04p4i8n5rp",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "9jrsnvnq65qdf1rcaviqk2919ahej8cx9j1ictxcwnpgw90jpkl0blv0prkgyc4om3wtoobmzvrerw6z8vbhqlqcg1wu16hymqc1a78mx1evuht6t0uzs9im0yltz9at"
+      ],
+      "expected": "ta9ztly0mi9szu0t6thuve1xm87a1cqmyh61uw1gcqlqhbv8z6wrervzmbootw3mo4cygkrp0vlb0lkpj09wgpnwcxtci1j9xc8jeha9192kqivacr1fdq56qnvnsrj9",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "n1u322n64kfs6vfptomjbcp4e30my5zpjag1ol73d9ph3i379u26192k42qpr75pr2esprvu8fijoyjne00v830dn0yby4awty088o5or15byvzk3i8bzbf1i3ldqyun"
+      ],
+      "expected": "nuyqdl3i1fbzb8i3kzvyb51ro5o880ytwa4yby0nd038v00enjyojif8uvrpse2rp57rpq24k29162u973i3hp9d37lo1gajpz5ym03e4pcbjmotpfv6sfk46n223u1n",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "uvyr0qf4b8dwoecbpmbjpi4hn3qxkhktgbtyzmepgthcw81xe6va05g1x3j1l7r8431rupfr2p3yvb5ul5nwqvrr9a7mfp059p452bfsozptx497w19vw3rtqohmuh8l"
+      ],
+      "expected": "l8humhoqtr3wv91w794xtpzosfb254p950pfm7a9rrvqwn5lu5bvy3p2rfpur1348r7l1j3x1g50av6ex18wchtgpemzytbgtkhkxq3nh4ipjbmpbceowd8b4fq0ryvu",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let out = '';\n  for (let i = 0; i < s.length; i++) {\n    out = s[i] + out;\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const a = s.split('');\n  let i = 0;\n  let j = a.length - 1;\n  while (i < j) {\n    const t = a[i];\n    a[i] = a[j];\n    a[j] = t;\n    i++;\n    j--;\n  }\n  return a.join('');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 6,
+  "prevSlug": "merge-two-sorted-lists",
+  "nextSlug": "squares-of-sorted-array"
+}

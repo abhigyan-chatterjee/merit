@@ -40,7 +40,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(numCourses, prerequisites) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(numCourses, prerequisites):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(int numCourses, int[][] prerequisites) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    bool solve(int numCourses, std::vector<std::vector<int>> prerequisites) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -102,8 +102,8 @@
       "label": "4 courses DAG"
     }
   ],
-  "sequence": 6,
-  "prevSlug": "all-paths-from-source-to-target",
+  "sequence": 9,
+  "prevSlug": "clone-graph",
   "nextSlug": "course-schedule-ii",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Graph_traversal"

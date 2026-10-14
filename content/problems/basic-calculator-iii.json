@@ -1,0 +1,252 @@
+{
+  "slug": "basic-calculator-iii",
+  "title": "Basic Calculator III",
+  "topic": "stack",
+  "difficulty": "Hard",
+  "pattern": "stack / operator-precedence parsing (shunting-yard)",
+  "statement": "You are given a string `s` that spells out an arithmetic expression over non-negative integer literals, the binary operators `+`, `-`, `*`, `/`, and parentheses `(` and `)`. Spaces carry no meaning and may appear anywhere.\n\nEvaluate the expression exactly and return its value as a decimal string. A literal may itself be long, so an intermediate product can be far larger than a 64-bit integer holds: compute with exact integers, never with floating point, and return the exact decimal digits of the result.\n\nGrammar and evaluation rules:\n\n- `*` and `/` bind tighter than `+` and `-`, and operators of equal precedence apply left to right.\n- Parentheses override precedence and must be balanced.\n- A literal is a non-empty run of digits. Leading zeros are allowed: `007` has the value 7.\n- `/` is integer division that truncates toward zero, so `7/2` is `3`, `(7-10)/2` is `-1`, and `10/5/2` is `1`.\n- Division by zero evaluates to `0`, so `5/0`, `0/0` and `5/(3-3)` are all `0`.\n- Unary signs are not part of the grammar: `-5` and `3*-2` are not valid expressions.\n- Two operands may never be adjacent: `3 4` and `(2)(3)` are not valid expressions.\n\nIf `s` does not match the grammar above, return `\"0\"`.\n\nConstraints: `1 <= s.length <= 200` and each character of `s` is a digit `0`-`9`, one of the operators `+`, `-`, `*`, `/`, a parenthesis `(`, `)`, or a space.\n",
+  "examples": [
+    {
+      "input": "s = \"3\"",
+      "output": "\"3\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"87\"",
+      "output": "\"87\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Precedence decides which operator is applied last, not first. Try to find the weakest operator that sits outside every pair of parentheses: that one splits the string into two smaller expressions you can solve separately.",
+    "A right-to-left scan can track nesting: `)` raises the depth, `(` lowers it, and the first `+` or `-` you meet at depth zero is the split point. If the scan finds nothing, look for a top-level `*` or `/` the same way; if that also fails, the substring is a plain literal or a fully parenthesised group.",
+    "For the single pass, keep one stack of numbers and one of operators. Before pushing an operator, apply every operator already on the stack whose precedence is at least as high; on `)` apply down to the matching `(`. Push literals as exact big integers, and make the division helper answer 0 when the divisor is 0."
+  ],
+  "editorial": {
+    "approach": "The brute force evaluates by splitting on the weakest operator it can find: scan the string right to left tracking parenthesis depth and stop at the first top-level `+` or `-`; if there is none, repeat the scan looking for a top-level `*` or `/`. That operator is the last one applied, so it splits the expression into two independent halves that are evaluated recursively by the same rule. When no top-level operator exists the substring is either a bare literal or a group wrapped in parentheses, so either parse the digits or strip the outer pair and recurse. Each split rescans part of its own substring, which costs O(n^2) overall. The optimal version makes a single left-to-right pass with the shunting-yard idea: digits are pushed as exact integers on a value stack, operators go on an operator stack after every top operator of greater or equal precedence has been applied, and `)` pops down to its matching `(`. Division is a helper that returns 0 for a zero divisor and truncates toward zero otherwise. Before either evaluation runs, a single scan validates the grammar, so malformed input returns \"0\" consistently.",
+    "why_optimal": "Every character has to be read at least once and each operator must be compared with its neighbours to respect precedence, so O(n) is the floor for parsing, and it is reached with one pass and two stacks. The O(n) auxiliary space is the parser's own state: operator nesting can be as deep as the string is long (200 open parentheses), so a stack proportional to n cannot be avoided. O(n^2) is not acceptable here because a fully nested expression forces the divide-and-conquer version to rescan almost the whole string at every level.",
+    "pitfalls": "- Writing the shipped functions in TypeScript form (`s: string`). The judge executes plain JavaScript, so any type annotation is an immediate SyntaxError.\n- Using floating point or 64-bit integers: a literal of 40 digits is legal, and JS doubles or Python floats lose the exact decimal answer that the problem asks for.\n- Popping the operator stack in the wrong order: the top of the value stack is the right operand, so the second pop is the left one (`calc(a, op, b)` with `b` popped first).\n- Treating division as floor division. `-7/2` must be `-3`, and Python's `//` floors to `-4`, so the sign has to be repaired explicitly while JavaScript needs `Math.trunc` or exact integer arithmetic.\n- Forgetting the zero-divisor rule: plain `/` yields `Infinity` in JavaScript and raises an exception in Python, so both must check the divisor first.\n- Accepting operands that touch (`1 2`, `(2)(3)`) or a trailing operator (`1+`): the bounds allow the single space string `\" \"`, and that must return `\"0\"` rather than crash."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Shunting_yard_algorithm",
+    "https://en.wikipedia.org/wiki/Operator-precedence_parser",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.3400429999999979,
+    "optimalRuntimeMs": 0.349103999999997,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "3"
+      ],
+      "expected": "3",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "87"
+      ],
+      "expected": "87",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "432/1026"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        " 06/7(80"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "/+846+"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "2*3-"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "81(3*29-6217"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "273*8(-5--"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "82575(*"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "7+171+*82"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "+6)*(48"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "78/*-"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "4 )21345"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "/2**( 8038+39/5(08 5 3"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "9 64-5 0+)03-971722)2"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "44)58 /669*-( (377"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "+07"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "7021721+2 78)64)7)/"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "33/-//(131*+3766(4/58(72(310275/))6*15*0*8(9/)469611+11)  51 25227*3712/ +86+78*49(+20(326 84-27-95(9 09348334896+68 )812/810+48"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "(/03241-4/419-1-673-/4755/05+/7853*1)76(-97706*+828- *+0385813/-+/ 3*681/0 6-/2++39 9/+*946/*59*0996/+(((6 )529 +279764017)2(/6*"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "*7403/75 (173(4( +( /(5)(878 )78(2978++2447*462//+(/16/*0*)0-9*/7)78/)0*+*5(40*02/4(518*+6(++*8/82)01-7210760474)36(8-5359309**6"
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "73931-/-2 +0/)3/-(4/5 8)(/8+728(7(*+0)+5)6-8+880 627/)7))(0297*79-) -/+-(898736+3566)8 93697-590481194)309))(+518)32*)21449273/7"
+      ],
+      "expected": "0",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n^2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const src = s.replace(/\\s+/g, '');\n  let i = 0, depth = 0, need = true, ok = true;\n  while (i < src.length) {\n    const c = src[i];\n    if (c >= '0' && c <= '9') {\n      if (!need) { ok = false; break; }\n      while (i < src.length && src[i] >= '0' && src[i] <= '9') i++;\n      need = false;\n    } else if (c === '(') {\n      if (!need) { ok = false; break; }\n      depth++; i++;\n    } else if (c === ')') {\n      if (need || depth === 0) { ok = false; break; }\n      depth--; i++;\n    } else if (c === '+' || c === '-' || c === '*' || c === '/') {\n      if (need) { ok = false; break; }\n      need = true; i++;\n    } else { ok = false; break; }\n  }\n  if (!ok || need || depth !== 0) return \"0\";\n\n  function calc(a, op, b) {\n    if (op === '+') return a + b;\n    if (op === '-') return a - b;\n    if (op === '*') return a * b;\n    if (b === 0n) return 0n;\n    return a / b;\n  }\n\n  function ev(t) {\n    let d = 0, split = -1;\n    for (let k = t.length - 1; k >= 0; k--) {\n      const c = t[k];\n      if (c === ')') d++;\n      else if (c === '(') d--;\n      else if (d === 0 && (c === '+' || c === '-')) { split = k; break; }\n    }\n    if (split === -1) {\n      d = 0;\n      for (let k = t.length - 1; k >= 0; k--) {\n        const c = t[k];\n        if (c === ')') d++;\n        else if (c === '(') d--;\n        else if (d === 0 && (c === '*' || c === '/')) { split = k; break; }\n      }\n    }\n    if (split !== -1) {\n      const left = ev(t.slice(0, split));\n      const right = ev(t.slice(split + 1));\n      return calc(left, t[split], right);\n    }\n    if (t[0] === '(') return ev(t.slice(1, -1));\n    return BigInt(t);\n  }\n\n  return ev(src).toString();\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const src = s.replace(/\\s+/g, '');\n  let i = 0, depth = 0, need = true, ok = true;\n  while (i < src.length) {\n    const c = src[i];\n    if (c >= '0' && c <= '9') {\n      if (!need) { ok = false; break; }\n      while (i < src.length && src[i] >= '0' && src[i] <= '9') i++;\n      need = false;\n    } else if (c === '(') {\n      if (!need) { ok = false; break; }\n      depth++; i++;\n    } else if (c === ')') {\n      if (need || depth === 0) { ok = false; break; }\n      depth--; i++;\n    } else if (c === '+' || c === '-' || c === '*' || c === '/') {\n      if (need) { ok = false; break; }\n      need = true; i++;\n    } else { ok = false; break; }\n  }\n  if (!ok || need || depth !== 0) return \"0\";\n\n  const prec = { '+': 1, '-': 1, '*': 2, '/': 2 };\n  const vals = [], ops = [];\n\n  function calc(a, op, b) {\n    if (op === '+') return a + b;\n    if (op === '-') return a - b;\n    if (op === '*') return a * b;\n    if (b === 0n) return 0n;\n    return a / b;\n  }\n\n  function apply() {\n    const b = vals.pop(), a = vals.pop(), op = ops.pop();\n    vals.push(calc(a, op, b));\n  }\n\n  i = 0;\n  while (i < src.length) {\n    const c = src[i];\n    if (c >= '0' && c <= '9') {\n      let j = i;\n      while (j < src.length && src[j] >= '0' && src[j] <= '9') j++;\n      vals.push(BigInt(src.slice(i, j)));\n      i = j;\n    } else if (c === '(') {\n      ops.push(c); i++;\n    } else if (c === ')') {\n      while (ops[ops.length - 1] !== '(') apply();\n      ops.pop(); i++;\n    } else {\n      while (ops.length > 0 && ops[ops.length - 1] !== '(' && prec[ops[ops.length - 1]] >= prec[c]) apply();\n      ops.push(c); i++;\n    }\n  }\n  while (ops.length > 0) apply();\n  return vals[0].toString();\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 20,
+  "prevSlug": "basic-calculator",
+  "nextSlug": "maximal-rectangle"
+}

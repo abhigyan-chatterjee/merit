@@ -1,0 +1,253 @@
+{
+  "slug": "restore-ip-addresses",
+  "title": "Restore IP Addresses",
+  "topic": "backtracking",
+  "difficulty": "Medium",
+  "pattern": "backtracking over cut positions",
+  "statement": "A dotted-decimal IPv4 address was written down and then every dot was lost, leaving only the digit string `s`. Recover all the addresses that could have produced `s`.\n\nAn IPv4 address is four decimal parts separated by dots, each part holding a number from 0 to 255 written without leading zeros, except that the number zero is written as the single digit `0`. Putting the four parts together in order must reproduce `s` exactly, so no digit may be dropped, reordered, or shared between two parts.\n\nReturn every valid address in ascending lexicographic order, and return an empty array when `s` cannot be split into four valid parts.\n\nExamples: `s = \"10112\"` yields `[\"1.0.1.12\", \"1.0.11.2\", \"10.1.1.2\"]`, and `s = \"010010\"` yields `[\"0.10.0.10\", \"0.100.1.0\"]`.\n\nConstraints: `1 <= s.length <= 12`.\n",
+  "examples": [
+    {
+      "input": "s = \"1\"",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"43\"",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Three dots are all the structure there is: four parts, each between one and three digits long, use every digit exactly once.",
+    "Prune while cutting. A part with a leading zero can only be the single digit `0`, and a part above 255 is dead, along with every longer part cut at the same spot.",
+    "Do not forget the leftover length rule: after three parts are placed, the rest is the fourth part, and its length has to be between one and three before you recurse any further."
+  ],
+  "editorial": {
+    "approach": "The brute force fixes the three dot positions with three nested loops over part lengths 1, 2 and 3, derives the length of the last part from what remains, validates all four parts, and sorts whatever it collected. The number of triples is at most C(n-1, 3), which is 165 for `n = 12`. The optimal version is a depth-first search with four levels that prunes at the point of choice: a part that is longer than one digit and starts with `0` kills the branch, a part whose value exceeds 255 kills the branch, and a part length that would leave fewer than one or more than three digits per remaining part is skipped before recursing. Both versions sort the answers, because the depth-first order (short first parts before long ones) is not lexicographic order on the finished addresses.",
+    "why_optimal": "Four parts of at most three digits give a search tree with at most 3^4 = 81 leaves, and the pruning cuts whole subtrees at the root, so the search does a constant amount of work regardless of how long `s` is; the same argument makes the nested loops `O(n\u00b3)` with `n <= 12`, at most 165 triples. The unavoidable cost is formatting and sorting the answers, which both versions share, so the two implementations differ by a small constant factor here and the pruning only becomes decisive when narrower bounds stop the loops from finishing early.",
+    "pitfalls": "Leading zeros are the classic bug: `\"01\"` is not a legal part, so `\"010010\"` must not produce `\"01.0.0.10\"`, and the check has to be done on the text of the part rather than on its numeric value, because `int(\"010\")` is happily 10. Values above 255 have to be rejected, and the rejection must break out of the length loop rather than continue, since a longer part cut from the same position is only larger. The last part has no choice about its length, so a search that only ever places four parts of length 1 to 3 will silently drop solutions such as `\"1.0.11.2\"`, and a search that does not check `start == n` will emit addresses built from a prefix of `s`. Finally, `len(s) < 4` or `len(s) > 12` can never be split, so the early return has to be there."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Backtracking",
+    "https://en.wikipedia.org/wiki/IPv4"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String[] solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::string> solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.293228999999986,
+    "optimalRuntimeMs": 0.37488399999998023,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "1"
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "43"
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "21819600"
+      ],
+      "expected": [
+        "218.19.60.0",
+        "218.196.0.0"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "338"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "083863794026"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "42351161559"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "078161849"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "931034131647"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "525534192832"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "648350305641"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "9537672"
+      ],
+      "expected": [
+        "9.53.76.72",
+        "95.3.76.72",
+        "95.37.6.72",
+        "95.37.67.2"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "238849696"
+      ],
+      "expected": [
+        "238.84.96.96"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "328710122691"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "697848018451"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "6270482814"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "893252880957"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "430391171822"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "782489638346"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "578713315098"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "930103105183"
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "738299737631"
+      ],
+      "expected": [],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b3) (at most 165 cut triples at n = 12) | Space: O(1) extra",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  const out = [];\n  const ok = (seg) => {\n    if (seg.length === 0 || seg.length > 3) return false;\n    if (seg.length > 1 && seg[0] === \"0\") return false;\n    return Number(seg) <= 255;\n  };\n  for (let a = 1; a <= 3; a++) {\n    for (let b = 1; b <= 3; b++) {\n      for (let c = 1; c <= 3; c++) {\n        const d = n - a - b - c;\n        if (d < 1 || d > 3) continue;\n        const parts = [s.slice(0, a), s.slice(a, a + b), s.slice(a + b, a + b + c), s.slice(a + b + c)];\n        if (parts.every(ok)) out.push(parts.join(\".\"));\n      }\n    }\n  }\n  out.sort();\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) (at most 81 pruned placements) | Space: O(1) extra",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  const out = [];\n  const parts = [];\n  function dfs(start) {\n    if (parts.length === 4) {\n      if (start === n) out.push(parts.join(\".\"));\n      return;\n    }\n    for (let len = 1; len <= 3; len++) {\n      if (start + len > n) break;\n      const seg = s.slice(start, start + len);\n      if (seg.length > 1 && seg[0] === \"0\") break;\n      if (Number(seg) > 255) break;\n      parts.push(seg);\n      dfs(start + len);\n      parts.pop();\n    }\n  }\n  dfs(0);\n  out.sort();\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 7,
+  "prevSlug": "permutations",
+  "nextSlug": "subsets"
+}

@@ -40,7 +40,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(s, t):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(String s, String t) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    bool solve(std::string s, std::string t) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -71,9 +71,9 @@
       "label": "\"listen\", \"silent\""
     }
   ],
-  "sequence": 10,
+  "sequence": 15,
   "prevSlug": "two-sum-ii-sorted",
-  "nextSlug": "group-anagrams",
+  "nextSlug": "insert-delete-getrandom-o-1",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ],

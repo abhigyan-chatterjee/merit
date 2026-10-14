@@ -1,0 +1,243 @@
+{
+  "slug": "longest-valid-parentheses",
+  "title": "Longest Valid Parentheses",
+  "topic": "dynamic-programming",
+  "difficulty": "Hard",
+  "pattern": "1D DP over valid slice endings",
+  "statement": "A string made of the characters `'('` and `')'` is valid when it is the empty string, or when it can be split into two valid strings, or when it is a valid string wrapped in a matching pair. Equivalently, a bracket string is valid when every prefix has at least as many `'('` as `')'` and the whole string has equally many of each.\n\nGiven the bracket string `s`, where every character is either `'('` or `')'`, return the length of the longest contiguous slice of `s` that is a valid bracket string. A slice is a run of consecutive characters; a valid slice must be non-empty to count. Return 0 when no non-empty valid slice exists.\n\nFor example, in `\"(()\"` the longest valid slice is `\"()\"` with length 2, in `\")()())\"` it is `\"()()\"` with length 4, and in `\"(\"` there is none, so the answer is 0.\n\nConstraints: `1 <= s.length <= 200` and every character of `s` is `'('` or `')'`.\n",
+  "examples": [
+    {
+      "input": "s = \"(\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \")(\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Do not try to count pairs. For each position ask a narrower question instead: what is the longest valid slice that ends exactly here?",
+    "When the current character is `')'`, the previous character decides the case. If it is `'('` you have a pair plus whatever valid slice ended before it. If it is `')'`, its own slice has a known length, and the character just left of that slice must be `'('` to close it; the slice before that opener can then be glued on as well.",
+    "The answer is the maximum over every ending position, because a trailing unmatched bracket means the best slice does not end at the last index."
+  ],
+  "editorial": {
+    "approach": "The brute force fixes a starting index and sweeps right keeping a running balance of `'('` minus `')'`. A slice is valid exactly when the balance never drops below zero and comes back to zero, so each zero hit is a candidate answer; once the balance goes negative the start index is dead and the inner loop breaks. That is O(n^2). The optimal version keeps a one-dimensional table where `dp[i]` is the length of the longest valid slice ending at index `i`. A `')'` at `i` either pairs with a `'('` at `i - 1`, giving 2 plus `dp[i - 2]`, or closes a block that already ends at `i - 1`: that block has length `dp[i - 1]`, the character immediately to its left must be `'('`, and when it is, the new length is `dp[i - 1] + 2` plus the valid slice ending just before that opener.",
+    "why_optimal": "The whole string must be read, and every DP entry is filled by looking back at a constant number of positions, so O(n) time is the floor; the table costs O(n) space and carries the recurrence directly. A monotonic stack reaches the same O(n) time bound, so no approach beats linear here. With n at most 200 the O(n^2) brute force is still instant and serves as the cross-check.",
+    "pitfalls": "Returning `dp[n - 1]` instead of the maximum over all positions, which fails on `\")()\"` and on any string whose last character leaves a slice open. Off-by-one in the jump `i - dp[i - 1] - 1`, which must land exactly on the character that closes the inner block. Forgetting to add the slice ending before that opener, which under-counts strings such as `\"()(())\"`. All `'('` or all `')'` input must return 0, and a single character must never be reported as valid."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dyck_language",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.48579000000000505,
+    "optimalRuntimeMs": 0.21801600000000576,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "("
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        ")("
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "((()(((("
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "(()())(("
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        ")))(()(()()))()()())((("
+      ],
+      "expected": 16,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "()((())))())()(((()))("
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        ")((()))(()()))()(())))"
+      ],
+      "expected": 12,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "()((((()"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "())))(())())()()(()("
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        ")(())"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        ")((((()((()("
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        ")(()))))("
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "(()((((("
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "(((()(())(()())((()))))"
+      ],
+      "expected": 22,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "((())(((()()())(()(((((("
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "))()(()())))))"
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "()((("
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        ")(()((((((()(((()))()())()))(()((()()(())())()(()((())()()))(())(()()())((((()()(())()((())(((()(())()(()()(()))(((()))())))(()("
+      ],
+      "expected": 40,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        ")(())))()()()(())())())))))(())())())()))))()(())(()(((((()())()))(((()(()((()()))))()))())())()()))(((()((()))))(())())())))()("
+      ],
+      "expected": 56,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "))()))()(()(()()(()))()))))))()(()(((((((((()(()))((()(()))(((()(()))()())()))()())))))(())()))())()()))))(((())()))(()()())))))"
+      ],
+      "expected": 74,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "))))((()(((()))(()()()(()(()()(()))))(())(())(((()((()())))))(((()((((((())))(()))(()()((()(((()))())))))(()))(((()(()))())())))"
+      ],
+      "expected": 66,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n^2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let best = 0;\n  for (let i = 0; i < s.length; i++) {\n    let balance = 0;\n    for (let j = i; j < s.length; j++) {\n      balance += s[j] === '(' ? 1 : -1;\n      if (balance < 0) break;\n      if (balance === 0) {\n        const len = j - i + 1;\n        if (len > best) best = len;\n      }\n    }\n  }\n  return best;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  const dp = new Array(n).fill(0);\n  let best = 0;\n  for (let i = 0; i < n; i++) {\n    if (s[i] !== ')') continue;\n    if (i >= 1 && s[i - 1] === '(') {\n      dp[i] = 2 + (i >= 2 ? dp[i - 2] : 0);\n    } else if (i >= 1 && s[i - 1] === ')') {\n      const open = i - dp[i - 1] - 1;\n      if (open >= 0 && s[open] === '(') {\n        dp[i] = dp[i - 1] + 2 + (open >= 1 ? dp[open - 1] : 0);\n      }\n    }\n    if (dp[i] > best) best = dp[i];\n  }\n  return best;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 24,
+  "prevSlug": "edit-distance",
+  "nextSlug": "maximum-profit-in-job-scheduling"
+}

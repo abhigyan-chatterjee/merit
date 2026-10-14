@@ -898,7 +898,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n² log n) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2 log n) | Space: O(n)",
       "language": "javascript",
       "code": "function lastStoneWeight(stones) {\n  let piles = stones.slice();\n  while (piles.length > 1) {\n    piles.sort((a, b) => a - b);\n    const y = piles.pop();\n    const x = piles.pop();\n    if (y !== x) piles.push(y - x);\n  }\n  return piles.length === 0 ? 0 : piles[0];\n}",
       "isReference": false
@@ -927,5 +927,5 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "kth-largest-element-in-an-array"
+  "nextSlug": "design-twitter"
 }
