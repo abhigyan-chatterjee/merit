@@ -249,7 +249,7 @@ cd /home/ubuntu/merit
 git pull
 docker compose up -d --build
 docker compose ps                 # merit-piston should be gone
-docker rm -f merit-piston 2>/dev/null || true
+docker rm -f merit-piston 2>/dev/null || true   # legacy cleanup: nothing calls Piston
 docker volume rm merit_merit-piston-packages 2>/dev/null || true
 ```
 
@@ -290,9 +290,16 @@ Answer. That is the lesson "selecting the proper type of data matters".
   typed source from the problem's recorded signature plus the test data: input
   values become typed literals, results are serialised and compared exactly as
   the interpreted languages do.
+- **Result protocol.** Every harness prints one line behind the
+  `__MERIT_RESULT__` marker and then hard-exits (`Runtime.halt`, `std::_Exit`,
+  `os._exit`, `process.reallyExit`). The marker alone is not a secret — student
+  code shares the process — so the exit is what carries the guarantee: an
+  `atexit`/shutdown hook cannot print a second block afterwards. The parser
+  rejects unmarked output entirely and requires each result to be an object with
+  a boolean `passed`; anything else grades `RE` rather than being coerced.
 - **Signatures** come from `content/signatures.json`, read through
   `app/services/signatures.py` and gated in CI by
-  `content/validators/verify_signatures.py`. All 140 problems carry one, so every
+  `content/validators/verify_signatures.py`. All 274 problems carry one, so every
   problem can be submitted in every language. The vocabulary is intentionally
   small — `int`, `long`, `double`, `boolean`, `String`, the four `List<…>` shapes,
   and `TreeNode` — and each entry is checked against the test data rather than

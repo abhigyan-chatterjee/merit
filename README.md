@@ -3,9 +3,9 @@
 > **"Step through the execution, not the explanation. Make the merit list."**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-merit.nullbit.in-00E599?style=flat-square&logo=googlechrome&logoColor=white)](https://merit.nullbit.in)
-[![API Tests](https://img.shields.io/badge/API%20Tests-153%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
-[![Web Tests](https://img.shields.io/badge/Web%20Tests-223%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
-[![Verified Problems](https://img.shields.io/badge/Problem%20Bank-140%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
+[![API Tests](https://img.shields.io/badge/API%20Tests-215%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
+[![Web Tests](https://img.shields.io/badge/Web%20Tests-262%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
+[![Verified Problems](https://img.shields.io/badge/Problem%20Bank-274%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 MERIT is an end-to-end technical assessment and Data Structures & Algorithms learning platform tailored for Indian engineering campus placements (TCS NQT Ninja/Prime, Infosys SP/DSE, Cognizant, and product-based hiring drives).
@@ -71,9 +71,9 @@ graph TD
   * HackerRank-style sidebar navigator with answered/flagged/visited question states.
 
 ### 3. Curated Problem Bank & Practice Modules
-* **140 Verified Problems**: Spanning 17 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions, and typed starter code for all four judged languages (Python, JavaScript, Java, C++).
+* **274 Verified Problems**: Spanning 18 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions, and typed starter code for all four judged languages (Python, JavaScript, Java, C++).
 * **Continuous Doubly-Linked Sequences**: Seamless "Next in Category" navigation ordered strictly by pedagogical difficulty (`Easy` $\rightarrow$ `Medium` $\rightarrow$ `Hard`).
-* **539 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
+* **341 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
 
 ### 4. Zero-Liability BYOK AI Tutor
 * **Bring Your Own Key**: Works with free Gemini API keys, OpenAI, Anthropic, DeepSeek, and Groq.
@@ -83,6 +83,11 @@ graph TD
 ### 5. In-App Bug & Test Case Feedback Webform
 * Self-hosted dialog accessible across the application.
 * Automatically captures problem context, page route, and error details, filing tracked issues directly into the public GitHub issue tracker via the GitHub REST API.
+
+### 6. Spaced Revision (SM-2)
+* **Automatic Scheduling**: A graded submission schedules the next review, so practice turns into retention instead of a single pass.
+* **Self-Rated Reviews**: The dashboard surfaces what is due today and lets you rate recall; the interval grows (`1d` → `6d` → `interval × ease`) and lapses reset it.
+* **Per-User Schedule**: `revision_items` is scoped to the signed-in user and keyed on `(user, item_type, item_id)`.
 
 ---
 
@@ -114,17 +119,17 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 │   │   │   ├── routers/     # Auth, Judge, Quizzes, Tutor, Feedback, Progress
 │   │   │   ├── schemas/     # Pydantic validation schemas
 │   │   │   └── seed.py      # Problem and question seed loaders
-│   │   └── tests/           # 153 Pytest unit and integration tests
+│   │   └── tests/           # 215 Pytest unit and integration tests
 │   └── web/                 # React 19 single-page application
 │       ├── src/
 │       │   ├── components/  # Modals, Navbars, CodeRunner, QuizEngine, Tutor
 │       │   ├── pages/       # Problems, Exams, Dashboard, Profile, Landing
 │       │   ├── visualizers/ # 12 interactive canvas algorithm engines
 │       │   └── store/       # Auth & Progress state contexts
-│       └── tests/           # 223 Vitest component tests
+│       └── tests/           # 262 Vitest component tests
 ├── content/
-│   ├── problems/            # 140 authored problem JSON specifications
-│   ├── questions/           # 539 verified multiple-choice question datasets
+│   ├── problems/            # 274 authored problem JSON specifications
+│   ├── questions/           # 341 verified multiple-choice question datasets
 │   ├── generators/          # Problem Authoring Framework (PAF) & TS sync scripts
 │   └── validators/          # Automated content & reference solution AC gates
 ├── docker-compose.yml       # Production multi-container composition
@@ -153,8 +158,9 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-# Run database migrations and seed problems
-python -c "from app.db import Base, engine, SessionLocal; from app.seed import seed_all; Base.metadata.create_all(bind=engine); db=SessionLocal(); seed_all(db); db.close()"
+# Apply migrations, then seed verified content
+alembic upgrade head
+python -m app.seed
 
 # Start API server
 uvicorn app.main:app --reload --port 8000
@@ -172,13 +178,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Running Test Suites
 
-### Backend Unit & Integration Tests (153 tests)
+### Backend Unit & Integration Tests (215 tests)
 ```bash
 cd apps/api
 pytest -q
 ```
 
-### Frontend Component & Route Tests (223 tests)
+### Frontend Component & Route Tests (262 tests)
 ```bash
 cd apps/web
 npm test

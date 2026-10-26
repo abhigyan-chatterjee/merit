@@ -148,7 +148,7 @@ points at Neon. No live URL exists yet — everything below is ready short of
 the owner-run cutover.
 
 Why it works without a data migration: all models use `String`/`Text`/
-`Integer`/`Float` (no SQLite-only DDL in any of the 9 migrations), UUID
+`Integer`/`Float` (no SQLite-only DDL in any of the 11 migrations), UUID
 primary keys are generated client-side (`str(uuid.uuid4())`, no `pgcrypto`
 needed), `server_default`s are plain string literals valid on Postgres, and
 the Clerk migration (`c4f1a2b3d4e5`) uses a unique *index* on nullable
@@ -191,11 +191,13 @@ server required).
 # here; the deploy itself lives at /home/ubuntu/merit.
 cd /home/ubuntu/merit/apps/api
 
-# 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 9 revisions)
+# 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 11 revisions)
 DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
 
 # 2. Seed verified content ONCE (problems, questions, paths). Re-runs are
-#    idempotent — existing rows are skipped, never duplicated.
+#    idempotent — existing rows are skipped, never duplicated. The API also
+#    syncs content on boot when the tree changed, so this step only matters for
+#    the one-off cutover to an empty database.
 DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 
 # 3. Recreate the API so the engine binds the pg URL. `restart` does not

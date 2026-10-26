@@ -27,13 +27,13 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 
 | Layer | Verification Gate | Status | Evidence / Artifact |
 |---|---|---|---|
-| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 223 tests across 39 files (visualizers, auth, code runner, quiz engine, admin) |
+| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 262 tests across 49 files (visualizers, auth, code runner, quiz engine, admin) |
 | **Frontend Build** | Vite production bundle & Route chunking | **PASSED** | Code-split into lazy route chunks with Suspense fallbacks |
 | **Correctness Defects** | D1–D12 Base Audit defects | **100% RESOLVED** | Verified: node-based BST/Heap, SVG scaling, dedicated visualizers |
 | **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Lax, Secure cookies; strict sub claim validation |
 | **User Data Isolation** | Server-side user_id filtering authz matrix | **PASSED** | `apps/api/tests/test_authz.py` asserts complete cross-user isolation |
 | **Sandboxed Judge** | Cloud Run judge service replacing `new Function()` | **PASSED** | Runs in its own container with no secrets/database, zero browser code evaluation |
-| **Content Bank** | 539 verified questions & 140 original problems | **PASSED** | `content/validators/run_all.py` (140/140 AC, 539 verified / 341 unique) |
+| **Content Bank** | 341 verified questions & 274 original problems | **PASSED** | `content/validators/run_all.py` (274/274 AC, 341 verified questions) |
 | **Adaptive Quizzes** | 50-exposure no-repeat window & server-side snapshots | **PASSED** | `test_quizzes.py` confirms no answer leakage + 404 on unknown topics; 20s auto-advance |
 | **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | Foundation, Targeted, Mastery (summaries + reading links per step) |
 | **Placement Features** | Spaced-repetition revision queue & Timed mock exam | **PASSED** | 20 MCQ + 2 coding exams (7 types incl. 3h full mock); rolling weak areas |
