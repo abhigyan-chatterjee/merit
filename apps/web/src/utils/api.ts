@@ -39,7 +39,144 @@ function normalizeUser(raw: Record<string, unknown>): UserProfile {
   };
 }
 
-let isRefreshing = false;
+/**
+ * Cross-tab coordination of the token refresh.
+ *
+ * The refresh cookie rotates atomically server-side: if two tabs POST
+ * /auth/refresh at the same time, the server grants one and treats the other
+ * as a replayed token (token theft) and revokes every session. So only one tab
+ * may refresh, and the others must wait for it instead of racing.
+ *
+ * Coordination is two-layered:
+ *  1. `navigator.locks` where available (all current Chromium/Firefox builds);
+ *  2. otherwise a localStorage mutex with a TTL, so a tab killed mid-refresh
+ *     cannot block everyone forever.
+ * Both paths then consult `REFRESH_STAMP_KEY`, so a tab that waited for the
+ * lock does not repeat the refresh its neighbour just completed.
+ */
+const REFRESH_LOCK_NAME = "merit_token_refresh";
+const REFRESH_LOCK_KEY = "merit_refresh_lock_v1";
+const REFRESH_STAMP_KEY = "merit_refresh_at_v1";
+/** A crashed tab stops refreshing the lock after this long. */
+const REFRESH_LOCK_TTL_MS = 10_000;
+/** A refresh younger than this is reused instead of repeated. */
+const REFRESH_FRESH_MS = 5_000;
+/** Upper bound on waiting for another tab's refresh. */
+const REFRESH_WAIT_MS = 4_000;
+
+/** Per-tab identity, so a tab only releases a mutex it actually holds. */
+const TAB_ID = Math.random().toString(36).slice(2);
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function lastRefreshAt(): number {
+  try {
+    const raw = window.localStorage.getItem(REFRESH_STAMP_KEY);
+    const parsed = raw === null ? 0 : Number(raw);
+    return Number.isFinite(parsed) ? parsed : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function markRefreshed(at: number = Date.now()): void {
+  try {
+    window.localStorage.setItem(REFRESH_STAMP_KEY, String(at));
+  } catch {
+    // Storage unavailable (private mode, quota): the lock still serialises.
+  }
+}
+
+function refreshIsFresh(): boolean {
+  return Date.now() - lastRefreshAt() < REFRESH_FRESH_MS;
+}
+
+function tryAcquireLocalLock(): boolean | null {
+  const now = Date.now();
+  try {
+    const raw = window.localStorage.getItem(REFRESH_LOCK_KEY);
+    if (raw !== null) {
+      let expiresAt = 0;
+      try {
+        const parsed = JSON.parse(raw) as { expiresAt?: unknown };
+        if (typeof parsed.expiresAt === "number") expiresAt = parsed.expiresAt;
+      } catch {
+        // Corrupt lock payload — treat as expired and take over.
+      }
+      if (expiresAt > now) return false;
+    }
+    window.localStorage.setItem(
+      REFRESH_LOCK_KEY,
+      JSON.stringify({ id: TAB_ID, expiresAt: now + REFRESH_LOCK_TTL_MS })
+    );
+    return true;
+  } catch {
+    // No usable storage: fall back to per-tab behaviour rather than deadlock.
+    return null;
+  }
+}
+
+function releaseLocalLock(): void {
+  try {
+    const raw = window.localStorage.getItem(REFRESH_LOCK_KEY);
+    if (raw === null) return;
+    const parsed = JSON.parse(raw) as { id?: unknown };
+    if (parsed.id === TAB_ID) window.localStorage.removeItem(REFRESH_LOCK_KEY);
+  } catch {
+    // Nothing to release.
+  }
+}
+
+async function requestRefresh(): Promise<void> {
+  const res = await fetch("/api/v1/auth/refresh", {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) {
+    throw new Error("Refresh failed");
+  }
+  markRefreshed();
+}
+
+async function refreshUnderLock(): Promise<void> {
+  // Another tab may have refreshed while this one was waiting.
+  if (refreshIsFresh()) return;
+  await requestRefresh();
+}
+
+async function crossTabRefresh(): Promise<void> {
+  const locks = navigator.locks as LockManager | undefined;
+  if (locks && typeof locks.request === "function") {
+    // Waiting tabs queue here, then no-op thanks to the freshness stamp.
+    await locks.request(REFRESH_LOCK_NAME, { mode: "exclusive" }, refreshUnderLock);
+    return;
+  }
+
+  const deadline = Date.now() + REFRESH_WAIT_MS;
+  while (Date.now() < deadline) {
+    const acquired = tryAcquireLocalLock();
+    if (acquired === true) {
+      try {
+        await refreshUnderLock();
+      } finally {
+        releaseLocalLock();
+      }
+      return;
+    }
+    if (acquired === null) {
+      // Storage unusable — best effort, this tab cannot coordinate.
+      await refreshUnderLock();
+      return;
+    }
+    if (refreshIsFresh()) return;
+    // Small randomised backoff so waiting tabs do not stampede the lock.
+    await sleep(40 + Math.random() * 120);
+  }
+  throw new Error("Refresh lock timed out");
+}
+
 let refreshPromise: Promise<void> | null = null;
 
 export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -66,22 +203,10 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     endpoint.includes("/auth/oauth");
 
   if (response.status === 401 && !isAuthEndpoint) {
-    if (!isRefreshing) {
-      isRefreshing = true;
-      refreshPromise = (async () => {
-        try {
-          const refRes = await fetch("/api/v1/auth/refresh", {
-            method: "POST",
-            credentials: "include",
-          });
-          if (!refRes.ok) {
-            throw new Error("Refresh failed");
-          }
-        } finally {
-          isRefreshing = false;
-          refreshPromise = null;
-        }
-      })();
+    if (!refreshPromise) {
+      refreshPromise = crossTabRefresh().finally(() => {
+        refreshPromise = null;
+      });
     }
 
     try {
@@ -219,6 +344,34 @@ export interface RevisionItem {
   reason: string;
   due_stage: string;
   link: string;
+}
+
+/** One scheduled review returned by /api/v1/revision/due. */
+export interface ScheduledReview {
+  item_type: "problem" | "question";
+  item_id: string;
+  title: string;
+  topic: string;
+  due_date: string;
+  interval_days: number;
+  reps: number;
+  lapses: number;
+}
+
+export interface RevisionDueResponse {
+  today: string;
+  count: number;
+  items: ScheduledReview[];
+}
+
+export interface RevisionReviewResult {
+  item_type: string;
+  item_id: string;
+  due_date: string;
+  interval_days: number;
+  ease: number;
+  reps: number;
+  lapses: number;
 }
 
 export interface ProgressSummary {
@@ -594,5 +747,26 @@ export const adminApi = {
   },
 };
 
+export const revisionApi = {
+  /** The queue that is actually due today. The dashboard summary shows the
+   *  next five scheduled items instead; this is the strict list. */
+  async getDue(limit = 20): Promise<RevisionDueResponse> {
+    return await apiRequest<RevisionDueResponse>(`/api/v1/revision/due?limit=${limit}`);
+  },
 
-
+  /** Self-rating moves the SM-2 schedule. Grade >= 3 counts as recalled. */
+  async review(
+    itemType: "problem" | "question",
+    itemId: string,
+    grade: number,
+    localDate?: string,
+  ): Promise<RevisionReviewResult> {
+    return await apiRequest<RevisionReviewResult>(
+      `/api/v1/revision/${itemType}/${encodeURIComponent(itemId)}/review`,
+      {
+        method: "POST",
+        body: JSON.stringify({ grade, ...(localDate ? { local_date: localDate } : {}) }),
+      },
+    );
+  },
+};

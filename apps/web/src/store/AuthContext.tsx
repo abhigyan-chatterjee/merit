@@ -1,9 +1,15 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { authApi, UserProfile } from "@/utils/api";
+import { ApiError, authApi, UserProfile } from "@/utils/api";
 
 interface AuthContextType {
   user: UserProfile | null;
   isLoading: boolean;
+  /**
+   * Set when the session probe failed for a reason that is not "you are signed
+   * out" (network error, timeout, 5xx). The UI can offer a retry instead of
+   * pretending the account disappeared.
+   */
+  authError: Error | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, displayName: string) => Promise<void>;
   loginWithClerk: (clerkToken: string) => Promise<void>;
@@ -20,14 +26,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [authError, setAuthError] = useState<Error | null>(null);
 
   const refreshUser = useCallback(async (): Promise<UserProfile | null> => {
     try {
       const profile = await authApi.getMe();
       setUser(profile);
+      setAuthError(null);
       return profile;
-    } catch {
-      setUser(null);
+    } catch (error) {
+      // Only a real 401 means "signed out". A network blip, a timeout or a
+      // 5xx says nothing about the session, so it must not destroy it — the
+      // failure is surfaced as `authError` and a reload/retry recovers.
+      const status = error instanceof ApiError ? error.status : null;
+      if (status === 401) {
+        setUser(null);
+        setAuthError(null);
+      } else {
+        setAuthError(error instanceof Error ? error : new Error("AUTH_CHECK_FAILED"));
+      }
       return null;
     } finally {
       setIsLoading(false);
@@ -40,16 +57,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const profile = await authApi.login(email, password);
+    setAuthError(null);
     setUser(profile);
   };
 
   const register = async (email: string, password: string, displayName: string) => {
     const profile = await authApi.register(email, password, displayName);
+    setAuthError(null);
     setUser(profile);
   };
 
   const loginWithClerk = async (clerkToken: string) => {
     const profile = await authApi.loginWithClerk(clerkToken);
+    setAuthError(null);
     setUser(profile);
   };
 
@@ -101,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isLoading,
+        authError,
         login,
         register,
         loginWithClerk,
@@ -123,6 +144,7 @@ export const useAuth = (): AuthContextType => {
     return {
       user: null,
       isLoading: false,
+      authError: null,
       login: async () => {},
       register: async () => {},
       loginWithClerk: async () => {},

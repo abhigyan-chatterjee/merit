@@ -16,9 +16,13 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useProgress, ProblemStatus } from '../store/ProgressContext';
+import { useDebouncedCallback } from '../hooks/useDebouncedCallback';
 import { NotFound } from '../components/NotFound';
 import { LessonNav } from '../components/LessonNav';
 import { MarkdownStatement } from '../components/MarkdownStatement';
+
+/** Typing pause before a note is persisted. */
+const NOTE_SAVE_DEBOUNCE_MS = 400;
 
 export const ProblemDetailPage: React.FC = () => {
   const { topic = 'arrays-hashing', slug = 'two-sum' } = useParams<{ topic: string; slug: string }>();
@@ -42,6 +46,15 @@ export const ProblemDetailPage: React.FC = () => {
     }
   }, [problem?.slug, problem?.topic]);
 
+  const noteSlug = problem?.slug ?? '';
+  // One write per typing pause instead of one per keystroke. The hook cancels
+  // a pending save on unmount, so navigating away mid-word does not write to
+  // the problem the user just left.
+  const persistNote = useDebouncedCallback((text: string) => {
+    if (!noteSlug) return;
+    saveNote(noteSlug, text);
+  }, NOTE_SAVE_DEBOUNCE_MS);
+
 
   if (!problem) {
     return (
@@ -59,7 +72,7 @@ export const ProblemDetailPage: React.FC = () => {
 
   const handleNoteChange = (val: string) => {
     setNoteText(val);
-    saveNote(problem.slug, val);
+    persistNote(val);
   };
 
   return (

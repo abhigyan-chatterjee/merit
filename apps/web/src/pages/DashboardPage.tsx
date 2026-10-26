@@ -20,7 +20,7 @@ import {
 } from 'recharts';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
-import { progressApi, ProgressSummary, RevisionItem } from '../utils/api';
+import { progressApi, revisionApi, ProgressSummary, RevisionItem } from '../utils/api';
 import { StreakHeatmap } from '../components/StreakHeatmap';
 import { ProgressRing } from '../components/ProgressRing';
 import { DailyGoalMenu } from '../components/DailyGoalMenu';
@@ -77,6 +77,28 @@ export const DashboardPage: React.FC = () => {
       cancelled = true;
     };
   }, [user]);
+
+  /**
+   * Rates one scheduled review and re-reads the queue.
+   *
+   * The SM-2 schedule lives on the server, so the only correct way to move an
+   * item is to tell it a grade and then refetch — flipping local state would
+   * put the UI out of step with the due dates that drive everything else.
+   */
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
+  const rateReview = async (item: RevisionItem, grade: number) => {
+    if (!user || reviewingId) return;
+    setReviewingId(`${item.type}:${item.id}`);
+    try {
+      await revisionApi.review(item.type, item.id, grade);
+      const refreshed = await progressApi.getSummary();
+      setSummary(refreshed);
+    } catch {
+      // Leave the item in place; it stays due and the next load retries.
+    } finally {
+      setReviewingId(null);
+    }
+  };
 
   const solvedCount = Object.values(state.progress).filter((s) => s === 'Done').length;
   const inProgress = Object.values(state.progress).filter((s) => s === 'Doing').length;
@@ -224,12 +246,11 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {revisionItems.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.link}
+              <div
+                key={`${item.type}:${item.id}:${idx}`}
                 className="p-4 rounded-xl border border-line bg-surface hover:border-amber transition flex flex-col justify-between space-y-2 group"
               >
-                <div>
+                <Link to={item.link} className="block">
                   <div className="flex items-center justify-between gap-2 text-[10px] font-mono mb-1">
                     <span className="px-1.5 py-0.5 rounded bg-amber/10 text-amber border border-amber/20 uppercase">
                       {item.due_stage}
@@ -240,12 +261,36 @@ export const DashboardPage: React.FC = () => {
                     {item.title}
                   </h4>
                   <p className="text-[10px] text-muted mt-1">{item.reason}</p>
+                </Link>
+                {/* Self-rating is what moves the schedule; opening the problem
+                    alone does not count as a review. */}
+                <div className="pt-2 border-t border-line/60 flex items-center justify-between gap-2 text-[10px] font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={reviewingId === `${item.type}:${item.id}`}
+                      onClick={() => rateReview(item, 4)}
+                      className="px-2 py-1 rounded border border-mint/40 text-mint hover:bg-mint/10 disabled:opacity-40 transition"
+                      aria-label={`Mark ${item.title} as recalled`}
+                    >
+                      Got it
+                    </button>
+                    <button
+                      type="button"
+                      disabled={reviewingId === `${item.type}:${item.id}`}
+                      onClick={() => rateReview(item, 2)}
+                      className="px-2 py-1 rounded border border-line text-muted hover:border-amber hover:text-amber disabled:opacity-40 transition"
+                      aria-label={`Mark ${item.title} as needing another pass`}
+                    >
+                      Again
+                    </button>
+                  </div>
+                  <Link to={item.link} className="inline-flex items-center gap-1 text-muted hover:text-amber">
+                    Solve
+                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
                 </div>
-                <div className="pt-2 border-t border-line/60 flex items-center justify-between text-[10px] font-mono text-muted">
-                  <span>Solve / Review</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform text-amber" />
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
