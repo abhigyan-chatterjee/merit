@@ -1,6 +1,8 @@
 """Database seeder for Merit content (problems, test cases, solutions, questions, paths)."""
 
+import hashlib
 import json
+import logging
 from pathlib import Path
 
 from sqlalchemy import select
@@ -8,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
 from app.models.content import (
+    ContentSync,
     LearningPath,
     PathStep,
     Problem,
@@ -15,6 +18,9 @@ from app.models.content import (
     ProblemTestCase,
     Question,
 )
+from app.models.user import utcnow_iso
+
+logger = logging.getLogger(__name__)
 
 
 def resolve_content_dir(subfolder: str) -> Path:
@@ -29,6 +35,32 @@ def resolve_content_dir(subfolder: str) -> Path:
         if c.exists():
             return c
     return candidates[0]
+
+
+_REQUIRED_PROBLEM_KEYS = ("slug", "topic", "difficulty", "pattern", "title", "statement")
+
+
+def _missing_content_keys(data: dict) -> str | None:
+    """Why this content entry cannot be seeded, or None when it is complete."""
+    missing = [key for key in _REQUIRED_PROBLEM_KEYS if not data.get(key)]
+    if missing:
+        return f"missing required field(s): {', '.join(missing)}"
+
+    cases = data.get("testCases")
+    if not isinstance(cases, list) or not cases:
+        return "no test cases"
+    for index, case in enumerate(cases):
+        if not isinstance(case, dict) or "input" not in case or "expected" not in case:
+            return f"test case {index + 1} is missing input/expected"
+
+    solutions = data.get("solutions")
+    if not isinstance(solutions, list) or not solutions:
+        return "no solutions"
+    for index, solution in enumerate(solutions):
+        if not isinstance(solution, dict) or not solution.get("code"):
+            return f"solution {index + 1} has no code"
+
+    return None
 
 
 def seed_problems(db: Session, content_dir: Path | None = None) -> int:
@@ -47,18 +79,27 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     # without the field.
     valid_problems: list[dict] = []
     verified_slugs: set[str] = set()
+    skipped: list[str] = []
 
     for file_path in sorted(content_dir.glob("*.json")):
         if file_path.name.startswith("scrap-"):
             continue
-        with open(file_path, encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                data = json.load(f)
+            status = data.get("reviewStatus") or data.get("review_status") or "verified"
+            slug = data["slug"]
+        except (OSError, ValueError, KeyError) as err:
+            # One unreadable file must not take down the whole seed, and it must
+            # not be silently skipped either: the caller needs to know the tree
+            # is not clean so it can decline to record a fingerprint.
+            skipped.append(f"{file_path.name}: {err}")
+            continue
 
-        status = data.get("reviewStatus") or data.get("review_status") or "verified"
         if status == "draft":
             continue
 
-        verified_slugs.add(data["slug"])
+        verified_slugs.add(slug)
         valid_problems.append(data)
 
     # Pass 2: Purge stale draft rows on re-seed.
@@ -81,6 +122,17 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     # Pass 3: Ingest or backfill verified problems.
     count = 0
     for data in valid_problems:
+        # A syntactically valid JSON file that is missing required keys used to
+        # raise KeyError out of the loop and abort the entire sync — with the
+        # fingerprint in place that happens at boot, so one bad content file
+        # froze every subsequent deploy. Validate the entry and skip it.
+        reason = _missing_content_keys(data)
+        if reason:
+            logger.error(
+                "Skipping %r: %s", data.get("slug") or data.get("title"), reason
+            )
+            continue
+
         slug = data["slug"]
         existing = db.scalar(select(Problem).where(Problem.slug == slug))
 
@@ -153,7 +205,13 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
             existing.sequence = data.get("sequence")
             existing.prev_slug = data.get("prevSlug")
             existing.next_slug = data.get("nextSlug")
-            existing.review_status = status
+            # `review_status` is deliberately NOT rewritten here. The content
+            # file's status is a default, not a moderator's decision: an admin
+            # who rejected a problem sets review_status="rejected", and a
+            # re-seed used to reset it to the file's "verified", silently
+            # re-publishing content that had been taken down. Files that flip to
+            # draft are still removed by the Pass 2 purge, which keys on the
+            # filename rather than this column.
             existing.title = data["title"]
             existing.statement = data["statement"]
             existing.difficulty = data["difficulty"]
@@ -239,6 +297,10 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                     )
 
     db.commit()
+    if skipped:
+        logging.getLogger(__name__).warning(
+            "Skipped %d unreadable content file(s): %s", len(skipped), "; ".join(skipped[:5])
+        )
     return count
 
 
@@ -385,6 +447,60 @@ def seed_admin(db: Session) -> int:
         db.commit()
         return 1
     return 0
+
+
+def content_fingerprint() -> str:
+    """A hash of the content tree: relative paths and file bytes.
+
+    Deliberately not mtimes. `docker build` COPY and `git checkout` both rewrite
+    mtimes for files that did not change, so an mtime digest differs on every
+    fresh container — the seed then re-ran on every deploy, which defeated the
+    fingerprint and, worse, re-published problems an admin had rejected.
+
+    Reading ~1,100 small JSON files costs tens of milliseconds against several
+    seconds for a full re-seed.
+    """
+    digest = hashlib.sha256()
+    for subfolder in ("problems", "questions", "paths"):
+        directory = resolve_content_dir(subfolder)
+        if not directory.exists():
+            continue
+        for path in sorted(directory.rglob("*.json")):
+            try:
+                relative = path.relative_to(directory).as_posix()
+                payload = path.read_bytes()
+            except OSError:
+                continue
+            # The relative path matters: `problems/two-sum.json` and
+            # `questions/two-sum.json` must not hash to the same bytes.
+            digest.update(relative.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(payload)
+    return digest.hexdigest()
+
+
+def seed_if_changed(db: Session) -> tuple[dict[str, int], bool]:
+    """Seeds when the content tree differs from what was last synced.
+
+    Returns the counts and whether a seed actually ran. This is what startup
+    calls: it is what makes a content commit reach an existing deployment
+    without an operator remembering to run the seeder by hand, while keeping an
+    unchanged boot free.
+    """
+    fingerprint = content_fingerprint()
+    row = db.get(ContentSync, "content")
+    if row and row.fingerprint == fingerprint:
+        return ({}, False)
+
+    counts = seed_all(db)
+    if row is None:
+        row = ContentSync(key="content", fingerprint=fingerprint)
+        db.add(row)
+    else:
+        row.fingerprint = fingerprint
+        row.synced_at = utcnow_iso()
+    db.commit()
+    return (counts, True)
 
 
 def seed_all(db: Session) -> dict[str, int]:

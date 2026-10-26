@@ -149,3 +149,21 @@ class PathStep(Base):
     reading_links_json: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
 
     path: Mapped["LearningPath"] = relationship("LearningPath", back_populates="steps")
+
+
+class ContentSync(Base):
+    """Fingerprint of the content tree as of the last successful seed.
+
+    Exists so startup can skip a full re-seed when nothing on disk changed. The
+    seed is idempotent and cheap in absolute terms, but it touches every problem
+    row, and running it on every boot (and on every test that builds a client)
+    is wasted work. Storing the fingerprint in the database rather than a file
+    keeps it correct across container restarts, where the filesystem is fresh but
+    the volume is not.
+    """
+
+    __tablename__ = "content_sync"
+
+    key: Mapped[str] = mapped_column(String, primary_key=True)
+    fingerprint: Mapped[str] = mapped_column(String, nullable=False)
+    synced_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
