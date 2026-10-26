@@ -1,4 +1,5 @@
 from app.models.content import (
+    ContentSync,
     LearningPath,
     PathStep,
     Problem,
@@ -22,10 +23,13 @@ from app.models.quiz import (
     QuizAttemptAnswer,
     UserQuestionExposure,
 )
+from app.models.revision import RevisionItem
 from app.models.submission import Submission
 from app.models.user import RefreshToken, User
 
 __all__ = [
+    "ContentSync",
+    "RevisionItem",
     "User",
     "RefreshToken",
     "Feedback",
