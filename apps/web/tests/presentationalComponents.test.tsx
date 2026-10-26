@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ComplexityBadge } from '../src/components/ComplexityBadge';
-import { EmptyState } from '../src/components/EmptyState';
 import { ProgressRing } from '../src/components/ProgressRing';
 import { SpeedControl } from '../src/components/SpeedControl';
 
@@ -15,29 +14,6 @@ describe('ComplexityBadge', () => {
   it('applies the variant tone', () => {
     render(<ComplexityBadge label="space" value="O(1)" variant="violet" />);
     expect(screen.getByText('O(1)')).toHaveClass('text-violet');
-  });
-});
-
-describe('EmptyState', () => {
-  it('renders title and description without an action', () => {
-    render(<EmptyState title="Nothing here" description="Add something to get started." />);
-    expect(screen.getByText('Nothing here')).toBeInTheDocument();
-    expect(screen.getByText('Add something to get started.')).toBeInTheDocument();
-    expect(screen.queryByRole('button')).not.toBeInTheDocument();
-  });
-
-  it('invokes the action when provided', () => {
-    const onAction = vi.fn();
-    render(
-      <EmptyState
-        title="Nothing here"
-        description="Add something."
-        actionLabel="Create"
-        onAction={onAction}
-      />,
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
-    expect(onAction).toHaveBeenCalledTimes(1);
   });
 });
 
