@@ -1,3 +1,4 @@
+import contextlib
 import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
@@ -16,13 +17,36 @@ from app.models.user import User
 # Password hashing via Argon2id
 password_hasher = PasswordHash((Argon2Hasher(),))
 
+# Real digest used to equalise work when the stored hash is unusable (a
+# provider-only account, or a corrupt row). Hashing once at import costs a few
+# tens of milliseconds of startup and removes a timing signal on every login.
+DUMMY_VERIFY_HASH = password_hasher.hash("merit_timing_equaliser")
+
 
 def hash_password(password: str) -> str:
     return password_hasher.hash(password)
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return password_hasher.verify(plain_password, hashed_password)
+def verify_password_safe(plain_password: str, hashed_password: str | None) -> bool:
+    """Constant-time-ish verify that treats an unparseable hash as "no match".
+
+    OAuth-only accounts store the sentinel `oauth$<provider>` in password_hash
+    rather than an Argon2 digest. pwdlib raises UnknownHashError on that instead
+    of returning False, which turned every login attempt against a provider-only
+    account into an unhandled 500 — an unauthenticated remote crash and an email
+    enumeration oracle. Callers that accept untrusted input must use this.
+    """
+    if not hashed_password:
+        return False
+    try:
+        return password_hasher.verify(plain_password, hashed_password)
+    except Exception:
+        # UnknownHashError, InvalidHashError, or any malformed stored digest.
+        # Burn comparable effort so a sentinel row is not distinguishable by
+        # timing from a wrong password against a real digest.
+        with contextlib.suppress(Exception):
+            password_hasher.verify(plain_password, DUMMY_VERIFY_HASH)
+        return False
 
 
 def hash_token(token: str) -> str:
