@@ -1,6 +1,7 @@
 """Quiz API endpoints: generate quiz, submit attempt, retry wrong questions, and view attempt."""
 
 import json
+import logging
 import uuid
 from datetime import UTC, datetime
 
@@ -20,11 +21,17 @@ from app.schemas.quiz import (
     QuizSubmitRequest,
     QuizSubmitResponse,
 )
-from app.security import get_current_user
+from app.security import get_current_user, require_same_origin
 from app.services.sampler import sample_questions
 from app.services.streak import record_activity
 
-router = APIRouter(prefix="/api/v1/quizzes", tags=["quizzes"])
+logger = logging.getLogger(__name__)
+
+router = APIRouter(
+    prefix="/api/v1/quizzes",
+    tags=["quizzes"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 
 @router.post("/generate", response_model=QuizGenerateResponse)
@@ -171,6 +178,23 @@ def submit_attempt(
     # Increment streak activity
     record_activity(db, current_user.id)
     db.commit()
+
+    # Feed spaced repetition: a question answered wrong is the single best signal
+    # that it needs to come back, and the review queue is where it should land.
+    # Done after the commit so a scheduling problem cannot lose the attempt.
+    from app.services.revision import apply_review, grade_for_submission
+
+    try:
+        for result in results:
+            grade = grade_for_submission("AC" if result.is_correct else "WA")
+            if grade is None:
+                continue
+            apply_review(db, current_user.id, "question", result.question_id, grade)
+    except Exception:
+        # The attempt is already committed. Scheduling is a follow-on and must
+        # not fail the request the user is waiting on.
+        logger.exception("Could not schedule revision items for attempt %s", attempt.id)
+        db.rollback()
 
     return QuizSubmitResponse(
         attempt_id=attempt.id,

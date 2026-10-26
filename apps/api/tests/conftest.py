@@ -54,6 +54,23 @@ def setup_database():
     Base.metadata.drop_all(bind=test_engine)
 
 
+@pytest.fixture(autouse=True)
+def _reset_rate_limiters():
+    """Clears every in-memory rate-limit bucket between tests.
+
+    The limiters are module-level singletons, so without this the suite is one
+    added request away from order-dependent 429s — a test that submits feedback
+    eleven times would start failing depending on what ran before it.
+    """
+    yield
+    from app.routers.feedback import _feedback_limiter
+    from app.routers.tutor import _rate_buckets, _rate_lock
+
+    _feedback_limiter.reset()
+    with _rate_lock:
+        _rate_buckets.clear()
+
+
 @pytest.fixture
 def db_session() -> Generator[Session, None, None]:
     connection = test_engine.connect()

@@ -9,15 +9,20 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.http_status import HTTP_422
 from app.models.content import Problem, Question, QuestionReview
 from app.models.feedback import Feedback
 from app.models.quiz import AdminAuditLog, QuizAttempt
 from app.models.submission import Submission
 from app.models.user import User, utcnow_iso
 from app.schemas.feedback import FeedbackItem
-from app.security import require_admin_user
+from app.security import require_admin_user, require_same_origin
 
-router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
+router = APIRouter(
+    prefix="/api/v1/admin",
+    tags=["admin"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 
 class QuestionReviewRequest(BaseModel):
@@ -150,7 +155,7 @@ def review_question(
     action = request.action.lower()
     if action not in {"approved", "rejected", "edited"}:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=HTTP_422,
             detail={
                 "code": "INVALID_ACTION",
                 "message": "Action must be approved, rejected, or edited",
@@ -199,7 +204,7 @@ def review_problem(
     action = request.action.lower()
     if action not in {"approved", "rejected"}:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=HTTP_422,
             detail={"code": "INVALID_ACTION", "message": "Action must be approved or rejected"},
         )
 
