@@ -37,8 +37,12 @@ class Settings(BaseSettings):
     # Python/JavaScript path does not pay for a compile toolchain it never uses.
     judge_heavy_url: str = ""
     # Cloud Run cold starts are slow, especially on a heavier image, so this is
-    # far above the judge's own per-submission time limit.
-    judge_timeout_sec: float = 60.0
+    # far above the judge's own per-submission time limit. It must also sit at or
+    # above the heavy tier's own request timeout (180s) and above
+    # `_COMPILE_TIMEOUT_SEC` (120s): a compile that outlives this client-side
+    # budget reports "could not be reached" while the judge is still working and
+    # holding its only slot.
+    judge_timeout_sec: float = 180.0
     # Path to the service-account JSON used to mint identity tokens for the
     # judge service. Only read when judge_url is set.
     google_application_credentials: str = ""

@@ -99,50 +99,23 @@ function solve(nums, target) {
     assert all(tc["passed"] for tc in data["test_results"])
 
 
-def test_guest_can_run_and_submit_without_login(client: TestClient):
-    # Guests (unauthenticated) must be able to run samples and submit solutions
-    # so they can freely solve and test problems.
-    code = """
-function solve(nums, target) {
-  const map = new Map();
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    if (map.has(complement)) {
-      return [map.get(complement), i];
-    }
-    map.set(nums[i], i);
-  }
-  return [];
-}
-"""
-    # 1. Run samples as guest (no cookies/auth header)
-    run_res = client.post(
-        "/api/v1/judge/run",
-        json={
-            "problem_slug": "two-sum",
-            "language": "javascript",
-            "code": code,
-        },
-    )
-    assert run_res.status_code == 200
-    run_data = run_res.json()
-    assert run_data["verdict"] == "AC"
-    assert len(run_data["test_results"]) >= 1
+def test_guest_cannot_run_or_submit(client: TestClient):
+    """The judge requires a session.
 
-    # 2. Submit as guest (grades all cases without requiring user account)
-    sub_res = client.post(
-        "/api/v1/judge/submit",
-        json={
-            "problem_slug": "two-sum",
-            "language": "javascript",
-            "code": code,
-        },
-    )
-    assert sub_res.status_code == 200
-    sub_data = sub_res.json()
-    assert sub_data["id"] == "guest"
-    assert sub_data["verdict"] == "AC"
-    assert len(sub_data["test_results"]) >= 1
+    It used to accept anonymous callers, which made every request a paid Cloud
+    Run invocation on the operator's bill with no rate limit in front of it. The
+    client already renders a sign-in gate when it sees a 401 here, so this is the
+    behaviour the UI was built for.
+    """
+    client.cookies.clear()
+    code = "function solve(nums, target) { return []; }"
+
+    for path in ("/api/v1/judge/run", "/api/v1/judge/submit"):
+        response = client.post(
+            path,
+            json={"problem_slug": "two-sum", "language": "javascript", "code": code},
+        )
+        assert response.status_code == 401, f"{path} let an anonymous caller through"
 
 
 def test_judge_run_samples_wa(client: TestClient):

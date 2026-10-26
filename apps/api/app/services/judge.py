@@ -42,6 +42,24 @@ JUDGE_ENV: dict[str, str] = {
 # API's own memory and OOM the container.
 MAX_OUTPUT_BYTES = 256 * 1024
 
+# The harness prefixes its result block with this marker. Without it, a student
+# who prints a hand-written result JSON — say from a background thread that runs
+# after the harness's own final line — could be graded on output they produced
+# rather than on what the harness measured. The parser prefers a marked block and
+# only falls back to position-based matching for harnesses that do not emit one.
+_RESULT_MARKER = "__MERIT_RESULT__"
+
+# After the direct child exits, how long to keep draining its pipes before
+# giving up on a grandchild that inherited the write end. Buffered output of a
+# normal submission drains in microseconds; this only bounds the pathological
+# case where a spawned helper keeps writing after its parent is gone.
+_PIPE_CHUNK = 65536
+#: How long a read may sit empty before the pipe is treated as stalled. An IDLE
+#: bound, not a budget for the whole drain. It must stay below the minimum
+#: run timeout (3 s) or a leaked grandchild turns a fast run into a TLE, and it
+#: must be far longer than a live writer's gap between chunks.
+_READ_IDLE_SEC = 1.0
+
 # Submissions larger than this are refused before any process starts. Defined
 # here, next to the executor that enforces it, because this file runs as both
 # the API's executor and the judge service's /app/sandbox.py — the judge's HTTP
@@ -154,29 +172,18 @@ class JudgeResult:
         runtime_ms: float,
         test_results: list[dict[str, Any]],
         compile_output: str = "",
+        infrastructure_error: bool = False,
     ):
         self.verdict = verdict
         self.runtime_ms = runtime_ms
         self.test_results = test_results
         self.compile_output = compile_output
-
-
-async def _read_capped(stream: asyncio.StreamReader, budget: int) -> tuple[bytes, bool]:
-    """Reads a stream but stops at `budget`, reporting whether it overflowed."""
-    chunks: list[bytes] = []
-    total = 0
-    overflowed = False
-    while True:
-        chunk = await stream.read(65536)
-        if not chunk:
-            break
-        total += len(chunk)
-        if total > budget:
-            chunks.append(chunk[: max(0, budget - (total - len(chunk)))])
-            overflowed = True
-            break
-        chunks.append(chunk)
-    return b"".join(chunks), overflowed
+        # True when the run never reached a grader: the judge was unreachable,
+        # the identity token could not be minted, or the deployment lacks a
+        # runner for this language. The router must not persist a Submission or
+        # move the user's streak for these — the handler's own message says
+        # "nothing was graded", and that has to be true.
+        self.infrastructure_error = infrastructure_error
 
 
 async def run_in_sandbox(
@@ -213,6 +220,12 @@ async def run_in_sandbox(
         # Its own session means the whole tree shares one process group, so a
         # timeout can kill grandchildren too — a fork bomb cannot outlive it.
         "start_new_session": True,
+        # asyncio pauses a subprocess pipe's transport once its StreamReader
+        # buffer passes 2x its limit (128 KB by default). A child writing a
+        # large result then blocks mid-write, and the drain stalls after exactly
+        # two 64 KB reads — which graded every >128 KB harness result as RE.
+        # The output budget is 256 KB, so a 1 MB stream limit never pauses.
+        "limit": 1 << 20,
     }
 
     # rlimits and the privilege drop are applied by a launcher that execs the
@@ -259,6 +272,8 @@ async def run_in_sandbox(
     if timed_out:
         return (-1, "", "Time Limit Exceeded", True)
 
+    await _kill_tree(proc)
+
     if overflowed:
         return (
             -1,
@@ -279,25 +294,91 @@ async def run_in_sandbox(
 async def _collect(
     proc: asyncio.subprocess.Process, budget: int
 ) -> tuple[bytes, bytes, bool]:
-    # Both pipes are drained concurrently. Reading stdout to completion first
-    # wedges a child that fills the stderr buffer (~64 KB) while stdout is still
-    # open; the wait_for then fires and the run is labelled TLE when the real
-    # cause is output overflow.
-    (out, out_over), (err, err_over) = await asyncio.gather(
-        _read_capped(proc.stdout, budget),
-        _read_capped(proc.stderr, budget),
-    )
-    await proc.wait()
-    return out, err, (out_over or err_over)
+    """Drains both pipes until the child exits, not until EOF.
+
+    EOF is the obvious stopping condition and it is the wrong one: a submission
+    that spawns a helper (`subprocess.Popen`, `child_process.spawn`) hands the
+    pipe's write end to a process that outlives the direct child, so EOF never
+    arrives and the caller's wall-clock wait_for fires. A program that finished
+    in milliseconds was graded TLE.
+
+    So: wait for the direct child, then drain while reads keep producing. Each
+    read is bounded by an idle window rather than the drain being bounded as a
+    whole, which is what lets a legitimate multi-chunk result through. Output is
+    accumulated into shared buffers rather than returned from the reader, so
+    cancelling a still-blocked reader keeps everything received up to that
+    point.
+
+    Output past `budget` is counted, discarded, and drained rather than
+    abandoned. Leaving data in the pipe blocks the child on a full buffer, which
+    turns an oversized-output run into a timeout and hides the real cause.
+    """
+    out_buf = bytearray()
+    err_buf = bytearray()
+    state = {"overflowed": False}
+
+    async def pump(stream: asyncio.StreamReader | None, buf: bytearray) -> None:
+        if stream is None:
+            return
+        while True:
+            # Bound each read, not the whole drain. A fixed budget for the
+            # entire drain truncated any output larger than one pipe buffer:
+            # the reader was cancelled after the first 64 KB while the child
+            # still had bytes queued, so a legitimate 65 KB result arrived
+            # cut in half and was graded RE. A read that has data returns at
+            # once, so this only costs time when the pipe has genuinely stalled
+            # — which is the grandchild case it exists for.
+            try:
+                chunk = await asyncio.wait_for(
+                    stream.read(_PIPE_CHUNK), timeout=_READ_IDLE_SEC
+                )
+            except asyncio.CancelledError:
+                # The caller gave up; keep what was already accumulated.
+                return
+            except Exception:
+                # Includes the idle timeout, a pipe error, and EOF races.
+                return
+            if not chunk:
+                return
+            room = budget - len(buf)
+            if room > 0:
+                buf.extend(chunk[:room])
+            if len(chunk) > room:
+                state["overflowed"] = True
+
+    readers = [
+        asyncio.ensure_future(pump(proc.stdout, out_buf)),
+        asyncio.ensure_future(pump(proc.stderr, err_buf)),
+    ]
+    try:
+        await proc.wait()
+        # Each read is individually bounded above, so this settles: it ends at
+        # EOF, or one idle grace window after the pipe stops producing. No
+        # outer timeout, because that is what cut large results in half.
+        await asyncio.gather(*readers, return_exceptions=True)
+    finally:
+        for reader in readers:
+            if not reader.done():
+                reader.cancel()
+        await asyncio.gather(*readers, return_exceptions=True)
+
+    return bytes(out_buf), bytes(err_buf), state["overflowed"]
 
 
 async def _kill_tree(proc: asyncio.subprocess.Process) -> None:
-    """SIGKILLs the child's whole process group, then reaps it."""
-    if proc.returncode is not None:
-        return
+    """SIGKILLs the child's whole process group.
+
+    The group is killed even when the direct child has already exited, because
+    that is exactly the case where grandchildren survive: with
+    `start_new_session=True` the child is a session leader, so its pid is also
+    the process-group id, which stays valid after the child is reaped. The old
+    early return on `proc.returncode is not None` skipped the kill in precisely
+    the leftover-child scenario, and orphans accumulated for the life of the
+    instance.
+    """
     with contextlib.suppress(ProcessLookupError, PermissionError, OSError):
-        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
-    with contextlib.suppress(Exception):
+        os.killpg(proc.pid, signal.SIGKILL)
+    with contextlib.suppress(ProcessLookupError, PermissionError, OSError):
         proc.kill()
     # Reaping prevents a zombie lingering for the worker's lifetime.
     with contextlib.suppress(Exception):
@@ -348,7 +429,112 @@ def _summarise_runtime_error(stdout: str, stderr: str) -> str:
             "sandbox allows. Reduce what it stores, or avoid materialising the "
             "whole input."
         )
+    if not text:
+        # A SIGKILL leaves nothing on stderr. The overwhelming cause here is the
+        # CPU rlimit firing, so say that instead of returning an empty message
+        # the UI renders as a bare "Runtime Error" with no explanation.
+        return (
+            "Your solution was stopped before finishing: it exceeded the "
+            "per-run CPU budget. Look for an accidental infinite loop or work "
+            "that repeats per element."
+        )
     return text
+
+
+def _parse_harness_output(stdout: str) -> dict[str, Any] | None:
+    """Finds the harness result block in stdout.
+
+    The block MUST be marked and MUST be shape-valid. Both requirements are
+    load-bearing:
+
+    * Unmarked JSON is not accepted at all. Every harness emits the marker, so a
+      bare `{"results": ...}` line is output the student printed — treating it as
+      a verdict hands them a free AC.
+    * Each result must be an object with a boolean `passed`. A block like
+      `{"results": [1]}` used to reach `r.get("passed")` and raise out of
+      `execute_code`, surfacing as an unhandled 500 on the submit route.
+
+    The last marked line wins, which is correct because the harness prints after
+    the student's code has run; the harnesses then hard-exit so nothing the
+    student registered can print afterwards.
+    """
+    text = (stdout or "").strip()
+    if not text:
+        return None
+
+    for line in reversed(text.splitlines()):
+        stripped = line.strip()
+        index = stripped.find(_RESULT_MARKER)
+        if index == -1:
+            continue
+        try:
+            parsed = json.loads(stripped[index + len(_RESULT_MARKER) :].strip())
+        except (ValueError, TypeError):
+            continue
+        if not _is_well_formed_result(parsed):
+            continue
+        return parsed
+    return None
+
+
+def _is_well_formed_result(parsed: Any) -> bool:
+    """True when `parsed` has the exact shape a verdict needs."""
+    if not isinstance(parsed, dict):
+        return False
+    results = parsed.get("results")
+    if not isinstance(results, list):
+        return False
+    for entry in results:
+        if not isinstance(entry, dict):
+            return False
+        if not isinstance(entry.get("passed"), bool):
+            return False
+    return True
+
+
+def _verdict_from_harness(stdout: str) -> JudgeResult:
+    """Turns a harness stdout line into a verdict, failing closed.
+
+    Two things this must never do: treat an empty result set as a pass, and let
+    a student's stray debug print look like a crashed harness.
+    """
+    parsed = _parse_harness_output(stdout)
+    if parsed is None:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                "Output parsing error: the harness produced no result block.\n"
+                f"Output was: {stdout}"
+            ),
+        )
+
+    results = parsed["results"]
+    if not results:
+        # `all([])` is True, so an empty list used to be graded AC and the
+        # router then flipped ProblemProgress to "Done" — free completion for a
+        # problem whose test rows are missing. Fail closed.
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                "No test cases ran for this problem, so nothing was graded. "
+                "Please report this problem."
+            ),
+        )
+
+    try:
+        runtime_ms = float(parsed.get("totalRuntime") or 0.0)
+    except (TypeError, ValueError):
+        runtime_ms = 0.0
+
+    return JudgeResult(
+        verdict="AC" if all(r.get("passed") for r in results) else "WA",
+        runtime_ms=runtime_ms,
+        test_results=results,
+    )
 
 
 async def _run_compiled(
@@ -430,6 +616,20 @@ async def _run_compiled(
                 f"This problem cannot be generated for {language} yet: {err}"
             ),
         )
+    except (TypeError, ValueError, KeyError, IndexError, AttributeError) as err:
+        # Test data the signature allows but the author got wrong — a null where
+        # an int belongs, a shape that does not match. This used to propagate
+        # out of execute_code as an unhandled 500 against the submitter. Bad
+        # content is a compile-class failure for this run, not a server error.
+        return JudgeResult(
+            verdict="CE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output=(
+                f"This problem's test data could not be converted to {language}: {err}. "
+                "Please report this problem."
+            ),
+        )
 
     build_ret, build_out, build_err, build_timed_out = await run_in_sandbox(
         compile_cmd,
@@ -473,25 +673,7 @@ async def _run_compiled(
             compile_output=_summarise_runtime_error(stderr, stdout),
         )
 
-    try:
-        parsed = json.loads(stdout.strip())
-        results = parsed["results"]
-        total_runtime = parsed.get("totalRuntime", 0.0)
-        all_passed = all(r["passed"] for r in results)
-        return JudgeResult(
-            verdict="AC" if all_passed else "WA",
-            runtime_ms=total_runtime,
-            test_results=results,
-        )
-    except Exception as err:
-        return JudgeResult(
-            verdict="RE",
-            runtime_ms=0,
-            test_results=[],
-            compile_output=f"Output parsing error: {err}\nOutput was: {stdout}",
-        )
-
-
+    return _verdict_from_harness(stdout)
 
 
 # ---------------------------------------------------------------------------
@@ -566,6 +748,26 @@ def _has_null(value: list[Any]) -> bool:
 # --- Java -------------------------------------------------------------------
 
 
+_JAVA_FLOAT_SPECIAL = {
+    "inf": "Double.POSITIVE_INFINITY",
+    "-inf": "Double.NEGATIVE_INFINITY",
+    "nan": "Double.NaN",
+}
+
+
+def _java_double(value: Any) -> str:
+    """A Java double literal, including the values `repr` does not spell.
+
+    `repr(float('inf'))` is `inf`, which is not Java source, so a legitimate
+    infinite expected value used to compile-error the whole submission.
+    """
+    number = float(value)
+    special = _JAVA_FLOAT_SPECIAL.get(repr(number))
+    if special:
+        return special
+    return repr(number)
+
+
 def _java_literal(type_name: str, value: Any) -> str:
     _check(type_name)
     if type_name == "int":
@@ -573,10 +775,12 @@ def _java_literal(type_name: str, value: Any) -> str:
     if type_name == "long":
         return f"{int(value)}L"
     if type_name == "double":
-        return repr(float(value))
+        return _java_double(value)
     if type_name == "boolean":
         return "true" if value else "false"
     if type_name == "String":
+        if value is None:
+            raise UnsupportedTypeError("String expected value is null")
         return json.dumps(str(value))
     if type_name == "List<Integer>":
         # A null inside the list means a tree/linked-list encoding, which is a
@@ -816,7 +1020,11 @@ public class Main {{
     StringBuilder sb = new StringBuilder("{{\\"results\\":[");
 {chr(10).join(appends)}
     sb.append("],\\"totalRuntime\\":").append(serRuntime(totalRuntime)).append("}}");
-    System.out.println(sb);
+    System.out.println("__MERIT_RESULT__" + sb);
+    // halt(), not exit(): exit runs registered shutdown hooks first, and a
+    // student can register one that prints a forged result block after this
+    // line. halt() terminates immediately and runs none of them.
+    Runtime.getRuntime().halt(0);
   }}
 }}
 """
@@ -826,6 +1034,22 @@ public class Main {{
 # --- C++ --------------------------------------------------------------------
 
 
+_CPP_FLOAT_SPECIAL = {
+    "inf": "std::numeric_limits<double>::infinity()",
+    "-inf": "(-std::numeric_limits<double>::infinity())",
+    "nan": "std::numeric_limits<double>::quiet_NaN()",
+}
+
+
+def _cpp_double(value: Any) -> str:
+    """A C++ double literal, including the values `repr` does not spell."""
+    number = float(value)
+    special = _CPP_FLOAT_SPECIAL.get(repr(number))
+    if special:
+        return special
+    return repr(number)
+
+
 def _cpp_literal(type_name: str, value: Any) -> str:
     _check(type_name)
     if type_name == "int":
@@ -833,10 +1057,12 @@ def _cpp_literal(type_name: str, value: Any) -> str:
     if type_name == "long":
         return f"{int(value)}LL"
     if type_name == "double":
-        return repr(float(value))
+        return _cpp_double(value)
     if type_name == "boolean":
         return "true" if value else "false"
     if type_name == "String":
+        if value is None:
+            raise UnsupportedTypeError("String expected value is null")
         return json.dumps(str(value))
     if type_name == "List<Integer>":
         if _has_null(value):
@@ -1031,6 +1257,7 @@ def cpp_source(
         )
 
     return f"""#include <bits/stdc++.h>
+#include <cstdlib>
 using namespace std;
 
 {_CPP_NODE_DECL}
@@ -1046,8 +1273,10 @@ int main() {{
   double totalRuntime = 0.0;
 {chr(10).join(blocks)}
   sb += "],\\"totalRuntime\\":" + std::to_string(totalRuntime) + "}}";
-  cout << sb << endl;
-  return 0;
+  cout << "__MERIT_RESULT__" << sb << endl;
+  // _Exit(), not return: returning runs static destructors and any atexit
+  // handler, which a student could use to print a forged result afterwards.
+  std::_Exit(0);
 }}
 """
 
@@ -1115,6 +1344,13 @@ for (let i = 0; i < cases.length; i++) {{
       throw new TypeError("{function_name} is not defined as a function");
     }}
     const out = {function_name}(...tc.input);
+    // `JSON.stringify(undefined)` is undefined rather than a string, so a
+    // solution missing a `return` used to compare undefined against the
+    // expected string, fail, and display as "expected null, actual null". Say
+    // what actually happened instead.
+    if (out === undefined) {{
+      throw new TypeError("Your function returned undefined here. Every path needs a return.");
+    }}
     const runtime = performance.now() - start;
     totalRuntime += runtime;
 
@@ -1145,7 +1381,17 @@ for (let i = 0; i < cases.length; i++) {{
   }}
 }}
 
-console.log(JSON.stringify({{ results, totalRuntime }}));
+// Write through the callback, then hard-exit. Two constraints collide here:
+// `process.reallyExit` is what stops a submission's 'exit' listener from
+// printing a forged result block afterwards, but it tears the process down
+// without waiting for pending stdout. Against a pipe that is only 64 KB, a
+// larger result was therefore truncated mid-JSON and graded RE — silently,
+// and only for problems whose expected output is long. The callback fires once
+// the write has actually been handed off, so both hold.
+const _payload = '__MERIT_RESULT__' + JSON.stringify({{ results, totalRuntime }});
+process.stdout.write(_payload + '\\n', () => process.reallyExit(0));
+// Backstop: if the write never completes, still exit without running listeners.
+setTimeout(() => process.reallyExit(0), 5000).unref();
 """
             script_file = tmp_path / "solution.mjs"
             script_file.write_text(harness, encoding="utf-8")
@@ -1173,31 +1419,12 @@ console.log(JSON.stringify({{ results, totalRuntime }}));
                     compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
-            try:
-                # Find JSON output
-                parsed = json.loads(stdout.strip())
-                results = parsed["results"]
-                total_runtime = parsed.get("totalRuntime", 0.0)
-
-                all_passed = all(r["passed"] for r in results)
-                verdict = "AC" if all_passed else "WA"
-                return JudgeResult(
-                    verdict=verdict,
-                    runtime_ms=total_runtime,
-                    test_results=results,
-                )
-            except Exception as err:
-                return JudgeResult(
-                    verdict="RE",
-                    runtime_ms=0,
-                    test_results=[],
-                    compile_output=f"Output parsing error: {err}\nOutput was: {stdout}",
-                )
+            return _verdict_from_harness(stdout)
 
         elif language == "python":
             cases_json_literal = json.dumps(test_cases)
             harness = f"""
-import json, time, sys
+import json, time, sys, os
 
 {code}
 
@@ -1243,7 +1470,15 @@ for i, tc in enumerate(cases):
             'error': str(err)
         }})
 
-print(json.dumps({{'results': results, 'totalRuntime': total_runtime}}))
+print(
+    "__MERIT_RESULT__" + json.dumps({{"results": results, "totalRuntime": total_runtime}}),
+    flush=True,
+)
+sys.stdout.flush()
+# os._exit skips atexit handlers and finally blocks. Without it a submission can
+# register an atexit hook that prints a forged result block after the real one,
+# and the parser takes the last marked line.
+os._exit(0)
 """
             script_file = tmp_path / "solution.py"
             script_file.write_text(harness, encoding="utf-8")
@@ -1271,25 +1506,7 @@ print(json.dumps({{'results': results, 'totalRuntime': total_runtime}}))
                     compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
-            try:
-                parsed = json.loads(stdout.strip())
-                results = parsed["results"]
-                total_runtime = parsed.get("totalRuntime", 0.0)
-
-                all_passed = all(r["passed"] for r in results)
-                verdict = "AC" if all_passed else "WA"
-                return JudgeResult(
-                    verdict=verdict,
-                    runtime_ms=total_runtime,
-                    test_results=results,
-                )
-            except Exception as err:
-                return JudgeResult(
-                    verdict="RE",
-                    runtime_ms=0,
-                    test_results=[],
-                    compile_output=f"Output parsing error: {err}\nOutput was: {stdout}",
-                )
+            return _verdict_from_harness(stdout)
 
         elif language in ("java", "cpp"):
             return await _run_compiled(
