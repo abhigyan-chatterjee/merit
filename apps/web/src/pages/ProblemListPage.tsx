@@ -93,7 +93,7 @@ export const ProblemListPage: React.FC = () => {
               <div className="text-lg font-bold text-mint tnum">
                 {solvedCount}/{PROBLEMS.length}
               </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Solved</div>
+              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Done</div>
             </div>
             <div>
               <div className="flex items-center gap-1.5 text-lg font-bold text-amber tnum">
@@ -132,7 +132,7 @@ export const ProblemListPage: React.FC = () => {
                 type="button"
                 onClick={() => toggleTag(tag)}
                 aria-pressed={active}
-                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] font-mono transition ${
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono transition ${
                   active
                     ? 'border-mint bg-mint text-canvas font-semibold'
                     : 'border-line bg-surface text-muted hover:border-steel hover:text-ink'
@@ -219,7 +219,7 @@ export const ProblemListPage: React.FC = () => {
                           />
                           <Link
                             to={`/problems/${problem.topic}/${problem.slug}`}
-                            className="min-w-0 flex-1 py-1 text-sm text-ink hover:text-mint transition"
+                            className="min-w-0 flex-1 py-2.5 text-sm text-ink hover:text-mint transition"
                           >
                             {problem.title}
                           </Link>
@@ -231,7 +231,7 @@ export const ProblemListPage: React.FC = () => {
                             onClick={() => toggleBookmark(problem.slug)}
                             aria-label={`${isBookmarked ? 'Remove' : 'Add'} bookmark for ${problem.title}`}
                             aria-pressed={isBookmarked}
-                            className={`p-1 rounded transition ${
+                            className={`-mr-2 p-3 rounded transition ${
                               isBookmarked ? 'text-amber' : 'text-muted hover:text-amber'
                             }`}
                           >

@@ -33,6 +33,7 @@ export const Navbar: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [activeIndex, setActiveIndex] = useState(0);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
   // The palette can be opened by ⌘K from anywhere, so there is no reliable
@@ -85,6 +86,27 @@ export const Navbar: React.FC = () => {
   const totalResults =
     searchResults.paths.length + searchResults.visualizers.length + searchResults.problems.length;
 
+  const isTyped = query.trim().length > 0;
+
+  const flatResults = useMemo(() => {
+    const out: { navigate: () => void }[] = [];
+    searchResults.paths.forEach((p) =>
+      out.push({ navigate: () => { setSearchOpen(false); navigate(`/learn/${p.id}`); } })
+    );
+    searchResults.visualizers.forEach((v) =>
+      out.push({ navigate: () => { setSearchOpen(false); navigate(`/visualizers/${v.id}`); } })
+    );
+    searchResults.problems.forEach((p) =>
+      out.push({ navigate: () => { setSearchOpen(false); navigate(`/problems/${p.topic}/${p.slug}`); } })
+    );
+    return out;
+  }, [searchResults, navigate]);
+
+  // Reset the active row whenever the result set changes.
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query]);
+
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/learn', label: 'Paths', icon: Route },
@@ -107,15 +129,21 @@ export const Navbar: React.FC = () => {
     d === 'Easy' ? 'bg-mint' : d === 'Medium' ? 'bg-amber' : 'bg-rose';
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIndex((i) => (flatResults.length === 0 ? 0 : Math.min(i + 1, flatResults.length - 1)));
+      return;
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIndex((i) => (flatResults.length === 0 ? 0 : Math.max(i - 1, 0)));
+      return;
+    }
     if (e.key !== 'Enter') return;
     e.preventDefault();
-    const { paths, visualizers, problems } = searchResults;
-    // Navigating away: focus should follow the new page, not snap back to the
-    // search button, so this path uses the raw setter rather than closeSearch.
-    setSearchOpen(false);
-    if (paths.length > 0) navigate(`/learn/${paths[0].id}`);
-    else if (visualizers.length > 0) navigate(`/visualizers/${visualizers[0].id}`);
-    else if (problems.length > 0) navigate(`/problems/${problems[0].topic}/${problems[0].slug}`);
+    const r = flatResults[activeIndex];
+    if (r) r.navigate();
+    else closeSearch();
   };
 
   return (
@@ -247,13 +275,13 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`relative flex flex-col items-center justify-center gap-1 h-14 text-[9px] font-mono tracking-wide ${
+                className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[11px] font-medium ${
                   active ? 'text-mint' : 'text-muted'
                 }`}
               >
                 {active && <span className="absolute top-0 w-8 h-px bg-mint" />}
                 <Icon className="w-4 h-4" />
-                <span>{link.label}</span>
+                <span className="truncate">{link.label}</span>
               </Link>
             );
           })}
@@ -293,7 +321,7 @@ export const Navbar: React.FC = () => {
                 className="flex-1 bg-transparent text-sm text-ink placeholder-muted"
               />
               <span className="text-[10px] font-mono text-muted tnum hidden sm:inline">
-                {totalResults} hits
+                {isTyped ? `${totalResults} ${totalResults === 1 ? 'result' : 'results'}` : ''}
               </span>
               <button
                 onClick={closeSearch}
@@ -305,27 +333,41 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div className="max-h-[52vh] overflow-y-auto p-2">
-              {totalResults === 0 && (
+              {isTyped && totalResults === 0 && (
                 <div className="py-10 text-center">
                   <p className="text-xs text-muted font-mono">
-                    No matches for “{query}”
+                    No matches for “{query}”. Try a pattern name like “sliding window”.
                   </p>
+                </div>
+              )}
+
+              {!isTyped && totalResults > 0 && (
+                <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+                  Suggested
                 </div>
               )}
 
               {searchResults.paths.length > 0 && (
                 <div className="mb-2">
-                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                    Learning paths
-                  </div>
-                  {searchResults.paths.map((p) => (
+                  {isTyped && (
+                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+                      Learning paths
+                    </div>
+                  )}
+                  {searchResults.paths.map((p, i) => {
+                    const gIdx = i;
+                    const isActiveRow = gIdx === activeIndex;
+                    return (
                     <button
                       key={p.id}
                       onClick={() => {
                         setSearchOpen(false);
                         navigate(`/learn/${p.id}`);
                       }}
-                      className="group w-full text-left px-3 py-2 rounded-lg hover:bg-canvas flex items-center justify-between gap-3 cursor-pointer"
+                      onMouseEnter={() => setActiveIndex(gIdx)}
+                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
+                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
+                      }`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         <Route className="w-3.5 h-3.5 text-mint shrink-0" />
@@ -335,23 +377,32 @@ export const Navbar: React.FC = () => {
                         {p.steps.length} steps
                       </span>
                     </button>
-                  ))}
+                  );
+                })}
                 </div>
               )}
 
               {searchResults.visualizers.length > 0 && (
                 <div className="mb-2">
-                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                    Visualizers
-                  </div>
-                  {searchResults.visualizers.map((v) => (
+                  {isTyped && (
+                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+                      Visualizers
+                    </div>
+                  )}
+                  {searchResults.visualizers.map((v, i) => {
+                    const gIdx = searchResults.paths.length + i;
+                    const isActiveRow = gIdx === activeIndex;
+                    return (
                     <button
                       key={v.id}
                       onClick={() => {
                         setSearchOpen(false);
                         navigate(`/visualizers/${v.id}`);
                       }}
-                      className="group w-full text-left px-3 py-2 rounded-lg hover:bg-canvas flex items-center justify-between gap-3 cursor-pointer"
+                      onMouseEnter={() => setActiveIndex(gIdx)}
+                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
+                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
+                      }`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         <Layers className="w-3.5 h-3.5 text-mint shrink-0" />
@@ -364,23 +415,32 @@ export const Navbar: React.FC = () => {
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>
-                  ))}
+                  );
+                })}
                 </div>
               )}
 
               {searchResults.problems.length > 0 && (
                 <div>
-                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                    Problems
-                  </div>
-                  {searchResults.problems.map((p) => (
+                  {isTyped && (
+                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+                      Problems
+                    </div>
+                  )}
+                  {searchResults.problems.map((p, i) => {
+                    const gIdx = searchResults.paths.length + searchResults.visualizers.length + i;
+                    const isActiveRow = gIdx === activeIndex;
+                    return (
                     <button
                       key={p.id}
                       onClick={() => {
                         setSearchOpen(false);
                         navigate(`/problems/${p.topic}/${p.slug}`);
                       }}
-                      className="group w-full text-left px-3 py-2 rounded-lg hover:bg-canvas flex items-center justify-between gap-3 cursor-pointer"
+                      onMouseEnter={() => setActiveIndex(gIdx)}
+                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
+                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
+                      }`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         {/* Difficulty carries a word as well as a hue: a
@@ -403,7 +463,9 @@ export const Navbar: React.FC = () => {
                       </span>
                       <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                     </button>
-                  ))}
+                  );
+                })}
+
                 </div>
               )}
             </div>

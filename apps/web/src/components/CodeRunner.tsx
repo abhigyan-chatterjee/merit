@@ -27,8 +27,9 @@ import {
 } from "../utils/api";
 import { useAuth } from "../store/AuthContext";
 import { useDialogFocus } from "../hooks/useDialogFocus";
-import { AiTutor } from "./AiTutor";
-import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from "../data/languages";
+import { AiTutor } from './AiTutor';
+import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from '../data/languages';
+import { InlineConfirm } from './ui/InlineConfirm';
 
 const pythonSkeleton = (fn: string): string =>
   `def ${fn}(*args):\n    # Write your solution here\n    raise NotImplementedError\n`;
@@ -126,6 +127,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [showTutor, setShowTutor] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionItem | null>(null);
   const [copied, setCopied] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const resetBtnRef = useRef<HTMLButtonElement | null>(null);
   const runSamplesRef = useRef<HTMLButtonElement | null>(null);
 
   // Same dialog contract as the feedback modal and the search palette: focus
@@ -255,6 +258,22 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setVerdict(null);
     setCompileError(null);
     setNeedsAuth(false);
+  };
+
+  const starterForCurrentLang = starterByLanguage(
+    starterCode,
+    starterCodePython,
+    starterCodeJava,
+    starterCodeCpp,
+    functionName
+  )[language];
+
+  const handleResetClick = () => {
+    if (code === starterForCurrentLang) {
+      handleReset();
+    } else {
+      setConfirmReset(true);
+    }
   };
 
   const fetchSubmissions = useCallback(async () => {
@@ -448,14 +467,28 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleReset}
-            title="Reset to starter code"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface border border-line text-xs font-mono text-muted hover:text-ink cursor-pointer transition"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Reset</span>
-          </button>
+          {confirmReset ? (
+            <InlineConfirm
+              title="Discard your edits and restore the starter code?"
+              confirmLabel="Discard"
+              cancelLabel="Cancel"
+              onConfirm={() => {
+                handleReset();
+                setConfirmReset(false);
+              }}
+              onCancel={() => setConfirmReset(false)}
+            />
+          ) : (
+            <button
+              ref={resetBtnRef}
+              onClick={handleResetClick}
+              title="Reset to starter code"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface border border-line text-xs font-mono text-muted hover:text-ink cursor-pointer transition"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Reset</span>
+            </button>
+          )}
 
           {tutorEnabled && (
             <button

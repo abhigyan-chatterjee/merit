@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   RotateCcw,
@@ -27,6 +27,7 @@ import { DailyGoalMenu } from '../components/DailyGoalMenu';
 import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
 import { Reveal } from '../components/ui/Reveal';
+import { InlineConfirm } from '../components/ui/InlineConfirm';
 import { PROBLEMS } from '../data/problems';
 import { TOPICS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
@@ -58,8 +59,14 @@ const DashboardPathCard: React.FC<{ path: (typeof LEARNING_PATHS)[number] }> = (
 
 export const DashboardPage: React.FC = () => {
   const { state, currentStreak, resetAllData } = useProgress();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const [confirmReset, setConfirmReset] = useState(false);
+  const resetBtnRef = useRef<HTMLButtonElement>(null);
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
+
+  useEffect(() => {
+    if (!confirmReset) resetBtnRef.current?.focus();
+  }, [confirmReset]);
 
   useEffect(() => {
     if (!user) {
@@ -146,21 +153,38 @@ export const DashboardPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <DailyGoalMenu />
-          <button
-            onClick={resetAllData}
-            title="Reset all locally stored progress"
-            aria-label="Reset all locally stored progress"
-            className="p-2 rounded-lg border border-line bg-surface text-muted hover:text-rose hover:border-rose/40 transition cursor-pointer"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          {!authLoading && !user && (
+            confirmReset ? (
+              <InlineConfirm
+                title="Clear progress on this device?"
+                body="Problem status, notes, bookmarks and streak on this browser will be deleted. This cannot be undone."
+                confirmLabel="Clear progress"
+                cancelLabel="Cancel"
+                onConfirm={() => {
+                  resetAllData();
+                  setConfirmReset(false);
+                }}
+                onCancel={() => setConfirmReset(false)}
+              />
+            ) : (
+              <button
+                ref={resetBtnRef}
+                onClick={() => setConfirmReset(true)}
+                title="Reset all locally stored progress"
+                aria-label="Reset all locally stored progress"
+                className="p-2 rounded-lg border border-line bg-surface text-muted hover:text-rose hover:border-rose/40 transition cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            )
+          )}
         </div>
       </div>
 
       {/* ===== KPI strip ===== */}
       <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-line">
         {[
-          { v: `${solvedCount}/${totalProblems}`, l: 'Problems solved', c: 'text-mint' },
+          { v: `${solvedCount}/${totalProblems}`, l: 'Problems done', c: 'text-mint' },
           { v: inProgress, l: 'In progress', c: 'text-amber' },
           { v: `${currentStreak}d`, l: 'Day streak', c: 'text-violet' },
           { v: Object.keys(allQuizScores).length, l: 'Quizzes taken', c: 'text-ink' },
