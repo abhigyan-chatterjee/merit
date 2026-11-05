@@ -4,8 +4,8 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-merit.nullbit.in-00E599?style=flat-square&logo=googlechrome&logoColor=white)](https://merit.nullbit.in)
 [![API Tests](https://img.shields.io/badge/API%20Tests-153%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
-[![Web Tests](https://img.shields.io/badge/Web%20Tests-223%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
-[![Verified Problems](https://img.shields.io/badge/Problem%20Bank-140%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
+[![Web Tests](https://img.shields.io/badge/Web%20Tests-227%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
+[![Problem Bank](https://img.shields.io/badge/Problem%20Bank-140-informational?style=flat-square&logo=codeforces&logoColor=white)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 MERIT is an end-to-end technical assessment and Data Structures & Algorithms learning platform tailored for Indian engineering campus placements (TCS NQT Ninja/Prime, Infosys SP/DSE, Cognizant, and product-based hiring drives).
@@ -51,7 +51,7 @@ graph TD
 
 ## Key Features
 
-### 1. Interactive Algorithm Visualizers (12 Canvas Engines)
+### 1. Interactive Algorithm Visualizers (12 structures)
 * **Frame-by-frame state execution**: Step forward and backward with custom scrubbing speeds (0.25× to 2×).
 * **Synchronized pseudocode**: Visual memory pointers and stack frames sync with highlighted logic lines.
 * **Supported engines**:
@@ -71,9 +71,9 @@ graph TD
   * HackerRank-style sidebar navigator with answered/flagged/visited question states.
 
 ### 3. Curated Problem Bank & Practice Modules
-* **140 Verified Problems**: Spanning 17 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions, and typed starter code for all four judged languages (Python, JavaScript, Java, C++).
+* **140 Problems**: Spanning 17 placement topics, 2,717 test cases in total. Every reference solution passes the content verifier through the judge, and all 140 ship typed starter code for Python, JavaScript, Java and C++ plus an editorial. 42 predate the editorial gates and are reported as legacy by the verifier.
 * **Continuous Doubly-Linked Sequences**: Seamless "Next in Category" navigation ordered strictly by pedagogical difficulty (`Easy` $\rightarrow$ `Medium` $\rightarrow$ `Hard`).
-* **539 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
+* **341 Verified Multiple-Choice Questions**: 136 distinct designs across them, 86 derived from generator templates and 50 hand-written, with timed locks, detailed explanations, and anti-pattern analysis.
 
 ### 4. Zero-Liability BYOK AI Tutor
 * **Bring Your Own Key**: Works with free Gemini API keys, OpenAI, Anthropic, DeepSeek, and Groq.
@@ -119,12 +119,12 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 │       ├── src/
 │       │   ├── components/  # Modals, Navbars, CodeRunner, QuizEngine, Tutor
 │       │   ├── pages/       # Problems, Exams, Dashboard, Profile, Landing
-│       │   ├── visualizers/ # 12 interactive canvas algorithm engines
+│       │   ├── visualizers/ # 12 interactive canvas visualizers
 │       │   └── store/       # Auth & Progress state contexts
-│       └── tests/           # 223 Vitest component tests
+│       └── tests/           # 227 Vitest component tests
 ├── content/
 │   ├── problems/            # 140 authored problem JSON specifications
-│   ├── questions/           # 539 verified multiple-choice question datasets
+│   ├── questions/           # 341 verified multiple-choice questions
 │   ├── generators/          # Problem Authoring Framework (PAF) & TS sync scripts
 │   └── validators/          # Automated content & reference solution AC gates
 ├── docker-compose.yml       # Production multi-container composition
@@ -178,7 +178,7 @@ cd apps/api
 pytest -q
 ```
 
-### Frontend Component & Route Tests (223 tests)
+### Frontend Component & Route Tests (227 tests)
 ```bash
 cd apps/web
 npm test
