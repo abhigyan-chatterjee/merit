@@ -753,5 +753,12 @@
   ],
   "sequence": 20,
   "prevSlug": "validate-binary-search-tree",
-  "nextSlug": "binary-tree-cameras"
+  "nextSlug": "binary-tree-cameras",
+  "companies": [
+    "Flipkart",
+    "Google",
+    "Citadel",
+    "DoorDash",
+    "Adobe"
+  ]
 }

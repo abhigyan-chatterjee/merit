@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-005",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A TLB hit ratio of 0.8 costs 10 ns to search and 100 ns to access memory; a miss also needs a second memory access. What is the effective access time in ns?",
+  "options": [
+    "130",
+    "180",
+    "140",
+    "160"
+  ],
+  "correct_index": 0,
+  "explanation": "EAT = 0.8*(10+100) + (1-0.8)*(10+2*100) = 130.0 ns.",
+  "source": "generated",
+  "generator_key": "core_cs.paging_tlb",
+  "content_hash": "58bc2c724d7ea27f5f9971e15da03a4dc5c740d822507a83d8d61ea62db3b737",
+  "review_status": "verified"
+}

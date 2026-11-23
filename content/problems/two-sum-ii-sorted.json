@@ -981,5 +981,12 @@
   ],
   "sequence": 14,
   "prevSlug": "two-sum",
-  "nextSlug": "valid-anagram"
+  "nextSlug": "valid-anagram",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "Cognizant",
+    "Zoho",
+    "Adobe"
+  ]
 }

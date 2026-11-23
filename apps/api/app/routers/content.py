@@ -12,7 +12,7 @@ from app.models.content import LearningPath, PathStep, Problem, Question
 from app.models.progress import ProblemProgress, VisualizerCompletion
 from app.models.quiz import PathStepProgress, QuizAttempt, QuizAttemptAnswer
 from app.models.user import User, utcnow_iso
-from app.security import get_current_user, get_optional_current_user
+from app.security import get_current_user, get_optional_current_user, require_same_origin
 
 router = APIRouter(prefix="/api/v1", tags=["content"])
 
@@ -107,6 +107,47 @@ VISUALIZERS_CATALOG = [
         "complexity": "Call stack frames & branching",
         "description": "Recursive state branching, subproblem memoization, and base cases.",
     },
+    {
+        "id": "dp-table",
+        "title": "2D Dynamic Programming Table",
+        "category": "Algorithmic Paradigms",
+        "complexity": "O(m·n) time, O(m·n) space",
+        "description": (
+            "2D tabulation grids for LCS, 0/1 Knapsack, and Edit Distance with traceback."
+        ),
+    },
+    {
+        "id": "sliding-window",
+        "title": "Sliding Window & Two Pointers",
+        "category": "Fundamental Algorithms",
+        "complexity": "O(n) time, O(1) - O(k) space",
+        "description": "Variable and fixed window expansion/contraction with frequency invariants.",
+    },
+    {
+        "id": "shortest-path",
+        "title": "Dijkstra & Bellman-Ford",
+        "category": "Network Structures",
+        "complexity": "O((V+E) log V), O(V·E) worst",
+        "description": (
+            "Greedy priority-queue relaxation versus V-1 pass negative-weight relaxation."
+        ),
+    },
+    {
+        "id": "union-find",
+        "title": "Union-Find (Disjoint Set)",
+        "category": "Network Structures",
+        "complexity": "O(α(n)) amortized",
+        "description": (
+            "Connected components and cycle detection with path compression and union by rank."
+        ),
+    },
+    {
+        "id": "trie",
+        "title": "Trie (Prefix Tree)",
+        "category": "Hierarchical Structures",
+        "complexity": "O(L) per word",
+        "description": "Prefix tree insertion, exact search, and prefix autocomplete.",
+    },
 ]
 
 
@@ -144,10 +185,39 @@ def list_visualizers() -> list[dict[str, Any]]:
     return VISUALIZERS_CATALOG
 
 
+def _parse_companies(raw: str | None) -> list[str]:
+    if not raw:
+        return []
+    try:
+        parsed = json.loads(raw)
+    except (TypeError, json.JSONDecodeError):
+        return []
+    if not isinstance(parsed, list):
+        return []
+    return [name for name in parsed if isinstance(name, str)]
+
+
+@router.get("/companies")
+def list_companies(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    problems = db.scalars(
+        select(Problem).where(Problem.review_status == "verified")
+    ).all()
+    for problem in problems:
+        for name in set(_parse_companies(problem.companies_json)):
+            counts[name] = counts.get(name, 0) + 1
+
+    return [
+        {"name": name, "count": count}
+        for name, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    ]
+
+
 @router.get("/problems")
 def list_problems(
     topic: str | None = Query(None),
     difficulty: str | None = Query(None),
+    company: str | None = Query(None),
     limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
@@ -158,8 +228,16 @@ def list_problems(
     if difficulty:
         query = query.where(Problem.difficulty == difficulty)
 
-    query = query.order_by(Problem.slug).offset(offset).limit(limit)
-    problems = db.scalars(query).all()
+    problems = list(db.scalars(query.order_by(Problem.slug)).all())
+    if company:
+        wanted = company.casefold()
+        problems = [
+            problem
+            for problem in problems
+            if any(name.casefold() == wanted for name in _parse_companies(problem.companies_json))
+        ]
+
+    problems = problems[offset : offset + limit]
 
     return [
         {
@@ -173,6 +251,7 @@ def list_problems(
             "constraints": json.loads(p.constraints_json) if p.constraints_json else [],
             "hints": json.loads(p.hints) if p.hints else [],
             "starter_code": json.loads(p.starter_code) if p.starter_code else {},
+            "companies": _parse_companies(p.companies_json),
             "function_name": p.function_name,
             "time_limit_ms": p.time_limit_ms,
             "sequence": p.sequence,
@@ -213,6 +292,7 @@ def get_problem(
         "constraints": json.loads(problem.constraints_json) if problem.constraints_json else [],
         "hints": json.loads(problem.hints) if problem.hints else [],
         "starter_code": json.loads(problem.starter_code) if problem.starter_code else {},
+        "companies": _parse_companies(problem.companies_json),
         "editorial": json.loads(problem.editorial_json) if problem.editorial_json else None,
         "reading_links": json.loads(problem.reading_links_json)
         if problem.reading_links_json
@@ -521,7 +601,7 @@ def get_path(
     }
 
 
-@router.post("/paths/steps/{step_id}/complete")
+@router.post("/paths/steps/{step_id}/complete", dependencies=[Depends(require_same_origin)])
 def complete_path_step(
     step_id: int,
     current_user: User = Depends(get_current_user),

@@ -749,5 +749,12 @@
   ],
   "sequence": 2,
   "prevSlug": "binary-search",
-  "nextSlug": "sqrt-x"
+  "nextSlug": "sqrt-x",
+  "companies": [
+    "Zoho",
+    "Meta",
+    "Accenture",
+    "IBM",
+    "TCS"
+  ]
 }

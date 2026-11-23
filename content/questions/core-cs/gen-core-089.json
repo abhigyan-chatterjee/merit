@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-089",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does sharding a database by user_id mainly improve?",
+  "options": [
+    "Query readability",
+    "Index selectivity",
+    "Cache hit ratio",
+    "Write throughput"
+  ],
+  "correct_index": 3,
+  "explanation": "Distributing writes across shards increases capacity. The correct answer is Write throughput.",
+  "source": "generated",
+  "generator_key": "core_cs.sharding",
+  "content_hash": "efb9c84fb53d3fd853c72054239a0cd4b8380c21b5ae4dc2b0970faf98492931",
+  "review_status": "verified"
+}

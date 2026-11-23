@@ -362,7 +362,14 @@
       "isReference": true
     }
   ],
-  "sequence": 22,
+  "sequence": 23,
   "prevSlug": "best-time-to-buy-and-sell-stock-iv",
-  "nextSlug": "edit-distance"
+  "nextSlug": "longest-valid-parentheses",
+  "companies": [
+    "PhonePe",
+    "Bloomberg",
+    "Samsung",
+    "Cisco",
+    "Uber"
+  ]
 }

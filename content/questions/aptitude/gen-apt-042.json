@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-042",
+  "topic": "aptitude",
+  "subtopic": "pipes-cisterns",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Pipe A fills a tank in 6 hours and pipe B in 12 hours. If both are opened together, how many hours fill the tank? Give only the number.",
+  "options": [
+    "7",
+    "9",
+    "4",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "Net rate 1/6 + 1/12 per hour fills the tank in 4.0 hours.",
+  "source": "generated",
+  "generator_key": "aptitude.pipes_cisterns",
+  "content_hash": "6647ea82482e081997b5bfba49150e51e89375549c575b2e9a6620910ebcfd9f",
+  "review_status": "verified"
+}

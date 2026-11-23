@@ -916,5 +916,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "best-time-to-buy-and-sell-stock-ii"
+  "nextSlug": "best-time-to-buy-and-sell-stock-ii",
+  "companies": [
+    "Apple",
+    "Cisco",
+    "Atlassian",
+    "LinkedIn",
+    "Airbnb"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-024",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Change to indirect speech: They said, 'We will come tomorrow.'",
+  "options": [
+    "They said that they would come the next day.",
+    "They said that they would come tomorrow.",
+    "They said that they will come tomorrow.",
+    "They said that they will come the next day."
+  ],
+  "correct_index": 0,
+  "explanation": "Will becomes would and tomorrow becomes the next day. The correct answer is They said that they would come the next day..",
+  "source": "generated",
+  "generator_key": "verbal.direct_indirect",
+  "content_hash": "712703ede3d2aa681d347bf67920ecb84adf754fb87f92e002890190d908b3cc",
+  "review_status": "verified"
+}

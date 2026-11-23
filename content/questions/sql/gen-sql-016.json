@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-016",
+  "topic": "sql",
+  "subtopic": "nulls",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A column x contains a NULL in one row. How many rows match WHERE x = NULL?",
+  "options": [
+    "6",
+    "0",
+    "4",
+    "2"
+  ],
+  "correct_index": 1,
+  "explanation": "NULL is never equal to NULL under SQL three-valued logic. The correct answer is 0.",
+  "source": "generated",
+  "generator_key": "sql.null_traps",
+  "content_hash": "00aed2ec171f6840c84179f82edc3b592166629ee5a1d83e3e4de3d001faac51",
+  "review_status": "verified"
+}

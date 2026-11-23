@@ -269,5 +269,12 @@
   ],
   "sequence": 14,
   "prevSlug": "string-to-integer-atoi",
-  "nextSlug": "integer-to-english-words"
+  "nextSlug": "integer-to-english-words",
+  "companies": [
+    "TCS",
+    "Microsoft",
+    "Walmart Labs",
+    "PayPal",
+    "Infosys"
+  ]
 }

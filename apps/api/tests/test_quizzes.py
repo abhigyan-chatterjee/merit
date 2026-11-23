@@ -220,13 +220,13 @@ def test_generate_difficulty_never_falls_back_to_other_difficulties():
 
     resp = client.post(
         "/api/v1/quizzes/generate",
-        json={"topics": ["core-cs"], "count": 10, "difficulty": "Hard"},
+        json={"topics": ["core-cs"], "count": 50, "difficulty": "Hard"},
     )
 
     assert resp.status_code == 200
     data = resp.json()
     assert data["total"] == len(data["questions"])
-    assert data["total"] < 10
+    assert data["total"] < 50
     with SessionLocal() as db:
         rows = db.scalars(
             select(Question).where(Question.id.in_([q["id"] for q in data["questions"]]))

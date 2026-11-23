@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-077",
+  "topic": "core-cs",
+  "subtopic": "oop-python",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A list passed to a Python function can be mutated so the caller sees the change because Python uses?",
+  "options": [
+    "Pass by reference only",
+    "Pass by value only",
+    "Pass by object reference",
+    "Call by name"
+  ],
+  "correct_index": 2,
+  "explanation": "The reference itself is passed by value. The correct answer is Pass by object reference.",
+  "source": "generated",
+  "generator_key": "core_cs.python_semantics",
+  "content_hash": "0dd2cc6933bf73a7587df5ec46d652bf65d68c85a003185493e85cd1a864e2d5",
+  "review_status": "verified"
+}

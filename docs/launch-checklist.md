@@ -1,20 +1,22 @@
 # Merit Platform Launch & Hardening Verification Checklist
 
-**Date of Execution:** 2026-09-09, re-verified 2026-10-07
+**Date of Execution:** 2026-09-09, re-verified 2026-11-24
 **Platform Status:** LIVE — `merit.nullbit.in`, judge on Cloud Run (light + heavy)
-**Repository Branch:** `main`
-**Commit Level:** Re-verified after the four-language pass, the two-tier judge split, and the content-integrity sweep
+**Repository Branch:** `scope/extension`
+**Commit Level:** Re-verified after the interview portal, placement readiness, expanded content bank, and security-hardening pass
 
 ---
 
 ## 0. Scope Extension Migrations (run before seed)
 
 ```bash
-alembic upgrade head   # 7c2e9a41f5b0 (user settings) → 8d3f2b17c6a1 (problem sequence) → 9e4a5c28d7f2 (path summaries)
-python3 -m app.seed    # backfills problem topics/sequence, question topics, re-syncs the 3 paths
+alembic upgrade head   # … → 7c2e9a41f5b0 (user settings) → 8d3f2b17c6a1 (problem sequence)
+                       # → 9e4a5c28d7f2 (path summaries) → … → f6b2c3d4e5a8 (problem companies)
+                       # → a7c3d4e5f6b9 (placement target settings) → b8d4e5f6a7c0 (interview sessions)
+python3 -m app.seed    # backfills problem topics/sequence/companies, question topics, re-syncs the 6 paths
 ```
 
-- Old learning paths (`foundations`, `pointers`, `structures`, `algorithms`, `placement-dsa`) are deleted; new slugs are `foundation`, `targeted`, `mastery`. Purge stale `learning_paths` rows if upgrading a dev DB.
+- Old learning paths (`foundations`, `pointers`, `structures`, `algorithms`, `placement-dsa`) are deleted; current slugs are `foundation`, `targeted`, `mastery`, `tcs-nqt`, `infosys-sp-dse`, `product-50`. Purge stale `learning_paths` rows if upgrading a dev DB.
 - Problem topics use the 18-category taxonomy (`content/taxonomy.py`); old slugs (`arrays`, `strings`, `linked-list`, `dp`) no longer exist.
 - Question topics remapped the same way (`arrays`→`arrays-hashing`, `dp`→`dynamic-programming`, etc.); `complexity` folded into `sorting`, CS topics into `data-structures`. New banks: `aptitude`, `core-cs`.
 - `users` gains `preferred_language` (default `python`) and `daily_goal_json`.
@@ -27,19 +29,22 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 
 | Layer | Verification Gate | Status | Evidence / Artifact |
 |---|---|---|---|
-| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 262 tests across 49 files (visualizers, auth, code runner, quiz engine, admin) |
+| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 397 tests across 55 files (visualizers, interview portal, review deck, auth, code runner, quiz engine, admin) |
 | **Frontend Build** | Vite production bundle & Route chunking | **PASSED** | Code-split into lazy route chunks with Suspense fallbacks |
 | **Correctness Defects** | D1–D12 Base Audit defects | **100% RESOLVED** | Verified: node-based BST/Heap, SVG scaling, dedicated visualizers |
 | **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Strict, Secure cookies; strict sub claim validation |
+| **Security Hardening** | CSP, request-size cap, rate limits, prod config refusal | **PASSED** | Enforcing CSP in `apps/web/nginx.conf`; global `BodyLimitMiddleware`; judge + interview rate limits; prod refuses to start without `JUDGE_URL`; BYOK tutor/interview require login |
 | **User Data Isolation** | Server-side user_id filtering authz matrix | **PASSED** | `apps/api/tests/test_authz.py` asserts complete cross-user isolation |
 | **Sandboxed Judge** | Cloud Run judge service replacing `new Function()` | **PASSED** | Runs in its own container with no secrets/database, zero browser code evaluation |
-| **Content Bank** | 341 verified questions & 274 original problems | **PASSED** | `content/validators/run_all.py` (274/274 AC, 341 verified questions) |
+| **Content Bank** | 574 verified questions & 274 original problems | **PASSED** | `content/validators/run_all.py` (274/274 AC, 574 verified questions; 772 total, 198 drafts quarantined; 181 distinct designs) |
 | **Adaptive Quizzes** | 50-exposure no-repeat window & server-side snapshots | **PASSED** | `test_quizzes.py` confirms no answer leakage + 404 on unknown topics; 20s auto-advance |
-| **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | Foundation, Targeted, Mastery (summaries + reading links per step) |
-| **Placement Features** | Spaced-repetition revision queue & Timed mock exam | **PASSED** | 20 MCQ + 2 coding exams (7 types incl. 3h full mock); rolling weak areas |
+| **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | 6 paths: Foundation, Targeted, Mastery, TCS NQT, Infosys SP/DSE, Product 50 |
+| **Placement Features** | Spaced-repetition queue, readiness score, diagnostic & timed exams | **PASSED** | 11 timed exams (incl. 3h full mock), Retry Wrong drill, 12-question diagnostic, `/review` SM-2 deck |
+| **AI Mock Interview Portal** | Multi-round live-judged interviewing | **PASSED** | `/interview` + `/interview/:sessionId`; Easy/Medium/Hard loops, embedded `CodeRunner`, CV PDF ≤ 2 MiB parsed in memory, `interview_sessions` persistence, structured rubrics |
+| **Feedback Privacy** | Public issue vs private contact email | **PASSED** | Optional contact email stored in DB only; never included in the public GitHub issue body |
 | **User Accounts** | Dropdown + profile/email/password/language | **PASSED** | `PATCH /me`, `POST /email`, `POST /password`, `/profile` page, preferred language |
 | **Admin Console** | Review queue, coverage matrix, audit trail | **PASSED** | `role='admin'` guard; students strictly receive 403 Forbidden |
-| **Deployment & Ops** | Docker Compose, SPA fallback, SQLite WAL & Postgres | **PASSED** | `docker-compose.yml`, `nginx.conf`, `backup_drill.sh` |
+| **Deployment & Ops** | Docker Compose, SPA fallback, SQLite WAL & Postgres | **PASSED** | `docker-compose.yml` (`no-new-privileges:true`), `nginx.conf` (CSP), `backup_drill.sh` |
 
 ---
 
@@ -57,12 +62,15 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 ## 3. Deployment & Operational Runbook
 
 ### 3.1 Single-Node Compose Launch
+Use `docker-compose` (standalone v5 at `/usr/local/bin/docker-compose`) or the
+plugin form `docker compose`; the commands below work with either.
+
 ```bash
 # 1. Start all containers (API, Web Nginx)
-docker compose up -d
+docker-compose up -d
 
 # 2. Verify container health
-docker compose ps
+docker-compose ps
 curl -i http://localhost/api/v1/health
 ```
 
@@ -103,7 +111,8 @@ new harness either way.
 ### 5.1 VPS prep
 
 ```bash
-# Docker + compose plugin, then host hardening (details: docs/prod.md §5)
+# Docker + compose (`docker-compose` standalone v5 at /usr/local/bin/docker-compose,
+# or the `docker compose` plugin), then host hardening (details: docs/prod.md §5)
 free -h                          # after: expect ~2G swap (swapfile)
 sysctl vm.overcommit_memory      # expect 0 or 1, never 2 without extra swap
 git clone <forge-url> /home/ubuntu/merit && cd /home/ubuntu/merit
@@ -123,9 +132,9 @@ export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=requ
 ### 5.3 Compose up (1GB budget: api 350m / web 64m)
 
 ```bash
-docker compose config   # must parse clean
-docker compose up -d --build
-docker compose ps
+docker-compose config   # must parse clean
+docker-compose up -d --build
+docker-compose ps
 # Judge runs on Cloud Run and needs no container here. Wire it up first:
 #   ./apps/judge/deploy.sh bootstrap
 #   ./apps/judge/deploy.sh deploy && TIER=heavy ./apps/judge/deploy.sh deploy
@@ -155,8 +164,13 @@ DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
       Compile Error, never a Wrong Answer)
 - [ ] Generate + submit a quiz → graded, no answer leakage pre-submit
 - [ ] Start + submit a timed mock exam → score recorded
-- [ ] Tutor panel WITHOUT a key → mocked/offline path, no crash; with a
-      pasted key → preset selector shows OpenAI (default) + Gemini
+- [ ] `/review` → due SM-2 cards render; rating a card advances its interval
+- [ ] Signed-out visit to tutor/interview → sign-in prompt only, no BYOK key accepted
+- [ ] Tutor panel signed in WITHOUT a key → mocked/offline path, no crash; with a
+      pasted key → all 4 modes (Socratic, Step Hint, Code Review, Mock Interview) and
+      preset selector show OpenAI (default) + Gemini
+- [ ] `/interview` → start an Easy/Medium/Hard loop, solve a coding round in the
+      embedded runner, end and score a rubric; session survives reload/another device
 - [ ] Logout → cookies cleared, protected routes redirect to login
 
 ### 5.6 Automated e2e (configured — run it)

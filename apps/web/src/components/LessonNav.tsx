@@ -75,6 +75,9 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
   const prevResolved = prevStep ? resolveStep(prevStep) : null;
   const nextResolved = nextStep ? resolveStep(nextStep) : null;
 
+  const stepHref = (link: string, idx: number) =>
+    `${link}${link.includes('?') ? '&' : '?'}path=${matchedPath.id}&step=${idx}`;
+
   const handleNext = () => {
     // Mark current step complete if visualizer
     if (currentType === 'visualizer') {
@@ -85,7 +88,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
     }
 
     if (nextResolved) {
-      navigate(`${nextResolved.link}?path=${matchedPath.id}&step=${currentStepIndex + 1}`);
+      navigate(stepHref(nextResolved.link, currentStepIndex + 1));
     } else {
       navigate(`/learn/${matchedPath.id}`);
     }
@@ -93,7 +96,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
 
   const handlePrev = () => {
     if (prevResolved) {
-      navigate(`${prevResolved.link}?path=${matchedPath.id}&step=${currentStepIndex - 1}`);
+      navigate(stepHref(prevResolved.link, currentStepIndex - 1));
     }
   };
 
@@ -123,7 +126,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
               aria-expanded={isDropdownOpen}
             >
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-mint animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-mint" />
                 <span className="text-[10px] font-mono text-mint font-semibold uppercase tracking-wider">
                   {`Step ${currentStepIndex + 1} of ${steps.length}`}
                 </span>
@@ -159,7 +162,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
                     return (
                       <Link
                         key={`${step.type}-${step.id}-${idx}`}
-                        to={`${resolved.link}?path=${matchedPath.id}&step=${idx}`}
+                        to={stepHref(resolved.link, idx)}
                         onClick={() => setIsDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs transition ${
                           isStepActive
@@ -202,9 +205,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
             className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:bg-mint/90 transition shadow-sm cursor-pointer"
           >
             <span>
-              {nextResolved
-                ? `Next: ${nextResolved.title}`
-                : 'Finish Path 🎉'}
+              {nextResolved ? `Next: ${nextResolved.title}` : 'Finish path'}
             </span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>

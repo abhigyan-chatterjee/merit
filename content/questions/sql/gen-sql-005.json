@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-005",
+  "topic": "sql",
+  "subtopic": "group-having",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Rows have dept values A, A, B, C, C, C. How many groups does GROUP BY dept produce?",
+  "options": [
+    "3",
+    "5",
+    "7",
+    "1"
+  ],
+  "correct_index": 0,
+  "explanation": "There are three distinct departments, so three groups. The correct answer is 3.",
+  "source": "generated",
+  "generator_key": "sql.group_having",
+  "content_hash": "12bd4d88305c9390120e74709f91cde1941e75d62b01bcb67d1efe95dfd5ebda",
+  "review_status": "verified"
+}

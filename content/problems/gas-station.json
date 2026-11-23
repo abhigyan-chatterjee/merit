@@ -1745,5 +1745,12 @@
   ],
   "sequence": 3,
   "prevSlug": "best-time-to-buy-and-sell-stock-ii",
-  "nextSlug": "integer-to-roman"
+  "nextSlug": "integer-to-roman",
+  "companies": [
+    "PhonePe",
+    "Microsoft",
+    "ServiceNow",
+    "Adobe",
+    "TCS"
+  ]
 }

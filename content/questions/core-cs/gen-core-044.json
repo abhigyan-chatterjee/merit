@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-044",
+  "topic": "core-cs",
+  "subtopic": "dbms-recovery",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the purpose of a checkpoint in recovery?",
+  "options": [
+    "To rebuild indexes",
+    "To increase log size",
+    "To lock the database forever",
+    "To shorten recovery time"
+  ],
+  "correct_index": 3,
+  "explanation": "Checkpoints bound how much log must be replayed. The correct answer is To shorten recovery time.",
+  "source": "generated",
+  "generator_key": "core_cs.wal_recovery",
+  "content_hash": "d7fb2eb83c2ea0b00037786d756041329fa8684a96f6a01835bc44b061333d5d",
+  "review_status": "verified"
+}

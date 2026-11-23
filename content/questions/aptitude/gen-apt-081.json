@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-081",
+  "topic": "aptitude",
+  "subtopic": "coding-decoding",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If TODAY is coded as UQEBZ by shifting every letter one place forward, how is WATER coded?",
+  "options": [
+    "WAUFS",
+    "XBVFT",
+    "XBUFS",
+    "XATFS"
+  ],
+  "correct_index": 2,
+  "explanation": "Each letter advances by one: W->X, A->B, T->U, E->F, R->S. The correct answer is XBUFS.",
+  "source": "generated",
+  "generator_key": "aptitude.coding_decoding",
+  "content_hash": "3bb993d68aff3639b5427329db62bd3179456f6224b5b0a147eb9f009a409536",
+  "review_status": "verified"
+}

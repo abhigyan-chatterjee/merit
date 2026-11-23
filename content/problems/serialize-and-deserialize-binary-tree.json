@@ -1050,5 +1050,12 @@
   ],
   "sequence": 22,
   "prevSlug": "binary-tree-cameras",
-  "nextSlug": "vertical-order-traversal-of-a-binary-tree"
+  "nextSlug": "vertical-order-traversal-of-a-binary-tree",
+  "companies": [
+    "Flipkart",
+    "Microsoft",
+    "Atlassian",
+    "PayPal",
+    "Uber"
+  ]
 }

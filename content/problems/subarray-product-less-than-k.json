@@ -1040,5 +1040,12 @@
   ],
   "sequence": 10,
   "prevSlug": "permutation-in-string",
-  "nextSlug": "sliding-window-maximum"
+  "nextSlug": "sliding-window-maximum",
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "Samsung",
+    "Airbnb",
+    "Goldman Sachs"
+  ]
 }

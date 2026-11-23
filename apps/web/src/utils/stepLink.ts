@@ -1,5 +1,5 @@
 import { PathStep } from '../data/learningPaths';
-import { PROBLEMS } from '../data/problems';
+import { PROBLEM_MANIFEST } from '../data/problemManifest';
 import { VISUALIZERS } from '../data/curriculum';
 import { QUIZZES, QUIZ_TOPICS } from '../data/quizzes';
 
@@ -33,7 +33,7 @@ export function resolveStep(step: PathStep): ResolvedStep {
   }
 
   if (step.type === 'problem') {
-    const problem = PROBLEMS.find((p) => p.slug === step.id);
+    const problem = PROBLEM_MANIFEST.find((p) => p.slug === step.id);
     return {
       step,
       title: problem?.title ?? step.id,

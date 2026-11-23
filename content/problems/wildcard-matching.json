@@ -269,5 +269,12 @@
   ],
   "sequence": 27,
   "prevSlug": "regular-expression-matching",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "Atlassian",
+    "DE Shaw",
+    "Zoho"
+  ]
 }

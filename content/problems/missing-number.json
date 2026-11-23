@@ -940,5 +940,12 @@
   ],
   "sequence": 10,
   "prevSlug": "majority-element",
-  "nextSlug": "move-zeroes"
+  "nextSlug": "move-zeroes",
+  "companies": [
+    "Infosys",
+    "Microsoft",
+    "Nvidia",
+    "TCS",
+    "Zoho"
+  ]
 }

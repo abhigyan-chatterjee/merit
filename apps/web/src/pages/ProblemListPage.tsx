@@ -1,19 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import {
   Bookmark,
   Check,
   ChevronDown,
   ChevronRight,
-  ChevronUp,
   Search,
-  Sparkles,
 } from 'lucide-react';
 import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { TOPICS } from '../data/curriculum';
 import { useProgress } from '../store/ProgressContext';
 
 const TAG_LIMIT = 8;
+const COMPANY_LIMIT = 10;
+
+type DifficultyFilter = 'All' | ProblemManifestItem['difficulty'];
+type StatusFilter = 'All' | 'Todo' | 'Done' | 'Starred';
+
+const DIFFICULTY_OPTIONS: DifficultyFilter[] = ['All', 'Easy', 'Medium', 'Hard'];
+const STATUS_OPTIONS: StatusFilter[] = ['All', 'Todo', 'Done', 'Starred'];
 
 const difficultyTone: Record<ProblemManifestItem['difficulty'], string> = {
   Easy: 'text-mint',
@@ -24,11 +29,32 @@ const difficultyTone: Record<ProblemManifestItem['difficulty'], string> = {
 export const ProblemListPage: React.FC = () => {
   const { topic } = useParams<{ topic: string }>();
   const { state, toggleBookmark } = useProgress();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [difficulty, setDifficulty] = useState<DifficultyFilter>('All');
+  const [status, setStatus] = useState<StatusFilter>('All');
   const [showAllTags, setShowAllTags] = useState(false);
+  const [showAllCompanies, setShowAllCompanies] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState<string[]>(
     topic && TOPICS.some((item) => item.slug === topic) ? [topic] : []
+  );
+  const prevTopicParamRef = useRef<string | undefined>(topic);
+  useEffect(() => {
+    if (prevTopicParamRef.current === topic) return;
+    prevTopicParamRef.current = topic;
+    if (topic && TOPICS.some((item) => item.slug === topic)) {
+      setExpandedTopics((prev) => (prev.includes(topic) ? prev : [...prev, topic]));
+    }
+  }, [topic]);
+
+  // Selected companies live in the URL (`?company=TCS[&company=...]`) so a
+  // badge link from a problem page lands pre-filtered and filters are
+  // shareable / survive a refresh.
+  const companyFilterKey = searchParams.getAll('company').join('\0');
+  const selectedCompanies = useMemo(
+    () => (companyFilterKey ? companyFilterKey.split('\0') : []),
+    [companyFilterKey],
   );
 
   const tagCounts = useMemo(() => {
@@ -40,28 +66,70 @@ export const ProblemListPage: React.FC = () => {
     return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   }, []);
 
+  const companyCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    PROBLEM_MANIFEST.forEach((problem) => {
+      problem.companies.forEach((company) => {
+        counts.set(company, (counts.get(company) ?? 0) + 1);
+      });
+    });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  }, []);
+
   const visibleTags = showAllTags ? tagCounts : tagCounts.slice(0, TAG_LIMIT);
+  // Selected companies beyond the top 10 stay visible so the active filter is
+  // never hidden inside the collapsed strip.
+  const visibleCompanies = showAllCompanies
+    ? companyCounts
+    : companyCounts
+        .slice(0, COMPANY_LIMIT)
+        .concat(companyCounts.slice(COMPANY_LIMIT).filter(([company]) => selectedCompanies.includes(company)));
+
   const filteredProblems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return PROBLEM_MANIFEST.filter((problem) => {
       const matchesSearch =
         !query ||
         problem.title.toLowerCase().includes(query) ||
-        problem.pattern.toLowerCase().includes(query);
+        problem.pattern.toLowerCase().includes(query) ||
+        problem.companies.some((company) => company.toLowerCase().includes(query));
       const matchesTags =
         selectedTags.length === 0 ||
         selectedTags.some((tag) => tag === problem.topic || tag === problem.pattern);
-      return matchesSearch && matchesTags;
+      const matchesCompanies =
+        selectedCompanies.length === 0 ||
+        selectedCompanies.some((company) => problem.companies.includes(company));
+      const matchesDifficulty = difficulty === 'All' || problem.difficulty === difficulty;
+      const problemStatus = state.progress[problem.slug] ?? 'Todo';
+      const matchesStatus =
+        status === 'All' ||
+        (status === 'Starred'
+          ? state.bookmarks.includes(problem.slug)
+          : problemStatus === status);
+      return matchesSearch && matchesTags && matchesCompanies && matchesDifficulty && matchesStatus;
     });
-  }, [searchQuery, selectedTags]);
+  }, [searchQuery, selectedTags, selectedCompanies, difficulty, status, state.progress, state.bookmarks]);
 
-  const hasActiveFilter = searchQuery.trim().length > 0 || selectedTags.length > 0;
+  const hasActiveFilter =
+    searchQuery.trim().length > 0 ||
+    selectedTags.length > 0 ||
+    selectedCompanies.length > 0 ||
+    difficulty !== 'All' ||
+    status !== 'All';
   const matchingTopics = TOPICS.filter((item) =>
     filteredProblems.some((problem) => problem.topic === item.slug)
   );
 
+  const filterSignature = `${searchQuery.trim()}|${selectedTags.join(',')}|${companyFilterKey}|${difficulty}|${status}`;
+  const lastExpandedFilterRef = useRef<string>('');
+
   useEffect(() => {
-    if (!hasActiveFilter) return;
+    if (!hasActiveFilter) {
+      lastExpandedFilterRef.current = '';
+      return;
+    }
+    if (lastExpandedFilterRef.current === filterSignature) return;
+    lastExpandedFilterRef.current = filterSignature;
     const matches = TOPICS.filter((item) =>
       filteredProblems.some((problem) => problem.topic === item.slug)
     ).map((item) => item.slug);
@@ -69,14 +137,38 @@ export const ProblemListPage: React.FC = () => {
       const next = Array.from(new Set([...current, ...matches]));
       return next.length === current.length ? current : next;
     });
-  }, [hasActiveFilter, filteredProblems]);
+  }, [hasActiveFilter, filterSignature, filteredProblems]);
 
   const solvedCount = PROBLEM_MANIFEST.filter((problem) => state.progress[problem.slug] === 'Done').length;
+  const starredCount = state.bookmarks.length;
 
   const toggleTag = (tag: string) => {
     setSelectedTags((current) =>
       current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag]
     );
+  };
+
+  const toggleCompany = (company: string) => {
+    const next = new URLSearchParams(searchParams.toString());
+    const current = next.getAll('company');
+    next.delete('company');
+    const updated = current.includes(company)
+      ? current.filter((item) => item !== company)
+      : [...current, company];
+    updated.forEach((item) => next.append('company', item));
+    setSearchParams(next);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedTags([]);
+    setDifficulty('All');
+    setStatus('All');
+    setShowAllTags(false);
+    setShowAllCompanies(false);
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete('company');
+    setSearchParams(next);
   };
 
   const toggleTopic = (slug: string) => {
@@ -85,43 +177,14 @@ export const ProblemListPage: React.FC = () => {
     );
   };
 
-  const topicTitle = (slug: string) => TOPICS.find((item) => item.slug === slug)?.title ?? slug;
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-      <section className="rounded-2xl border border-line bg-surface p-6 md:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div className="max-w-2xl space-y-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-mint">
-              <Sparkles className="w-3.5 h-3.5" />
-              Problem set
-            </span>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
-              Master the patterns
-            </h1>
-            <p className="text-sm text-muted leading-relaxed">
-              A focused, pattern-first path through the problems that matter most for technical
-              interviews.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-6 font-mono">
-            <div>
-              <div className="text-lg font-bold text-mint tnum">
-                {solvedCount}/{PROBLEM_MANIFEST.length}
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Done</div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 text-lg font-bold text-amber tnum">
-                <Bookmark className="w-4 h-4 fill-amber" />
-                {state.bookmarks.length}
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Starred</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-ink">Problems</h1>
+        <p className="text-xs text-muted font-mono">
+          {filteredProblems.length} problems · {solvedCount} done · {starredCount} starred
+        </p>
+      </div>
 
       <section className="space-y-3" aria-label="Problem filters">
         <div className="relative">
@@ -140,7 +203,7 @@ export const ProblemListPage: React.FC = () => {
           <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
             Tags
           </span>
-          {visibleTags.map(([tag, count]) => {
+          {visibleTags.map(([tag]) => {
             const active = selectedTags.includes(tag);
             const label = TOPICS.find((item) => item.slug === tag)?.title ?? tag;
             return (
@@ -156,7 +219,6 @@ export const ProblemListPage: React.FC = () => {
                 }`}
               >
                 {label}
-                <span className={active ? 'text-canvas/70' : 'text-muted'}>{count}</span>
               </button>
             );
           })}
@@ -166,8 +228,97 @@ export const ProblemListPage: React.FC = () => {
               onClick={() => setShowAllTags((current) => !current)}
               className="inline-flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono text-mint hover:text-ink"
             >
-              {showAllTags ? 'Show fewer' : 'Expand'}
-              {showAllTags ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+{showAllTags ? 'Show fewer' : 'Expand'}
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+            Companies
+          </span>
+          {visibleCompanies.map(([company]) => {
+            const active = selectedCompanies.includes(company);
+            return (
+              <button
+                key={company}
+                type="button"
+                onClick={() => toggleCompany(company)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono transition ${
+                  active
+                    ? 'border-mint bg-mint text-canvas font-semibold'
+                    : 'border-line bg-surface text-muted hover:border-steel hover:text-ink'
+                }`}
+              >
+                {company}
+              </button>
+            );
+          })}
+          {companyCounts.length > COMPANY_LIMIT && (
+            <button
+              type="button"
+              onClick={() => setShowAllCompanies((current) => !current)}
+              className="inline-flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono text-mint hover:text-ink"
+            >
+{showAllCompanies ? 'Fewer' : 'All companies'}
+            </button>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+            Difficulty
+          </span>
+          {DIFFICULTY_OPTIONS.map((option) => {
+            const active = difficulty === option;
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setDifficulty(option)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono transition ${
+                  active
+                    ? 'border-mint bg-mint text-canvas font-semibold'
+                    : 'border-line bg-surface text-muted hover:border-steel hover:text-ink'
+                }`}
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
+            Status
+          </span>
+          {STATUS_OPTIONS.map((option) => {
+            const active = status === option;
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setStatus(option)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono transition ${
+                  active
+                    ? 'border-mint bg-mint text-canvas font-semibold'
+                    : 'border-line bg-surface text-muted hover:border-steel hover:text-ink'
+                }`}
+              >
+                {option}
+              </button>
+            );
+          })}
+          {hasActiveFilter && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1 px-2 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono text-rose hover:text-ink"
+            >
+              Clear filters
             </button>
           )}
         </div>
@@ -176,7 +327,7 @@ export const ProblemListPage: React.FC = () => {
       {hasActiveFilter && filteredProblems.length === 0 && (
         <div className="rounded-xl border border-line bg-surface p-8 text-center">
           <p className="text-sm font-semibold text-ink">No problems match your filters</p>
-          <p className="text-xs text-muted mt-1">Try a different search or clear the selected tags.</p>
+          <p className="text-xs text-muted mt-1">Try a different search or clear the filters.</p>
         </div>
       )}
 
@@ -207,7 +358,6 @@ export const ProblemListPage: React.FC = () => {
                 )}
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold text-ink">{topicItem.title}</span>
-                  <span className="block mt-0.5 text-[11px] text-muted">{topicItem.description}</span>
                 </span>
                 <span className="w-24 shrink-0 space-y-1.5">
                   <span className="block text-right text-[11px] font-mono text-muted tnum">
@@ -275,8 +425,7 @@ export const ProblemListPage: React.FC = () => {
       </section>
 
       <p className="text-center text-[11px] font-mono text-muted">
-        Showing {filteredProblems.length} of {PROBLEM_MANIFEST.length} problems
-        {selectedTags.length > 0 && ` across ${selectedTags.map(topicTitle).join(', ')}`}
+        {filteredProblems.length} / {PROBLEM_MANIFEST.length}
       </p>
     </div>
   );

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-013",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: He is very good ___ mathematics.",
+  "options": [
+    "with",
+    "at",
+    "on",
+    "in"
+  ],
+  "correct_index": 1,
+  "explanation": "The idiom is 'good at' a subject.",
+  "source": "generated",
+  "generator_key": "verbal.prepositions_idioms",
+  "content_hash": "1304d3a719a623e3bccbd572aa2dd22e99814b70bf48f16c83671070c9be2872",
+  "review_status": "verified"
+}

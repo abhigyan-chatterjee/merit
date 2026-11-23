@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-086",
+  "topic": "core-cs",
+  "subtopic": "design-caching",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which eviction policy removes the least recently used entry?",
+  "options": [
+    "FIFO",
+    "Random",
+    "LRU",
+    "LFU"
+  ],
+  "correct_index": 2,
+  "explanation": "LRU evicts the oldest accessed item.",
+  "source": "generated",
+  "generator_key": "core_cs.caching",
+  "content_hash": "906e95768ba39bf30dcd8575c0827a1464fd3224f0bcd0357a975c44cc2c9bda",
+  "review_status": "verified"
+}

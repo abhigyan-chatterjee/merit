@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-022",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Change to indirect speech: She asked, 'Where do you live?'",
+  "options": [
+    "She asked where did I live.",
+    "She asked where do I live.",
+    "She asked where I lived.",
+    "She asked where I live."
+  ],
+  "correct_index": 2,
+  "explanation": "Questions become statements with shifted tense. The correct answer is She asked where I lived..",
+  "source": "generated",
+  "generator_key": "verbal.direct_indirect",
+  "content_hash": "9151504f9d3bdab907ac83d7d1d865e73a36bae541c31766d892a989183013be",
+  "review_status": "verified"
+}

@@ -1202,5 +1202,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "minimum-absolute-difference"
+  "nextSlug": "minimum-absolute-difference",
+  "companies": [
+    "Wipro",
+    "Amazon",
+    "Cognizant",
+    "Samsung",
+    "Qualcomm"
+  ]
 }

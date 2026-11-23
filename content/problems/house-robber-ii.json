@@ -980,7 +980,14 @@
       "isReference": true
     }
   ],
-  "sequence": 8,
+  "sequence": 9,
   "prevSlug": "house-robber",
-  "nextSlug": "longest-common-subsequence"
+  "nextSlug": "longest-common-subsequence",
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "ServiceNow",
+    "DE Shaw",
+    "Salesforce"
+  ]
 }

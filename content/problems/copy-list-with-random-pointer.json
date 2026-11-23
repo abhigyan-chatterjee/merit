@@ -2838,5 +2838,12 @@
   ],
   "sequence": 8,
   "prevSlug": "add-two-numbers",
-  "nextSlug": "odd-even-linked-list"
+  "nextSlug": "odd-even-linked-list",
+  "companies": [
+    "Walmart Labs",
+    "Google",
+    "Morgan Stanley",
+    "Snowflake",
+    "Flipkart"
+  ]
 }

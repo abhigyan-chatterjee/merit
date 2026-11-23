@@ -1234,5 +1234,12 @@
   ],
   "sequence": 3,
   "prevSlug": "implement-trie-prefix-tree",
-  "nextSlug": "design-in-memory-file-system"
+  "nextSlug": "design-in-memory-file-system",
+  "companies": [
+    "Bloomberg",
+    "DoorDash",
+    "Adobe",
+    "PayPal",
+    "Citadel"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-034",
+  "topic": "sql",
+  "subtopic": "dml-indexes",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A table has 7 rows. How many rows remain immediately after TRUNCATE TABLE t?",
+  "options": [
+    "0",
+    "3",
+    "2",
+    "6"
+  ],
+  "correct_index": 0,
+  "explanation": "TRUNCATE empties the table. The correct answer is 0.",
+  "source": "generated",
+  "generator_key": "sql.dml_indexes",
+  "content_hash": "06d0cce0758027c4d4900d554d6a02c584651f42c0387309415e789cd887390b",
+  "review_status": "verified"
+}

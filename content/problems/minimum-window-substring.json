@@ -269,5 +269,12 @@
   ],
   "sequence": 12,
   "prevSlug": "sliding-window-maximum",
-  "nextSlug": "subarrays-with-k-different-integers"
+  "nextSlug": "subarrays-with-k-different-integers",
+  "companies": [
+    "Zoho",
+    "Bloomberg",
+    "SAP",
+    "Airbnb",
+    "Snowflake"
+  ]
 }

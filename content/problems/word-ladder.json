@@ -943,5 +943,12 @@
   ],
   "sequence": 28,
   "prevSlug": "shortest-path-in-a-grid-with-obstacles-elimination",
-  "nextSlug": "word-ladder-ii"
+  "nextSlug": "word-ladder-ii",
+  "companies": [
+    "PhonePe",
+    "Google",
+    "Visa",
+    "LinkedIn",
+    "Samsung"
+  ]
 }

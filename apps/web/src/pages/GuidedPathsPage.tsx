@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutGrid, GitCommit, Network, Cpu, ChevronRight } from 'lucide-react';
-import { LEARNING_PATHS } from '../data/learningPaths';
-import { resolveStep } from '../utils/stepLink';
+import { LayoutGrid, GitCommit, Network, Cpu, Briefcase, Target, ChevronRight } from 'lucide-react';
+import { LEARNING_PATHS, LearningPath } from '../data/learningPaths';
 import { useProgress } from '../store/ProgressContext';
 import { Reveal } from '../components/ui/Reveal';
 
@@ -10,8 +9,17 @@ const PATH_ICONS: Record<string, React.ComponentType<any>> = {
   LayoutGrid,
   GitCommit,
   Network,
-  Cpu
+  Cpu,
+  Briefcase,
+  Target,
 };
+
+const TRACK_TABS: Array<{ id: LearningPath['track'] | 'all'; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'foundational', label: 'Foundational' },
+  { id: 'placement', label: 'Placement & Company' },
+  { id: 'specialised', label: 'Specialised' },
+];
 
 function isStepDone(
   step: { type: string; id: string },
@@ -46,7 +54,6 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
   const path = LEARNING_PATHS.find((p) => p.id === pathId)!;
   const Icon = PATH_ICONS[path.icon] ?? LayoutGrid;
   const { done, total, pct } = usePathProgress(path.id);
-  const preview = path.steps.slice(0, 3).map((s) => resolveStep(s).title);
   const complete = pct === 100;
   const recommended = path.id === 'foundation';
 
@@ -81,23 +88,7 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
             <ChevronRight className="w-4 h-4 text-muted group-hover:text-mint transition-colors shrink-0" />
           </div>
 
-          <p className="text-xs text-muted leading-relaxed">{path.blurb}</p>
-
-          <div className="flex flex-wrap gap-1.5">
-            {preview.map((t) => (
-              <span
-                key={t}
-                className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-canvas border border-line text-muted"
-              >
-                {t}
-              </span>
-            ))}
-            {path.steps.length > 3 && (
-              <span className="text-[10px] font-mono text-muted">
-                +{path.steps.length - 3} more
-              </span>
-            )}
-          </div>
+          <p className="text-xs text-muted leading-relaxed line-clamp-1">{path.blurb}</p>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-[10px] font-mono text-muted">
@@ -118,6 +109,9 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
 };
 
 export const GuidedPathsPage: React.FC = () => {
+  const [track, setTrack] = useState<LearningPath['track'] | 'all'>('all');
+  const paths = track === 'all' ? LEARNING_PATHS : LEARNING_PATHS.filter((p) => p.track === track);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}
@@ -132,9 +126,27 @@ export const GuidedPathsPage: React.FC = () => {
         </p>
       </div>
 
+      {/* Track filter tabs */}
+      <div className="flex flex-wrap gap-2">
+        {TRACK_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setTrack(tab.id)}
+            className={`px-3 py-1.5 rounded-lg border font-mono text-[11px] uppercase tracking-[0.12em] transition cursor-pointer ${
+              track === tab.id
+                ? 'bg-violet text-canvas border-violet'
+                : 'bg-surface text-muted border-line hover:border-steel'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {/* Path cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {LEARNING_PATHS.map((path, i) => (
+        {paths.map((path, i) => (
           <PathCard key={path.id} pathId={path.id} index={i} />
         ))}
       </div>

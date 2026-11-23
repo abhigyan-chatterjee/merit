@@ -329,5 +329,12 @@
   ],
   "sequence": 5,
   "prevSlug": "coin-change",
-  "nextSlug": "delete-and-earn"
+  "nextSlug": "delete-and-earn",
+  "companies": [
+    "Infosys",
+    "Meta",
+    "DE Shaw",
+    "Intuit",
+    "Flipkart"
+  ]
 }

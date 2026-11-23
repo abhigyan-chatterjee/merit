@@ -2448,5 +2448,12 @@
   ],
   "sequence": 12,
   "prevSlug": "n-queens",
-  "nextSlug": "word-break-ii"
+  "nextSlug": "word-break-ii",
+  "companies": [
+    "Zoho",
+    "Meta",
+    "Intuit",
+    "DoorDash",
+    "Citadel"
+  ]
 }

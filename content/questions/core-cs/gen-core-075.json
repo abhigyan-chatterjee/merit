@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-075",
+  "topic": "core-cs",
+  "subtopic": "oop-cpp",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A class containing at least one pure virtual function is called?",
+  "options": [
+    "Sealed",
+    "Final",
+    "Concrete",
+    "Abstract"
+  ],
+  "correct_index": 3,
+  "explanation": "Pure virtual functions make a class abstract.",
+  "source": "generated",
+  "generator_key": "core_cs.cpp_virtual_dispatch",
+  "content_hash": "02c6c23de8c83c497d082058fed3e415093f9e6d1c0c0f8b43131fbb19e21d49",
+  "review_status": "verified"
+}

@@ -249,5 +249,12 @@
   ],
   "sequence": 7,
   "prevSlug": "permutations",
-  "nextSlug": "subsets"
+  "nextSlug": "subsets",
+  "companies": [
+    "Zoho",
+    "Amazon",
+    "ByteDance",
+    "Nvidia",
+    "Adobe"
+  ]
 }

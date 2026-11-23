@@ -249,5 +249,12 @@
   ],
   "sequence": 10,
   "prevSlug": "word-search",
-  "nextSlug": "n-queens"
+  "nextSlug": "n-queens",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Flipkart",
+    "TCS",
+    "Cognizant"
+  ]
 }

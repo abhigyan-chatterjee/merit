@@ -940,5 +940,12 @@
   ],
   "sequence": 33,
   "prevSlug": "valid-sudoku",
-  "nextSlug": "max-points-on-a-line"
+  "nextSlug": "max-points-on-a-line",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Salesforce",
+    "PayPal",
+    "PhonePe"
+  ]
 }

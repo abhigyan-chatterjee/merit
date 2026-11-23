@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-027",
+  "topic": "sql",
+  "subtopic": "window-functions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Four rows have scores 100, 90, 90, 80. What DENSE_RANK does the last row receive?",
+  "options": [
+    "1",
+    "6",
+    "3",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "DENSE_RANK yields 1, 2, 2, 3.",
+  "source": "generated",
+  "generator_key": "sql.window_functions",
+  "content_hash": "6b54c367d9919fa3ea0a4ecbc98210419b51c555e1b237c8184376bbd1785b22",
+  "review_status": "verified"
+}

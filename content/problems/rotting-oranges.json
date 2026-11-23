@@ -1300,5 +1300,12 @@
   ],
   "sequence": 17,
   "prevSlug": "redundant-connection",
-  "nextSlug": "shortest-bridge"
+  "nextSlug": "shortest-bridge",
+  "companies": [
+    "Cognizant",
+    "Amazon",
+    "Intuit",
+    "Infosys",
+    "DoorDash"
+  ]
 }

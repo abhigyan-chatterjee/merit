@@ -525,5 +525,12 @@
   ],
   "sequence": 9,
   "prevSlug": "subsets",
-  "nextSlug": "n-queens-count"
+  "nextSlug": "n-queens-count",
+  "companies": [
+    "Intuit",
+    "Accenture",
+    "Google",
+    "Atlassian",
+    "PayPal"
+  ]
 }

@@ -238,6 +238,13 @@
     }
   ],
   "sequence": 24,
-  "prevSlug": "edit-distance",
-  "nextSlug": "maximum-profit-in-job-scheduling"
+  "prevSlug": "burst-balloons",
+  "nextSlug": "maximum-profit-in-job-scheduling",
+  "companies": [
+    "Google",
+    "Zoho",
+    "Morgan Stanley",
+    "DE Shaw",
+    "LinkedIn"
+  ]
 }

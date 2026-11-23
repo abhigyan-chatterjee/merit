@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-054",
+  "topic": "core-cs",
+  "subtopic": "cn-transport",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "In which phase does the congestion window grow linearly?",
+  "options": [
+    "Slow start",
+    "Congestion avoidance",
+    "Handshake",
+    "Fast recovery"
+  ],
+  "correct_index": 1,
+  "explanation": "Congestion avoidance adds one MSS per RTT.",
+  "source": "generated",
+  "generator_key": "core_cs.congestion_control",
+  "content_hash": "8ae4dab42e7668d73c68c3d4d09fc5136950fc84102f1586c97b51c67ad589d9",
+  "review_status": "verified"
+}

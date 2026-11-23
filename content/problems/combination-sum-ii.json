@@ -839,5 +839,12 @@
   ],
   "sequence": 2,
   "prevSlug": "combination-sum",
-  "nextSlug": "generate-parentheses"
+  "nextSlug": "generate-parentheses",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Walmart Labs",
+    "Adobe",
+    "ByteDance"
+  ]
 }

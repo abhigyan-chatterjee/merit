@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-094",
+  "topic": "core-cs",
+  "subtopic": "design-messaging",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does at-least-once delivery imply?",
+  "options": [
+    "Consumers may see duplicates",
+    "No acknowledgements are used",
+    "Messages are never retried",
+    "Every message is delivered once"
+  ],
+  "correct_index": 0,
+  "explanation": "Retries can redeliver the same message. The correct answer is Consumers may see duplicates.",
+  "source": "generated",
+  "generator_key": "core_cs.queues",
+  "content_hash": "2bb42c9459781f81c8d8e726bb09ba9ed7ecbf36dc6ea2fa74b49ac5eee0db32",
+  "review_status": "verified"
+}

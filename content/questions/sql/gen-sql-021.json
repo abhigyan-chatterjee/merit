@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-021",
+  "topic": "sql",
+  "subtopic": "subqueries",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Five users exist and orders reference 3 distinct users. How many rows does a query with WHERE id IN (SELECT user_id FROM orders) return?",
+  "options": [
+    "7",
+    "3",
+    "5",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "Only the three referenced users are returned. The correct answer is 3.",
+  "source": "generated",
+  "generator_key": "sql.subqueries",
+  "content_hash": "7e40e16c9aa65d6e0fa53d3828f61616d1c1eecc4aa962f14a16ff007246eb9a",
+  "review_status": "verified"
+}

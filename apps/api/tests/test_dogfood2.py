@@ -427,6 +427,18 @@ def test_tutor_journey_models_502_hint_policy_ratelimit(client: TestClient, monk
     """Journey 4: bad-key models → 502; hint policy at 0 fails; 30/min rate limit."""
     import httpx
 
+    def _resolve(host, port, **kwargs):
+        return [
+            (
+                tutor_module.socket.AF_INET,
+                kwargs["type"],
+                6,
+                "",
+                ("93.184.216.34", port),
+            )
+        ]
+
+    monkeypatch.setattr(tutor_module.socket, "getaddrinfo", _resolve)
     register(client, "dogfood-tutor@merit.org")
     base = {
         "base_url": "https://provider.example.com/v1",

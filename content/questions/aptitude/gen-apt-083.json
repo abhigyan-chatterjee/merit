@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-083",
+  "topic": "aptitude",
+  "subtopic": "coding-decoding",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If MANGO is coded as NBOHP, how is APPLE coded?",
+  "options": [
+    "BOPMF",
+    "BQQMF",
+    "APQMF",
+    "BQQNF"
+  ],
+  "correct_index": 1,
+  "explanation": "Each letter advances by one. The correct answer is BQQMF.",
+  "source": "generated",
+  "generator_key": "aptitude.coding_decoding",
+  "content_hash": "b8b375f64d3b2705112c6b76e7f5d952ae9bad08e4ce9f3bd123033b857f3aca",
+  "review_status": "verified"
+}

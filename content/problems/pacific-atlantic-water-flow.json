@@ -3423,5 +3423,12 @@
   ],
   "sequence": 15,
   "prevSlug": "open-the-lock",
-  "nextSlug": "redundant-connection"
+  "nextSlug": "redundant-connection",
+  "companies": [
+    "Flipkart",
+    "Apple",
+    "Adobe",
+    "ServiceNow",
+    "Nutanix"
+  ]
 }

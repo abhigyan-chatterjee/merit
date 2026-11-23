@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-006",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: She ___ in this city since 2010.",
+  "options": [
+    "lives",
+    "has lived",
+    "is living",
+    "lived"
+  ],
+  "correct_index": 1,
+  "explanation": "Since with a continuing state requires the present perfect. The correct answer is has lived.",
+  "source": "generated",
+  "generator_key": "verbal.tense_modifiers",
+  "content_hash": "d68e112c302c3ff571ed4df8dd0e1be873e455a931252bbc4bbd4e83161550bc",
+  "review_status": "verified"
+}

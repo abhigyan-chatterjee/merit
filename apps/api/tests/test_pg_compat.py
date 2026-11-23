@@ -50,6 +50,7 @@ def test_engine_builds_from_pg_url_without_connecting():
 
 def test_metadata_compiles_on_postgres_dialect():
     import app.models.content  # noqa: F401 (register tables)
+    import app.models.interview  # noqa: F401
     import app.models.progress  # noqa: F401
     import app.models.quiz  # noqa: F401
     import app.models.submission  # noqa: F401
@@ -107,6 +108,28 @@ def test_migration_chain_has_clean_upgrade_paths_and_no_sqlite_ddl():
         "op.get_bind().dialect.name != \"sqlite\"", ""
     )
 
+    companies_rev = script.get_revision("f6b2c3d4e5a8")
+    assert companies_rev is not None
+    assert companies_rev.down_revision == "e5a1b2c3d4f6"
+    companies_source = Path(companies_rev.path).read_text()
+    assert "companies_json" in companies_source
+    assert "sa.Text()" in companies_source
+
+    targets_rev = script.get_revision("a7c3d4e5f6b9")
+    assert targets_rev is not None
+    assert targets_rev.down_revision == "f6b2c3d4e5a8"
+    targets_source = Path(targets_rev.path).read_text()
+    assert "target_drive_date" in targets_source
+    assert "target_tier" in targets_source
+    assert "server_default" in targets_source
+
+    interview_rev = script.get_revision("b8d4e5f6a7c0")
+    assert interview_rev is not None
+    assert interview_rev.down_revision == "a7c3d4e5f6b9"
+    interview_source = Path(interview_rev.path).read_text()
+    assert "interview_sessions" in interview_source
+    assert "ix_interview_sessions_user_id" in interview_source
+
 
 def test_quiz_answer_unique_constraint_in_metadata():
     import app.models.quiz  # noqa: F401
@@ -129,6 +152,8 @@ def test_production_postgres_without_sslmode_warns():
             secret_key=SECRET,
             environment="production",
             database_url="postgresql+psycopg://merit:x@ep-host.aws.neon.tech/merit",
+            judge_url="https://judge.example.com",
+            google_application_credentials="/tmp/fake-service-account.json",
         )
     assert any("sslmode" in str(w.message) for w in caught)
 
@@ -138,5 +163,11 @@ def test_production_postgres_with_sslmode_no_warning():
 
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        Settings(secret_key=SECRET, environment="production", database_url=PG_URL)
+        Settings(
+            secret_key=SECRET,
+            environment="production",
+            database_url=PG_URL,
+            judge_url="https://judge.example.com",
+            google_application_credentials="/tmp/fake-service-account.json",
+        )
     assert not any("sslmode" in str(w.message) for w in caught)

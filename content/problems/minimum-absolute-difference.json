@@ -1187,5 +1187,12 @@
   ],
   "sequence": 2,
   "prevSlug": "merge-sorted-array",
-  "nextSlug": "largest-number"
+  "nextSlug": "largest-number",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Nvidia",
+    "Salesforce",
+    "PayPal"
+  ]
 }

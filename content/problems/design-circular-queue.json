@@ -1833,5 +1833,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "design-memory-allocator"
+  "nextSlug": "design-memory-allocator",
+  "companies": [
+    "Amazon",
+    "Snowflake",
+    "Qualcomm",
+    "Citadel",
+    "Oracle"
+  ]
 }

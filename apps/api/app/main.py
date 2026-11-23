@@ -12,6 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 import app.models.content  # noqa: F401
 import app.models.feedback  # noqa: F401
+import app.models.interview  # noqa: F401
 import app.models.progress  # noqa: F401
 import app.models.quiz  # noqa: F401
 import app.models.revision  # noqa: F401
@@ -24,6 +25,7 @@ from app.routers import (
     auth,
     content,
     feedback,
+    interview,
     judge,
     progress,
     quizzes,
@@ -103,7 +105,43 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
-_is_prod = settings.environment == "production"
+def _payload_too_large() -> JSONResponse:
+    return JSONResponse(
+        status_code=413,
+        content={"detail": {"code": "PAYLOAD_TOO_LARGE", "message": "Request body too large."}},
+    )
+
+
+class BodyLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        limit = (
+            2_621_440
+            if request.url.path == "/api/v1/interview/parse-resume"
+            else 1_048_576
+        )
+        length = request.headers.get("content-length")
+        if length is not None:
+            try:
+                parsed_length = int(length)
+            except ValueError:
+                parsed_length = -1
+            if parsed_length > limit:
+                return _payload_too_large()
+            if parsed_length >= 0:
+                return await call_next(request)
+        body = bytearray()
+        async for chunk in request.stream():
+            body.extend(chunk)
+            if len(body) > limit:
+                return _payload_too_large()
+
+        async def receive():
+            return {"type": "http.request", "body": bytes(body), "more_body": False}
+
+        return await call_next(Request(request.scope, receive=receive))
+
+
+_is_prod = settings.environment.lower() == "production"
 
 app = FastAPI(
     title="Merit API",
@@ -114,15 +152,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(SecurityHeadersMiddleware)
-
+app.add_middleware(BodyLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.include_router(auth.router)
 app.include_router(progress.router)
@@ -131,6 +169,7 @@ app.include_router(content.router)
 app.include_router(quizzes.router)
 app.include_router(admin.router)
 app.include_router(tutor.router)
+app.include_router(interview.router)
 app.include_router(feedback.router)
 app.include_router(revision.router)
 

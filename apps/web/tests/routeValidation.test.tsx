@@ -78,7 +78,7 @@ describe('Route Validation & 404 Handling (D5)', () => {
       { timeout: 10000 }
     );
     // Aptitude now ships a static quiz bank: a live quiz renders, never a 404.
-    expect(await screen.findByText(/Question 1 of 10/i, {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByText(/Q 1\/10/i, {}, { timeout: 10000 })).toBeInTheDocument();
   }, 20000);
 
   it('serves a live quiz instead of 404 for unknown quiz topic', async () => {
@@ -127,6 +127,14 @@ describe('Route Validation & 404 Handling (D5)', () => {
     renderWithRouter('/terms');
     expect(await screen.findByRole('heading', { name: 'Terms of Service' })).toBeInTheDocument();
   });
+
+  it('renders ProblemListPage for bare /problems?company=TCS without 404', async () => {
+    renderWithRouter('/problems?company=TCS');
+    expect(
+      await screen.findByRole('heading', { name: /^Problems$/i }, { timeout: 10000 })
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+  }, 15000);
 
   it('renders real problem when topic and slug match', async () => {
     renderWithRouter('/problems/arrays-hashing/two-sum');

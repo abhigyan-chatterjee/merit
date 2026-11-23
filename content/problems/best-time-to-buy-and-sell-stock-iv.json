@@ -1068,7 +1068,14 @@
       "isReference": true
     }
   ],
-  "sequence": 21,
+  "sequence": 22,
   "prevSlug": "best-time-to-buy-and-sell-stock-iii",
-  "nextSlug": "burst-balloons"
+  "nextSlug": "burst-balloons",
+  "companies": [
+    "Apple",
+    "Goldman Sachs",
+    "Citadel",
+    "Visa",
+    "Infosys"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-005",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: By the time we arrived, the film ___.",
+  "options": [
+    "starts",
+    "has started",
+    "will start",
+    "had started"
+  ],
+  "correct_index": 3,
+  "explanation": "The past perfect 'had started' describes an earlier past event.",
+  "source": "generated",
+  "generator_key": "verbal.tense_modifiers",
+  "content_hash": "a95306cce461d1310330e33eef86e11da1757be50dbe8d113b1c602c4da9da05",
+  "review_status": "verified"
+}

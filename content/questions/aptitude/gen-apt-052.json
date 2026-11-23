@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-052",
+  "topic": "aptitude",
+  "subtopic": "combinations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of combinations C(8, 4) = 8C4. Give only the number.",
+  "options": [
+    "70",
+    "68",
+    "74",
+    "73"
+  ],
+  "correct_index": 0,
+  "explanation": "8C4 = 8!/(4!*(8-4)!) = 70.",
+  "source": "generated",
+  "generator_key": "aptitude.combinations",
+  "content_hash": "2d31d8cc797d38a08c40190b0b76d6356e181cd6798b1311e2c9d988e45f056a",
+  "review_status": "verified"
+}

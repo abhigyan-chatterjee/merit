@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-028",
+  "topic": "aptitude",
+  "subtopic": "averages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Four items average 30 and six items average 40. What is the combined average? Give only the number.",
+  "options": [
+    "37",
+    "35",
+    "36",
+    "34"
+  ],
+  "correct_index": 2,
+  "explanation": "Weighted total (4*30 + 6*40)/10 = 360/10 = 36.",
+  "source": "generated",
+  "generator_key": "aptitude.averages",
+  "content_hash": "3fbe3038268344f575aef9fd0302cf576a7b8bc7ee896cfa7f4abecd16de1a44",
+  "review_status": "verified"
+}

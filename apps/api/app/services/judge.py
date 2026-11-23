@@ -519,51 +519,6 @@ def _is_well_formed_result(
     return True
 
 
-def _verdict_from_harness(stdout: str) -> JudgeResult:
-    """Turns a harness stdout line into a verdict, failing closed.
-
-    Two things this must never do: treat an empty result set as a pass, and let
-    a student's stray debug print look like a crashed harness.
-    """
-    parsed = _parse_harness_output(stdout)
-    if parsed is None:
-        return JudgeResult(
-            verdict="RE",
-            runtime_ms=0,
-            test_results=[],
-            compile_output=(
-                "Output parsing error: the harness produced no result block.\n"
-                f"Output was: {stdout}"
-            ),
-        )
-
-    results = parsed["results"]
-    if not results:
-        # `all([])` is True, so an empty list used to be graded AC and the
-        # router then flipped ProblemProgress to "Done" — free completion for a
-        # problem whose test rows are missing. Fail closed.
-        return JudgeResult(
-            verdict="RE",
-            runtime_ms=0,
-            test_results=[],
-            compile_output=(
-                "No test cases ran for this problem, so nothing was graded. "
-                "Please report this problem."
-            ),
-        )
-
-    try:
-        runtime_ms = float(parsed.get("totalRuntime") or 0.0)
-    except (TypeError, ValueError):
-        runtime_ms = 0.0
-
-    return JudgeResult(
-        verdict="AC" if all(r.get("passed") for r in results) else "WA",
-        runtime_ms=runtime_ms,
-        test_results=results,
-    )
-
-
 def _grade_harness_output(
     stdout: str,
     test_cases: list[dict[str, Any]],
@@ -1530,9 +1485,8 @@ const ctx = vm.createContext({
   parseInt, parseFloat, isNaN, isFinite, Infinity, NaN, undefined, BigInt
 });
 let fn = null;
-try {
-  vm.runInContext(userSrc, ctx);
-} catch (_) {}
+let loadErr = null;
+try { vm.runInContext(userSrc, ctx); } catch (err) { loadErr = err; }
 try {
   fn = vm.runInContext(
     "typeof __FUNCTION_NAME__ === 'function' ? __FUNCTION_NAME__ : null",
@@ -1540,7 +1494,10 @@ try {
   );
 } catch (_) {}
 if (typeof fn !== 'function') {
-  process.stderr.write("Function __FUNCTION_NAME__ is not defined");
+  const msg = loadErr !== null
+    ? String((loadErr && (loadErr.stack || loadErr.message)) || loadErr)
+    : "Function __FUNCTION_NAME__ is not defined";
+  process.stderr.write(msg);
   _exit(1);
 }
 const results = [];

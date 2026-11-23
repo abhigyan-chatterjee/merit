@@ -1475,5 +1475,12 @@
   ],
   "sequence": 8,
   "prevSlug": "design-hit-counter",
-  "nextSlug": "koko-eating-bananas"
+  "nextSlug": "koko-eating-bananas",
+  "companies": [
+    "Capgemini",
+    "Apple",
+    "Atlassian",
+    "Flipkart",
+    "LinkedIn"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-078",
+  "topic": "core-cs",
+  "subtopic": "oop-python",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In 'def f(x, *args)', what does args collect?",
+  "options": [
+    "A tuple of extra positional arguments",
+    "A single integer",
+    "A list of keywords",
+    "A dictionary of keywords"
+  ],
+  "correct_index": 0,
+  "explanation": "The star collects extra positional arguments into a tuple. The correct answer is A tuple of extra positional arguments.",
+  "source": "generated",
+  "generator_key": "core_cs.python_semantics",
+  "content_hash": "a88ab1e0a4e71add2eb18f0a3b4665678ff325434739cc00e95dad0f3e3426ec",
+  "review_status": "verified"
+}

@@ -73,7 +73,6 @@ async def submit_feedback(
         f"- **Category:** `{payload.category}`",
         f"- **Reported URL:** {payload.page_url or 'N/A'}",
         f"- **Problem Context:** {payload.problem_slug or 'N/A'}",
-        f"- **Contact:** {payload.email or 'Anonymous'}",
         f"- **Internal Ref:** `{feedback_record.id}`",
         "",
         "### Details",

@@ -942,5 +942,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "find-the-index-of-the-first-occurrence-in-a-string"
+  "nextSlug": "find-the-index-of-the-first-occurrence-in-a-string",
+  "companies": [
+    "TCS",
+    "Microsoft",
+    "Adobe",
+    "Flipkart",
+    "Accenture"
+  ]
 }

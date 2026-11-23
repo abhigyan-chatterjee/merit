@@ -108,11 +108,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
             </div>
             <div>
               <h2 id="feedback-modal-title" className="text-sm font-bold text-ink">
-                Feedback & Bug Report
+                Report a bug
               </h2>
-              <p className="text-[11px] text-muted">
-                Report test case edge cases, visual bugs, or suggest improvements.
-              </p>
             </div>
           </div>
           <button
@@ -137,7 +134,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                 {successData.message}
               </p>
             </div>
-            {successData.issueUrl && (
+            {successData.issueUrl?.startsWith("https://github.com/") && (
               <a
                 href={successData.issueUrl}
                 target="_blank"

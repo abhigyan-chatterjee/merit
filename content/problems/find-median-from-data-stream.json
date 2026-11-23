@@ -1050,5 +1050,12 @@
   ],
   "sequence": 7,
   "prevSlug": "top-k-frequent-words",
-  "nextSlug": "lfu-cache"
+  "nextSlug": "lfu-cache",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "Intuit",
+    "Uber",
+    "Salesforce"
+  ]
 }

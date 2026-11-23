@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-013",
+  "topic": "sql",
+  "subtopic": "nulls",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A column x holds 1, 2, NULL and 4. What does COUNT(*) return?",
+  "options": [
+    "4",
+    "8",
+    "7",
+    "6"
+  ],
+  "correct_index": 0,
+  "explanation": "COUNT(*) counts every row, including the NULL one. The correct answer is 4.",
+  "source": "generated",
+  "generator_key": "sql.null_traps",
+  "content_hash": "3ab1a508d70ada7bb3fea67010a2c6fb3f82e03c339943a0ef88bc0c059a6e3a",
+  "review_status": "verified"
+}

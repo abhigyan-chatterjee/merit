@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 export const ProblemStatusSchema = z.enum(['Todo', 'Doing', 'Done']);
+export const TargetTierSchema = z.enum(['service', 'product', 'faang']);
+export type TargetTier = z.infer<typeof TargetTierSchema>;
 
 export const LastVisitedItemSchema = z.object({
   type: z.enum(['problem', 'visualizer']),
@@ -49,6 +51,8 @@ export const ProgressStateZodSchema = z.object({
   dailyGoalDone: z.record(z.string(), z.boolean()).default({}),
   dailyGoal: DailyGoalSchema.nullable().optional().default(null),
   dailyGoalProgress: z.record(z.string(), z.number()).default({}),
+  targetDriveDate: z.string().nullable().optional().default(null),
+  targetTier: TargetTierSchema.optional().default('product'),
   visitedVisualizers: z.array(z.string()).default([]),
   lastVisited: LastVisitedItemSchema.nullable().optional().default(null),
 });
@@ -67,6 +71,8 @@ export const EMPTY_INITIAL_STATE: ProgressStateSchema = {
   dailyGoalDone: {},
   dailyGoal: null,
   dailyGoalProgress: {},
+  targetDriveDate: null,
+  targetTier: 'product',
   visitedVisualizers: [],
   lastVisited: null,
 };

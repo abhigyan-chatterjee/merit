@@ -1302,5 +1302,12 @@
   ],
   "sequence": 9,
   "prevSlug": "copy-list-with-random-pointer",
-  "nextSlug": "partition-list"
+  "nextSlug": "partition-list",
+  "companies": [
+    "Infosys",
+    "Microsoft",
+    "TCS",
+    "Zoho",
+    "Meesho"
+  ]
 }

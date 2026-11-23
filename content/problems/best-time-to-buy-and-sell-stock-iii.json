@@ -1048,7 +1048,14 @@
       "isReference": true
     }
   ],
-  "sequence": 20,
+  "sequence": 21,
   "prevSlug": "word-break",
-  "nextSlug": "best-time-to-buy-and-sell-stock-iv"
+  "nextSlug": "best-time-to-buy-and-sell-stock-iv",
+  "companies": [
+    "Google",
+    "PayPal",
+    "Goldman Sachs",
+    "Citadel",
+    "Visa"
+  ]
 }

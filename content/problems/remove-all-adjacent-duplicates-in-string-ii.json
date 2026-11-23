@@ -269,5 +269,12 @@
   ],
   "sequence": 15,
   "prevSlug": "next-greater-element-ii",
-  "nextSlug": "remove-k-digits"
+  "nextSlug": "remove-k-digits",
+  "companies": [
+    "Walmart Labs",
+    "Google",
+    "PayPal",
+    "Morgan Stanley",
+    "Goldman Sachs"
+  ]
 }

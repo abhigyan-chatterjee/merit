@@ -2044,7 +2044,14 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
+  "sequence": 10,
   "prevSlug": "lowest-common-ancestor-bst",
-  "nextSlug": "balanced-binary-tree"
+  "nextSlug": "kth-smallest-element-in-a-bst",
+  "companies": [
+    "Accenture",
+    "Apple",
+    "Citadel",
+    "ByteDance",
+    "Goldman Sachs"
+  ]
 }

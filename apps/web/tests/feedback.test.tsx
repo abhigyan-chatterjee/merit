@@ -12,7 +12,7 @@ describe('FeedbackModal', () => {
     render(<FeedbackModal isOpen={true} onClose={handleClose} defaultProblemSlug="two-sum" />);
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText('Feedback & Bug Report')).toBeInTheDocument();
+    expect(screen.getByText('Report a bug')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/e\.g\. two-sum/i)).toHaveValue('two-sum');
   });
 

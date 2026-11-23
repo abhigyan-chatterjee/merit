@@ -3365,5 +3365,12 @@
   ],
   "sequence": 14,
   "prevSlug": "snapshot-array",
-  "nextSlug": "median-of-two-sorted-arrays"
+  "nextSlug": "median-of-two-sorted-arrays",
+  "companies": [
+    "Walmart Labs",
+    "Meta",
+    "Cisco",
+    "Oracle",
+    "Salesforce"
+  ]
 }

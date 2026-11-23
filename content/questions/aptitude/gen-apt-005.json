@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-005",
+  "topic": "aptitude",
+  "subtopic": "profit-loss",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An article with cost price Rs. 200 is sold at a 15% profit. What is the selling price? Give only the number.",
+  "options": [
+    "230",
+    "234",
+    "233",
+    "232"
+  ],
+  "correct_index": 0,
+  "explanation": "Selling price = 200 * (100 + 15)/100 = 230.",
+  "source": "generated",
+  "generator_key": "aptitude.profit_loss",
+  "content_hash": "40dc95c328abf7f6f5a1ddefe0e8ff13b61424b96ca2ac816df7c636f28f5bb7",
+  "review_status": "verified"
+}

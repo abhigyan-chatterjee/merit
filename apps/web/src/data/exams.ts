@@ -17,6 +17,10 @@ export interface TargetedExam {
   durationSec: number;
   difficulty?: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
+  /** exam family: recruiter mock, screening round, or DSA topic drill */
+  category: 'company' | 'screening' | 'dsa';
+  /** recruiter name for company-category exam cards */
+  company?: string;
 }
 
 export const TARGETED_EXAMS: TargetedExam[] = [
@@ -32,6 +36,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 2700,
     level: 'Beginner',
+    category: 'dsa',
   },
   {
     id: 'intermediate-dsa',
@@ -45,6 +50,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 3600,
     level: 'Intermediate',
+    category: 'dsa',
   },
   {
     id: 'sorting-searching',
@@ -58,6 +64,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 3600,
     level: 'Intermediate',
+    category: 'dsa',
   },
   {
     id: 'dp-greedy',
@@ -71,6 +78,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 3600,
     level: 'Advanced',
+    category: 'dsa',
   },
   {
     id: 'trees-graphs',
@@ -84,6 +92,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 3600,
     level: 'Intermediate',
+    category: 'dsa',
   },
   {
     id: 'aptitude',
@@ -94,6 +103,7 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     coding: [],
     durationSec: 1800,
     level: 'Beginner',
+    category: 'screening',
   },
   {
     id: 'full-mock',
@@ -115,5 +125,85 @@ export const TARGETED_EXAMS: TargetedExam[] = [
     ],
     durationSec: 10800,
     level: 'Advanced',
+    category: 'screening',
+  },
+  {
+    id: 'tcs-nqt',
+    title: 'TCS NQT & Digital Mock',
+    description: 'TCS NQT and Digital pattern: aptitude, verbal, and core CS sections plus 2 coding questions.',
+    topics: ['aptitude', 'verbal', 'core-cs'],
+    questionCount: 50,
+    topicPlan: [
+      ['aptitude', 20],
+      ['verbal', 15],
+      ['core-cs', 15],
+    ],
+    coding: [
+      { slug: 'two-sum', title: 'Two Sum' },
+      { slug: 'subarray-sum-equals-k', title: 'Subarray Sum Equals K' },
+    ],
+    durationSec: 5400,
+    level: 'Intermediate',
+    category: 'company',
+    company: 'TCS',
+  },
+  {
+    id: 'infosys-sp-dse',
+    title: 'Infosys SP & DSE Mock',
+    description: 'Infosys SP and DSE pattern: aptitude, core CS, and SQL sections plus 2 coding questions.',
+    topics: ['aptitude', 'core-cs', 'sql'],
+    questionCount: 40,
+    topicPlan: [
+      ['aptitude', 15],
+      ['core-cs', 15],
+      ['sql', 10],
+    ],
+    coding: [
+      { slug: 'longest-substring-without-repeating', title: 'Longest Substring Without Repeating Characters' },
+      { slug: 'coin-change', title: 'Coin Change' },
+    ],
+    durationSec: 5400,
+    level: 'Advanced',
+    category: 'company',
+    company: 'Infosys',
+  },
+  {
+    id: 'service-screening',
+    title: 'Service Screening Mock',
+    description: 'Service-company first round: aptitude, verbal, SQL, and core CS MCQs with no coding section.',
+    topics: ['aptitude', 'verbal', 'sql', 'core-cs'],
+    questionCount: 40,
+    topicPlan: [
+      ['aptitude', 15],
+      ['verbal', 10],
+      ['sql', 10],
+      ['core-cs', 5],
+    ],
+    coding: [],
+    durationSec: 2700,
+    level: 'Beginner',
+    category: 'screening',
+  },
+  {
+    id: 'product-oa',
+    title: 'Product OA Simulation',
+    description: 'Product-company online assessment: core CS plus DSA sections and 3 coding questions.',
+    topics: ['core-cs', 'arrays-hashing', 'trees', 'dynamic-programming'],
+    questionCount: 30,
+    topicPlan: [
+      ['core-cs', 10],
+      ['arrays-hashing', 8],
+      ['trees', 6],
+      ['dynamic-programming', 6],
+    ],
+    coding: [
+      { slug: 'trapping-rain-water', title: 'Trapping Rain Water' },
+      { slug: 'merge-intervals', title: 'Merge Intervals' },
+      { slug: 'course-schedule', title: 'Course Schedule' },
+    ],
+    durationSec: 5400,
+    level: 'Advanced',
+    category: 'company',
+    company: 'Product',
   },
 ];

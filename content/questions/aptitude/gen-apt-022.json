@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-022",
+  "topic": "aptitude",
+  "subtopic": "mixtures-alligations",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "10 litres of a 20% solution is mixed with 30 litres of a 40% solution. What is the resulting concentration? Give only the number.",
+  "options": [
+    "35",
+    "32",
+    "40",
+    "30"
+  ],
+  "correct_index": 0,
+  "explanation": "Solute = 2 + 12 = 14 L in 40 L, so concentration = 14/40 = 35%.",
+  "source": "generated",
+  "generator_key": "aptitude.mixtures_alligations",
+  "content_hash": "4cd512dcb18d5e868c7a226fc7c6a42dcbb4d015311f8ff9c0c56696a467925c",
+  "review_status": "verified"
+}

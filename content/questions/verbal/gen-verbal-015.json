@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-015",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: The book is ___ the table.",
+  "options": [
+    "by",
+    "on",
+    "at",
+    "in"
+  ],
+  "correct_index": 1,
+  "explanation": "A surface contact uses the preposition 'on'.",
+  "source": "generated",
+  "generator_key": "verbal.prepositions_idioms",
+  "content_hash": "3158051bcc70364d811b4529d20c7d81dd4c68ce849c4eb30d5fae38bc632369",
+  "review_status": "verified"
+}

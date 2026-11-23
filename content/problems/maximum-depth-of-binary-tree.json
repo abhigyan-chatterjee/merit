@@ -81,7 +81,7 @@
       "label": "[]"
     }
   ],
-  "sequence": 3,
+  "sequence": 4,
   "prevSlug": "invert-binary-tree",
   "nextSlug": "symmetric-tree",
   "reading_links": [
@@ -92,5 +92,12 @@
     "approach": "Bottom-up post-order DFS: the maximum depth of an empty tree is 0. For any node, the depth is 1 + max(maxDepth(node.left), maxDepth(node.right)). Recursively evaluate left and right depths and combine.",
     "why_optimal": "Single traversal visits all N nodes in O(N) time and O(H) space, corresponding to the height of the tree.",
     "pitfalls": "Stack overflow on skewed tree paths in deep call stacks without proper base case termination."
-  }
+  },
+  "companies": [
+    "TCS",
+    "Bloomberg",
+    "Qualcomm",
+    "Uber",
+    "Accenture"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-086",
+  "topic": "aptitude",
+  "subtopic": "seating-ranking",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A is 12th from the left and 18th from the right in a row. How many people are in the row?",
+  "options": [
+    "28",
+    "30",
+    "29",
+    "31"
+  ],
+  "correct_index": 2,
+  "explanation": "12 + 18 - 1 = 29.",
+  "source": "generated",
+  "generator_key": "aptitude.seating_ranking",
+  "content_hash": "09451e984e6b629e1589895794478b6b2a770b93c7330ceac061ed59fd5cf178",
+  "review_status": "verified"
+}

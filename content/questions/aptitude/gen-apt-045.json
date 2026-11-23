@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-045",
+  "topic": "aptitude",
+  "subtopic": "permutations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of permutations P(5, 3) = 5P3. Give only the number.",
+  "options": [
+    "63",
+    "64",
+    "60",
+    "58"
+  ],
+  "correct_index": 2,
+  "explanation": "5P3 = 5!/(5-3)! = 60.",
+  "source": "generated",
+  "generator_key": "aptitude.permutations",
+  "content_hash": "def10a1248d5d6d8dfb4ef98b20483cf8b12f5c6fbb436e9d413adb478182f74",
+  "review_status": "verified"
+}

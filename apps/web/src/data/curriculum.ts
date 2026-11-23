@@ -238,5 +238,50 @@ export const VISUALIZERS: VisualizerItem[] = [
     timeComplexity: { best: 'O(n)', avg: 'O(2ⁿ)', worst: 'O(2ⁿ)' },
     spaceComplexity: 'O(n)',
     keyOperations: ['fib(n) Tree', 'fact(n) Stack', 'Highlight Memoized', 'Step Stack Frame']
+  },
+  {
+    id: 'dp-table',
+    title: '2D Dynamic Programming Table',
+    category: 'Algorithms',
+    description: 'Step through 2D tabulation grids for LCS, 0/1 Knapsack, and Edit Distance with recurrence cell dependencies and optimal traceback.',
+    timeComplexity: { best: 'O(m·n)', avg: 'O(m·n)', worst: 'O(m·n)' },
+    spaceComplexity: 'O(m·n)',
+    keyOperations: ['LCS Table', '0/1 Knapsack', 'Edit Distance', 'Traceback Path']
+  },
+  {
+    id: 'sliding-window',
+    title: 'Sliding Window & Two Pointers',
+    category: 'Algorithms',
+    description: 'Animate variable and fixed window [L..R] expansion/contraction and converging two-pointer scans with live frequency invariants.',
+    timeComplexity: { best: 'O(n)', avg: 'O(n)', worst: 'O(n)' },
+    spaceComplexity: 'O(1) - O(k)',
+    keyOperations: ['Variable Window', 'Fixed Window Sum', 'Converging Pointers', 'Window Invariant']
+  },
+  {
+    id: 'shortest-path',
+    title: 'Dijkstra & Bellman-Ford',
+    category: 'Graphs',
+    description: 'Compare greedy min-priority-queue edge relaxation in Dijkstra against V-1 pass negative-weight relaxation in Bellman-Ford.',
+    timeComplexity: { best: 'O((V+E) log V)', avg: 'O((V+E) log V)', worst: 'O(V·E)' },
+    spaceComplexity: 'O(V)',
+    keyOperations: ['Dijkstra PQ', 'Bellman-Ford Passes', 'Edge Relaxation', 'Shortest-Path Tree']
+  },
+  {
+    id: 'union-find',
+    title: 'Union-Find (Disjoint Set)',
+    category: 'Graphs',
+    description: 'Track connected components and cycle detection with animated path compression and union-by-rank parent trees.',
+    timeComplexity: { best: 'O(1)', avg: 'O(α(n))', worst: 'O(α(n))' },
+    spaceComplexity: 'O(n)',
+    keyOperations: ['Find + Compress', 'Union by Rank', 'Cycle Detection', 'Component Forest']
+  },
+  {
+    id: 'trie',
+    title: 'Trie (Prefix Tree)',
+    category: 'Trees',
+    description: 'Insert words, test exact word membership, and run prefix autocomplete over shared character paths and terminal markers.',
+    timeComplexity: { best: 'O(L)', avg: 'O(L)', worst: 'O(L)' },
+    spaceComplexity: 'O(Σ·N·L)',
+    keyOperations: ['Insert(word)', 'Search(word)', 'StartsWith(prefix)', 'Autocomplete']
   }
 ];

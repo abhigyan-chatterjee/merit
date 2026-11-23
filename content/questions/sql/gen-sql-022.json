@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-022",
+  "topic": "sql",
+  "subtopic": "subqueries",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "An EXISTS subquery finds no matching rows for any outer row. How many outer rows are returned?",
+  "options": [
+    "6",
+    "0",
+    "4",
+    "3"
+  ],
+  "correct_index": 1,
+  "explanation": "No row satisfies the EXISTS predicate. The correct answer is 0.",
+  "source": "generated",
+  "generator_key": "sql.subqueries",
+  "content_hash": "7c1dc795e95ed9eea7cdf1d5596ca38300c8841091a4760831a482093b6114ec",
+  "review_status": "verified"
+}

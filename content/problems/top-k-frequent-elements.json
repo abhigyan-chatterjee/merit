@@ -1110,5 +1110,12 @@
   ],
   "sequence": 31,
   "prevSlug": "subarray-sum-equals-k",
-  "nextSlug": "valid-sudoku"
+  "nextSlug": "valid-sudoku",
+  "companies": [
+    "Infosys",
+    "Bloomberg",
+    "Intuit",
+    "Atlassian",
+    "Adobe"
+  ]
 }

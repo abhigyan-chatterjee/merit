@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-074",
+  "topic": "aptitude",
+  "subtopic": "blood-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Pointing to a man, a woman said, 'His mother is the only daughter of my mother.' How is the woman related to the man?",
+  "options": [
+    "Sister",
+    "Aunt",
+    "Mother",
+    "Grandmother"
+  ],
+  "correct_index": 2,
+  "explanation": "The only daughter of her mother is the woman herself.",
+  "source": "generated",
+  "generator_key": "aptitude.blood_relations",
+  "content_hash": "2e15dac26122c02f5145bda9a4be9c0b9042acbf4c69d6d9605f4d8de1ab67df",
+  "review_status": "verified"
+}

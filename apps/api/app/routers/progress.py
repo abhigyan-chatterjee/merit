@@ -240,9 +240,8 @@ def get_progress_summary(
     # Fetch activity days
     act_rows = db.scalars(select(ActivityDay).where(ActivityDay.user_id == user.id)).all()
     act_map = {a.day: a.action_count for a in act_rows}
-    streak = compute_streak(
-        list(act_map.keys()), _validated_local_date(local_date) or get_current_date_str()
-    )
+    today_str = _validated_local_date(local_date) or get_current_date_str()
+    streak = compute_streak(list(act_map.keys()), today_str)
 
     # Fetch visited visualizers
     vis_rows = db.scalars(
@@ -280,7 +279,11 @@ def get_progress_summary(
         ).all()
         q_ids = list({ans.question_id for ans in answers})
         if q_ids:
-            q_rows = db.scalars(select(Question).where(Question.id.in_(q_ids))).all()
+            q_rows = db.scalars(
+                select(Question).where(
+                    Question.id.in_(q_ids), Question.review_status == "verified"
+                )
+            ).all()
             q_map = {q.id: q for q in q_rows}
             for ans in answers:
                 q = q_map.get(ans.question_id)
@@ -300,7 +303,11 @@ def get_progress_summary(
     p_map: dict[str, Problem] = {}
 
     if sub_slugs:
-        p_rows = db.scalars(select(Problem).where(Problem.slug.in_(sub_slugs))).all()
+        p_rows = db.scalars(
+            select(Problem).where(
+                Problem.slug.in_(sub_slugs), Problem.review_status == "verified"
+            )
+        ).all()
         p_map = {p.slug: p for p in p_rows}
         for sub in recent_subs:
             p = p_map.get(sub.problem_slug)
@@ -349,12 +356,26 @@ def get_progress_summary(
     due_slugs = [r.item_id for r in due_rows if r.item_type == "problem"]
     due_qids = [r.item_id for r in due_rows if r.item_type == "question"]
     due_problems = (
-        {p.slug: p for p in db.scalars(select(Problem).where(Problem.slug.in_(due_slugs))).all()}
+        {
+            p.slug: p
+            for p in db.scalars(
+                select(Problem).where(
+                    Problem.slug.in_(due_slugs), Problem.review_status == "verified"
+                )
+            ).all()
+        }
         if due_slugs
         else {}
     )
     due_questions = (
-        {q.id: q for q in db.scalars(select(Question).where(Question.id.in_(due_qids))).all()}
+        {
+            q.id: q
+            for q in db.scalars(
+                select(Question).where(
+                    Question.id.in_(due_qids), Question.review_status == "verified"
+                )
+            ).all()
+        }
         if due_qids
         else {}
     )
@@ -397,6 +418,48 @@ def get_progress_summary(
         db.scalar(select(func.count(Problem.slug)).where(Problem.review_status == "verified")) or 0
     )
 
+    # Strictly due items, excluding ones whose problem/question no longer exists.
+    due_all_rows = db.scalars(
+        select(RevisionItem).where(
+            RevisionItem.user_id == user.id,
+            RevisionItem.due_date <= today_str,
+        )
+    ).all()
+    due_all_slugs = [r.item_id for r in due_all_rows if r.item_type == "problem"]
+    due_all_qids = [r.item_id for r in due_all_rows if r.item_type == "question"]
+    existing_slugs = (
+        {
+            p.slug
+            for p in db.scalars(
+                select(Problem).where(
+                    Problem.slug.in_(due_all_slugs),
+                    Problem.review_status == "verified",
+                )
+            ).all()
+        }
+        if due_all_slugs
+        else set()
+    )
+    existing_qids = (
+        {
+            q.id
+            for q in db.scalars(
+                select(Question).where(
+                    Question.id.in_(due_all_qids),
+                    Question.review_status == "verified",
+                )
+            ).all()
+        }
+        if due_all_qids
+        else set()
+    )
+    due_today_count = sum(
+        1
+        for r in due_all_rows
+        if (r.item_type == "problem" and r.item_id in existing_slugs)
+        or (r.item_type == "question" and r.item_id in existing_qids)
+    )
+
     return ProgressSummaryResponse(
         solved_count=solved_count,
         doing_count=doing_count,
@@ -413,6 +476,9 @@ def get_progress_summary(
         revision_due=revision_due,
         preferred_language=getattr(user, "preferred_language", None) or "python",
         daily_goal=_user_daily_goal(user),
+        due_today_count=due_today_count,
+        target_drive_date=getattr(user, "target_drive_date", None),
+        target_tier=getattr(user, "target_tier", None) or "product",
     )
 
 
@@ -455,6 +521,8 @@ def get_settings(
     return SettingsResponse(
         preferred_language=getattr(user, "preferred_language", None) or "python",
         daily_goal=_user_daily_goal(user),
+        target_drive_date=getattr(user, "target_drive_date", None),
+        target_tier=getattr(user, "target_tier", None) or "product",
     )
 
 
@@ -478,11 +546,19 @@ def update_settings(
             user.daily_goal_json = None
     elif req.daily_goal is not None:
         user.daily_goal_json = json.dumps(req.daily_goal.model_dump())
+    if req.clear_target_drive_date:
+        user.target_drive_date = None
+    elif req.target_drive_date is not None:
+        user.target_drive_date = req.target_drive_date
+    if req.target_tier is not None:
+        user.target_tier = req.target_tier
     db.commit()
     db.refresh(user)
     return SettingsResponse(
         preferred_language=user.preferred_language or "python",
         daily_goal=json.loads(user.daily_goal_json) if user.daily_goal_json else None,
+        target_drive_date=getattr(user, "target_drive_date", None),
+        target_tier=getattr(user, "target_tier", None) or "product",
     )
 
 

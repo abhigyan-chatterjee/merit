@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-072",
+  "topic": "core-cs",
+  "subtopic": "oop-java",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does an abstract method in Java lack?",
+  "options": [
+    "An access modifier",
+    "A return type",
+    "A body",
+    "A name"
+  ],
+  "correct_index": 2,
+  "explanation": "Abstract methods declare a signature without implementation. The correct answer is A body.",
+  "source": "generated",
+  "generator_key": "core_cs.java_polymorphism",
+  "content_hash": "946a013c29a26af8b3f364198235b59e3d8e33925eea4cb67fa1e91e88edd4b4",
+  "review_status": "verified"
+}

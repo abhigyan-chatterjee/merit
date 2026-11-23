@@ -1,8 +1,9 @@
+import asyncio
 import json
 import logging
 import re
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -21,6 +22,7 @@ from app.schemas.judge import (
 from app.security import get_current_user, require_same_origin
 from app.services.judge import JudgeResult
 from app.services.judge_backend import execute as execute_code
+from app.services.rate_limit import SlidingWindowLimiter
 from app.services.revision import record_submission
 from app.services.signatures import get_signature
 from app.services.streak import record_activity
@@ -37,6 +39,14 @@ router = APIRouter(
 # generated code — enforce a plain identifier before anything reaches it.
 FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*\Z")
 DUNDER_NAME_RE = re.compile(r"^__.*__\Z")
+
+_judge_limiter = SlidingWindowLimiter(
+    max_hits=20,
+    window_sec=60,
+    code="JUDGE_RATE_LIMIT",
+    message="Too many judge requests. Try again shortly.",
+)
+_judge_semaphore = asyncio.Semaphore(4)
 
 
 def _get_verified_problem(db: Session, slug: str) -> Problem:
@@ -68,7 +78,9 @@ def _get_verified_problem(db: Session, slug: str) -> Problem:
     return problem
 
 
-def _result_models(rows: list[dict]) -> list[TestCaseResult]:
+def _result_models(rows) -> list[TestCaseResult]:
+    if not isinstance(rows, list):
+        return []
     """Builds response models defensively.
 
     The rows come from student-visible process output, so a missing or wrong-typed
@@ -95,9 +107,42 @@ def _result_models(rows: list[dict]) -> list[TestCaseResult]:
                 actual=row.get("actual"),
                 runtime_ms=runtime,
                 error=error if isinstance(error, str) or error is None else str(error),
+                hidden=row.get("hidden") is True,
             )
         )
     return models
+
+
+def _redact_hidden_results(rows: list[dict], tc_rows: list[ProblemTestCase]) -> list[dict]:
+    """Hides a non-sample case's data, keeping only its pass/fail.
+
+    Sample cases keep every field so the learner can debug against them; a
+    hidden case must not reveal the input or the answer. Rows and cases are
+    paired by position, so a mismatch stops at the last complete pair rather
+    than inventing a result.
+    """
+    redacted: list[dict] = []
+    hidden_idx = 0
+    for row, tc in zip(rows, tc_rows, strict=False):
+        if not isinstance(row, dict):
+            continue
+        if tc.is_sample == 1:
+            redacted.append({**row, "hidden": False})
+            continue
+        hidden_idx += 1
+        redacted.append(
+            {
+                "label": f"Hidden Case {hidden_idx}",
+                "passed": row.get("passed") is True,
+                "input": None,
+                "expected": None,
+                "actual": None,
+                "runtime_ms": row.get("runtime_ms", 0.0),
+                "error": "Runtime error on hidden test" if row.get("error") else None,
+                "hidden": True,
+            }
+        )
+    return redacted
 
 
 async def _execute(
@@ -152,14 +197,21 @@ def _cases_from_rows(tc_rows: list[ProblemTestCase]) -> list[dict]:
                 ),
             },
         )
-    return [
-        {
-            "label": tc.label,
-            "input": json.loads(tc.input_json),
-            "expected": json.loads(tc.expected_json),
-        }
-        for tc in tc_rows
-    ]
+    cases = []
+    for tc in tc_rows:
+        try:
+            input_data = json.loads(tc.input_json)
+            expected_data = json.loads(tc.expected_json)
+        except (TypeError, ValueError):
+            raise HTTPException(
+                status_code=HTTP_422,
+                detail={
+                    "code": "INVALID_TEST_CASE",
+                    "message": "Problem test case data is malformed.",
+                },
+            ) from None
+        cases.append({"label": tc.label, "input": input_data, "expected": expected_data})
+    return cases
 
 
 @router.post("/run", response_model=JudgeRunResponse)
@@ -168,6 +220,7 @@ async def run_samples(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _judge_limiter.check(user.id)
     problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
@@ -179,6 +232,93 @@ async def run_samples(
             },
         )
 
+    signature = get_signature(problem.slug)
+
+    if req.custom_input is not None:
+        if len(json.dumps(req.custom_input).encode("utf-8")) > 32_768:
+            raise HTTPException(
+                status_code=HTTP_422,
+                detail={
+                    "code": "INVALID_CUSTOM_INPUT",
+                    "message": "Custom input must be at most 32 KB of JSON.",
+                },
+            )
+        expected_arity = None
+        if isinstance(signature, dict) and isinstance(signature.get("params"), list):
+            expected_arity = len(signature["params"])
+        else:
+            first_tc = db.scalars(
+                select(ProblemTestCase)
+                .where(ProblemTestCase.problem_slug == req.problem_slug)
+                .order_by(ProblemTestCase.ordinal)
+                .limit(1)
+            ).first()
+            if first_tc is not None:
+                try:
+                    parsed_input = json.loads(first_tc.input_json)
+                except (TypeError, ValueError):
+                    parsed_input = None
+                if isinstance(parsed_input, list):
+                    expected_arity = len(parsed_input)
+        if expected_arity is not None and len(req.custom_input) != expected_arity:
+            raise HTTPException(
+                status_code=HTTP_422,
+                detail={
+                    "code": "INVALID_CUSTOM_INPUT",
+                    "message": (
+                        f"Expected {expected_arity} argument(s) as a JSON array, "
+                        f"got {len(req.custom_input)}."
+                    ),
+                },
+            )
+        async with _judge_semaphore:
+            res = await _execute(
+                language=req.language,
+                code=req.code,
+                function_name=problem.function_name,
+                test_cases=[
+                    {"label": "Custom Input", "input": req.custom_input, "expected": None}
+                ],
+                time_limit_ms=problem.time_limit_ms,
+                signature=signature,
+            )
+        if (
+            res.infrastructure_error
+            or res.verdict in {"CE", "TLE", "RE"}
+            or not res.test_results
+        ):
+            return JudgeRunResponse(
+                verdict=res.verdict,
+                runtime_ms=res.runtime_ms,
+                test_results=_result_models(res.test_results),
+                compile_output=res.compile_output,
+                infrastructure_error=res.infrastructure_error,
+                passed_count=0,
+                total_count=1,
+                custom_run=True,
+            )
+        row = dict(res.test_results[0])
+        if row.get("error"):
+            verdict = "RE"
+            row["passed"] = False
+            passed_count = 0
+        else:
+            verdict = "CUSTOM"
+            row["passed"] = True
+            row["expected"] = None
+            row["hidden"] = False
+            passed_count = 1
+        return JudgeRunResponse(
+            verdict=verdict,
+            runtime_ms=res.runtime_ms,
+            test_results=_result_models([row]),
+            compile_output=res.compile_output,
+            infrastructure_error=False,
+            passed_count=passed_count,
+            total_count=1,
+            custom_run=True,
+        )
+
     # Load sample test cases
     tc_rows = db.scalars(
         select(ProblemTestCase)
@@ -186,33 +326,40 @@ async def run_samples(
         .order_by(ProblemTestCase.ordinal)
     ).all()
 
-    # Fallback to first two if none marked sample
     if not tc_rows:
-        tc_rows = db.scalars(
-            select(ProblemTestCase)
-            .where(ProblemTestCase.problem_slug == req.problem_slug)
-            .order_by(ProblemTestCase.ordinal)
-            .limit(2)
-        ).all()
+        raise HTTPException(
+            status_code=HTTP_422,
+            detail={
+                "code": "NO_SAMPLE_TESTS",
+                "message": "This problem has no sample test cases on this deployment.",
+            },
+        )
 
     cases = _cases_from_rows(tc_rows)
 
-    res = await _execute(
-        language=req.language,
-        code=req.code,
-        function_name=problem.function_name,
-        test_cases=cases,
-        time_limit_ms=problem.time_limit_ms,
-        # Compiled languages need the recorded types to generate their
-        # harness; the interpreted languages ignore it.
-        signature=get_signature(problem.slug),
-    )
+    async with _judge_semaphore:
+        res = await _execute(
+            language=req.language,
+            code=req.code,
+            function_name=problem.function_name,
+            test_cases=cases,
+            time_limit_ms=problem.time_limit_ms,
+            # Compiled languages need the recorded types to generate their
+            # harness; the interpreted languages ignore it.
+            signature=signature,
+        )
+
+    models = _result_models(res.test_results)
 
     return JudgeRunResponse(
         verdict=res.verdict,
         runtime_ms=res.runtime_ms,
-        test_results=_result_models(res.test_results),
+        test_results=models,
         compile_output=res.compile_output,
+        infrastructure_error=res.infrastructure_error,
+        passed_count=sum(1 for m in models if m.passed),
+        total_count=len(models),
+        custom_run=False,
     )
 
 
@@ -222,6 +369,7 @@ async def submit_solution(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _judge_limiter.check(user.id)
     problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
@@ -230,6 +378,15 @@ async def submit_solution(
             detail={
                 "code": "EMPTY_CODE",
                 "message": "Submitted code must not be empty.",
+            },
+        )
+
+    if req.custom_input is not None:
+        raise HTTPException(
+            status_code=HTTP_422,
+            detail={
+                "code": "INVALID_SUBMIT_REQUEST",
+                "message": "Custom input is only supported on Run, not Submit.",
             },
         )
 
@@ -242,16 +399,17 @@ async def submit_solution(
 
     cases = _cases_from_rows(tc_rows)
 
-    res = await _execute(
-        language=req.language,
-        code=req.code,
-        function_name=problem.function_name,
-        test_cases=cases,
-        time_limit_ms=problem.time_limit_ms,
-        # Compiled languages need the recorded types to generate their
-        # harness; the interpreted languages ignore it.
-        signature=get_signature(problem.slug),
-    )
+    async with _judge_semaphore:
+        res = await _execute(
+            language=req.language,
+            code=req.code,
+            function_name=problem.function_name,
+            test_cases=cases,
+            time_limit_ms=problem.time_limit_ms,
+            # Compiled languages need the recorded types to generate their
+            # harness; the interpreted languages ignore it.
+            signature=get_signature(problem.slug),
+        )
 
     now_str = utcnow_iso()
 
@@ -268,9 +426,14 @@ async def submit_solution(
             runtime_ms=res.runtime_ms,
             test_results=[],
             created_at=now_str,
+            compile_output=res.compile_output,
+            infrastructure_error=res.infrastructure_error,
+            passed_count=0,
+            total_count=0,
         )
 
-    test_results_json = json.dumps(res.test_results)
+    redacted_rows = _redact_hidden_results(res.test_results, tc_rows)
+    test_results_json = json.dumps(redacted_rows)
     submission = Submission(
         user_id=user.id,
         problem_slug=req.problem_slug,
@@ -317,6 +480,8 @@ async def submit_solution(
     sub_id = submission.id
     created_at = submission.created_at
 
+    models = _result_models(redacted_rows)
+
     return SubmissionResponse(
         id=sub_id,
         problem_slug=req.problem_slug,
@@ -324,14 +489,19 @@ async def submit_solution(
         code=req.code,
         verdict=res.verdict,
         runtime_ms=res.runtime_ms,
-        test_results=_result_models(res.test_results),
+        test_results=models,
         created_at=created_at,
+        compile_output=res.compile_output,
+        infrastructure_error=res.infrastructure_error,
+        passed_count=sum(1 for m in models if m.passed),
+        total_count=len(models),
     )
 
 
 @router.get("/submissions/{problem_slug}", response_model=list[SubmissionResponse])
 def get_submissions(
     problem_slug: str,
+    limit: int = Query(default=50, ge=1, le=200),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -342,11 +512,16 @@ def get_submissions(
             Submission.problem_slug == problem_slug,
         )
         .order_by(Submission.created_at.desc())
+        .limit(limit)
     ).all()
 
     resp = []
     for s in rows:
-        results_data = json.loads(s.test_results) if s.test_results else []
+        try:
+            results_data = json.loads(s.test_results) if s.test_results else []
+        except (TypeError, ValueError):
+            results_data = []
+        models = _result_models(results_data)
         resp.append(
             SubmissionResponse(
                 id=s.id,
@@ -355,8 +530,10 @@ def get_submissions(
                 code=s.code,
                 verdict=s.verdict,
                 runtime_ms=s.runtime_ms,
-                test_results=_result_models(results_data),
+                test_results=models,
                 created_at=s.created_at,
+                passed_count=sum(1 for m in models if m.passed),
+                total_count=len(models),
             )
         )
     return resp

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-076",
+  "topic": "core-cs",
+  "subtopic": "oop-cpp",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which C++ cast performs a runtime type check for polymorphic types?",
+  "options": [
+    "reinterpret_cast",
+    "static_cast",
+    "const_cast",
+    "dynamic_cast"
+  ],
+  "correct_index": 3,
+  "explanation": "dynamic_cast checks at runtime and returns null on failure.",
+  "source": "generated",
+  "generator_key": "core_cs.cpp_virtual_dispatch",
+  "content_hash": "bfe70122c836718b148ca64f637903daa2c455781816993938944624a7e33249",
+  "review_status": "verified"
+}

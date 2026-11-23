@@ -83,4 +83,4 @@ class AuthMessageResponse(BaseModel):
 
 
 class ClerkOAuthRequest(BaseModel):
-    clerk_token: str = Field(..., min_length=1, description="Clerk session JWT")
+    clerk_token: str = Field(..., min_length=1, max_length=8192, description="Clerk session JWT")

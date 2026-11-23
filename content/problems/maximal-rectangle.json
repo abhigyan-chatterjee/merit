@@ -2880,5 +2880,12 @@
   ],
   "sequence": 21,
   "prevSlug": "basic-calculator-iii",
-  "nextSlug": "number-of-visible-people-in-a-queue"
+  "nextSlug": "number-of-visible-people-in-a-queue",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Intuit",
+    "Salesforce",
+    "DE Shaw"
+  ]
 }

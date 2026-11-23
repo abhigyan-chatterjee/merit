@@ -1416,5 +1416,12 @@
   ],
   "sequence": 4,
   "prevSlug": "generate-parentheses",
-  "nextSlug": "palindrome-partitioning"
+  "nextSlug": "palindrome-partitioning",
+  "companies": [
+    "PhonePe",
+    "Microsoft",
+    "DE Shaw",
+    "Infosys",
+    "Cisco"
+  ]
 }

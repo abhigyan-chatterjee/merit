@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from '../src/pages/DashboardPage';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -7,6 +7,8 @@ import { AuthProvider } from '../src/store/AuthContext';
 import { PROBLEMS } from '../src/data/problems';
 import { TOPICS } from '../src/data/curriculum';
 import { LEARNING_PATHS } from '../src/data/learningPaths';
+
+const FOUNDATION = LEARNING_PATHS.find((p) => p.id === 'foundation')!;
 
 function mockFetch(user: boolean) {
   vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
@@ -81,8 +83,10 @@ describe('DashboardPage Honest Initial State (D7)', () => {
     );
 
     const foundation = screen.getByText('Foundation').closest('a');
+    const done = 4;
+    const pct = Math.round((done / FOUNDATION.steps.length) * 100);
     expect(foundation).toHaveTextContent(
-      `${LEARNING_PATHS[0].steps.length} steps · 4/21 complete · 19%`
+      `${FOUNDATION.steps.length} steps · ${done}/${FOUNDATION.steps.length} complete · ${pct}%`
     );
   });
 
@@ -150,5 +154,62 @@ describe('DashboardPage Honest Initial State (D7)', () => {
     await waitFor(() =>
       expect(screen.getByLabelText(/reset all locally stored progress/i)).toHaveFocus()
     );
+  });
+});
+
+describe('DashboardPage Placement Readiness (Web-4)', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  function renderDashboard() {
+    return render(
+      <ProgressProvider>
+        <MemoryRouter>
+          <DashboardPage />
+        </MemoryRouter>
+      </ProgressProvider>
+    );
+  }
+
+  it('renders the Placement Readiness card at 0/100 for a fresh user', () => {
+    renderDashboard();
+    expect(screen.getByText('Placement Readiness')).toBeInTheDocument();
+    expect(screen.getAllByText('0/100').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/Getting Started/)).toBeInTheDocument();
+  });
+
+  it('toggles target tier metadata', () => {
+    renderDashboard();
+    expect(screen.getByText(/Atlassian \/ Flipkart \/ Oracle/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Service & Mass' }));
+    expect(screen.getByText(/TCS \/ Infosys \/ Wipro/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Service & Mass' })).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'FAANG & Dream' }));
+    expect(screen.getByText(/Google \/ Microsoft \/ Amazon/i)).toBeInTheDocument();
+  });
+
+  it('shows a countdown once a drive date is picked', () => {
+    renderDashboard();
+    const input = screen.getByLabelText(/target placement drive date/i) as HTMLInputElement;
+    expect(screen.getByText('Set drive date')).toBeInTheDocument();
+    fireEvent.change(input, { target: { value: '2099-01-01' } });
+    expect(screen.getByText(/\d+ days left/)).toBeInTheDocument();
+    fireEvent.change(input, { target: { value: '2000-01-01' } });
+    expect(screen.getByText('Drive passed')).toBeInTheDocument();
+  });
+
+  it("renders 3 Today's Focus links", () => {
+    renderDashboard();
+    const heading = screen.getByText("Today's Focus");
+    const section = heading.parentElement!;
+    const cards = section.querySelectorAll('a');
+    expect(cards).toHaveLength(3);
+    expect(within(section).getByText('01')).toBeInTheDocument();
+    expect(within(section).getByText('02')).toBeInTheDocument();
+    expect(within(section).getByText('03')).toBeInTheDocument();
   });
 });

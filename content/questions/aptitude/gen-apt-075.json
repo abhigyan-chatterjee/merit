@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-075",
+  "topic": "aptitude",
+  "subtopic": "blood-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "X's father has only one son. Y is that son's wife. How is Y related to X?",
+  "options": [
+    "Sister",
+    "Mother",
+    "Daughter",
+    "Wife"
+  ],
+  "correct_index": 3,
+  "explanation": "The only son is X, so Y is X's wife.",
+  "source": "generated",
+  "generator_key": "aptitude.blood_relations",
+  "content_hash": "274d8568283dc064115c32f9f4ad1e837dd1fb1d96e34819254deae22ff63fce",
+  "review_status": "verified"
+}

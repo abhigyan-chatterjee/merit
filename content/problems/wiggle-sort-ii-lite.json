@@ -835,5 +835,12 @@
   ],
   "sequence": 5,
   "prevSlug": "sort-an-array",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Flipkart",
+    "Microsoft",
+    "Cognizant",
+    "Infosys",
+    "TCS"
+  ]
 }

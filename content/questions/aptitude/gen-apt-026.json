@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-026",
+  "topic": "aptitude",
+  "subtopic": "averages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the average of the first 7 natural numbers. Give only the number.",
+  "options": [
+    "5",
+    "4",
+    "3",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "Sum 28 divided by 7 gives 4.",
+  "source": "generated",
+  "generator_key": "aptitude.averages",
+  "content_hash": "b8708ac438b776c036e7cedb02d386c6c78048e48fe07701fb9958543c81c321",
+  "review_status": "verified"
+}

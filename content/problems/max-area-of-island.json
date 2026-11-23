@@ -2878,6 +2878,13 @@
     }
   ],
   "sequence": 12,
-  "prevSlug": "evaluate-division",
-  "nextSlug": "number-of-islands"
+  "prevSlug": "keys-and-rooms",
+  "nextSlug": "number-of-islands",
+  "companies": [
+    "Zoho",
+    "Bloomberg",
+    "DoorDash",
+    "Intuit",
+    "Goldman Sachs"
+  ]
 }

@@ -27,6 +27,12 @@ class User(Base):
         String, server_default="python", default="python", nullable=False
     )  # javascript | python
     daily_goal_json: Mapped[str | None] = mapped_column(String, nullable=True)  # JSON or null
+    target_drive_date: Mapped[str | None] = mapped_column(
+        String, nullable=True, default=None
+    )
+    target_tier: Mapped[str] = mapped_column(
+        String, server_default="product", default="product", nullable=False
+    )
     created_at: Mapped[str] = mapped_column(String, default=utcnow_iso, nullable=False)
     last_login_at: Mapped[str | None] = mapped_column(String, nullable=True)
     # Clerk OAuth linkage. NULL until the user signs in via Clerk at least once.

@@ -93,4 +93,38 @@ describe('ControlBar step controls (regression: Step/Back must work)', () => {
     expect(screen.getByRole('button', { name: /^Step forward$/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^Step back$/ })).toBeInTheDocument();
   });
+
+  it('does not trigger onPlayPause when Space is pressed while an interactive control has focus', () => {
+    const onPlayPause = vi.fn();
+    render(
+      <ControlBar
+        isPlaying={false}
+        onPlayPause={onPlayPause}
+        onReset={() => {}}
+        onRandomize={() => {}}
+        speed={1}
+        onSpeedChange={() => {}}
+      />
+    );
+
+    const resetBtn = screen.getByRole('button', { name: /reset/i });
+    resetBtn.focus();
+    fireEvent.keyDown(resetBtn, { key: ' ' });
+    expect(onPlayPause).not.toHaveBeenCalled();
+
+    // Body/non-interactive focus toggles play/pause cleanly
+    fireEvent.keyDown(document.body, { key: ' ' });
+    expect(onPlayPause).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not crash or underflow frameIdx to -1 when stepping forward on heap variant', () => {
+    const { container } = render(<TreeVisualizer variant="heap" />);
+    expect(screen.getAllByText(/Heap ready/i).length).toBeGreaterThan(0);
+
+    const stepBtn = screen.getByRole('button', { name: /step forward/i });
+    fireEvent.click(stepBtn);
+
+    expect(screen.getAllByText(/Heap ready/i).length).toBeGreaterThan(0);
+    expect(container.textContent).toContain('Heap ready');
+  });
 });

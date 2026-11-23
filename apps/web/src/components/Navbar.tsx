@@ -7,13 +7,15 @@ import {
   Code2,
   BrainCircuit,
   GraduationCap,
+  MessagesSquare,
   Search,
   Flame,
   X,
   CornerDownLeft,
   Route,
   LogIn,
-  Bug
+  Bug,
+  RotateCcw
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { UserDropdown } from './UserDropdown';
@@ -24,6 +26,15 @@ import { useDialogFocus } from '../hooks/useDialogFocus';
 import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
+import { TARGETED_EXAMS } from '../data/exams';
+
+const QUIZ_TRACKS = [
+  { id: 'aptitude', title: 'Aptitude', description: 'Quant, logical reasoning, and verbal for screening rounds.' },
+  { id: 'verbal', title: 'Verbal Ability', description: 'Grammar correction, vocabulary in context, para-jumbles, and inference.' },
+  { id: 'sql', title: 'SQL & Databases', description: 'Queries, joins, grouping, NULL traps, and window functions.' },
+  { id: 'cs-fundamentals', title: 'CS Fundamentals', description: 'Operating systems, memory management, networks, and DBMS.' },
+  { id: 'mixed', title: 'Mixed Mastery', description: 'Adaptive placement assessment drawn across all verified items.' },
+] as const;
 
 const scoreMatch = (title: string, q: string, extra: string[] = [], blurb?: string) => {
   const t = title.toLowerCase();
@@ -35,16 +46,10 @@ const scoreMatch = (title: string, q: string, extra: string[] = [], blurb?: stri
   return 0;
 };
 
-const KindBadge: React.FC<{ label: string }> = ({ label }) => (
-  <span className="px-1.5 py-0.5 rounded border border-line text-[9px] font-mono uppercase tracking-wider text-muted shrink-0">
-    {label}
-  </span>
-);
-
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentStreak } = useProgress();
+  const { currentStreak, dueTodayCount } = useProgress();
   const { user, isLoading: authLoading } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -79,7 +84,11 @@ export const Navbar: React.FC = () => {
   type PaletteEntry =
     | { kind: 'path'; path: (typeof LEARNING_PATHS)[number]; score: number; navigate: () => void }
     | { kind: 'visualizer'; viz: (typeof VISUALIZERS)[number]; score: number; navigate: () => void }
-    | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void };
+    | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void }
+    | { kind: 'exam'; exam: (typeof TARGETED_EXAMS)[number]; score: number; navigate: () => void }
+    | { kind: 'quiz'; quiz: (typeof QUIZ_TRACKS)[number]; score: number; navigate: () => void }
+    | { kind: 'interview'; score: number; navigate: () => void }
+    | { kind: 'review'; score: number; navigate: () => void };
 
   const entries = useMemo<PaletteEntry[]>(() => {
     const q = query.trim().toLowerCase();
@@ -166,11 +175,116 @@ export const Navbar: React.FC = () => {
           navigate(`/problems/${p.topic}/${p.slug}`);
         }
       }));
-    const combined = [...pathHits, ...vizHits, ...probHits];
-    const kindRank = (e: PaletteEntry) =>
-      e.kind === 'path' ? 0 : e.kind === 'visualizer' ? 1 : 2;
-    const titleOf = (e: PaletteEntry) =>
-      e.kind === 'path' ? e.path.title : e.kind === 'visualizer' ? e.viz.title : e.problem.title;
+    const examHits: PaletteEntry[] = TARGETED_EXAMS.filter(
+      (e) =>
+        e.title.toLowerCase().includes(q) ||
+        e.description.toLowerCase().includes(q) ||
+        (e.company && e.company.toLowerCase().includes(q)) ||
+        e.category.toLowerCase().includes(q)
+    ).map((e) => ({
+      kind: 'exam',
+      exam: e,
+      score: scoreMatch(e.title, q, [e.company ?? '', e.category], e.description),
+      navigate: () => {
+        setSearchOpen(false);
+        navigate(`/exams/${e.id}`);
+      }
+    }));
+    const quizHits: PaletteEntry[] = QUIZ_TRACKS.filter(
+      (quiz) =>
+        quiz.title.toLowerCase().includes(q) ||
+        quiz.description.toLowerCase().includes(q) ||
+        quiz.id.toLowerCase().includes(q)
+    ).map((quiz) => ({
+      kind: 'quiz',
+      quiz,
+      score: scoreMatch(quiz.title, q, [quiz.id], quiz.description),
+      navigate: () => {
+        setSearchOpen(false);
+        navigate(`/quiz/${quiz.id}`);
+      }
+    }));
+    const interviewHits: PaletteEntry[] =
+      q.includes('interview') ||
+      q.includes('mock') ||
+      q.includes('faang') ||
+      q.includes('system design') ||
+      q.includes('resume')
+        ? [
+            {
+              kind: 'interview',
+              score: scoreMatch('AI Mock Interview Portal', q, [
+                'interview',
+                'mock',
+                'faang',
+                'system design',
+                'resume',
+              ]),
+              navigate: () => {
+                setSearchOpen(false);
+                navigate('/interview');
+              },
+            },
+          ]
+        : [];
+    const reviewHits: PaletteEntry[] =
+      q.includes('review') || q.includes('spaced') || q.includes('sm-2')
+        ? [
+            {
+              kind: 'review',
+              score: scoreMatch('Spaced Review Deck', q, ['review', 'spaced', 'sm-2']),
+              navigate: () => {
+                setSearchOpen(false);
+                navigate('/review');
+              },
+            },
+          ]
+        : [];
+    const combined = [
+      ...pathHits,
+      ...vizHits,
+      ...probHits,
+      ...examHits,
+      ...quizHits,
+      ...interviewHits,
+      ...reviewHits,
+    ];
+    const kindRank = (e: PaletteEntry) => {
+      switch (e.kind) {
+        case 'path':
+          return 0;
+        case 'visualizer':
+          return 1;
+        case 'exam':
+          return 2;
+        case 'quiz':
+          return 3;
+        case 'interview':
+          return 4;
+        case 'review':
+          return 5;
+        case 'problem':
+          return 6;
+      }
+    };
+    const titleOf = (e: PaletteEntry) => {
+      switch (e.kind) {
+        case 'path':
+          return e.path.title;
+        case 'visualizer':
+          return e.viz.title;
+        case 'problem':
+          return e.problem.title;
+        case 'exam':
+          return e.exam.title;
+        case 'quiz':
+          return e.quiz.title;
+        case 'interview':
+          return 'AI Mock Interview Portal';
+        case 'review':
+          return 'Spaced Review Deck';
+      }
+    };
     combined.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       const kr = kindRank(a) - kindRank(b);
@@ -193,10 +307,12 @@ export const Navbar: React.FC = () => {
     { to: '/visualizers', label: 'Visualizers', icon: Layers },
     { to: '/problems/arrays-hashing', label: 'Problems', icon: Code2 },
     { to: '/quiz/mixed', label: 'Quizzes', icon: BrainCircuit },
-    { to: '/exams', label: 'Exams', icon: GraduationCap }
+    { to: '/exams', label: 'Exams', icon: GraduationCap },
+    { to: '/interview', label: 'Interview', icon: MessagesSquare }
   ];
 
   const isActive = (path: string) => {
+    if (path.startsWith('/interview') && location.pathname.startsWith('/interview')) return true;
     if (path.startsWith('/exams') && location.pathname.startsWith('/exams')) return true;
     if (path.startsWith('/learn') && location.pathname.startsWith('/learn')) return true;
     if (path.startsWith('/problems') && location.pathname.startsWith('/problems')) return true;
@@ -268,7 +384,7 @@ export const Navbar: React.FC = () => {
                   aria-label={link.label}
                   aria-current={active ? 'page' : undefined}
                   title={link.label}
-                  className={`relative inline-flex items-center gap-2 px-3 xl:px-3.5 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
+                  className={`relative inline-flex items-center gap-2 px-2.5 xl:px-3 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
                     active ? 'text-ink' : 'text-muted hover:text-ink'
                   }`}
                 >
@@ -315,6 +431,18 @@ export const Navbar: React.FC = () => {
               <span className="text-muted text-[10px] uppercase tracking-wider">d</span>
             </Link>
 
+            {user && dueTodayCount > 0 && (
+              <Link
+                to="/review"
+                aria-label={`${dueTodayCount} due for review today`}
+                className="hidden sm:flex relative items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber/40 bg-amber/10 text-xs font-mono text-amber hover:border-amber transition before:absolute before:-inset-2 before:content-['']"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="font-bold tnum">{dueTodayCount}</span>
+                <span className="hidden sm:inline text-[10px] uppercase tracking-wider">due</span>
+              </Link>
+            )}
+
             <ThemeToggle />
 
             {/* The bug report lives in the footer on phones, so it is not
@@ -348,7 +476,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile bottom tab bar */}
       <nav aria-label="Mobile navigation" className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-line bg-canvas/95 backdrop-blur-md">
-        <div className="grid grid-cols-6">
+        <div className="grid grid-cols-7">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = isActive(link.to);
@@ -357,7 +485,7 @@ export const Navbar: React.FC = () => {
                 key={link.to}
                 to={link.to}
                 aria-current={active ? 'page' : undefined}
-                className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[11px] font-medium ${
+                className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[10px] font-medium ${
                   active ? 'text-mint' : 'text-muted'
                 }`}
               >
@@ -456,7 +584,6 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">{p.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Path" />
                         <span className="font-mono text-[10px] text-muted">
                           {p.steps.length} steps
                         </span>
@@ -481,10 +608,108 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">{v.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Visualizer" />
                         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
                           {v.category}
                         </span>
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'exam') {
+                  const exam = entry.exam;
+                  return (
+                    <button
+                      key={`exam-${exam.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <GraduationCap className="w-3.5 h-3.5 text-mint shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">{exam.title}</span>
+                        {exam.company && (
+                          <span className="text-[10px] font-mono text-violet truncate hidden sm:inline">
+                            {exam.company}
+                          </span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                          {exam.category}
+                        </span>
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'quiz') {
+                  const quiz = entry.quiz;
+                  return (
+                    <button
+                      key={`quiz-${quiz.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <BrainCircuit className="w-3.5 h-3.5 text-mint shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">{quiz.title}</span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                          {quiz.id}
+                        </span>
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'interview') {
+                  return (
+                    <button
+                      key="ai-interview-portal"
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <MessagesSquare className="w-3.5 h-3.5 text-violet shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">
+                          AI Mock Interview Portal
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'review') {
+                  return (
+                    <button
+                      key="review-deck"
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <RotateCcw className="w-3.5 h-3.5 text-amber shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">Spaced Review Deck</span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>
@@ -517,7 +742,6 @@ export const Navbar: React.FC = () => {
                       </span>
                     </span>
                     <span className="flex items-center gap-2 shrink-0">
-                      <KindBadge label="Problem" />
                       <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                     </span>
                   </button>

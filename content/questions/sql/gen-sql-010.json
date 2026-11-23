@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-010",
+  "topic": "sql",
+  "subtopic": "joins",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A users table has 4 rows and an orders table has 6 rows, of which 2 orders have a NULL user_id. How many rows does an INNER JOIN produce?",
+  "options": [
+    "4",
+    "8",
+    "6",
+    "2"
+  ],
+  "correct_index": 0,
+  "explanation": "Only the 4 orders with a matching user survive.",
+  "source": "generated",
+  "generator_key": "sql.joins",
+  "content_hash": "3dd2af2504f7e586ac3ad9581938415baa3ddc9c1a9f7a09b3cd60f9a01cad63",
+  "review_status": "verified"
+}

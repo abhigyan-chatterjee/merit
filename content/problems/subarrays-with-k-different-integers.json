@@ -1053,5 +1053,12 @@
   ],
   "sequence": 13,
   "prevSlug": "minimum-window-substring",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Amazon",
+    "Morgan Stanley",
+    "ServiceNow",
+    "Uber",
+    "Salesforce"
+  ]
 }

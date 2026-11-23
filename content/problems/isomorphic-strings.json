@@ -269,5 +269,12 @@
   ],
   "sequence": 7,
   "prevSlug": "intersection-of-two-arrays",
-  "nextSlug": "logger-rate-limiter"
+  "nextSlug": "logger-rate-limiter",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Oracle",
+    "TCS",
+    "LinkedIn"
+  ]
 }

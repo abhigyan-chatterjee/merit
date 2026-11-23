@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router-dom';
+import { LessonNav } from '../src/components/LessonNav';
+import { LEARNING_PATHS } from '../src/data/learningPaths';
 import { VisualizerDetailPage } from '../src/pages/VisualizerDetailPage';
 import { GuidedPathDetailPage } from '../src/pages/GuidedPathDetailPage';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -112,5 +114,38 @@ describe('LessonNav & Unblocked Guided Path Flow', () => {
     // External "Further reading" links must live outside the step <Link> so
     // anchors never nest -- the root cause of React's DOM nesting warning.
     expect(container.querySelector('a a')).toBeNull();
+  });
+
+  it('builds mock-step navigation links with a single ? separator', async () => {
+    const path = LEARNING_PATHS.find((p) => p.id === 'targeted')!;
+    const mockIndex = path.steps.findIndex((s) => s.type === 'mock');
+    const currentStep = path.steps[mockIndex - 1];
+    const expected = `/quiz/mixed?mock=true&path=targeted&step=${mockIndex}`;
+
+    const LocationProbe = () => {
+      const location = useLocation();
+      return <div data-testid="nav-location">{location.pathname}{location.search}</div>;
+    };
+
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <MemoryRouter initialEntries={[`/quiz/${currentStep.id}?path=${path.id}&step=${mockIndex - 1}`]}>
+            <LocationProbe />
+            <LessonNav currentType="quiz" currentId={currentStep.id} />
+          </MemoryRouter>
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    fireEvent.click(await screen.findByRole('button', { name: /Next:/i }));
+    expect(screen.getByTestId('nav-location')).toHaveTextContent(expected);
+    expect((screen.getByTestId('nav-location').textContent || '').match(/\?/g)).toHaveLength(1);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Step \d+ of \d+/i }));
+    expect(screen.getByRole('link', { name: /Targeted placement mock/i })).toHaveAttribute(
+      'href',
+      expected
+    );
   });
 });

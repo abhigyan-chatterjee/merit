@@ -2619,5 +2619,12 @@
   ],
   "sequence": 25,
   "prevSlug": "longest-valid-parentheses",
-  "nextSlug": "regular-expression-matching"
+  "nextSlug": "regular-expression-matching",
+  "companies": [
+    "PhonePe",
+    "Amazon",
+    "DoorDash",
+    "Airbnb",
+    "Goldman Sachs"
+  ]
 }

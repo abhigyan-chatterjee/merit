@@ -746,5 +746,12 @@
   ],
   "sequence": 16,
   "prevSlug": "construct-from-preorder-inorder",
-  "nextSlug": "binary-tree-right-side-view"
+  "nextSlug": "binary-tree-right-side-view",
+  "companies": [
+    "Zoho",
+    "Google",
+    "Infosys",
+    "Accenture",
+    "Cognizant"
+  ]
 }

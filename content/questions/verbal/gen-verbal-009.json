@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-009",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the correct version of: 'He don't like tea.'",
+  "options": [
+    "He doesn't like tea.",
+    "He don't likes tea.",
+    "He didn't liked tea.",
+    "He doesn't likes tea."
+  ],
+  "correct_index": 0,
+  "explanation": "A singular subject takes 'doesn't' followed by the base verb. The correct answer is He doesn't like tea..",
+  "source": "generated",
+  "generator_key": "verbal.sentence_correction",
+  "content_hash": "ed55452a2103088fbb382fa8d87a13768b67a01f59cc65412a354ad70bb8611b",
+  "review_status": "verified"
+}

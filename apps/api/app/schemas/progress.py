@@ -6,6 +6,22 @@ from pydantic import BaseModel, Field, field_validator
 
 from app.schemas.judge import SUPPORTED_LANGUAGES
 
+TARGET_TIERS = frozenset({"service", "product", "faang"})
+
+
+def validate_drive_date(v: str | None) -> str | None:
+    if v is None:
+        return None
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", v):
+        raise ValueError("target_drive_date must be in YYYY-MM-DD format")
+    try:
+        dt = datetime.strptime(v, "%Y-%m-%d").date()
+    except ValueError as err:
+        raise ValueError("Invalid date value") from err
+    if not 2020 <= dt.year <= 2035:
+        raise ValueError("target_drive_date year must be between 2020 and 2035")
+    return v
+
 
 def validate_local_date(v: str | None) -> str | None:
     if v is None:
@@ -109,6 +125,9 @@ class ProgressSummaryResponse(BaseModel):
     revision_due: list[dict[str, Any]] = Field(default_factory=list)
     preferred_language: str = "python"
     daily_goal: dict[str, Any] | None = None
+    due_today_count: int = 0
+    target_drive_date: str | None = None
+    target_tier: str = "product"
 
 
 class LocalImportRequest(BaseModel):
@@ -184,6 +203,21 @@ class SettingsUpdate(BaseModel):
     daily_goal: DailyGoalPayload | None = None
     clear_daily_goal: bool = False
     unpin_daily_goal: bool = False
+    target_drive_date: str | None = None
+    clear_target_drive_date: bool = False
+    target_tier: str | None = None
+
+    @field_validator("target_drive_date")
+    @classmethod
+    def validate_target_drive_date(cls, v: str | None) -> str | None:
+        return validate_drive_date(v)
+
+    @field_validator("target_tier")
+    @classmethod
+    def validate_target_tier(cls, v: str | None) -> str | None:
+        if v is not None and v not in TARGET_TIERS:
+            raise ValueError(f"target_tier must be one of: {', '.join(sorted(TARGET_TIERS))}")
+        return v
 
     @field_validator("preferred_language")
     @classmethod
@@ -201,3 +235,5 @@ class SettingsUpdate(BaseModel):
 class SettingsResponse(BaseModel):
     preferred_language: str = "python"
     daily_goal: dict[str, Any] | None = None
+    target_drive_date: str | None = None
+    target_tier: str = "product"

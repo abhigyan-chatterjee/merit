@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-103",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does a health check accomplish for a load balancer?",
+  "options": [
+    "Removes unhealthy backends",
+    "Increases capacity",
+    "Compresses responses",
+    "Rewrites URLs"
+  ],
+  "correct_index": 0,
+  "explanation": "Failing backends are taken out of rotation. The correct answer is Removes unhealthy backends.",
+  "source": "generated",
+  "generator_key": "core_cs.load_balancing",
+  "content_hash": "f9d034d5b51613084ea7239fb21cff366199052fbb540fafc342d3ba3d363e1f",
+  "review_status": "verified"
+}

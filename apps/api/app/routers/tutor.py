@@ -11,19 +11,23 @@ used here. Multi-worker exactness is explicitly out of scope pre-launch:
 each process tracks its own buckets.
 """
 
+import asyncio
 import ipaddress
 import logging
 import re
 import socket
 import time
+from collections.abc import AsyncIterator, Iterable
 from threading import Lock
 from urllib.parse import urlsplit
 
+import httpcore
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db import get_db
 from app.http_status import HTTP_422
 from app.models.content import Problem
@@ -34,22 +38,38 @@ from app.schemas.tutor import (
     TutorModelsRequest,
     TutorModelsResponse,
 )
-from app.security import get_optional_current_user
+from app.security import get_current_user, require_same_origin
 
-router = APIRouter(prefix="/api/v1/tutor", tags=["tutor"])
+router = APIRouter(
+    prefix="/api/v1/tutor",
+    tags=["tutor"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 MODELS_TIMEOUT_S = 10.0
 CHAT_TIMEOUT_S = 30.0
+MAX_PROVIDER_RESPONSE_BYTES = 1_048_576
 RATE_LIMIT_MAX_REQUESTS = 30
 RATE_LIMIT_WINDOW_S = 60.0
 
 _rate_buckets: dict[str, list[float]] = {}
 _rate_lock = Lock()
+_rate_sweep_at = 1024
 _logger = logging.getLogger(__name__)
 _CODE_BLOCK_RE = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 _TRUNCATED_REPLY = (
     "I can’t provide solution code. Let’s work through the next reasoning step instead."
 )
+
+
+def _sweep_rate_buckets(now: float) -> None:
+    stale = [
+        key
+        for key, hits in _rate_buckets.items()
+        if not hits or now - max(hits) >= RATE_LIMIT_WINDOW_S
+    ]
+    for key in stale:
+        del _rate_buckets[key]
 
 
 def _check_rate_limit(user_id: str) -> None:
@@ -67,6 +87,10 @@ def _check_rate_limit(user_id: str) -> None:
             )
         hits.append(now)
         _rate_buckets[user_id] = hits
+        global _rate_sweep_at
+        if len(_rate_buckets) >= _rate_sweep_at:
+            _sweep_rate_buckets(now)
+            _rate_sweep_at = max(1024, len(_rate_buckets) * 2)
 
 
 def _upstream_error() -> HTTPException:
@@ -83,11 +107,127 @@ def _bad_url() -> HTTPException:
     )
 
 
-def _validate_provider_url(base_url: str) -> None:
+def _content_length_exceeds_limit(headers: object, max_bytes: int) -> bool:
+    getter = getattr(headers, "get", None)
+    if not callable(getter):
+        return False
+    raw = getter("content-length")
+    if raw is None:
+        raw = getter("Content-Length")
+    if raw is None:
+        return False
+    try:
+        return int(str(raw).strip()) > max_bytes
+    except ValueError:
+        return False
+
+
+class _PinnedDNSBackend(httpcore.AsyncNetworkBackend):
+    """Connect only to pre-validated IPs so DNS cannot rebind after validation."""
+
+    def __init__(
+        self,
+        expected_host: str,
+        pinned_ips: tuple[str, ...],
+        inner: httpcore.AsyncNetworkBackend,
+    ) -> None:
+        self._expected_host = expected_host.strip("[]").lower()
+        self._pinned_ips = pinned_ips
+        self._inner = inner
+
+    async def connect_tcp(
+        self,
+        host: str,
+        port: int,
+        timeout: float | None = None,
+        local_address: str | None = None,
+        socket_options: Iterable[httpcore.SOCKET_OPTION] | None = None,
+    ) -> httpcore.AsyncNetworkStream:
+        if host.strip("[]").lower() != self._expected_host:
+            raise httpcore.ConnectError("Tutor provider host mismatch.")
+        last_err: Exception | None = None
+        for ip in self._pinned_ips:
+            try:
+                return await self._inner.connect_tcp(
+                    host=ip,
+                    port=port,
+                    timeout=timeout,
+                    local_address=local_address,
+                    socket_options=socket_options,
+                )
+            except (httpcore.ConnectError, OSError) as err:
+                last_err = err
+        raise last_err if last_err is not None else httpcore.ConnectError(
+            "Failed to connect to tutor provider."
+        )
+
+    async def connect_unix_socket(
+        self,
+        path: str,
+        timeout: float | None = None,
+        socket_options: Iterable[httpcore.SOCKET_OPTION] | None = None,
+    ) -> httpcore.AsyncNetworkStream:
+        raise httpcore.ConnectError("Unix sockets are not allowed for tutor providers.")
+
+    async def sleep(self, seconds: float) -> None:
+        await self._inner.sleep(seconds)
+
+
+class _BoundedAsyncByteStream(httpx.AsyncByteStream):
+    """Abort streaming upstream responses once cumulative bytes exceed max_bytes."""
+
+    def __init__(self, stream: httpx.AsyncByteStream, max_bytes: int) -> None:
+        self._stream = stream
+        self._max_bytes = max_bytes
+
+    async def __aiter__(self) -> AsyncIterator[bytes]:
+        total = 0
+        async for chunk in self._stream:
+            total += len(chunk)
+            if total > self._max_bytes:
+                await self.aclose()
+                raise httpx.ReadError("Tutor provider response exceeded maximum size.")
+            yield chunk
+
+    async def aclose(self) -> None:
+        await self._stream.aclose()
+
+
+class _PinnedTransport(httpx.AsyncHTTPTransport):
+    """HTTP transport pinned to validated IPs with bounded response sizes."""
+
+    def __init__(
+        self,
+        expected_host: str,
+        pinned_ips: tuple[str, ...],
+        max_response_bytes: int = MAX_PROVIDER_RESPONSE_BYTES,
+    ) -> None:
+        super().__init__(verify=True, trust_env=False)
+        self.expected_host = expected_host.strip("[]").lower()
+        self.pinned_ips = pinned_ips
+        self._max_response_bytes = max_response_bytes
+        self._pool._network_backend = _PinnedDNSBackend(
+            expected_host=self.expected_host,
+            pinned_ips=self.pinned_ips,
+            inner=self._pool._network_backend,
+        )
+
+    async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
+        response = await super().handle_async_request(request)
+        if _content_length_exceeds_limit(response.headers, self._max_response_bytes):
+            await response.aclose()
+            raise httpx.ReadError("Tutor provider response exceeded maximum size.")
+        if isinstance(response.stream, httpx.AsyncByteStream):
+            response.stream = _BoundedAsyncByteStream(response.stream, self._max_response_bytes)
+        return response
+
+
+async def _validate_provider_url(base_url: str) -> tuple[str, tuple[str, ...]]:
     """Allow public HTTPS providers; localhost HTTP is a development-only exception.
 
-    DNS is resolved and checked for every request. This closes the common SSRF
-    path, but a DNS rebinding race remains possible between resolution and connect.
+    DNS is resolved off the event loop and checked on every request; callers
+    connect using a transport pinned to the validated IP(s) so a subsequent
+    DNS change cannot rebind to an internal address.
     """
     try:
         parsed = urlsplit(base_url)
@@ -96,29 +236,43 @@ def _validate_provider_url(base_url: str) -> None:
             raise ValueError
         if parsed.scheme not in {"http", "https"}:
             raise ValueError
-        if parsed.scheme == "http" and hostname.lower() not in {"localhost", "127.0.0.1"}:
+        normalized_host = hostname.strip("[]").lower()
+        is_loopback = normalized_host in {"localhost", "127.0.0.1"}
+        if parsed.scheme == "http" and not is_loopback:
+            raise ValueError
+        if is_loopback and settings.environment.lower() == "production":
+            raise ValueError
+        if not is_loopback and parsed.port is not None and parsed.port not in (80, 443):
             raise ValueError
         port = parsed.port or (443 if parsed.scheme == "https" else 80)
-        try:
-            addresses = {
-                ipaddress.ip_address(result[4][0])
-                for result in socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
-            }
-        except socket.gaierror:
-            # The reserved fixture hostname is intentionally not published in DNS.
-            if hostname.lower() == "provider.example.com":
-                addresses = {ipaddress.ip_address("93.184.216.34")}
-            else:
-                raise
+        infos = await asyncio.to_thread(
+            socket.getaddrinfo, hostname, port, type=socket.SOCK_STREAM
+        )
+        addresses = list(
+            dict.fromkeys(ipaddress.ip_address(result[4][0]) for result in infos)
+        )
         if not addresses:
             raise ValueError
-        if parsed.scheme == "http" and hostname.lower() in {"localhost", "127.0.0.1"}:
+        if parsed.scheme == "http" and normalized_host in {"localhost", "127.0.0.1"}:
             if not all(address.is_loopback for address in addresses):
                 raise ValueError
-        elif not all(address.is_global for address in addresses):
+        elif not all(address.is_global and not address.is_multicast for address in addresses):
             raise ValueError
+        return normalized_host, tuple(str(address) for address in addresses)
     except (OSError, TypeError, ValueError):
         raise _bad_url() from None
+
+
+def _parse_json_response(resp: httpx.Response) -> object:
+    if _content_length_exceeds_limit(getattr(resp, "headers", None), MAX_PROVIDER_RESPONSE_BYTES):
+        raise _upstream_error()
+    content = getattr(resp, "content", None)
+    if isinstance(content, (bytes, bytearray)) and len(content) > MAX_PROVIDER_RESPONSE_BYTES:
+        raise _upstream_error()
+    try:
+        return resp.json()
+    except ValueError as err:
+        raise _upstream_error() from err
 
 
 def _sanitize_tutor_reply(text: str) -> str:
@@ -179,7 +333,32 @@ def _extract_model_ids(payload: object) -> list[str]:
     raise _upstream_error()
 
 
-def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: int) -> str:
+_COACHING_MODE_DIRECTIVES = {
+    "hint": (
+        "Coaching mode: Progressive Step Hint. Structure your reply as: (1) Core Invariant, "
+        "(2) State / Transition, and (3) Next Concrete Step. Never provide a complete solution "
+        "or code block."
+    ),
+    "code_review": (
+        "Coaching mode: Code & Complexity Review. Critique <student_code> for time/space Big-O "
+        "complexity, corner cases (empty input, duplicates, boundary values, off-by-one), and OA "
+        "readiness without providing a complete solution or code block."
+    ),
+    "interview": (
+        "Coaching mode: 30-Minute Technical Mock Interviewer. Act as a realistic campus/FAANG "
+        "interviewer: probe clarifying assumptions, ask for time/space complexity before "
+        "coding, and challenge edge cases. When asked for a rubric evaluation or wrap-up, score "
+        "the candidate on 4 dimensions: Problem Clarification (0-5), Algorithmic Approach (0-5), "
+        "Code & Edge Cases (0-5), Communication & Big-O (0-5), Total (/20), Verdict (Strong Hire "
+        "/ Hire / Leaning Hire / No Hire), and 2 actionable improvements. Never provide a "
+        "complete solution or code block."
+    ),
+}
+
+
+def _build_system_prompt(
+    problem: Problem, code: str | None, failed_attempts: int, mode: str = "socratic"
+) -> str:
     if failed_attempts >= 3:
         policy = (
             f"The student has made {failed_attempts} failed submissions. "
@@ -195,7 +374,7 @@ def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: in
             "reason about the next step."
         )
     student_code = code if code else "(no code shared yet)"
-    return (
+    prompt = (
         "You are a Socratic DSA tutor helping a student solve "
         f'"{problem.title}" (topic: {problem.topic}, difficulty: {problem.difficulty}).\n'
         f"Problem statement:\n{problem.statement}\n"
@@ -206,41 +385,100 @@ def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: in
         f"<student_code>\n{student_code}\n</student_code>\n"
         f"Tutoring policy: {policy}"
     )
+    directive = _COACHING_MODE_DIRECTIVES.get(mode)
+    return f"{prompt}\n{directive}" if directive else prompt
 
 
 @router.post("/models", response_model=TutorModelsResponse)
 async def list_models(
     req: TutorModelsRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
+    user: User = Depends(get_current_user),
 ) -> TutorModelsResponse:
-    rate_key = user.id if user else (request.client.host if request.client else "guest")
-    _check_rate_limit(rate_key)
-    _validate_provider_url(req.base_url)
+    _check_rate_limit(user.id)
+    hostname, pinned_ips = await _validate_provider_url(req.base_url)
+    transport = _PinnedTransport(hostname, pinned_ips)
     try:
-        async with httpx.AsyncClient(timeout=MODELS_TIMEOUT_S, follow_redirects=False) as client:
+        async with httpx.AsyncClient(
+            timeout=MODELS_TIMEOUT_S,
+            follow_redirects=False,
+            trust_env=False,
+            transport=transport,
+        ) as client:
             resp = await client.get(f"{req.base_url}/models", headers=_auth_headers(req.api_key))
     except httpx.HTTPError as err:
         raise _upstream_error() from err
     if resp.status_code != status.HTTP_200_OK:
         raise _upstream_error()
-    try:
-        payload = resp.json()
-    except ValueError as err:
-        raise _upstream_error() from err
+    payload = _parse_json_response(resp)
     return TutorModelsResponse(models=_extract_model_ids(payload))
+
+
+async def call_byok_completion(
+    base_url: str,
+    api_key: str,
+    model: str,
+    messages: list[dict[str, str]],
+    rate_key: str,
+    *,
+    sanitize_code_tripwire: bool = True,
+) -> str:
+    """Execute one rate-limited, IP-pinned BYOK chat completion request."""
+    _check_rate_limit(rate_key)
+    hostname, pinned_ips = await _validate_provider_url(base_url)
+    transport = _PinnedTransport(hostname, pinned_ips)
+    try:
+        async with httpx.AsyncClient(
+            timeout=CHAT_TIMEOUT_S,
+            follow_redirects=False,
+            trust_env=False,
+            transport=transport,
+        ) as client:
+            resp = await client.post(
+                f"{base_url}/chat/completions",
+                headers=_auth_headers(api_key),
+                json={"model": model, "messages": messages},
+            )
+    except httpx.HTTPError as err:
+        raise _upstream_error() from err
+    if resp.status_code != status.HTTP_200_OK:
+        raise _upstream_error()
+    payload = _parse_json_response(resp)
+    try:
+        message = payload["choices"][0]["message"]
+    except (KeyError, IndexError, TypeError) as err:
+        raise _upstream_error() from err
+    if not isinstance(message, dict):
+        raise _upstream_error()
+    content = message.get("content")
+    if isinstance(content, str):
+        reply = content
+    elif isinstance(content, list):
+        reply = "".join(
+            part.get("text", "")
+            for part in content
+            if isinstance(part, dict) and isinstance(part.get("text"), str)
+        )
+    else:
+        reply = ""
+    if not reply.strip():
+        for key in ("reasoning_content", "reasoning"):
+            fallback = message.get(key)
+            if isinstance(fallback, str) and fallback.strip():
+                reply = fallback
+                break
+    if not isinstance(reply, str) or not reply.strip():
+        raise _upstream_error()
+    cleaned = _sanitize_tutor_reply(reply)
+    return _sanitize_reply(cleaned) if sanitize_code_tripwire else cleaned
 
 
 @router.post("/chat", response_model=TutorChatResponse)
 async def chat(
     req: TutorChatRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
+    user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> TutorChatResponse:
-    rate_key = user.id if user else (request.client.host if request.client else "guest")
-    _check_rate_limit(rate_key)
-    _validate_provider_url(req.base_url)
+    rate_key = user.id
     problem = db.scalar(
         select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
     )
@@ -256,29 +494,19 @@ async def chat(
     messages = [
         {
             "role": "system",
-            "content": _build_system_prompt(problem, req.code, req.failed_attempts),
+            "content": _build_system_prompt(problem, req.code, req.failed_attempts, req.mode),
         },
-        {"role": "user", "content": req.question},
     ]
-    try:
-        async with httpx.AsyncClient(timeout=CHAT_TIMEOUT_S, follow_redirects=False) as client:
-            resp = await client.post(
-                f"{req.base_url}/chat/completions",
-                headers=_auth_headers(req.api_key),
-                json={"model": req.model, "messages": messages},
-            )
-    except httpx.HTTPError as err:
-        raise _upstream_error() from err
-    if resp.status_code != status.HTTP_200_OK:
-        raise _upstream_error()
-    try:
-        payload = resp.json()
-    except ValueError as err:
-        raise _upstream_error() from err
-    try:
-        reply = payload["choices"][0]["message"]["content"]
-    except (KeyError, IndexError, TypeError) as err:
-        raise _upstream_error() from err
-    if not isinstance(reply, str) or not reply.strip():
-        raise _upstream_error()
-    return TutorChatResponse(reply=_sanitize_reply(_sanitize_tutor_reply(reply)))
+    messages.extend(
+        {"role": turn.role, "content": turn.content} for turn in req.history[-12:]
+    )
+    messages.append({"role": "user", "content": req.question})
+    reply = await call_byok_completion(
+        req.base_url,
+        req.api_key,
+        req.model,
+        messages,
+        rate_key,
+        sanitize_code_tripwire=True,
+    )
+    return TutorChatResponse(reply=reply)

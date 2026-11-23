@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-087",
+  "topic": "aptitude",
+  "subtopic": "seating-ranking",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In a queue of 30 people, Ravi is 10th from the front. What is his position from the back?",
+  "options": [
+    "19th",
+    "20th",
+    "21st",
+    "22nd"
+  ],
+  "correct_index": 2,
+  "explanation": "30 - 10 + 1 = 21st.",
+  "source": "generated",
+  "generator_key": "aptitude.seating_ranking",
+  "content_hash": "5076ffeecff9f0e18cee23b8ae7af13ca73e9c2a16ef52622504387b83275365",
+  "review_status": "verified"
+}

@@ -2879,5 +2879,12 @@
   ],
   "sequence": 24,
   "prevSlug": "longest-increasing-path-in-a-matrix",
-  "nextSlug": "reconstruct-itinerary"
+  "nextSlug": "reconstruct-itinerary",
+  "companies": [
+    "Intuit",
+    "Google",
+    "Airbnb",
+    "DoorDash",
+    "LinkedIn"
+  ]
 }

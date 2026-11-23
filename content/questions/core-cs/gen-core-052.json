@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-052",
+  "topic": "core-cs",
+  "subtopic": "cn-transport",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which TCP state does a client enter immediately after sending SYN?",
+  "options": [
+    "ESTABLISHED",
+    "TIME-WAIT",
+    "SYN-RECEIVED",
+    "SYN-SENT"
+  ],
+  "correct_index": 3,
+  "explanation": "The client waits for SYN-ACK in SYN-SENT.",
+  "source": "generated",
+  "generator_key": "core_cs.tcp_udp",
+  "content_hash": "1eb4dbb5896905fe102b0ce5d0fd6f3561aa8834dbe46ef57428a8ac39967c90",
+  "review_status": "verified"
+}

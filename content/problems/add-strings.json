@@ -270,5 +270,12 @@
   ],
   "sequence": 2,
   "prevSlug": "add-binary",
-  "nextSlug": "fizz-buzz"
+  "nextSlug": "fizz-buzz",
+  "companies": [
+    "Wipro",
+    "Meta",
+    "Uber",
+    "Airbnb",
+    "Visa"
+  ]
 }

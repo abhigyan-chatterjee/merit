@@ -1442,5 +1442,12 @@
   ],
   "sequence": 8,
   "prevSlug": "isomorphic-strings",
-  "nextSlug": "majority-element"
+  "nextSlug": "majority-element",
+  "companies": [
+    "Microsoft",
+    "Intuit",
+    "Atlassian",
+    "Oracle",
+    "Palo Alto Networks"
+  ]
 }

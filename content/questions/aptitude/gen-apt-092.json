@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-092",
+  "topic": "aptitude",
+  "subtopic": "clocks-calendars",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If 1 January 2024 was a Monday, what day was 1 January 2025?",
+  "options": [
+    "Tuesday",
+    "Sunday",
+    "Thursday",
+    "Wednesday"
+  ],
+  "correct_index": 3,
+  "explanation": "2024 is a leap year of 366 days, shifting the day by two. The correct answer is Wednesday.",
+  "source": "generated",
+  "generator_key": "aptitude.clocks_calendars",
+  "content_hash": "8c154e3838d451a80501be56a3f4d368d70464d40680f678be2b424dcafa24f4",
+  "review_status": "verified"
+}

@@ -215,5 +215,12 @@
   ],
   "sequence": 3,
   "prevSlug": "count-binary-substrings",
-  "nextSlug": "is-subsequence"
+  "nextSlug": "is-subsequence",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "Accenture",
+    "Airbnb",
+    "Snowflake"
+  ]
 }

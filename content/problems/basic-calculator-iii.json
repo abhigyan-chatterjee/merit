@@ -248,5 +248,12 @@
   ],
   "sequence": 20,
   "prevSlug": "basic-calculator",
-  "nextSlug": "maximal-rectangle"
+  "nextSlug": "maximal-rectangle",
+  "companies": [
+    "Microsoft",
+    "Intuit",
+    "DoorDash",
+    "Oracle",
+    "Snap"
+  ]
 }

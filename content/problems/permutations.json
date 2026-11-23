@@ -6950,5 +6950,12 @@
   ],
   "sequence": 6,
   "prevSlug": "palindrome-partitioning",
-  "nextSlug": "restore-ip-addresses"
+  "nextSlug": "restore-ip-addresses",
+  "companies": [
+    "Infosys",
+    "Google",
+    "Samsung",
+    "Qualcomm",
+    "TCS"
+  ]
 }

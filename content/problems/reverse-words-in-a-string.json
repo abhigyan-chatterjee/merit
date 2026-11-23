@@ -247,5 +247,12 @@
   ],
   "sequence": 16,
   "prevSlug": "remove-nth-node-from-end",
-  "nextSlug": "string-compression"
+  "nextSlug": "string-compression",
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "ServiceNow",
+    "LinkedIn",
+    "Zoho"
+  ]
 }

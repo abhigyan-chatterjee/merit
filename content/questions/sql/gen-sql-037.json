@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-037",
+  "topic": "sql",
+  "subtopic": "aggregates",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A column holds [10, 20, 30]. What does SELECT AVG(x) return? Give only the number.",
+  "options": [
+    "18",
+    "24",
+    "23",
+    "20"
+  ],
+  "correct_index": 3,
+  "explanation": "AVG of [10, 20, 30] is 20.",
+  "source": "generated",
+  "generator_key": "sql.aggregates",
+  "content_hash": "7255bc99c572fad93fba3db66c4134d5ae4c1fc8aa260e9f8b92e952e56a3cfb",
+  "review_status": "verified"
+}

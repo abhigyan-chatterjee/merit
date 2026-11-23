@@ -1811,5 +1811,12 @@
   ],
   "sequence": 4,
   "prevSlug": "largest-number",
-  "nextSlug": "wiggle-sort-ii-lite"
+  "nextSlug": "wiggle-sort-ii-lite",
+  "companies": [
+    "Infosys",
+    "Microsoft",
+    "TCS",
+    "Oracle",
+    "TikTok"
+  ]
 }

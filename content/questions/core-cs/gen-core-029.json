@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-029",
+  "topic": "core-cs",
+  "subtopic": "dbms-normalization",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which normal form eliminates repeating groups and enforces atomic values?",
+  "options": [
+    "Boyce-Codd Normal Form (BCNF)",
+    "Second Normal Form (2NF)",
+    "First Normal Form (1NF)",
+    "Third Normal Form (3NF)"
+  ],
+  "correct_index": 2,
+  "explanation": "1NF requires atomic, single-valued columns. The correct answer is First Normal Form (1NF).",
+  "source": "generated",
+  "generator_key": "core_cs.normalization",
+  "content_hash": "e8be62e416f9baf0da521a23856d9fa034af6440ee6c183b3519aae58ed400a6",
+  "review_status": "verified"
+}

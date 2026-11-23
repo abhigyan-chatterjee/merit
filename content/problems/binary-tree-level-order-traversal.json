@@ -1381,5 +1381,12 @@
   ],
   "sequence": 12,
   "prevSlug": "kth-smallest-element-in-a-bst",
-  "nextSlug": "lowest-common-ancestor-of-a-binary-tree"
+  "nextSlug": "lowest-common-ancestor-of-a-binary-tree",
+  "companies": [
+    "Meta",
+    "LinkedIn",
+    "Goldman Sachs",
+    "Adobe",
+    "Visa"
+  ]
 }

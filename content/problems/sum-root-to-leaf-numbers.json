@@ -730,5 +730,12 @@
   ],
   "sequence": 18,
   "prevSlug": "binary-tree-right-side-view",
-  "nextSlug": "validate-binary-search-tree"
+  "nextSlug": "validate-binary-search-tree",
+  "companies": [
+    "Bloomberg",
+    "Visa",
+    "Meta",
+    "Oracle",
+    "Microsoft"
+  ]
 }

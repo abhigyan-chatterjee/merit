@@ -2631,5 +2631,12 @@
   ],
   "sequence": 5,
   "prevSlug": "lru-cache",
-  "nextSlug": "all-o-one-data-structure"
+  "nextSlug": "all-o-one-data-structure",
+  "companies": [
+    "PhonePe",
+    "Bloomberg",
+    "Goldman Sachs",
+    "Stripe",
+    "Airbnb"
+  ]
 }

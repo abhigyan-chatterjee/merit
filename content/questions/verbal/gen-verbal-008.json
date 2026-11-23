@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-008",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: The report ___ before the meeting starts.",
+  "options": [
+    "has finished",
+    "finishes",
+    "will be finished",
+    "is finishing"
+  ],
+  "correct_index": 2,
+  "explanation": "The future passive 'will be finished' fits the future deadline.",
+  "source": "generated",
+  "generator_key": "verbal.tense_modifiers",
+  "content_hash": "51878cd643bd4d3515e3e0edba78b28695020b75a672eca80c634d19dc6d0670",
+  "review_status": "verified"
+}

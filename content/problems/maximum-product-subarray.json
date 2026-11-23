@@ -995,7 +995,14 @@
       "isReference": true
     }
   ],
-  "sequence": 14,
+  "sequence": 15,
   "prevSlug": "maximal-square",
-  "nextSlug": "maximum-subarray"
+  "nextSlug": "maximum-subarray",
+  "companies": [
+    "TCS",
+    "Meta",
+    "Qualcomm",
+    "Morgan Stanley",
+    "IBM"
+  ]
 }

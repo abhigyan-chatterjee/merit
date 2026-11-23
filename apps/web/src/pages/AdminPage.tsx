@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Shield,
   CheckCircle,
   XCircle,
   Layers,
@@ -29,6 +28,7 @@ export const AdminPage: React.FC = () => {
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -50,8 +50,10 @@ export const AdminPage: React.FC = () => {
         const data = await adminApi.getAuditLogs();
         setAuditLogs(data);
       }
+      setLoadError(null);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
+      setLoadError(err?.message ? `Failed to load admin data: ${err.message}` : 'Failed to load admin data. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -113,16 +115,16 @@ export const AdminPage: React.FC = () => {
         <div className="w-12 h-12 rounded-2xl bg-rose/10 border border-rose/20 grid place-items-center text-rose mx-auto">
           <AlertTriangle className="w-6 h-6" />
         </div>
-        <h1 className="text-lg font-bold text-ink">Administrative Privileges Required</h1>
+        <h1 className="text-lg font-bold text-ink">Admin only</h1>
         <p className="text-xs text-muted leading-relaxed">
-          The content moderation, coverage matrix, and system aggregate consoles are restricted to designated administrator accounts.
+          Sign in with an admin account to continue.
         </p>
         <div className="pt-2">
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-line text-xs font-semibold text-ink hover:border-mint transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line bg-surface text-xs text-muted hover:text-ink hover:border-mint transition"
           >
-            Return to Learning Dashboard
+            Back to dashboard
           </Link>
         </div>
       </div>
@@ -134,13 +136,9 @@ export const AdminPage: React.FC = () => {
       {/* Admin Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-line">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-mint/15 text-mint border border-mint/30">
-            <Shield className="w-3 h-3" />
-            Verified Content Console
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink">Admin Control Center</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Admin</h1>
           <p className="text-xs text-muted">
-            Logged in as <span className="font-mono text-ink font-semibold">{user.email}</span> ({user.role})
+            {user.email} · {user.role}
           </p>
         </div>
 
@@ -157,6 +155,19 @@ export const AdminPage: React.FC = () => {
         <div className="p-3.5 rounded-xl bg-mint/10 border border-mint/30 text-xs font-mono text-mint flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
           <span>{actionSuccess}</span>
+        </div>
+      )}
+
+      {loadError && (
+        <div role="alert" className="p-3.5 rounded-xl bg-rose/10 border border-rose/30 text-xs font-mono text-rose flex items-center justify-between gap-2">
+          <span>{loadError}</span>
+          <button
+            onClick={() => void loadData()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose/40 bg-rose/10 text-rose font-semibold text-xs hover:bg-rose/20 transition cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Retry
+          </button>
         </div>
       )}
 
@@ -198,7 +209,7 @@ export const AdminPage: React.FC = () => {
             </div>
             <div className="p-5 rounded-xl border border-line bg-surface">
               <div className="text-[10px] font-mono text-muted uppercase">Total Submissions</div>
-              <div className="text-3xl font-bold font-mono text-violet mt-1">
+              <div className="text-3xl font-bold font-mono text-ink mt-1">
                 {stats.total_submissions}
               </div>
               <div className="text-[10px] font-mono text-mint mt-1">
@@ -207,7 +218,7 @@ export const AdminPage: React.FC = () => {
             </div>
             <div className="p-5 rounded-xl border border-line bg-surface">
               <div className="text-[10px] font-mono text-muted uppercase">Verified Questions</div>
-              <div className="text-3xl font-bold font-mono text-mint mt-1">
+              <div className="text-3xl font-bold font-mono text-ink mt-1">
                 {stats.verified_questions}
               </div>
               <div className="text-[10px] font-mono text-muted mt-1">
@@ -216,7 +227,7 @@ export const AdminPage: React.FC = () => {
             </div>
             <div className="p-5 rounded-xl border border-line bg-surface">
               <div className="text-[10px] font-mono text-muted uppercase">Verified Problems</div>
-              <div className="text-3xl font-bold font-mono text-violet mt-1">
+              <div className="text-3xl font-bold font-mono text-ink mt-1">
                 {stats.verified_problems}
               </div>
               <div className="text-[10px] font-mono text-muted mt-1">
@@ -225,7 +236,7 @@ export const AdminPage: React.FC = () => {
             </div>
             <div className="p-5 rounded-xl border border-line bg-surface">
               <div className="text-[10px] font-mono text-muted uppercase">Quiz Attempts</div>
-              <div className="text-3xl font-bold font-mono text-amber mt-1">
+              <div className="text-3xl font-bold font-mono text-ink mt-1">
                 {stats.total_quiz_attempts}
               </div>
             </div>
@@ -452,6 +463,14 @@ export const AdminPage: React.FC = () => {
                     {item.prompt || item.title}
                   </h3>
 
+                  {queueType === 'problems' && item.statement && (
+                    <div className="p-3 rounded-lg bg-canvas border border-line text-xs space-y-1">
+                      <span className="font-mono text-[10px] text-muted uppercase">Statement:</span>
+                      <p className="text-ink leading-relaxed whitespace-pre-wrap">{item.statement}</p>
+                      {item.pattern && <p className="text-muted font-mono text-[11px]">Pattern: {item.pattern}</p>}
+                    </div>
+                  )}
+
                   {item.options && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
                       {item.options.map((opt: string, oIdx: number) => (
@@ -490,7 +509,7 @@ export const AdminPage: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-              Topic × Difficulty Coverage ({coverage.total_verified} Verified Total)
+              Coverage ({coverage.total_verified})
             </h3>
           </div>
 
@@ -509,9 +528,9 @@ export const AdminPage: React.FC = () => {
                 {Object.entries(coverage.matrix).map(([topic, counts]) => (
                   <tr key={topic} className="hover:bg-canvas/50 transition">
                     <td className="p-3.5 font-semibold capitalize">{topic}</td>
-                    <td className="p-3.5 text-center text-mint font-medium">{counts.easy}</td>
-                    <td className="p-3.5 text-center text-violet font-medium">{counts.medium}</td>
-                    <td className="p-3.5 text-center text-amber font-medium">{counts.hard}</td>
+                    <td className="p-3.5 text-center text-ink font-medium">{counts.easy}</td>
+                    <td className="p-3.5 text-center text-ink font-medium">{counts.medium}</td>
+                    <td className="p-3.5 text-center text-ink font-medium">{counts.hard}</td>
                     <td className="p-3.5 text-right font-bold text-ink">{counts.total}</td>
                   </tr>
                 ))}
@@ -526,7 +545,7 @@ export const AdminPage: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-              Administrative Audit Log (Tamper-evident trail)
+              Audit log
             </h3>
           </div>
 

@@ -274,5 +274,12 @@
   ],
   "sequence": 3,
   "prevSlug": "find-the-index-of-the-first-occurrence-in-a-string",
-  "nextSlug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit"
+  "nextSlug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
+  "companies": [
+    "Walmart Labs",
+    "Apple",
+    "Accenture",
+    "Snowflake",
+    "Databricks"
+  ]
 }

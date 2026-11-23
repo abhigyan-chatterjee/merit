@@ -1226,5 +1226,12 @@
   ],
   "sequence": 10,
   "prevSlug": "valid-palindrome-ii",
-  "nextSlug": "4sum"
+  "nextSlug": "4sum",
+  "companies": [
+    "Deloitte",
+    "Amazon",
+    "Accenture",
+    "Cisco",
+    "Adobe"
+  ]
 }

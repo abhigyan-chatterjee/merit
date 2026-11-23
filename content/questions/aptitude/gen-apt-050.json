@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-050",
+  "topic": "aptitude",
+  "subtopic": "combinations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of combinations C(6, 3) = 6C3. Give only the number.",
+  "options": [
+    "24",
+    "18",
+    "23",
+    "20"
+  ],
+  "correct_index": 3,
+  "explanation": "6C3 = 6!/(3!*(6-3)!) = 20.",
+  "source": "generated",
+  "generator_key": "aptitude.combinations",
+  "content_hash": "8944841bb68040349138132a3a138a68cbc2cf6a31e02f86e30e06414c6cbf56",
+  "review_status": "verified"
+}

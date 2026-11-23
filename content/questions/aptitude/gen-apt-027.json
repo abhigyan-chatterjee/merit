@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-027",
+  "topic": "aptitude",
+  "subtopic": "averages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "The average of 5 numbers is 20. If one number, 40, is removed, what is the average of the rest? Give only the number.",
+  "options": [
+    "16",
+    "10",
+    "15",
+    "12"
+  ],
+  "correct_index": 2,
+  "explanation": "Total 100, remaining 60 over 4 numbers gives 15.",
+  "source": "generated",
+  "generator_key": "aptitude.averages",
+  "content_hash": "0247c31ed1b4df26ff7d8b50841d5b3eb953fdfa5014fe2e8178a3ba5bdc3958",
+  "review_status": "verified"
+}

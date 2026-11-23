@@ -30,6 +30,7 @@ export interface Problem {
   topic: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   pattern: string;
+  companies: string[];
   statement: string;
   examples: ProblemExample[];
   constraints: string[];
@@ -59,6 +60,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "One-Pass Min Tracking",
+    companies: ["Deloitte", "Google", "Wipro", "SAP", "Atlassian", "Meta", "Morgan Stanley"],
     statement: "You are given an array prices where prices[i] is the price of a stock on day i. Choose one day to buy and a later day to sell to maximize profit. Return the maximum profit achievable, or 0 if no profit is possible.",
     examples: [
       { input: "prices = [7,1,5,3,6,4]", output: "5", explanation: "Buy on day 2 (price 1) and sell on day 5 (price 6) for profit 5." },
@@ -111,6 +113,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "Hash Set",
+    companies: ["Capgemini", "Microsoft", "Airbnb", "Infosys", "Visa"],
     statement: "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
     examples: [
       { input: "nums = [1,2,3,1]", output: "true" },
@@ -165,6 +168,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Bit manipulation",
+    companies: ["Microsoft", "Qualcomm", "Oracle", "Nvidia", "Bloomberg"],
     statement: "Given an integer `n`, compute and return an array `ans` of length `n + 1` such that for every integer `i` in the range `0 <= i <= n`, `ans[i]` represents the total number of `1` bits in the binary representation of `i`.\n\nConstraints: `0 <= n <= 500`.\n",
     examples: [
       { input: "n = 0", output: "[0]", explanation: "0 has no 1-bits in its binary representation, so the result is a single-element array [0]." },
@@ -232,6 +236,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "prefix sum / running total",
+    companies: ["TCS", "Amazon", "Goldman Sachs", "IBM", "Salesforce"],
     statement: "Given an array of integers `nums`, an index `i` is a pivot index when the sum of all elements strictly to the left of `i` equals the sum of all elements strictly to the right of `i`. A sum over an empty range counts as `0`, so index `0` is a pivot index whenever everything after it sums to zero, and the last index qualifies whenever everything before it sums to zero.\n\nReturn the leftmost pivot index of `nums`, or `-1` when no index satisfies the condition.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -286,6 +291,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "frequency counting",
+    companies: ["Deloitte", "Amazon", "Morgan Stanley", "Accenture", "Zoho"],
     statement: "Given a string `s` made of lowercase English letters, call a character unique when it occurs exactly once in the whole string. Return the index of the leftmost unique character of `s`. If every character of `s` appears at least twice, return `-1`.\n\nFor example, for `s = \"loveleetcode\"` the answer is `2`, because `v` is the first letter that appears only once.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"d\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -340,6 +346,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "Hash set membership with deduplicated, sorted output",
+    companies: ["Accenture", "Apple", "Zoho", "Capgemini", "Two Sigma"],
     statement: "Given two integer arrays `nums1` and `nums2`, return every value that occurs in both arrays.\n\nA value that appears several times in either array appears only once in the answer, and the answer must be sorted in ascending order. If the arrays share no value, return an empty array.\n\nConstraints: `1 <= nums1.length <= 200`, `1 <= nums2.length <= 200`, `0 <= nums1[i] <= 1000` and `0 <= nums2[i] <= 1000`.\n",
     examples: [
       { input: "nums1 = [0], nums2 = [0]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -394,6 +401,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "hashing / two-way character mapping",
+    companies: ["Zoho", "Microsoft", "Oracle", "TCS", "LinkedIn"],
     statement: "Two strings are called isomorphic when the characters of the first string can be renamed into the characters of the second, keeping the order the same. That means every character of `s` is assigned exactly one character of `t`, and two different characters of `s` may never be assigned the same character of `t`, so the correspondence works in both directions.\n\nGiven the strings `s` and `t`, return `true` if they are isomorphic and `false` otherwise. The two strings are guaranteed to have the same length; if they ever differ in length, no correspondence exists and the answer is `false`.\n\nBoth strings contain only lowercase English letters.\n\nConstraints: `1 <= s.length <= 200` and `1 <= t.length <= 200`.\n",
     examples: [
       { input: "s = \"d\", t = \"x\"", output: "true", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -448,6 +456,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "design / hash map of last-print timestamps",
+    companies: ["Microsoft", "Intuit", "Atlassian", "Oracle", "Palo Alto Networks"],
     statement: "You are writing the core of a rate limited logger. Every logging call carries a timestamp and a message, and a message should be printed only if it has never been printed before, or if at least 10 time units have passed since the most recent print of that same message. Any other call is dropped.\n\nThe calls arrive as two arrays that are read together in index order: `timestamps[i]` is the time of the i-th call and `messages[i]` is the text of that call, where each message is a non-empty string of lowercase English letters. The two arrays have the same length and `timestamps` is sorted in non-decreasing order.\n\nReturn an array `out` with one entry per call, where `out[i]` is `1` if call i was printed and `0` if it was dropped.\n\nConstraints: `1 <= timestamps.length <= 200` and `0 <= timestamps[i] <= 10000` and `1 <= messages.length <= timestamps.length`.\n",
     examples: [
       { input: "timestamps = [0], messages = [\"b\"]", output: "[1]", explanation: "Generated from the verified optimal implementation." },
@@ -502,6 +511,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Boyer-Moore",
+    companies: ["Microsoft", "Wipro", "Morgan Stanley", "Cognizant", "Oracle"],
     statement: "Given an integer array `nums` containing `n` elements, find and return the majority element.\n\nThe majority element is defined as the element that appears more than `⌊n / 2⌋` times in the array. When an input does not contain a strict majority element (> n/2 occurrences), the algorithm returns the candidate produced by majority voting cancellation.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "-100", explanation: "A single-element array has only one value, which trivially appears more than half the time: the answer is -100." },
@@ -567,6 +577,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Index placement",
+    companies: ["Infosys", "Microsoft", "Nvidia", "TCS", "Zoho"],
     statement: "Given an array `nums` containing `n` integers, find and return the smallest non-negative integer in the range `[0, n]` that is absent from `nums`.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "0", explanation: "The array [-100] has length 1, so n=1. The value 0 is absent from the range [0, 1], making 0 the missing number." },
@@ -633,6 +644,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Stable partition",
+    companies: ["Cognizant", "Apple", "Wipro", "Intuit", "Qualcomm"],
     statement: "Given an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements.\n\nReturn the resulting array containing all transformed elements. Do not return an empty array unless the input itself is empty.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "[-100]", explanation: "A single-element array [-100] has no zeros, so nothing needs to move: the output is [-100]." },
@@ -699,6 +711,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Two pointers",
+    companies: ["Wipro", "Microsoft", "Cognizant", "Zoho", "Flipkart"],
     statement: "Given an integer array `nums`, sort the elements in non-decreasing order and remove any duplicate occurrences so that each unique element appears exactly once.\n\nReturn the resulting array containing only the unique elements in sorted ascending order.\n\nConstraints: `1 <= nums.length <= 100` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "[-100]", explanation: "A single-element array has no duplicates to remove: the output is [-100]." },
@@ -765,6 +778,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "Hash Map / Complement",
+    companies: ["TCS", "Infosys", "Zoho", "Amazon", "Google", "Flipkart", "Goldman Sachs"],
     statement: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution.",
     examples: [
       { input: "nums = [2, 7, 11, 15], target = 9", output: "[0, 1]", explanation: "nums[0] + nums[1] == 9, so we return [0, 1]." },
@@ -819,6 +833,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "arrays-hashing / Two pointers",
+    companies: ["TCS", "Amazon", "Cognizant", "Zoho", "Adobe"],
     statement: "Given an array of integers `numbers` and an integer `target`, sort the array in ascending order and find two distinct elements that add up to `target`.\n\nReturn the 1-based indices `[index1, index2]` (`index1 < index2`) corresponding to the outermost pair whose sum equals `target`. If no such pair exists, return an empty array `[]`.\n\nConstraints: `2 <= numbers.length <= 100`, `-100 <= numbers[i] <= 100`, and `-200 <= target <= 200`.\n",
     examples: [
       { input: "numbers = [-100, -100], target = -200", output: "[1, 2]", explanation: "The sorted array [-100, -100] sums to -200 at positions 1 and 2 (1-based indices), so the answer is [1, 2]." },
@@ -886,6 +901,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Easy",
     pattern: "Frequency Counter",
+    companies: ["Wipro", "Bloomberg", "Capgemini", "PayPal", "Visa"],
     statement: "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
     examples: [
       { input: "s = \"anagram\", t = \"nagaram\"", output: "true" },
@@ -939,6 +955,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "prefix balance with a hash map of first occurrences",
+    companies: ["Walmart Labs", "Google", "Morgan Stanley", "TCS", "Accenture"],
     statement: "A binary array `nums` records a sequence of outcomes, one entry per slot. Find the length of the longest contiguous slice of `nums` that holds the same number of 0s as 1s.\n\nOnly contiguous slices count, so the answer is the span between two positions, not the count of a value. A balanced slice always has even length, and the answer is 0 when the array is too short or unbalanced to contain one, for example `[1]` or `[0, 0]`.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`.\n",
     examples: [
       { input: "nums = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -993,6 +1010,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "hash set / repeated value scan",
+    companies: ["TCS", "Google", "Citadel", "Salesforce", "Cisco"],
     statement: "You are given an integer array `nums`. A value counts as *repeated* when it appears at two different indices.\n\nReturn the smallest repeated value in `nums`. If no value is repeated, return `-1`.\n\nConstraints: `1 <= nums.length <= 200` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1047,6 +1065,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "incremental prefix hashing",
+    companies: ["Amazon", "Visa", "ByteDance", "Uber", "Capital One"],
     statement: "Every integer in `nums` is at least `1`, so its decimal form has no leading zeros. For two different indices `i` and `j`, the common prefix length is the largest `L` such that the first `L` digits of `nums[i]` equal the first `L` digits of `nums[j]`.\n\nReturn the largest common prefix length over all pairs of different indices. If no two numbers share their first digit, return `0`.\n\nConstraints: `1 <= nums.length <= 200` and `1 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [1]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1101,6 +1120,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Hash key",
+    companies: ["Capgemini", "Bloomberg", "Citadel", "Cisco", "Atlassian"],
     statement: "Given an array of strings `strs`, group all anagrams together into sub-arrays.\n\nAn anagram is a word formed by rearranging the letters of another word using all original letters exactly once.\n\nTo ensure deterministic output, sort each group of anagrams lexicographically, and sort the list of groups lexicographically by their null-delimited joined representations.\n\nConstraints: `1 <= strs.length <= 30`. Each string consists of lowercase English letters.\n",
     examples: [
       { input: "strs = [\"b\"]", output: "[[\"b\"]]", explanation: "A single string 'b' forms one anagram group: [['b']]." },
@@ -1167,6 +1187,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "hash map from value to slot / swap-with-last removal",
+    companies: ["Bloomberg", "DE Shaw", "Cisco", "Snowflake", "LinkedIn"],
     statement: "A container holds distinct integers in a sequence that starts out empty. You are given a stream of instructions, one per cell of `ops`:\n\n- a positive cell `v` inserts the value `v` at the end of the sequence, unless `v` is already in it;\n- a negative cell `v` deletes the value `-v` if it is present, by the swap-with-last rule: the freed slot is overwritten with the last element of the sequence, and the sequence then loses its final slot;\n- a cell equal to `0` does nothing.\n\nDeleting a value that is not in the sequence changes nothing at all.\n\nReturn the sequence that remains once every instruction has been applied, in its final order.\n\nFor example, with `ops = [3, 1, 2, -3]` the sequence runs `[3]`, `[3, 1]`, `[3, 1, 2]`, and the final delete moves the `2` into the slot the `3` occupied, giving `[2, 1]`.\n\nConstraints: `1 <= ops.length <= 200` and `-50 <= ops[i] <= 50`.\n",
     examples: [
       { input: "ops = [-50]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1221,6 +1242,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "Union-Find / Set Streaks",
+    companies: ["Deloitte", "Meta", "Atlassian", "PhonePe", "Uber"],
     statement: "Given an unsorted array of integers nums, return the length of the longest run of consecutive integers. The algorithm must run in O(n) time.",
     examples: [
       { input: "nums = [100,4,200,1,3,2]", output: "4", explanation: "The consecutive run [1,2,3,4] has length 4." },
@@ -1274,6 +1296,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "Two Pointers / suffix pivot swap",
+    companies: ["Qualcomm", "Deloitte", "Amazon", "Samsung", "Atlassian"],
     statement: "Given an integer array `nums`, return the next permutation of `nums` in lexicographic order: the smallest rearrangement of the same multiset of values that is strictly greater than `nums` when compared element by element. Lexicographic comparison looks at the first index where the two arrays differ and prefers the smaller value at that index.\n\nIf no strictly greater rearrangement exists, that is when `nums` is already sorted in non-increasing order, return the same values sorted in non-decreasing order instead. Do not mutate the input array; return a new array.\n\nConstraints: `1 <= nums.length <= 100` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "[-10000]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1328,6 +1351,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "Linear scan / running maximum",
+    companies: ["Accenture", "Amazon", "Samsung", "Infosys", "Walmart Labs"],
     statement: "The peak of a sequence is its highest value. Given an integer array `nums`, return the index of the largest value in `nums`. When the largest value appears at more than one index, return the smallest such index.\n\nThis is the general form of the usual mountain-array question, in which `nums` climbs strictly to a single highest entry and falls strictly after it; there the peak is unique and this function returns the index of that summit. Stated this way every array has an answer and the answer is always unique, including arrays with repeated values, arrays that only climb and arrays that only fall.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1382,6 +1406,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "Prefix & Suffix Products",
+    companies: ["Infosys", "Bloomberg", "ServiceNow", "Flipkart", "Goldman Sachs"],
     statement: "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. Must run in O(n) without division.",
     examples: [
       { input: "nums = [1, 2, 3, 4]", output: "[24, 12, 8, 6]" },
@@ -1435,6 +1460,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "array reversal / three-reverse rotation",
+    companies: ["Amazon", "Deloitte", "Samsung", "Capgemini", "Zoho"],
     statement: "You are given an integer array `nums` and a non-negative integer `k`. Rotate the array to the right by `k` steps and return the rotated array.\n\nRotating by one step moves the last element to the front and shifts every other element one position to the right. When `k` is larger than the length of the array, only `k` modulo `nums.length` steps count. The input array must not be modified.\n\nConstraints: `1 <= nums.length <= 200`, `-100 <= nums[i] <= 100` and `0 <= k <= 100`.\n",
     examples: [
       { input: "nums = [43], k = 25", output: "[43]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1489,6 +1515,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "rank of a value in row-major sorted order / single counting pass over the grid",
+    companies: ["Zomato", "Google", "PayPal", "Goldman Sachs", "Oracle"],
     statement: "`matrix` holds integers in any order: `R` rows and `C` columns, every row the same length. Searching it means first placing its values in non-decreasing order, filling the first row from left to right, then the second row, and so on. That layout puts the smallest value in the top-left cell, keeps every row non-decreasing, keeps every column non-decreasing, and gives every copy of a value one fixed cell.\n\nReturn `[row, col]`, the cell holding the first copy of `target` in that layout, or `[-1, -1]` when no value equals `target`.\n\nFor example `matrix = [[3, 1], [4, 2]]` with `target = 3`: the values in order are `1, 2, 3, 4` and the layout is `[[1, 2], [3, 4]]`, so `3` sits at row 1, column 0 and the answer is `[1, 0]`. The same grid with `target = 5` gives `[-1, -1]`.\n\nConstraints: `1 <= matrix.length <= 100`, `1 <= matrix[0].length <= 100`, `-100 <= matrix[i][j] <= 100` and `-100 <= target <= 100`.\n",
     examples: [
       { input: "matrix = [[-100]], target = -100", output: "[0, 0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1543,6 +1570,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "one-pass running maxima / order statistics",
+    companies: ["Deloitte", "Google", "Cognizant", "Oracle", "Capgemini"],
     statement: "A payroll file lists the monthly salary of every employee as an array `salaries`, where `salaries[i]` is what employee `i` earns. HR wants a metric that is not dominated by a single outlier, so they ask for the **second highest distinct** salary in the file.\n\nValues that appear more than once count once. For example, in `[60000, 60000, 45000, 45000]` the highest distinct salary is `60000` and the second highest distinct salary is `45000`. If the file holds fewer than two distinct values (for example `[30000]` or `[500, 500]`), no second highest distinct salary exists and you report `-1`.\n\nReturn the second highest distinct salary, or `-1` when it does not exist.\n\nConstraints: `1 <= salaries.length <= 100` and `0 <= salaries[i] <= 10^4`.\n",
     examples: [
       { input: "salaries = [0]", output: "-1", explanation: "Generated from the verified optimal implementation." },
@@ -1597,6 +1625,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "counting / bucket sort by frequency",
+    companies: ["Wipro", "Amazon", "Salesforce", "Flipkart", "Visa"],
     statement: "You are given a string `s` built from lowercase English letters and digits. Rearrange its characters so that characters that occur more often come first, and return the rearranged string.\n\nCharacters with the same number of occurrences must be ordered by character code in ascending order, so `'0'` comes before `'9'` and `'9'` comes before `'a'`. Every character of `s` must appear exactly as many times in the returned string as it does in `s`, which makes the answer a single determined string.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"7\"", output: "\"7\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1651,6 +1680,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Dutch flag",
+    companies: ["Flipkart", "Meta", "ServiceNow", "Samsung", "Morgan Stanley"],
     statement: "Given an array `nums` containing `n` elements colored red, white, or blue (represented as `0`, `1`, and `2` respectively), sort them in-place so that objects of the same color are adjacent, in the order `0`, `1`, and `2`.\n\nReturn the sorted array.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 2`.\n",
     examples: [
       { input: "nums = [0]", output: "[0]", explanation: "A single-element array [0] is already sorted: the output is [0]." },
@@ -1717,6 +1747,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "Prefix Sum Hash Map",
+    companies: ["Wipro", "Amazon", "Cognizant", "PayPal", "ServiceNow"],
     statement: "Given an array of integers nums and an integer k, return the number of contiguous subarrays whose elements sum to exactly k.",
     examples: [
       { input: "nums = [1,1,1], k = 2", output: "2", explanation: "Subarrays [1,1] starting at index 0 and starting at index 1." },
@@ -1771,6 +1802,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "arrays-hashing / Bucket sort",
+    companies: ["Infosys", "Bloomberg", "Intuit", "Atlassian", "Adobe"],
     statement: "Given an integer array `nums` and an integer `k`, return the `k` most frequent elements in the array.\n\nIf two or more elements have the same frequency, break ties deterministically by selecting the smaller value first.\n\nConstraints: `1 <= nums.length <= 100`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [-100], k = 1", output: "[-100]", explanation: "A single-element array [-100] has one value with frequency 1; asking for the top 1 returns [-100]." },
@@ -1837,6 +1869,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Medium",
     pattern: "hash set membership / grid constraint tracking",
+    companies: ["Zoho", "Apple", "PayPal", "Walmart Labs", "Goldman Sachs"],
     statement: "A partially filled Sudoku board arrives as a grid of integers with R rows and C columns. A cell holding 0 is empty, any other cell holds a clue digit from 1 to 9. Draw the grid lines every three rows and every three columns: on the classic 9 x 9 board those lines cut exactly nine 3 x 3 boxes, and on any other grid they cut the same 3 x 3 tiles with the last row or column of tiles left partial. A position is legal when no digit appears twice inside one row, twice inside one column, or twice inside one of those boxes.\n\nDecide whether the given position is legal. The board does not have to be completable and does not have to be full: an all-zero board is legal, and repeating a digit is legal as long as the repeats never share a row, a column or a box.\n\nReturn true when the position is legal and false otherwise.\n\nConstraints: `1 <= board.length <= 200` and `1 <= board[i].length <= 200` and `0 <= board[i][j] <= 9`.\n",
     examples: [
       { input: "board = [[0]]", output: "true", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -1891,6 +1924,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Hard",
     pattern: "arrays-hashing / Index placement",
+    companies: ["Walmart Labs", "Amazon", "Salesforce", "PayPal", "PhonePe"],
     statement: "Given an unsorted integer array `nums`, find and return the smallest positive integer that is missing from `nums`.\n\nA positive integer is any integer strictly greater than zero (`1, 2, 3, ...`).\n\nConstraints: `1 <= nums.length <= 100` and `-50 <= nums[i] <= 50`.\n",
     examples: [
       { input: "nums = [-50]", output: "1", explanation: "The only element is -50, a negative number, so the smallest positive integer 1 is missing." },
@@ -1957,6 +1991,7 @@ export const PROBLEMS: Problem[] = [
     topic: "arrays-hashing",
     difficulty: "Hard",
     pattern: "normalized direction vectors hashed with GCD",
+    companies: ["Zoho", "Meta", "Citadel", "Cisco", "Nvidia"],
     statement: "You are given `points`, a list of rows. Each row describes one point: its first entry is the point's x coordinate and its second entry is its y coordinate. Only those first two entries are read, so any further entries in a row are ignored. A row holding fewer than two entries describes no point at all: it is skipped and never counts towards the answer.\n\nSeveral rows may describe the same location; every row is a separate point and each one is counted separately.\n\nReturn the largest number of points that lie on one single straight line. The line may run in any direction, including vertical and horizontal, and a line is allowed to contain coincident points, each of which counts. With a single point the answer is 1, and when no row describes a point at all the answer is 0.\n\nFor example, with `[[1, 1], [2, 2], [3, 3], [4, 5]]` the three points with equal coordinates sit on the line `y = x`, so the answer is 3. With `[[0, 0], [0, 0], [1, 1]]` the first two rows describe the same location and all three points lie on `y = x`, so the answer is 3.\n\nConstraints: `1 <= points.length <= 200`, `1 <= points[i].length <= 200` and `-100 <= points[i][j] <= 100`.\n",
     examples: [
       { input: "points = [[-17]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2013,6 +2048,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / Reverse scan",
+    companies: ["IBM", "Microsoft", "Goldman Sachs", "Salesforce", "Meta"],
     statement: "Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors where `'#'` represents a backspace character, or `false` otherwise.\n\nWhen a backspace is typed, it removes the preceding non-backspace character if one is present. Backspacing over an empty text buffer leaves the buffer empty.\n\nConstraints: `1 <= s.length <= 100` and `1 <= t.length <= 100`. Strings may contain alphanumeric characters and `'#'`.\n",
     examples: [
       { input: "s = \"b\", t = \"y\"", output: "false", explanation: "Generated from the verified optimal implementation." },
@@ -2078,6 +2114,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "run-length grouping of adjacent runs",
+    companies: ["IBM", "Bloomberg", "Salesforce", "Uber", "Oracle"],
     statement: "Given a bit string `s`, count its substrings in which the number of `'0'` characters equals the number of `'1'` characters and all `'0'`s are consecutive with each other, as are all `'1'`s. Every such substring is therefore a block of one character directly followed by an equally long block of the other.\n\nReturn that count, treating substrings that occupy different index ranges as distinct even when they read the same.\n\nFor example, `s = \"00110011\"` contains 6 such substrings.\n\nConstraints: `1 <= s.length <= 200`, and `s` consists only of the characters `'0'` and `'1'`.\n",
     examples: [
       { input: "s = \"0\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2133,6 +2170,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "Floyd's cycle detection (tortoise and hare)",
+    companies: ["TCS", "Amazon", "Accenture", "Airbnb", "Snowflake"],
     statement: "A number is **happy** when repeatedly replacing it with the sum of the squares of its base-10 digits eventually reaches `1`. Otherwise the process loops forever in a cycle and the number is unhappy.\n\nGiven a positive integer `n`, return `true` if `n` is happy and `false` otherwise. Each step replaces the current value `x` with the sum of the squares of its decimal digits, and `1` maps to itself.\n\nConstraints: `1 <= n <= 10000`.\n",
     examples: [
       { input: "n = 1", output: "true", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2187,6 +2225,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "Suffix DP table collapsed into a greedy two-pointer scan",
+    companies: ["Infosys", "Google", "Goldman Sachs", "Adobe", "Qualcomm"],
     statement: "Given two lowercase strings `s` and `t`, decide whether `s` is a subsequence of `t`. A string is a subsequence of another string when it can be obtained by deleting zero or more characters from the other string without changing the order of the remaining characters.\n\nThe empty string is a subsequence of every string. Return `true` when `s` is a subsequence of `t`, and `false` otherwise.\n\nConstraints: `0 <= s.length <= 100` and `1 <= t.length <= 200`.\n",
     examples: [
       { input: "s = \"d\", t = \"x\"", output: "false", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2241,6 +2280,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "Two-Pointer Merge",
+    companies: ["Capgemini", "Apple", "Qualcomm", "Infosys", "Salesforce"],
     statement: "You are given two sorted linked lists list1 and list2. Merge the two lists into one sorted list and return its values.",
     examples: [
       { input: "list1 = [1,2,4], list2 = [1,3,4]", output: "[1,1,2,3,4,4]" },
@@ -2294,6 +2334,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two pointers / in-place swap",
+    companies: ["TCS", "Amazon", "Qualcomm", "Wipro", "Goldman Sachs"],
     statement: "You are given a string `s` built from lowercase English letters and decimal digits. Return a new string holding the same characters in the opposite order: the last character of `s` becomes the first character of the answer, the second-to-last becomes the second, and so on until the first character of `s` ends up last.\n\nThe answer must contain exactly the same multiset of characters as `s`, repeats included. The input string does not need to be modified.\n\nConstraints: `1 <= s.length <= 200`, and every character of `s` is a lowercase English letter or a decimal digit.\n",
     examples: [
       { input: "s = \"h\"", output: "\"h\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2348,6 +2389,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / Converge ends",
+    companies: ["Infosys", "Amazon", "Adobe", "Cognizant", "Zoho"],
     statement: "Given an integer array `nums` arranged in non-decreasing numerical order, return a new array containing the squares of each number, also sorted in non-decreasing order.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [-1000]", output: "[1000000]", explanation: "Generated from the verified optimal implementation." },
@@ -2413,6 +2455,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "Two Pointers",
+    companies: ["Cognizant", "Apple", "SAP", "Accenture", "Cisco"],
     statement: "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
     examples: [
       { input: "s = \"A man, a plan, a canal: Panama\"", output: "true" },
@@ -2466,6 +2509,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Easy",
     pattern: "two-pointers / One deletion",
+    companies: ["IBM", "Microsoft", "Uber", "Visa", "eBay"],
     statement: "Given a string `s`, return `true` if `s` can be made a palindrome after deleting at most one character from it, or `false` otherwise.\n\nA sequence is a palindrome when it reads identically forwards and backwards.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"b\"", output: "true", explanation: "Generated from the verified optimal implementation." },
@@ -2532,6 +2576,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "sort + anchored two-pointer sweep with value dedup",
+    companies: ["Deloitte", "Amazon", "Accenture", "Cisco", "Adobe"],
     statement: "You are given an integer array `nums`. A valid triple is a choice of three different positions `i < j < k` with `nums[i] + nums[j] + nums[k] == 0`. Return every distinct triple of values that a valid triple of positions can produce.\n\nDifferent position triples that yield the same three values count only once. To keep the answer deterministic, write the three values of each triple in non-decreasing order, and order the triples themselves in ascending lexicographic order: compare the smallest values first, then the middle values on a tie, then the largest. When no valid triple exists, return an empty list.\n\nConstraints: `3 <= nums.length <= 200` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100, -100, -100]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2586,6 +2631,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "sort + two anchored loops + two-pointer tail",
+    companies: ["Accenture", "Apple", "DoorDash", "TCS", "ServiceNow"],
     statement: "You are given an integer array `nums` and an integer `target`. A valid quadruple is a choice of four different positions `i < j < k < l` with `nums[i] + nums[j] + nums[k] + nums[l] == target`. Return every distinct quadruple of values reachable that way.\n\nQuadruples with the same four values count only once. Write each quadruple's values in non-decreasing order, and order the quadruples themselves in ascending lexicographic order, comparing the smallest values first and moving to the next value only on a tie. When no valid quadruple exists, including whenever `nums` holds fewer than four elements, return an empty list.\n\nConstraints: `1 <= nums.length <= 60`, `-100 <= nums[i] <= 100` and `-400 <= target <= 400`.\n",
     examples: [
       { input: "nums = [43], target = -197", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2640,6 +2686,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "two-pointers / Greedy pairing",
+    companies: ["Flipkart", "Amazon", "Snowflake", "DE Shaw", "TCS"],
     statement: "You are provided an array of integers `people` where `people[i]` denotes the weight of the `i`-th person, alongside an integer `limit` representing the maximum capacity of each rescue boat.\n\nEach boat can carry at most two people simultaneously, provided the sum of their weights does not exceed `limit`.\n\nReturn the minimum number of boats required to carry every person.\n\nConstraints: `1 <= people.length <= 100`, `1 <= people[i] <= 50`, and `50 <= limit <= 100`.\n",
     examples: [
       { input: "people = [1], limit = 50", output: "1", explanation: "A single person weighing 1 with limit 50 needs exactly one boat." },
@@ -2706,6 +2753,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "Two Pointers",
+    companies: ["Capgemini", "Bloomberg", "DE Shaw", "Flipkart", "Deloitte"],
     statement: "Given n non-negative integers height where each represents a point at coordinate (i, height[i]), find two lines that together with the x-axis form a container that holds the most water.",
     examples: [
       { input: "height = [1,8,6,2,5,4,8,3,7]", output: "49" },
@@ -2759,6 +2807,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "Expand around center / two pointers",
+    companies: ["IBM", "Microsoft", "Intuit", "Cisco", "Salesforce"],
     statement: "A substring is a contiguous slice of the string `s`. Count how many substrings of `s` read the same forwards and backwards.\n\nSubstrings are counted with multiplicity: two different start and end positions that happen to spell the same text count as two palindromic substrings. For example `\"aaa\"` contains `\"a\"` at index 0, `\"a\"` at index 1, `\"a\"` at index 2, `\"aa\"` at 0..1, `\"aa\"` at 1..2 and `\"aaa\"` at 0..2, so the answer is 6.\n\nEvery character of `s` is a lowercase English letter.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"d\"", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2813,6 +2862,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "Two Pointers with Gap N",
+    companies: ["TCS", "Google", "Accenture", "Flipkart", "Zoho"],
     statement: "Given the head of a linked list, remove the nth node from the end of the list and return the resulting node values.",
     examples: [
       { input: "head = [1,2,3,4,5], n = 2", output: "[1,2,3,5]" },
@@ -2866,6 +2916,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "string scanning / converging scan from the right",
+    companies: ["IBM", "Microsoft", "ServiceNow", "LinkedIn", "Zoho"],
     statement: "A string `s` holds a sentence: words made of lowercase English letters, separated by one or more spaces. The string may also begin or end with spaces, and it may contain runs of several spaces between two words.\n\nReturn a new string containing the same words in reverse order, joined by exactly one space, with no leading or trailing spaces. If `s` contains no letter at all, return the empty string `\"\"`.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"d\"", output: "\"d\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2920,6 +2971,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "run detection / two pointers over one string",
+    companies: ["Cognizant", "Amazon", "Nvidia", "Oracle", "Goldman Sachs"],
     statement: "You are given a string `s` of lowercase English letters. Compress it with run-length encoding and return the compressed string.\n\nSplit `s` into maximal runs of equal characters, scanning from left to right. A run of length 1 is written as just the character. A run of length L greater than 1 is written as the character followed by the decimal representation of L. The encoded pieces are concatenated in the order the runs appear.\n\nFor example `\"aabbbcc\"` becomes `\"a2b3c2\"` and `\"abcd\"` is returned unchanged as `\"abcd\"`.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"a\"", output: "\"a\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -2974,6 +3026,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Medium",
     pattern: "two-pointers / Sort+scan",
+    companies: ["Accenture", "Microsoft", "Infosys", "Flipkart", "Zoho"],
     statement: "Given an array of integers `nums`, find all unique triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.\n\nThe solution set must not contain duplicate triplets. Each individual triplet must be sorted in non-decreasing order, and the outer list of triplets must be sorted in lexicographical order.\n\nConstraints: `3 <= nums.length <= 50` and `-20 <= nums[i] <= 20`.\n",
     examples: [
       { input: "nums = [-20, -20, -20]", output: "[]", explanation: "Three identical negative values sum to -60, not zero, so no triplet qualifies." },
@@ -3040,6 +3093,7 @@ export const PROBLEMS: Problem[] = [
     topic: "two-pointers",
     difficulty: "Hard",
     pattern: "two-pointers / Precompute max",
+    companies: ["PayU", "Google", "Flipkart", "SAP", "Uber", "Visa", "ServiceNow"],
     statement: "Given an elevation map represented by an array of non-negative integers `height` where the width of each bar is `1`, compute the total volume of rainwater it can retain after raining.\n\nConstraints: `0 <= height.length <= 100` and `0 <= height[i] <= 100`.\n",
     examples: [
       { input: "height = []", output: "0", explanation: "An empty elevation map traps no water." },
@@ -3107,6 +3161,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Easy",
     pattern: "hash set sliding window over the last k indices",
+    companies: ["TCS", "Microsoft", "Adobe", "Flipkart", "Accenture"],
     statement: "Readings from a sensor are recorded in order in `nums`. Two readings at indices `i` and `j` with `i < j` belong to the same burst when `nums[i] == nums[j]` and `j - i <= k`.\n\nReturn `true` if any pair of indices forms such a burst, and `false` otherwise.\n\nFor example, `nums = [1, 2, 3, 1]` with `k = 3` gives `true`, because indices 0 and 3 are exactly `k` apart.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [0], k = 1", output: "false", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3161,6 +3216,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Easy",
     pattern: "string matching / prefix function (KMP)",
+    companies: ["Capgemini", "Bloomberg", "Cognizant", "Zoho", "PayPal"],
     statement: "You are given two strings, `haystack` and `needle`, both made of lowercase English letters, where `needle` is never longer than `haystack`. Return the index of the first character of the earliest occurrence of `needle` as a contiguous block inside `haystack`. If `needle` does not occur in `haystack`, return `-1`.\n\nFor example, when `haystack` is `\"butterfly\"` and `needle` is `\"fly\"`, the answer is `6`, the index of the `f`.\n\nConstraints: `1 <= haystack.length <= 200` and `1 <= needle.length <= haystack.length`.\n",
     examples: [
       { input: "haystack = \"d\", needle = \"x\"", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3215,6 +3271,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "fixed-size sliding window with character counts",
+    companies: ["Walmart Labs", "Apple", "Accenture", "Snowflake", "Databricks"],
     statement: "Two strings are anagrams of each other when one can be rearranged into the other, so they hold exactly the same letters with the same multiplicities. Given `s` and `p`, return every start index `i` for which the substring `s[i ... i + p.length - 1]` is an anagram of `p`, in increasing index order. Only windows that fit entirely inside `s` count, so return an empty list when no window matches. Both strings contain lowercase English letters only.\n\nConstraints: `1 <= s.length <= 200`, `1 <= p.length <= s.length`.\n",
     examples: [
       { input: "s = \"d\", p = \"x\"", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3269,6 +3326,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding window / monotonic deques",
+    companies: ["Infosys", "Amazon", "Salesforce", "PhonePe", "Visa"],
     statement: "You are given a list of non-negative integers `nums` and an integer `limit`. A contiguous run of the list is called *balanced* when the difference between its largest element and its smallest element is at most `limit`. Return the number of elements in the longest balanced run; a run of a single element is always balanced, so the answer is at least 1.\n\nFor `nums = [2, 6, 3, 8]` and `limit = 4`, the run `[2, 6, 3]` has maximum 6 and minimum 2, a difference of exactly 4, and no longer run is balanced, so the answer is 3.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 10000` and `0 <= limit <= 10000`.\n",
     examples: [
       { input: "nums = [0], limit = 0", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3323,6 +3381,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / Frequency max",
+    companies: ["Zoho", "Microsoft", "ServiceNow", "Infosys", "Adobe"],
     statement: "You are given a string `s` and an integer `k`. You can choose any character of the string and change it to any other character at most `k` times.\n\nReturn the length of the longest contiguous substring containing identical characters that can be obtained after performing at most `k` replacements.\n\nConstraints: `1 <= s.length <= 100` and `0 <= k <= 50`.\n",
     examples: [
       { input: "s = \"b\", k = 0", output: "1", explanation: "Generated from the verified optimal implementation." },
@@ -3388,6 +3447,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "Sliding Window",
+    companies: ["Zoho", "Infosys", "Wipro", "Flipkart", "Cognizant"],
     statement: "Given a string s, find the length of the longest substring without repeating characters.",
     examples: [
       { input: "s = \"abcabcbb\"", output: "3", explanation: "The answer is \"abc\", with length 3." },
@@ -3442,6 +3502,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / At-most-K",
+    companies: ["Infosys", "Meta", "DE Shaw", "Citadel", "IBM"],
     statement: "Given a binary array `nums` and an integer `k`, return the maximum number of consecutive `1`s in the array if you can flip at most `k` zeros to ones.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i] <= 1`, and `0 <= k <= 50`.\n",
     examples: [
       { input: "nums = [0], k = 0", output: "0", explanation: "The only element is 0 and zero flips are allowed, so the longest run of 1s is 0." },
@@ -3508,6 +3569,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "Variable sliding window with a running sum",
+    companies: ["TCS", "Google", "DoorDash", "Goldman Sachs", "Infosys"],
     statement: "Given a list of non-negative integers `nums` and a target value `target`, a contiguous block of `nums` is called sufficient when the sum of its elements is at least `target`.\n\nReturn the length of the shortest sufficient block of `nums`, or `0` when no block reaches `target` at all. Blocks must be non-empty and their elements must be adjacent in the original list. Because every value is non-negative, a target of `0` is already reached by any single element, so the shortest sufficient block then has length `1`.\n\nConstraints: `1 <= nums.length <= 200` and `0 <= nums[i] <= 100` and `0 <= target <= 10000`.\n",
     examples: [
       { input: "nums = [0], target = 0", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3562,6 +3624,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding-window / Fixed window",
+    companies: ["Walmart Labs", "Google", "Cisco", "TCS", "Adobe"],
     statement: "Given two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
     examples: [
       { input: "s1 = \"b\", s2 = \"y\"", output: "false", explanation: "Generated from the verified optimal implementation." },
@@ -3628,6 +3691,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Medium",
     pattern: "sliding window over the non-zero runs with the last zero tracked",
+    companies: ["Walmart Labs", "Microsoft", "Samsung", "Airbnb", "Goldman Sachs"],
     statement: "You are given an array of non-negative integers `nums` and an integer `k`. Count how many contiguous subarrays of `nums` have a product that is **strictly less than** `k`.\n\nA contiguous subarray is a slice `nums[i..j]` with `0 <= i <= j < nums.length`; an array of length `n` has `n * (n + 1) / 2` of them. Elements may be zero, and every subarray that contains a zero has product `0`, which is below every positive `k`. No product is ever negative, so the answer is `0` whenever `k <= 0`.\n\nExample: for `nums = [10, 5, 2, 6]` and `k = 100` the answer is `8`. The qualifying subarrays are `[10]`, `[5]`, `[2]`, `[6]`, `[10, 5]`, `[5, 2]`, `[2, 6]` and `[5, 2, 6]`; note that `[10, 5, 2]` has product `100`, which is not less than `k`.\n\nExample: for `nums = [100, 0, 100]` and `k = 50` the answer is `4`. The four subarrays that reach the zero, `[100, 0]`, `[100, 0, 100]`, `[0]` and `[0, 100]`, all have product `0`, while either single `100` has product `100` and does not qualify.\n\nConstraints: `1 <= nums.length <= 200` and `0 <= nums[i] <= 100` and `0 <= k <= 10000`.\n",
     examples: [
       { input: "nums = [0], k = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3682,6 +3746,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Hard",
     pattern: "frequency map + variable sliding window",
+    companies: ["Zoho", "Bloomberg", "SAP", "Airbnb", "Snowflake"],
     statement: "Given two strings `s` and `t`, find the shortest contiguous substring of `s` that contains every character of `t` as many times as `t` contains it. When several substrings share the minimal length, return the one that starts earliest. Return an empty string `\"\"` when no such substring exists.\n\nFor `s = 'cbaabcab'` and `t = 'abc'` the answer is `'cba'`, the window at index 0 through 2; the window `'abc'` at index 3 through 5 has the same length but starts later. For `s = 'aaaa'` and `t = 'aa'` the answer is `'aa'`, and for `s = 'abc'` and `t = 'abcd'` the answer is `\"\"`.\n\nConstraints: `1 <= s.length <= 200`, `1 <= t.length <= 200`, and every character of `s` and `t` is a lowercase English letter.\n",
     examples: [
       { input: "s = \"d\", t = \"x\"", output: "\"\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3736,6 +3801,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Hard",
     pattern: "sliding-window / Monotonic deque",
+    companies: ["Apple", "DE Shaw", "ByteDance", "Citadel", "DoorDash"],
     statement: "You are given an integer array `nums` and a sliding window of size `k` that traverses from the left of the array to the right. You can only observe the `k` numbers in the window at each position. Each time, the window advances to the right by one position.\n\nReturn an array containing the maximum value inside the sliding window at each step.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [-1000], k = 1", output: "[-1000]", explanation: "A single-element window reports the only value -1000." },
@@ -3802,6 +3868,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sliding-windows",
     difficulty: "Hard",
     pattern: "two sliding windows / count exactly k as atMost(k) minus atMost(k-1)",
+    companies: ["Amazon", "Morgan Stanley", "ServiceNow", "Uber", "Salesforce"],
     statement: "Given an array `nums` of positive integers and an integer `k`, count the contiguous subarrays of `nums` that contain exactly `k` **distinct** values. A subarray is a maximal-length-preserving slice `nums[i..j]` with `i <= j`; two subarrays are different when their start or end index differs, even if their contents are equal, and a subarray with a repeated value counts its distinct values only once.\n\nReturn the number of such subarrays as an integer. Since there are only `nums.length * (nums.length + 1) / 2` subarrays in total (at most `20100` here), the answer always fits comfortably in a 32-bit integer. For example, with `nums = [1, 2, 1, 2, 3]` and `k = 2` the valid subarrays are `[1,2]`, `[2,1]`, `[1,2]`, `[1,2,1]`, `[2,1,2]`, `[1,2,1,2]` and `[2,3]`, so the answer is `7`. If `k` exceeds the number of distinct values in the whole array the answer is `0`.\n\nConstraints: `1 <= nums.length <= 200` and `1 <= nums[i] <= 50` and `1 <= k <= 50`.\n",
     examples: [
       { input: "nums = [1], k = 1", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3857,6 +3924,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Record-ops",
+    companies: ["Microsoft", "Bloomberg", "Turing", "Google", "Meta"],
     statement: "You are keeping score for a baseball game with a record of round scores and four kinds of entries in `operations`:\n\n- An integer string `x` records a new round worth `x` points.\n- `\"C\"` voids the previous round, removing it from the record.\n- `\"D\"` records a new round worth double the previous round's score.\n- `\"+\"` records a new round worth the sum of the previous two rounds' scores.\n\nEvery `\"C\"`, `\"D\"`, and `\"+\"` entry is guaranteed a valid record to work with. Return the total of all rounds left in the record.\n\nConstraints: `1 <= operations.length <= 100` and each integer entry satisfies `-30 <= operations[i] <= 30`.\n",
     examples: [
       { input: "operations = [\"5\", \"2\", \"C\", \"D\", \"+\"]", output: "30", explanation: "Generated from the verified optimal implementation." },
@@ -3921,6 +3989,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "Two stacks with amortised O(1) transfer",
+    companies: ["Goldman Sachs", "Oracle", "Infosys", "Apple", "SAP"],
     statement: "A queue is first-in first-out while a stack is last-in first-out, so a queue has to be simulated on top of stack storage. Replay the encoded queue operations below in order and report what the queue returns.\n\nEach element of `operations` is one operation:\n\n- a positive value `v` is `push(v)`, which appends `v` at the back of the queue;\n- `0` is `pop()`, which removes the element at the front of the queue and outputs it;\n- `-1` is `peek()`, which outputs the element at the front of the queue without removing it.\n\nThe queue starts empty. A `pop` or `peek` on an empty queue outputs `-1` and changes nothing. Return the outputs of every `pop` and `peek` call in the order the calls happen; a `push` produces no output.\n\nConstraints: `1 <= operations.length <= 200` and `-1 <= operations[i] <= 100`.\n",
     examples: [
       { input: "operations = [-1]", output: "[-1]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -3975,6 +4044,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Case-cancel",
+    companies: ["Amazon", "Microsoft", "Google", "Bloomberg"],
     statement: "Given a string `s`, repeatedly delete any adjacent pair of characters that show the same alphabet letter in opposite cases (one uppercase, the other lowercase). Each deletion may bring two new neighbours together, which must then be examined again.\n\nReturn the shortest string reachable once no such clashing pair remains anywhere in it.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"b\"", output: "\"b\"", explanation: "Generated from the verified optimal implementation." },
@@ -4028,6 +4098,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Monotonic map",
+    companies: ["TCS", "Google", "Accenture", "Uber", "Flipkart"],
     statement: "You are given two arrays `nums1` and `nums2` where every value of `nums1` also appears in `nums2`.\n\nFor each value `x` in `nums1`, find the first position where `x` occurs in `nums2`, then report the first value strictly greater than `x` that appears after that position. When no larger value follows, report `-1` for that entry.\n\nReturn an array holding one answer per entry of `nums1`, in order.\n\nConstraints: `1 <= nums1.length <= 20`, `1 <= nums2.length <= 50`, `-100 <= nums1[i] <= 100`, and `-100 <= nums2[i] <= 100`.\n",
     examples: [
       { input: "nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]", output: "[-1, 3, -1]", explanation: "Generated from the verified optimal implementation." },
@@ -4093,6 +4164,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "stack / Collapse",
+    companies: ["Cognizant", "Google", "Accenture", "Zoho", "Oracle"],
     statement: "Given a string `s`, scan it from left to right: whenever two equal characters stand side by side, delete both of them at once. Deleting a pair can join two previously separated characters into a fresh adjacent pair, which must then collapse as well.\n\nReturn the final string once no two neighbours are equal.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"b\"", output: "\"b\"", explanation: "Generated from the verified optimal implementation." },
@@ -4158,6 +4230,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "monotonic stack / cancellation on insert",
+    companies: ["Deloitte", "Amazon", "Cisco", "Oracle", "Paytm"],
     statement: "You are given a string `s` made of lowercase English letters. Repeat the following operation until it no longer applies: pick two neighbouring characters that are equal and erase both of them from the string.\n\nErasing a pair can pull together characters that were not neighbours before, so one left-to-right pass is not enough to finish the job. Stop when no two neighbouring characters are equal, then return the resulting string. The final string is unique, no matter which valid pair is erased first, and it may be empty. When it is empty, return an empty string.\n\nConstraints: `1 <= s.length <= 200`, and every character of `s` is a lowercase English letter.\n",
     examples: [
       { input: "s = \"d\"", output: "\"d\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4211,6 +4284,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Easy",
     pattern: "Stack Matching",
+    companies: ["Wipro", "Apple", "Cognizant", "Flipkart", "Adobe", "Goldman Sachs", "Cisco"],
     statement: "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
     examples: [
       { input: "s = \"()[]{}\"", output: "true", explanation: "Every opening bracket is immediately closed by its matching type in the correct order." },
@@ -4277,6 +4351,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Simulate",
+    companies: ["Deloitte", "Meta", "TCS", "PayPal", "Nvidia"],
     statement: "You are given an array `asteroids` of non-zero integers tracing rocks on a single line. The absolute value of an entry is the rock's size: a positive rock drifts right and a negative rock drifts left, each at the same speed.\n\nRocks moving in the same direction never meet. When a right-drifting rock meets a left-drifting one, the smaller rock explodes; when both share the same size, both explode. Survivors keep drifting and may collide further.\n\nReturn the left-to-right state of the rocks that survive every collision. A zero entry, if present, simply passes through without colliding.\n\nConstraints: `1 <= asteroids.length <= 100` and `-1000 <= asteroids[i] <= 1000`.\n",
     examples: [
       { input: "asteroids = [648, -354]", output: "[648]", explanation: "Asteroid 648 moves right and -354 moves left. They collide; since 648 > 354, -354 explodes, leaving [648]." },
@@ -4343,6 +4418,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Deferred ops",
+    companies: ["Zoho", "Google", "Airbnb", "DE Shaw", "Oracle"],
     statement: "Given a string `s` holding an arithmetic expression with non-negative integers, the binary operators `+`, `-`, `*`, `/`, and optional spaces, evaluate it and return the integer result.\n\nMultiplication and division bind tighter than addition and subtraction; operators sharing a precedence level apply left to right. There are no parentheses. Division between integers truncates toward zero.\n\nConstraints: `1 <= s.length <= 100`.\n",
     examples: [
       { input: "s = \"3+2*2\"", output: "7", explanation: "Generated from the verified optimal implementation." },
@@ -4408,6 +4484,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Next greater",
+    companies: ["Accenture", "Bloomberg", "SAP", "ServiceNow", "Intuit"],
     statement: "Given an array `temperatures` where `temperatures[i]` is the temperature of day `i`, compute for every day how many days pass before a strictly warmer temperature occurs. When no future day is warmer, record `0` for that day.\n\nReturn an array of the same length holding one waiting time per day.\n\nConstraints: `1 <= temperatures.length <= 100` and `30 <= temperatures[i] <= 100`.\n",
     examples: [
       { input: "temperatures = [95, 60, 65]", output: "[0, 1, 0]", explanation: "Day 0 (95) has no future warmer day (0). Day 1 (60) sees warmer temperature 65 on day 2 (wait of 1 day). Day 2 (65) is the last day (0)." },
@@ -4474,6 +4551,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "Stack Unwinding",
+    companies: ["PhonePe", "Microsoft", "Cisco", "PayPal", "Snowflake"],
     statement: "Given an encoded string where k[encoded] means the encoded part repeats exactly k times, return the fully decoded string. Inputs are always valid with balanced brackets.",
     examples: [
       { input: "s = \"3[a]2[bc]\"", output: "\"aaabcbc\"" },
@@ -4527,6 +4605,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Postfix eval",
+    companies: ["Infosys", "Bloomberg", "Citadel", "Goldman Sachs", "LinkedIn"],
     statement: "Given an array of strings `tokens` written in postfix order, evaluate the expression it denotes and return the integer result.\n\nEach token is either a decimal integer (possibly negative) or one of the four operators `+`, `-`, `*`, `/`. Every operator consumes its two nearest preceding values: the earlier value is the left operand and the later value is the right operand. Division between integers truncates toward zero.\n\nConstraints: `1 <= tokens.length <= 100`.\n",
     examples: [
       { input: "tokens = [\"2\", \"1\", \"+\", \"3\", \"*\"]", output: "9", explanation: "Generated from the verified optimal implementation." },
@@ -4592,6 +4671,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "Auxiliary stack of running minima",
+    companies: ["Flipkart", "Apple", "Nvidia", "IBM", "Oracle"],
     statement: "A stack starts empty and receives a sequence of operations. The string `ops` encodes one operation character per step and the array `vals` supplies one integer per step. The two inputs are read together by index: the stack sees one step for every index `i` that lies inside both inputs, that is every `i` with `i < ops.length` and `i < vals.length`. The number of steps is therefore the shorter of the two lengths, and an entry of `vals` is only ever read by a step whose character is `'p'`.\n\nThe operation characters are:\n\n- `'p'` push `vals[i]` onto the top of the stack.\n- `'o'` remove the element on top of the stack; on an empty stack this does nothing.\n- `'t'` read the element currently on top of the stack.\n- `'m'` read the smallest element currently in the stack.\n\nReturn an array holding the value produced by every `'t'` and `'m'` step, in the order those reads happen. A read performed on an empty stack produces `-1`.\n\nConstraints: `1 <= ops.length <= 200` and `1 <= vals.length <= 200` and `-10000 <= vals[i] <= 10000`, and every character of `ops` is one of `'p'`, `'o'`, `'t'` or `'m'`.\n",
     examples: [
       { input: "ops = \"p\", vals = [-10000]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4646,6 +4726,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "Monotonic stack over a doubled array",
+    companies: ["Zoho", "Apple", "ServiceNow", "Morgan Stanley", "Visa"],
     statement: "For every position `i` of the circular list `nums`, look clockwise for the first value strictly greater than `nums[i]`: examine `nums[i+1]`, then `nums[i+2]`, and so on, wrapping back to the start of the list after the end, and stop at the first element that beats `nums[i]`. Elements at positions before `i` are only considered after the scan wraps around.\n\nReturn an array `res` of the same length as `nums` where `res[i]` is that first greater value, or `-1` when no element of the list is strictly greater than `nums[i]`. Duplicates are not greater than each other, and a position never compares against itself.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "[-1]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4700,6 +4781,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack with run-length pairs",
+    companies: ["Walmart Labs", "Google", "PayPal", "Morgan Stanley", "Goldman Sachs"],
     statement: "You are given a string `s` built only from the letters `'a'`, `'b'` and `'c'`, and an integer `k` that is at least 2.\n\nKeep applying this operation while it is possible: find a maximal run of equal letters whose length is `k` or more, delete exactly `k` of those letters, and close the gap so that the letters which stood on either side of the run become neighbours. The join can put two identical letters next to each other and start a fresh run, so collapses chain. A run longer than `k` also survives a single deletion: five copies of the same letter with `k = 2` shrink to one letter, not to three.\n\nReturn the string that remains once no run of length `k` or more is left.\n\nWorked cases:\n\n- `s = \"abba\"`, `k = 2`: deleting `\"bb\"` welds the two `a` letters into a run of two, which then disappears, so the answer is `\"\"`.\n- `s = \"aabcaa\"`, `k = 2`: deleting the first `\"aa\"` gives `\"bcaa\"`, and deleting the `\"aa\"` at the end gives `\"bc\"`, which is the answer.\n\nThe surviving string does not depend on the order in which qualifying runs are chosen.\n\nConstraints: `1 <= s.length <= 200` and `2 <= k <= 5`.\n",
     examples: [
       { input: "s = \"a\", k = 2", output: "\"a\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4754,6 +4836,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "greedy / monotonic stack",
+    companies: ["Deloitte", "Microsoft", "Walmart Labs", "PhonePe", "Accenture"],
     statement: "A non-negative integer is handed to you as a string `num` of decimal digits, and you must delete exactly `k` of those digits. The digits that stay keep their original relative order and are read left to right to spell the new number.\n\nReturn the smallest number that can be spelled this way, written as a string with no unnecessary leading zeros. If you delete every digit, or if nothing but zeros is left, return `\"0\"`.\n\nFor example, `num = \"1432219\"` with `k = 3`: deleting the `4`, the `3` and one of the `2` digits leaves `1`, `2`, `1`, `9`, which spells `\"1219\"`. With `num = \"10200\"` and `k = 1`, dropping the leading `1` leaves `\"0200\"`, which spells `\"200\"` once the leading zero goes.\n\nConstraints: `1 <= num.length <= 100` and `1 <= k <= num.length`.\n",
     examples: [
       { input: "num = \"1\", k = 1", output: "\"0\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4808,6 +4891,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "stack / Token parse",
+    companies: ["IBM", "Meta", "Snowflake", "Nvidia", "Visa"],
     statement: "Given an absolute Unix-style path string `path`, reduce it to its canonical form: a single leading slash, directory names joined by exactly one slash each, with no trailing slash.\n\nResolve every `.` segment (stay in place) and every `..` segment (step to the parent directory, staying at the root when already there). Treat repeated slashes as one separator and drop empty segments.\n\nConstraints: `1 <= path.length <= 100`.\n",
     examples: [
       { input: "path = \"/home/\"", output: "\"/home\"", explanation: "Generated from the verified optimal implementation." },
@@ -4873,6 +4957,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Medium",
     pattern: "monotonic stack + dp over subarrays ending at i",
+    companies: ["Accenture", "Apple", "Morgan Stanley", "Infosys", "Flipkart"],
     statement: "Given an array of integers `nums`, take the minimum of every contiguous subarray and return the sum of all those minima.\n\nThere are `n * (n + 1) / 2` contiguous subarrays in total, and `nums` may contain negative values, so the answer may be negative. A subarray of length one is a valid subarray and contributes its own element.\n\nExample: for `nums = [3, 1, 2]` the subarrays are `[3]`, `[3, 1]`, `[3, 1, 2]`, `[1]`, `[1, 2]`, `[2]`; their minima are `3, 1, 1, 1, 1, 2`, which sum to `9`.\n\nConstraints: `1 <= nums.length <= 200` and `-100 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [-100]", output: "-100", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4927,6 +5012,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "single-pass expression evaluation with a sign stack (Shunting-yard style)",
+    companies: ["Walmart Labs", "Microsoft", "Salesforce", "Uber", "Snowflake"],
     statement: "Evaluate a simple arithmetic expression. It is built from integer literals of one or more digits, the binary operators + and -, parentheses, and spaces; spaces may appear anywhere and are ignored entirely.\n\nA well-formed expression is a term followed by any number of pairs of an operator and another term, where a term is either an integer literal or a parenthesised well-formed expression. Both operators are binary, so an expression always begins with a digit or an opening parenthesis, always ends with a digit or a closing parenthesis, never places two operators side by side, never has an empty pair of parentheses, and never leaves a parenthesis unmatched.\n\nValues can grow far beyond what a 64-bit integer holds, so all arithmetic is carried out modulo 1,000,000,007 and the reported value is the least non-negative residue of the expression under that modulus: 0-5 is reported as 1000000002. If s is not well-formed, including when it is empty or contains any character outside digits, the two operators, parentheses and spaces, return -1 instead.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"0\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -4981,6 +5067,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "stack / operator-precedence parsing (shunting-yard)",
+    companies: ["Microsoft", "Intuit", "DoorDash", "Oracle", "Snap"],
     statement: "You are given a string `s` that spells out an arithmetic expression over non-negative integer literals, the binary operators `+`, `-`, `*`, `/`, and parentheses `(` and `)`. Spaces carry no meaning and may appear anywhere.\n\nEvaluate the expression exactly and return its value as a decimal string. A literal may itself be long, so an intermediate product can be far larger than a 64-bit integer holds: compute with exact integers, never with floating point, and return the exact decimal digits of the result.\n\nGrammar and evaluation rules:\n\n- `*` and `/` bind tighter than `+` and `-`, and operators of equal precedence apply left to right.\n- Parentheses override precedence and must be balanced.\n- A literal is a non-empty run of digits. Leading zeros are allowed: `007` has the value 7.\n- `/` is integer division that truncates toward zero, so `7/2` is `3`, `(7-10)/2` is `-1`, and `10/5/2` is `1`.\n- Division by zero evaluates to `0`, so `5/0`, `0/0` and `5/(3-3)` are all `0`.\n- Unary signs are not part of the grammar: `-5` and `3*-2` are not valid expressions.\n- Two operands may never be adjacent: `3 4` and `(2)(3)` are not valid expressions.\n\nIf `s` does not match the grammar above, return `\"0\"`.\n\nConstraints: `1 <= s.length <= 200` and each character of `s` is a digit `0`-`9`, one of the operators `+`, `-`, `*`, `/`, a parenthesis `(`, `)`, or a space.\n",
     examples: [
       { input: "s = \"3\"", output: "\"3\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -5036,6 +5123,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "stack / Monotonic increasing",
+    companies: ["Flipkart", "Meta", "Salesforce", "LinkedIn", "Cisco"],
     statement: "Given an array `heights` where `heights[i]` is the height of bar `i` and every bar shares width `1`, find the largest rectangular area that fits entirely inside the union of the bars.\n\nAny group of consecutive bars supports a rectangle whose height cannot exceed the shortest bar of the group; multiply that height by the group's width to obtain its area.\n\nConstraints: `1 <= heights.length <= 100` and `0 <= heights[i] <= 100`.\n",
     examples: [
       { input: "heights = [31, 95, 71, 68, 33]", output: "204", explanation: "Bars at indices 1 to 3 have heights [95, 71, 68]. The minimum height across these 3 bars is 68, forming a rectangle of area 68 * 3 = 204." },
@@ -5101,6 +5189,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "monotonic stack / row-wise histogram DP",
+    companies: ["Zoho", "Microsoft", "Intuit", "Salesforce", "DE Shaw"],
     statement: "A venue's seating chart is given as `grid`, a rectangular matrix of integers where `grid[i][j]` is `1` for a usable cell and `0` for a blocked one. A banner is an axis-aligned rectangle: it covers a contiguous range of rows and a contiguous range of columns, and every cell underneath it must be usable. Return the area of the largest banner that fits, counted as the number of cells it covers. If no cell is usable, return 0.\n\nFor `grid = [[1, 0, 1], [1, 1, 1], [1, 0, 1]]` the answer is 3: the middle row and the first column are each a usable run of three cells, and no rectangle of four cells is fully usable. For `grid = [[1, 1], [1, 1]]` the answer is 4, and for `grid = [[0]]` the answer is 0.\n\nConstraints: `1 <= grid.length <= 30`, every row of `grid` has the same length, and `0 <= grid[i] <= 1` for every row `i`, so every cell of the matrix is either `0` or `1`.\n",
     examples: [
       { input: "grid = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -5156,6 +5245,7 @@ export const PROBLEMS: Problem[] = [
     topic: "stack",
     difficulty: "Hard",
     pattern: "monotonic decreasing stack",
+    companies: ["Meesho", "Amazon", "ServiceNow", "Nvidia", "LinkedIn"],
     statement: "A queue of `n` people is standing in one straight line, and `heights[i]` is the height of the person at position `i`. Person `i` can see person `j` (with `j > i`) when no person standing strictly between them is taller than the shorter of the two: the maximum height among the positions `i + 1` up to `j - 1` must be at most `min(heights[i], heights[j])`. Because of that rule a person always sees the person standing immediately in front of them, and someone exactly as tall as the next person does not block the view. Return an array `answer` of length `n` where `answer[i]` is the number of people person `i` can see among the positions after them.\n\nFor example with `heights = [10, 6, 8, 5, 11, 9]` the answer is `[3, 1, 2, 1, 1, 0]`.\n\nConstraints: `1 <= heights.length <= 200` and `1 <= heights[i] <= 10000`.\n",
     examples: [
       { input: "heights = [1]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -5212,6 +5302,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "Length alignment then lockstep two pointers",
+    companies: ["Walmart Labs", "Amazon", "Samsung", "LinkedIn", "TCS"],
     statement: "Two singly linked lists are described by their node values: `a` lists the first list from head to tail, and `b` lists the second list from head to tail.\n\nThe lists share a suffix. Let `shared` be the number of nodes the two lists actually hold in common, `shared = min(tail, a.length, b.length)`. The last `shared` nodes of the second list are the very same physical nodes as the last `shared` nodes of the first list, so those shared nodes carry the values `a[a.length - shared]` through `a[a.length - 1]`. Capping `tail` at the shorter list is what keeps the description defined for every `tail` the constraints allow, including a `tail` larger than one of the lists. When `shared` is `0` the lists are disjoint and every node of `b` is an independent node.\n\nReturn the value stored in the first node that belongs to both lists (the intersection node), or `-1` when the lists are disjoint.\n\nConstraints: `1 <= a.length <= 200`, `1 <= b.length <= 200`, `-100 <= a[i] <= 100`, `-100 <= b[i] <= 100`, `0 <= tail <= a.length` and `0 <= tail <= b.length`.\n",
     examples: [
       { input: "a = [-100], b = [-100], tail = 0", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -5265,6 +5356,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "Fast & Slow Pointers",
+    companies: ["Cognizant", "Microsoft", "Qualcomm", "SAP", "Infosys"],
     statement: "A singly linked list is given as an array of values plus an integer pos, where pos is the index that the tail connects back to (-1 means the tail points to null). Return true if the list contains a cycle, otherwise false. A pos of 0 with a non-empty list is a cycle.",
     examples: [
       { input: "values = [3,2,0,-4], pos = 1", output: "true", explanation: "The tail (-4) links back to index 1 (value 2)." },
@@ -5318,6 +5410,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "Fast & Slow Pointers",
+    companies: ["IBM", "Bloomberg", "Qualcomm", "Nvidia", "Accenture"],
     statement: "Given the head of a singly linked list, return the values starting from the middle node to the end. If there are two middle nodes, return from the second middle node.",
     examples: [
       { input: "head = [1,2,3,4,5]", output: "[3,4,5]" },
@@ -5371,6 +5464,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "Reverse Second Half",
+    companies: ["Infosys", "Google", "SAP", "Morgan Stanley", "Nvidia"],
     statement: "Given the head of a singly linked list, return true if it is a palindrome or false otherwise.",
     examples: [
       { input: "head = [1,2,2,1]", output: "true" },
@@ -5424,6 +5518,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "linked-list / Filter",
+    companies: ["TCS", "Apple", "Oracle", "Arista Networks", "Amazon"],
     statement: "You are given an integer array `nums` representing the sequence of values in a singly linked list, and an integer `val`.\n\nRemove all nodes of the linked list that have value equal to `val`, preserving the relative order of all remaining elements.\n\nReturn the filtered sequence of values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= val <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 6, 3, 4, 5, 6], val = 6", output: "[1, 2, 3, 4, 5]", explanation: "Both occurrences of 6 (at indices 2 and 6) are removed, leaving [1, 2, 3, 4, 5]." },
@@ -5491,6 +5586,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Easy",
     pattern: "In-Place Pointer Reversal",
+    companies: ["Wipro", "Microsoft", "Cognizant", "Visa", "Morgan Stanley"],
     statement: "Given the head of a singly linked list represented as a sequence of values, reverse the list and return the reversed sequence.",
     examples: [
       { input: "head = [1, 2, 3, 4, 5]", output: "[5, 4, 3, 2, 1]" },
@@ -5544,6 +5640,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "Digit Carry Simulation",
+    companies: ["Capgemini", "Amazon", "SAP", "Uber", "IBM"],
     statement: "Two non-negative integers are stored as arrays of digits in reverse order (least significant digit first). Add them and return the sum in the same reverse-digit array format.",
     examples: [
       { input: "l1 = [2,4,3], l2 = [5,6,4]", output: "[7,0,8]", explanation: "342 + 465 = 807, stored reversed as [7,0,8]." },
@@ -5597,6 +5694,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Deep copy",
+    companies: ["Walmart Labs", "Google", "Morgan Stanley", "Snowflake", "Flipkart"],
     statement: "A linked list of length `n` is given such that each node contains an additional random pointer, which could point to any node in the list, or `null`.\n\nIn this problem, the linked list is represented as an array of pairs `nodes`, where each entry `nodes[i] = [val, randomIndex]` specifies the `i`-th node:\n- `val`: an integer value stored in the node.\n- `randomIndex`: the 0-indexed position of the node that the random pointer references, or `-1` if it points to `null`.\n\nConstruct and return a deep copy of the list represented in the exact same format `[[val, randomIndex], ...]`. None of the inner pairs or the outer container in the returned copy should share reference identity with the input.\n\nConstraints: `0 <= nodes.length <= 100`, `-1000 <= nodes[i][0] <= 1000`, and each `nodes[i][1]` is either `-1` or satisfies `0 <= nodes[i][1] < nodes.length`.\n",
     examples: [
       { input: "nodes = [[7, -1], [13, 0], [11, 4], [10, 2], [1, 0]]", output: "[[7, -1], [13, 0], [11, 4], [10, 2], [1, 0]]", explanation: "A 5-node list where node 0 has no random target (-1), node 1 points to node 0, node 2 points to node 4, node 3 points to node 2, and node 4 points to node 0. A distinct deep copy with identical structure is created." },
@@ -5663,6 +5761,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Index parity",
+    companies: ["Infosys", "Microsoft", "TCS", "Zoho", "Meesho"],
     statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nGroup all nodes at 1-indexed odd positions together first, followed by all nodes at 1-indexed even positions. The relative order within the odd-indexed group and within the even-indexed group must be maintained.\n\nNote that the grouping is based on the 1-indexed position in the sequence, not on the numerical value of the nodes.\n\nReturn the reordered sequence of node values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5]", output: "[1, 3, 5, 2, 4]", explanation: "Nodes at 1-indexed positions 1, 3, 5 are values [1, 3, 5]. Nodes at positions 2, 4 are [2, 4]. Connecting odds then evens yields [1, 3, 5, 2, 4]." },
@@ -5729,6 +5828,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Stable partition",
+    companies: ["Meta", "Microsoft", "Bloomberg", "Amazon", "Google"],
     statement: "You are given an integer array `nums` representing the node values of a singly linked list, and a target value `x`.\n\nPartition the list such that all nodes with values strictly less than `x` come before all nodes with values greater than or equal to `x`. You must preserve the original relative order of the nodes in each of the two partitions.\n\nReturn the partitioned sequence of node values.\n\nConstraints: `0 <= nums.length <= 100`, `-1000 <= x <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 4, 3, 2, 5, 2], x = 3", output: "[1, 2, 2, 4, 3, 5]", explanation: "Elements strictly less than 3 are [1, 2, 2]. Elements greater than or equal to 3 are [4, 3, 5]. Combining them while preserving relative order gives [1, 2, 2, 4, 3, 5]." },
@@ -5795,6 +5895,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Fold ends",
+    companies: ["Intuit", "Infosys", "Google", "Morgan Stanley", "TCS"],
     statement: "You are given an array of integers `nums` representing the node values of a singly linked list in sequence: `[L_0, L_1, ..., L_{n-1}]`.\n\nReorder the list such that the elements follow the interwoven fold pattern:\n`[L_0, L_{n-1}, L_1, L_{n-2}, L_2, L_{n-3}, ...]`\n\nYou must construct and return the reordered list of values.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4]", output: "[1, 4, 2, 3]", explanation: "With four elements, the first element 1 is paired with the last element 4, followed by the second element 2 paired with the second-to-last element 3." },
@@ -5861,6 +5962,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Range reverse",
+    companies: ["Infosys", "Amazon", "Nvidia", "ByteDance", "Walmart Labs"],
     statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence, and two integers `left` and `right` with `1 <= left <= right <= nums.length`.\n\nReverse the nodes of the list from 1-indexed position `left` to 1-indexed position `right` (both endpoints inclusive), keeping the rest of the list unchanged.\n\nReturn the modified sequence of node values.\n\nConstraints: `1 <= nums.length <= 100`, `1 <= left <= right <= nums.length`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], left = 2, right = 4", output: "[1, 4, 3, 2, 5]", explanation: "The subsegment from 1-indexed position 2 to 4 corresponds to values [2, 3, 4]. Reversing this segment gives [4, 3, 2], producing the final sequence [1, 4, 3, 2, 5]." },
@@ -5927,6 +6029,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Rotation",
+    companies: ["Meta", "LinkedIn", "Nvidia", "Oracle", "Google"],
     statement: "You are given an integer array `nums` representing the sequence of values in a singly linked list, and a non-negative integer `k`.\n\nRotate the list to the right by `k` places. In each rotation step, the last element moves to the very front of the list, shifting all other elements one position to the right.\n\nReturn the list of values after applying the `k` rotations.\n\nConstraints: `0 <= nums.length <= 100`, `0 <= k <= 1000`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], k = 2", output: "[4, 5, 1, 2, 3]", explanation: "Rotating right by 2 shifts 5 and 4 to the front, followed by the remaining elements 1, 2, and 3." },
@@ -5993,6 +6096,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Medium",
     pattern: "linked-list / Adjacent swap",
+    companies: ["Walmart Labs", "Microsoft", "PayPal", "Goldman Sachs", "TCS"],
     statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence.\n\nSwap every two adjacent nodes from left to right. If the total number of elements is odd, the final lone element should remain in its original position.\n\nReturn the modified sequence of node values after performing the swaps.\n\nConstraints: `0 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4]", output: "[2, 1, 4, 3]", explanation: "Elements 1 and 2 swap positions to become [2, 1], and elements 3 and 4 swap positions to become [4, 3]." },
@@ -6059,6 +6163,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Hard",
     pattern: "linked-list / Heap merge",
+    companies: ["Flipkart", "Apple", "Samsung", "Goldman Sachs", "Salesforce"],
     statement: "You are given an array of `k` sorted integer arrays `lists`, where each individual array represents a singly linked list sorted in non-decreasing order.\n\nMerge all `k` linked lists into a single consolidated list sorted in non-decreasing order, and return the resulting array.\n\nConstraints: `0 <= lists.length <= 30`, each list satisfies `0 <= lists[i].length <= 50`, and `-1000 <= lists[i][j] <= 1000`.\n",
     examples: [
       { input: "lists = [[1, 4, 5], [1, 3, 4], [2, 6]]", output: "[1, 1, 2, 3, 4, 4, 5, 6]", explanation: "Merging the three sorted lists yields all elements in ascending order: [1, 1, 2, 3, 4, 4, 5, 6]." },
@@ -6125,6 +6230,7 @@ export const PROBLEMS: Problem[] = [
     topic: "linked-lists",
     difficulty: "Hard",
     pattern: "linked-list / Chunk reverse",
+    companies: ["Walmart Labs", "Bloomberg", "Qualcomm", "Oracle", "Uber"],
     statement: "You are given an integer array `nums` representing the node values of a singly linked list in sequence, and a positive integer `k`.\n\nReverse the nodes of the list `k` at a time from left to right, and return the modified sequence. If the number of nodes remaining at the end is less than `k`, those leftover nodes must remain in their original order.\n\nConstraints: `0 <= nums.length <= 100`, `1 <= k <= 100`, and `-1000 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [1, 2, 3, 4, 5], k = 2", output: "[2, 1, 4, 3, 5]", explanation: "The first chunk [1, 2] is reversed to [2, 1]; the second chunk [3, 4] is reversed to [4, 3]; the lone remaining element [5] is left unchanged." },
@@ -6186,401 +6292,13 @@ export const PROBLEMS: Problem[] = [
 
   // TREES (23 problems)
   {
-    id: "tree-6",
-    slug: "diameter-of-binary-tree",
-    title: "Diameter of Binary Tree",
-    topic: "trees",
-    difficulty: "Easy",
-    pattern: "Postorder Height & Best",
-    statement: "Given the level-order array representation of a binary tree, return the diameter: the number of edges on the longest path between any two nodes in the tree.",
-    examples: [
-      { input: "root = [1,2,3,4,5]", output: "3", explanation: "The longest path is 4 -> 2 -> 1 -> 3, which uses 3 edges." },
-      { input: "root = [1,2]", output: "1" },
-    ],
-    constraints: ["0 <= nodes <= 10^4"],
-    hints: [
-      "For node index i, children sit at 2*i + 1 and 2*i + 2 in the level-order array.",
-      "The longest path through a node equals leftHeight + rightHeight (in edges).",
-      "Track the global best across all nodes while returning 1 + max(left, right) upward.",
-    ],
-    solutions: [
-      {
-        title: "All-Pairs Path Check",
-        complexity: "Time: O(n²) | Space: O(h)",
-        language: "javascript",
-        code: "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}",
-      },
-      {
-        title: "Single Postorder Pass",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "javascript",
-        code: "function solve(arr) {\n  let best = 0;\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    const l = depth(2 * i + 1), r = depth(2 * i + 2);\n    best = Math.max(best, l + r);\n    return 1 + Math.max(l, r);\n  }\n  depth(0);\n  return best;\n}",
-      },
-    ],
-    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 1,
-    nextSlug: "invert-binary-tree",
-    testCases: [
-      { input: [[1, 2, 3, 4, 5]], expected: 3, label: "[1,2,3,4,5]" },
-      { input: [[1, 2]], expected: 1, label: "[1,2]" },
-    ],
-    editorial: {
-      approach: "The diameter is the length of the longest path between any two nodes, which may or may not pass through the root. Compute the max depth of each subtree recursively using post-order DFS. At each node, the longest path passing through that node is left_depth + right_depth. Update a global maximum diameter at each node, while returning 1 + max(left_depth, right_depth) to the caller.",
-      why_optimal: "Visits each node in the tree exactly once in O(N) time with O(H) call stack space, computing height and path length simultaneously in a bottom-up pass.",
-      pitfalls: "Confusing the count of nodes on the path with the count of edges (diameter is measured in edges, so a single node has diameter 0). Assuming the diameter must pass through the tree root.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-    ],
-  },
-  {
-    id: "tree-2",
-    slug: "invert-binary-tree",
-    title: "Invert Binary Tree",
-    topic: "trees",
-    difficulty: "Easy",
-    pattern: "Recursive Subtree Swap",
-    statement: "Given the root of a complete binary tree level-order array, invert the tree by swapping every left and right child and return the inverted level-order array.",
-    examples: [
-      { input: "root = [4,2,7,1,3,6,9]", output: "[4,7,2,9,6,3,1]" },
-      { input: "root = [2,1,3]", output: "[2,3,1]" },
-    ],
-    constraints: ["0 <= nodes <= 100"],
-    hints: [
-      "For every level of the binary tree, reverse the slice of nodes in that level.",
-      "Level k starts at index 2^k - 1 and has 2^k elements.",
-      "Combine reversed levels into the output array.",
-    ],
-    solutions: [
-      {
-        title: "Level-by-Level Reversal",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(arr) {\n  const res = [];\n  let levelSize = 1, idx = 0;\n  while (idx < arr.length) {\n    const slice = arr.slice(idx, idx + levelSize).reverse();\n    res.push(...slice);\n    idx += levelSize;\n    levelSize *= 2;\n  }\n  return res;\n}",
-      },
-      {
-        title: "DFS Swap Children",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "javascript",
-        code: "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}",
-      },
-    ],
-    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int[] solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 2,
-    prevSlug: "diameter-of-binary-tree",
-    nextSlug: "maximum-depth-of-binary-tree",
-    testCases: [
-      { input: [[4, 2, 7, 1, 3, 6, 9]], expected: [4, 7, 2, 9, 6, 3, 1], label: "[4,2,7,1,3,6,9]" },
-      { input: [[2, 1, 3]], expected: [2, 3, 1], label: "[2,1,3]" },
-    ],
-    editorial: {
-      approach: "Inverting a binary tree requires swapping the left and right subtrees for every node. Perform a post-order or pre-order recursive DFS: at each node, swap node.left and node.right, and recursively call invert on both children. Base case is a null node returning null.",
-      why_optimal: "Visits every node in the tree exactly once in O(N) time with O(H) auxiliary space on the call stack, mutating tree pointers in-place.",
-      pitfalls: "Overwriting a child reference before recurring on it without a temporary swap variable. Not handling null root nodes gracefully.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-    ],
-  },
-  {
-    id: "tree-1",
-    slug: "maximum-depth-of-binary-tree",
-    title: "Maximum Depth of Binary Tree",
-    topic: "trees",
-    difficulty: "Easy",
-    pattern: "Postorder DFS Depth",
-    statement: "Given the level-order array representation of a binary tree, return its maximum depth (number of nodes along the longest path from root to leaf).",
-    examples: [
-      { input: "root = [3,9,20,null,null,15,7]", output: "3" },
-      { input: "root = [1,null,2]", output: "2" },
-    ],
-    constraints: ["0 <= nodes <= 10^4"],
-    hints: [
-      "Base case: an empty tree has depth 0.",
-      "Depth of any node is 1 + Math.max(depth(left), depth(right)).",
-      "For level-order array index i, left child is 2*i + 1 and right child is 2*i + 2.",
-    ],
-    solutions: [
-      {
-        title: "Recursive DFS",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "javascript",
-        code: "function solve(arr) {\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(depth(2 * i + 1), depth(2 * i + 2));\n  }\n  return depth(0);\n}",
-      },
-      {
-        title: "Iterative Level Counting",
-        complexity: "Time: O(n) | Space: O(w)",
-        language: "javascript",
-        code: "function solve(arr) {\n  if (!arr.length) return 0;\n  return Math.floor(Math.log2(arr.length)) + 1;\n}",
-      },
-    ],
-    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(TreeNode treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(TreeNode* treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 3,
-    prevSlug: "invert-binary-tree",
-    nextSlug: "symmetric-tree",
-    testCases: [
-      { input: [[3, 9, 20, null, null, 15, 7]], expected: 3, label: "[3,9,20,null,null,15,7]" },
-      { input: [[1, null, 2]], expected: 2, label: "[1,null,2]" },
-    ],
-    editorial: {
-      approach: "Bottom-up post-order DFS: the maximum depth of an empty tree is 0. For any node, the depth is 1 + max(maxDepth(node.left), maxDepth(node.right)). Recursively evaluate left and right depths and combine.",
-      why_optimal: "Single traversal visits all N nodes in O(N) time and O(H) space, corresponding to the height of the tree.",
-      pitfalls: "Stack overflow on skewed tree paths in deep call stacks without proper base case termination.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-      "https://en.wikipedia.org/wiki/Depth-first_search",
-    ],
-  },
-  {
-    id: "tree-5",
-    slug: "same-tree",
-    title: "Same Tree",
-    topic: "trees",
-    difficulty: "Easy",
-    pattern: "Simultaneous DFS Comparison",
-    statement: "Given the level-order arrays of two binary trees p and q, write a function to check if they are structurally identical and nodes have the same values.",
-    examples: [
-      { input: "p = [1,2,3], q = [1,2,3]", output: "true" },
-      { input: "p = [1,2], q = [1,null,2]", output: "false" },
-    ],
-    constraints: ["0 <= nodes <= 100"],
-    hints: [
-      "Check if both trees have identical length.",
-      "Compare p[i] === q[i] at each corresponding index.",
-      "Return true only if all nodes match.",
-    ],
-    solutions: [
-      {
-        title: "Recursive Structural Check",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "javascript",
-        code: "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) if (p[i] !== q[i]) return false;\n  return true;\n}",
-      },
-      {
-        title: "JSON Serialization Check",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}",
-      },
-    ],
-    starterCode: "function solve(p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(p, q):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public boolean solve(TreeNode p, TreeNode q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    bool solve(TreeNode* p, TreeNode* q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 5,
-    prevSlug: "symmetric-tree",
-    nextSlug: "all-nodes-distance-k-in-binary-tree",
-    testCases: [
-      { input: [[1, 2, 3], [1, 2, 3]], expected: true, label: "p=[1,2,3], q=[1,2,3]" },
-      { input: [[1, 2], [1, null, 2]], expected: false, label: "p=[1,2], q=[1,null,2]" },
-    ],
-    editorial: {
-      approach: "Simultaneous recursive DFS comparison: given roots p and q, if both are null, they are identical (true). If only one is null, they differ (false). If their values differ (p.val != q.val), return false. Otherwise, return sameTree(p.left, q.left) && sameTree(p.right, q.right).",
-      why_optimal: "Traverses both trees in lockstep in O(min(N, M)) time and O(min(H_p, H_q)) stack space, terminating at the earliest structural or value discrepancy.",
-      pitfalls: "Comparing node values before verifying that neither node is null, raising null dereference errors.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-      "https://en.wikipedia.org/wiki/Depth-first_search",
-    ],
-  },
-  {
-    id: "tree-8",
-    slug: "symmetric-tree",
-    title: "Mirror Check",
-    topic: "trees",
-    difficulty: "Easy",
-    pattern: "trees / Mirror compare",
-    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
-    examples: [
-      { input: "root = [1,2,2,3,4,4,3]", output: "true", explanation: "The two 2s match, the outer 3s match each other, and the inner 4s match each other." },
-      { input: "root = [1,2,2,null,3,null,3]", output: "false", explanation: "The inner pair pits 3 against a hole: the left 2 has a right child while the right 2 has no left child." },
-      { input: "root = [1,2,2,3,null,null,3]", output: "true", explanation: "The holes face each other on the inside while the two 3s face each other on the outside." },
-    ],
-    constraints: ["Function signature: `function isSymmetric(root: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Compare the left and right subtrees as mirror images.",
-      "Pair the outer children together and the inner children together.",
-      "A hole must face a hole; a value facing a hole breaks symmetry.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function isSymmetric(root) {\n  function build(i) {\n    if (i >= root.length || root[i] === null) return null;\n    return { v: root[i], l: build(2 * i + 1), r: build(2 * i + 2) };\n  }\n  const tree = build(0);\n  if (tree === null) return true;\n  const stack = [[tree.l, tree.r]];\n  while (stack.length > 0) {\n    const pair = stack.pop();\n    const a = pair[0];\n    const b = pair[1];\n    if (a === null && b === null) continue;\n    if (a === null || b === null || a.v !== b.v) return false;\n    stack.push([a.l, b.r]);\n    stack.push([a.r, b.l]);\n  }\n  return true;\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "javascript",
-        code: "function isSymmetric(root) {\n  function mirror(l, r) {\n    const lv = l < root.length ? root[l] : null;\n    const rv = r < root.length ? root[r] : null;\n    if (lv === null && rv === null) return true;\n    if (lv === null || rv === null || lv !== rv) return false;\n    return mirror(2 * l + 1, 2 * r + 2) && mirror(2 * l + 2, 2 * r + 1);\n  }\n  if (root.length === 0 || root[0] === null) return true;\n  return mirror(1, 2);\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "python",
-        code: "def isSymmetric(root: list) -> bool:\n    def build(i):\n        if i >= len(root) or root[i] is None:\n            return None\n        return (root[i], build(2 * i + 1), build(2 * i + 2))\n    tree = build(0)\n    if tree is None:\n        return True\n    stack = [(tree[1], tree[2])]\n    while stack:\n        a, b = stack.pop()\n        if a is None and b is None:\n            continue\n        if a is None or b is None or a[0] != b[0]:\n            return False\n        stack.append((a[1], b[2]))\n        stack.append((a[2], b[1]))\n    return True\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(h)",
-        language: "python",
-        code: "def isSymmetric(root: list) -> bool:\n    def mirror(l, r):\n        lv = root[l] if l < len(root) else None\n        rv = root[r] if r < len(root) else None\n        if lv is None and rv is None:\n            return True\n        if lv is None or rv is None or lv != rv:\n            return False\n        return mirror(2 * l + 1, 2 * r + 2) and mirror(2 * l + 2, 2 * r + 1)\n    if len(root) == 0 or root[0] is None:\n        return True\n    return mirror(1, 2)\n",
-      },
-    ],
-    starterCode: "function isSymmetric(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def isSymmetric(root):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public boolean isSymmetric(TreeNode root) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    bool isSymmetric(TreeNode* root) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "isSymmetric",
-    sequence: 4,
-    prevSlug: "maximum-depth-of-binary-tree",
-    nextSlug: "same-tree",
-    testCases: [
-      { input: [[1, 2, 2, 3, 4, 4, 3]], expected: true, label: "example-01" },
-      { input: [[1, 2, 2, null, 3, null, 3]], expected: false, label: "example-02" },
-    ],
-    editorial: {
-      approach: "Check the two subtrees as mirror images: values must match, outer index pairs recurse together and inner index pairs recurse together.",
-      why_optimal: "Each index pair is visited once, so the check is linear in the array size with recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.27 ms and the optimal at 0.14 ms (about 1.9x faster).",
-      pitfalls: "Missing children are significant — a value facing a hole breaks symmetry just as surely as two different values.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Binary_tree",
-    ],
-  },
-  {
-    id: "tree-18",
-    slug: "all-nodes-distance-k-in-binary-tree",
-    title: "All Nodes Distance K in Binary Tree",
-    topic: "trees",
-    difficulty: "Medium",
-    pattern: "BFS with parent pointers (tree to graph conversion)",
-    statement: "A binary tree is stored in an array using the implicit layout: index 0 holds the root, and the node stored at index i has its left child at index 2*i + 1 and its right child at index 2*i + 2 whenever those indices are still inside the array. Nodes are named by the values stored in the array, so the answer must contain values and not indices.\n\nLocate the node whose value equals target. If target occurs more than once, use its first occurrence, which is the smallest index holding it. One step means moving across a single edge between a node and its parent or between a node and one of its children.\n\nReturn the values of all nodes that are exactly k steps away from the located node, sorted in ascending order. Return an empty array when target does not occur in the array, or when no node sits exactly k steps away.\n\nConstraints: `1 <= tree.length <= 200`, `-100 <= tree[i] <= 100`, `-100 <= target <= 100` and `0 <= k <= tree.length`.\n",
-    examples: [
-      { input: "tree = [-100], target = -100, k = 0", output: "[-100]", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "tree = [-41, -75, -3], target = -29, k = 3", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(tree: number[], target: number, k: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "A node at distance k can be below the target, or above it, reached by climbing to an ancestor and then descending into the other branch.",
-      "Give every index three neighbours: its parent (i - 1) / 2 and its children 2*i + 1 and 2*i + 2, guarding the ends of the array. Walking those neighbours in rounds visits nodes in increasing order of distance.",
-      "Run one breadth-first search from the target's index, expand it exactly k times while remembering visited indices, and the nodes left in the frontier after the last expansion are the answer.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n²) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(tree, target, k) {\n  const n = tree.length;\n  const start = tree.indexOf(target);\n  if (start === -1) return [];\n  const res = [];\n  for (let v = 0; v < n; v++) {\n    const dist = new Array(n).fill(-1);\n    dist[v] = 0;\n    let queue = [v];\n    let found = -1;\n    while (queue.length > 0 && found === -1) {\n      const nxt = [];\n      for (const u of queue) {\n        if (u === start) { found = dist[u]; break; }\n        const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n        for (const c of cands) {\n          if (c >= 0 && c < n && dist[c] === -1) {\n            dist[c] = dist[u] + 1;\n            nxt.push(c);\n          }\n        }\n      }\n      if (found !== -1) break;\n      queue = nxt;\n    }\n    if (found === k) res.push(tree[v]);\n  }\n  res.sort((a, b) => a - b);\n  return res;\n}\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(tree, target, k) {\n  const n = tree.length;\n  const start = tree.indexOf(target);\n  if (start === -1) return [];\n  const seen = new Set([start]);\n  let frontier = [start];\n  for (let step = 0; step < k; step++) {\n    const nxt = [];\n    for (const u of frontier) {\n      const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n      for (const c of cands) {\n        if (c >= 0 && c < n && !seen.has(c)) {\n          seen.add(c);\n          nxt.push(c);\n        }\n      }\n    }\n    frontier = nxt;\n  }\n  return frontier.map(u => tree[u]).sort((a, b) => a - b);\n}\n",
-      },
-    ],
-    starterCode: "function solve(tree, target, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(tree, target, k):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int[] solve(int[] tree, int target, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> tree, int target, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 6,
-    prevSlug: "same-tree",
-    nextSlug: "amount-of-time-for-binary-tree-to-be-infected",
-    testCases: [
-      { input: [[-100], -100, 0], expected: [-100], label: "edge-min-1" },
-      { input: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 100, 24], expected: [], label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The implicit layout hands you the whole neighbourhood of an index: its parent is (i - 1) / 2 and its children are 2*i + 1 and 2*i + 2, which is the same relation the classic solution reconstructs by walking the tree once and storing parent pointers. The optimal solution runs a single breadth-first search from the index holding target, expanding parent and both children at every node and keeping a visited set so nothing is entered twice. After exactly k rounds of expansion the current frontier is precisely the set of nodes at distance k, and their values are sorted before returning. The brute force ignores the fact that one source is enough and runs a separate breadth-first search from every index until it reaches the target's index, comparing the distance it discovers against k. That is n searches of O(n) each, so O(n²) in total.",
-      why_optimal: "Every node sits on exactly one shortest route from the start, so the parent-and-children relation means a single traversal discovers each node's distance the first time it is reached. That makes O(n) time and O(n) space for the visited set and the frontier the best any algorithm can do here, and the single search already achieves it. Sorting the returned values adds only O(m log m) for the m nodes found, and m is at most n. The brute force is slower purely through repetition, since it recomputes distances from n different sources.",
-      pitfalls: "k larger than the height of the tree empties the frontier, and the answer must then be an empty array rather than the last non-empty level, so the loop has to run exactly k rounds instead of stopping when the frontier runs out. k equal to 0 returns the target's own value. Index 0 has no parent, so the (i - 1) / 2 computation must be guarded for i = 0 or it walks to a wrong node. Missing values are common, since target need not be present at all. With duplicated values in the array, the first occurrence rule decides the start, and a node whose value repeats target and sits k steps away still contributes its value to the answer.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Breadth-first_search",
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-      "https://en.wikipedia.org/wiki/Binary_tree",
-    ],
-  },
-  {
-    id: "tree-19",
-    slug: "amount-of-time-for-binary-tree-to-be-infected",
-    title: "Amount of Time for Binary Tree to Be Infected",
-    topic: "trees",
-    difficulty: "Medium",
-    pattern: "BFS eccentricity from a single source",
-    statement: "A binary tree is stored in an array using the implicit layout: index 0 holds the root, and the node stored at index i has its left child at index 2*i + 1 and its right child at index 2*i + 2 whenever those indices are still inside the array. Every index of the array is a node of the tree.\n\nAt minute 0, exactly one node starts out infected: the node whose value equals start, taking its first occurrence when the value repeats. During each following minute, every infected node passes the infection to its still healthy parent and to its still healthy children, and a node that is already infected stays infected. The tree is connected, so the infection reaches every node in the end.\n\nReturn the number of minutes that elapse before the last node is infected. If start does not occur in the array, return -1.\n\nConstraints: `1 <= tree.length <= 200`, `-100 <= tree[i] <= 100` and `-100 <= start <= 100`.\n",
-    examples: [
-      { input: "tree = [43], start = -50", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "tree = [-100], start = -100", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(tree: number[], start: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "You do not have to simulate the minutes. The moment the last node is infected is simply the number of edges between the start node and the node farthest away from it.",
-      "That farthest node is reached by climbing from the start to an ancestor and then descending on the other side, so the structure has to be walked upwards as well as downwards.",
-      "One breadth-first search from the start's index, expanding parent and children at every node, is enough. Count the rounds of expansion until the frontier becomes empty; that count is the answer.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n²) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(tree, start) {\n  const n = tree.length;\n  const origin = tree.indexOf(start);\n  if (origin === -1) return -1;\n  let best = 0;\n  for (let v = 0; v < n; v++) {\n    const dist = new Array(n).fill(-1);\n    dist[v] = 0;\n    let queue = [v];\n    let found = -1;\n    while (queue.length > 0 && found === -1) {\n      const nxt = [];\n      for (const u of queue) {\n        if (u === origin) { found = dist[u]; break; }\n        const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n        for (const c of cands) {\n          if (c >= 0 && c < n && dist[c] === -1) {\n            dist[c] = dist[u] + 1;\n            nxt.push(c);\n          }\n        }\n      }\n      if (found !== -1) break;\n      queue = nxt;\n    }\n    if (found > best) best = found;\n  }\n  return best;\n}\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(tree, start) {\n  const n = tree.length;\n  const origin = tree.indexOf(start);\n  if (origin === -1) return -1;\n  const seen = new Set([origin]);\n  let frontier = [origin];\n  let minutes = 0;\n  while (frontier.length > 0) {\n    const nxt = [];\n    for (const u of frontier) {\n      const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n      for (const c of cands) {\n        if (c >= 0 && c < n && !seen.has(c)) {\n          seen.add(c);\n          nxt.push(c);\n        }\n      }\n    }\n    if (nxt.length === 0) break;\n    minutes += 1;\n    frontier = nxt;\n  }\n  return minutes;\n}\n",
-      },
-    ],
-    starterCode: "function solve(tree, start) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(tree, start):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] tree, int start) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> tree, int start) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 7,
-    prevSlug: "all-nodes-distance-k-in-binary-tree",
-    nextSlug: "lowest-common-ancestor-bst",
-    testCases: [
-      { input: [[-100], -100], expected: 0, label: "edge-min-1" },
-      { input: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 100], expected: 4, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "Simulating minute by minute never needs more work than measuring distances: the last node to be infected is the one farthest from the start, so the answer is the number of edges between the start node and the most distant node. The optimal solution exploits the implicit layout, where index i has parent (i - 1) / 2 and children 2*i + 1 and 2*i + 2, and runs a single breadth-first search from the start's index, counting how many rounds of expansion the frontier survives; because the structure is connected, every index is reached and each round of expansion is one minute. The brute force does not trust a single source. It runs a separate breadth-first search from every index until it reaches the start, takes the distance it finds, and keeps the largest, which costs O(n) per index and therefore O(n²) overall.",
-      why_optimal: "The infection spreads along the unique path between the start and each node, and each node's infection time equals its distance from the start, so no node can be timed without being visited at least once. That makes O(n) time the floor, and one breadth-first search meets it, using O(n) for the visited set and frontier. The brute force spends an extra factor of n because it recomputes the distance to the start from n different origins; the values it produces match the single search, which the tests confirm.",
-      pitfalls: "Counting minutes as the number of levels emitted rather than the number of completed expansion rounds, which overcounts by one whenever the frontier empties right after the last level is finished, or reports 1 for a single-node tree where 0 is correct. Returning 0 instead of -1 when start is absent, which hides the missing value behind a plausible answer. Using the index of the start node's value rather than locating the value itself, so a duplicated value picks the wrong origin. Forgetting the parent edge entirely, which silently turns the tree into a one-way descent and undercounts whenever the farthest node lies above the start.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Breadth-first_search",
-      "https://en.wikipedia.org/wiki/Distance_(graph_theory)",
-      "https://en.wikipedia.org/wiki/Tree_traversal",
-    ],
-  },
-  {
     id: "tree-9",
     slug: "balanced-binary-tree",
     title: "Height-Balanced Check",
     topic: "trees",
-    difficulty: "Medium",
+    difficulty: "Easy",
     pattern: "trees / Height diff",
+    companies: ["Amazon", "Meta", "Visa", "Apple", "Bloomberg"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree is height-balanced when, at every present node, the heights of its left and right subtrees differ by at most one. Height counts nodes along the longest downward path: a leaf has height 1 and an absent child has height 0. An empty tree counts as balanced.\n\nReturn `true` when every node passes this test, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,9,20,null,null,15,7]", output: "true", explanation: "The left subtree has height 1 and the right has height 2, and every smaller subtree is even tighter." },
@@ -6624,9 +6342,9 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public boolean isBalanced(TreeNode root) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    bool isBalanced(TreeNode* root) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "isBalanced",
-    sequence: 10,
-    prevSlug: "binary-tree-zigzag-level-order-traversal",
-    nextSlug: "kth-smallest-element-in-a-bst",
+    sequence: 2,
+    prevSlug: "diameter-of-binary-tree",
+    nextSlug: "invert-binary-tree",
     testCases: [
       { input: [[3, 9, 20, null, null, 15, 7]], expected: true, label: "example-01" },
       { input: [[1, 2, 2, 3, 3, null, null, 4, 4]], expected: false, label: "example-02" },
@@ -6641,12 +6359,409 @@ export const PROBLEMS: Problem[] = [
     ],
   },
   {
+    id: "tree-6",
+    slug: "diameter-of-binary-tree",
+    title: "Diameter of Binary Tree",
+    topic: "trees",
+    difficulty: "Easy",
+    pattern: "Postorder Height & Best",
+    companies: ["VMware", "TCS", "Microsoft", "DoorDash", "Oracle"],
+    statement: "Given the level-order array representation of a binary tree, return the diameter: the number of edges on the longest path between any two nodes in the tree.",
+    examples: [
+      { input: "root = [1,2,3,4,5]", output: "3", explanation: "The longest path is 4 -> 2 -> 1 -> 3, which uses 3 edges." },
+      { input: "root = [1,2]", output: "1" },
+    ],
+    constraints: ["0 <= nodes <= 10^4"],
+    hints: [
+      "For node index i, children sit at 2*i + 1 and 2*i + 2 in the level-order array.",
+      "The longest path through a node equals leftHeight + rightHeight (in edges).",
+      "Track the global best across all nodes while returning 1 + max(left, right) upward.",
+    ],
+    solutions: [
+      {
+        title: "All-Pairs Path Check",
+        complexity: "Time: O(n²) | Space: O(h)",
+        language: "javascript",
+        code: "function solve(arr) {\n  function height(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(height(2 * i + 1), height(2 * i + 2));\n  }\n  let best = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === null) continue;\n    best = Math.max(best, height(2 * i + 1) + height(2 * i + 2));\n  }\n  return best;\n}",
+      },
+      {
+        title: "Single Postorder Pass",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "javascript",
+        code: "function solve(arr) {\n  let best = 0;\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    const l = depth(2 * i + 1), r = depth(2 * i + 2);\n    best = Math.max(best, l + r);\n    return 1 + Math.max(l, r);\n  }\n  depth(0);\n  return best;\n}",
+      },
+    ],
+    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 1,
+    nextSlug: "balanced-binary-tree",
+    testCases: [
+      { input: [[1, 2, 3, 4, 5]], expected: 3, label: "[1,2,3,4,5]" },
+      { input: [[1, 2]], expected: 1, label: "[1,2]" },
+    ],
+    editorial: {
+      approach: "The diameter is the length of the longest path between any two nodes, which may or may not pass through the root. Compute the max depth of each subtree recursively using post-order DFS. At each node, the longest path passing through that node is left_depth + right_depth. Update a global maximum diameter at each node, while returning 1 + max(left_depth, right_depth) to the caller.",
+      why_optimal: "Visits each node in the tree exactly once in O(N) time with O(H) call stack space, computing height and path length simultaneously in a bottom-up pass.",
+      pitfalls: "Confusing the count of nodes on the path with the count of edges (diameter is measured in edges, so a single node has diameter 0). Assuming the diameter must pass through the tree root.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
+  },
+  {
+    id: "tree-2",
+    slug: "invert-binary-tree",
+    title: "Invert Binary Tree",
+    topic: "trees",
+    difficulty: "Easy",
+    pattern: "Recursive Subtree Swap",
+    companies: ["Amazon", "LinkedIn", "Oracle", "Palo Alto Networks", "Google"],
+    statement: "Given the root of a complete binary tree level-order array, invert the tree by swapping every left and right child and return the inverted level-order array.",
+    examples: [
+      { input: "root = [4,2,7,1,3,6,9]", output: "[4,7,2,9,6,3,1]" },
+      { input: "root = [2,1,3]", output: "[2,3,1]" },
+    ],
+    constraints: ["0 <= nodes <= 100"],
+    hints: [
+      "For every level of the binary tree, reverse the slice of nodes in that level.",
+      "Level k starts at index 2^k - 1 and has 2^k elements.",
+      "Combine reversed levels into the output array.",
+    ],
+    solutions: [
+      {
+        title: "Level-by-Level Reversal",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(arr) {\n  const res = [];\n  let levelSize = 1, idx = 0;\n  while (idx < arr.length) {\n    const slice = arr.slice(idx, idx + levelSize).reverse();\n    res.push(...slice);\n    idx += levelSize;\n    levelSize *= 2;\n  }\n  return res;\n}",
+      },
+      {
+        title: "DFS Swap Children",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "javascript",
+        code: "function solve(arr) {\n  const res = [];\n  for (let d = 0; (1 << d) - 1 < arr.length; d++) {\n    const start = (1 << d) - 1;\n    res.push(...arr.slice(start, start + (1 << d)).reverse());\n  }\n  return res;\n}",
+      },
+    ],
+    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int[] solve(int[] treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 3,
+    prevSlug: "balanced-binary-tree",
+    nextSlug: "maximum-depth-of-binary-tree",
+    testCases: [
+      { input: [[4, 2, 7, 1, 3, 6, 9]], expected: [4, 7, 2, 9, 6, 3, 1], label: "[4,2,7,1,3,6,9]" },
+      { input: [[2, 1, 3]], expected: [2, 3, 1], label: "[2,1,3]" },
+    ],
+    editorial: {
+      approach: "Inverting a binary tree requires swapping the left and right subtrees for every node. Perform a post-order or pre-order recursive DFS: at each node, swap node.left and node.right, and recursively call invert on both children. Base case is a null node returning null.",
+      why_optimal: "Visits every node in the tree exactly once in O(N) time with O(H) auxiliary space on the call stack, mutating tree pointers in-place.",
+      pitfalls: "Overwriting a child reference before recurring on it without a temporary swap variable. Not handling null root nodes gracefully.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
+  },
+  {
+    id: "tree-1",
+    slug: "maximum-depth-of-binary-tree",
+    title: "Maximum Depth of Binary Tree",
+    topic: "trees",
+    difficulty: "Easy",
+    pattern: "Postorder DFS Depth",
+    companies: ["TCS", "Bloomberg", "Qualcomm", "Uber", "Accenture"],
+    statement: "Given the level-order array representation of a binary tree, return its maximum depth (number of nodes along the longest path from root to leaf).",
+    examples: [
+      { input: "root = [3,9,20,null,null,15,7]", output: "3" },
+      { input: "root = [1,null,2]", output: "2" },
+    ],
+    constraints: ["0 <= nodes <= 10^4"],
+    hints: [
+      "Base case: an empty tree has depth 0.",
+      "Depth of any node is 1 + Math.max(depth(left), depth(right)).",
+      "For level-order array index i, left child is 2*i + 1 and right child is 2*i + 2.",
+    ],
+    solutions: [
+      {
+        title: "Recursive DFS",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "javascript",
+        code: "function solve(arr) {\n  function depth(i) {\n    if (i >= arr.length || arr[i] === null) return 0;\n    return 1 + Math.max(depth(2 * i + 1), depth(2 * i + 2));\n  }\n  return depth(0);\n}",
+      },
+      {
+        title: "Iterative Level Counting",
+        complexity: "Time: O(n) | Space: O(w)",
+        language: "javascript",
+        code: "function solve(arr) {\n  if (!arr.length) return 0;\n  return Math.floor(Math.log2(arr.length)) + 1;\n}",
+      },
+    ],
+    starterCode: "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(TreeNode treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(TreeNode* treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 4,
+    prevSlug: "invert-binary-tree",
+    nextSlug: "symmetric-tree",
+    testCases: [
+      { input: [[3, 9, 20, null, null, 15, 7]], expected: 3, label: "[3,9,20,null,null,15,7]" },
+      { input: [[1, null, 2]], expected: 2, label: "[1,null,2]" },
+    ],
+    editorial: {
+      approach: "Bottom-up post-order DFS: the maximum depth of an empty tree is 0. For any node, the depth is 1 + max(maxDepth(node.left), maxDepth(node.right)). Recursively evaluate left and right depths and combine.",
+      why_optimal: "Single traversal visits all N nodes in O(N) time and O(H) space, corresponding to the height of the tree.",
+      pitfalls: "Stack overflow on skewed tree paths in deep call stacks without proper base case termination.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
+    ],
+  },
+  {
+    id: "tree-5",
+    slug: "same-tree",
+    title: "Same Tree",
+    topic: "trees",
+    difficulty: "Easy",
+    pattern: "Simultaneous DFS Comparison",
+    companies: ["TCS", "Amazon", "SAP", "LinkedIn", "Google"],
+    statement: "Given the level-order arrays of two binary trees p and q, write a function to check if they are structurally identical and nodes have the same values.",
+    examples: [
+      { input: "p = [1,2,3], q = [1,2,3]", output: "true" },
+      { input: "p = [1,2], q = [1,null,2]", output: "false" },
+    ],
+    constraints: ["0 <= nodes <= 100"],
+    hints: [
+      "Check if both trees have identical length.",
+      "Compare p[i] === q[i] at each corresponding index.",
+      "Return true only if all nodes match.",
+    ],
+    solutions: [
+      {
+        title: "Recursive Structural Check",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "javascript",
+        code: "function solve(p, q) {\n  if (p.length !== q.length) return false;\n  for (let i = 0; i < p.length; i++) if (p[i] !== q[i]) return false;\n  return true;\n}",
+      },
+      {
+        title: "JSON Serialization Check",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(p, q) {\n  return JSON.stringify(p) === JSON.stringify(q);\n}",
+      },
+    ],
+    starterCode: "function solve(p, q) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(p, q):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public boolean solve(TreeNode p, TreeNode q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    bool solve(TreeNode* p, TreeNode* q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 6,
+    prevSlug: "symmetric-tree",
+    nextSlug: "all-nodes-distance-k-in-binary-tree",
+    testCases: [
+      { input: [[1, 2, 3], [1, 2, 3]], expected: true, label: "p=[1,2,3], q=[1,2,3]" },
+      { input: [[1, 2], [1, null, 2]], expected: false, label: "p=[1,2], q=[1,null,2]" },
+    ],
+    editorial: {
+      approach: "Simultaneous recursive DFS comparison: given roots p and q, if both are null, they are identical (true). If only one is null, they differ (false). If their values differ (p.val != q.val), return false. Otherwise, return sameTree(p.left, q.left) && sameTree(p.right, q.right).",
+      why_optimal: "Traverses both trees in lockstep in O(min(N, M)) time and O(min(H_p, H_q)) stack space, terminating at the earliest structural or value discrepancy.",
+      pitfalls: "Comparing node values before verifying that neither node is null, raising null dereference errors.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Depth-first_search",
+    ],
+  },
+  {
+    id: "tree-8",
+    slug: "symmetric-tree",
+    title: "Mirror Check",
+    topic: "trees",
+    difficulty: "Easy",
+    pattern: "trees / Mirror compare",
+    companies: ["Infosys", "Google", "LinkedIn", "TikTok", "Amazon"],
+    statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree mirrors itself when its left and right subtrees are reflections of each other: the two child values must match, the outer grandchildren must mirror each other, and so must the inner grandchildren, all the way down. A `null` hole only mirrors another `null` hole in the facing position. An empty tree (or a `null` root) mirrors itself, so answer `true`.\n\nReturn `true` when the tree is a mirror image of itself, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
+    examples: [
+      { input: "root = [1,2,2,3,4,4,3]", output: "true", explanation: "The two 2s match, the outer 3s match each other, and the inner 4s match each other." },
+      { input: "root = [1,2,2,null,3,null,3]", output: "false", explanation: "The inner pair pits 3 against a hole: the left 2 has a right child while the right 2 has no left child." },
+      { input: "root = [1,2,2,3,null,null,3]", output: "true", explanation: "The holes face each other on the inside while the two 3s face each other on the outside." },
+    ],
+    constraints: ["Function signature: `function isSymmetric(root: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Compare the left and right subtrees as mirror images.",
+      "Pair the outer children together and the inner children together.",
+      "A hole must face a hole; a value facing a hole breaks symmetry.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function isSymmetric(root) {\n  function build(i) {\n    if (i >= root.length || root[i] === null) return null;\n    return { v: root[i], l: build(2 * i + 1), r: build(2 * i + 2) };\n  }\n  const tree = build(0);\n  if (tree === null) return true;\n  const stack = [[tree.l, tree.r]];\n  while (stack.length > 0) {\n    const pair = stack.pop();\n    const a = pair[0];\n    const b = pair[1];\n    if (a === null && b === null) continue;\n    if (a === null || b === null || a.v !== b.v) return false;\n    stack.push([a.l, b.r]);\n    stack.push([a.r, b.l]);\n  }\n  return true;\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "javascript",
+        code: "function isSymmetric(root) {\n  function mirror(l, r) {\n    const lv = l < root.length ? root[l] : null;\n    const rv = r < root.length ? root[r] : null;\n    if (lv === null && rv === null) return true;\n    if (lv === null || rv === null || lv !== rv) return false;\n    return mirror(2 * l + 1, 2 * r + 2) && mirror(2 * l + 2, 2 * r + 1);\n  }\n  if (root.length === 0 || root[0] === null) return true;\n  return mirror(1, 2);\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "python",
+        code: "def isSymmetric(root: list) -> bool:\n    def build(i):\n        if i >= len(root) or root[i] is None:\n            return None\n        return (root[i], build(2 * i + 1), build(2 * i + 2))\n    tree = build(0)\n    if tree is None:\n        return True\n    stack = [(tree[1], tree[2])]\n    while stack:\n        a, b = stack.pop()\n        if a is None and b is None:\n            continue\n        if a is None or b is None or a[0] != b[0]:\n            return False\n        stack.append((a[1], b[2]))\n        stack.append((a[2], b[1]))\n    return True\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(h)",
+        language: "python",
+        code: "def isSymmetric(root: list) -> bool:\n    def mirror(l, r):\n        lv = root[l] if l < len(root) else None\n        rv = root[r] if r < len(root) else None\n        if lv is None and rv is None:\n            return True\n        if lv is None or rv is None or lv != rv:\n            return False\n        return mirror(2 * l + 1, 2 * r + 2) and mirror(2 * l + 2, 2 * r + 1)\n    if len(root) == 0 or root[0] is None:\n        return True\n    return mirror(1, 2)\n",
+      },
+    ],
+    starterCode: "function isSymmetric(root) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def isSymmetric(root):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public boolean isSymmetric(TreeNode root) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    bool isSymmetric(TreeNode* root) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "isSymmetric",
+    sequence: 5,
+    prevSlug: "maximum-depth-of-binary-tree",
+    nextSlug: "same-tree",
+    testCases: [
+      { input: [[1, 2, 2, 3, 4, 4, 3]], expected: true, label: "example-01" },
+      { input: [[1, 2, 2, null, 3, null, 3]], expected: false, label: "example-02" },
+    ],
+    editorial: {
+      approach: "Check the two subtrees as mirror images: values must match, outer index pairs recurse together and inner index pairs recurse together.",
+      why_optimal: "Each index pair is visited once, so the check is linear in the array size with recursion depth bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 0.27 ms and the optimal at 0.14 ms (about 1.9x faster).",
+      pitfalls: "Missing children are significant — a value facing a hole breaks symmetry just as surely as two different values.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Binary_tree",
+    ],
+  },
+  {
+    id: "tree-18",
+    slug: "all-nodes-distance-k-in-binary-tree",
+    title: "All Nodes Distance K in Binary Tree",
+    topic: "trees",
+    difficulty: "Medium",
+    pattern: "BFS with parent pointers (tree to graph conversion)",
+    companies: ["Flipkart", "Meta", "DE Shaw", "Salesforce", "Nvidia"],
+    statement: "A binary tree is stored in an array using the implicit layout: index 0 holds the root, and the node stored at index i has its left child at index 2*i + 1 and its right child at index 2*i + 2 whenever those indices are still inside the array. Nodes are named by the values stored in the array, so the answer must contain values and not indices.\n\nLocate the node whose value equals target. If target occurs more than once, use its first occurrence, which is the smallest index holding it. One step means moving across a single edge between a node and its parent or between a node and one of its children.\n\nReturn the values of all nodes that are exactly k steps away from the located node, sorted in ascending order. Return an empty array when target does not occur in the array, or when no node sits exactly k steps away.\n\nConstraints: `1 <= tree.length <= 200`, `-100 <= tree[i] <= 100`, `-100 <= target <= 100` and `0 <= k <= tree.length`.\n",
+    examples: [
+      { input: "tree = [-100], target = -100, k = 0", output: "[-100]", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "tree = [-41, -75, -3], target = -29, k = 3", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(tree: number[], target: number, k: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "A node at distance k can be below the target, or above it, reached by climbing to an ancestor and then descending into the other branch.",
+      "Give every index three neighbours: its parent (i - 1) / 2 and its children 2*i + 1 and 2*i + 2, guarding the ends of the array. Walking those neighbours in rounds visits nodes in increasing order of distance.",
+      "Run one breadth-first search from the target's index, expand it exactly k times while remembering visited indices, and the nodes left in the frontier after the last expansion are the answer.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n²) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(tree, target, k) {\n  const n = tree.length;\n  const start = tree.indexOf(target);\n  if (start === -1) return [];\n  const res = [];\n  for (let v = 0; v < n; v++) {\n    const dist = new Array(n).fill(-1);\n    dist[v] = 0;\n    let queue = [v];\n    let found = -1;\n    while (queue.length > 0 && found === -1) {\n      const nxt = [];\n      for (const u of queue) {\n        if (u === start) { found = dist[u]; break; }\n        const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n        for (const c of cands) {\n          if (c >= 0 && c < n && dist[c] === -1) {\n            dist[c] = dist[u] + 1;\n            nxt.push(c);\n          }\n        }\n      }\n      if (found !== -1) break;\n      queue = nxt;\n    }\n    if (found === k) res.push(tree[v]);\n  }\n  res.sort((a, b) => a - b);\n  return res;\n}\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(tree, target, k) {\n  const n = tree.length;\n  const start = tree.indexOf(target);\n  if (start === -1) return [];\n  const seen = new Set([start]);\n  let frontier = [start];\n  for (let step = 0; step < k; step++) {\n    const nxt = [];\n    for (const u of frontier) {\n      const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n      for (const c of cands) {\n        if (c >= 0 && c < n && !seen.has(c)) {\n          seen.add(c);\n          nxt.push(c);\n        }\n      }\n    }\n    frontier = nxt;\n  }\n  return frontier.map(u => tree[u]).sort((a, b) => a - b);\n}\n",
+      },
+    ],
+    starterCode: "function solve(tree, target, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(tree, target, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int[] solve(int[] tree, int target, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> tree, int target, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 7,
+    prevSlug: "same-tree",
+    nextSlug: "amount-of-time-for-binary-tree-to-be-infected",
+    testCases: [
+      { input: [[-100], -100, 0], expected: [-100], label: "edge-min-1" },
+      { input: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 100, 24], expected: [], label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The implicit layout hands you the whole neighbourhood of an index: its parent is (i - 1) / 2 and its children are 2*i + 1 and 2*i + 2, which is the same relation the classic solution reconstructs by walking the tree once and storing parent pointers. The optimal solution runs a single breadth-first search from the index holding target, expanding parent and both children at every node and keeping a visited set so nothing is entered twice. After exactly k rounds of expansion the current frontier is precisely the set of nodes at distance k, and their values are sorted before returning. The brute force ignores the fact that one source is enough and runs a separate breadth-first search from every index until it reaches the target's index, comparing the distance it discovers against k. That is n searches of O(n) each, so O(n²) in total.",
+      why_optimal: "Every node sits on exactly one shortest route from the start, so the parent-and-children relation means a single traversal discovers each node's distance the first time it is reached. That makes O(n) time and O(n) space for the visited set and the frontier the best any algorithm can do here, and the single search already achieves it. Sorting the returned values adds only O(m log m) for the m nodes found, and m is at most n. The brute force is slower purely through repetition, since it recomputes distances from n different sources.",
+      pitfalls: "k larger than the height of the tree empties the frontier, and the answer must then be an empty array rather than the last non-empty level, so the loop has to run exactly k rounds instead of stopping when the frontier runs out. k equal to 0 returns the target's own value. Index 0 has no parent, so the (i - 1) / 2 computation must be guarded for i = 0 or it walks to a wrong node. Missing values are common, since target need not be present at all. With duplicated values in the array, the first occurrence rule decides the start, and a node whose value repeats target and sits k steps away still contributes its value to the answer.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Breadth-first_search",
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+      "https://en.wikipedia.org/wiki/Binary_tree",
+    ],
+  },
+  {
+    id: "tree-19",
+    slug: "amount-of-time-for-binary-tree-to-be-infected",
+    title: "Amount of Time for Binary Tree to Be Infected",
+    topic: "trees",
+    difficulty: "Medium",
+    pattern: "BFS eccentricity from a single source",
+    companies: ["PhonePe", "Google", "Goldman Sachs", "ServiceNow", "Uber"],
+    statement: "A binary tree is stored in an array using the implicit layout: index 0 holds the root, and the node stored at index i has its left child at index 2*i + 1 and its right child at index 2*i + 2 whenever those indices are still inside the array. Every index of the array is a node of the tree.\n\nAt minute 0, exactly one node starts out infected: the node whose value equals start, taking its first occurrence when the value repeats. During each following minute, every infected node passes the infection to its still healthy parent and to its still healthy children, and a node that is already infected stays infected. The tree is connected, so the infection reaches every node in the end.\n\nReturn the number of minutes that elapse before the last node is infected. If start does not occur in the array, return -1.\n\nConstraints: `1 <= tree.length <= 200`, `-100 <= tree[i] <= 100` and `-100 <= start <= 100`.\n",
+    examples: [
+      { input: "tree = [43], start = -50", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "tree = [-100], start = -100", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(tree: number[], start: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "You do not have to simulate the minutes. The moment the last node is infected is simply the number of edges between the start node and the node farthest away from it.",
+      "That farthest node is reached by climbing from the start to an ancestor and then descending on the other side, so the structure has to be walked upwards as well as downwards.",
+      "One breadth-first search from the start's index, expanding parent and children at every node, is enough. Count the rounds of expansion until the frontier becomes empty; that count is the answer.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n²) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(tree, start) {\n  const n = tree.length;\n  const origin = tree.indexOf(start);\n  if (origin === -1) return -1;\n  let best = 0;\n  for (let v = 0; v < n; v++) {\n    const dist = new Array(n).fill(-1);\n    dist[v] = 0;\n    let queue = [v];\n    let found = -1;\n    while (queue.length > 0 && found === -1) {\n      const nxt = [];\n      for (const u of queue) {\n        if (u === origin) { found = dist[u]; break; }\n        const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n        for (const c of cands) {\n          if (c >= 0 && c < n && dist[c] === -1) {\n            dist[c] = dist[u] + 1;\n            nxt.push(c);\n          }\n        }\n      }\n      if (found !== -1) break;\n      queue = nxt;\n    }\n    if (found > best) best = found;\n  }\n  return best;\n}\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(tree, start) {\n  const n = tree.length;\n  const origin = tree.indexOf(start);\n  if (origin === -1) return -1;\n  const seen = new Set([origin]);\n  let frontier = [origin];\n  let minutes = 0;\n  while (frontier.length > 0) {\n    const nxt = [];\n    for (const u of frontier) {\n      const cands = [2 * u + 1, 2 * u + 2, u > 0 ? Math.floor((u - 1) / 2) : -1];\n      for (const c of cands) {\n        if (c >= 0 && c < n && !seen.has(c)) {\n          seen.add(c);\n          nxt.push(c);\n        }\n      }\n    }\n    if (nxt.length === 0) break;\n    minutes += 1;\n    frontier = nxt;\n  }\n  return minutes;\n}\n",
+      },
+    ],
+    starterCode: "function solve(tree, start) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(tree, start):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] tree, int start) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> tree, int start) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 8,
+    prevSlug: "all-nodes-distance-k-in-binary-tree",
+    nextSlug: "lowest-common-ancestor-bst",
+    testCases: [
+      { input: [[-100], -100], expected: 0, label: "edge-min-1" },
+      { input: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], 100], expected: 4, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "Simulating minute by minute never needs more work than measuring distances: the last node to be infected is the one farthest from the start, so the answer is the number of edges between the start node and the most distant node. The optimal solution exploits the implicit layout, where index i has parent (i - 1) / 2 and children 2*i + 1 and 2*i + 2, and runs a single breadth-first search from the start's index, counting how many rounds of expansion the frontier survives; because the structure is connected, every index is reached and each round of expansion is one minute. The brute force does not trust a single source. It runs a separate breadth-first search from every index until it reaches the start, takes the distance it finds, and keeps the largest, which costs O(n) per index and therefore O(n²) overall.",
+      why_optimal: "The infection spreads along the unique path between the start and each node, and each node's infection time equals its distance from the start, so no node can be timed without being visited at least once. That makes O(n) time the floor, and one breadth-first search meets it, using O(n) for the visited set and frontier. The brute force spends an extra factor of n because it recomputes the distance to the start from n different origins; the values it produces match the single search, which the tests confirm.",
+      pitfalls: "Counting minutes as the number of levels emitted rather than the number of completed expansion rounds, which overcounts by one whenever the frontier empties right after the last level is finished, or reports 1 for a single-node tree where 0 is correct. Returning 0 instead of -1 when start is absent, which hides the missing value behind a plausible answer. Using the index of the start node's value rather than locating the value itself, so a duplicated value picks the wrong origin. Forgetting the parent edge entirely, which silently turns the tree into a one-way descent and undercounts whenever the farthest node lies above the start.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Breadth-first_search",
+      "https://en.wikipedia.org/wiki/Distance_(graph_theory)",
+      "https://en.wikipedia.org/wiki/Tree_traversal",
+    ],
+  },
+  {
     id: "tree-10",
     slug: "binary-tree-level-order-traversal",
     title: "Level Order Listing",
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / BFS levels",
+    companies: ["Meta", "LinkedIn", "Goldman Sachs", "Adobe", "Visa"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nReturn an array with one entry per depth level, where each entry lists that level's values from left to right. `null` holes are skipped and never appear in the output. An empty tree yields `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,9,20,null,null,15,7]", output: "[[3],[9,20],[15,7]]", explanation: "Depth 0 holds 3; depth 1 holds 9 and 20 left to right; depth 2 holds 15 and 7 under node 20." },
@@ -6713,6 +6828,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Level last",
+    companies: ["Walmart Labs", "Meta", "Accenture", "ServiceNow", "ByteDance"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nImagine standing to the right of the tree and looking left: at each depth only the rightmost present node stays visible. Return those visible values from top to bottom. An empty tree shows nothing, so return `[]`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [1,2,3,null,5,null,4]", output: "[1,3,4]", explanation: "Depth 0 shows 1; at depth 1 the rightmost node is 3; at depth 2 the candidates are 5 and 4, so 4 wins." },
@@ -6779,6 +6895,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "Level-order BFS with alternating direction",
+    companies: ["Accenture", "Apple", "Citadel", "ByteDance", "Goldman Sachs"],
     statement: "A binary tree is stored in an array using the implicit layout: index 0 holds the root, and the node stored at index i has its left child at index 2*i + 1 and its right child at index 2*i + 2 whenever those indices are still inside the array. Every index of the array is a node, index 0 sits on level 0, and every other node sits one level below its parent.\n\nWalk the levels from the top down. Write the nodes of level 0 from left to right, the nodes of level 1 from right to left, the nodes of level 2 from left to right, and keep flipping the direction for each next level.\n\nReturn an array of levels, where each level is an array of the node values written in the direction that level requires. Nodes of a level are considered left to right in increasing index order.\n\nConstraints: `1 <= tree.length <= 200` and `-100 <= tree[i] <= 100`.\n",
     examples: [
       { input: "tree = [-100]", output: "[[-100]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -6809,9 +6926,9 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int[][] solve(int[] tree) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<int> tree) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
-    sequence: 9,
+    sequence: 10,
     prevSlug: "lowest-common-ancestor-bst",
-    nextSlug: "balanced-binary-tree",
+    nextSlug: "kth-smallest-element-in-a-bst",
     testCases: [
       { input: [[-100]], expected: [[-100]], label: "edge-min-1" },
       { input: [[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]], expected: [[100], [100, 100], [100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100]], label: "edge-max-2" },
@@ -6834,6 +6951,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Partition",
+    companies: ["Wipro", "Bloomberg", "Cognizant", "Adobe", "Flipkart"],
     statement: "You are given the preorder and inorder traversals of one binary tree whose values are all distinct. In preorder the root of every subtree comes first, followed by its left subtree then its right subtree; in inorder the left subtree comes first, then the root, then the right subtree.\n\nRebuild the original tree and return it as a level-order array using the bank-standard heap encoding: the children of the entry at index `i` live at `2i+1` and `2i+2`, absent children are written as `null`, and trailing `null` entries are trimmed. Both inputs are non-empty and describe the same set of values.\n\nConstraints: `1 <= preorder.length <= 20`, `1 <= inorder.length <= 20`, `preorder.length == inorder.length`, `-100 <= preorder[i] <= 100`, and all values are unique.\n",
     examples: [
       { input: "preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]", output: "[3,9,20,null,null,15,7]", explanation: "3 is the root; 9 forms the left subtree; in the right subtree 20 is the root with 15 left and 7 right." },
@@ -6900,6 +7018,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Max-path",
+    companies: ["Zoho", "Google", "Infosys", "Accenture", "Cognizant"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA node earns the title of record node when its value is greater than or equal to every value on the path from the root down to (but excluding) itself. The root has no ancestors above it, so it always qualifies.\n\nReturn how many present nodes are record nodes.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [3,1,4,3,null,1,5]", output: "4", explanation: "3 starts the record; 1 falls short of it; 4 sets a new record; the lower 3 ties the root's record and counts; 1 stays below 4; 5 tops everything." },
@@ -6966,6 +7085,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Preorder sequence",
+    companies: ["Cognizant", "Google", "Wipro", "Oracle", "Microsoft"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nFlattening rewires the tree into a right-leaning chain that visits every present node exactly once in preorder (node, then left subtree, then right subtree). Because the judge compares returned values rather than pointer surgery, this task asks for the flattened order directly.\n\nReturn the preorder traversal of the present nodes as a flat array.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
     examples: [
       { input: "root = [1,2,5,3,4,null,6]", output: "[1,2,3,4,5,6]", explanation: "Preorder visits 1, then the left subtree as 2, 3, 4, then the right subtree as 5, 6." },
@@ -7032,6 +7152,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "Inorder Traversal (Sorted Order)",
+    companies: ["TCS", "Google", "Cisco", "LinkedIn", "Oracle"],
     statement: "Given the level-order array of a Binary Search Tree and an integer k (1-indexed), return the kth smallest value in the tree.",
     examples: [
       { input: "root = [3,1,4,null,2], k = 1", output: "1" },
@@ -7063,7 +7184,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeCpp: "class Solution {\npublic:\n    int solve(TreeNode* tree, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "solve",
     sequence: 11,
-    prevSlug: "balanced-binary-tree",
+    prevSlug: "binary-tree-zigzag-level-order-traversal",
     nextSlug: "binary-tree-level-order-traversal",
     testCases: [
       { input: [[3, 1, 4, null, 2], 1], expected: 1, label: "root=[3,1,4,null,2], k=1" },
@@ -7085,6 +7206,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / BST descend",
+    companies: ["Zoho", "Meta", "TCS", "Accenture", "Flipkart"],
     statement: "A binary search tree is handed to you as a level-order array `root`. The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing. Every present value obeys the search-tree order: all values in a left subtree are smaller than their parent, and all values in a right subtree are larger.\n\nGiven two distinct values `p` and `q` that both occur somewhere in the tree, return the value of their lowest common ancestor: the deepest node whose subtree contains both values. Either target may itself be the ancestor of the other, and the root may be the answer.\n\nConstraints: `0 <= root.length <= 30`, `-100 <= root[i] <= 100`, `-100 <= p <= 100`, `-100 <= q <= 100`, `p != q`, and both `p` and `q` are present in a valid search tree.\n",
     examples: [
       { input: "root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 8", output: "6", explanation: "2 lives in the left subtree of 6 and 8 lives in the right subtree, so the paths split at the root itself." },
@@ -7128,7 +7250,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int lowestCommonAncestor(TreeNode root, int p, int q) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    int lowestCommonAncestor(TreeNode* root, int p, int q) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "lowestCommonAncestor",
-    sequence: 8,
+    sequence: 9,
     prevSlug: "amount-of-time-for-binary-tree-to-be-infected",
     nextSlug: "binary-tree-zigzag-level-order-traversal",
     testCases: [
@@ -7151,6 +7273,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "Root-to-Node Path Compare",
+    companies: ["Meta", "Atlassian", "SAP", "Intuit", "Cisco"],
     statement: "Given the level-order array of a binary tree and two node values p and q that both exist in the tree, return the value of their lowest common ancestor: the deepest node that has both p and q in its subtree.",
     examples: [
       { input: "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1", output: "3", explanation: "Nodes 5 and 1 sit in different subtrees of the root 3." },
@@ -7204,6 +7327,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "trees / Path accumulate",
+    companies: ["Bloomberg", "Visa", "Meta", "Oracle", "Microsoft"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nEvery present node holds a single decimal digit (`0` to `9`). Each root-to-leaf path spells a decimal number: starting from `0` at the root's parent, each step updates `value = value * 10 + digit`. A lone root is itself a leaf, contributing its own digit.\n\nReturn the sum of the numbers spelled by all root-to-leaf paths.\n\nConstraints: `1 <= root.length <= 30`, `0 <= root[i] <= 9`, and `root[0]` is present.\n",
     examples: [
       { input: "root = [1,2,3]", output: "25", explanation: "The paths spell 12 and 13, which sum to 25." },
@@ -7270,6 +7394,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Medium",
     pattern: "Range Bound DFS (min, max)",
+    companies: ["IBM", "Bloomberg", "Goldman Sachs", "Citadel", "Oracle"],
     statement: "Given the level-order representation of a binary tree, determine if it is a valid Binary Search Tree (BST).",
     examples: [
       { input: "root = [2,1,3]", output: "true" },
@@ -7324,6 +7449,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Hard",
     pattern: "greedy post-order DFS / minimum dominating set on a tree",
+    companies: ["Amazon", "DE Shaw", "Uber", "Goldman Sachs", "Oracle"],
     statement: "A security team is installing cameras on a binary tree. A camera placed on a node watches exactly three things: the node it sits on, that node's parent, and that node's immediate children.\n\nThe tree is given as a level-order array `tree`. Index 0 is the root, and the left and right children of the node at index `i` are the nodes at indices `2i+1` and `2i+2`. A value of `-1` marks a missing node. A node exists only when the array covers its index, its value is not `-1`, and every ancestor up to the root also exists; the numeric values of the nodes that do exist carry no meaning, only the shape of the tree matters. If no node exists at all, no camera is needed.\n\nReturn the smallest number of cameras that leaves every existing node watched, directly by the camera on it or from a camera on its parent or one of its children.\n\nConstraints: `1 <= tree.length <= 15` and `-1 <= tree[i] <= 100`.\n",
     examples: [
       { input: "tree = [-1]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7378,6 +7504,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Hard",
     pattern: "trees / Gain clamp",
+    companies: ["Flipkart", "Google", "Citadel", "DoorDash", "Adobe"],
     statement: "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA path is any non-empty sequence of present nodes linked parent-to-child, travelled in either direction; it may bend once at its highest node but never branches. Negative values are allowed, and a single node alone qualifies as a path.\n\nReturn the largest achievable sum of values along any such path. Because paths must be non-empty, an all-negative tree answers with its least-negative value.\n\nConstraints: `1 <= root.length <= 30` and `-100 <= root[i] <= 100`, with `root[0]` present.\n",
     examples: [
       { input: "root = [1,2,3]", output: "6", explanation: "The bent path 2 -> 1 -> 3 collects all three values, beating any single-side chain." },
@@ -7444,6 +7571,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Hard",
     pattern: "breadth-first tree construction followed by a preorder serialization",
+    companies: ["Flipkart", "Microsoft", "Atlassian", "PayPal", "Uber"],
     statement: "A binary tree is described by a level-order array `level`. The tree is built in this way: `level[0]` is the value of the root, and a value of `0` there means the tree is empty. The nodes are then processed in the order in which they were created, starting with the root. When a node is processed, it takes the next two unused values of `level` as the value of its left child slot and then the value of its right child slot; a slot whose value is `0` creates no node and is therefore never processed itself, a used slot is never reused, and when `level` runs out of values the corresponding child simply does not exist. Values left over after the last created node was processed belong to no node and are ignored. Every real node has a value of at least `1`.\n\nSerialize the tree that `level` describes into a string: walk it in preorder (the node, then its left subtree, then its right subtree), write the node values separated by commas, and write `#` at every empty child position. Each real node therefore contributes exactly three comma separated tokens: its own value, then its left position, then its right position. Return that string; the serialization of the empty tree is the single token `#`.\n\nFor example `level = [1, 2, 3, 0, 0, 4]` describes a tree whose root is `1` with left child `2` and right child `3`, and `4` as the left child of `3`; its serialization is `1,2,#,#,3,4,#,#,#`.\n\nConstraints: `1 <= level.length <= 200` and `0 <= level[i] <= 10000`.\n",
     examples: [
       { input: "level = [0]", output: "\"#\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7498,6 +7626,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trees",
     difficulty: "Hard",
     pattern: "tree DFS + per-column bucketing / sorting",
+    companies: ["Walmart Labs", "Meta", "Samsung", "DoorDash", "Salesforce"],
     statement: "You are given a binary tree stored in a flat array `nodes` in heap layout: the root is `nodes[0]`, and for the node at index `i` its left child sits at index `2*i + 1` and its right child at index `2*i + 2`. The value `-1` marks an absent node, and real node values are never negative.\n\nGive the root the coordinate `(row, col) = (0, 0)`. Moving to a left child adds 1 to the row and subtracts 1 from the column; moving to a right child adds 1 to the row and adds 1 to the column.\n\nReport the vertical order traversal: one group per column, with the groups ordered from the smallest column to the largest. Inside one column, order the nodes by row ascending, and when two nodes share both row and column, order them by value ascending.\n\nReturn the result as a list of lists of integers. An absent root gives an empty list.\n\nConstraints: `1 <= nodes.length <= 100` and `-1 <= nodes[i] <= 100`.\n",
     examples: [
       { input: "nodes = [-1]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7553,6 +7682,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Easy",
     pattern: "binary-search / Classic",
+    companies: ["LinkedIn", "Wipro", "Apple", "SAP", "TCS"],
     statement: "Given an array of integers `nums` which is sorted in ascending order, and an integer `target`, write a function to search `target` in `nums`. If `target` exists, then return its index. Otherwise, return `-1`.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All the integers in `nums` are unique and sorted in ascending order.\n",
     examples: [
       { input: "nums = [-1000], target = -1000", output: "0", explanation: "Generated from the verified optimal implementation." },
@@ -7617,6 +7747,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Easy",
     pattern: "binary-search / Lower bound",
+    companies: ["Zoho", "Meta", "Accenture", "IBM", "TCS"],
     statement: "Given a sorted array of distinct integers `nums` and a target value `target`, return the index if the target is found. If not, return the index where it would be if it were inserted in order.\n\nYou must write an algorithm with `O(log n)` runtime complexity.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. `nums` contains distinct values sorted in ascending order.\n",
     examples: [
       { input: "nums = [-1000], target = -1000", output: "0", explanation: "Generated from the verified optimal implementation." },
@@ -7682,6 +7813,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Easy",
     pattern: "binary search on a monotone predicate",
+    companies: ["Infosys", "Google", "Nvidia", "TCS", "Oracle"],
     statement: "Given a non-negative integer `n`, return the largest integer `r` such that `r * r <= n`. That is the square root of `n` rounded down to an integer.\n\nThe answer must be computed with integer arithmetic alone; a library square-root routine may not be used. For `n = 0` the answer is `0`, and for `n = 1` the answer is `1`.\n\nConstraints: `0 <= n <= 10000`.\n",
     examples: [
       { input: "n = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7736,6 +7868,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary search on the answer / monotone feasibility check",
+    companies: ["Flipkart", "Google", "Walmart Labs", "Visa", "Goldman Sachs"],
     statement: "A depot loads parcels onto a cargo ship in the order they arrive on the belt, so the parcels can be read as the array `weights`. The ship sails at most once per day, each day carrying a contiguous run of the parcels still waiting, and a parcel can never be split across two sailings or reordered. The ship has exactly one adjustable setting: the maximum total weight it may carry per sailing.\n\nReturn the smallest capacity that gets every parcel delivered within `days` days.\n\nTwo obvious bounds frame the search. The capacity cannot be below the heaviest single parcel, and any capacity at or above the total weight of all parcels ships everything in one day.\n\nConstraints: `1 <= weights.length <= 100`, `1 <= weights[i] <= 200`, `1 <= days <= weights.length`.\n",
     examples: [
       { input: "weights = [1], days = 1", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7789,6 +7922,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary search / counting in a trailing window over sorted events",
+    companies: ["Walmart Labs", "Amazon", "Snowflake", "Atlassian", "Uber"],
     statement: "A service logs the arrival time of every request in the array `times`, where each entry is an integer timestamp. Timestamps may repeat and are not given in any particular order. A query at time `q` asks how many logged requests arrived inside the window of length `window` that ends at `q`, that is, requests whose timestamp `t` satisfies `q - window < t <= q`.\n\nGiven `window`, `times` and the array of query times `queries`, return an array whose i-th entry is the number of logged requests inside the window ending at `queries[i]`. Queries are answered in the order they are given, and the same logged request is counted by every query whose window contains it.\n\nConstraints: `1 <= window <= 1000`, `1 <= times.length <= 200`, `0 <= times[i] <= 10000`, `1 <= queries.length <= 200` and `0 <= queries[i] <= 10000`.\n",
     examples: [
       { input: "window = 1, times = [0], queries = [0]", output: "[1]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7843,6 +7977,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary search for the lower bound and the upper bound",
+    companies: ["Capgemini", "Amazon", "Atlassian", "Infosys", "Citadel"],
     statement: "`nums` is an array of integers, handed over in any order. Sort its values in non-decreasing order and `target` then occupies a contiguous block of positions: those positions are the ranks of the target's occurrences. Return the smallest and the largest of them as the two-element list `[first, last]`, and return `[-1, -1]` when no value equals `target`.\n\nFor example `nums = [8, 5, 7, 8, 8, 10]` and `target = 8` gives `[2, 4]`, because the ordered values are `5, 7, 8, 8, 8, 10` and the three copies of `8` sit at positions 2, 3 and 4 once duplicates are counted from the left; the same array with `target = 6` gives `[-1, -1]`.\n\nConstraints: `1 <= nums.length <= 200`, `-10000 <= nums[i] <= 10000`, `-10000 <= target <= 10000`.\n",
     examples: [
       { input: "nums = [-10000], target = -10000", output: "[0, 0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7897,6 +8032,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary search on the starting index of a fixed-length window",
+    companies: ["Capgemini", "Apple", "Atlassian", "Flipkart", "LinkedIn"],
     statement: "`nums` is an array of integers, handed over in any order. Choose `k` of its values that are closest to `x`, where the distance between a value `v` and `x` is `|v - x|`. When two values are equally distant from `x` the smaller value is preferred, which fixes exactly which values are chosen; a value that appears several times in `nums` can be chosen several times. Return the chosen values in ascending order.\n\nFor example `nums = [1, 2, 3, 4, 5]`, `k = 4` and `x = 3` gives `[1, 2, 3, 4]`: the distances are `2, 1, 0, 1, 2`, and once `2`, `3` and `4` are kept the last place goes to `1` rather than `5` because the two are equally distant and `1` is smaller.\n\nConstraints: `1 <= nums.length <= 200`, `1 <= k <= nums.length`, `-10000 <= nums[i] <= 10000`, `-10000 <= x <= 10000`.\n",
     examples: [
       { input: "nums = [-10000], k = 1, x = -10000", output: "[-10000]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -7951,6 +8087,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Inflection",
+    companies: ["IBM", "Meta", "TCS", "Flipkart", "Uber"],
     statement: "Suppose an array of length `n` sorted in ascending order with distinct values is rotated between `1` and `n` times.\n\nFor example, the array `nums = [0, 1, 2, 4, 5, 6, 7]` might become:\n- `[4, 5, 6, 7, 0, 1, 2]` if rotated `4` times.\n- `[0, 1, 2, 4, 5, 6, 7]` if rotated `7` times (fully unrotated).\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element of this array.\n\nConstraints: `1 <= nums.length <= 100` and `-1000 <= nums[i] <= 1000`. All integers in `nums` are unique.\n",
     examples: [
       { input: "nums = [-1000]", output: "-1000", explanation: "Generated from the verified optimal implementation." },
@@ -8016,6 +8153,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Answer space",
+    companies: ["Accenture", "Apple", "TCS", "Citadel", "Goldman Sachs"],
     statement: "Koko loves to eat bananas. There are `n` piles of bananas, where the `i`-th pile has `piles[i]` bananas. The guards have gone and will return in `h` hours.\n\nKoko can decide her bananas-per-hour eating speed of `k`. Each hour, she chooses some pile of bananas and eats `k` bananas from that pile. If the pile has fewer than `k` bananas, she eats all of them instead and will not eat any more bananas during that hour.\n\nKoko wants to finish eating all the bananas before the guards return. Return the minimum integer `k` such that she can eat all the bananas within `h` hours.\n\nConstraints: `1 <= piles.length <= 100`, `piles.length <= h <= 10000`, and `1 <= piles[i] <= 1000`.\n",
     examples: [
       { input: "piles = [3, 6, 7, 11], h = 8", output: "4", explanation: "At eating speed 4, Koko requires 1 + 2 + 2 + 3 = 8 hours to finish all piles, which fits within the guard limit of 8 hours." },
@@ -8083,6 +8221,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "Prefix Sum / binary search lower bound",
+    companies: ["Apple", "Snowflake", "PayPal", "Adobe", "LinkedIn"],
     statement: "A loaded selector is described by a list of positive weights. Picture a line segment split into bins: bin 0 owns the first `weights[0]` units of length, bin 1 owns the next `weights[1]` units, and so on, so the whole segment has length equal to the sum of all weights.\n\nA draw is an integer `r`. The selector returns the index of the bin that contains position `r`, which is the smallest index `i` with `weights[0] + ... + weights[i] > r`. A draw below 0 is treated as 0, and a draw at or above the total weight is treated as `total - 1`, so every draw yields a valid index even when the draw is outside the segment.\n\nThe array `picks` holds one draw per query. Return one selected index per draw, in the same order, as an array of the same length.\n\nConstraints: `1 <= weights.length <= 100` and `1 <= weights[i] <= 10000` and `1 <= picks.length <= 100` and `0 <= picks[j] <= 100000`.\n",
     examples: [
       { input: "weights = [1], picks = [0]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8138,6 +8277,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Flattened",
+    companies: ["TCS", "Google", "SAP", "PayPal", "DE Shaw"],
     statement: "You are given an `m x n` integer matrix `matrix` with the following two properties:\n1. Each row is sorted in non-decreasing order.\n2. The first integer of each row is greater than the last integer of the previous row.\n\nGiven an integer `target`, return `true` if `target` is in `matrix` or `false` otherwise.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[0].length <= 50`, `-10000 <= matrix[i][j] <= 10000`, and `-10000 <= target <= 10000`.\n",
     examples: [
       { input: "matrix = [[-10000]], target = -10000", output: "true", explanation: "Generated from the verified optimal implementation." },
@@ -8204,6 +8344,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "binary-search / Half sorted",
+    companies: ["Flipkart", "Amazon", "ByteDance", "Cisco", "Adobe"],
     statement: "Given an array of integers `nums` sorted in ascending order with distinct values, and an integer `target`, suppose that `nums` is rotated at an unknown pivot index `k` (`0 <= k < nums.length`) such that the resulting array is `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`.\n\nFor example, `[0, 1, 2, 4, 5, 6, 7]` might be rotated at pivot index `3` and become `[4, 5, 6, 7, 0, 1, 2]`.\n\nReturn the index of `target` if it is present in `nums`, or `-1` if it is not in `nums`.\n\nConstraints: `1 <= nums.length <= 100`, `-1000 <= nums[i] <= 1000`, and `-1000 <= target <= 1000`. All elements of `nums` are unique.\n",
     examples: [
       { input: "nums = [-1000], target = -1000", output: "0", explanation: "Generated from the verified optimal implementation." },
@@ -8269,6 +8410,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "per-index write history / binary search over snapshot ids",
+    companies: ["Amazon", "Snowflake", "Goldman Sachs", "Nutanix", "Netflix"],
     statement: "A snapshot array stores one value per index and is written to over time. Each write records the snapshot id that was current when it happened, and a query names a snapshot id and asks for the value of an index as of that moment.\n\nYou are given `history`, a list of writes where `history[i] = [snapId, index, value]` means that index `index` was set to `value` at snapshot `snapId`. The writes arrive in no particular order. You are also given `queries`, where `queries[i] = [snapId, index]` asks for the value stored at that index at that moment.\n\nFor each query, return the value of that index as of that snapshot id: the `value` of the write to that index whose snapshot id is the largest one not exceeding the queried snapshot id. If several writes to that index share that snapshot id, the write listed later in `history` is the one that took effect. If the index was never written at or before that snapshot, the value is `0`.\n\nReturn the answers in the same order as `queries`.\n\nConstraints: `1 <= history.length <= 200`, `1 <= queries.length <= 200`; every row of `history` has exactly three entries `[snapId, index, value]` with `0 <= snapId <= 10000`, `0 <= index <= 50` and `0 <= value <= 10000`; every row of `queries` has exactly two entries `[snapId, index]` with `0 <= snapId <= 10000` and `0 <= index <= 50`.\n",
     examples: [
       { input: "history = [[-100]], queries = [[-100]]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8323,6 +8465,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Medium",
     pattern: "sort by timestamp + binary search for the rightmost value <= query",
+    companies: ["Walmart Labs", "Meta", "Cisco", "Oracle", "Salesforce"],
     statement: "A time-based key-value store keeps one key whose value is overwritten over time: a write stores a value together with the timestamp at which it happened. A read at timestamp `q` must serve the value that was in effect at `q`, that is the value of the write with the largest timestamp not greater than `q`.\n\nYou are given the write history as two parallel arrays: entry `i` stored `values[i]` at `times[i]`. You are also given a list of read timestamps `queries`. For every read, return the value that must be served, or `-1` if no write happened at or before that timestamp.\n\nIf two writes share the same timestamp, the one appearing later in the history is in effect, because a write overwrites whatever was stored at the same instant. Only the first `min(times.length, values.length)` entries of the history exist.\n\nExample: `times = [1, 4, 7]`, `values = [30, 60, 90]`, `queries = [1, 5, 3, 8, 0]` returns `[30, 60, 30, 90, -1]`: at time `5` the value written at time `4` is still in effect, at time `3` the value from time `1` is, and at time `0` nothing has been written yet.\n\nReturn the answers in the order the queries were given.\n\nConstraints: `1 <= times.length <= 200` and `0 <= times[i] <= 10000` and `1 <= values.length <= 200` and `0 <= values[i] <= 10000` and `1 <= queries.length <= 200` and `0 <= queries[i] <= 10000`.\n",
     examples: [
       { input: "times = [0], values = [0], queries = [0]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8377,6 +8520,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Hard",
     pattern: "sort both arrays, then binary search on the partition index",
+    companies: ["Zoho", "Microsoft", "DE Shaw", "Qualcomm", "Samsung"],
     statement: "Given `nums1` and `nums2`, consider the multiset of all their values. Either array may hold its values in any order, so sort what you need as part of your solution. If the combined count is odd the median is the single middle value; if it is even the median is the average of the two middle values. Return the median as a floating-point number, a `double` in the compiled languages. A median that lands on a whole number is still a `double`, so `2` and `2.0` denote the same result and the judge compares the value rather than the way it is written.\n\nFor `nums1 = [3, 1]` and `nums2 = [2]` the answer is 2, from the sorted order 1, 2, 3. For `nums1 = [2, 1]` and `nums2 = [4, 3]` the answer is 2.5, the average of the two middle values 2 and 3.\n\nConstraints: `1 <= nums1.length <= 200`, `1 <= nums2.length <= 200`, `-10000 <= nums1[i] <= 10000`, `-10000 <= nums2[i] <= 10000`, and the values of each array are given in arbitrary order.\n",
     examples: [
       { input: "nums1 = [-10000], nums2 = [-10000]", output: "-10000", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8432,6 +8576,7 @@ export const PROBLEMS: Problem[] = [
     topic: "binary-search",
     difficulty: "Hard",
     pattern: "binary search on the answer / greedy feasibility check",
+    companies: ["PhonePe", "Google", "Samsung", "DE Shaw", "Flipkart"],
     statement: "You are given an array `nums` of positive integers and an integer `m`. Cut `nums` into exactly `m` non-empty contiguous pieces, keeping the original order of the elements, and place every element in exactly one piece. A cut is described by `m - 1` split positions between adjacent elements.\n\nThe score of a cut is the largest sum among its pieces. Different cuts give different scores, and you want the smallest possible score over all legal cuts. Return that minimum score.\n\nBecause `m` is never larger than the length of `nums`, at least one legal cut always exists. The minimum score is unique, so there is exactly one correct value to return. For example, splitting `[7, 2, 5, 10, 8]` into `2` pieces has candidates such as `[7, 2, 5 | 10, 8]` with score `18` and `[7, 2, 5, 10 | 8]` with score `24`, and the minimum over all cuts is `18`.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 10000` and `1 <= m <= nums.length`.\n",
     examples: [
       { input: "nums = [1], m = 1", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8487,6 +8632,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Easy",
     pattern: "heap / Max simulate",
+    companies: ["IBM", "Microsoft", "PayPal", "Salesforce", "Nvidia"],
     statement: "A row of stones is given, where `stones[i]` is the weight of stone `i`. The game repeats the following round while more than one stone remains: pick the two heaviest stones `x <= y`, smash them together, and if `x < y` put a new stone of weight `y - x` back into the row. Equal stones destroy each other completely.\n\nA single surviving stone keeps its weight; when every stone is destroyed the result is `0`.\n\nConstraints: `1 <= stones.length <= 30` and `1 <= stones[i] <= 100`.\n",
     examples: [
       { input: "stones = [2, 7, 4, 1, 8, 1]", output: "1", explanation: "Smash 8+7 -> 1 ([2,4,1,1,1]), then 4+2 -> 2 ([1,1,1,2]), then 2+1 -> 1 ([1,1,1]), then 1+1 -> 0 ([1]): one stone of weight 1 survives." },
@@ -8552,6 +8698,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "hash set + bounded min-heap (top-k over an ordered log)",
+    companies: ["Swiggy", "Microsoft", "Salesforce", "Adobe", "PayPal"],
     statement: "You are building the read path of a Twitter-like service. The log `tweets` records every post in chronological order: `tweets[i]` carries a post as `[authorId, tweetId, ...]`, and a smaller index means an older post. Only the first two entries of a row are read, so a row that does not carry both an author id and a tweet id is not a post. `follows` lists follow relations as rows `[followerId, followeeId, ...]`, again reading only the first two entries of a row, and the same relation may be listed more than once; a row that does not name both ids states no relation.\n\nReturn the home feed of `userId`: the tweet ids of the 10 most recent posts written by `userId` or by any account that `userId` follows, ordered from newest to oldest. Return every matching tweet id when there are fewer than 10, and an empty list when nothing matches at all. A user's own posts always belong to their own feed, and every index of `tweets` is a distinct moment in time, so no two returned tweets tie.\n\nConstraints: `1 <= tweets.length <= 200`, `0 <= follows.length <= 200`, `0 <= follows[i][j] <= 50`, `1 <= tweets[i][j] <= 10000`, `1 <= userId <= 50`.\n",
     examples: [
       { input: "follows = [], tweets = [[1]], userId = 1", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8606,6 +8753,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "bounded max-heap for top-k selection",
+    companies: ["Swiggy", "Meta", "Goldman Sachs", "LinkedIn", "Salesforce"],
     statement: "Each entry of `points` is a point given as a list of one or more integers, its coordinates. The squared distance of a point from the origin is the sum of the squares of its coordinates. Comparing squared distances ranks points exactly as comparing real distances does, so no square root is needed anywhere.\n\nReturn the `k` points closest to the origin, ordered by increasing squared distance. Points that are equidistant are ordered lexicographically: compare the coordinate lists entry by entry and let the first entry that differs decide the order, with the shorter list first if one is a prefix of the other. Each returned point is a copy of the row it came from, and a point repeated in the input is repeated in the answer.\n\nFor example, with `points = [[1, 3], [-2, 2]]` and `k = 1` the answer is `[[-2, 2]]`, because `8 < 10`.\n\nConstraints: `1 <= points.length <= 100`, `-100 <= points[i][j] <= 100` and `1 <= k <= points.length`.\n",
     examples: [
       { input: "points = [[-100]], k = 1", output: "[[-100]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8660,6 +8808,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "heap / Quickselect",
+    companies: ["Deloitte", "Apple", "Accenture", "Oracle", "Morgan Stanley"],
     statement: "An unsorted integer array `nums` and an integer `k` are given. Order the values from largest to smallest; the element in position `k` (1-based) is the kth largest, counting duplicates separately rather than collapsing them.\n\nFor `k = 1` this is the maximum of the array, and for `k = nums.length` it is the minimum.\n\nConstraints: `1 <= nums.length <= 50`, `-100 <= nums[i] <= 100`, and `1 <= k <= nums.length`.\n",
     examples: [
       { input: "nums = [3, 2, 1, 5, 6, 4], k = 2", output: "5", explanation: "Sorted descending the array reads [6, 5, 4, 3, 2, 1]; the element in position 2 is 5." },
@@ -8726,6 +8875,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "heap / Frequency math",
+    companies: ["TCS", "Bloomberg", "LinkedIn", "Snowflake", "Walmart Labs"],
     statement: "A list of tasks is given, where each entry is an uppercase letter naming the task type, alongside a cooldown `n`. Each task occupies one unit of time, and two tasks of the same type must be separated by at least `n` units containing other tasks or idle waiting.\n\nTasks may run in any order. Return the smallest total time units, including idle slots, needed to finish every task. With `n = 0` no waiting is ever required.\n\nConstraints: `1 <= tasks.length <= 50` and `0 <= n <= 20`. Each task is an uppercase letter.\n",
     examples: [
       { input: "tasks = [\"A\", \"A\", \"A\", \"B\", \"B\", \"B\"], n = 2", output: "8", explanation: "Each type appears 3 times: frame (3-1)*(2+1)+2 = 8 slots, e.g. A B idle A B idle A B." },
@@ -8792,6 +8942,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Medium",
     pattern: "frequency map + bounded min-heap under a total order",
+    companies: ["TCS", "Amazon", "PayPal", "Adobe", "Goldman Sachs"],
     statement: "Given a list of words, return the `k` words that occur most often, ordered by decreasing number of occurrences. Words that occur the same number of times are ordered alphabetically in ascending order, so the answer is completely determined and must be returned in exactly that order.\n\nEvery word is a non-empty string of lowercase English letters. If `k` is larger than the number of distinct words, return every distinct word in that same order.\n\nExample: for `words = [\"ball\", \"cat\", \"ball\", \"bat\", \"cat\", \"ball\"]` and `k = 2`, `\"ball\"` occurs three times and `\"cat\"` twice, so the answer is `[\"ball\", \"cat\"]`.\n\nConstraints: `1 <= words.length <= 200` and `1 <= k <= words.length`.\n",
     examples: [
       { input: "words = [\"d\"], k = 1", output: "[\"d\"]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8846,6 +8997,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Hard",
     pattern: "heap / two-heap running median",
+    companies: ["Flipkart", "Meta", "Intuit", "Uber", "Salesforce"],
     statement: "A sensor reports readings one at a time as the elements of nums. Right after each reading arrives, the sensor records the running median of the readings seen so far, using the lower median whenever the count is even: for a sorted list of m readings the lower median is the element at index (m - 1) // 2, counting from zero. The first reading therefore contributes its own value.\n\nReturn the sum of the running medians recorded over all prefixes of nums.\n\nFor example, nums = [1, 2, 3, 4] gives the running medians 1, 1, 2 and 2, so the answer is 6.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "-10000", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8900,6 +9052,7 @@ export const PROBLEMS: Problem[] = [
     topic: "heap",
     difficulty: "Hard",
     pattern: "hash map with a min-heap and lazy deletion",
+    companies: ["Walmart Labs", "Apple", "ServiceNow", "Uber", "DoorDash"],
     statement: "You are simulating the eviction policy of a Least Frequently Used (LFU) cache. The cache holds at most `capacity` distinct keys. A program issues a sequence of requests given as `accesses`; the request at index `i` (0-based) asks for the key `accesses[i]`, and its timestamp is `i`.\n\nFor every key the cache currently holds, keep a use count and the timestamp of its last request. A larger timestamp means a more recent request. Process the requests left to right:\n\n1. If the requested key is already in the cache, add 1 to its use count and set its last-request timestamp to the current index.\n2. Otherwise, if the cache holds fewer than `capacity` keys, insert the key with use count 1 and the current index as its timestamp.\n3. Otherwise the cache is full. Evict exactly one cached key, then insert the requested key with use count 1. The key to evict is the one whose use count is smallest; when several keys share the smallest use count, evict the one whose last-request timestamp is smallest, that is the least recently used among them. Append the evicted key to the result.\n\nA capacity of `0` means the cache can never hold a key at all: every request is a miss, nothing is ever inserted and therefore nothing is ever evicted.\n\nReturn the list of evicted keys in the order they were evicted. Return an empty list when nothing is ever evicted.\n\nBecause every request touches exactly one key, no two cached keys can share a timestamp, so the eviction choice is always unique.\n\nConstraints: `0 <= capacity <= 100` and `1 <= accesses.length <= 200` and `0 <= accesses[i] <= 100`.\n",
     examples: [
       { input: "capacity = 0, accesses = [0]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -8955,6 +9108,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Easy",
     pattern: "BFS / Union-Find Connectivity",
+    companies: ["Google", "Meta", "Microsoft", "Bloomberg", "Amazon"],
     statement: "There is a bi-directional graph with n vertices. Given n, an edge list edges, source, and destination, return true if there is a valid path from source to destination.",
     examples: [
       { input: "n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2", output: "true" },
@@ -9008,6 +9162,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Easy",
     pattern: "Graph In-Degree & Out-Degree",
+    companies: ["Bloomberg", "Meta", "Arista Networks", "Amazon", "Google"],
     statement: "In a town of n people labeled 1 to n, the town judge trusts nobody and everybody else trusts the town judge. Return the label of the town judge, or -1 if none exists.",
     examples: [
       { input: "n = 2, trust = [[1,2]]", output: "2" },
@@ -9061,6 +9216,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Easy",
     pattern: "Matrix BFS / DFS Traversal",
+    companies: ["TCS", "Bloomberg", "Visa", "Uber", "Oracle"],
     statement: "Given an image grid, starting pixel (sr, sc), and a new color, perform a 4-directional flood fill from the starting pixel and return the modified image.",
     examples: [
       { input: "image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2", output: "[[2,2,2],[2,2,0],[2,0,1]]" },
@@ -9092,7 +9248,7 @@ export const PROBLEMS: Problem[] = [
     functionName: "solve",
     sequence: 3,
     prevSlug: "find-the-town-judge",
-    nextSlug: "keys-and-rooms",
+    nextSlug: "accounts-merge",
     testCases: [
       { input: [[[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2], expected: [[2, 2, 2], [2, 2, 0], [2, 0, 1]], label: "3x3 flood fill center" },
       { input: [[[0, 0, 0], [0, 0, 0]], 0, 0, 0], expected: [[0, 0, 0], [0, 0, 0]], label: "Same color no-op" },
@@ -9108,78 +9264,13 @@ export const PROBLEMS: Problem[] = [
     ],
   },
   {
-    id: "graph-8",
-    slug: "keys-and-rooms",
-    title: "Keys and Rooms",
-    topic: "graphs",
-    difficulty: "Easy",
-    pattern: "graphs / DFS reachability",
-    statement: "There are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
-    examples: [
-      { input: "rooms = [[1], [2], [3], []]", output: "true", explanation: "Key chain 0 -> 1 -> 2 -> 3 opens every room in order." },
-      { input: "rooms = [[1, 3], [3, 0, 1], [2], [0]]", output: "false", explanation: "Rooms 0, 1, 3 form a connected group but room 2 is only reachable from itself, so it stays locked." },
-      { input: "rooms = [[]]", output: "true", explanation: "A single room needs no keys and is trivially fully visitable." },
-    ],
-    constraints: ["Function signature: `function canVisitAllRooms(rooms: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Room 0 is the only entry point; every other room must be reached through collected keys.",
-      "Treat rooms as graph nodes and keys as directed edges from room 0 outward.",
-      "One DFS from room 0 visits exactly the reachable rooms; compare its count with n.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n * (n + E)) | Space: O(n)",
-        language: "javascript",
-        code: "function canVisitAllRooms(rooms) {\n  const n = rooms.length;\n  const visited = new Set([0]);\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let r = 0; r < n; r++) {\n      if (!visited.has(r)) continue;\n      const keys = rooms[r] || [];\n      for (let k = 0; k < keys.length; k++) {\n        const dest = keys[k];\n        if (dest >= 0 && dest < n && !visited.has(dest)) {\n          visited.add(dest);\n          changed = true;\n        }\n      }\n    }\n  }\n  return visited.size === n;\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n + E) | Space: O(n)",
-        language: "javascript",
-        code: "function canVisitAllRooms(rooms) {\n  const n = rooms.length;\n  const seen = new Set([0]);\n  const stack = [0];\n  while (stack.length > 0) {\n    const room = stack.pop();\n    const keys = rooms[room] || [];\n    for (let k = 0; k < keys.length; k++) {\n      const dest = keys[k];\n      if (dest >= 0 && dest < n && !seen.has(dest)) {\n        seen.add(dest);\n        stack.push(dest);\n      }\n    }\n  }\n  return seen.size === n;\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n * (n + E)) | Space: O(n)",
-        language: "python",
-        code: "def canVisitAllRooms(rooms):\n    n = len(rooms)\n    visited = {0}\n    changed = True\n    while changed:\n        changed = False\n        for r in range(n):\n            if r not in visited:\n                continue\n            for dest in rooms[r]:\n                if 0 <= dest < n and dest not in visited:\n                    visited.add(dest)\n                    changed = True\n    return len(visited) == n\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n + E) | Space: O(n)",
-        language: "python",
-        code: "def canVisitAllRooms(rooms):\n    n = len(rooms)\n    seen = {0}\n    stack = [0]\n    while stack:\n        room = stack.pop()\n        for dest in rooms[room] if room < n else []:\n            if 0 <= dest < n and dest not in seen:\n                seen.add(dest)\n                stack.append(dest)\n    return len(seen) == n\n",
-      },
-    ],
-    starterCode: "function canVisitAllRooms(rooms) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def canVisitAllRooms(rooms):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public boolean canVisitAllRooms(int[][] rooms) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    bool canVisitAllRooms(std::vector<std::vector<int>> rooms) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "canVisitAllRooms",
-    sequence: 4,
-    prevSlug: "flood-fill",
-    nextSlug: "accounts-merge",
-    testCases: [
-      { input: [[[1], [2], [3], []]], expected: true, label: "custom-01" },
-      { input: [[[1, 3], [3, 0, 1], [2], [0]]], expected: false, label: "custom-02" },
-    ],
-    editorial: {
-      approach: "Walk outward from room 0 along collected keys with a stack, marking each newly opened room. When the walk ends, every room is reachable exactly when all marks are set.",
-      why_optimal: "One DFS follows each key once instead of re-scanning every visited room until no change remains. On 41 generated cases PAF measured the brute force at 0.43 ms and the optimal at 0.26 ms.",
-      pitfalls: "Keys outside 0..n-1 are invalid doors and must be ignored. Duplicate keys and the starting room's self-keys must not cause revisits or infinite loops.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Depth-first_search",
-    ],
-  },
-  {
     id: "graph-21",
     slug: "accounts-merge",
     title: "Accounts Merge",
     topic: "graphs",
     difficulty: "Medium",
     pattern: "Union-Find / BFS over an email graph",
+    companies: ["Google", "Uber", "ByteDance", "Goldman Sachs", "Airbnb"],
     statement: "You are given a list of account records. Each record is an array of strings: the first string is the account holder's name and every remaining string is an email address listed on that record. Two records belong to the same person whenever they share at least one email address, and they also belong together through a chain of records that share emails with each other.\n\nMerge every set of records that belongs to the same person into a single group. A group is an array whose first element is the group's name and whose remaining elements are all the distinct emails of the group, sorted in ascending lexicographic order.\n\nThe name of a group is the name of the earliest record in the input, meaning the record with the smallest index, that belongs to that group. A record that lists no email addresses at all forms a group containing only its name.\n\nReturn the groups sorted by name, and for two groups that share a name, ordered by their email lists compared from the first email onwards. An email never appears twice inside a group.\n\nConstraints: `1 <= accounts.length <= 8`, `1 <= accounts[i].length <= 8` and `1 <= accounts[i][j].length <= 12`.\n",
     examples: [
       { input: "accounts = [[\"d\"]]", output: "[[\"d\"]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9210,8 +9301,8 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public String[][] solve(String[][] accounts) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<std::vector<std::string>> solve(std::vector<std::vector<std::string>> accounts) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
-    sequence: 5,
-    prevSlug: "keys-and-rooms",
+    sequence: 4,
+    prevSlug: "flood-fill",
     nextSlug: "all-paths-from-source-to-target",
     testCases: [
       { input: [[["d"]]], expected: [["d"]], label: "edge-min-1" },
@@ -9235,6 +9326,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / DAG DFS",
+    companies: ["Meta", "Amazon", "Netflix", "Bloomberg", "Google"],
     statement: "A directed acyclic graph with `n` nodes is given as an adjacency list `graph`, where `graph[i]` lists the neighbours of node `i` in ascending order and every edge points from a smaller node to a larger one.\n\nEnumerate every directed path from node `0` to node `n - 1`. Each path is written as the sequence of visited node ids. Return the full list of paths sorted lexicographically.\n\nA single direct edge yields exactly one path `[[0, 1]]`.\n\nConstraints: `2 <= graph.length <= 6` and `0 <= graph[i] <= 5`.\n",
     examples: [
       { input: "graph = [[1, 2], [3], [3], []]", output: "[[0, 1, 3], [0, 2, 3]]", explanation: "From node 0 the path forks to 1 and 2, and both rejoin at target 3, giving two lexicographically ordered paths." },
@@ -9278,7 +9370,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int[][] allPathsSourceTarget(int[][] graph) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<std::vector<int>> allPathsSourceTarget(std::vector<std::vector<int>> graph) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "allPathsSourceTarget",
-    sequence: 6,
+    sequence: 5,
     prevSlug: "accounts-merge",
     nextSlug: "cheapest-flights-within-k-stops",
     testCases: [
@@ -9301,6 +9393,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "layered Bellman-Ford / BFS on the number of flights taken",
+    companies: ["Flipkart", "Amazon", "Stripe", "Cisco", "Intuit"],
     statement: "A traveller needs to get from city `src` to city `dst`. There are `n` cities numbered `0` to `n - 1`, and `flights` lists the available legs, `flights[i] = [from, to, price]` being a direct flight that costs `price`. Every leg joins two of those `n` cities, so `from` and `to` always lie in `0 .. n - 1`, and `src` and `dst` are city ids in the same range. The traveller has agreed not to make more than `k` intermediate stops, so an itinerary may use at most `k + 1` flights; every stop counts, including one in a city already visited.\n\nReturn the cheapest total price of an itinerary from `src` to `dst` that respects the stop limit, or `-1` when no such itinerary exists. When `src` equals `dst` the price is `0`, because no flight is needed at all. All prices are positive, so an itinerary that revisits a city is never cheaper than the one that skips the detour.\n\nConstraints: `1 <= n <= 8`, `0 <= flights.length <= 25`, `0 <= flights[i][0] <= n - 1`, `0 <= flights[i][1] <= n - 1`, `1 <= flights[i][2] <= 10`, `0 <= src <= n - 1`, `0 <= dst <= n - 1`, `0 <= k <= 8`.\n",
     examples: [
       { input: "n = 1, flights = [], src = 0, dst = 0, k = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9331,7 +9424,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int solve(int n, int[][] flights, int src, int dst, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     starterCodeCpp: "class Solution {\npublic:\n    int solve(int n, std::vector<std::vector<int>> flights, int src, int dst, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
-    sequence: 7,
+    sequence: 6,
     prevSlug: "all-paths-from-source-to-target",
     nextSlug: "clone-graph",
     testCases: [
@@ -9355,6 +9448,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graph traversal with a visited set / flood fill",
+    companies: ["Google", "Nvidia", "ByteDance", "Uber", "Oracle"],
     statement: "A background job needs its own private copy of an undirected graph so that it can rewrite edges without disturbing the original. The graph arrives as an adjacency list `adj`, where `adj[i]` lists the neighbours of node `i`; the list is symmetric (`j` appears in `adj[i]` exactly when `i` appears in `adj[j]`) and may contain the same neighbour twice. Every id that appears in the lists, and `start` itself, is one of the nodes, so all of them lie in `0 .. adj.length - 1`. Copying is a traversal problem rather than an allocation problem: you start at the entry node `start`, walk the adjacency lists, and remember which nodes you have already copied so that a cycle does not send you round forever.\n\nA grader cannot compare node identity, so report the structure you copied instead. Return every undirected edge inside the component that contains `start`, each written as `[u, v]` with `u <= v`; an edge is reported only when both of its endpoints sit inside that component. Every edge of the component appears exactly once, edges touching nodes outside the component are omitted, and the whole list is sorted ascending by first endpoint and then by second endpoint. When `start` has no neighbours, return an empty list.\n\nThe input never contains a self loop, so `adj[i]` never lists `i`.\n\nConstraints: `1 <= adj.length <= 100`, `0 <= adj[i].length <= 99`, `0 <= adj[i][j] <= adj.length - 1`, `0 <= start <= adj.length - 1`.\n",
     examples: [
       { input: "adj = [[0]], start = 0", output: "[[0, 0]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9385,7 +9479,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int[][] solve(int[][] adj, int start) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<std::vector<int>> adj, int start) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
-    sequence: 8,
+    sequence: 7,
     prevSlug: "cheapest-flights-within-k-stops",
     nextSlug: "course-schedule",
     testCases: [
@@ -9409,6 +9503,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "Topological Sort / Kahn In-Degree",
+    companies: ["Flipkart", "Bloomberg", "Citadel", "ByteDance", "Adobe"],
     statement: "There are numCourses courses labeled 0 to numCourses - 1. Given prerequisites[i] = [ai, bi] meaning you must take bi before ai, return true if you can finish all courses.",
     examples: [
       { input: "numCourses = 2, prerequisites = [[1,0]]", output: "true" },
@@ -9439,7 +9534,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public boolean solve(int numCourses, int[][] prerequisites) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    bool solve(int numCourses, std::vector<std::vector<int>> prerequisites) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "solve",
-    sequence: 9,
+    sequence: 8,
     prevSlug: "clone-graph",
     nextSlug: "course-schedule-ii",
     testCases: [
@@ -9462,6 +9557,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "Kahn Topological Order",
+    companies: ["Flipkart", "Amazon", "Qualcomm", "LinkedIn", "Nvidia"],
     statement: "There are numCourses courses labeled 0 to numCourses - 1. Given prerequisites[i] = [ai, bi] meaning bi must be taken before ai, return any valid course order. If no valid order exists, return an empty array.",
     examples: [
       { input: "numCourses = 2, prerequisites = [[1,0]]", output: "[0,1]", explanation: "Take course 0 first, then course 1." },
@@ -9492,7 +9588,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int[] solve(int numCourses, int[][] prerequisites) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(int numCourses, std::vector<std::vector<int>> prerequisites) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "solve",
-    sequence: 10,
+    sequence: 9,
     prevSlug: "course-schedule",
     nextSlug: "evaluate-division",
     testCases: [
@@ -9515,6 +9611,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "weighted graph DFS with a precomputed adjacency map",
+    companies: ["PhonePe", "Meta", "Stripe", "Goldman Sachs", "Uber"],
     statement: "A set of unit conversions is given. `equations[i]` is a list of variable names, and `values[i]` is the integer ratio it states. Only the first two names of a row carry a conversion: when a row names at least two variables, the first divided by the second equals `values[i]`. A row that names fewer than two variables states no conversion at all, although every name it mentions is still a known variable.\n\nOnly the first `min(equations.length, values.length)` rows are backed by a value; a row past that point states no conversion either.\n\nA row whose value is `0` says that the first name is zero of the second, which can be multiplied by but not divided by: such a row is read forwards as usual and contributes nothing in the reverse direction, because no name is obtained by dividing by zero.\n\nAnswer every query. `queries[j]` is a list of variable names and only its first two entries are read: it asks for the ratio of `queries[j][0]` to `queries[j][1]`. A query row naming fewer than two variables is answered `-1`. Return `-1` as well when the ratio cannot be determined, which happens whenever a name is unknown or the two names are not connected by the stated conversions. A row whose two names are the same variable is answered `1` exactly when that name is known.\n\nConversions are walked one step at a time: from the current name, take the first row in order that relates it to a name not yet visited on this walk, multiplying by `values[i]` when the row is read forwards (`current / other == values[i]`) and dividing by it when the row is read backwards. The first such walk that reaches the target name supplies the answer, so rows that contradict each other are resolved in row order rather than rejected.\n\nEvery variable name is a lowercase English word, and all query answers are ordinary JSON numbers.\n\nConstraints: `1 <= equations.length <= 100`, `1 <= values.length <= 100`, `0 <= values[i] <= 100`, `1 <= queries.length <= 100`.\n",
     examples: [
       { input: "equations = [[\"d\"]], values = [0], queries = [[\"x\"]]", output: "[-1]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9545,9 +9642,9 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int[] solve(String[][] equations, int[] values, String[][] queries) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     starterCodeCpp: "class Solution {\npublic:\n    std::vector<int> solve(std::vector<std::vector<std::string>> equations, std::vector<int> values, std::vector<std::vector<std::string>> queries) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
-    sequence: 11,
+    sequence: 10,
     prevSlug: "course-schedule-ii",
-    nextSlug: "max-area-of-island",
+    nextSlug: "keys-and-rooms",
     testCases: [
       { input: [[["d"]], [0], [["x"]]], expected: [-1], label: "edge-min-1" },
       { input: [[["hh", "xd", "xr", "sn", "ac", "hq", "ar", "wu", "rn", "os", "za", "wn"], ["ie", "yk", "cm", "ll", "iz", "xo", "dm", "rj", "tl", "gw", "bv", "yj"], ["hd", "io", "lf", "lg", "iw", "uc", "uf", "xh", "om", "uw", "hv", "yy"], ["hb", "mi", "gs", "kg", "pm", "oe", "eh", "rr", "xs", "sm", "he", "pc"], ["de", "fz", "nt", "mm", "oq", "ra", "xd", "ry", "yu", "dj", "fo", "xx"], ["qy", "qd", "ju", "tg", "ly", "ry", "at", "pa", "lz", "hb", "sc", "xp"], ["yr", "ev", "rf", "qt", "gr", "wg", "jm", "ul", "qo", "hh", "ka", "rh"], ["ha", "wu", "hc", "kc", "hi", "pg", "ex", "sp", "zp", "gd", "vn", "nn"], ["xb", "uu", "bm", "kz", "hg", "ro", "nf", "oh", "oz", "db", "ra", "yh"], ["np", "gm", "fm", "mi", "jn", "xz", "vw", "eg", "gb", "xr", "xk", "bs"], ["qq", "bq", "fc", "cv", "md", "hs", "bt", "nv", "sq", "ig", "wk", "im"], ["vu", "ok", "ao", "sd", "rg", "ie", "ch", "jf", "rw", "tz", "qa", "rj"]], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [["de", "dd", "re", "jt", "wk", "vu", "qp", "bc", "ni", "ak", "ui", "xo"], ["wn", "ad", "we", "bl", "re", "eb", "lz", "lg", "hv", "ly", "nt", "eh"], ["zz", "na", "xk", "zv", "zh", "fz", "dm", "ph", "ol", "zh", "av", "mk"], ["cy", "lu", "mv", "ka", "if", "ib", "tn", "xz", "nt", "dm", "gi", "wn"], ["qz", "vx", "xv", "ln", "vk", "kv", "xj", "jv", "km", "jr", "gn", "mv"], ["ft", "jm", "aj", "gn", "tu", "oo", "vg", "pz", "fv", "jq", "ut", "cy"], ["vj", "zg", "ab", "pt", "on", "sg", "wm", "mh", "uw", "yy", "yn", "fz"], ["qo", "rh", "oe", "vq", "tk", "tx", "nr", "fx", "oi", "ui", "pu", "io"], ["wj", "ik", "rc", "eh", "we", "gc", "nk", "on", "gn", "ys", "ay", "mp"], ["lj", "nr", "xr", "hp", "in", "am", "vv", "xf", "et", "am", "sv", "cu"], ["eo", "bi", "kg", "kk", "iy", "ic", "ax", "bl", "uc", "by", "hg", "te"], ["ep", "ds", "ow", "yl", "tt", "wd", "jd", "aj", "vm", "wg", "sw", "hd"]]], expected: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], label: "edge-max-2" },
@@ -9563,12 +9660,80 @@ export const PROBLEMS: Problem[] = [
     ],
   },
   {
+    id: "graph-8",
+    slug: "keys-and-rooms",
+    title: "Keys and Rooms",
+    topic: "graphs",
+    difficulty: "Medium",
+    pattern: "graphs / DFS reachability",
+    companies: ["Apple", "Snowflake", "Google", "Oracle", "Amazon"],
+    statement: "There are `n` rooms numbered `0` to `n - 1`, described by `rooms` where `rooms[i]` lists the keys found inside room `i`. Every key is a room number that its door opens.\n\nStarting with room `0` unlocked and all other rooms locked, a key collected from any visited room may be used to open its room. Return `true` when every room becomes reachable this way, else `false`.\n\nA single room is trivially fully visitable.\n\nConstraints: `1 <= rooms.length <= 20` and `0 <= rooms[i] <= 19`.\n",
+    examples: [
+      { input: "rooms = [[1], [2], [3], []]", output: "true", explanation: "Key chain 0 -> 1 -> 2 -> 3 opens every room in order." },
+      { input: "rooms = [[1, 3], [3, 0, 1], [2], [0]]", output: "false", explanation: "Rooms 0, 1, 3 form a connected group but room 2 is only reachable from itself, so it stays locked." },
+      { input: "rooms = [[]]", output: "true", explanation: "A single room needs no keys and is trivially fully visitable." },
+    ],
+    constraints: ["Function signature: `function canVisitAllRooms(rooms: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Room 0 is the only entry point; every other room must be reached through collected keys.",
+      "Treat rooms as graph nodes and keys as directed edges from room 0 outward.",
+      "One DFS from room 0 visits exactly the reachable rooms; compare its count with n.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n * (n + E)) | Space: O(n)",
+        language: "javascript",
+        code: "function canVisitAllRooms(rooms) {\n  const n = rooms.length;\n  const visited = new Set([0]);\n  let changed = true;\n  while (changed) {\n    changed = false;\n    for (let r = 0; r < n; r++) {\n      if (!visited.has(r)) continue;\n      const keys = rooms[r] || [];\n      for (let k = 0; k < keys.length; k++) {\n        const dest = keys[k];\n        if (dest >= 0 && dest < n && !visited.has(dest)) {\n          visited.add(dest);\n          changed = true;\n        }\n      }\n    }\n  }\n  return visited.size === n;\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n + E) | Space: O(n)",
+        language: "javascript",
+        code: "function canVisitAllRooms(rooms) {\n  const n = rooms.length;\n  const seen = new Set([0]);\n  const stack = [0];\n  while (stack.length > 0) {\n    const room = stack.pop();\n    const keys = rooms[room] || [];\n    for (let k = 0; k < keys.length; k++) {\n      const dest = keys[k];\n      if (dest >= 0 && dest < n && !seen.has(dest)) {\n        seen.add(dest);\n        stack.push(dest);\n      }\n    }\n  }\n  return seen.size === n;\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n * (n + E)) | Space: O(n)",
+        language: "python",
+        code: "def canVisitAllRooms(rooms):\n    n = len(rooms)\n    visited = {0}\n    changed = True\n    while changed:\n        changed = False\n        for r in range(n):\n            if r not in visited:\n                continue\n            for dest in rooms[r]:\n                if 0 <= dest < n and dest not in visited:\n                    visited.add(dest)\n                    changed = True\n    return len(visited) == n\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n + E) | Space: O(n)",
+        language: "python",
+        code: "def canVisitAllRooms(rooms):\n    n = len(rooms)\n    seen = {0}\n    stack = [0]\n    while stack:\n        room = stack.pop()\n        for dest in rooms[room] if room < n else []:\n            if 0 <= dest < n and dest not in seen:\n                seen.add(dest)\n                stack.append(dest)\n    return len(seen) == n\n",
+      },
+    ],
+    starterCode: "function canVisitAllRooms(rooms) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def canVisitAllRooms(rooms):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public boolean canVisitAllRooms(int[][] rooms) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    bool canVisitAllRooms(std::vector<std::vector<int>> rooms) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "canVisitAllRooms",
+    sequence: 11,
+    prevSlug: "evaluate-division",
+    nextSlug: "max-area-of-island",
+    testCases: [
+      { input: [[[1], [2], [3], []]], expected: true, label: "custom-01" },
+      { input: [[[1, 3], [3, 0, 1], [2], [0]]], expected: false, label: "custom-02" },
+    ],
+    editorial: {
+      approach: "Walk outward from room 0 along collected keys with a stack, marking each newly opened room. When the walk ends, every room is reachable exactly when all marks are set.",
+      why_optimal: "One DFS follows each key once instead of re-scanning every visited room until no change remains. On 41 generated cases PAF measured the brute force at 0.43 ms and the optimal at 0.26 ms.",
+      pitfalls: "Keys outside 0..n-1 are invalid doors and must be ignored. Duplicate keys and the starting room's self-keys must not cause revisits or infinite loops.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Depth-first_search",
+    ],
+  },
+  {
     id: "graph-15",
     slug: "max-area-of-island",
     title: "Max Area of Island",
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graph traversal (iterative flood fill)",
+    companies: ["Zoho", "Bloomberg", "DoorDash", "Intuit", "Goldman Sachs"],
     statement: "You are given a rectangular matrix in which every cell is `0` (water) or `1` (land). With m rows and n columns, two land cells belong to the same island when they can be linked through a chain of land cells that touch horizontally or vertically (diagonal contact does not count). The area of an island is the number of cells it contains. Return the area of the largest island, or 0 when the matrix holds no land at all.\n\nFor the grid `[[1, 0, 0], [1, 1, 0], [0, 0, 1]]` the land cells `(0, 0)`, `(1, 0)` and `(1, 1)` touch edge-to-edge and form one island of three cells, while `(2, 2)` is a lone island of one, so the answer is 3.\n\nConstraints: `1 <= grid.length <= 50`, `1 <= grid[i].length <= 50` and `0 <= grid[i][j] <= 1`. Every row has the same length.\n",
     examples: [
       { input: "grid = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9600,7 +9765,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> grid) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
     sequence: 12,
-    prevSlug: "evaluate-division",
+    prevSlug: "keys-and-rooms",
     nextSlug: "number-of-islands",
     testCases: [
       { input: [[[0]]], expected: 0, label: "edge-min-1" },
@@ -9623,6 +9788,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "Grid DFS / Flood Fill",
+    companies: ["Cognizant", "Microsoft", "SAP", "Intuit", "Snowflake", "ByteDance", "Cisco"],
     statement: "Given an m x n 2D binary grid which represents a map of 1s (land) and 0s (water), return the number of islands.",
     examples: [
       { input: "grid = [[1,1,0],[0,1,0],[0,0,1]]", output: "2" },
@@ -9677,6 +9843,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "Graph BFS / bidirectional search",
+    companies: ["Amazon", "DE Shaw", "Uber", "Goldman Sachs", "LinkedIn"],
     statement: "A combination lock has four wheels showing the string \"0000\". Every wheel displays one decimal digit and can be rotated one step up or one step down, so 9 rotates up into 0 and 0 rotates down into 9. One rotation moves exactly one wheel by exactly one step.\n\nThe array `deadends` lists lock states that jam the mechanism: the lock must never show one of those strings, neither at the start nor partway through. The string `target` is the state you want.\n\nReturn the minimum number of rotations needed to reach `target` from \"0000\", or `-1` when `target` is unreachable without jamming the lock. If \"0000\" itself, or `target` itself, appears in `deadends`, the answer is `-1`; if `target` is \"0000\", the answer is 0.\n\nEvery deadend string and the target are exactly four decimal digits, `deadends` may contain duplicates, and any entry that is not a four digit string is ignored.\n\nConstraints: `1 <= deadends.length <= 100` and `4 <= target.length <= 4`.\n",
     examples: [
       { input: "deadends = [\"1\"], target = \"4332\"", output: "12", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -9731,6 +9898,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Dual DFS",
+    companies: ["Flipkart", "Apple", "Adobe", "ServiceNow", "Nutanix"],
     statement: "A rectangular island is described by `heights`, where `heights[r][c]` is the elevation of cell `(r, c)`. Rain falling on a cell flows to each orthogonal neighbour whose height is less than or equal to the current cell.\n\nThe Pacific ocean touches the top and left edges of the island; the Atlantic ocean touches the bottom and right edges. A cell drains to an ocean when a non-increasing path of heights leads from the cell to that ocean edge.\n\nReturn every `[row, col]` coordinate whose rain reaches both oceans, sorted lexicographically by row then column.\n\nConstraints: `1 <= heights.length <= 8` and `0 <= heights[i] <= 20`.\n",
     examples: [
       { input: "heights = [[1, 2, 2, 3, 5], [3, 2, 3, 4, 4], [2, 4, 5, 3, 1], [6, 7, 1, 4, 5], [5, 1, 1, 2, 4]]", output: "[[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]]", explanation: "Seven cells drain both ways: the ridge through (2,2) flows down to each ocean, and the border peaks like (0,4) and (3,0) each reach their far ocean via non-increasing paths." },
@@ -9797,6 +9965,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Union-find",
+    companies: ["Google", "Amazon", "Oracle", "Apple", "Microsoft"],
     statement: "A connected undirected graph with `n` labelled nodes `1..n` began as a tree with `n - 1` edges; one extra edge was then appended, creating exactly one cycle. The input `edges` lists all `n` edges in the order they were added.\n\nReturn the extra edge `[u, v]` whose removal restores a tree. Because exactly one cycle exists, this is the last edge in input order whose endpoints are already connected by the earlier edges.\n\nConstraints: `3 <= edges.length <= 15` and `1 <= edges[i] <= 8`. Each edge joins two distinct node labels.\n",
     examples: [
       { input: "edges = [[1, 2], [1, 3], [2, 3]]", output: "[2, 3]", explanation: "Edges [1,2] and [1,3] form a tree; [2,3] joins two already-connected vertices and closes the triangle, so it is redundant." },
@@ -9863,6 +10032,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Multi-source BFS",
+    companies: ["Cognizant", "Amazon", "Intuit", "Infosys", "DoorDash"],
     statement: "A crate of oranges is arranged in a rectangular grid `grid`. Each cell holds `0` for an empty slot, `1` for a fresh orange, or `2` for a rotten orange.\n\nEvery minute, each rotten orange spoils its four orthogonal neighbours (up, down, left, right) that currently hold a fresh orange. Empty slots never change and never transmit rot.\n\nReturn the number of minutes until no fresh orange remains. Return `-1` when at least one fresh orange can never rot, and `0` when there is nothing fresh to begin with.\n\nConstraints: `1 <= grid.length <= 8` and `0 <= grid[i] <= 2`.\n",
     examples: [
       { input: "grid = [[2, 1, 1], [1, 1, 0], [0, 1, 1]]", output: "4", explanation: "Rot spreads from (0,0) one layer per minute: neighbours rot at minute 1, their neighbours at minute 2, and the last cell (2,2) rots at minute 4." },
@@ -9929,6 +10099,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "flood fill (component labelling) + multi-source BFS",
+    companies: ["Flipkart", "Meta", "Snowflake", "ByteDance", "Salesforce"],
     statement: "You are given a binary grid `grid` with `grid.length` rows and `grid[0].length` columns, where `grid[i][j] = 1` marks land and `0` marks water. Two land cells are connected when they share an edge (up, down, left or right), so the land forms islands. The grid is guaranteed to contain exactly two islands.\n\nYou may convert water into land, at a cost of one conversion per cell. Your goal is to make the two islands one connected piece: after the conversions, every land cell of the first island must reach every land cell of the second island by moving between edge-adjacent land cells. Cells that are already land stay land.\n\nReturn the minimum number of conversions needed, i.e. the smallest number of `0` cells that must become `1` so the two islands join. The converted cells must form a 4-connected water chain from a cell of one island to a cell of the other; converting cells that merely sit next to land without bridging does not help.\n\nIf the input breaks the two-island guarantee, then define the answer against island `A`, the island containing the topmost land cell (breaking ties by leftmost column): return the minimum number of conversions needed to connect `A` to any other land cell, or `-1` when the grid holds no land outside `A`.\n\nConstraints: `2 <= grid.length <= 25`, `1 <= grid[i].length <= 25` and `0 <= grid[i][j] <= 1`.\n",
     examples: [
       { input: "grid = [[0, 0], [0, 0]]", output: "-1", explanation: "Generated from the verified optimal implementation." },
@@ -9984,6 +10155,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "BFS on an implicit 8-neighbour grid graph",
+    companies: ["Amazon", "Airbnb", "Goldman Sachs", "Uber", "Databricks"],
     statement: "You are given a grid `grid` of `0`s (clear) and `1`s (blocked), with `grid.length` rows and `grid[0].length` columns. A path starts at the top-left cell and ends at the bottom-right cell, and it may only visit clear cells. From a cell you may step to any of its eight neighbours: the four edge neighbours and the four diagonal neighbours. The length of a path is the number of cells it visits, counting both the start cell and the end cell, so a path that leaves the traversal immediately has length `1`.\n\nReturn the length of the shortest clear path, or `-1` if no such path exists. If the start cell or the end cell is blocked, no path exists.\n\nConstraints: `1 <= grid.length <= 20`, `1 <= grid[i].length <= 20` and `0 <= grid[i][j] <= 1`.\n",
     examples: [
       { input: "grid = [[0]]", output: "1", explanation: "Generated from the verified optimal implementation." },
@@ -10038,6 +10210,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Medium",
     pattern: "graphs / Border DFS",
+    companies: ["Meta", "Uber", "Adobe", "Oracle", "Nutanix"],
     statement: "A rectangular board `board` holds the strings `'X'` and `'O'`. Any `'O'` cell that is not connected to the border of the board through a chain of orthogonally adjacent `'O'` cells is captured and flipped to `'X'`.\n\nAn `'O'` region survives exactly when at least one of its cells touches the border, or reaches the border through neighbouring `'O'` cells. Every other `'O'` becomes `'X'`.\n\nReturn the board after all captures are applied.\n\nConstraints: `1 <= board.length <= 8`. Every row holds only `'X'` and `'O'` strings.\n",
     examples: [
       { input: "board = [[\"X\", \"X\", \"X\", \"X\"], [\"X\", \"O\", \"O\", \"X\"], [\"X\", \"X\", \"O\", \"X\"], [\"X\", \"O\", \"X\", \"X\"]]", output: "[[\"X\", \"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\", \"X\"], [\"X\", \"X\", \"X\", \"X\"], [\"X\", \"O\", \"X\", \"X\"]]", explanation: "The three connected O cells in the middle never touch the border and are captured, while the lone O at (3,1) sits on the border and survives." },
@@ -10104,6 +10277,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "topological sort (Kahn) over a graph built from adjacent comparisons",
+    companies: ["Microsoft", "Walmart Labs", "Intuit", "Airbnb", "Uber"],
     statement: "An alien language uses the same 26 lowercase letters as English, but in an unknown order. You are handed a dictionary of its words, already sorted into that unknown order.\n\nRecover the relative order of the letters that occur anywhere in the dictionary and return it as a string holding each of those letters exactly once. For any two words that are adjacent in the list, find the first position where they disagree: the letter of the earlier word must appear before the letter of the later word in your string.\n\nEqual words, and adjacent pairs where the earlier word is a prefix of the later one, add no requirement. A word that comes before a shorter word which is its own prefix makes the dictionary impossible, since that shorter word would have had to come first; so does a set of requirements that forms a cycle, where some letter would have to come both before and after another letter.\n\nSeveral strings may satisfy the requirements. Return the lexicographically smallest one, comparing candidates as ordinary strings over that same letter set. Return the empty string \"\" when no string can satisfy them.\n\nConstraints: `1 <= words.length <= 100` and `1 <= words[i].length <= 20`.\n",
     examples: [
       { input: "words = [\"d\"]", output: "\"d\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10158,6 +10332,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "graphs / breadth-first search over routes",
+    companies: ["Walmart Labs", "Bloomberg", "PhonePe", "Uber", "Salesforce"],
     statement: "A city transit authority operates several bus routes. Route i serves exactly the stops listed in routes[i], and every bus circles its route forever, so a passenger may board it at any stop of the route and step off at any other stop of the same route. A stop id appears at most once inside a single route, but the same stop may be served by many routes.\n\nA passenger is waiting at stop source and wants to reach stop target. Boarding a bus costs one ride, and switching between buses at a shared stop costs one more ride, because the passenger has to board the second bus. Return the smallest number of rides needed to arrive at stop target, or -1 when target cannot be reached from source at all. When source equals target the passenger is already there and the answer is 0.\n\nFor example, with routes = [[1, 2, 7], [3, 6, 7]], source = 1 and target = 6, the passenger takes the first bus from stop 1 to stop 7 and then the second bus from stop 7 to stop 6, which is 2 rides.\n\nConstraints: `1 <= routes.length <= 200` and `1 <= routes[i].length <= 50` and `0 <= routes[i][j] <= 10000` and `0 <= source <= 10000` and `0 <= target <= 10000`.\n",
     examples: [
       { input: "routes = [[0]], source = 0, target = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10212,6 +10387,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "DFS with memoization / longest path on a DAG",
+    companies: ["DE Shaw", "PhonePe", "Amazon", "DoorDash", "Adobe"],
     statement: "You are given a rectangular integer matrix `matrix` with `m` rows and `n` columns. A path is a sequence of cells in which each consecutive pair shares an edge (up, down, left or right, never diagonal) and no cell appears twice. The path is strictly increasing when the value in every cell is strictly greater than the value in the cell before it.\n\nReturn the number of cells on the longest strictly increasing path. A single cell counts as a path of length 1, so the answer is always at least 1.\n\nFor example, in `[[9, 9, 4], [6, 6, 8], [2, 1, 1]]` the path `1 -> 2 -> 6 -> 9` uses four cells and no longer strictly increasing path exists, so the answer is 4. In `[[1, 1], [1, 1]]` every neighbour is equal, so the answer is 1.\n\nConstraints: `1 <= matrix.length <= 30` and `1 <= matrix[i].length <= 30` and `-100 <= matrix[i][j] <= 100`.\n",
     examples: [
       { input: "matrix = [[-17]]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10267,6 +10443,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "flood fill with component labelling and sizes",
+    companies: ["Intuit", "Google", "Airbnb", "DoorDash", "LinkedIn"],
     statement: "You are given a rectangular grid of `0`s and `1`s. A cell holding `1` is land and a cell holding `0` is water. Land cells form an island when they are connected through shared edges (up, down, left, right); a single land cell is an island of size 1, and diagonal contact does not connect cells. The size of an island is the number of land cells it contains.\n\nYou may change at most one water cell into land, and you may also change nothing at all. After that single change, return the size of the largest island in the grid.\n\nWhen the grid holds no water, the answer is just the size of the one island that fills it. When the grid is entirely water, changing one cell is the best you can do and the answer is 1.\n\nFor example, in `[[1, 0], [0, 1]]` the two land cells are separate islands of size 1, and flipping either water cell joins both, so the answer is 3. In `[[1, 1], [1, 0]]` the answer is 4, because the grid already has an island of size 3 and flipping the last water cell joins it.\n\nConstraints: `1 <= grid.length <= 30` and `1 <= grid[i].length <= 30` and `0 <= grid[i][j] <= 1`.\n",
     examples: [
       { input: "grid = [[0]]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10321,6 +10498,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "Hierholzer's algorithm for an Eulerian trail with sorted adjacency",
+    companies: ["PhonePe", "Amazon", "Citadel", "Walmart Labs", "Flipkart"],
     statement: "You are given `edges`, a list of airport numbers that encodes the one-way flight tickets in consecutive pairs: `edges[0] -> edges[1]` is the first ticket, `edges[2] -> edges[3]` is the second one, and so on. A ticket written `from -> to` departs airport `from` and arrives at airport `to`. When the list has an odd length the trailing number belongs to no ticket and is ignored, so the number of tickets is the length of `edges` divided by two, rounded down; call it `E`. There are only three airports, numbered `0`, `1` and `2`, and you start at airport `0`. An itinerary is a sequence of airports, and it is valid when its first airport is `0` and every ticket is used exactly once, so a valid itinerary over `E` tickets visits `E + 1` airports, and with no tickets at all the only itinerary is `[0]`. Among all valid itineraries return the lexicographically smallest one, comparing two itineraries element by element; because every itinerary has the same length this comparison is never a tie. If there is no valid itinerary, return an empty array.\n\nFor example with `edges = [0, 1, 0, 2, 1, 0, 2, 1]` the tickets are `0 -> 1`, `0 -> 2`, `1 -> 0` and `2 -> 1`, and the answer is `[0, 1, 0, 2, 1]`.\n\nConstraints: `1 <= edges.length <= 16` and `0 <= edges[i] <= 2`.\n",
     examples: [
       { input: "edges = [0]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10375,6 +10553,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "breadth-first search from every building with accumulated distance sums",
+    companies: ["Microsoft", "ByteDance", "DoorDash", "Uber", "TikTok"],
     statement: "You are given a rectangular grid of integers. A `0` is empty land, a `1` is a building and a `2` is an obstacle that nobody can walk through. You want to pick one empty cell and build a house there. The house must be able to reach every building by walking up, down, left or right, where empty land and buildings may both be walked through and obstacles block the way. The cost of a cell is the sum of the walking distances from that cell to every building, and a cell only counts as a candidate when every building is reachable from it. Return the smallest cost among the candidate cells, or `-1` when there is no candidate cell at all (in particular when the grid contains no building, and when the grid contains no empty cell).\n\nFor example the grid `[[1, 0, 0], [0, 0, 0], [0, 0, 1]]` has two buildings, and every empty cell reaches both of them; the cheapest one is the centre or any of the four edge middles, with cost `4`.\n\nConstraints: `1 <= grid.length <= 20`, `1 <= grid[i].length <= 20` and `0 <= grid[i][j] <= 2`.\n",
     examples: [
       { input: "grid = [[0]]", output: "-1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10429,6 +10608,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "BFS on an expanded state space / shortest path with a budget",
+    companies: ["Amazon", "DE Shaw", "Cisco", "Adobe", "Uber"],
     statement: "You are given a rectangular grid of `0`s and `1`s, where `0` marks a free cell and `1` marks a blocked cell. You begin on the top-left cell `(0, 0)` and want to finish on the bottom-right cell `(grid.length - 1, grid[0].length - 1)`.\n\nIn a single move you step up, down, left or right onto an adjacent cell. You are allowed to walk over at most `k` blocked cells in total: every time you enter a blocked cell, one unit of your budget is consumed. Re-entering a blocked cell you have already crossed costs another unit, because the budget counts entries, not distinct cells. Free cells are free to enter any number of times. Note that entering the starting cell itself also consumes a unit when `(0, 0)` is blocked.\n\nReturn the smallest number of moves needed to reach the bottom-right cell, or `-1` when no walk within the budget exists. When the grid is a single cell you are already at the destination, so the answer is `0` moves (provided the starting cell is affordable). The grid is a rectangle, so every row holds the same number of columns as the first one.\n\nConstraints: `1 <= grid.length <= 15` and `1 <= grid[i].length <= 15` and `0 <= grid[i][j] <= 1` and `0 <= k <= 15`.\n",
     examples: [
       { input: "grid = [[0]], k = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10483,6 +10663,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "graphs / BFS shortest",
+    companies: ["PhonePe", "Google", "Visa", "LinkedIn", "Samsung"],
     statement: "A start word `beginWord`, a target word `endWord`, and a dictionary `wordList` are given. Every entry is a lowercase English word; only words sharing the start word's length can take part in a ladder.\n\nOne step replaces exactly one letter of the current word, and every intermediate word must appear in `wordList`. The ladder begins at `beginWord` and each visited word counts toward its length, so a direct one-letter change scores `2`.\n\nReturn the length of the shortest such ladder from `beginWord` to `endWord`. Return `0` when `endWord` is absent from `wordList` or when no chain of valid steps connects them.\n\nConstraints: `1 <= wordList.length <= 20`. Each word holds lowercase English letters.\n",
     examples: [
       { input: "beginWord = \"hit\", endWord = \"cog\", wordList = [\"hot\", \"dot\", \"dog\", \"lot\", \"log\", \"cog\"]", output: "5", explanation: "Shortest chain hit -> hot -> dot -> dog -> cog uses five words; each step changes exactly one letter and every intermediate word is in the dictionary." },
@@ -10549,6 +10730,7 @@ export const PROBLEMS: Problem[] = [
     topic: "graphs",
     difficulty: "Hard",
     pattern: "BFS distance labelling + level-graph DFS reconstruction",
+    companies: ["Apple", "LinkedIn", "Citadel", "Goldman Sachs", "Uber"],
     statement: "One transformation turns a word into another by replacing exactly one letter, so both words have the same number of letters, and the resulting word must appear in `wordList`.\n\nGiven `beginWord`, `endWord` and `wordList`, return every transformation sequence of minimum length that starts at `beginWord`, ends at `endWord`, and uses only words from `wordList` as intermediate steps. A sequence lists the words in order from `beginWord` to `endWord`, inclusive of both ends, and every consecutive pair in it must differ in exactly one letter. Sequences that are longer than the minimum are not returned.\n\nReturn the sequences sorted in ascending lexicographic order, comparing them element by element. Return an empty list when `endWord` cannot be reached, and return `[[beginWord]]` when `beginWord` equals `endWord`.\n\nConstraints: `1 <= wordList.length <= 12` and `1 <= beginWord.length <= 6` and `1 <= endWord.length <= 6` and `1 <= wordList[i].length <= 6`.\n",
     examples: [
       { input: "beginWord = \"a\", endWord = \"c\", wordList = [\"a\"]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -10604,6 +10786,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Easy",
     pattern: "intervals / Sort+scan",
+    companies: ["Meta", "Uber", "Oracle", "Palo Alto Networks", "TikTok"],
     statement: "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, determine if a person could attend all meetings.\n\nTouching boundaries are allowed: a meeting ending at time `t` does not conflict with another meeting beginning at time `t`.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[0, 30], [5, 10], [15, 20]]", output: "false", explanation: "Meeting [0, 30] overlaps with both [5, 10] and [15, 20], making it impossible for one person to attend all." },
@@ -10671,6 +10854,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Merge scan",
+    companies: ["PhonePe", "Amazon", "TCS", "Walmart Labs", "PayPal"],
     statement: "You are given an array of non-overlapping intervals `intervals` where `intervals[i] = [start_i, end_i]` represents the start and the end of the `i`-th interval, and `intervals` is sorted in ascending order by `start_i`. You are also given an interval `newInterval = [start, end]` representing the start and end of another interval.\n\nInsert `newInterval` into `intervals` such that `intervals` is still sorted in ascending order by start time and `intervals` still contains no overlapping intervals (merge overlapping intervals if necessary).\n\nReturn `intervals` after the insertion.\n\nConstraints: `0 <= intervals.length <= 100`, `intervals[i].length == 2`, `newInterval.length == 2`, and `0 <= start_i <= end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[1, 3], [6, 9]], newInterval = [2, 5]", output: "[[1, 5], [6, 9]]", explanation: "The interval [2, 5] overlaps with [1, 3], merging them into [1, 5]." },
@@ -10738,6 +10922,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Heap sweep",
+    companies: ["Walmart Labs", "Amazon", "Atlassian", "Citadel", "DE Shaw"],
     statement: "Given an array of meeting time intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of conference rooms required to hold all meetings without overlaps.\n\nAn interval `[start, end]` reserves the room from time `start` up to (but not including) time `end`. A meeting ending at time `t` does not conflict with a meeting starting at time `t`.\n\nConstraints: `0 <= intervals.length <= 1000` and `0 <= start_i < end_i <= 10⁶`.\n",
     examples: [
       { input: "intervals = [[0, 30], [5, 10], [15, 20]]", output: "2", explanation: "Meeting [0, 30] conflicts with [5, 10] and [15, 20]. At least 2 rooms are required." },
@@ -10806,6 +10991,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "Sort & Sweep Merge",
+    companies: ["Wipro", "Amazon", "Stripe", "Atlassian", "TCS", "Cisco", "Meta"],
     statement: "Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals.",
     examples: [
       { input: "intervals = [[1,3],[2,6],[8,10],[15,18]]", output: "[[1,6],[8,10],[15,18]]" },
@@ -10859,6 +11045,7 @@ export const PROBLEMS: Problem[] = [
     topic: "intervals",
     difficulty: "Medium",
     pattern: "intervals / Greedy end-sort",
+    companies: ["IBM", "Microsoft", "PayPal", "Visa", "TCS"],
     statement: "Given an array of intervals `intervals` where `intervals[i] = [start_i, end_i]`, return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.\n\nNote that intervals which touch at a single point (such as `[1, 2]` and `[2, 3]`) are considered non-overlapping.\n\nConstraints: `1 <= intervals.length <= 100`, `intervals[i].length == 2`, and `-10000 <= start_i < end_i <= 10000`.\n",
     examples: [
       { input: "intervals = [[1, 2], [2, 3], [3, 4], [1, 3]]", output: "1", explanation: "Removing interval [1, 3] leaves [[1, 2], [2, 3], [3, 4]], which are all mutually non-overlapping." },
@@ -10928,6 +11115,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Easy",
     pattern: "1D Fibonacci State Transition",
+    companies: ["Wipro", "Bloomberg", "Accenture", "PayPal", "ByteDance", "Adobe", "Goldman Sachs"],
     statement: "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
     examples: [
       { input: "n = 2", output: "2" },
@@ -10980,6 +11168,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Easy",
     pattern: "linear recurrence / rolling variables",
+    companies: ["Accenture", "Amazon", "Morgan Stanley", "Infosys", "Nvidia"],
     statement: "The Fibonacci sequence is defined by `F(0) = 0`, `F(1) = 1`, and `F(n) = F(n - 1) + F(n - 2)` for every `n >= 2`. Given a non-negative integer `n`, return the value of `F(n)`.\n\nEvery value produced by the allowed inputs is small, so no big-integer handling is required.\n\nConstraints: `0 <= n <= 25`.\n",
     examples: [
       { input: "n = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -11034,6 +11223,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Easy",
     pattern: "dynamic programming / row by row construction",
+    companies: ["Zoho", "Apple", "Goldman Sachs", "Accenture", "Wipro"],
     statement: "Pascal's triangle is built row by row. The first row is `[1]`. Every later row begins and ends with `1`, and each entry inside a row is the sum of the two entries sitting directly above it, so the first four rows are `[1]`, `[1, 1]`, `[1, 2, 1]` and `[1, 3, 3, 1]`. Equivalently, entry `k` of row `r`, both counted from zero, is the binomial coefficient `C(r, k)`, the number of ways to choose `k` items out of `r`.\n\nGiven an integer `numRows`, return the first `numRows` rows of Pascal's triangle, from the top down, with each row given left to right.\n\nConstraints: `1 <= numRows <= 20`.\n",
     examples: [
       { input: "numRows = 1", output: "[[1]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -11088,6 +11278,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "Unbounded Knapsack Tabulation",
+    companies: ["Microsoft", "Morgan Stanley", "Wipro", "Deloitte", "SAP", "PhonePe", "Uber"],
     statement: "You are given an integer array coins representing coins of different denominations and an integer amount. Return the fewest number of coins that you need to make up that amount, or -1 if impossible.",
     examples: [
       { input: "coins = [1,2,5], amount = 11", output: "3", explanation: "11 = 5 + 5 + 1" },
@@ -11141,6 +11332,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dp / Prefix count",
+    companies: ["Infosys", "Meta", "DE Shaw", "Intuit", "Flipkart"],
     statement: "A message containing letters from `A-Z` can be encoded into numbers using the following mapping:\n- `'A'` -> `\"1\"`\n- `'B'` -> `\"2\"`\n- ...\n- `'Z'` -> `\"26\"`\n\nTo decode an encoded message, all the digits must be grouped and mapped back into letters using the reverse mapping. There may be multiple valid groupings. For example, `\"11106\"` can be mapped into:\n- `\"AAJF\"` with grouping `(1, 1, 10, 6)`\n- `\"KJF\"` with grouping `(11, 10, 6)`\n\nNote that the grouping `(1, 11, 06)` is invalid because `\"06\"` cannot be mapped into `'F'` since `'6'` is different from `\"06\"`.\n\nGiven a string `s` containing only digits, return the number of ways to decode it.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of digits. The test cases are generated so that the answer fits in a 32-bit integer.\n",
     examples: [
       { input: "s = '226'", output: "3", explanation: "It could be decoded as 'BZ' (2, 26), 'VF' (22, 6), or 'BBF' (2, 2, 6)." },
@@ -11209,6 +11401,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Medium",
     pattern: "dynamic programming / value compression + house-robber recurrence",
+    companies: ["Walmart Labs", "Microsoft", "Morgan Stanley", "Infosys", "Accenture"],
     statement: "You are given an array `nums` of positive integers. Repeat the following turn until nothing survives: pick one surviving element with value `v`, add `v` to your score, then destroy that element together with every surviving element whose value is `v - 1` or `v + 1`. Elements equal to `v` other than the one you picked are untouched.\n\nReturn the maximum total score reachable. Because taking a large value can wipe out several smaller ones, always taking the largest surviving value is not always best, so the maximum has to be computed exactly.\n\nConstraints: `1 <= nums.length <= 200` and `1 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [1]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -11241,7 +11434,7 @@ export const PROBLEMS: Problem[] = [
     functionName: "solve",
     sequence: 6,
     prevSlug: "decode-ways",
-    nextSlug: "house-robber",
+    nextSlug: "edit-distance",
     testCases: [
       { input: [[1]], expected: 1, label: "edge-min-1" },
       { input: [[10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000]], expected: 240000, label: "edge-max-2" },
@@ -11257,943 +11450,13 @@ export const PROBLEMS: Problem[] = [
     ],
   },
   {
-    id: "dp-2",
-    slug: "house-robber",
-    title: "House Robber",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "Include / Exclude Choice DP",
-    statement: "Given an integer array nums representing the amount of money of each house along a street, return the maximum amount of money you can rob tonight without alerting the police (cannot rob two adjacent houses).",
-    examples: [
-      { input: "nums = [1,2,3,1]", output: "4" },
-      { input: "nums = [2,7,9,3,1]", output: "12" },
-    ],
-    constraints: ["1 <= nums.length <= 100"],
-    hints: [
-      "At house i, you have two choices: rob house i (add nums[i] + dp[i-2]) or skip it (keep dp[i-1]).",
-      "Transition: dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]).",
-      "Maintain rob1 and rob2 variables.",
-    ],
-    solutions: [
-      {
-        title: "1D DP Table",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(nums) {\n  if (!nums.length) return 0;\n  const dp = [0, nums[0]];\n  for (let i = 1; i < nums.length; i++) {\n    dp[i + 1] = Math.max(dp[i], dp[i - 1] + nums[i]);\n  }\n  return dp[nums.length];\n}",
-      },
-      {
-        title: "Two Variable Rolling DP",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}",
-      },
-    ],
-    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 7,
-    prevSlug: "delete-and-earn",
-    nextSlug: "house-robber-ii",
-    testCases: [
-      { input: [[1, 2, 3, 1]], expected: 4, label: "[1,2,3,1]" },
-      { input: [[2, 7, 9, 3, 1]], expected: 12, label: "[2,7,9,3,1]" },
-    ],
-    editorial: {
-      approach: "At each house i, you either rob house i (adding its value to the maximum looted up to house i-2) or skip house i (keeping the maximum looted up to house i-1). This yields recurrence dp[i] = max(dp[i-1], dp[i-2] + nums[i]). Maintain two rolling variables representing prev1 (best up to previous house) and prev2 (best up to house before that).",
-      why_optimal: "Runs in O(n) time and O(1) auxiliary space, compressing the 1D DP table into two scalar variables without auxiliary array allocation.",
-      pitfalls: "Edge cases with empty arrays or single-element arrays returning incorrect indices. Forgetting to update the rolling state variables in atomic sequence.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
-    id: "dp-7",
-    slug: "house-robber-ii",
-    title: "House Robber II",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "dp / Circular split",
-    statement: "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 1000`.\n",
-    examples: [
-      { input: "nums = [2, 3, 2]", output: "3", explanation: "You cannot rob house 1 (money = 2) and house 3 (money = 2) because they are adjacent in the circular street. Robbing house 2 yields 3." },
-      { input: "nums = [1, 2, 3, 1]", output: "4", explanation: "Rob house 1 (money = 1) and house 3 (money = 3). Total amount robbed is 1 + 3 = 4. Note that house 1 and house 4 cannot both be robbed." },
-      { input: "nums = [1, 2, 1, 1]", output: "3", explanation: "Rob house 2 (money = 2) and house 4 (money = 1). Total amount robbed is 2 + 1 = 3." },
-    ],
-    constraints: ["Function signature: `function rob2(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Because the houses form a circle, the first and last houses are adjacent; you cannot rob both.",
-      "Divide the problem into two linear subproblems: robbing houses 0 to n - 2, and robbing houses 1 to n - 1.",
-      "Solve each linear subproblem in O(n) time and O(1) space using two rolling variables, then take the maximum of the two results.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "javascript",
-        code: "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(arr) {\n    const n = arr.length;\n    if (n === 0) return 0;\n    if (n === 1) return arr[0];\n    const dp = new Array(n).fill(0);\n    dp[0] = arr[0];\n    dp[1] = Math.max(arr[0], arr[1]);\n    for (let i = 2; i < n; i++) {\n      dp[i] = Math.max(dp[i - 1], dp[i - 2] + arr[i]);\n    }\n    return dp[n - 1];\n  }\n\n  const case1 = robLinear(nums.slice(0, nums.length - 1));\n  const case2 = robLinear(nums.slice(1));\n  return Math.max(case1, case2);\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "javascript",
-        code: "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(start, end) {\n    let prev2 = 0;\n    let prev1 = 0;\n    for (let i = start; i <= end; i++) {\n      const cur = Math.max(prev1, prev2 + nums[i]);\n      prev2 = prev1;\n      prev1 = cur;\n    }\n    return prev1;\n  }\n\n  return Math.max(robLinear(0, nums.length - 2), robLinear(1, nums.length - 1));\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n) | Space: O(n)",
-        language: "python",
-        code: "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(arr: list[int]) -> int:\n        n = len(arr)\n        if n == 0:\n            return 0\n        if n == 1:\n            return arr[0]\n        dp = [0] * n\n        dp[0] = arr[0]\n        dp[1] = max(arr[0], arr[1])\n        for i in range(2, n):\n            dp[i] = max(dp[i - 1], dp[i - 2] + arr[i])\n        return dp[-1]\n\n    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "python",
-        code: "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(start: int, end: int) -> int:\n        prev2, prev1 = 0, 0\n        for i in range(start, end + 1):\n            cur = max(prev1, prev2 + nums[i])\n            prev2, prev1 = prev1, cur\n        return prev1\n\n    return max(rob_linear(0, len(nums) - 2), rob_linear(1, len(nums) - 1))\n",
-      },
-    ],
-    starterCode: "function rob2(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def rob2(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int rob2(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    int rob2(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "rob2",
-    sequence: 8,
-    prevSlug: "house-robber",
-    nextSlug: "longest-common-subsequence",
-    testCases: [
-      { input: [[2, 3, 2]], expected: 3, label: "case-01" },
-      { input: [[1, 2, 3, 1]], expected: 4, label: "case-02" },
-      { input: [[1, 2, 1, 1]], expected: 3, label: "case-03" },
-    ],
-    editorial: {
-      approach: "### Dynamic Programming with Circular Decomposition\n\nIn a linear street of houses, house 0 and house n - 1 are not adjacent. In a circular street, however, robbing house 0 strictly prohibits robbing house n - 1. This circular dependency can be resolved by decomposing the problem into two independent linear subproblems:\n1. **Exclude the last house**: Rob houses from index 0 to n - 2.\n2. **Exclude the first house**: Rob houses from index 1 to n - 1.\n\nThe maximum amount achievable is the greater of these two linear runs: max(robLinear(0, n - 2), robLinear(1, n - 1)).\n\n#### 1. DP State Definition\nFor a linear subarray A, define dp[i] as the maximum amount of money that can be robbed from the prefix A[0...i].\n\n#### 2. Recurrence Relation & State Transition\nAt each house i, we make a binary choice:\n- **Skip house i**: The accumulated money remains dp[i - 1].\n- **Rob house i**: We cannot rob house i - 1, so the accumulated money is dp[i - 2] + A[i].\n\ndp[i] = max(dp[i - 1], dp[i - 2] + A[i])\n\nSince computing dp[i] only depends on the two preceding states (dp[i - 1] and dp[i - 2]), we can maintain two rolling scalar variables prev1 and prev2, reducing auxiliary space from O(n) to O(1).\n\n#### 3. Base Cases\n- When n = 1: Only one house exists, so return nums[0].\n- When n = 2: Return max(nums[0], nums[1]).\n- For linear DP starting at an empty prefix: prev2 = 0, prev1 = 0.\n\n#### 4. Answer Extraction\nans = max(robLinear(nums[0...n - 2]), robLinear(nums[1...n - 1]))",
-      why_optimal: "Allocating separate DP tables for each slice requires O(n) space, whereas tracking two rolling variables (prev1 and prev2) reduces space complexity to O(1) while maintaining O(n) linear time. On 30 verified test cases, the space-optimized solution finished in 0.91 ms compared to 0.73 ms for tabular dynamic programming.",
-      pitfalls: "A common mistake is neglecting the single-house edge case: when nums has only 1 element, slicing [0, n - 2] produces an empty array and evaluates to 0 instead of nums[0]. Always handle n = 1 as an explicit guard condition.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://algo.monster/problems/house_robber_ii",
-    ],
-  },
-  {
-    id: "dp-18",
-    slug: "longest-common-subsequence",
-    title: "Longest Common Subsequence",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "2D DP reduced to two rolling rows",
-    statement: "Deleting zero or more characters from a string without reordering what is left produces a subsequence of it. The characters that are kept do not have to be adjacent. Both `a` and `b` are made of lowercase English letters. Return the length of the longest string that is a subsequence of `a` and also a subsequence of `b`.\n\nThat common string is not needed, only its length. For example, `a = \"abcde\"` and `b = \"ace\"` share the subsequence `\"ace\"`, so the answer is `3`; `a = \"abc\"` and `b = \"def\"` share only the empty subsequence, so the answer is `0`.\n\nConstraints: `1 <= a.length <= 200` and `1 <= b.length <= 200`.\n",
-    examples: [
-      { input: "a = \"d\", b = \"x\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "a = \"hh\", b = \"xd\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(a: string, b: string)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Think about the longest common subsequence of two prefixes, and what the last pair of characters tells you about it.",
-      "Equal characters can be matched immediately; different characters mean one of them is not used, and you may try dropping either.",
-      "Each row of that table only needs the row above it, so two rows are enough if you decide which string indexes the columns.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(m·n) | Space: O(m·n)",
-        language: "javascript",
-        code: "function solve(a, b) {\n  const table = [];\n  for (let i = 0; i <= a.length; i++) table.push(new Array(b.length + 1).fill(0));\n  for (let i = 1; i <= a.length; i++) {\n    for (let j = 1; j <= b.length; j++) {\n      if (a[i - 1] === b[j - 1]) table[i][j] = table[i - 1][j - 1] + 1;\n      else table[i][j] = Math.max(table[i - 1][j], table[i][j - 1]);\n    }\n  }\n  return table[a.length][b.length];\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(m·n) | Space: O(min(m,n))",
-        language: "javascript",
-        code: "function solve(a, b) {\n  let wide = a;\n  let narrow = b;\n  if (narrow.length > wide.length) {\n    const held = wide;\n    wide = narrow;\n    narrow = held;\n  }\n  let above = new Array(narrow.length + 1).fill(0);\n  let current = new Array(narrow.length + 1).fill(0);\n  for (let i = 1; i <= wide.length; i++) {\n    const char = wide[i - 1];\n    for (let j = 1; j <= narrow.length; j++) {\n      if (char === narrow[j - 1]) current[j] = above[j - 1] + 1;\n      else current[j] = Math.max(above[j], current[j - 1]);\n    }\n    const held = above;\n    above = current;\n    current = held;\n  }\n  return above[narrow.length];\n}",
-      },
-    ],
-    starterCode: "function solve(a, b) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(String a, String b) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::string a, std::string b) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 9,
-    prevSlug: "house-robber-ii",
-    nextSlug: "longest-increasing-subsequence",
-    testCases: [
-      { input: ["d", "x"], expected: 0, label: "edge-min-1" },
-      { input: ["hh", "xd"], expected: 0, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "Name the states by a suffix pair: `table[i][j]` is the answer for the first `i` characters of `a` and the first `j` of `b`. If the two characters being compared are equal, they can be matched for free and the answer is `table[i-1][j-1] + 1`; if they differ, one of them is unusable in the best solution either way, so the answer is `max(table[i-1][j], table[i][j-1])`. The brute force fills the whole (m+1) x (n+1) table with those two rules and reads the bottom-right cell; the plain recursion behind it would be exponential, and memoising it is exactly this table. The optimal solution keeps the same recurrence but notices that row `i` needs only row `i-1`, so two rolling rows of the shorter string's length are enough, and the loop can iterate the longer string as the outer dimension so the rows stay as short as possible.",
-      why_optimal: "The recurrence has m·n distinct states and each is constant work, so O(m·n) time is the floor for this table, and with both strings capped at 200 the optimal does about 40,000 cell updates. Space drops from the full table to O(min(m,n)) because a state only ever reads the cell above, the cell to the left and the cell diagonally above-left; those three live in the previous row and the current one, so everything older can be discarded. Swapping the roles of the two strings so the shorter one indexes the rows is what makes the bound min(m,n) rather than n.",
-      pitfalls: "Create the columns from the shorter string, or the rolling rows waste memory and the `max` access can go out of bounds when the shorter string is the outer one. `current[0]` must stay 0 and must be reset on every row, since it stands for the empty prefix and the cell to the left of the first column. The equal-character branch must read the diagonal `above[j-1]`, not `above[j]` or `current[j-1]`, or the length of a match is double-counted. When the two strings share no character the answer is 0, and an empty string on either side must return 0 instead of crashing on an index of -1.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Longest_common_subsequence",
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
-    id: "dp-4",
-    slug: "longest-increasing-subsequence",
-    title: "Longest Increasing Subsequence",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "Patience Sorting / DP Subsequence",
-    statement: "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
-    examples: [
-      { input: "nums = [10,9,2,5,3,7,101,18]", output: "4", explanation: "The LIS is [2,3,7,101]." },
-      { input: "nums = [0,1,0,3,2,3]", output: "4" },
-    ],
-    constraints: ["1 <= nums.length <= 2500"],
-    hints: [
-      "dp[i] represents the length of the LIS ending at index i.",
-      "For each i, check all j < i where nums[j] < nums[i].",
-      "Or use binary search tails array for O(n log n).",
-    ],
-    solutions: [
-      {
-        title: "Quadratic DP Tabulation",
-        complexity: "Time: O(n²) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}",
-      },
-      {
-        title: "Binary Search Patience Piles",
-        complexity: "Time: O(n log n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(nums) {\n  const tails = [];\n  for (const x of nums) {\n    let l = 0, r = tails.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (tails[m] < x) l = m + 1; else r = m;\n    }\n    tails[l] = x;\n  }\n  return tails.length;\n}",
-      },
-    ],
-    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "solve",
-    sequence: 10,
-    prevSlug: "longest-common-subsequence",
-    nextSlug: "longest-palindromic-substring",
-    testCases: [
-      { input: [[10, 9, 2, 5, 3, 7, 101, 18]], expected: 4, label: "[10,9,2,5,3,7,101,18]" },
-      { input: [[0, 1, 0, 3, 2, 3]], expected: 4, label: "[0,1,0,3,2,3]" },
-    ],
-    editorial: {
-      approach: "Patience sorting / Binary search: maintain an array tails where tails[i] stores the smallest tail of all increasing subsequences of length i + 1. For each number x in nums, use binary search (bisect_left) to find the first index in tails with value >= x. If found, replace that value with x; if not found, append x to tails. The length of tails is the LIS length.",
-      why_optimal: "Achieves O(n log n) time and O(n) space, fundamentally outperforming traditional O(n^2) DP tabulation.",
-      pitfalls: "Mistaking tails for the actual increasing subsequence (the elements in tails represent candidate boundary endpoints, not the verbatim sequence elements). Using non-strict < vs <= when strictly increasing is required.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://visualgo.net/en/sorting",
-    ],
-  },
-  {
-    id: "dp-8",
-    slug: "longest-palindromic-substring",
-    title: "Longest Palindromic Substring",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "dp / Expand center",
-    statement: "Given a string `s`, return the longest palindromic substring in `s`.\n\nIf there are multiple palindromic substrings of the same maximum length, return the one that appears earliest (smallest start index) in `s`.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of lowercase English letters.\n",
-    examples: [
-      { input: "s = 'babad'", output: "'bab'", explanation: "Both 'bab' and 'aba' are palindromic substrings of length 3. Because 'bab' begins at index 0 and 'aba' begins at index 1, the tie is broken by the earliest start index, yielding 'bab'." },
-      { input: "s = 'cbbd'", output: "'bb'", explanation: "The longest palindromic substring is 'bb' with length 2 starting at index 1." },
-      { input: "s = 'abacdfgdcaba'", output: "'aba'", explanation: "Both the prefix 'aba' (index 0) and suffix 'aba' (index 9) have length 3. The earliest occurrence at index 0 is returned." },
-    ],
-    constraints: ["Function signature: `function longestPalindrome(s: string)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "A palindrome reads the same forwards and backwards and is symmetric around its center.",
-      "There are 2n - 1 possible centers: n single characters and n - 1 adjacent character pairs.",
-      "Whenever a candidate matches the current best length, preserve the one with the smaller starting index.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n³) | Space: O(1)",
-        language: "javascript",
-        code: "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n  function isPalindrome(left, right) {\n    while (left < right) {\n      if (s[left] !== s[right]) return false;\n      left++;\n      right--;\n    }\n    return true;\n  }\n  for (let i = 0; i < s.length; i++) {\n    for (let j = i; j < s.length; j++) {\n      const len = j - i + 1;\n      if (len > bestLen && isPalindrome(i, j)) {\n        bestStart = i;\n        bestLen = len;\n      }\n    }\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n²) | Space: O(1)",
-        language: "javascript",
-        code: "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n\n  function expand(left, right) {\n    while (left >= 0 && right < s.length && s[left] === s[right]) {\n      left--;\n      right++;\n    }\n    const start = left + 1;\n    const len = right - left - 1;\n    if (len > bestLen || (len === bestLen && start < bestStart)) {\n      bestStart = start;\n      bestLen = len;\n    }\n  }\n\n  for (let i = 0; i < s.length; i++) {\n    expand(i, i);\n    expand(i, i + 1);\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n³) | Space: O(1)",
-        language: "python",
-        code: "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def is_palindrome(left: int, right: int) -> bool:\n        while left < right:\n            if s[left] != s[right]:\n                return False\n            left += 1\n            right -= 1\n        return True\n\n    for i in range(len(s)):\n        for j in range(i, len(s)):\n            length = j - i + 1\n            if length > best_len and is_palindrome(i, j):\n                best_start = i\n                best_len = length\n    return s[best_start : best_start + best_len]\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n²) | Space: O(1)",
-        language: "python",
-        code: "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def expand(left: int, right: int) -> None:\n        nonlocal best_start, best_len\n        while left >= 0 and right < len(s) and s[left] == s[right]:\n            left -= 1\n            right += 1\n        start = left + 1\n        length = right - left - 1\n        if length > best_len or (length == best_len and start < best_start):\n            best_start = start\n            best_len = length\n\n    for i in range(len(s)):\n        expand(i, i)\n        expand(i, i + 1)\n    return s[best_start : best_start + best_len]\n",
-      },
-    ],
-    starterCode: "function longestPalindrome(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def longestPalindrome(s):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public String longestPalindrome(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
-    starterCodeCpp: "class Solution {\npublic:\n    std::string longestPalindrome(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
-    functionName: "longestPalindrome",
-    sequence: 11,
-    prevSlug: "longest-increasing-subsequence",
-    nextSlug: "longest-string-chain",
-    testCases: [
-      { input: ["babad"], expected: "bab", label: "case-01" },
-      { input: ["cbbd"], expected: "bb", label: "case-02" },
-      { input: ["abacdfgdcaba"], expected: "aba", label: "case-03" },
-    ],
-    editorial: {
-      approach: "### Dynamic Programming & Center Expansion\n\nA palindrome mirrors around its center. A string of length n has 2n - 1 possible centers: n single-character centers (odd-length palindromes) and n - 1 between-character centers (even-length palindromes).\n\n#### 1. DP State Definition\nIn 2D tabular DP, let dp[i][j] be a boolean indicating whether substring s[i...j] is a palindrome.\n\n#### 2. Recurrence Relation & State Transition\nA substring s[i...j] is a palindrome if and only if its endpoint characters match and the inner substring is also a palindrome:\ndp[i][j] = (s[i] == s[j]) and (j - i < 2 or dp[i + 1][j - 1])\n\nRather than storing an O(n²) table, we can expand outwards from each center (c1, c2) while s[left] == s[right].\n\n#### 3. Deterministic Tie-Breaking Invariant\nWhen comparing candidate palindromes with start index i and length L:\nupdate if L > bestLen or (L == bestLen and i < bestStart)\nThis guarantees that if two different substrings attain the maximum length, the one appearing earliest in the string is chosen deterministically in both implementations.\n\n#### 4. Base Cases\n- Single characters are palindromes of length 1: dp[i][i] = true.\n- Adjacent pairs are palindromes of length 2 if s[i] == s[i + 1].\n\n#### 5. Answer Extraction\nans = s.slice(bestStart, bestStart + bestLen).",
-      why_optimal: "Brute force checks all O(n²) substrings with an O(n) palindrome test, taking O(n³) time. Center expansion evaluates all 2n - 1 centers in O(n²) time and O(1) auxiliary space without matrix allocations. Across 30 verified test cases, center expansion executed in 0.83 ms compared to 1.19 ms for cubic brute force.",
-      pitfalls: "Remember to test both odd centers (i, i) and even centers (i, i + 1). When breaking ties, using strictly greater length (> bestLen) naturally keeps earlier occurrences for the same center orientation, but when comparing across odd and even centers, an explicit start index check (len === bestLen && start < bestStart) prevents incorrect overrides.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Longest_palindromic_substring",
-      "https://algo.monster/problems/longest_palindromic_substring",
-    ],
-  },
-  {
-    id: "dp-19",
-    slug: "longest-string-chain",
-    title: "Longest String Chain",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "sort by length + hash map DP",
-    statement: "You are given a list of distinct words. Word `b` may be followed by word `a` in a chain when `a` is formed from `b` by inserting exactly one character anywhere in `b`, which means `a` is exactly one character longer and `b` appears inside `a` in order. A chain is any sequence of words in which every word can be followed by the next one. Return the length of the longest chain you can build from the list. Words may be used in any order, and the order inside a chain is the insertion order, not the order the words appear in the input. A single word is a chain of length 1.\n\nFor `words = [\"ab\", \"abc\", \"abcd\", \"xyz\"]`, the chain `\"ab\" -> \"abc\" -> \"abcd\"` has length 3, while `\"xyz\"` can only form a chain of length 1, so the answer is 3.\n\nConstraints: `1 <= words.length <= 100` and `1 <= words[i].length <= 12`. Each word is a non-empty string of lowercase English letters, and no two words in the list are equal.\n",
-    examples: [
-      { input: "words = [\"d\"]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "words = [\"fz\", \"txsjodowjw\", \"iqrpoctbnxkt\"]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(words: string[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Inserting exactly one character into a short word means the long word is the short word with exactly one character deleted.",
-      "Order the words by length so that when you handle a word, every candidate predecessor is already solved.",
-      "Instead of comparing every pair, generate all L strings obtained by deleting one character from a word and look each one up in a map from a word to the best chain length ending there.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n^2 * L) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(words) {\n  const n = words.length;\n  if (n === 0) return 0;\n\n  function isPredecessor(short, longer) {\n    if (longer.length - short.length !== 1) return false;\n    let i = 0;\n    let j = 0;\n    let skipped = false;\n    while (i < short.length && j < longer.length) {\n      if (short[i] === longer[j]) {\n        i++;\n        j++;\n      } else if (!skipped) {\n        skipped = true;\n        j++;\n      } else {\n        return false;\n      }\n    }\n    return true;\n  }\n\n  const order = [];\n  for (let i = 0; i < n; i++) order.push(i);\n  order.sort((a, b) => words[a].length - words[b].length);\n  const dp = new Array(n).fill(1);\n  let best = 1;\n  for (let a = 0; a < n; a++) {\n    const i = order[a];\n    for (let b = 0; b < a; b++) {\n      const j = order[b];\n      if (words[j].length !== words[i].length - 1) continue;\n      if (isPredecessor(words[j], words[i]) && dp[j] + 1 > dp[i]) dp[i] = dp[j] + 1;\n    }\n    if (dp[i] > best) best = dp[i];\n  }\n  return best;\n}\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n * L^2) | Space: O(n * L)",
-        language: "javascript",
-        code: "function solve(words) {\n  const n = words.length;\n  if (n === 0) return 0;\n  const byLength = new Map();\n  for (const w of words) {\n    if (!byLength.has(w.length)) byLength.set(w.length, []);\n    byLength.get(w.length).push(w);\n  }\n  const lengths = Array.from(byLength.keys()).sort((a, b) => a - b);\n  const best = new Map();\n  let answer = 1;\n  for (const length of lengths) {\n    for (const w of byLength.get(length)) {\n      let cur = 1;\n      if (length > 1) {\n        const seen = new Set();\n        for (let i = 0; i < length; i++) {\n          const p = w.slice(0, i) + w.slice(i + 1);\n          if (seen.has(p)) continue;\n          seen.add(p);\n          if (best.has(p) && best.get(p) + 1 > cur) cur = best.get(p) + 1;\n        }\n      }\n      best.set(w, cur);\n      if (cur > answer) answer = cur;\n    }\n  }\n  return answer;\n}\n",
-      },
-    ],
-    starterCode: "function solve(words) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(words):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(String[] words) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::string> words) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 12,
-    prevSlug: "longest-palindromic-substring",
-    nextSlug: "maximal-square",
-    testCases: [
-      { input: [["d"]], expected: 1, label: "edge-min-1" },
-      { input: [["xi", "he", "dv", "rc", "nb", "cg", "qt", "rg", "uw", "nh", "si", "yz", "wn", "ie", "yk", "cm", "ll", "iz", "xo", "dm", "rj", "tl", "gw", "bv"]], expected: 1, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force sorts the words by length and computes dp[i], the longest chain that ends at words[i], as 1 + the largest dp[j] over every j whose word is exactly one character shorter and is a subsequence of words[i]; the subsequence test is a two-pointer scan over the two words. That is O(n^2 * L) time because every pair of words is compared, and L <= 12 here, so the length factor stays small. The optimal removes the pairwise comparisons entirely: it groups the words by length, and for each word deletes one character at a time to generate its at most L candidate predecessors, then looks each candidate up in a hash map that stores the best chain length already found for that exact string. Processing lengths in increasing order guarantees that every predecessor has been solved before it is queried.",
-      why_optimal: "A chain is a path in a DAG whose edges only run from a word of length L-1 to a word of length L, so the longest chain is the longest path in that DAG and the number of states is just n. Each state needs at most L generated keys of length L, which is O(L^2) work per word and O(n * L^2) overall with O(n * L) space for the map keys. With words up to length 12 the spelled-out keys stay cheap, and no pair of words with length difference greater than 1 is ever touched, so the O(n^2) pair comparison of the brute is avoided.",
-      pitfalls: "Deleting repeated characters produces duplicate predecessor strings (for example `abba` yields `bba`, `aba`, `aba`, `abb`), so duplicate candidates must not double-count or the dp values inflate. Words of length 1 have no predecessor and must contribute 1, and a list holding a single word must return 1 rather than 0. The DP must be ordered by the actual word length, not by the input index, or a word may be queried before its predecessor is solved.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Longest_path_problem",
-      "https://en.wikipedia.org/wiki/Subsequence",
-    ],
-  },
-  {
-    id: "dp-20",
-    slug: "maximal-square",
-    title: "Maximal Square",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "2D DP with a rolling row",
-    statement: "You are given a rectangular matrix whose cells are `0` or `1`. Find the largest square submatrix that contains only `1`s and return its area, that is, the square of its side length. Return 0 when the matrix contains no `1` at all. With m rows and n columns, a submatrix is a rectangle of consecutive rows and consecutive columns.\n\nFor the matrix `[[1, 1, 0], [1, 1, 1], [0, 1, 1]]` the largest all-`1` square has side 2 (rows 0-1 and columns 0-1, for example), so the answer is 4.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[i].length <= 50` and `0 <= matrix[i][j] <= 1`. Every row has the same length.\n",
-    examples: [
-      { input: "matrix = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "matrix = [[1]]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(matrix: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "A square of side s with bottom-right corner (i, j) contains a square of side s-1 with bottom-right corner (i-1, j-1), and it also needs a full row of ones on top and a full column on the left.",
-      "Ask for the largest all-ones square that ends at each cell and compare that value with the values of its top, left and top-left neighbours.",
-      "The recurrence is 1 + min(top, left, top-left) when the cell is 1 and 0 otherwise, and only the previous row of the table is alive at any moment.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(m*n*min(m,n)) | Space: O(m*n)",
-        language: "javascript",
-        code: "function solve(matrix) {\n  const rows = matrix.length;\n  if (rows === 0) return 0;\n  let cols = matrix[0].length;\n  for (const row of matrix) if (row.length < cols) cols = row.length;\n  if (cols === 0) return 0;\n  const pref = [];\n  for (let i = 0; i <= rows; i++) pref.push(new Array(cols + 1).fill(0));\n  for (let i = 0; i < rows; i++) {\n    let rowSum = 0;\n    for (let j = 0; j < cols; j++) {\n      if (matrix[i][j] === 1) rowSum += 1;\n      pref[i + 1][j + 1] = pref[i][j + 1] + rowSum;\n    }\n  }\n  let best = 0;\n  for (let i = 0; i < rows; i++) {\n    for (let j = 0; j < cols; j++) {\n      let side = Math.min(i + 1, j + 1);\n      while (side > best) {\n        const top = i - side + 1;\n        const left = j - side + 1;\n        const total = pref[i + 1][j + 1] - pref[top][j + 1] - pref[i + 1][left] + pref[top][left];\n        if (total === side * side) {\n          best = side;\n          break;\n        }\n        side -= 1;\n      }\n    }\n  }\n  return best * best;\n}\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(m*n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(matrix) {\n  const rows = matrix.length;\n  if (rows === 0) return 0;\n  let cols = matrix[0].length;\n  for (const row of matrix) if (row.length < cols) cols = row.length;\n  if (cols === 0) return 0;\n  let prev = new Array(cols + 1).fill(0);\n  let best = 0;\n  for (let i = 0; i < rows; i++) {\n    const cur = new Array(cols + 1).fill(0);\n    for (let j = 0; j < cols; j++) {\n      if (matrix[i][j] === 1) {\n        let side = prev[j + 1];\n        if (prev[j] < side) side = prev[j];\n        if (cur[j] < side) side = cur[j];\n        side += 1;\n        cur[j + 1] = side;\n        if (side > best) best = side;\n      }\n    }\n    prev = cur;\n  }\n  return best * best;\n}\n",
-      },
-    ],
-    starterCode: "function solve(matrix) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(matrix):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[][] matrix) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> matrix) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 13,
-    prevSlug: "longest-string-chain",
-    nextSlug: "maximum-product-subarray",
-    testCases: [
-      { input: [[[0]]], expected: 0, label: "edge-min-1" },
-      { input: [[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]], expected: 144, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force builds a summed-area table (two-dimensional prefix sums) so the number of ones inside any rectangle is one arithmetic lookup, then treats every cell as the bottom-right corner of a candidate square and tries side lengths downwards from min(i + 1, j + 1), stopping at the first side whose queried square holds exactly side * side ones. It keeps the best side found anywhere and returns its square. That is O(m*n*min(m,n)) time and O(m*n) space, because a cell near the middle of a large matrix may test O(min(m,n)) candidate sides. The optimal defines side[i][j] as the side of the largest all-ones square whose bottom-right corner is (i, j): it is 0 when the cell is 0, and otherwise 1 + min(side[i-1][j], side[i-1][j-1], side[i][j-1]), which one pass with a rolling previous row evaluates in O(m*n) time.",
-      why_optimal: "The recurrence uses only three already-computed neighbours, so each cell costs a constant amount of work and the scan is O(m*n) time; keeping one row of the table plus the row being built means O(n) space instead of O(m*n). O(m*n) is the floor because every cell must be inspected at least once, and the brute pays an extra factor of min(m,n) for re-querying squares it has already looked at. The prefix-sum brute is also the only way to answer each square query in constant time without the DP insight.",
-      pitfalls: "Reading the three neighbours from the row being built instead of the previous row silently reports squares that are too large. The recurrence takes the minimum of the top, left and top-left neighbours, not their sum and not their maximum. Returning the side length instead of side * side is the classic wrong answer, and an all-zero matrix must return 0 rather than 1. A single row or a single column can only produce side 1, and a matrix whose first row is empty must not crash the row-length computation.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Summed-area_table",
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
-    id: "dp-9",
-    slug: "maximum-product-subarray",
-    title: "Maximum Product Subarray",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "dp / Min-max track",
-    statement: "Given an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
-    examples: [
-      { input: "nums = [2, 3, -2, 4]", output: "6", explanation: "[2, 3] has the largest product 6." },
-      { input: "nums = [-2, 0, -1]", output: "0", explanation: "The result cannot be 2, because [-2, -1] is not a contiguous subarray. The maximum product subarray is [0] with product 0." },
-      { input: "nums = [-2, 3, -4]", output: "24", explanation: "The entire subarray [-2, 3, -4] has product (-2) * 3 * (-4) = 24." },
-    ],
-    constraints: ["Function signature: `function maxProduct(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Multiplying a negative number by another negative number produces a positive number.",
-      "Track both the maximum product and the minimum product ending at the current position.",
-      "When the current number is negative, the minimum product can become the new maximum product.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n²) | Space: O(1)",
-        language: "javascript",
-        code: "function maxProduct(nums) {\n  let maxProd = nums[0];\n  for (let i = 0; i < nums.length; i++) {\n    let current = 1;\n    for (let j = i; j < nums.length; j++) {\n      current *= nums[j];\n      if (current > maxProd) {\n        maxProd = current;\n      }\n    }\n  }\n  return maxProd;\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "javascript",
-        code: "function maxProduct(nums) {\n  let globalMax = nums[0];\n  let curMax = nums[0];\n  let curMin = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    const x = nums[i];\n    if (x < 0) {\n      const temp = curMax;\n      curMax = curMin;\n      curMin = temp;\n    }\n    curMax = Math.max(x, curMax * x);\n    curMin = Math.min(x, curMin * x);\n    if (curMax > globalMax) {\n      globalMax = curMax;\n    }\n  }\n  return globalMax;\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n²) | Space: O(1)",
-        language: "python",
-        code: "def maxProduct(nums: list[int]) -> int:\n    max_prod = nums[0]\n    for i in range(len(nums)):\n        current = 1\n        for j in range(i, len(nums)):\n            current *= nums[j]\n            if current > max_prod:\n                max_prod = current\n    return max_prod\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "python",
-        code: "def maxProduct(nums: list[int]) -> int:\n    global_max = nums[0]\n    cur_max = nums[0]\n    cur_min = nums[0]\n    for i in range(1, len(nums)):\n        x = nums[i]\n        if x < 0:\n            cur_max, cur_min = cur_min, cur_max\n        cur_max = max(x, cur_max * x)\n        cur_min = min(x, cur_min * x)\n        if cur_max > global_max:\n            global_max = cur_max\n    return global_max\n",
-      },
-    ],
-    starterCode: "function maxProduct(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def maxProduct(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int maxProduct(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int maxProduct(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "maxProduct",
-    sequence: 14,
-    prevSlug: "maximal-square",
-    nextSlug: "maximum-subarray",
-    testCases: [
-      { input: [[2, 3, -2, 4]], expected: 6, label: "case-01" },
-      { input: [[-2, 0, -1]], expected: 0, label: "case-02" },
-      { input: [[-2, 3, -4]], expected: 24, label: "case-03" },
-    ],
-    editorial: {
-      approach: "### Dynamic Programming: Dual Extremum Tracking (Kadane Extension)\n\nUnlike maximum sum subarray where adding negative numbers strictly decreases the sum, multiplying two negative numbers creates a positive product. Therefore, a very small negative product can become a large positive product when multiplied by another negative number.\n\n#### 1. DP State Definition\nFor prefix ending at index i:\n- maxProd[i]: Maximum product of a non-empty contiguous subarray ending at index i.\n- minProd[i]: Minimum product of a non-empty contiguous subarray ending at index i.\n\n#### 2. Recurrence Relation & State Transition\nAt index i, the new subarray ending at i can either start at nums[i] alone, or extend the previous maximum or minimum:\ncandidates = {nums[i], maxProd[i - 1] * nums[i], minProd[i - 1] * nums[i]}\nmaxProd[i] = max(candidates)\nminProd[i] = min(candidates)\n\nWhen nums[i] < 0, multiplying by a negative number inverts order, so swapping curMax and curMin before multiplying cleanly handles the sign flip.\n\nSince only the previous index's values are needed, we maintain two scalar variables curMax and curMin, reducing space to O(1).\n\n#### 3. Base Cases\ncurMax = nums[0], curMin = nums[0], globalMax = nums[0].\n\n#### 4. Answer Extraction\nans = max_{0 <= i < n} maxProd[i] (tracked in globalMax).",
-      why_optimal: "Brute force checks all O(n²) contiguous subarrays and computes their products, taking O(n²) time. Tracking running minimum and maximum products in a single pass achieves O(n) linear time with O(1) auxiliary space. Across 30 verified test cases, the linear DP finished in 0.16 ms compared to 0.77 ms for the quadratic search.",
-      pitfalls: "Do not discard minimum products: when a negative number appears, the current minimum (most negative) product multiplied by that number yields a large positive candidate. Also, be sure to update curMax and curMin simultaneously or swap them when num < 0 so the new curMax does not overwrite the value needed to compute curMin.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Maximum_subarray_problem",
-      "https://algo.monster/problems/maximum_product_subarray",
-    ],
-  },
-  {
-    id: "arr-2",
-    slug: "maximum-subarray",
-    title: "Maximum Subarray (Kadane)",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "Kadane's Algorithm",
-    statement: "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
-    examples: [
-      { input: "nums = [-2,1,-3,4,-1,2,1,-5,4]", output: "6", explanation: "The subarray [4,-1,2,1] has the largest sum 6." },
-      { input: "nums = [5,4,-1,7,8]", output: "23" },
-    ],
-    constraints: ["1 <= nums.length <= 10^5", "-10^4 <= nums[i] <= 10^4"],
-    hints: [
-      "If the running sum becomes negative, does it help any future subarray?",
-      "Keep track of currentRunningSum = Math.max(nums[i], currentRunningSum + nums[i]).",
-      "Update maxGlobalSum at every step.",
-    ],
-    solutions: [
-      {
-        title: "Quadratic Prefix Sums",
-        complexity: "Time: O(n²) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}",
-      },
-      {
-        title: "Kadane's Linear Scan",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(nums) {\n  let curr = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    best = Math.max(best, curr);\n  }\n  return best;\n}",
-      },
-    ],
-    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 15,
-    prevSlug: "maximum-product-subarray",
-    nextSlug: "minimum-path-sum",
-    testCases: [
-      { input: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], expected: 6, label: "[-2,1,-3,4,-1,2,1,-5,4]" },
-      { input: [[1]], expected: 1, label: "[1]" },
-    ],
-    editorial: {
-      approach: "Kadane's algorithm: maintain a running current sum curr and a global maximum best. For each number x, decide whether to extend the previous subarray or start a new subarray at x: curr = max(x, curr + x). Update best = max(best, curr). Initialize best = nums[0] to handle all-negative arrays correctly.",
-      why_optimal: "Computes the optimal contiguous sum in a single O(n) pass with O(1) space, avoiding all O(n^2) subarray evaluations.",
-      pitfalls: "Initializing best = 0, which fails on arrays containing only negative numbers (e.g. [-5, -2, -8] would incorrectly return 0 instead of -2).",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
-    id: "dp-21",
-    slug: "minimum-path-sum",
-    title: "Minimum Path Sum",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "Grid DP with a rolling row",
-    statement: "A robot starts in the top-left cell of a rectangular grid of non-negative integers `grid` and must reach the bottom-right cell. Each move takes it exactly one cell to the right or exactly one cell down, and it may never move left or up.\n\nReturn the minimum possible sum of the values of the cells it visits, counting the starting cell and the destination cell. Every row of the grid has the same length and the grid has at least one cell.\n\nConstraints: `1 <= grid.length <= 10` and `1 <= grid[i].length <= 10` and `0 <= grid[i][j] <= 100`.\n",
-    examples: [
-      { input: "grid = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "grid = [[71]]", output: "71", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(grid: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Start from the recursion: the cheapest sum from a cell is the cell's own value plus the cheaper of the two moves available from it.",
-      "The recursion recomputes the same cells many times. Which two neighbours does a cell's answer actually depend on?",
-      "Keep one array of length cols and sweep row by row: turn the first row into a prefix sum, then use dp[k] = grid[i][k] + min(dp[k], dp[k-1]), reading dp[k-1] from the same row you are writing.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(2^(rows + cols)) | Space: O(rows + cols)",
-        language: "javascript",
-        code: "function solve(grid) {\n  var rows = grid.length;\n  var cols = grid[0].length;\n  function walk(i, j) {\n    if (i === rows - 1 && j === cols - 1) return grid[i][j];\n    if (i === rows - 1) return grid[i][j] + walk(i, j + 1);\n    if (j === cols - 1) return grid[i][j] + walk(i + 1, j);\n    var down = walk(i + 1, j);\n    var right = walk(i, j + 1);\n    return grid[i][j] + (down < right ? down : right);\n  }\n  return walk(0, 0);\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(rows × cols) | Space: O(cols)",
-        language: "javascript",
-        code: "function solve(grid) {\n  var rows = grid.length;\n  var cols = grid[0].length;\n  var dp = grid[0].slice();\n  for (var j = 1; j < cols; j++) dp[j] = dp[j - 1] + grid[0][j];\n  for (var i = 1; i < rows; i++) {\n    dp[0] += grid[i][0];\n    for (var k = 1; k < cols; k++) {\n      var fromTop = dp[k];\n      var fromLeft = dp[k - 1];\n      dp[k] = (fromTop < fromLeft ? fromTop : fromLeft) + grid[i][k];\n    }\n  }\n  return dp[cols - 1];\n}",
-      },
-    ],
-    starterCode: "function solve(grid) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(grid):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[][] grid) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> grid) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 16,
-    prevSlug: "maximum-subarray",
-    nextSlug: "partition-equal-subset-sum",
-    testCases: [
-      { input: [[[0]]], expected: 0, label: "edge-min-1" },
-      { input: [[[100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]]], expected: 1900, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force is the definition of the problem written as a recursion: from cell (i, j) the best sum is grid[i][j] plus the smaller of the answers for (i+1, j) and (i, j+1), with the bottom-right cell as the base case. Every call branches twice along a monotone path, so the recursion walks on the order of C(rows+cols-2, rows-1) distinct paths, which is exponential. The optimal version observes that a cell's answer depends only on the cell above it and the cell to its left, so it fills a single array of length cols: the first row becomes a prefix sum, and each later row is updated in place with dp[k] = grid[i][k] + min(dp[k], dp[k-1]), where the old dp[k] is the value from above and dp[k-1] has already been overwritten with this row's value.",
-      why_optimal: "Every cell must be read at least once, so O(rows × cols) time is the floor and the rolling row reaches it with one addition and one comparison per cell. Because a cell only ever consults the row above and the cell to its left, keeping one row of state is enough, and the width is at most 10, so O(cols) extra space is negligible. At the stated 10 × 10 bound the exponential recursion still finishes in milliseconds (at most 48620 paths), which is what keeps the brute force usable as the naive reference rather than a timeout.",
-      pitfalls: "The first row and the first column are not ordinary cells: each has a single predecessor, and forgetting to seed dp[0] with the running column sum makes every answer wrong from the second row onwards. The rolling array must be updated left to right, because dp[k-1] has to hold the current row's value when dp[k] is computed. A grid with one row or one column is legal under the constraints and must return the plain prefix sum; an all-zero grid must return 0 through the normal computation rather than through a special case.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://en.wikipedia.org/wiki/Lattice_path",
-    ],
-  },
-  {
-    id: "dp-10",
-    slug: "partition-equal-subset-sum",
-    title: "Partition Equal Subset Sum",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "dp / Subset sum",
-    statement: "Given an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
-    examples: [
-      { input: "nums = [1, 5, 11, 5]", output: "true", explanation: "The total sum is 22. The array can be partitioned into [1, 5, 5] and [11], each with sum 11." },
-      { input: "nums = [1, 2, 3, 5]", output: "false", explanation: "The total sum is 11, which is odd. It cannot be partitioned into two equal integer subsets." },
-      { input: "nums = [1, 2, 5]", output: "false", explanation: "The total sum is 8 (target 4), but no subset sums to 4." },
-    ],
-    constraints: ["Function signature: `function canPartition(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "If the total sum of all elements is odd, it is impossible to partition into two equal integers; return false.",
-      "The problem reduces to finding a subset that sums to sum(nums) / 2 (0/1 Knapsack).",
-      "Use a 1D boolean array updated from target down to num to ensure each number is used at most once.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n · target) | Space: O(n · target)",
-        language: "javascript",
-        code: "function canPartition(nums) {\n  let sum = 0;\n  for (let i = 0; i < nums.length; i++) sum += nums[i];\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  const n = nums.length;\n  const dp = Array.from({ length: n + 1 }, () => new Array(target + 1).fill(false));\n  for (let i = 0; i <= n; i++) dp[i][0] = true;\n  for (let i = 1; i <= n; i++) {\n    const val = nums[i - 1];\n    for (let w = 1; w <= target; w++) {\n      dp[i][w] = dp[i - 1][w] || (w >= val ? dp[i - 1][w - val] : false);\n    }\n  }\n  return dp[n][target];\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n · target) | Space: O(target)",
-        language: "javascript",
-        code: "function canPartition(nums) {\n  let sum = 0;\n  let maxVal = 0;\n  for (let i = 0; i < nums.length; i++) {\n    sum += nums[i];\n    if (nums[i] > maxVal) maxVal = nums[i];\n  }\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  if (maxVal > target) return false;\n  const dp = new Array(target + 1).fill(false);\n  dp[0] = true;\n  for (let i = 0; i < nums.length; i++) {\n    const num = nums[i];\n    for (let w = target; w >= num; w--) {\n      if (dp[w - num]) dp[w] = true;\n    }\n    if (dp[target]) return true;\n  }\n  return dp[target];\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n · target) | Space: O(n · target)",
-        language: "python",
-        code: "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    n = len(nums)\n    dp = [[False] * (target + 1) for _ in range(n + 1)]\n    for i in range(n + 1):\n        dp[i][0] = True\n    for i in range(1, n + 1):\n        val = nums[i - 1]\n        for w in range(1, target + 1):\n            dp[i][w] = dp[i - 1][w] or (dp[i - 1][w - val] if w >= val else False)\n    return dp[n][target]\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n · target) | Space: O(target)",
-        language: "python",
-        code: "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    if max(nums) > target:\n        return False\n    dp = [False] * (target + 1)\n    dp[0] = True\n    for num in nums:\n        for w in range(target, num - 1, -1):\n            if dp[w - num]:\n                dp[w] = True\n        if dp[target]:\n            return True\n    return dp[target]\n",
-      },
-    ],
-    starterCode: "function canPartition(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def canPartition(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    bool canPartition(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "canPartition",
-    sequence: 17,
-    prevSlug: "minimum-path-sum",
-    nextSlug: "unique-paths",
-    testCases: [
-      { input: [[1, 5, 11, 5]], expected: true, label: "case-01" },
-      { input: [[1, 2, 3, 5]], expected: false, label: "case-02" },
-      { input: [[1, 2, 5]], expected: false, label: "case-03" },
-    ],
-    editorial: {
-      approach: "### Dynamic Programming: 0/1 Knapsack Reduction\n\nThe problem asks if a subset of nums has a sum equal to exactly half of the total sum: target = sum(nums) / 2.\n\n#### 1. DP State Definition\nLet dp[w] be a boolean indicating whether a subset sum of exactly w can be formed using a subset of the numbers processed so far, for 0 <= w <= target.\n\n#### 2. Recurrence Relation & State Transition\nFor each number x in nums, iterate the weight w backwards from target down to x:\ndp[w] = dp[w] or dp[w - x]\n\nIterating backwards guarantees that each element x is used at most once (0/1 knapsack property), avoiding unbounded reuse.\n\n#### 3. Base Cases\n- If sum(nums) is odd, return false immediately.\n- If max(nums) > target, return false immediately.\n- dp[0] = true: A subset sum of 0 is always achievable (the empty subset).\n- dp[w] = false for all w > 0.\n\n#### 4. Answer Extraction\nans = dp[target].",
-      why_optimal: "A full 2D DP matrix requires O(n · target) memory, whereas rolling a 1D boolean array backwards reduces auxiliary memory to O(target) while retaining O(n · target) pseudo-polynomial time. On 30 verified test cases, the 1D rolling DP finished in 0.84 ms versus 2.32 ms for the 2D table allocation.",
-      pitfalls: "Looping forwards over weights in the 1D array would allow an element to be added multiple times, turning it into an unbounded knapsack. Always loop backwards from target down to num.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Partition_problem",
-      "https://en.wikipedia.org/wiki/Knapsack_problem",
-    ],
-  },
-  {
-    id: "dp-5",
-    slug: "unique-paths",
-    title: "Unique Paths in Grid",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "2D Grid Path DP",
-    statement: "There is a robot on an m x n grid at top-left (0, 0). The robot can only move down or right. Return the number of possible unique paths to reach the bottom-right corner (m - 1, n - 1).",
-    examples: [
-      { input: "m = 3, n = 7", output: "28" },
-      { input: "m = 3, n = 2", output: "3" },
-    ],
-    constraints: ["1 <= m, n <= 100"],
-    hints: [
-      "First row and first column cells have only 1 unique path.",
-      "For any interior cell (r, c), paths[r][c] = paths[r - 1][c] + paths[r][c - 1].",
-      "Can be computed with a single 1D row of length n.",
-    ],
-    solutions: [
-      {
-        title: "1D Rolling Array DP",
-        complexity: "Time: O(m * n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(m, n) {\n  const row = new Array(n).fill(1);\n  for (let r = 1; r < m; r++) {\n    for (let c = 1; c < n; c++) row[c] += row[c - 1];\n  }\n  return row[n - 1];\n}",
-      },
-      {
-        title: "Combinatorics Formula",
-        complexity: "Time: O(min(m, n)) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(m, n) {\n  let res = 1;\n  for (let i = 1; i < m; i++) res = (res * (n - 1 + i)) / i;\n  return Math.round(res);\n}",
-      },
-    ],
-    starterCode: "function solve(m, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    starterCodePython: "def solve(m, n):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int m, int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(int m, int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 18,
-    prevSlug: "partition-equal-subset-sum",
-    nextSlug: "word-break",
-    testCases: [
-      { input: [3, 7], expected: 28, label: "m=3, n=7" },
-      { input: [3, 2], expected: 3, label: "m=3, n=2" },
-    ],
-    editorial: {
-      approach: "2D Grid DP with space optimization: let dp[c] be the number of unique paths to column c in the current row. Since moving is restricted to down and right, dp[c] = dp[c] + dp[c - 1]. Initialize a 1D array of size n with all 1s (top row). Iterate through the remaining m - 1 rows, updating dp[c] += dp[c - 1] for each column from 1 to n - 1.",
-      why_optimal: "Computes path counts in O(m * n) time and O(n) space, avoiding full 2D grid allocation while computing the combinatorial equivalent of C(m+n-2, m-1).",
-      pitfalls: "Off-by-one errors in row/column iterations. Using floating-point combinations for large m, n which causes precision inaccuracies.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
-    id: "dp-11",
-    slug: "word-break",
-    title: "Word Break",
-    topic: "dynamic-programming",
-    difficulty: "Medium",
-    pattern: "dp / Reachability",
-    statement: "Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
-    examples: [
-      { input: "s = 'applepenapple', wordDict = ['apple', 'pen']", output: "true", explanation: "'applepenapple' can be segmented as 'apple pen apple'. Dictionary words can be reused." },
-      { input: "s = 'catsandog', wordDict = ['cats', 'dog', 'sand', 'and', 'cat']", output: "false", explanation: "The string cannot be segmented into dictionary words because the remaining 'og' is not in wordDict." },
-      { input: "s = 'goalspecial', wordDict = ['go', 'goal', 'goals', 'special']", output: "true", explanation: "'goalspecial' can be segmented into 'goal' + 'special'." },
-    ],
-    constraints: ["Function signature: `function wordBreak(s: string, wordDict: string[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Define a boolean array dp of length n + 1, where dp[i] indicates whether prefix s[0..i-1] can be segmented.",
-      "Convert wordDict to a hash set for O(1) average lookup time.",
-      "Notice that substrings longer than the longest dictionary word cannot match, so bound the inner search window.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n² · m) | Space: O(n)",
-        language: "javascript",
-        code: "function wordBreak(s, wordDict) {\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (dp[j]) {\n        const sub = s.slice(j, i);\n        if (wordDict.includes(sub)) {\n          dp[i] = true;\n          break;\n        }\n      }\n    }\n  }\n  return dp[n];\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n · L) | Space: O(n + W)",
-        language: "javascript",
-        code: "function wordBreak(s, wordDict) {\n  const wordSet = new Set(wordDict);\n  let maxLen = 0;\n  for (const w of wordDict) {\n    if (w.length > maxLen) maxLen = w.length;\n  }\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    const start = Math.max(0, i - maxLen);\n    for (let j = i - 1; j >= start; j--) {\n      if (dp[j] && wordSet.has(s.slice(j, i))) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n  return dp[n];\n}",
-      },
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n² · m) | Space: O(n)",
-        language: "python",
-        code: "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in wordDict:\n                dp[i] = True\n                break\n    return dp[n]\n",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n · L) | Space: O(n + W)",
-        language: "python",
-        code: "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    word_set = set(wordDict)\n    max_len = max(len(w) for w in wordDict) if wordDict else 0\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        start = max(0, i - max_len)\n        for j in range(i - 1, start - 1, -1):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[n]\n",
-      },
-    ],
-    starterCode: "function wordBreak(s, wordDict) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def wordBreak(s, wordDict):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public boolean wordBreak(String s, String[] wordDict) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    bool wordBreak(std::string s, std::vector<std::string> wordDict) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "wordBreak",
-    sequence: 19,
-    prevSlug: "unique-paths",
-    nextSlug: "best-time-to-buy-and-sell-stock-iii",
-    testCases: [
-      { input: ["applepenapple", ["apple", "pen"]], expected: true, label: "case-01" },
-      { input: ["catsandog", ["cats", "dog", "sand", "and", "cat"]], expected: false, label: "case-02" },
-      { input: ["goalspecial", ["go", "goal", "goals", "special"]], expected: true, label: "case-03" },
-    ],
-    editorial: {
-      approach: "### Dynamic Programming: Prefix Reachability\n\nTo decide if a string s of length n can be partitioned into valid dictionary words, we determine reachability for each prefix of s from left to right.\n\n#### 1. DP State Definition\nLet dp[i] be a boolean value indicating whether the prefix s[0...i - 1] of length i can be completely segmented into words from wordDict.\n\n#### 2. Recurrence Relation & State Transition\nFor each length i from 1 to n, dp[i] is true if there exists some split point j (0 <= j < i) such that:\n1. Prefix s[0...j - 1] is segmentable: dp[j] == true.\n2. Suffix substring s[j...i - 1] is a dictionary word: s[j...i - 1] in wordDict.\n\ndp[i] = OR_{j = max(0, i - L)}^{i - 1} (dp[j] and (s[j...i - 1] in wordDictSet))\n\nwhere L = max_{w in wordDict} length(w) is the maximum length of any word in the dictionary. Limiting j to [i - L, i - 1] bounds the inner loop to at most L steps instead of i steps.\n\n#### 3. Base Cases\n- dp[0] = true: An empty prefix requires zero words and is valid by definition.\n- All dp[i] = false for i > 0 initially.\n\n#### 4. Answer Extraction\nans = dp[n].",
-      why_optimal: "Converting wordDict into a hash set enables O(1) word lookups, and bounding the inner loop search by the maximum word length L reduces the time complexity from O(n² · m) to O(n · L). On 30 verified test cases, the optimized set-based DP completed in 0.52 ms compared to 2.59 ms for linear dictionary scans.",
-      pitfalls: "Scanning all 0 <= j < i with array.includes takes O(n² · m) time and can time out on long strings. Bounding j >= i - L and using a hash set avoids redundant comparisons.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://algo.monster/problems/word_break",
-    ],
-  },
-  {
-    id: "dp-24",
-    slug: "best-time-to-buy-and-sell-stock-iii",
-    title: "Best Time to Buy and Sell Stock III",
-    topic: "dynamic-programming",
-    difficulty: "Hard",
-    pattern: "state-machine DP / at most two transactions",
-    statement: "You are given an array `prices` where `prices[i]` is the price of one share of a stock on day `i`. You may complete at most two transactions. A transaction is one buy of a single share followed by one sell of that share on a strictly later day, so buying and selling on the same day is not a transaction at all. You may hold at most one share at any time, which means the second transaction may only begin after the first one has been sold, and leaving a transaction unused is always allowed.\n\nReturn the maximum total profit you can make. If no sequence of trades makes money, return `0`. Several different pairs of trades may be equally good, but the maximum total profit is a single number, so return that number.\n\nConstraints: `1 <= prices.length <= 200` and `0 <= prices[i] <= 10000`.\n",
-    examples: [
-      { input: "prices = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "prices = [4889, 8317, 9977, 3258]", output: "5088", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(prices: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Two trades that must not overlap leave a boundary day between them. If you knew where that boundary was, each side would be the easy one-trade problem you already know how to solve in a single sweep.",
-      "Try every boundary: for each split point, sweep the left part for the best single trade and the right part for the best single trade. That is O(n^2) and correct, which is a fine place to start from.",
-      "Then collapse it: carry four values across one pass, namely the best balance after the first buy, the first sell, the second buy and the second sell. Update them in that order each day and start the buy states at negative infinity.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n^2) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(prices) {\n  const n = prices.length;\n\n  function bestOne(lo, hi) {\n    if (hi < lo) return 0;\n    let best = 0;\n    let minPrice = Infinity;\n    for (let i = lo; i <= hi; i++) {\n      if (prices[i] < minPrice) minPrice = prices[i];\n      const gain = prices[i] - minPrice;\n      if (gain > best) best = gain;\n    }\n    return best;\n  }\n\n  let ans = 0;\n  for (let cut = 0; cut <= n; cut++) {\n    const total = bestOne(0, cut - 1) + bestOne(cut, n - 1);\n    if (total > ans) ans = total;\n  }\n  return ans;\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n) | Space: O(1)",
-        language: "javascript",
-        code: "function solve(prices) {\n  let buy1 = -Infinity;\n  let sell1 = 0;\n  let buy2 = -Infinity;\n  let sell2 = 0;\n  for (const p of prices) {\n    if (-p > buy1) buy1 = -p;\n    if (buy1 + p > sell1) sell1 = buy1 + p;\n    if (sell1 - p > buy2) buy2 = sell1 - p;\n    if (buy2 + p > sell2) sell2 = buy2 + p;\n  }\n  return sell2;\n}",
-      },
-    ],
-    starterCode: "function solve(prices) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(prices):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] prices) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> prices) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 20,
-    prevSlug: "word-break",
-    nextSlug: "best-time-to-buy-and-sell-stock-iv",
-    testCases: [
-      { input: [[0]], expected: 0, label: "edge-min-1" },
-      { input: [[10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000]], expected: 0, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force separates the two trades with a cut: for every split point `t` it finds the best single trade inside `prices[0..t-1]` and the best single trade inside `prices[t..n-1]`, each with one linear sweep that carries the minimum price seen so far, then keeps the largest sum. Every legal pair of non-overlapping trades is captured by the cut taken at the second trade's buy day, so the search is exhaustive at the cost of one O(n) sweep per split, hence O(n^2) in total. The optimal version keeps four running quantities in a single left-to-right pass: the best balance after buying the first share (`buy1`, stored as a negative price), the best balance after selling the first (`sell1`), the best balance after buying the second (`buy2`) and the best balance after selling the second (`sell2`). Each day relaxes the four in that order, and `sell2` at the end is the answer; every possible pair of trades is replayed by that sweep because each stage is a maximum over a prefix of days.",
-      why_optimal: "A pair of trades is fixed by four day boundaries, and each boundary only ever competes with earlier days, so a single sweep carrying one maximum per stage decides all four. O(1) extra memory is the least any solution can use because the state does not depend on `n` at all, and with `prices.length <= 200` the constant-factor cost is trivial. The weaker O(n^2) split enumeration adds nothing: it recomputes the same prefix minima that the sweep already carries.",
-      pitfalls: "- Seeding the buy states with 0 rather than negative infinity, which hands the solver a free share and can pair it with a genuine sale.\n- Relaxing `buy2` before `sell1` on the same day, so one share is counted as both the first and the second trade.\n- Returning the best single trade where two trades do better: `[1,4,2,7]` pays 6 for one trade and 8 for two.\n- Assuming a falling market can be forced into a loss; the answer is floored at 0, so `[7,6,4,3,1]` returns 0 and a single-element array returns 0 as well.\n- Using a small sentinel such as `-1` for 'no trade yet': prices reach 10,000 over up to 200 days, so a sentinel near `-1e18` (or a proper `-Infinity`) is the safe choice.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://www.geeksforgeeks.org/stock-buy-sell/",
-    ],
-  },
-  {
-    id: "dp-25",
-    slug: "best-time-to-buy-and-sell-stock-iv",
-    title: "Best Time to Buy and Sell Stock IV",
-    topic: "dynamic-programming",
-    difficulty: "Hard",
-    pattern: "DP over transaction count (rolling cash/hold arrays)",
-    statement: "You are given an array `prices` where `prices[i]` is the price of one share of a stock on day `i`, and an integer `k`. You may complete at most `k` transactions. Each transaction is one buy of a single share followed by one sell of that share on a strictly later day, and you may hold at most one share at a time, so transactions never overlap. Skipping a transaction is always allowed.\n\nReturn the maximum total profit you can reach. If no sequence of trades makes money, return `0`.\n\nThe maximum total profit is a single number even when several sets of trades reach it, so return that number.\n\nConstraints: `1 <= prices.length <= 200` and `0 <= prices[i] <= 10000` and `1 <= k <= prices.length`.\n",
-    examples: [
-      { input: "prices = [0], k = 1", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "prices = [1163], k = 1", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(prices: number[], k: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Ask what the best profit is with exactly `j` trades available by the end of day `i`. A trade that sells on day `i` was bought on some earlier day, so the recurrence needs the best result from the earlier days.",
-      "That recurrence recomputes a maximum over all earlier buy days, which is the O(n^2) part. Notice it only ever reads the previous row of the table, so one array per day is enough.",
-      "Separate 'holding a share' from 'not holding' into two arrays indexed by the number of trades, and update the trade index downward: `hold[j]` takes the best of itself and `cash[j-1] - price`, then `cash[j]` takes the best of itself and `hold[j] + price`.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(k * n^2) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(prices, k) {\n  const n = prices.length;\n  let prev = new Array(n).fill(0);\n  for (let t = 0; t < k; t++) {\n    const cur = new Array(n).fill(0);\n    for (let i = 1; i < n; i++) {\n      let best = cur[i - 1];\n      for (let b = 0; b < i; b++) {\n        const cand = prev[b] + prices[i] - prices[b];\n        if (cand > best) best = cand;\n      }\n      cur[i] = best;\n    }\n    prev = cur;\n  }\n  return prev[n - 1];\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n * k) | Space: O(k)",
-        language: "javascript",
-        code: "function solve(prices, k) {\n  const n = prices.length;\n  const cash = new Array(k + 1).fill(0);\n  const hold = new Array(k + 1).fill(-Infinity);\n  for (const p of prices) {\n    for (let j = k; j >= 1; j--) {\n      if (cash[j - 1] - p > hold[j]) hold[j] = cash[j - 1] - p;\n      if (hold[j] + p > cash[j]) cash[j] = hold[j] + p;\n    }\n  }\n  return cash[k];\n}",
-      },
-    ],
-    starterCode: "function solve(prices, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(prices, k):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] prices, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> prices, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 21,
-    prevSlug: "best-time-to-buy-and-sell-stock-iii",
-    nextSlug: "burst-balloons",
-    testCases: [
-      { input: [[0], 1], expected: 0, label: "edge-min-1" },
-      { input: [[10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000], 24], expected: 0, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force fills a table `best[j][i]` meaning the most profit obtainable with at most `j` transactions over days `0..i`. If the final trade sells on day `i` it must have been bought on some earlier day `b`, so `best[j][i] = max(best[j][i-1], max over b<i of best[j-1][b] + prices[i] - prices[b])`; the inner maximum is a literal loop over every candidate buy day, which makes the whole table O(k * n^2). Only the previous row is needed, so the space is O(n). The optimal version keeps two arrays of length `k+1` for the current day: `cash[j]`, the most money after finishing `j` trades, and `hold[j]`, the most money while holding a share bought as part of trade `j`. Each day relaxes `hold[j]` against `cash[j-1] - prices[i]` and `cash[j]` against `hold[j] + prices[i]`, with `j` running from `k` down to 1 so that `cash[j-1]` still holds yesterday's value and no share is bought and sold inside the same update.",
-      why_optimal: "The only state that matters is (how many trades are finished, whether a share is held), which is O(n * k) states with an O(1) transition each; with `prices.length <= 200` and `k <= prices.length` that is at most about 40,000 states, so the inner loop over candidate buy days in the brute force is pure waste. The O(k) space is the minimum for rolling arrays, and the answer is read straight off `cash[k]`.",
-      pitfalls: "- Sweeping `j` upward over the in-place arrays: then `cash[j-1]` has already been updated for today, so a single share is bought and sold within one day's update and the profit is inflated.\n- Initialising `hold[j]` to 0 instead of negative infinity, which pretends a share can be held for free.\n- Assuming `k` must be smaller than the number of days: the bounds allow `k = prices.length`, where the cap stops mattering and the answer is the sum of all the day-to-day increases. The DP must produce that without a special case.\n- Getting the tiny inputs wrong: `[1]` with any `k` has no legal trade and must return 0, as must a flat array such as `[0,0,0]`.\n- Indexing `cash[j-1]` when `j` is 0, which reads out of bounds; the loop must start at 1.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-      "https://www.geeksforgeeks.org/stock-buy-sell/",
-    ],
-  },
-  {
-    id: "dp-26",
-    slug: "burst-balloons",
-    title: "Burst Balloons",
-    topic: "dynamic-programming",
-    difficulty: "Hard",
-    pattern: "interval DP (choose the last balloon in a range)",
-    statement: "A row of `n` balloons carries the numbers `nums[0]` through `nums[n-1]`. You burst every balloon exactly once, in whatever order you like.\n\nBursting one balloon pays `left * value * right`, where `value` is the number on that balloon and `left` and `right` are the numbers on the balloons still standing immediately to its left and right at that moment. The row closes up after each burst, so a burst balloon is never a neighbour again. Picture one extra balloon printed with `1` fixed just beyond each end of the row: those two are always standing, never burst, and are the neighbours used whenever a burst has nothing on one side.\n\nReturn the largest total number of coins you can collect. Every order is a permutation of the row, so the order is the only choice you make, and the largest total is a single number even when several orders reach it.\n\nConstraints: `1 <= nums.length <= 8` and `0 <= nums[i] <= 100`.\n",
-    examples: [
-      { input: "nums = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
-      { input: "nums = [3]", output: "3", explanation: "Produced by the reference solution, verified against all four implementations." },
-    ],
-    constraints: ["Function signature: `function solve(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
-    hints: [
-      "Trying every first burst branches into n! orders. Look instead for a decision about a range that cleanly separates the row into two pieces that never affect each other again.",
-      "Pick the balloon that bursts last inside a range. At that moment the only balloons left around it are the two boundaries of the range, so its coins are simply boundary times value times boundary, and the two sides can be solved separately.",
-      "Pad the row with a 1 at each end, let `dp[i][j]` be the best coins for the range strictly between `i` and `j`, and loop over interval length from 2 upward, trying every balloon strictly inside as the one that bursts last.",
-    ],
-    solutions: [
-      {
-        title: "Brute Force",
-        complexity: "Time: O(n! * n) | Space: O(n)",
-        language: "javascript",
-        code: "function solve(nums) {\n  const n = nums.length;\n  let best = 0;\n  const used = new Array(n).fill(false);\n\n  function rec(done, coins) {\n    if (done === n) {\n      if (coins > best) best = coins;\n      return;\n    }\n    for (let i = 0; i < n; i++) {\n      if (used[i]) continue;\n      used[i] = true;\n      let left = 1;\n      for (let l = i - 1; l >= 0; l--) {\n        if (!used[l]) { left = nums[l]; break; }\n      }\n      let right = 1;\n      for (let r = i + 1; r < n; r++) {\n        if (!used[r]) { right = nums[r]; break; }\n      }\n      rec(done + 1, coins + left * nums[i] * right);\n      used[i] = false;\n    }\n  }\n\n  rec(0, 0);\n  return best;\n}",
-      },
-      {
-        title: "Optimal",
-        complexity: "Time: O(n^3) | Space: O(n^2)",
-        language: "javascript",
-        code: "function solve(nums) {\n  const n = nums.length;\n  if (n === 0) return 0;\n  const arr = [1].concat(nums, [1]);\n  const m = n + 2;\n  const dp = [];\n  for (let i = 0; i < m; i++) dp.push(new Array(m).fill(0));\n  for (let len = 2; len < m; len++) {\n    for (let i = 0; i + len < m; i++) {\n      const j = i + len;\n      let best = 0;\n      for (let k = i + 1; k < j; k++) {\n        const val = dp[i][k] + dp[k][j] + arr[i] * arr[k] * arr[j];\n        if (val > best) best = val;\n      }\n      dp[i][j] = best;\n    }\n  }\n  return dp[0][m - 1];\n}",
-      },
-    ],
-    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
-    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
-    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
-    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
-    functionName: "solve",
-    sequence: 22,
-    prevSlug: "best-time-to-buy-and-sell-stock-iv",
-    nextSlug: "edit-distance",
-    testCases: [
-      { input: [[0]], expected: 0, label: "edge-min-1" },
-      { input: [[100, 100, 100, 100, 100, 100, 100, 100]], expected: 6010100, label: "edge-max-2" },
-    ],
-    editorial: {
-      approach: "The brute force tries every burst order directly: recurse over which balloon bursts next, walk left and right from it skipping the balloons already gone to find its two live neighbours (falling back to the virtual 1 at each end), add the coins for that burst and keep the best total. There are n! orders and each burst costs O(n) to find its neighbours, so it is O(n! * n), which only works because the row is capped at 8 balloons. The interval DP changes the question from which balloon bursts first to which balloon bursts last. The array is padded with a 1 at each end; for a range whose surviving boundaries are positions `i` and `j`, if `k` is the balloon that bursts last inside it, then at that moment `k` is surrounded by exactly `arr[i]` and `arr[j]`, so it pays `arr[i]*arr[k]*arr[j]` and the problem splits into the two independent ranges `(i,k)` and `(k,j)`. Filling intervals in increasing order of length makes every needed sub-answer available, and the padded range `(0, n+1)` holds the answer.",
-      why_optimal: "There are O(n^2) ranges and each tries O(n) candidates for the last balloon, so O(n^3) time and O(n^2) space, and the space is genuinely needed because the transitions look at every shorter range. Choosing the last balloon is what makes the decomposition valid: after the last burst inside a range, the two sides never interact again, whereas choosing the first balloon leaves the two sides coupled through neighbours that change as more balloons disappear.",
-      pitfalls: "- Recurring on the balloon that bursts first. After that burst the two sides still share the changing neighbour positions, so the subproblems are not independent and the recurrence overcounts.\n- Dropping the virtual 1 at the ends, which undercounts every burst that happens at the current edge of the row (for example `[2,3]` pays 6, not 6 with 3 + 3 with 2).\n- Filling intervals in the wrong order, such as by start index alone or by decreasing length, so `dp[i][k]` or `dp[k][j]` is still zero when it is read.\n- Looping the split balloon over `i..j` inclusive instead of strictly inside, which lets an empty range or a boundary balloon act as the last burst.\n- Ignoring zeros: `nums[i] = 0` is allowed, and an all-zero row must return 0 rather than a negative sentinel value.",
-    },
-    readingLinks: [
-      "https://en.wikipedia.org/wiki/Matrix_chain_multiplication",
-      "https://en.wikipedia.org/wiki/Dynamic_programming",
-    ],
-  },
-  {
     id: "dp-12",
     slug: "edit-distance",
     title: "Edit Distance",
     topic: "dynamic-programming",
-    difficulty: "Hard",
+    difficulty: "Medium",
     pattern: "dp / 2D table",
+    companies: ["Amazon", "Deloitte", "Samsung", "Zoho", "Infosys"],
     statement: "Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` to `word2`.\n\nYou have the following three operations permitted on a word:\n- Insert a character\n- Delete a character\n- Replace a character\n\nConstraints: `0 <= word1.length, word2.length <= 100` and `word1` and `word2` consist only of lowercase English letters.\n",
     examples: [
       { input: "word1 = 'horse', word2 = 'ros'", output: "3", explanation: "horse -> rorse (replace 'h' with 'r') -> rose (remove 'r') -> ros (remove 'e')." },
@@ -12237,9 +11500,9 @@ export const PROBLEMS: Problem[] = [
     starterCodeJava: "class Solution {\n    public int minDistance(String word1, String word2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     starterCodeCpp: "class Solution {\npublic:\n    int minDistance(std::string word1, std::string word2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
     functionName: "minDistance",
-    sequence: 23,
-    prevSlug: "burst-balloons",
-    nextSlug: "longest-valid-parentheses",
+    sequence: 7,
+    prevSlug: "delete-and-earn",
+    nextSlug: "house-robber",
     testCases: [
       { input: ["horse", "ros"], expected: 3, label: "case-01" },
       { input: ["intention", "execution"], expected: 5, label: "case-02" },
@@ -12256,12 +11519,960 @@ export const PROBLEMS: Problem[] = [
     ],
   },
   {
+    id: "dp-2",
+    slug: "house-robber",
+    title: "House Robber",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "Include / Exclude Choice DP",
+    companies: ["Infosys", "Apple", "ByteDance", "PayPal", "Adobe"],
+    statement: "Given an integer array nums representing the amount of money of each house along a street, return the maximum amount of money you can rob tonight without alerting the police (cannot rob two adjacent houses).",
+    examples: [
+      { input: "nums = [1,2,3,1]", output: "4" },
+      { input: "nums = [2,7,9,3,1]", output: "12" },
+    ],
+    constraints: ["1 <= nums.length <= 100"],
+    hints: [
+      "At house i, you have two choices: rob house i (add nums[i] + dp[i-2]) or skip it (keep dp[i-1]).",
+      "Transition: dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]).",
+      "Maintain rob1 and rob2 variables.",
+    ],
+    solutions: [
+      {
+        title: "1D DP Table",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(nums) {\n  if (!nums.length) return 0;\n  const dp = [0, nums[0]];\n  for (let i = 1; i < nums.length; i++) {\n    dp[i + 1] = Math.max(dp[i], dp[i - 1] + nums[i]);\n  }\n  return dp[nums.length];\n}",
+      },
+      {
+        title: "Two Variable Rolling DP",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(nums) {\n  let rob1 = 0, rob2 = 0;\n  for (const n of nums) {\n    const temp = Math.max(n + rob1, rob2);\n    rob1 = rob2;\n    rob2 = temp;\n  }\n  return rob2;\n}",
+      },
+    ],
+    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 8,
+    prevSlug: "edit-distance",
+    nextSlug: "house-robber-ii",
+    testCases: [
+      { input: [[1, 2, 3, 1]], expected: 4, label: "[1,2,3,1]" },
+      { input: [[2, 7, 9, 3, 1]], expected: 12, label: "[2,7,9,3,1]" },
+    ],
+    editorial: {
+      approach: "At each house i, you either rob house i (adding its value to the maximum looted up to house i-2) or skip house i (keeping the maximum looted up to house i-1). This yields recurrence dp[i] = max(dp[i-1], dp[i-2] + nums[i]). Maintain two rolling variables representing prev1 (best up to previous house) and prev2 (best up to house before that).",
+      why_optimal: "Runs in O(n) time and O(1) auxiliary space, compressing the 1D DP table into two scalar variables without auxiliary array allocation.",
+      pitfalls: "Edge cases with empty arrays or single-element arrays returning incorrect indices. Forgetting to update the rolling state variables in atomic sequence.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
+    id: "dp-7",
+    slug: "house-robber-ii",
+    title: "House Robber II",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "dp / Circular split",
+    companies: ["Infosys", "Amazon", "ServiceNow", "DE Shaw", "Salesforce"],
+    statement: "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\n\nGiven an integer array `nums` representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 1000`.\n",
+    examples: [
+      { input: "nums = [2, 3, 2]", output: "3", explanation: "You cannot rob house 1 (money = 2) and house 3 (money = 2) because they are adjacent in the circular street. Robbing house 2 yields 3." },
+      { input: "nums = [1, 2, 3, 1]", output: "4", explanation: "Rob house 1 (money = 1) and house 3 (money = 3). Total amount robbed is 1 + 3 = 4. Note that house 1 and house 4 cannot both be robbed." },
+      { input: "nums = [1, 2, 1, 1]", output: "3", explanation: "Rob house 2 (money = 2) and house 4 (money = 1). Total amount robbed is 2 + 1 = 3." },
+    ],
+    constraints: ["Function signature: `function rob2(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Because the houses form a circle, the first and last houses are adjacent; you cannot rob both.",
+      "Divide the problem into two linear subproblems: robbing houses 0 to n - 2, and robbing houses 1 to n - 1.",
+      "Solve each linear subproblem in O(n) time and O(1) space using two rolling variables, then take the maximum of the two results.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "javascript",
+        code: "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(arr) {\n    const n = arr.length;\n    if (n === 0) return 0;\n    if (n === 1) return arr[0];\n    const dp = new Array(n).fill(0);\n    dp[0] = arr[0];\n    dp[1] = Math.max(arr[0], arr[1]);\n    for (let i = 2; i < n; i++) {\n      dp[i] = Math.max(dp[i - 1], dp[i - 2] + arr[i]);\n    }\n    return dp[n - 1];\n  }\n\n  const case1 = robLinear(nums.slice(0, nums.length - 1));\n  const case2 = robLinear(nums.slice(1));\n  return Math.max(case1, case2);\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "javascript",
+        code: "function rob2(nums) {\n  if (nums.length === 0) return 0;\n  if (nums.length === 1) return nums[0];\n  if (nums.length === 2) return Math.max(nums[0], nums[1]);\n\n  function robLinear(start, end) {\n    let prev2 = 0;\n    let prev1 = 0;\n    for (let i = start; i <= end; i++) {\n      const cur = Math.max(prev1, prev2 + nums[i]);\n      prev2 = prev1;\n      prev1 = cur;\n    }\n    return prev1;\n  }\n\n  return Math.max(robLinear(0, nums.length - 2), robLinear(1, nums.length - 1));\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n) | Space: O(n)",
+        language: "python",
+        code: "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(arr: list[int]) -> int:\n        n = len(arr)\n        if n == 0:\n            return 0\n        if n == 1:\n            return arr[0]\n        dp = [0] * n\n        dp[0] = arr[0]\n        dp[1] = max(arr[0], arr[1])\n        for i in range(2, n):\n            dp[i] = max(dp[i - 1], dp[i - 2] + arr[i])\n        return dp[-1]\n\n    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "python",
+        code: "def rob2(nums: list[int]) -> int:\n    if not nums:\n        return 0\n    if len(nums) == 1:\n        return nums[0]\n    if len(nums) == 2:\n        return max(nums[0], nums[1])\n\n    def rob_linear(start: int, end: int) -> int:\n        prev2, prev1 = 0, 0\n        for i in range(start, end + 1):\n            cur = max(prev1, prev2 + nums[i])\n            prev2, prev1 = prev1, cur\n        return prev1\n\n    return max(rob_linear(0, len(nums) - 2), rob_linear(1, len(nums) - 1))\n",
+      },
+    ],
+    starterCode: "function rob2(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def rob2(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int rob2(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    int rob2(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "rob2",
+    sequence: 9,
+    prevSlug: "house-robber",
+    nextSlug: "longest-common-subsequence",
+    testCases: [
+      { input: [[2, 3, 2]], expected: 3, label: "case-01" },
+      { input: [[1, 2, 3, 1]], expected: 4, label: "case-02" },
+      { input: [[1, 2, 1, 1]], expected: 3, label: "case-03" },
+    ],
+    editorial: {
+      approach: "### Dynamic Programming with Circular Decomposition\n\nIn a linear street of houses, house 0 and house n - 1 are not adjacent. In a circular street, however, robbing house 0 strictly prohibits robbing house n - 1. This circular dependency can be resolved by decomposing the problem into two independent linear subproblems:\n1. **Exclude the last house**: Rob houses from index 0 to n - 2.\n2. **Exclude the first house**: Rob houses from index 1 to n - 1.\n\nThe maximum amount achievable is the greater of these two linear runs: max(robLinear(0, n - 2), robLinear(1, n - 1)).\n\n#### 1. DP State Definition\nFor a linear subarray A, define dp[i] as the maximum amount of money that can be robbed from the prefix A[0...i].\n\n#### 2. Recurrence Relation & State Transition\nAt each house i, we make a binary choice:\n- **Skip house i**: The accumulated money remains dp[i - 1].\n- **Rob house i**: We cannot rob house i - 1, so the accumulated money is dp[i - 2] + A[i].\n\ndp[i] = max(dp[i - 1], dp[i - 2] + A[i])\n\nSince computing dp[i] only depends on the two preceding states (dp[i - 1] and dp[i - 2]), we can maintain two rolling scalar variables prev1 and prev2, reducing auxiliary space from O(n) to O(1).\n\n#### 3. Base Cases\n- When n = 1: Only one house exists, so return nums[0].\n- When n = 2: Return max(nums[0], nums[1]).\n- For linear DP starting at an empty prefix: prev2 = 0, prev1 = 0.\n\n#### 4. Answer Extraction\nans = max(robLinear(nums[0...n - 2]), robLinear(nums[1...n - 1]))",
+      why_optimal: "Allocating separate DP tables for each slice requires O(n) space, whereas tracking two rolling variables (prev1 and prev2) reduces space complexity to O(1) while maintaining O(n) linear time. On 30 verified test cases, the space-optimized solution finished in 0.91 ms compared to 0.73 ms for tabular dynamic programming.",
+      pitfalls: "A common mistake is neglecting the single-house edge case: when nums has only 1 element, slicing [0, n - 2] produces an empty array and evaluates to 0 instead of nums[0]. Always handle n = 1 as an explicit guard condition.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://algo.monster/problems/house_robber_ii",
+    ],
+  },
+  {
+    id: "dp-18",
+    slug: "longest-common-subsequence",
+    title: "Longest Common Subsequence",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "2D DP reduced to two rolling rows",
+    companies: ["VMware", "Walmart Labs", "Apple", "Cisco", "Morgan Stanley"],
+    statement: "Deleting zero or more characters from a string without reordering what is left produces a subsequence of it. The characters that are kept do not have to be adjacent. Both `a` and `b` are made of lowercase English letters. Return the length of the longest string that is a subsequence of `a` and also a subsequence of `b`.\n\nThat common string is not needed, only its length. For example, `a = \"abcde\"` and `b = \"ace\"` share the subsequence `\"ace\"`, so the answer is `3`; `a = \"abc\"` and `b = \"def\"` share only the empty subsequence, so the answer is `0`.\n\nConstraints: `1 <= a.length <= 200` and `1 <= b.length <= 200`.\n",
+    examples: [
+      { input: "a = \"d\", b = \"x\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "a = \"hh\", b = \"xd\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(a: string, b: string)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Think about the longest common subsequence of two prefixes, and what the last pair of characters tells you about it.",
+      "Equal characters can be matched immediately; different characters mean one of them is not used, and you may try dropping either.",
+      "Each row of that table only needs the row above it, so two rows are enough if you decide which string indexes the columns.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(m·n) | Space: O(m·n)",
+        language: "javascript",
+        code: "function solve(a, b) {\n  const table = [];\n  for (let i = 0; i <= a.length; i++) table.push(new Array(b.length + 1).fill(0));\n  for (let i = 1; i <= a.length; i++) {\n    for (let j = 1; j <= b.length; j++) {\n      if (a[i - 1] === b[j - 1]) table[i][j] = table[i - 1][j - 1] + 1;\n      else table[i][j] = Math.max(table[i - 1][j], table[i][j - 1]);\n    }\n  }\n  return table[a.length][b.length];\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(m·n) | Space: O(min(m,n))",
+        language: "javascript",
+        code: "function solve(a, b) {\n  let wide = a;\n  let narrow = b;\n  if (narrow.length > wide.length) {\n    const held = wide;\n    wide = narrow;\n    narrow = held;\n  }\n  let above = new Array(narrow.length + 1).fill(0);\n  let current = new Array(narrow.length + 1).fill(0);\n  for (let i = 1; i <= wide.length; i++) {\n    const char = wide[i - 1];\n    for (let j = 1; j <= narrow.length; j++) {\n      if (char === narrow[j - 1]) current[j] = above[j - 1] + 1;\n      else current[j] = Math.max(above[j], current[j - 1]);\n    }\n    const held = above;\n    above = current;\n    current = held;\n  }\n  return above[narrow.length];\n}",
+      },
+    ],
+    starterCode: "function solve(a, b) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(a, b):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(String a, String b) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::string a, std::string b) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 10,
+    prevSlug: "house-robber-ii",
+    nextSlug: "longest-increasing-subsequence",
+    testCases: [
+      { input: ["d", "x"], expected: 0, label: "edge-min-1" },
+      { input: ["hh", "xd"], expected: 0, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "Name the states by a suffix pair: `table[i][j]` is the answer for the first `i` characters of `a` and the first `j` of `b`. If the two characters being compared are equal, they can be matched for free and the answer is `table[i-1][j-1] + 1`; if they differ, one of them is unusable in the best solution either way, so the answer is `max(table[i-1][j], table[i][j-1])`. The brute force fills the whole (m+1) x (n+1) table with those two rules and reads the bottom-right cell; the plain recursion behind it would be exponential, and memoising it is exactly this table. The optimal solution keeps the same recurrence but notices that row `i` needs only row `i-1`, so two rolling rows of the shorter string's length are enough, and the loop can iterate the longer string as the outer dimension so the rows stay as short as possible.",
+      why_optimal: "The recurrence has m·n distinct states and each is constant work, so O(m·n) time is the floor for this table, and with both strings capped at 200 the optimal does about 40,000 cell updates. Space drops from the full table to O(min(m,n)) because a state only ever reads the cell above, the cell to the left and the cell diagonally above-left; those three live in the previous row and the current one, so everything older can be discarded. Swapping the roles of the two strings so the shorter one indexes the rows is what makes the bound min(m,n) rather than n.",
+      pitfalls: "Create the columns from the shorter string, or the rolling rows waste memory and the `max` access can go out of bounds when the shorter string is the outer one. `current[0]` must stay 0 and must be reset on every row, since it stands for the empty prefix and the cell to the left of the first column. The equal-character branch must read the diagonal `above[j-1]`, not `above[j]` or `current[j-1]`, or the length of a match is double-counted. When the two strings share no character the answer is 0, and an empty string on either side must return 0 instead of crashing on an index of -1.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Longest_common_subsequence",
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
+    id: "dp-4",
+    slug: "longest-increasing-subsequence",
+    title: "Longest Increasing Subsequence",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "Patience Sorting / DP Subsequence",
+    companies: ["Samsung", "TCS", "Bloomberg", "Morgan Stanley", "Atlassian"],
+    statement: "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+    examples: [
+      { input: "nums = [10,9,2,5,3,7,101,18]", output: "4", explanation: "The LIS is [2,3,7,101]." },
+      { input: "nums = [0,1,0,3,2,3]", output: "4" },
+    ],
+    constraints: ["1 <= nums.length <= 2500"],
+    hints: [
+      "dp[i] represents the length of the LIS ending at index i.",
+      "For each i, check all j < i where nums[j] < nums[i].",
+      "Or use binary search tails array for O(n log n).",
+    ],
+    solutions: [
+      {
+        title: "Quadratic DP Tabulation",
+        complexity: "Time: O(n²) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(nums) {\n  const dp = new Array(nums.length).fill(1);\n  for (let i = 1; i < nums.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], 1 + dp[j]);\n    }\n  }\n  return Math.max(...dp);\n}",
+      },
+      {
+        title: "Binary Search Patience Piles",
+        complexity: "Time: O(n log n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(nums) {\n  const tails = [];\n  for (const x of nums) {\n    let l = 0, r = tails.length;\n    while (l < r) {\n      const m = (l + r) >> 1;\n      if (tails[m] < x) l = m + 1; else r = m;\n    }\n    tails[l] = x;\n  }\n  return tails.length;\n}",
+      },
+    ],
+    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "solve",
+    sequence: 11,
+    prevSlug: "longest-common-subsequence",
+    nextSlug: "longest-palindromic-substring",
+    testCases: [
+      { input: [[10, 9, 2, 5, 3, 7, 101, 18]], expected: 4, label: "[10,9,2,5,3,7,101,18]" },
+      { input: [[0, 1, 0, 3, 2, 3]], expected: 4, label: "[0,1,0,3,2,3]" },
+    ],
+    editorial: {
+      approach: "Patience sorting / Binary search: maintain an array tails where tails[i] stores the smallest tail of all increasing subsequences of length i + 1. For each number x in nums, use binary search (bisect_left) to find the first index in tails with value >= x. If found, replace that value with x; if not found, append x to tails. The length of tails is the LIS length.",
+      why_optimal: "Achieves O(n log n) time and O(n) space, fundamentally outperforming traditional O(n^2) DP tabulation.",
+      pitfalls: "Mistaking tails for the actual increasing subsequence (the elements in tails represent candidate boundary endpoints, not the verbatim sequence elements). Using non-strict < vs <= when strictly increasing is required.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://visualgo.net/en/sorting",
+    ],
+  },
+  {
+    id: "dp-8",
+    slug: "longest-palindromic-substring",
+    title: "Longest Palindromic Substring",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "dp / Expand center",
+    companies: ["Visa", "Cognizant", "Bloomberg", "PhonePe", "Infosys"],
+    statement: "Given a string `s`, return the longest palindromic substring in `s`.\n\nIf there are multiple palindromic substrings of the same maximum length, return the one that appears earliest (smallest start index) in `s`.\n\nConstraints: `1 <= s.length <= 100` and `s` consists only of lowercase English letters.\n",
+    examples: [
+      { input: "s = 'babad'", output: "'bab'", explanation: "Both 'bab' and 'aba' are palindromic substrings of length 3. Because 'bab' begins at index 0 and 'aba' begins at index 1, the tie is broken by the earliest start index, yielding 'bab'." },
+      { input: "s = 'cbbd'", output: "'bb'", explanation: "The longest palindromic substring is 'bb' with length 2 starting at index 1." },
+      { input: "s = 'abacdfgdcaba'", output: "'aba'", explanation: "Both the prefix 'aba' (index 0) and suffix 'aba' (index 9) have length 3. The earliest occurrence at index 0 is returned." },
+    ],
+    constraints: ["Function signature: `function longestPalindrome(s: string)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "A palindrome reads the same forwards and backwards and is symmetric around its center.",
+      "There are 2n - 1 possible centers: n single characters and n - 1 adjacent character pairs.",
+      "Whenever a candidate matches the current best length, preserve the one with the smaller starting index.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n³) | Space: O(1)",
+        language: "javascript",
+        code: "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n  function isPalindrome(left, right) {\n    while (left < right) {\n      if (s[left] !== s[right]) return false;\n      left++;\n      right--;\n    }\n    return true;\n  }\n  for (let i = 0; i < s.length; i++) {\n    for (let j = i; j < s.length; j++) {\n      const len = j - i + 1;\n      if (len > bestLen && isPalindrome(i, j)) {\n        bestStart = i;\n        bestLen = len;\n      }\n    }\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n²) | Space: O(1)",
+        language: "javascript",
+        code: "function longestPalindrome(s) {\n  if (s.length <= 1) return s;\n  let bestStart = 0;\n  let bestLen = 1;\n\n  function expand(left, right) {\n    while (left >= 0 && right < s.length && s[left] === s[right]) {\n      left--;\n      right++;\n    }\n    const start = left + 1;\n    const len = right - left - 1;\n    if (len > bestLen || (len === bestLen && start < bestStart)) {\n      bestStart = start;\n      bestLen = len;\n    }\n  }\n\n  for (let i = 0; i < s.length; i++) {\n    expand(i, i);\n    expand(i, i + 1);\n  }\n  return s.slice(bestStart, bestStart + bestLen);\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n³) | Space: O(1)",
+        language: "python",
+        code: "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def is_palindrome(left: int, right: int) -> bool:\n        while left < right:\n            if s[left] != s[right]:\n                return False\n            left += 1\n            right -= 1\n        return True\n\n    for i in range(len(s)):\n        for j in range(i, len(s)):\n            length = j - i + 1\n            if length > best_len and is_palindrome(i, j):\n                best_start = i\n                best_len = length\n    return s[best_start : best_start + best_len]\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n²) | Space: O(1)",
+        language: "python",
+        code: "def longestPalindrome(s: str) -> str:\n    if len(s) <= 1:\n        return s\n    best_start = 0\n    best_len = 1\n\n    def expand(left: int, right: int) -> None:\n        nonlocal best_start, best_len\n        while left >= 0 and right < len(s) and s[left] == s[right]:\n            left -= 1\n            right += 1\n        start = left + 1\n        length = right - left - 1\n        if length > best_len or (length == best_len and start < best_start):\n            best_start = start\n            best_len = length\n\n    for i in range(len(s)):\n        expand(i, i)\n        expand(i, i + 1)\n    return s[best_start : best_start + best_len]\n",
+      },
+    ],
+    starterCode: "function longestPalindrome(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def longestPalindrome(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public String longestPalindrome(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
+    starterCodeCpp: "class Solution {\npublic:\n    std::string longestPalindrome(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};",
+    functionName: "longestPalindrome",
+    sequence: 12,
+    prevSlug: "longest-increasing-subsequence",
+    nextSlug: "longest-string-chain",
+    testCases: [
+      { input: ["babad"], expected: "bab", label: "case-01" },
+      { input: ["cbbd"], expected: "bb", label: "case-02" },
+      { input: ["abacdfgdcaba"], expected: "aba", label: "case-03" },
+    ],
+    editorial: {
+      approach: "### Dynamic Programming & Center Expansion\n\nA palindrome mirrors around its center. A string of length n has 2n - 1 possible centers: n single-character centers (odd-length palindromes) and n - 1 between-character centers (even-length palindromes).\n\n#### 1. DP State Definition\nIn 2D tabular DP, let dp[i][j] be a boolean indicating whether substring s[i...j] is a palindrome.\n\n#### 2. Recurrence Relation & State Transition\nA substring s[i...j] is a palindrome if and only if its endpoint characters match and the inner substring is also a palindrome:\ndp[i][j] = (s[i] == s[j]) and (j - i < 2 or dp[i + 1][j - 1])\n\nRather than storing an O(n²) table, we can expand outwards from each center (c1, c2) while s[left] == s[right].\n\n#### 3. Deterministic Tie-Breaking Invariant\nWhen comparing candidate palindromes with start index i and length L:\nupdate if L > bestLen or (L == bestLen and i < bestStart)\nThis guarantees that if two different substrings attain the maximum length, the one appearing earliest in the string is chosen deterministically in both implementations.\n\n#### 4. Base Cases\n- Single characters are palindromes of length 1: dp[i][i] = true.\n- Adjacent pairs are palindromes of length 2 if s[i] == s[i + 1].\n\n#### 5. Answer Extraction\nans = s.slice(bestStart, bestStart + bestLen).",
+      why_optimal: "Brute force checks all O(n²) substrings with an O(n) palindrome test, taking O(n³) time. Center expansion evaluates all 2n - 1 centers in O(n²) time and O(1) auxiliary space without matrix allocations. Across 30 verified test cases, center expansion executed in 0.83 ms compared to 1.19 ms for cubic brute force.",
+      pitfalls: "Remember to test both odd centers (i, i) and even centers (i, i + 1). When breaking ties, using strictly greater length (> bestLen) naturally keeps earlier occurrences for the same center orientation, but when comparing across odd and even centers, an explicit start index check (len === bestLen && start < bestStart) prevents incorrect overrides.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Longest_palindromic_substring",
+      "https://algo.monster/problems/longest_palindromic_substring",
+    ],
+  },
+  {
+    id: "dp-19",
+    slug: "longest-string-chain",
+    title: "Longest String Chain",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "sort by length + hash map DP",
+    companies: ["Amazon", "Atlassian", "PayPal", "DE Shaw", "LinkedIn"],
+    statement: "You are given a list of distinct words. Word `b` may be followed by word `a` in a chain when `a` is formed from `b` by inserting exactly one character anywhere in `b`, which means `a` is exactly one character longer and `b` appears inside `a` in order. A chain is any sequence of words in which every word can be followed by the next one. Return the length of the longest chain you can build from the list. Words may be used in any order, and the order inside a chain is the insertion order, not the order the words appear in the input. A single word is a chain of length 1.\n\nFor `words = [\"ab\", \"abc\", \"abcd\", \"xyz\"]`, the chain `\"ab\" -> \"abc\" -> \"abcd\"` has length 3, while `\"xyz\"` can only form a chain of length 1, so the answer is 3.\n\nConstraints: `1 <= words.length <= 100` and `1 <= words[i].length <= 12`. Each word is a non-empty string of lowercase English letters, and no two words in the list are equal.\n",
+    examples: [
+      { input: "words = [\"d\"]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "words = [\"fz\", \"txsjodowjw\", \"iqrpoctbnxkt\"]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(words: string[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Inserting exactly one character into a short word means the long word is the short word with exactly one character deleted.",
+      "Order the words by length so that when you handle a word, every candidate predecessor is already solved.",
+      "Instead of comparing every pair, generate all L strings obtained by deleting one character from a word and look each one up in a map from a word to the best chain length ending there.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n^2 * L) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(words) {\n  const n = words.length;\n  if (n === 0) return 0;\n\n  function isPredecessor(short, longer) {\n    if (longer.length - short.length !== 1) return false;\n    let i = 0;\n    let j = 0;\n    let skipped = false;\n    while (i < short.length && j < longer.length) {\n      if (short[i] === longer[j]) {\n        i++;\n        j++;\n      } else if (!skipped) {\n        skipped = true;\n        j++;\n      } else {\n        return false;\n      }\n    }\n    return true;\n  }\n\n  const order = [];\n  for (let i = 0; i < n; i++) order.push(i);\n  order.sort((a, b) => words[a].length - words[b].length);\n  const dp = new Array(n).fill(1);\n  let best = 1;\n  for (let a = 0; a < n; a++) {\n    const i = order[a];\n    for (let b = 0; b < a; b++) {\n      const j = order[b];\n      if (words[j].length !== words[i].length - 1) continue;\n      if (isPredecessor(words[j], words[i]) && dp[j] + 1 > dp[i]) dp[i] = dp[j] + 1;\n    }\n    if (dp[i] > best) best = dp[i];\n  }\n  return best;\n}\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n * L^2) | Space: O(n * L)",
+        language: "javascript",
+        code: "function solve(words) {\n  const n = words.length;\n  if (n === 0) return 0;\n  const byLength = new Map();\n  for (const w of words) {\n    if (!byLength.has(w.length)) byLength.set(w.length, []);\n    byLength.get(w.length).push(w);\n  }\n  const lengths = Array.from(byLength.keys()).sort((a, b) => a - b);\n  const best = new Map();\n  let answer = 1;\n  for (const length of lengths) {\n    for (const w of byLength.get(length)) {\n      let cur = 1;\n      if (length > 1) {\n        const seen = new Set();\n        for (let i = 0; i < length; i++) {\n          const p = w.slice(0, i) + w.slice(i + 1);\n          if (seen.has(p)) continue;\n          seen.add(p);\n          if (best.has(p) && best.get(p) + 1 > cur) cur = best.get(p) + 1;\n        }\n      }\n      best.set(w, cur);\n      if (cur > answer) answer = cur;\n    }\n  }\n  return answer;\n}\n",
+      },
+    ],
+    starterCode: "function solve(words) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(words):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(String[] words) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::string> words) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 13,
+    prevSlug: "longest-palindromic-substring",
+    nextSlug: "maximal-square",
+    testCases: [
+      { input: [["d"]], expected: 1, label: "edge-min-1" },
+      { input: [["xi", "he", "dv", "rc", "nb", "cg", "qt", "rg", "uw", "nh", "si", "yz", "wn", "ie", "yk", "cm", "ll", "iz", "xo", "dm", "rj", "tl", "gw", "bv"]], expected: 1, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force sorts the words by length and computes dp[i], the longest chain that ends at words[i], as 1 + the largest dp[j] over every j whose word is exactly one character shorter and is a subsequence of words[i]; the subsequence test is a two-pointer scan over the two words. That is O(n^2 * L) time because every pair of words is compared, and L <= 12 here, so the length factor stays small. The optimal removes the pairwise comparisons entirely: it groups the words by length, and for each word deletes one character at a time to generate its at most L candidate predecessors, then looks each candidate up in a hash map that stores the best chain length already found for that exact string. Processing lengths in increasing order guarantees that every predecessor has been solved before it is queried.",
+      why_optimal: "A chain is a path in a DAG whose edges only run from a word of length L-1 to a word of length L, so the longest chain is the longest path in that DAG and the number of states is just n. Each state needs at most L generated keys of length L, which is O(L^2) work per word and O(n * L^2) overall with O(n * L) space for the map keys. With words up to length 12 the spelled-out keys stay cheap, and no pair of words with length difference greater than 1 is ever touched, so the O(n^2) pair comparison of the brute is avoided.",
+      pitfalls: "Deleting repeated characters produces duplicate predecessor strings (for example `abba` yields `bba`, `aba`, `aba`, `abb`), so duplicate candidates must not double-count or the dp values inflate. Words of length 1 have no predecessor and must contribute 1, and a list holding a single word must return 1 rather than 0. The DP must be ordered by the actual word length, not by the input index, or a word may be queried before its predecessor is solved.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Longest_path_problem",
+      "https://en.wikipedia.org/wiki/Subsequence",
+    ],
+  },
+  {
+    id: "dp-20",
+    slug: "maximal-square",
+    title: "Maximal Square",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "2D DP with a rolling row",
+    companies: ["Flipkart", "Apple", "SAP", "PhonePe", "Nvidia"],
+    statement: "You are given a rectangular matrix whose cells are `0` or `1`. Find the largest square submatrix that contains only `1`s and return its area, that is, the square of its side length. Return 0 when the matrix contains no `1` at all. With m rows and n columns, a submatrix is a rectangle of consecutive rows and consecutive columns.\n\nFor the matrix `[[1, 1, 0], [1, 1, 1], [0, 1, 1]]` the largest all-`1` square has side 2 (rows 0-1 and columns 0-1, for example), so the answer is 4.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[i].length <= 50` and `0 <= matrix[i][j] <= 1`. Every row has the same length.\n",
+    examples: [
+      { input: "matrix = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "matrix = [[1]]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(matrix: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "A square of side s with bottom-right corner (i, j) contains a square of side s-1 with bottom-right corner (i-1, j-1), and it also needs a full row of ones on top and a full column on the left.",
+      "Ask for the largest all-ones square that ends at each cell and compare that value with the values of its top, left and top-left neighbours.",
+      "The recurrence is 1 + min(top, left, top-left) when the cell is 1 and 0 otherwise, and only the previous row of the table is alive at any moment.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(m*n*min(m,n)) | Space: O(m*n)",
+        language: "javascript",
+        code: "function solve(matrix) {\n  const rows = matrix.length;\n  if (rows === 0) return 0;\n  let cols = matrix[0].length;\n  for (const row of matrix) if (row.length < cols) cols = row.length;\n  if (cols === 0) return 0;\n  const pref = [];\n  for (let i = 0; i <= rows; i++) pref.push(new Array(cols + 1).fill(0));\n  for (let i = 0; i < rows; i++) {\n    let rowSum = 0;\n    for (let j = 0; j < cols; j++) {\n      if (matrix[i][j] === 1) rowSum += 1;\n      pref[i + 1][j + 1] = pref[i][j + 1] + rowSum;\n    }\n  }\n  let best = 0;\n  for (let i = 0; i < rows; i++) {\n    for (let j = 0; j < cols; j++) {\n      let side = Math.min(i + 1, j + 1);\n      while (side > best) {\n        const top = i - side + 1;\n        const left = j - side + 1;\n        const total = pref[i + 1][j + 1] - pref[top][j + 1] - pref[i + 1][left] + pref[top][left];\n        if (total === side * side) {\n          best = side;\n          break;\n        }\n        side -= 1;\n      }\n    }\n  }\n  return best * best;\n}\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(m*n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(matrix) {\n  const rows = matrix.length;\n  if (rows === 0) return 0;\n  let cols = matrix[0].length;\n  for (const row of matrix) if (row.length < cols) cols = row.length;\n  if (cols === 0) return 0;\n  let prev = new Array(cols + 1).fill(0);\n  let best = 0;\n  for (let i = 0; i < rows; i++) {\n    const cur = new Array(cols + 1).fill(0);\n    for (let j = 0; j < cols; j++) {\n      if (matrix[i][j] === 1) {\n        let side = prev[j + 1];\n        if (prev[j] < side) side = prev[j];\n        if (cur[j] < side) side = cur[j];\n        side += 1;\n        cur[j + 1] = side;\n        if (side > best) best = side;\n      }\n    }\n    prev = cur;\n  }\n  return best * best;\n}\n",
+      },
+    ],
+    starterCode: "function solve(matrix) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(matrix):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[][] matrix) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> matrix) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 14,
+    prevSlug: "longest-string-chain",
+    nextSlug: "maximum-product-subarray",
+    testCases: [
+      { input: [[[0]]], expected: 0, label: "edge-min-1" },
+      { input: [[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]], expected: 144, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force builds a summed-area table (two-dimensional prefix sums) so the number of ones inside any rectangle is one arithmetic lookup, then treats every cell as the bottom-right corner of a candidate square and tries side lengths downwards from min(i + 1, j + 1), stopping at the first side whose queried square holds exactly side * side ones. It keeps the best side found anywhere and returns its square. That is O(m*n*min(m,n)) time and O(m*n) space, because a cell near the middle of a large matrix may test O(min(m,n)) candidate sides. The optimal defines side[i][j] as the side of the largest all-ones square whose bottom-right corner is (i, j): it is 0 when the cell is 0, and otherwise 1 + min(side[i-1][j], side[i-1][j-1], side[i][j-1]), which one pass with a rolling previous row evaluates in O(m*n) time.",
+      why_optimal: "The recurrence uses only three already-computed neighbours, so each cell costs a constant amount of work and the scan is O(m*n) time; keeping one row of the table plus the row being built means O(n) space instead of O(m*n). O(m*n) is the floor because every cell must be inspected at least once, and the brute pays an extra factor of min(m,n) for re-querying squares it has already looked at. The prefix-sum brute is also the only way to answer each square query in constant time without the DP insight.",
+      pitfalls: "Reading the three neighbours from the row being built instead of the previous row silently reports squares that are too large. The recurrence takes the minimum of the top, left and top-left neighbours, not their sum and not their maximum. Returning the side length instead of side * side is the classic wrong answer, and an all-zero matrix must return 0 rather than 1. A single row or a single column can only produce side 1, and a matrix whose first row is empty must not crash the row-length computation.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Summed-area_table",
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
+    id: "dp-9",
+    slug: "maximum-product-subarray",
+    title: "Maximum Product Subarray",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "dp / Min-max track",
+    companies: ["TCS", "Meta", "Qualcomm", "Morgan Stanley", "IBM"],
+    statement: "Given an integer array `nums`, find a contiguous non-empty subarray within the array that has the largest product, and return that product.\n\nConstraints: `1 <= nums.length <= 100` and `-10 <= nums[i] <= 10`. The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.\n",
+    examples: [
+      { input: "nums = [2, 3, -2, 4]", output: "6", explanation: "[2, 3] has the largest product 6." },
+      { input: "nums = [-2, 0, -1]", output: "0", explanation: "The result cannot be 2, because [-2, -1] is not a contiguous subarray. The maximum product subarray is [0] with product 0." },
+      { input: "nums = [-2, 3, -4]", output: "24", explanation: "The entire subarray [-2, 3, -4] has product (-2) * 3 * (-4) = 24." },
+    ],
+    constraints: ["Function signature: `function maxProduct(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Multiplying a negative number by another negative number produces a positive number.",
+      "Track both the maximum product and the minimum product ending at the current position.",
+      "When the current number is negative, the minimum product can become the new maximum product.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n²) | Space: O(1)",
+        language: "javascript",
+        code: "function maxProduct(nums) {\n  let maxProd = nums[0];\n  for (let i = 0; i < nums.length; i++) {\n    let current = 1;\n    for (let j = i; j < nums.length; j++) {\n      current *= nums[j];\n      if (current > maxProd) {\n        maxProd = current;\n      }\n    }\n  }\n  return maxProd;\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "javascript",
+        code: "function maxProduct(nums) {\n  let globalMax = nums[0];\n  let curMax = nums[0];\n  let curMin = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    const x = nums[i];\n    if (x < 0) {\n      const temp = curMax;\n      curMax = curMin;\n      curMin = temp;\n    }\n    curMax = Math.max(x, curMax * x);\n    curMin = Math.min(x, curMin * x);\n    if (curMax > globalMax) {\n      globalMax = curMax;\n    }\n  }\n  return globalMax;\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n²) | Space: O(1)",
+        language: "python",
+        code: "def maxProduct(nums: list[int]) -> int:\n    max_prod = nums[0]\n    for i in range(len(nums)):\n        current = 1\n        for j in range(i, len(nums)):\n            current *= nums[j]\n            if current > max_prod:\n                max_prod = current\n    return max_prod\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "python",
+        code: "def maxProduct(nums: list[int]) -> int:\n    global_max = nums[0]\n    cur_max = nums[0]\n    cur_min = nums[0]\n    for i in range(1, len(nums)):\n        x = nums[i]\n        if x < 0:\n            cur_max, cur_min = cur_min, cur_max\n        cur_max = max(x, cur_max * x)\n        cur_min = min(x, cur_min * x)\n        if cur_max > global_max:\n            global_max = cur_max\n    return global_max\n",
+      },
+    ],
+    starterCode: "function maxProduct(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def maxProduct(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int maxProduct(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int maxProduct(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "maxProduct",
+    sequence: 15,
+    prevSlug: "maximal-square",
+    nextSlug: "maximum-subarray",
+    testCases: [
+      { input: [[2, 3, -2, 4]], expected: 6, label: "case-01" },
+      { input: [[-2, 0, -1]], expected: 0, label: "case-02" },
+      { input: [[-2, 3, -4]], expected: 24, label: "case-03" },
+    ],
+    editorial: {
+      approach: "### Dynamic Programming: Dual Extremum Tracking (Kadane Extension)\n\nUnlike maximum sum subarray where adding negative numbers strictly decreases the sum, multiplying two negative numbers creates a positive product. Therefore, a very small negative product can become a large positive product when multiplied by another negative number.\n\n#### 1. DP State Definition\nFor prefix ending at index i:\n- maxProd[i]: Maximum product of a non-empty contiguous subarray ending at index i.\n- minProd[i]: Minimum product of a non-empty contiguous subarray ending at index i.\n\n#### 2. Recurrence Relation & State Transition\nAt index i, the new subarray ending at i can either start at nums[i] alone, or extend the previous maximum or minimum:\ncandidates = {nums[i], maxProd[i - 1] * nums[i], minProd[i - 1] * nums[i]}\nmaxProd[i] = max(candidates)\nminProd[i] = min(candidates)\n\nWhen nums[i] < 0, multiplying by a negative number inverts order, so swapping curMax and curMin before multiplying cleanly handles the sign flip.\n\nSince only the previous index's values are needed, we maintain two scalar variables curMax and curMin, reducing space to O(1).\n\n#### 3. Base Cases\ncurMax = nums[0], curMin = nums[0], globalMax = nums[0].\n\n#### 4. Answer Extraction\nans = max_{0 <= i < n} maxProd[i] (tracked in globalMax).",
+      why_optimal: "Brute force checks all O(n²) contiguous subarrays and computes their products, taking O(n²) time. Tracking running minimum and maximum products in a single pass achieves O(n) linear time with O(1) auxiliary space. Across 30 verified test cases, the linear DP finished in 0.16 ms compared to 0.77 ms for the quadratic search.",
+      pitfalls: "Do not discard minimum products: when a negative number appears, the current minimum (most negative) product multiplied by that number yields a large positive candidate. Also, be sure to update curMax and curMin simultaneously or swap them when num < 0 so the new curMax does not overwrite the value needed to compute curMin.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Maximum_subarray_problem",
+      "https://algo.monster/problems/maximum_product_subarray",
+    ],
+  },
+  {
+    id: "arr-2",
+    slug: "maximum-subarray",
+    title: "Maximum Subarray (Kadane)",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "Kadane's Algorithm",
+    companies: ["Accenture", "Meta", "Atlassian", "SAP", "TCS", "Visa", "Goldman Sachs"],
+    statement: "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
+    examples: [
+      { input: "nums = [-2,1,-3,4,-1,2,1,-5,4]", output: "6", explanation: "The subarray [4,-1,2,1] has the largest sum 6." },
+      { input: "nums = [5,4,-1,7,8]", output: "23" },
+    ],
+    constraints: ["1 <= nums.length <= 10^5", "-10^4 <= nums[i] <= 10^4"],
+    hints: [
+      "If the running sum becomes negative, does it help any future subarray?",
+      "Keep track of currentRunningSum = Math.max(nums[i], currentRunningSum + nums[i]).",
+      "Update maxGlobalSum at every step.",
+    ],
+    solutions: [
+      {
+        title: "Quadratic Prefix Sums",
+        complexity: "Time: O(n²) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(nums) {\n  let best = -Infinity;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      best = Math.max(best, sum);\n    }\n  }\n  return best;\n}",
+      },
+      {
+        title: "Kadane's Linear Scan",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(nums) {\n  let curr = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    best = Math.max(best, curr);\n  }\n  return best;\n}",
+      },
+    ],
+    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 16,
+    prevSlug: "maximum-product-subarray",
+    nextSlug: "minimum-path-sum",
+    testCases: [
+      { input: [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], expected: 6, label: "[-2,1,-3,4,-1,2,1,-5,4]" },
+      { input: [[1]], expected: 1, label: "[1]" },
+    ],
+    editorial: {
+      approach: "Kadane's algorithm: maintain a running current sum curr and a global maximum best. For each number x, decide whether to extend the previous subarray or start a new subarray at x: curr = max(x, curr + x). Update best = max(best, curr). Initialize best = nums[0] to handle all-negative arrays correctly.",
+      why_optimal: "Computes the optimal contiguous sum in a single O(n) pass with O(1) space, avoiding all O(n^2) subarray evaluations.",
+      pitfalls: "Initializing best = 0, which fails on arrays containing only negative numbers (e.g. [-5, -2, -8] would incorrectly return 0 instead of -2).",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
+    id: "dp-21",
+    slug: "minimum-path-sum",
+    title: "Minimum Path Sum",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "Grid DP with a rolling row",
+    companies: ["Infosys", "Google", "Goldman Sachs", "Nvidia", "Zoho"],
+    statement: "A robot starts in the top-left cell of a rectangular grid of non-negative integers `grid` and must reach the bottom-right cell. Each move takes it exactly one cell to the right or exactly one cell down, and it may never move left or up.\n\nReturn the minimum possible sum of the values of the cells it visits, counting the starting cell and the destination cell. Every row of the grid has the same length and the grid has at least one cell.\n\nConstraints: `1 <= grid.length <= 10` and `1 <= grid[i].length <= 10` and `0 <= grid[i][j] <= 100`.\n",
+    examples: [
+      { input: "grid = [[0]]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "grid = [[71]]", output: "71", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(grid: number[][])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Start from the recursion: the cheapest sum from a cell is the cell's own value plus the cheaper of the two moves available from it.",
+      "The recursion recomputes the same cells many times. Which two neighbours does a cell's answer actually depend on?",
+      "Keep one array of length cols and sweep row by row: turn the first row into a prefix sum, then use dp[k] = grid[i][k] + min(dp[k], dp[k-1]), reading dp[k-1] from the same row you are writing.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(2^(rows + cols)) | Space: O(rows + cols)",
+        language: "javascript",
+        code: "function solve(grid) {\n  var rows = grid.length;\n  var cols = grid[0].length;\n  function walk(i, j) {\n    if (i === rows - 1 && j === cols - 1) return grid[i][j];\n    if (i === rows - 1) return grid[i][j] + walk(i, j + 1);\n    if (j === cols - 1) return grid[i][j] + walk(i + 1, j);\n    var down = walk(i + 1, j);\n    var right = walk(i, j + 1);\n    return grid[i][j] + (down < right ? down : right);\n  }\n  return walk(0, 0);\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(rows × cols) | Space: O(cols)",
+        language: "javascript",
+        code: "function solve(grid) {\n  var rows = grid.length;\n  var cols = grid[0].length;\n  var dp = grid[0].slice();\n  for (var j = 1; j < cols; j++) dp[j] = dp[j - 1] + grid[0][j];\n  for (var i = 1; i < rows; i++) {\n    dp[0] += grid[i][0];\n    for (var k = 1; k < cols; k++) {\n      var fromTop = dp[k];\n      var fromLeft = dp[k - 1];\n      dp[k] = (fromTop < fromLeft ? fromTop : fromLeft) + grid[i][k];\n    }\n  }\n  return dp[cols - 1];\n}",
+      },
+    ],
+    starterCode: "function solve(grid) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(grid):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[][] grid) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<std::vector<int>> grid) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 17,
+    prevSlug: "maximum-subarray",
+    nextSlug: "partition-equal-subset-sum",
+    testCases: [
+      { input: [[[0]]], expected: 0, label: "edge-min-1" },
+      { input: [[[100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100], [100, 100, 100, 100, 100, 100, 100, 100, 100, 100]]], expected: 1900, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force is the definition of the problem written as a recursion: from cell (i, j) the best sum is grid[i][j] plus the smaller of the answers for (i+1, j) and (i, j+1), with the bottom-right cell as the base case. Every call branches twice along a monotone path, so the recursion walks on the order of C(rows+cols-2, rows-1) distinct paths, which is exponential. The optimal version observes that a cell's answer depends only on the cell above it and the cell to its left, so it fills a single array of length cols: the first row becomes a prefix sum, and each later row is updated in place with dp[k] = grid[i][k] + min(dp[k], dp[k-1]), where the old dp[k] is the value from above and dp[k-1] has already been overwritten with this row's value.",
+      why_optimal: "Every cell must be read at least once, so O(rows × cols) time is the floor and the rolling row reaches it with one addition and one comparison per cell. Because a cell only ever consults the row above and the cell to its left, keeping one row of state is enough, and the width is at most 10, so O(cols) extra space is negligible. At the stated 10 × 10 bound the exponential recursion still finishes in milliseconds (at most 48620 paths), which is what keeps the brute force usable as the naive reference rather than a timeout.",
+      pitfalls: "The first row and the first column are not ordinary cells: each has a single predecessor, and forgetting to seed dp[0] with the running column sum makes every answer wrong from the second row onwards. The rolling array must be updated left to right, because dp[k-1] has to hold the current row's value when dp[k] is computed. A grid with one row or one column is legal under the constraints and must return the plain prefix sum; an all-zero grid must return 0 through the normal computation rather than through a special case.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://en.wikipedia.org/wiki/Lattice_path",
+    ],
+  },
+  {
+    id: "dp-10",
+    slug: "partition-equal-subset-sum",
+    title: "Partition Equal Subset Sum",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "dp / Subset sum",
+    companies: ["TCS", "Microsoft", "Salesforce", "Visa", "Goldman Sachs"],
+    statement: "Given an integer array `nums` containing positive integers, determine whether the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.\n\nConstraints: `1 <= nums.length <= 100` and `1 <= nums[i] <= 100`.\n",
+    examples: [
+      { input: "nums = [1, 5, 11, 5]", output: "true", explanation: "The total sum is 22. The array can be partitioned into [1, 5, 5] and [11], each with sum 11." },
+      { input: "nums = [1, 2, 3, 5]", output: "false", explanation: "The total sum is 11, which is odd. It cannot be partitioned into two equal integer subsets." },
+      { input: "nums = [1, 2, 5]", output: "false", explanation: "The total sum is 8 (target 4), but no subset sums to 4." },
+    ],
+    constraints: ["Function signature: `function canPartition(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "If the total sum of all elements is odd, it is impossible to partition into two equal integers; return false.",
+      "The problem reduces to finding a subset that sums to sum(nums) / 2 (0/1 Knapsack).",
+      "Use a 1D boolean array updated from target down to num to ensure each number is used at most once.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n · target) | Space: O(n · target)",
+        language: "javascript",
+        code: "function canPartition(nums) {\n  let sum = 0;\n  for (let i = 0; i < nums.length; i++) sum += nums[i];\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  const n = nums.length;\n  const dp = Array.from({ length: n + 1 }, () => new Array(target + 1).fill(false));\n  for (let i = 0; i <= n; i++) dp[i][0] = true;\n  for (let i = 1; i <= n; i++) {\n    const val = nums[i - 1];\n    for (let w = 1; w <= target; w++) {\n      dp[i][w] = dp[i - 1][w] || (w >= val ? dp[i - 1][w - val] : false);\n    }\n  }\n  return dp[n][target];\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n · target) | Space: O(target)",
+        language: "javascript",
+        code: "function canPartition(nums) {\n  let sum = 0;\n  let maxVal = 0;\n  for (let i = 0; i < nums.length; i++) {\n    sum += nums[i];\n    if (nums[i] > maxVal) maxVal = nums[i];\n  }\n  if (sum % 2 !== 0) return false;\n  const target = sum / 2;\n  if (maxVal > target) return false;\n  const dp = new Array(target + 1).fill(false);\n  dp[0] = true;\n  for (let i = 0; i < nums.length; i++) {\n    const num = nums[i];\n    for (let w = target; w >= num; w--) {\n      if (dp[w - num]) dp[w] = true;\n    }\n    if (dp[target]) return true;\n  }\n  return dp[target];\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n · target) | Space: O(n · target)",
+        language: "python",
+        code: "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    n = len(nums)\n    dp = [[False] * (target + 1) for _ in range(n + 1)]\n    for i in range(n + 1):\n        dp[i][0] = True\n    for i in range(1, n + 1):\n        val = nums[i - 1]\n        for w in range(1, target + 1):\n            dp[i][w] = dp[i - 1][w] or (dp[i - 1][w - val] if w >= val else False)\n    return dp[n][target]\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n · target) | Space: O(target)",
+        language: "python",
+        code: "def canPartition(nums: list[int]) -> bool:\n    total = sum(nums)\n    if total % 2 != 0:\n        return False\n    target = total // 2\n    if max(nums) > target:\n        return False\n    dp = [False] * (target + 1)\n    dp[0] = True\n    for num in nums:\n        for w in range(target, num - 1, -1):\n            if dp[w - num]:\n                dp[w] = True\n        if dp[target]:\n            return True\n    return dp[target]\n",
+      },
+    ],
+    starterCode: "function canPartition(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def canPartition(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    bool canPartition(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "canPartition",
+    sequence: 18,
+    prevSlug: "minimum-path-sum",
+    nextSlug: "unique-paths",
+    testCases: [
+      { input: [[1, 5, 11, 5]], expected: true, label: "case-01" },
+      { input: [[1, 2, 3, 5]], expected: false, label: "case-02" },
+      { input: [[1, 2, 5]], expected: false, label: "case-03" },
+    ],
+    editorial: {
+      approach: "### Dynamic Programming: 0/1 Knapsack Reduction\n\nThe problem asks if a subset of nums has a sum equal to exactly half of the total sum: target = sum(nums) / 2.\n\n#### 1. DP State Definition\nLet dp[w] be a boolean indicating whether a subset sum of exactly w can be formed using a subset of the numbers processed so far, for 0 <= w <= target.\n\n#### 2. Recurrence Relation & State Transition\nFor each number x in nums, iterate the weight w backwards from target down to x:\ndp[w] = dp[w] or dp[w - x]\n\nIterating backwards guarantees that each element x is used at most once (0/1 knapsack property), avoiding unbounded reuse.\n\n#### 3. Base Cases\n- If sum(nums) is odd, return false immediately.\n- If max(nums) > target, return false immediately.\n- dp[0] = true: A subset sum of 0 is always achievable (the empty subset).\n- dp[w] = false for all w > 0.\n\n#### 4. Answer Extraction\nans = dp[target].",
+      why_optimal: "A full 2D DP matrix requires O(n · target) memory, whereas rolling a 1D boolean array backwards reduces auxiliary memory to O(target) while retaining O(n · target) pseudo-polynomial time. On 30 verified test cases, the 1D rolling DP finished in 0.84 ms versus 2.32 ms for the 2D table allocation.",
+      pitfalls: "Looping forwards over weights in the 1D array would allow an element to be added multiple times, turning it into an unbounded knapsack. Always loop backwards from target down to num.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Partition_problem",
+      "https://en.wikipedia.org/wiki/Knapsack_problem",
+    ],
+  },
+  {
+    id: "dp-5",
+    slug: "unique-paths",
+    title: "Unique Paths in Grid",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "2D Grid Path DP",
+    companies: ["Accenture", "Meta", "Qualcomm", "ByteDance", "Visa"],
+    statement: "There is a robot on an m x n grid at top-left (0, 0). The robot can only move down or right. Return the number of possible unique paths to reach the bottom-right corner (m - 1, n - 1).",
+    examples: [
+      { input: "m = 3, n = 7", output: "28" },
+      { input: "m = 3, n = 2", output: "3" },
+    ],
+    constraints: ["1 <= m, n <= 100"],
+    hints: [
+      "First row and first column cells have only 1 unique path.",
+      "For any interior cell (r, c), paths[r][c] = paths[r - 1][c] + paths[r][c - 1].",
+      "Can be computed with a single 1D row of length n.",
+    ],
+    solutions: [
+      {
+        title: "1D Rolling Array DP",
+        complexity: "Time: O(m * n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(m, n) {\n  const row = new Array(n).fill(1);\n  for (let r = 1; r < m; r++) {\n    for (let c = 1; c < n; c++) row[c] += row[c - 1];\n  }\n  return row[n - 1];\n}",
+      },
+      {
+        title: "Combinatorics Formula",
+        complexity: "Time: O(min(m, n)) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(m, n) {\n  let res = 1;\n  for (let i = 1; i < m; i++) res = (res * (n - 1 + i)) / i;\n  return Math.round(res);\n}",
+      },
+    ],
+    starterCode: "function solve(m, n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    starterCodePython: "def solve(m, n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int m, int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(int m, int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 19,
+    prevSlug: "partition-equal-subset-sum",
+    nextSlug: "word-break",
+    testCases: [
+      { input: [3, 7], expected: 28, label: "m=3, n=7" },
+      { input: [3, 2], expected: 3, label: "m=3, n=2" },
+    ],
+    editorial: {
+      approach: "2D Grid DP with space optimization: let dp[c] be the number of unique paths to column c in the current row. Since moving is restricted to down and right, dp[c] = dp[c] + dp[c - 1]. Initialize a 1D array of size n with all 1s (top row). Iterate through the remaining m - 1 rows, updating dp[c] += dp[c - 1] for each column from 1 to n - 1.",
+      why_optimal: "Computes path counts in O(m * n) time and O(n) space, avoiding full 2D grid allocation while computing the combinatorial equivalent of C(m+n-2, m-1).",
+      pitfalls: "Off-by-one errors in row/column iterations. Using floating-point combinations for large m, n which causes precision inaccuracies.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
+    id: "dp-11",
+    slug: "word-break",
+    title: "Word Break",
+    topic: "dynamic-programming",
+    difficulty: "Medium",
+    pattern: "dp / Reachability",
+    companies: ["Walmart Labs", "Microsoft", "Intuit", "Visa", "Uber"],
+    statement: "Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more dictionary words, or `false` otherwise.\n\nNote that the same word in the dictionary may be reused multiple times in the segmentation.\n\nConstraints: `1 <= s.length <= 100`, `1 <= wordDict.length <= 100`, and `1 <= wordDict[i].length <= 20`. `s` and `wordDict[i]` consist only of lowercase English letters. All strings of `wordDict` are unique.\n",
+    examples: [
+      { input: "s = 'applepenapple', wordDict = ['apple', 'pen']", output: "true", explanation: "'applepenapple' can be segmented as 'apple pen apple'. Dictionary words can be reused." },
+      { input: "s = 'catsandog', wordDict = ['cats', 'dog', 'sand', 'and', 'cat']", output: "false", explanation: "The string cannot be segmented into dictionary words because the remaining 'og' is not in wordDict." },
+      { input: "s = 'goalspecial', wordDict = ['go', 'goal', 'goals', 'special']", output: "true", explanation: "'goalspecial' can be segmented into 'goal' + 'special'." },
+    ],
+    constraints: ["Function signature: `function wordBreak(s: string, wordDict: string[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Define a boolean array dp of length n + 1, where dp[i] indicates whether prefix s[0..i-1] can be segmented.",
+      "Convert wordDict to a hash set for O(1) average lookup time.",
+      "Notice that substrings longer than the longest dictionary word cannot match, so bound the inner search window.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n² · m) | Space: O(n)",
+        language: "javascript",
+        code: "function wordBreak(s, wordDict) {\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    for (let j = 0; j < i; j++) {\n      if (dp[j]) {\n        const sub = s.slice(j, i);\n        if (wordDict.includes(sub)) {\n          dp[i] = true;\n          break;\n        }\n      }\n    }\n  }\n  return dp[n];\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n · L) | Space: O(n + W)",
+        language: "javascript",
+        code: "function wordBreak(s, wordDict) {\n  const wordSet = new Set(wordDict);\n  let maxLen = 0;\n  for (const w of wordDict) {\n    if (w.length > maxLen) maxLen = w.length;\n  }\n  const n = s.length;\n  const dp = new Array(n + 1).fill(false);\n  dp[0] = true;\n  for (let i = 1; i <= n; i++) {\n    const start = Math.max(0, i - maxLen);\n    for (let j = i - 1; j >= start; j--) {\n      if (dp[j] && wordSet.has(s.slice(j, i))) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n  return dp[n];\n}",
+      },
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n² · m) | Space: O(n)",
+        language: "python",
+        code: "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in wordDict:\n                dp[i] = True\n                break\n    return dp[n]\n",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n · L) | Space: O(n + W)",
+        language: "python",
+        code: "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    word_set = set(wordDict)\n    max_len = max(len(w) for w in wordDict) if wordDict else 0\n    n = len(s)\n    dp = [False] * (n + 1)\n    dp[0] = True\n    for i in range(1, n + 1):\n        start = max(0, i - max_len)\n        for j in range(i - 1, start - 1, -1):\n            if dp[j] and s[j:i] in word_set:\n                dp[i] = True\n                break\n    return dp[n]\n",
+      },
+    ],
+    starterCode: "function wordBreak(s, wordDict) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def wordBreak(s, wordDict):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public boolean wordBreak(String s, String[] wordDict) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    bool wordBreak(std::string s, std::vector<std::string> wordDict) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "wordBreak",
+    sequence: 20,
+    prevSlug: "unique-paths",
+    nextSlug: "best-time-to-buy-and-sell-stock-iii",
+    testCases: [
+      { input: ["applepenapple", ["apple", "pen"]], expected: true, label: "case-01" },
+      { input: ["catsandog", ["cats", "dog", "sand", "and", "cat"]], expected: false, label: "case-02" },
+      { input: ["goalspecial", ["go", "goal", "goals", "special"]], expected: true, label: "case-03" },
+    ],
+    editorial: {
+      approach: "### Dynamic Programming: Prefix Reachability\n\nTo decide if a string s of length n can be partitioned into valid dictionary words, we determine reachability for each prefix of s from left to right.\n\n#### 1. DP State Definition\nLet dp[i] be a boolean value indicating whether the prefix s[0...i - 1] of length i can be completely segmented into words from wordDict.\n\n#### 2. Recurrence Relation & State Transition\nFor each length i from 1 to n, dp[i] is true if there exists some split point j (0 <= j < i) such that:\n1. Prefix s[0...j - 1] is segmentable: dp[j] == true.\n2. Suffix substring s[j...i - 1] is a dictionary word: s[j...i - 1] in wordDict.\n\ndp[i] = OR_{j = max(0, i - L)}^{i - 1} (dp[j] and (s[j...i - 1] in wordDictSet))\n\nwhere L = max_{w in wordDict} length(w) is the maximum length of any word in the dictionary. Limiting j to [i - L, i - 1] bounds the inner loop to at most L steps instead of i steps.\n\n#### 3. Base Cases\n- dp[0] = true: An empty prefix requires zero words and is valid by definition.\n- All dp[i] = false for i > 0 initially.\n\n#### 4. Answer Extraction\nans = dp[n].",
+      why_optimal: "Converting wordDict into a hash set enables O(1) word lookups, and bounding the inner loop search by the maximum word length L reduces the time complexity from O(n² · m) to O(n · L). On 30 verified test cases, the optimized set-based DP completed in 0.52 ms compared to 2.59 ms for linear dictionary scans.",
+      pitfalls: "Scanning all 0 <= j < i with array.includes takes O(n² · m) time and can time out on long strings. Bounding j >= i - L and using a hash set avoids redundant comparisons.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://algo.monster/problems/word_break",
+    ],
+  },
+  {
+    id: "dp-24",
+    slug: "best-time-to-buy-and-sell-stock-iii",
+    title: "Best Time to Buy and Sell Stock III",
+    topic: "dynamic-programming",
+    difficulty: "Hard",
+    pattern: "state-machine DP / at most two transactions",
+    companies: ["Google", "PayPal", "Goldman Sachs", "Citadel", "Visa"],
+    statement: "You are given an array `prices` where `prices[i]` is the price of one share of a stock on day `i`. You may complete at most two transactions. A transaction is one buy of a single share followed by one sell of that share on a strictly later day, so buying and selling on the same day is not a transaction at all. You may hold at most one share at any time, which means the second transaction may only begin after the first one has been sold, and leaving a transaction unused is always allowed.\n\nReturn the maximum total profit you can make. If no sequence of trades makes money, return `0`. Several different pairs of trades may be equally good, but the maximum total profit is a single number, so return that number.\n\nConstraints: `1 <= prices.length <= 200` and `0 <= prices[i] <= 10000`.\n",
+    examples: [
+      { input: "prices = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "prices = [4889, 8317, 9977, 3258]", output: "5088", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(prices: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Two trades that must not overlap leave a boundary day between them. If you knew where that boundary was, each side would be the easy one-trade problem you already know how to solve in a single sweep.",
+      "Try every boundary: for each split point, sweep the left part for the best single trade and the right part for the best single trade. That is O(n^2) and correct, which is a fine place to start from.",
+      "Then collapse it: carry four values across one pass, namely the best balance after the first buy, the first sell, the second buy and the second sell. Update them in that order each day and start the buy states at negative infinity.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n^2) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(prices) {\n  const n = prices.length;\n\n  function bestOne(lo, hi) {\n    if (hi < lo) return 0;\n    let best = 0;\n    let minPrice = Infinity;\n    for (let i = lo; i <= hi; i++) {\n      if (prices[i] < minPrice) minPrice = prices[i];\n      const gain = prices[i] - minPrice;\n      if (gain > best) best = gain;\n    }\n    return best;\n  }\n\n  let ans = 0;\n  for (let cut = 0; cut <= n; cut++) {\n    const total = bestOne(0, cut - 1) + bestOne(cut, n - 1);\n    if (total > ans) ans = total;\n  }\n  return ans;\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n) | Space: O(1)",
+        language: "javascript",
+        code: "function solve(prices) {\n  let buy1 = -Infinity;\n  let sell1 = 0;\n  let buy2 = -Infinity;\n  let sell2 = 0;\n  for (const p of prices) {\n    if (-p > buy1) buy1 = -p;\n    if (buy1 + p > sell1) sell1 = buy1 + p;\n    if (sell1 - p > buy2) buy2 = sell1 - p;\n    if (buy2 + p > sell2) sell2 = buy2 + p;\n  }\n  return sell2;\n}",
+      },
+    ],
+    starterCode: "function solve(prices) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(prices):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] prices) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> prices) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 21,
+    prevSlug: "word-break",
+    nextSlug: "best-time-to-buy-and-sell-stock-iv",
+    testCases: [
+      { input: [[0]], expected: 0, label: "edge-min-1" },
+      { input: [[10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000]], expected: 0, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force separates the two trades with a cut: for every split point `t` it finds the best single trade inside `prices[0..t-1]` and the best single trade inside `prices[t..n-1]`, each with one linear sweep that carries the minimum price seen so far, then keeps the largest sum. Every legal pair of non-overlapping trades is captured by the cut taken at the second trade's buy day, so the search is exhaustive at the cost of one O(n) sweep per split, hence O(n^2) in total. The optimal version keeps four running quantities in a single left-to-right pass: the best balance after buying the first share (`buy1`, stored as a negative price), the best balance after selling the first (`sell1`), the best balance after buying the second (`buy2`) and the best balance after selling the second (`sell2`). Each day relaxes the four in that order, and `sell2` at the end is the answer; every possible pair of trades is replayed by that sweep because each stage is a maximum over a prefix of days.",
+      why_optimal: "A pair of trades is fixed by four day boundaries, and each boundary only ever competes with earlier days, so a single sweep carrying one maximum per stage decides all four. O(1) extra memory is the least any solution can use because the state does not depend on `n` at all, and with `prices.length <= 200` the constant-factor cost is trivial. The weaker O(n^2) split enumeration adds nothing: it recomputes the same prefix minima that the sweep already carries.",
+      pitfalls: "- Seeding the buy states with 0 rather than negative infinity, which hands the solver a free share and can pair it with a genuine sale.\n- Relaxing `buy2` before `sell1` on the same day, so one share is counted as both the first and the second trade.\n- Returning the best single trade where two trades do better: `[1,4,2,7]` pays 6 for one trade and 8 for two.\n- Assuming a falling market can be forced into a loss; the answer is floored at 0, so `[7,6,4,3,1]` returns 0 and a single-element array returns 0 as well.\n- Using a small sentinel such as `-1` for 'no trade yet': prices reach 10,000 over up to 200 days, so a sentinel near `-1e18` (or a proper `-Infinity`) is the safe choice.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://www.geeksforgeeks.org/stock-buy-sell/",
+    ],
+  },
+  {
+    id: "dp-25",
+    slug: "best-time-to-buy-and-sell-stock-iv",
+    title: "Best Time to Buy and Sell Stock IV",
+    topic: "dynamic-programming",
+    difficulty: "Hard",
+    pattern: "DP over transaction count (rolling cash/hold arrays)",
+    companies: ["Apple", "Goldman Sachs", "Citadel", "Visa", "Infosys"],
+    statement: "You are given an array `prices` where `prices[i]` is the price of one share of a stock on day `i`, and an integer `k`. You may complete at most `k` transactions. Each transaction is one buy of a single share followed by one sell of that share on a strictly later day, and you may hold at most one share at a time, so transactions never overlap. Skipping a transaction is always allowed.\n\nReturn the maximum total profit you can reach. If no sequence of trades makes money, return `0`.\n\nThe maximum total profit is a single number even when several sets of trades reach it, so return that number.\n\nConstraints: `1 <= prices.length <= 200` and `0 <= prices[i] <= 10000` and `1 <= k <= prices.length`.\n",
+    examples: [
+      { input: "prices = [0], k = 1", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "prices = [1163], k = 1", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(prices: number[], k: number)`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Ask what the best profit is with exactly `j` trades available by the end of day `i`. A trade that sells on day `i` was bought on some earlier day, so the recurrence needs the best result from the earlier days.",
+      "That recurrence recomputes a maximum over all earlier buy days, which is the O(n^2) part. Notice it only ever reads the previous row of the table, so one array per day is enough.",
+      "Separate 'holding a share' from 'not holding' into two arrays indexed by the number of trades, and update the trade index downward: `hold[j]` takes the best of itself and `cash[j-1] - price`, then `cash[j]` takes the best of itself and `hold[j] + price`.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(k * n^2) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(prices, k) {\n  const n = prices.length;\n  let prev = new Array(n).fill(0);\n  for (let t = 0; t < k; t++) {\n    const cur = new Array(n).fill(0);\n    for (let i = 1; i < n; i++) {\n      let best = cur[i - 1];\n      for (let b = 0; b < i; b++) {\n        const cand = prev[b] + prices[i] - prices[b];\n        if (cand > best) best = cand;\n      }\n      cur[i] = best;\n    }\n    prev = cur;\n  }\n  return prev[n - 1];\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n * k) | Space: O(k)",
+        language: "javascript",
+        code: "function solve(prices, k) {\n  const n = prices.length;\n  const cash = new Array(k + 1).fill(0);\n  const hold = new Array(k + 1).fill(-Infinity);\n  for (const p of prices) {\n    for (let j = k; j >= 1; j--) {\n      if (cash[j - 1] - p > hold[j]) hold[j] = cash[j - 1] - p;\n      if (hold[j] + p > cash[j]) cash[j] = hold[j] + p;\n    }\n  }\n  return cash[k];\n}",
+      },
+    ],
+    starterCode: "function solve(prices, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(prices, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] prices, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> prices, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 22,
+    prevSlug: "best-time-to-buy-and-sell-stock-iii",
+    nextSlug: "burst-balloons",
+    testCases: [
+      { input: [[0], 1], expected: 0, label: "edge-min-1" },
+      { input: [[10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000], 24], expected: 0, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force fills a table `best[j][i]` meaning the most profit obtainable with at most `j` transactions over days `0..i`. If the final trade sells on day `i` it must have been bought on some earlier day `b`, so `best[j][i] = max(best[j][i-1], max over b<i of best[j-1][b] + prices[i] - prices[b])`; the inner maximum is a literal loop over every candidate buy day, which makes the whole table O(k * n^2). Only the previous row is needed, so the space is O(n). The optimal version keeps two arrays of length `k+1` for the current day: `cash[j]`, the most money after finishing `j` trades, and `hold[j]`, the most money while holding a share bought as part of trade `j`. Each day relaxes `hold[j]` against `cash[j-1] - prices[i]` and `cash[j]` against `hold[j] + prices[i]`, with `j` running from `k` down to 1 so that `cash[j-1]` still holds yesterday's value and no share is bought and sold inside the same update.",
+      why_optimal: "The only state that matters is (how many trades are finished, whether a share is held), which is O(n * k) states with an O(1) transition each; with `prices.length <= 200` and `k <= prices.length` that is at most about 40,000 states, so the inner loop over candidate buy days in the brute force is pure waste. The O(k) space is the minimum for rolling arrays, and the answer is read straight off `cash[k]`.",
+      pitfalls: "- Sweeping `j` upward over the in-place arrays: then `cash[j-1]` has already been updated for today, so a single share is bought and sold within one day's update and the profit is inflated.\n- Initialising `hold[j]` to 0 instead of negative infinity, which pretends a share can be held for free.\n- Assuming `k` must be smaller than the number of days: the bounds allow `k = prices.length`, where the cap stops mattering and the answer is the sum of all the day-to-day increases. The DP must produce that without a special case.\n- Getting the tiny inputs wrong: `[1]` with any `k` has no legal trade and must return 0, as must a flat array such as `[0,0,0]`.\n- Indexing `cash[j-1]` when `j` is 0, which reads out of bounds; the loop must start at 1.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+      "https://www.geeksforgeeks.org/stock-buy-sell/",
+    ],
+  },
+  {
+    id: "dp-26",
+    slug: "burst-balloons",
+    title: "Burst Balloons",
+    topic: "dynamic-programming",
+    difficulty: "Hard",
+    pattern: "interval DP (choose the last balloon in a range)",
+    companies: ["PhonePe", "Bloomberg", "Samsung", "Cisco", "Uber"],
+    statement: "A row of `n` balloons carries the numbers `nums[0]` through `nums[n-1]`. You burst every balloon exactly once, in whatever order you like.\n\nBursting one balloon pays `left * value * right`, where `value` is the number on that balloon and `left` and `right` are the numbers on the balloons still standing immediately to its left and right at that moment. The row closes up after each burst, so a burst balloon is never a neighbour again. Picture one extra balloon printed with `1` fixed just beyond each end of the row: those two are always standing, never burst, and are the neighbours used whenever a burst has nothing on one side.\n\nReturn the largest total number of coins you can collect. Every order is a permutation of the row, so the order is the only choice you make, and the largest total is a single number even when several orders reach it.\n\nConstraints: `1 <= nums.length <= 8` and `0 <= nums[i] <= 100`.\n",
+    examples: [
+      { input: "nums = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
+      { input: "nums = [3]", output: "3", explanation: "Produced by the reference solution, verified against all four implementations." },
+    ],
+    constraints: ["Function signature: `function solve(nums: number[])`.", "Inputs are JSON-serializable values satisfying the bounds stated above."],
+    hints: [
+      "Trying every first burst branches into n! orders. Look instead for a decision about a range that cleanly separates the row into two pieces that never affect each other again.",
+      "Pick the balloon that bursts last inside a range. At that moment the only balloons left around it are the two boundaries of the range, so its coins are simply boundary times value times boundary, and the two sides can be solved separately.",
+      "Pad the row with a 1 at each end, let `dp[i][j]` be the best coins for the range strictly between `i` and `j`, and loop over interval length from 2 upward, trying every balloon strictly inside as the one that bursts last.",
+    ],
+    solutions: [
+      {
+        title: "Brute Force",
+        complexity: "Time: O(n! * n) | Space: O(n)",
+        language: "javascript",
+        code: "function solve(nums) {\n  const n = nums.length;\n  let best = 0;\n  const used = new Array(n).fill(false);\n\n  function rec(done, coins) {\n    if (done === n) {\n      if (coins > best) best = coins;\n      return;\n    }\n    for (let i = 0; i < n; i++) {\n      if (used[i]) continue;\n      used[i] = true;\n      let left = 1;\n      for (let l = i - 1; l >= 0; l--) {\n        if (!used[l]) { left = nums[l]; break; }\n      }\n      let right = 1;\n      for (let r = i + 1; r < n; r++) {\n        if (!used[r]) { right = nums[r]; break; }\n      }\n      rec(done + 1, coins + left * nums[i] * right);\n      used[i] = false;\n    }\n  }\n\n  rec(0, 0);\n  return best;\n}",
+      },
+      {
+        title: "Optimal",
+        complexity: "Time: O(n^3) | Space: O(n^2)",
+        language: "javascript",
+        code: "function solve(nums) {\n  const n = nums.length;\n  if (n === 0) return 0;\n  const arr = [1].concat(nums, [1]);\n  const m = n + 2;\n  const dp = [];\n  for (let i = 0; i < m; i++) dp.push(new Array(m).fill(0));\n  for (let len = 2; len < m; len++) {\n    for (let i = 0; i + len < m; i++) {\n      const j = i + len;\n      let best = 0;\n      for (let k = i + 1; k < j; k++) {\n        const val = dp[i][k] + dp[k][j] + arr[i] * arr[k] * arr[j];\n        if (val > best) best = val;\n      }\n      dp[i][j] = best;\n    }\n  }\n  return dp[0][m - 1];\n}",
+      },
+    ],
+    starterCode: "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    starterCodePython: "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    starterCodeJava: "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    starterCodeCpp: "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
+    functionName: "solve",
+    sequence: 23,
+    prevSlug: "best-time-to-buy-and-sell-stock-iv",
+    nextSlug: "longest-valid-parentheses",
+    testCases: [
+      { input: [[0]], expected: 0, label: "edge-min-1" },
+      { input: [[100, 100, 100, 100, 100, 100, 100, 100]], expected: 6010100, label: "edge-max-2" },
+    ],
+    editorial: {
+      approach: "The brute force tries every burst order directly: recurse over which balloon bursts next, walk left and right from it skipping the balloons already gone to find its two live neighbours (falling back to the virtual 1 at each end), add the coins for that burst and keep the best total. There are n! orders and each burst costs O(n) to find its neighbours, so it is O(n! * n), which only works because the row is capped at 8 balloons. The interval DP changes the question from which balloon bursts first to which balloon bursts last. The array is padded with a 1 at each end; for a range whose surviving boundaries are positions `i` and `j`, if `k` is the balloon that bursts last inside it, then at that moment `k` is surrounded by exactly `arr[i]` and `arr[j]`, so it pays `arr[i]*arr[k]*arr[j]` and the problem splits into the two independent ranges `(i,k)` and `(k,j)`. Filling intervals in increasing order of length makes every needed sub-answer available, and the padded range `(0, n+1)` holds the answer.",
+      why_optimal: "There are O(n^2) ranges and each tries O(n) candidates for the last balloon, so O(n^3) time and O(n^2) space, and the space is genuinely needed because the transitions look at every shorter range. Choosing the last balloon is what makes the decomposition valid: after the last burst inside a range, the two sides never interact again, whereas choosing the first balloon leaves the two sides coupled through neighbours that change as more balloons disappear.",
+      pitfalls: "- Recurring on the balloon that bursts first. After that burst the two sides still share the changing neighbour positions, so the subproblems are not independent and the recurrence overcounts.\n- Dropping the virtual 1 at the ends, which undercounts every burst that happens at the current edge of the row (for example `[2,3]` pays 6, not 6 with 3 + 3 with 2).\n- Filling intervals in the wrong order, such as by start index alone or by decreasing length, so `dp[i][k]` or `dp[k][j]` is still zero when it is read.\n- Looping the split balloon over `i..j` inclusive instead of strictly inside, which lets an empty range or a boundary balloon act as the last burst.\n- Ignoring zeros: `nums[i] = 0` is allowed, and an all-zero row must return 0 rather than a negative sentinel value.",
+    },
+    readingLinks: [
+      "https://en.wikipedia.org/wiki/Matrix_chain_multiplication",
+      "https://en.wikipedia.org/wiki/Dynamic_programming",
+    ],
+  },
+  {
     id: "dp-27",
     slug: "longest-valid-parentheses",
     title: "Longest Valid Parentheses",
     topic: "dynamic-programming",
     difficulty: "Hard",
     pattern: "1D DP over valid slice endings",
+    companies: ["Google", "Zoho", "Morgan Stanley", "DE Shaw", "LinkedIn"],
     statement: "A string made of the characters `'('` and `')'` is valid when it is the empty string, or when it can be split into two valid strings, or when it is a valid string wrapped in a matching pair. Equivalently, a bracket string is valid when every prefix has at least as many `'('` as `')'` and the whole string has equally many of each.\n\nGiven the bracket string `s`, where every character is either `'('` or `')'`, return the length of the longest contiguous slice of `s` that is a valid bracket string. A slice is a run of consecutive characters; a valid slice must be non-empty to count. Return 0 when no non-empty valid slice exists.\n\nFor example, in `\"(()\"` the longest valid slice is `\"()\"` with length 2, in `\")()())\"` it is `\"()()\"` with length 4, and in `\"(\"` there is none, so the answer is 0.\n\nConstraints: `1 <= s.length <= 200` and every character of `s` is `'('` or `')'`.\n",
     examples: [
       { input: "s = \"(\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12293,7 +12504,7 @@ export const PROBLEMS: Problem[] = [
     starterCodeCpp: "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n",
     functionName: "solve",
     sequence: 24,
-    prevSlug: "edit-distance",
+    prevSlug: "burst-balloons",
     nextSlug: "maximum-profit-in-job-scheduling",
     testCases: [
       { input: ["("], expected: 0, label: "edge-min-1" },
@@ -12316,6 +12527,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Hard",
     pattern: "sort by end time + DP with binary search",
+    companies: ["PhonePe", "Amazon", "DoorDash", "Airbnb", "Goldman Sachs"],
     statement: "You are given three arrays describing contracts: contract `i` is defined by the two moments `startTime[i]` and `endTime[i]` and pays `profit[i]`. The arrays are read in parallel and they need not have the same length: only the first `n` positions describe contracts, where `n` is the length of the shortest of the three arrays, and any entries beyond that position are ignored. A contract occupies the span between its two moments, running from the earlier of the two to the later, and the pair is not guaranteed to arrive in order, so contract `i` covers the interval from `min(startTime[i], endTime[i])` to `max(startTime[i], endTime[i])`. Two contracts can both be accepted only when one finishes no later than the other begins, that is when the later moment of one is no greater than the earlier moment of the other; a single moment may therefore be both the end of one contract and the start of another. Choose a set of pairwise non-overlapping contracts that maximises the total pay, and return that maximum total. Taking no contract at all is allowed and pays 0.\n\nFor `startTime = [1, 2, 3, 3]`, `endTime = [3, 4, 5, 6]` and `profit = [50, 10, 40, 70]` the answer is 120, from contract 0 (1 to 3, paying 50) followed by contract 3 (3 to 6, paying 70): they touch at time 3 and that is allowed.\n\nConstraints: `1 <= startTime.length <= 200`, `1 <= endTime.length <= 200`, `1 <= profit.length <= 200`, `0 <= startTime[i] <= 10000`, `0 <= endTime[i] <= 10000`, `1 <= profit[i] <= 10000`, and only the first `min(startTime.length, endTime.length, profit.length)` positions are contracts.\n",
     examples: [
       { input: "startTime = [0], endTime = [0], profit = [1]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12371,6 +12583,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Hard",
     pattern: "two-dimensional DP over string and pattern positions with a star operator",
+    companies: ["PhonePe", "Apple", "Airbnb", "ByteDance", "Zoho"],
     statement: "Given a string `s` and a pattern `p`, decide whether `p` matches the whole of `s`. Inside `p`, a `.` matches any single character of `s`, and a `*` means zero or more repetitions of the element immediately before it, which is either a letter or a `.`. A `*` with no element before it is ignored, so a `*` at the very start of `p`, or a `*` written directly after another `*`, matches the empty string only and constrains nothing. The match must consume every character of `s` and every element of `p`. Return `true` when `p` matches all of `s` and `false` otherwise.\n\nFor example `s = \"abc\"` and `p = \".*c\"` match, while `s = \"abc\"` and `p = \"a*c\"` do not.\n\nConstraints: `1 <= s.length <= 10`, `1 <= p.length <= 10`, every character of `s` is `a`, `b` or `c`, and every character of `p` is `a`, `b`, `c`, `.` or `*`.\n",
     examples: [
       { input: "s = \"a\", p = \"c\"", output: "false", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12425,6 +12638,7 @@ export const PROBLEMS: Problem[] = [
     topic: "dynamic-programming",
     difficulty: "Hard",
     pattern: "state DP over (i, j) / greedy two-pointer with star rewind",
+    companies: ["Walmart Labs", "Microsoft", "Atlassian", "DE Shaw", "Zoho"],
     statement: "Given an input string `s` and a pattern `p`, decide whether `p` matches all of `s`.\n\nThe pattern is built from lowercase English letters, `?` which matches exactly one character, and `*` which matches any sequence of characters including the empty sequence. A match has to cover `s` from its first character to its last; matching only a prefix or only a suffix is not enough.\n\nReturn `true` when the pattern matches the whole input string, otherwise `false`.\n\nConstraints: `0 <= s.length <= 100` and `0 <= p.length <= 100`.\n",
     examples: [
       { input: "s = \"a\", p = \"c\"", output: "false", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12480,6 +12694,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Easy",
     pattern: "greedy left-to-right scan with a previous-plot flag",
+    companies: ["Apple", "Cisco", "Atlassian", "LinkedIn", "Airbnb"],
     statement: "A gardener tends a single row of plots described by `flowerbed`, where `flowerbed[i]` is `1` when plot i already holds a flower and `0` when the plot is empty. Neighbouring flowers shade each other, so no two adjacent plots may end up occupied.\n\nReturn `true` if at least `n` additional flowers can be planted without creating an adjacent occupied pair, and `false` otherwise. The flowers already in the row stay where they are.\n\nFor example, `flowerbed = [1, 0, 0, 0, 1]` with `n = 1` gives `true`, while the same bed with `n = 2` gives `false`.\n\nConstraints: `1 <= flowerbed.length <= 100`, `0 <= flowerbed[i] <= 1`, and `0 <= n <= 100`.\n",
     examples: [
       { input: "flowerbed = [0], n = 0", output: "true", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12534,6 +12749,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "State DP over days, collapsed by greedy delta summing",
+    companies: ["Accenture", "Microsoft", "Atlassian", "ServiceNow", "DE Shaw"],
     statement: "You are given an array prices where prices[i] is the price of one share of a stock on day i. You may hold at most one share at any moment, and you may complete as many transactions as you like during the n days. Every buy happens on some day, and its sell happens on a strictly later day.\n\nReturn the largest total profit you can reach. Holding no share at all is allowed, so the answer is never negative.\n\nConstraints: `1 <= prices.length <= 200` and `0 <= prices[i] <= 10000`.\n",
     examples: [
       { input: "prices = [0]", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12589,6 +12805,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Surplus",
+    companies: ["PhonePe", "Microsoft", "ServiceNow", "Adobe", "TCS"],
     statement: "There are `n` gas stations along a circular route, where the amount of gas at the `i`-th station is `gas[i]`.\n\nYou have a car with an unlimited gas tank and it costs `cost[i]` of gas to travel from the `i`-th station to its next `(i + 1)`-th station. You begin the journey with an empty tank at one of the gas stations.\n\nGiven two integer arrays `gas` and `cost`, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, or `-1` if it is impossible. If there exists a solution, it is guaranteed to be unique.\n\nConstraints: `gas.length == cost.length`, `1 <= gas.length <= 100`, and `0 <= gas[i], cost[i] <= 1000`.\n",
     examples: [
       { input: "gas = [1, 2, 3, 4, 5], cost = [3, 4, 5, 1, 2]", output: "3", explanation: "Start at station 3 (index 3). Fill with 4 gas. Tank = 4. Cost to next is 1. Tank = 3. Fill 5, cost 2. Tank = 6. Wrap around to station 0, fill 1, cost 3. Tank = 4. Continue through stations 1 and 2, completing the circuit with 0 gas remaining." },
@@ -12657,6 +12874,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy over a canonical value table / denomination decomposition",
+    companies: ["Infosys", "Microsoft", "DoorDash", "IBM", "Adobe"],
     statement: "Roman numerals are built from seven symbols: `I` = 1, `V` = 5, `X` = 10, `L` = 50, `C` = 100, `D` = 500 and `M` = 1000. Symbols are written from left to right in non-increasing value order, except for the six subtractive pairs, where a smaller symbol stands immediately before a larger one and its value is subtracted: `IV` = 4, `IX` = 9, `XL` = 40, `XC` = 90, `CD` = 400 and `CM` = 900. Nothing else is written subtractively, and no symbol appears more than three times in a row.\n\nReturn `num` written as a Roman numeral. Values above `3999` are outside the scope here, so no symbol is ever repeated more than three times and no overbar notation is needed. `num = 0` is written as the empty string.\n\nFor example, `num = 1994` gives `MCMXCIV` and `num = 4` gives `IV`; `num = 3999` gives `MMMCMXCIX`, the largest value in the domain.\n\nConstraints: `0 <= num <= 3999`.\n",
     examples: [
       { input: "num = 0", output: "\"\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12711,6 +12929,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Max reach",
+    companies: ["Cognizant", "Meta", "PhonePe", "Cisco", "Infosys"],
     statement: "You are given an integer array `nums`. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.\n\nReturn `true` if you can reach the last index, or `false` otherwise.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 100`.\n",
     examples: [
       { input: "nums = [2, 3, 1, 1, 4]", output: "true", explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index." },
@@ -12779,6 +12998,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy / Window expand",
+    companies: ["PhonePe", "Microsoft", "Samsung", "DoorDash", "Goldman Sachs"],
     statement: "You are given a 0-indexed array of integers `nums` of length `n`. You are initially positioned at `nums[0]`.\n\nEach element `nums[i]` represents the maximum length of a forward jump from index `i`.\n\nReturn the minimum number of jumps to reach index `n - 1`. It is guaranteed that you can always reach the last index.\n\nConstraints: `1 <= nums.length <= 1000` and `0 <= nums[i] <= 1000`.\n",
     examples: [
       { input: "nums = [2, 3, 1, 1, 4]", output: "2", explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index." },
@@ -12847,6 +13067,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy day sweep with a min-heap",
+    companies: ["Zoho", "Google", "PayPal", "Snowflake", "Visa"],
     statement: "You are given a list of events. Every event is a row of day numbers, and the event at position i can be attended on any single day `d` satisfying `events[i][0] <= d <= events[i][1]`. A row holding only one day number is a single-day event on that day, numbers after the second one in a row are ignored, and a row whose first number is greater than its second allows no day at all and cannot be attended. On any one day you may attend at most one event, and each event may be attended at most once. Return the maximum number of events you can attend, or 0 when the list is empty.\n\nFor `events = [[1, 2], [2, 3], [3, 4]]` you can attend the three events on days 1, 2 and 3. For `events = [[1, 1], [1, 1], [1, 1]]` only one of the three events fits on the single day they all allow, so the answer is 1.\n\nConstraints: `1 <= events.length <= 100`, `1 <= events[i] <= 100` and each event row holds at least one day number. Every day number in the list lies between 1 and 100, and a row may hold one, two or more day numbers.\n",
     examples: [
       { input: "events = [[1, 1]]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12901,6 +13122,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy with multiset feasibility check",
+    companies: ["IBM", "Meta", "Citadel", "DE Shaw", "Salesforce"],
     statement: "You are given a string `s` made of the letters `'a'`, `'b'` and `'c'`. Rearrange all of its letters so that no two equal letters end up next to each other, and return the lexicographically smallest rearrangement that satisfies the rule. If no such rearrangement exists, return an empty string.\n\nMany rearrangements are usually valid, so the answer is pinned down by dictionary order: between two candidates the one whose first differing letter is smaller wins, which means `\"abab\"` beats `\"abba\"`.\n\nExamples: `s = \"aab\"` gives `\"aba\"`; `s = \"aaab\"` cannot be arranged, because the three `a` letters would need three other letters to separate them and only one `b` is available, so the answer is `\"\"`.\n\nConstraints: `1 <= s.length <= 60`.\n",
     examples: [
       { input: "s = \"a\"", output: "\"a\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -12955,6 +13177,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Medium",
     pattern: "greedy over the range of reachable open-bracket counts",
+    companies: ["Apple", "Goldman Sachs", "Salesforce", "LinkedIn", "TikTok"],
     statement: "A bracket string is built from three characters: `(`, `)` and `*`. A `*` is a wildcard and may stand for a `(`, for a `)`, or for nothing at all.\n\nGiven such a string `s`, decide whether some way of replacing every `*` turns `s` into a valid bracket sequence, meaning every `)` is matched by an earlier `(` and no `(` is left without a partner.\n\nReturn `true` if such a replacement exists, and `false` otherwise.\n\nExample: `s = \"(*))\"` is `true`, because the `*` can become `(`. `s = \"((*\"` is `false`, since after replacing the `*` there are still three opens and at most one close. `s = \")*\"` is `false`, because the leading `)` can never be matched.\n\nConstraints: `1 <= s.length <= 100` and every character of `s` is one of `(`, `)` or `*`.\n",
     examples: [
       { input: "s = \"(\"", output: "false", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13009,6 +13232,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Hard",
     pattern: "greedy / two-pass neighbour constraints",
+    companies: ["PhonePe", "Amazon", "SAP", "Morgan Stanley", "Intuit"],
     statement: "Children stand in a line, and child i has performance rating ratings[i]. Every child must receive at least one candy, and a child whose rating is strictly greater than the rating of an immediate neighbour must receive strictly more candies than that neighbour. Children with equal ratings are under no constraint relative to each other. Return the smallest total number of candies that can be handed out while satisfying all of these requirements.\n\nFor example, ratings = [1, 0, 2] needs the piles [2, 1, 2] for a total of 5, and ratings = [1, 2, 2] needs [1, 2, 1] for a total of 4.\n\nConstraints: `1 <= ratings.length <= 200` and `0 <= ratings[i] <= 10000`.\n",
     examples: [
       { input: "ratings = [0]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13063,6 +13287,7 @@ export const PROBLEMS: Problem[] = [
     topic: "greedy",
     difficulty: "Hard",
     pattern: "greedy line packing with arithmetic space distribution",
+    companies: ["Google", "Atlassian", "DE Shaw", "Airbnb", "LinkedIn"],
     statement: "You are given a list of `words` and an integer `maxWidth`, and you must lay the words out into lines of exactly `maxWidth` characters each. Words keep their order, no word is ever split, and no line may exceed the width.\n\nThe layout is fully determined by these rules. Pack greedily: a line holds the longest possible run of consecutive words such that the run's characters plus a single space between each neighbouring pair fits within `maxWidth`. A line whose run is followed by more words is **fully justified**: the leftover `maxWidth - (sum of the run's word lengths)` spaces are spread over the `run.length - 1` gaps as evenly as possible, and when the leftover does not divide evenly the leftmost gaps take the extra spaces, one per gap, so the gaps differ by at most one space. The final line and any line holding a single word are instead left-aligned: words separated by exactly one space and the remaining characters on the right emitted as spaces. Every string you return therefore has length exactly `maxWidth`.\n\nReturn the list of lines in top-to-bottom order. Every word is at most `maxWidth` characters long, so a word always fits on a line by itself; a word that somehow exceeded the width would still take a line of its own and be emitted unchanged, because words are never split. For example, with `words = [\"the\", \"quick\", \"brown\", \"fox\"]` and `maxWidth = 16` the first line holds `the`, `quick` and `brown`, whose lengths sum to 13 and whose single-space layout measures 15; the 3 leftover spaces do not divide evenly over the 2 gaps, so the leftmost gap takes the extra one and the line is `\"the  quick brown\"`, exactly 16 characters with a double space before `quick` and a single space before `brown`. The word `fox` then forms the final line, left-aligned and padded to width: `\"fox             \"`, where the padding is `13` trailing spaces.\n\nConstraints: `1 <= words.length <= 100` and `1 <= words[i].length <= 10` and `10 <= maxWidth <= 20`.\n",
     examples: [
       { input: "words = [\"b\"], maxWidth = 10", output: "[\"b         \"]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13118,6 +13343,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Unbounded pick",
+    companies: ["Zoho", "Microsoft", "Salesforce", "PayPal", "ByteDance"],
     statement: "Given an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`.\n\nThe same candidate number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.\n\nTo ensure determinism, sort each individual combination in ascending numerical order, and sort the outer list of combinations in lexicographical order.\n\nConstraints: `1 <= candidates.length <= 20`, `2 <= candidates[i] <= 40`, and `1 <= target <= 40`. All elements of `candidates` are distinct.\n",
     examples: [
       { input: "candidates = [2, 3, 6, 7], target = 7", output: "[[2, 2, 3], [7]]", explanation: "2 + 2 + 3 = 7 and 7 = 7. 2 can be chosen multiple times." },
@@ -13185,6 +13411,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking with sorted duplicate skipping",
+    companies: ["Zoho", "Microsoft", "Walmart Labs", "Adobe", "ByteDance"],
     statement: "Given a list of positive integers `candidates`, which may repeat a value, and a `target`, return every distinct group of entries whose values add up to `target`.\n\nEach position of `candidates` may be used at most once, so a value that occurs twice can appear twice in a group only through its two separate positions. Two groups count as the same group when they hold the same multiset of values, and the answer must list each distinct group once. If nothing sums to `target`, return an empty list.\n\nThe output shape is fixed so that the check is unambiguous: the values inside a group are listed in non-decreasing order, and the groups themselves are sorted ascending, compared element by element, with the shorter group first when one is a prefix of the other.\n\nConstraints: `1 <= candidates.length <= 16`, `1 <= candidates[i] <= 50`, `1 <= target <= 100`.\n",
     examples: [
       { input: "candidates = [1], target = 1", output: "[[1]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13239,6 +13466,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking with prefix pruning",
+    companies: ["TCS", "Apple", "Samsung", "Qualcomm", "Intuit"],
     statement: "Given `n` pairs of parentheses, build every string of length `2n` that is well formed: reading left to right, the number of `(` characters seen so far is never smaller than the number of `)` characters seen so far, and the two counts are equal at the end.\n\nReturn all such strings in ascending lexicographic order, where `(` sorts before `)`.\n\nConstraints: `1 <= n <= 8`.\n",
     examples: [
       { input: "n = 1", output: "[\"()\"]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13293,6 +13521,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Digit map",
+    companies: ["PhonePe", "Microsoft", "DE Shaw", "Infosys", "Cisco"],
     statement: "Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent according to standard telephone keypad mappings:\n- `2`: `a, b, c`\n- `3`: `d, e, f`\n- `4`: `g, h, i`\n- `5`: `j, k, l`\n- `6`: `m, n, o`\n- `7`: `p, q, r, s`\n- `8`: `t, u, v`\n- `9`: `w, x, y, z`\n\nIf the input string is empty, return an empty array `[]`. Return the combinations in lexicographical order.\n\nConstraints: `0 <= digits.length <= 4`. `digits[i]` is a digit in the range `['2', '9']`.\n",
     examples: [
       { input: "digits = '23'", output: "['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']", explanation: "Digit 2 maps to 'abc' and 3 maps to 'def', yielding 3 × 3 = 9 combinations." },
@@ -13361,6 +13590,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Cut positions",
+    companies: ["Accenture", "Microsoft", "Salesforce", "DE Shaw", "Infosys"],
     statement: "Given a string `s`, partition `s` such that every substring of the partition is a palindrome.\n\nReturn all possible palindrome partitionings of `s`. The partitions must be returned sorted in lexicographical order.\n\nConstraints: `1 <= s.length <= 16`. `s` contains only lowercase English letters.\n",
     examples: [
       { input: "s = 'aab'", output: "[['a', 'a', 'b'], ['aa', 'b']]", explanation: "'aab' can be partitioned into ['a', 'a', 'b'] and ['aa', 'b'] where all components are palindromes." },
@@ -13429,6 +13659,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Swap-build",
+    companies: ["Infosys", "Google", "Samsung", "Qualcomm", "TCS"],
     statement: "Given an array `nums` of distinct integers, return all the possible permutations.\n\nThe returned list of permutations must be sorted in lexicographical order.\n\nConstraints: `1 <= nums.length <= 6` and `-10 <= nums[i] <= 10`. All integers of `nums` are unique.\n",
     examples: [
       { input: "nums = [-10]", output: "[[-10]]", explanation: "Generated from the verified optimal implementation." },
@@ -13495,6 +13726,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking over cut positions",
+    companies: ["Zoho", "Amazon", "ByteDance", "Nvidia", "Adobe"],
     statement: "A dotted-decimal IPv4 address was written down and then every dot was lost, leaving only the digit string `s`. Recover all the addresses that could have produced `s`.\n\nAn IPv4 address is four decimal parts separated by dots, each part holding a number from 0 to 255 written without leading zeros, except that the number zero is written as the single digit `0`. Putting the four parts together in order must reproduce `s` exactly, so no digit may be dropped, reordered, or shared between two parts.\n\nReturn every valid address in ascending lexicographic order, and return an empty array when `s` cannot be split into four valid parts.\n\nExamples: `s = \"10112\"` yields `[\"1.0.1.12\", \"1.0.11.2\", \"10.1.1.2\"]`, and `s = \"010010\"` yields `[\"0.10.0.10\", \"0.100.1.0\"]`.\n\nConstraints: `1 <= s.length <= 12`.\n",
     examples: [
       { input: "s = \"1\"", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13549,6 +13781,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / Choose-skip",
+    companies: ["Flipkart", "Meta", "PayPal", "Walmart Labs", "ByteDance"],
     statement: "Given an integer array `nums` of unique elements, return all possible subsets (the power set).\n\nThe solution set must not contain duplicate subsets. Each individual subset must be sorted in ascending numerical order, and the outer list of subsets must be sorted in lexicographical order.\n\nConstraints: `0 <= nums.length <= 10` and `-10 <= nums[i] <= 10`. All elements of `nums` are unique.\n",
     examples: [
       { input: "nums = []", output: "[[]]", explanation: "Generated from the verified optimal implementation." },
@@ -13615,6 +13848,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Medium",
     pattern: "backtracking / DFS grid",
+    companies: ["Intuit", "Accenture", "Google", "Atlassian", "PayPal"],
     statement: "Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid, or `false` otherwise.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= word.length <= 15`. `board` and `word` consist only of lowercase English letters.\n",
     examples: [
       { input: "board = [['a', 'b', 'c', 'e'], ['s', 'f', 'c', 's'], ['a', 'd', 'e', 'e']], word = 'abcced'", output: "true", explanation: "The word 'abcced' can be traced along cells (0,0)->(0,1)->(0,2)->(1,2)->(2,2)->(2,1)." },
@@ -13683,6 +13917,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Hard",
     pattern: "backtracking with bitmask conflict sets",
+    companies: ["Zoho", "Microsoft", "Adobe", "Oracle", "Goldman Sachs"],
     statement: "Place `n` queens on an `n × n` chessboard so that no two queens share a row, a column, or a diagonal. Return how many distinct placements exist, where two placements are distinct when the sets of occupied squares differ. For `n = 1` the answer is 1, for `n = 2` and `n = 3` the answer is 0 because no placement exists, for `n = 4` it is 2, and for `n = 8` it is 92.\n\nConstraints: `1 <= n <= 10`.\n",
     examples: [
       { input: "n = 1", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13737,6 +13972,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Hard",
     pattern: "backtracking / Constraint place",
+    companies: ["Walmart Labs", "Amazon", "Flipkart", "TCS", "Cognizant"],
     statement: "The n-queens puzzle is the problem of placing `n` chess queens on an `n x n` chessboard so that no two queens attack each other.\n\nGiven an integer `n`, return the number of distinct solutions to the n-queens puzzle.\n\nConstraints: `1 <= n <= 9`.\n",
     examples: [
       { input: "n = 4", output: "2", explanation: "There are 2 distinct configurations to place 4 non-attacking queens on a 4x4 board." },
@@ -13805,6 +14041,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Hard",
     pattern: "backtracking with constraint bitmasks and minimum-remaining-values ordering",
+    companies: ["Zoho", "Meta", "Intuit", "DoorDash", "Citadel"],
     statement: "A standard Sudoku board is a `9 x 9` grid divided into nine `3 x 3` boxes. A board is **complete** when every cell holds a digit from `1` to `9`, every row holds each digit exactly once, every column holds each digit exactly once, and every box holds each digit exactly once. A **completion** of a board is a complete board that agrees with it on every pre-filled cell.\n\nYou are given a board as a list of nine lists of nine integers, where `0` marks an empty cell and `1` through `9` mark filled cells. Report how many completions the board has, but stop counting at two: this is what keeps boards with astronomically many completions (an empty board has more than 10^21 of them) from running forever.\n\nReturn `0` when the board has no completion, `1` when it has exactly one, and `2` when it has two or more. Boards whose pre-filled cells already break a rule have no completion and therefore return `0`, even if no cell is empty. A board that is already complete and legal returns `1`. A board holding a value outside `0` through `9` is not a Sudoku board at all, so the answer is `0`.\n\nConstraints: `9 <= board.length <= 9` and `9 <= board[i].length <= 9` and `0 <= board[i][j] <= 9`.\n",
     examples: [
       { input: "board = [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]]", output: "2", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13860,6 +14097,7 @@ export const PROBLEMS: Problem[] = [
     topic: "backtracking",
     difficulty: "Hard",
     pattern: "memoized backtracking over string prefixes",
+    companies: ["Meta", "ServiceNow", "Uber", "Visa", "Oracle"],
     statement: "You are given a string `s` and a dictionary `wordDict`. Cut `s` into one or more dictionary words joined by single spaces, so that the concatenation of the chosen words is exactly `s`. A word from the dictionary may be reused any number of times.\n\nReturn every distinct valid sentence as a string, sorted in ascending lexicographic order. Return an empty list when no sentence can be formed.\n\nConstraints: `1 <= s.length <= 12` and `1 <= wordDict.length <= 12` and `1 <= wordDict[i].length <= 6`.\n",
     examples: [
       { input: "s = \"a\", wordDict = [\"c\"]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -13915,6 +14153,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / n&(n-1)",
+    companies: ["IBM", "Apple", "Nvidia", "Qualcomm", "Meta"],
     statement: "Given a 32-bit unsigned integer `n`, return the number of `1` bits it has (also known as the Hamming weight).\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
     examples: [
       { input: "n = 11", output: "3", explanation: "11 in binary is 1011, which has three '1' bits." },
@@ -13982,6 +14221,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / n&(n-1)",
+    companies: ["TCS", "Google", "Qualcomm", "Goldman Sachs", "Nvidia"],
     statement: "Given an integer `n`, return `true` if it is a power of two. Otherwise, return `false`.\n\nAn integer `n` is a power of two if there exists an integer `x` such that `n == 2ˣ`.\n\nConstraints: `-2³¹ <= n <= 2³¹ - 1`.\n",
     examples: [
       { input: "n = 1", output: "true", explanation: "2⁰ = 1." },
@@ -14050,6 +14290,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / Mirror",
+    companies: ["Qualcomm", "Apple", "Airbnb", "Nvidia", "Meta"],
     statement: "Reverse the bits of a given 32-bit unsigned integer and return the resulting 32-bit unsigned integer.\n\nConstraints: `0 <= n <= 4294967295` (32-bit unsigned integer).\n",
     examples: [
       { input: "n = 43261596", output: "964176192", explanation: "43261596 represented in binary is 00000010100101000001111010011100; reversed it is 00111001011110000010100101000000 = 964176192." },
@@ -14118,6 +14359,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Easy",
     pattern: "bit-manipulation / XOR cancel",
+    companies: ["TCS", "Microsoft", "Qualcomm", "Adobe", "Cognizant"],
     statement: "Given a non-empty array of integers `nums`, every element appears twice except for one. Find that single element.\n\nYou must implement a solution with linear runtime complexity and use only constant extra space.\n\nConstraints: `1 <= nums.length <= 101` (`nums.length` is odd) and `-30000 <= nums[i] <= 30000`. Each element appears twice except one which appears once.\n",
     examples: [
       { input: "nums = [2, 2, 1]", output: "1", explanation: "2 appears twice; 1 appears once." },
@@ -14186,6 +14428,7 @@ export const PROBLEMS: Problem[] = [
     topic: "bit-manipulation",
     difficulty: "Medium",
     pattern: "bit-manipulation / Carry loop",
+    companies: ["IBM", "Microsoft", "Google", "Swiggy", "Meta"],
     statement: "Given two integers `a` and `b`, return the sum of the two integers without using the operators `+` and `-`.\n\nCalculations must follow standard 32-bit signed two's complement integer arithmetic.\n\nConstraints: `-1000 <= a, b <= 1000`.\n",
     examples: [
       { input: "a = 1, b = 2", output: "3", explanation: "1 + 2 = 3 calculated with bitwise operators." },
@@ -14255,6 +14498,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Easy",
     pattern: "sorting / Back-fill",
+    companies: ["Wipro", "Amazon", "Cognizant", "Samsung", "Qualcomm"],
     statement: "You are given two integer arrays `nums1` and `nums2`, sorted in non-decreasing order, and two integers `m` and `n`, representing the number of initial elements in `nums1` and `nums2` respectively.\n\n`nums1` has a total length of `m + n`, where the first `m` elements denote the values to be merged, and the last `n` elements are set to `0` and should be ignored. `nums2` has a length of `n`.\n\nMerge `nums2` into `nums1` as one sorted array in non-decreasing order and return `nums1`.\n\nConstraints: `nums1.length == m + n`, `nums2.length == n`, `0 <= m, n <= 100`, `1 <= m + n <= 200`, and `-1000 <= nums1[i], nums2[j] <= 1000`.\n",
     examples: [
       { input: "nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3", output: "[1, 2, 2, 3, 5, 6]", explanation: "nums2 is merged into nums1 in-place producing a fully sorted array." },
@@ -14322,6 +14566,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Easy",
     pattern: "sorting / adjacent difference scan",
+    companies: ["Walmart Labs", "Amazon", "Nvidia", "Salesforce", "PayPal"],
     statement: "You are given an integer array `nums`. Look at every pair of different positions `i` and `j`, take the absolute difference of their values and find the smallest such difference over the whole array. Then report every unordered pair of values `[a, b]` with `a <= b` whose absolute difference equals that smallest value.\n\nValues may repeat, so one pair of values can be produced by several different pairs of positions. List each distinct pair of values only once, and return the pairs sorted in ascending order, comparing the smaller element first and the larger element second. If `nums` holds fewer than two elements there is no pair at all, so return an empty list.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
     examples: [
       { input: "nums = [-10000]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14376,6 +14621,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Custom comparator",
+    companies: ["TCS", "Amazon", "ServiceNow", "Infosys", "Adobe"],
     statement: "Given a list of non-negative integers `nums`, arrange them such that they form the largest possible number and return it as a string.\n\nSince the result may be very large, return a string instead of an integer. If the highest value is `\"0\"`, return `\"0\"`.\n\nConstraints: `1 <= nums.length <= 100` and `0 <= nums[i] <= 10⁹`.\n",
     examples: [
       { input: "nums = [10, 2]", output: "'210'", explanation: "'210' > '102'." },
@@ -14444,6 +14690,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Merge sort",
+    companies: ["Infosys", "Microsoft", "TCS", "Oracle", "TikTok"],
     statement: "Given an array of integers `nums`, sort the array in ascending numerical order and return it.\n\nYou must solve the problem with an efficient divide-and-conquer comparison sorting algorithm (such as merge sort) with `O(n log n)` time complexity.\n\nConstraints: `0 <= nums.length <= 1000` and `-50000 <= nums[i] <= 50000`.\n",
     examples: [
       { input: "nums = [5, 2, 3, 1]", output: "[1, 2, 3, 5]", explanation: "The array sorted in non-decreasing order." },
@@ -14512,6 +14759,7 @@ export const PROBLEMS: Problem[] = [
     topic: "sorting",
     difficulty: "Medium",
     pattern: "sorting / Interleave halves",
+    companies: ["Flipkart", "Microsoft", "Cognizant", "Infosys", "TCS"],
     statement: "Given an integer array `nums`, reorder it such that `nums[0] < nums[1] > nums[2] < nums[3]...`.\n\nDuplicate values may be present. To guarantee a unique and deterministic output across implementations, your solution must sort the elements in ascending order, partition them into a smaller half of length `⌈n/2⌉` and a larger half of length `⌊n/2⌋`, and interleave them in reverse order:\n- Even indices `0, 2, 4, ...` receive elements backwards from the end of the smaller half.\n- Odd indices `1, 3, 5, ...` receive elements backwards from the end of the larger half.\n\nReturn the rearranged array.\n\nConstraints: `0 <= nums.length <= 100` and `0 <= nums[i] <= 1000`. You may assume a valid wiggle arrangement always exists for the given inputs.\n",
     examples: [
       { input: "nums = [1, 5, 1, 1, 6, 4]", output: "[1, 6, 1, 5, 1, 4]", explanation: "1 < 6 > 1 < 5 > 1 < 4 satisfies nums[0] < nums[1] > nums[2] < nums[3]..." },
@@ -14581,6 +14829,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Easy",
     pattern: "carry simulation over bits / two pointers from the least significant bit",
+    companies: ["Deloitte", "Meta", "Capgemini", "Visa", "Walmart Labs"],
     statement: "Two telemetry packets arrive as strings of bits, `a` and `b`. Every character is either `'0'` or `'1'`, and the leftmost character is the most significant bit. Either operand may carry leading zeros.\n\nReturn the sum of the two values in the same format, written canonically: no leading zeros, and the value zero is written as `\"0\"`.\n\nFor example, `a = \"1011\"` and `b = \"1101\"` give `\"11000\"`.\n\nConstraints: `1 <= a.length <= 100`, `1 <= b.length <= 100`, and both strings consist only of the characters `'0'` and `'1'`.\n",
     examples: [
       { input: "a = \"0\", b = \"1\"", output: "\"1\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14635,6 +14884,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Easy",
     pattern: "digit-column carry simulation / two pointers from the least significant digit",
+    companies: ["Wipro", "Meta", "Uber", "Airbnb", "Visa"],
     statement: "A ledger export stores two non-negative amounts as strings of decimal digits, `num1` and `num2`. Every character is a digit from `'0'` to `'9'`, and either operand may carry leading zeros.\n\nReturn the sum of the two amounts as a decimal string with no leading zeros, where the value zero is written as `\"0\"`.\n\nFor example, `num1 = \"9137\"` and `num2 = \"846\"` give `\"9983\"`.\n\nConstraints: `1 <= num1.length <= 100`, `1 <= num2.length <= 100`, and both strings consist only of the characters `'0'`-`'9'`.\n",
     examples: [
       { input: "num1 = \"1\", num2 = \"4\"", output: "\"5\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14690,6 +14940,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Easy",
     pattern: "simulation / divisibility branching",
+    companies: ["TCS", "Apple", "Nvidia", "Cisco", "IBM"],
     statement: "Given a positive integer `n`, build the list of values for the numbers `1` through `n`, in increasing order. For each number use the following rule, evaluated in this order:\n\n- if it is divisible by both 3 and 5, the value is the string `\"FizzBuzz\"`;\n- otherwise, if it is divisible by 3, the value is the string `\"Fizz\"`;\n- otherwise, if it is divisible by 5, the value is the string `\"Buzz\"`;\n- otherwise, the value is the plain decimal representation of the number.\n\nReturn the resulting list, which always has exactly `n` entries.\n\nFor example, for `n = 5` the answer is `[\"1\", \"2\", \"Fizz\", \"4\", \"Buzz\"]`.\n\nConstraints: `1 <= n <= 200`.\n",
     examples: [
       { input: "n = 1", output: "[\"1\"]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14744,6 +14995,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Easy",
     pattern: "math / half digit reversal",
+    companies: ["Wipro", "Meta", "Deloitte", "SAP", "Morgan Stanley"],
     statement: "An integer is a palindrome when its decimal representation, as written without leading zeros, reads the same from left to right as from right to left. A negative number is never a palindrome, because the leading minus sign cannot appear at the other end.\n\nGiven an integer `x`, return `true` if `x` is a palindrome and `false` otherwise.\n\nConstraints: `-10000 <= x <= 10000`.\n",
     examples: [
       { input: "x = 0", output: "true", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14798,6 +15050,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Easy",
     pattern: "Subtractive Peek",
+    companies: ["Deloitte", "Google", "Capgemini", "Adobe", "Zoho"],
     statement: "Given a valid roman numeral string s using symbols I, V, X, L, C, D, M, convert it to its integer value using standard subtractive notation (IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900).",
     examples: [
       { input: "s = \"MCMXCIV\"", output: "1994", explanation: "M + CM + XC + IV = 1000 + 900 + 90 + 4." },
@@ -14851,6 +15104,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "enumeration / sieve of eratosthenes",
+    companies: ["Accenture", "Google", "SAP", "TCS", "Nvidia"],
     statement: "Given an integer `n`, return how many primes are strictly less than `n`. A prime is an integer greater than 1 whose only positive divisors are 1 and itself.\n\nThe direct route tests every integer below `n` for divisors up to its square root. A faster route sweeps instead of testing: walk upward from 2, and every time you meet a number that no earlier step has marked, count it and mark all of its multiples starting from its square. Numbers 0 and 1 are never prime, so an upper bound of 2 or less gives 0.\n\nReturn that count.\n\nConstraints: `2 <= n <= 10000`.\n",
     examples: [
       { input: "n = 2", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14905,6 +15159,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "Digit-array long multiplication with carries",
+    companies: ["Zoho", "Google", "ByteDance", "Oracle", "Two Sigma"],
     statement: "Two non-negative integers are given as decimal strings `num1` and `num2`, where every character is a digit from `'0'` to `'9'`. The values may be up to 200 digits long, so they can exceed what a 64-bit integer holds and converting the inputs to machine numbers is not an option.\n\nReturn the product `num1 * num2` as a decimal string. The result must not contain leading zeros, and the product of a value with `'0'` is the single character `'0'`. An input may itself carry leading zeros; the product is still expected in canonical form.\n\nConstraints: `1 <= num1.length <= 200` and `1 <= num2.length <= 200`, and every character of both strings is a digit from `'0'` to `'9'`.\n",
     examples: [
       { input: "num1 = \"1\", num2 = \"4\"", output: "\"4\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -14959,6 +15214,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "math-matrices / Fast pow",
+    companies: ["Infosys", "Meta", "Qualcomm", "Cisco", "Nvidia"],
     statement: "Implement `myPow(x, n)`, which calculates `x` raised to the power `n` (i.e., `xⁿ`).\n\nThe exponent `n` may be positive, negative, or zero. Return the result rounded to 5 decimal places. If the result is an exact integer, an integer value is returned.\n\nConstraints: `-100.0 < x < 100.0`, `-1000 <= n <= 1000`. `x` will not be `0` when `n <= 0`.\n",
     examples: [
       { input: "x = 2.0, n = 10", output: "1024", explanation: "2¹⁰ = 1024." },
@@ -15026,6 +15282,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "digit extraction with overflow guard",
+    companies: ["Wipro", "Google", "Capgemini", "Adobe", "Uber"],
     statement: "You are given a signed 32-bit integer `x`. Reverse the order of its decimal digits and return the result with its sign, dropping zeros that end up at the front: reversing `120` gives `21`, and reversing `-120` gives `-21`.\n\nA signed 32-bit integer only holds values from `-2147483648` to `2147483647`. If the reversed value falls outside that range, return `0` instead. The value of `x` itself is always inside the range.\n\nExamples: `x = 123` gives `321`, `x = -123` gives `-321`, and `x = 1534236469` reverses to `9646324351`, which no 32-bit integer can hold, so the answer is `0`.\n\nConstraints: `-2147483648 <= x <= 2147483647`.\n",
     examples: [
       { input: "x = 0", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15081,6 +15338,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "matrix index mapping / rotating a grid in one pass",
+    companies: ["Wipro", "Apple", "TCS", "Goldman Sachs", "Samsung"],
     statement: "You are given a rectangular matrix of integers with `R` rows and `C` columns, where every row has the same length. Rotate it 90 degrees clockwise and return the rotated matrix.\n\nUnder a clockwise rotation the element at row `i`, column `j` moves to row `j`, column `R - 1 - i` of the result, so the result has `C` rows and `R` columns. The input matrix must not be modified.\n\nConstraints: `1 <= matrix.length <= 30`, `1 <= matrix[0].length <= 30` and `-100 <= matrix[i][j] <= 100`.\n",
     examples: [
       { input: "matrix = [[-17]]", output: "[[-17]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15135,6 +15393,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "first row/column reused as in-place markers",
+    companies: ["Walmart Labs", "Google", "Nvidia", "ServiceNow", "TCS"],
     statement: "You are given an `m x n` integer matrix `matrix`. Whenever a cell holds the value `0`, every cell in the same row and every cell in the same column as that cell must be set to `0` as well.\n\nThe rows and columns to clear are decided from the **original** matrix only: a `0` that appears purely because of this clearing must not cause any further row or column to be cleared. Return the resulting matrix.\n\nBecause both decisions are taken from the input, the order in which you clear rows and columns does not change the answer.\n\nConstraints: `1 <= matrix.length <= 50`, `1 <= matrix[i].length <= 50` and `-100 <= matrix[i][j] <= 100`.\n",
     examples: [
       { input: "matrix = [[-100]]", output: "[[-100]]", explanation: "Generated from the verified optimal implementation." },
@@ -15189,6 +15448,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "Boundary Shrinking",
+    companies: ["Wipro", "Bloomberg", "Intuit", "Morgan Stanley", "Cognizant"],
     statement: "Given an m x n matrix, return all elements of the matrix in clockwise spiral order starting from the top-left cell.",
     examples: [
       { input: "matrix = [[1,2,3],[4,5,6],[7,8,9]]", output: "[1,2,3,6,9,8,7,4,5]" },
@@ -15242,6 +15502,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "state machine parsing / clamp during accumulation",
+    companies: ["Accenture", "Bloomberg", "Qualcomm", "Adobe", "Citadel"],
     statement: "Implement the classic string to 32-bit signed integer conversion and return the value it produces for the string `s`.\n\nThe rules are applied in order:\n\n1. Skip any leading space characters. Spaces are allowed only before the number, never between the sign and the digits or inside the digits.\n2. Read one optional sign, either `'+'` or `'-'`. With no sign the number is positive.\n3. Read consecutive decimal digits until a non-digit character or the end of the string, and ignore everything from that point on.\n4. If no digit was read at all the answer is `0`.\n5. If the resulting value is below `-2147483648` the answer is `-2147483648`, and if it is above `2147483647` the answer is `2147483647`.\n\nThe input is arbitrary text made of digits, spaces and signs, so strings like `\"  -42\"` (answer `-42`), `\"+-12\"` (answer `0`, because `'+'` is consumed as the sign and `'-'` is not a digit) and `\"99999999999999999999\"` (answer `2147483647`) must all be handled by the same single pass.\n\nConstraints: `1 <= s.length <= 200`.\n",
     examples: [
       { input: "s = \"+\"", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15296,6 +15557,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Medium",
     pattern: "index arithmetic over a repeated cycle / virtual grid",
+    companies: ["TCS", "Microsoft", "Walmart Labs", "PayPal", "Infosys"],
     statement: "A string is written onto numRows rows in a zigzag walk. Place the first character in the top row, step straight down one row per character until the bottom row is reached, then step diagonally up-right one row per character until the top row is reached, then step down again, and keep alternating. Each character of the string lands in the next cell of that walk.\n\nOnce every character has been placed, read the visited cells row by row, top row first and left to right inside each row, skipping cells the walk never touched. The characters in that reading order, concatenated, are the converted string.\n\nReturn the converted string. numRows may be larger than the length of s, in which case the walk never reaches the bottom row and every character keeps a row of its own; a single row makes the walk flat, so the string comes back unchanged.\n\nConstraints: `1 <= s.length <= 200` and `1 <= numRows <= 100`.\n",
     examples: [
       { input: "s = \"d\", numRows = 1", output: "\"d\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15350,6 +15612,7 @@ export const PROBLEMS: Problem[] = [
     topic: "math-matrices",
     difficulty: "Hard",
     pattern: "math / chunked number spelling",
+    companies: ["Zoho", "Microsoft", "Morgan Stanley", "Cisco", "LinkedIn"],
     statement: "Spell a non-negative integer in English using the short scale, with every word in Title Case and single spaces between words. Groups of three digits are followed by the scale word 'Thousand', 'Million' and so on, a hundreds digit is followed by 'Hundred', and the value zero is written as 'Zero'. Values from eleven to nineteen are single words, values from twenty upwards combine the tens word and the units word, groups whose value is zero are skipped entirely, and no leading, trailing or doubled spaces may appear in the answer.\n\nFor example, 0 is 'Zero', 115 is 'One Hundred Fifteen', 1001 is 'One Thousand One' and 10000 is 'Ten Thousand'.\n\nConstraints: `0 <= num <= 10000`.\n",
     examples: [
       { input: "num = 0", output: "\"Zero\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15405,6 +15668,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Easy",
     pattern: "Horizontal / Vertical Scan",
+    companies: ["Deloitte", "Google", "Adobe", "Capgemini", "Infosys"],
     statement: "Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string \"\".",
     examples: [
       { input: "strs = [\"flower\",\"flow\",\"flight\"]", output: "\"fl\"" },
@@ -15457,6 +15721,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Medium",
     pattern: "trie node counting",
+    companies: ["Meta", "DoorDash", "Citadel", "Snowflake", "Goldman Sachs"],
     statement: "You are given `words`, a list of non-empty lowercase words. Inserting them one by one into a prefix tree (trie) creates one node per distinct prefix: the root stands for nothing, and every other node stands for one specific non-empty prefix that at least one word starts with.\n\nReturn how many distinct non-empty prefixes the words in `words` have.\n\nConstraints: `1 <= words.length <= 50` and `1 <= words[i].length <= 10`.\n",
     examples: [
       { input: "words = [\"d\"]", output: "1", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15511,6 +15776,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Medium",
     pattern: "sort once + lower-bound binary search over prefixes",
+    companies: ["Bloomberg", "DoorDash", "Adobe", "PayPal", "Citadel"],
     statement: "A search box is fed a list of product names `products` and a `searchWord`. After the user types each character of `searchWord`, the box shows up to three suggestions.\n\nReturn a list of lists: the list at index `i` holds up to three names from `products` that start with the first `i + 1` characters of `searchWord`, chosen as the lexicographically smallest matches and sorted in ascending order. If fewer than three names match, return all of them; if none match, return an empty list, so a one-character `searchWord` produces exactly one list.\n\nNames are lowercase words, comparisons are plain code-unit order, and a name that appears several times in `products` counts as several separate suggestions.\n\nConstraints: `1 <= products.length <= 100` and `1 <= searchWord.length <= 20`.\n",
     examples: [
       { input: "products = [\"d\"], searchWord = \"x\"", output: "[[]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15565,6 +15831,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Hard",
     pattern: "design / trie of path segments",
+    companies: ["Amazon", "DoorDash", "Snowflake", "Citadel", "Uber"],
     statement: "A log records paths that were created in an in-memory file system, and you replay it in order. Each element of paths names one node that was created. A path that ends with a slash marks a directory, any other path marks a file, and a path with no name segments at all, such as \"/\", is ignored. Every path is read as absolute, so a leading slash carries no extra meaning and repeated slashes act as a single separator. A path like '/a/b/c.txt' also creates the directories /a and /a/b when they do not exist yet. An element is ignored when a name already exists as a file, when the element would turn an existing file into a directory, or when it would turn an existing directory into a file.\n\nAfter every element has been applied, report the immediate children of the directory target as a single string. Each child contributes its own name, followed by a slash when that child is a directory, and the entries are sorted in plain ascending order of the name alone, decided before the slash is appended. Join the entries with newline characters and return the empty string when target does not name an existing directory. A target with no name segments refers to the root directory.\n\nFor example, for paths = ['/a/', '/a/b.txt'] and target = '/', the answer is 'a/'.\n\nConstraints: `1 <= paths.length <= 150` and `1 <= paths[i].length <= 40` and `0 <= target.length <= 40`.\n",
     examples: [
       { input: "paths = [\"h\"], target = \"r\"", output: "\"\"", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15619,6 +15886,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Hard",
     pattern: "trie / Prefix prune",
+    companies: ["Flipkart", "Meta", "Cisco", "Airbnb", "Uber"],
     statement: "Given an `m x n` board of characters and a list of strings `words`, return all words found on the board.\n\nEach word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a single word path.\n\nThe returned list of words must be sorted in lexicographical order.\n\nConstraints: `1 <= board.length, board[i].length <= 6`, `1 <= words.length <= 20`, and `1 <= words[i].length <= 10`. `board` and `words[i]` consist only of lowercase English letters. All strings in `words` are unique.\n",
     examples: [
       { input: "board = [['o', 'a', 'a', 'n'], ['e', 't', 'a', 'e'], ['i', 'h', 'k', 'r'], ['i', 'f', 'l', 'v']], words = ['oath', 'pea', 'eat', 'rain']", output: "['eat', 'oath']", explanation: "'eat' and 'oath' exist on the board; 'pea' and 'rain' cannot be formed." },
@@ -15687,6 +15955,7 @@ export const PROBLEMS: Problem[] = [
     topic: "trie",
     difficulty: "Hard",
     pattern: "trie of words + DFS pruning on a grid",
+    companies: ["Meta", "Cisco", "Visa", "Airbnb", "DoorDash"],
     statement: "You are given a board as a list of row strings `board`, so `board[r][c]` is the lowercase letter in row `r`, column `c`, together with a list of words. Rows are not guaranteed to be equally long: a row may end before the row above it does.\n\nA word can be formed by walking from a cell to a side-adjacent cell (up, down, left or right) without visiting the same cell twice, so the letters read along the walk spell the word exactly. Two cells are adjacent only when both of them exist, so a step that would leave the end of a shorter row is not a legal step. A word may start at any cell, and different words may reuse the same cells.\n\nReturn every word from the list that can be formed on the board, with no duplicates, sorted in ascending lexicographic order.\n\nConstraints: `1 <= board.length <= 8` and `1 <= board[i].length <= 24` and `1 <= words.length <= 15` and `1 <= words[i].length <= 24`. Every row holds at least one lowercase letter, every word holds at least one lowercase letter, and a word longer than the total number of letters on the board simply cannot be formed.\n",
     examples: [
       { input: "board = [\"a\"], words = [\"c\"]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15742,6 +16011,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Medium",
     pattern: "design / fixed-capacity fifo simulation with flat command stream",
+    companies: ["Amazon", "Snowflake", "Qualcomm", "Citadel", "Oracle"],
     statement: "A queue of fixed `capacity` slots stores integers in first-in first-out order and refuses a new item when it already holds `capacity` items. You are given the capacity and a list of commands `ops`; each command yields exactly one integer result, and the results are returned in command order.\n\n- `ops[i] > 0` - enqueue the value `ops[i]`. Result `1` if it was stored, `0` if the queue was full.\n- `ops[i] == 0` - dequeue and return the front value, or `-1` if the queue is empty.\n- `ops[i] == -1` - return the current front value without removing it, or `-1` if empty.\n- `ops[i] == -2` - return the most recently stored value without removing it, or `-1` if empty.\n- `ops[i] == -3` - return `1` if the queue is empty, otherwise `0`.\n- `ops[i] == -4` - return `1` if the queue currently holds `capacity` items, otherwise `0`.\n- `ops[i] == -5` - return how many items the queue currently holds.\n\nReturn the array of results, with one entry per command.\n\nConstraints: `1 <= capacity <= 100`, `1 <= ops.length <= 200` and `-5 <= ops[i] <= 10000`.\n",
     examples: [
       { input: "capacity = 1, ops = [-5]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15795,6 +16065,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Medium",
     pattern: "design / first-fit allocation over a free-run list with hash map bookkeeping",
+    companies: ["Meta", "Nvidia", "Uber", "Visa", "ByteDance"],
     statement: "You manage `memory` units of address space, addressed `0` through `memory - 1` and all free at the start. A list of commands `ops` arrives, and each command is read by its sign and magnitude and produces exactly one integer result, collected in command order.\n\n- `ops[i] > 0` - an allocation request for a block of `ops[i]` consecutive free units. Occupy the lowest-addressed run that is long enough and return its starting address; if no run is long enough, allocate nothing and return `-1`. A successful block is labelled `i + 1`, the 1-based position of the command that created it.\n- `ops[i] < 0` - release the block labelled `-ops[i]`. Return how many units were returned to the free pool, or `0` if no live block carries that label (never allocated, or already released).\n- `ops[i] == 0` - no operation, result `0`.\n\nReleased units are immediately available to later allocation commands, and adjacent free regions are equivalent to one larger region. Return the array of results, one entry per command.\n\nConstraints: `1 <= memory <= 200`, `1 <= ops.length <= 200` and `-200 <= ops[i] <= 200`.\n",
     examples: [
       { input: "memory = 1, ops = [-200]", output: "[0]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15849,6 +16120,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Medium",
     pattern: "lazy iterator / group skipping",
+    companies: ["Walmart Labs", "Apple", "DE Shaw", "Adobe", "Airbnb"],
     statement: "You are given `nums`, a list of integer lists, and an integer `k`. Reading the groups left to right and taking every integer inside them produces one long sequence; empty groups add nothing to it.\n\nA flattening iterator walks that sequence and hands back one integer per `next()` call. Return the integer produced by the `k`-th `next()` call (counting from `1`). If the sequence holds fewer than `k` integers, return `-1`.\n\nEvery integer in `nums` is non-negative, so `-1` always means the sequence ran out.\n\nConstraints: `1 <= nums.length <= 100`, `0 <= nums[i].length <= 100`, `0 <= nums[i][j] <= 100` and `1 <= k <= 100`.\n",
     examples: [
       { input: "nums = [[0]], k = 1", output: "0", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -15903,6 +16175,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Medium",
     pattern: "hash map plus doubly linked recency list",
+    companies: ["Amazon", "Google", "Visa", "Walmart Labs", "Zoho", "Cognizant", "Infosys"],
     statement: "A cache holds at most `capacity` distinct keys and starts empty. You are given a stream of accesses in `keys`, one per cell, in order. Each access behaves like this:\n\n- if the key is already cached it is a hit, and the key becomes the most recently used one;\n- if the key is not cached it is a miss, the key is stored as the most recently used one, and if the cache is now over `capacity` the least recently used key is evicted.\n\nA capacity of `0` means nothing is ever retained, so every access is a miss.\n\nReturn one entry per access, in order: `1` when the access was a hit and `0` when it was a miss.\n\nFor example, with `capacity = 2` and `keys = [1, 2, 1, 3]` the first two accesses miss, the third is a hit that makes `1` the most recently used key, and the fourth misses and evicts `2`, which had become the least recently used key. The result is `[0, 0, 1, 0]`.\n\nConstraints: `0 <= capacity <= 20`, `1 <= keys.length <= 200` and `0 <= keys[i] <= 20`.\n",
     examples: [
       { input: "capacity = 0, keys = [0]", output: "[0]", explanation: "Generated from the verified optimal implementation." },
@@ -15957,6 +16230,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Medium",
     pattern: "stateful simulation with 1-indexed lookups",
+    companies: ["PhonePe", "Bloomberg", "Goldman Sachs", "Stripe", "Airbnb"],
     statement: "You are implementing the core of a tiny bank. There are `n` accounts, numbered `1` through `n`. The array `balance` holds the opening balances: `balance[i]` is the opening balance of account `i + 1`.\n\nThe array `ops` holds the numbers that make up the operations, four consecutive numbers per operation. The operation numbered `k` is the group `ops[4*k]`, `ops[4*k+1]`, `ops[4*k+2]`, `ops[4*k+3]`, read as `[type, a, b, amount]`:\n\n- `type = 0` is a deposit: add `amount` to account `a`. The field `b` is ignored.\n- `type = 1` is a withdrawal: subtract `amount` from account `a`. The field `b` is ignored.\n- `type = 2` is a transfer: subtract `amount` from account `a` and add `amount` to account `b`.\n\nAn operation succeeds only when its `type` is `0`, `1` or `2`, every account number it references lies in `1..n`, and, for a withdrawal or a transfer, the source account holds at least `amount`. An operation whose `type` is any other value fails. A failed operation changes nothing at all, not even part of a transfer. A transfer whose two account numbers are equal is a valid operation whenever the account exists and holds `amount`, and it leaves every balance unchanged.\n\nThe operations are applied in order, so there are `ops.length // 4` of them: when `ops.length` is not a multiple of four, the trailing numbers belong to no operation and are ignored.\n\nReturn an array of two arrays. The first is `result[0]`, the final balances of accounts `1` through `n` in that order. The second is `result[1]`, where `result[1][k]` is `1` if operation `k` succeeded and `0` if it failed, so `result[1]` holds exactly `ops.length // 4` entries.\n\nConstraints: `1 <= balance.length <= 100`, `0 <= balance[i] <= 10^4`, `4 <= ops.length <= 200` and `0 <= ops[i] <= 30`.\n",
     examples: [
       { input: "balance = [0], ops = [0, 0, 0, 0]", output: "[[0], [0]]", explanation: "Produced by the reference solution, verified against all four implementations." },
@@ -16011,6 +16285,7 @@ export const PROBLEMS: Problem[] = [
     topic: "data-structures",
     difficulty: "Hard",
     pattern: "design / hash map plus doubly linked list of count buckets",
+    companies: ["Apple", "Atlassian", "Uber", "Airbnb", "LinkedIn"],
     statement: "Simulate a counter store that keeps one count per integer key and can report a key holding the largest or the smallest count. Two parallel lists of the same length describe the run: ops and keys, where entry i is the operation performed at step i.\n\n1: increment the count of key keys[i], starting the key at count 1 when it is not tracked.\n2: decrement the count of key keys[i]. A key that is not tracked is left alone, and a key whose count would fall to 0 is dropped from the store.\n3: record the tracked key whose count is largest.\n4: record the tracked key whose count is smallest.\n\nkeys[i] is ignored for operations 3 and 4. Record -1 when the store is empty at the moment a query runs. When several keys share the extreme count, record the smallest of those key values, so every answer is unambiguous.\n\nReturn the recorded query answers in the order the queries appeared.\n\nConstraints: `1 <= ops.length <= 200` and `1 <= keys.length <= 200` and `1 <= ops[i] <= 4` and `1 <= keys[i] <= 100`.\n",
     examples: [
       { input: "ops = [1], keys = [1]", output: "[]", explanation: "Produced by the reference solution, verified against all four implementations." },

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../store/AuthContext";
+import { SIGNOUT_PENDING_KEY, useAuth } from "../store/AuthContext";
 import { useTheme } from "../store/ProgressContext";
 import { ApiError } from "../utils/api";
 import { isSafeLoginDestination } from "../utils/redirect";
@@ -34,21 +34,59 @@ interface BridgeProps {
 }
 
 const ClerkBridge: React.FC<BridgeProps> = ({ mode }) => {
-  const [state] = useState(() => {
-    const value = crypto.randomUUID();
-    sessionStorage.setItem(OAUTH_STATE_KEY, value);
-    return value;
-  });
+  const { isLoaded, isSignedIn, signOut } = useClerkAuth();
+  const { user: meritUser } = useAuth();
+  const signOutStartedRef = useRef(false);
+
+  const [state] = useState(
+    () => sessionStorage.getItem(OAUTH_STATE_KEY) || crypto.randomUUID(),
+  );
+
+  useEffect(() => {
+    if (sessionStorage.getItem(OAUTH_STATE_KEY) !== state) {
+      sessionStorage.setItem(OAUTH_STATE_KEY, state);
+    }
+  }, [state]);
+
+  const inSsoCallback = typeof window !== "undefined" && window.location.hash.includes("sso-callback");
+
+  useEffect(() => {
+    if (!inSsoCallback && isLoaded && isSignedIn && !meritUser && !signOutStartedRef.current) {
+      signOutStartedRef.current = true;
+      try {
+        sessionStorage.removeItem(OAUTH_STATE_KEY);
+        sessionStorage.removeItem(SIGNOUT_PENDING_KEY);
+      } catch {
+        // ignore
+      }
+      void signOut().catch(() => {
+        // ignore sign-out errors
+      });
+    }
+  }, [inSsoCallback, isLoaded, isSignedIn, meritUser, signOut]);
+
+  if (!inSsoCallback && isLoaded && isSignedIn && !meritUser) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 text-center py-8">
+        <RefreshCw className="w-6 h-6 text-mint animate-spin" />
+        <span className="text-xs font-mono text-muted">Signing out…</span>
+      </div>
+    );
+  }
+
+  const callbackUrl = `/sso-callback?state=${encodeURIComponent(state)}`;
 
   return mode === "signin" ? (
     <SignIn
       appearance={{ elements: { footerAction: "hidden" } }}
-      afterSignInUrl={`/sso-callback?state=${encodeURIComponent(state)}`}
+      forceRedirectUrl={callbackUrl}
+      signUpForceRedirectUrl={callbackUrl}
     />
   ) : (
     <SignUp
       appearance={{ elements: { footerAction: "hidden" } }}
-      afterSignUpUrl={`/sso-callback?state=${encodeURIComponent(state)}`}
+      forceRedirectUrl={callbackUrl}
+      signInForceRedirectUrl={callbackUrl}
     />
   );
 };
@@ -77,6 +115,7 @@ const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, next }) => {
   // Recorded before the redirect so the callback can restore it. Validated
   // again on read, since sessionStorage is not a trusted source.
   useEffect(() => {
+    if (window.location.hash.includes("sso-callback")) return;
     if (next && isSafeLoginDestination(next)) {
       sessionStorage.setItem(OAUTH_NEXT_KEY, next);
     } else {
@@ -135,41 +174,58 @@ const ClerkSsoCallbackInner: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState<string | null>(null);
-  const [attempted, setAttempted] = useState(false);
+  const exchangePromiseRef = useRef<Promise<{ destination: string } | { error: string }> | null>(null);
 
   useEffect(() => {
-    if (!isLoaded || attempted) return;
-    const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
-    const returnedState = new URLSearchParams(location.search).get("state");
-    sessionStorage.removeItem(OAUTH_STATE_KEY);
-    if (!expectedState || !returnedState || returnedState !== expectedState) {
-      setError("This sign-in attempt is invalid or has expired. Please sign in again.");
-      return;
+    let cancelled = false;
+    if (!isLoaded) return;
+    if (!exchangePromiseRef.current) {
+      exchangePromiseRef.current = (async () => {
+        const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
+        const returnedState = new URLSearchParams(location.search).get("state");
+        try {
+          sessionStorage.removeItem(OAUTH_STATE_KEY);
+        } catch {
+          // ignore
+        }
+        if (!expectedState || !returnedState || returnedState !== expectedState) {
+          return { error: "This sign-in attempt is invalid or has expired. Please sign in again." };
+        }
+        if (!isSignedIn) {
+          return { error: "No active Clerk session was found. Please sign in again." };
+        }
+        try {
+          const token = await getToken(JWT_TEMPLATE ? { template: JWT_TEMPLATE } : undefined);
+          if (!token) {
+            throw new Error("Could not retrieve a Clerk session token.");
+          }
+          await loginWithClerk(token);
+          const stashedNext = sessionStorage.getItem(OAUTH_NEXT_KEY);
+          try {
+            sessionStorage.removeItem(OAUTH_NEXT_KEY);
+          } catch {
+            // ignore
+          }
+          const destination =
+            stashedNext && isSafeLoginDestination(stashedNext) ? stashedNext : "/dashboard";
+          return { destination };
+        } catch (err: unknown) {
+          return { error: oauthErrorMessage(err) };
+        }
+      })();
     }
-    if (!isSignedIn) {
-      setError("No active Clerk session was found. Please sign in again.");
-      return;
-    }
-
-    setAttempted(true);
-    (async () => {
-      const token = await getToken(JWT_TEMPLATE ? { template: JWT_TEMPLATE } : undefined);
-      if (!token) {
-        throw new Error("Could not retrieve a Clerk session token.");
+    exchangePromiseRef.current.then((result) => {
+      if (cancelled) return;
+      if ("error" in result) {
+        setError(result.error);
+      } else {
+        navigate(result.destination, { replace: true });
       }
-      await loginWithClerk(token);
-
-      // Restore the deep link the user arrived with (a problem, an exam, the
-      // code runner). Re-validated here: sessionStorage can be tampered with.
-      const stashedNext = sessionStorage.getItem(OAUTH_NEXT_KEY);
-      sessionStorage.removeItem(OAUTH_NEXT_KEY);
-      const destination =
-        stashedNext && isSafeLoginDestination(stashedNext) ? stashedNext : "/dashboard";
-      navigate(destination, { replace: true });
-    })().catch((err: unknown) => {
-      setError(oauthErrorMessage(err));
     });
-  }, [attempted, getToken, isLoaded, isSignedIn, location.search, loginWithClerk, navigate]);
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, isLoaded, isSignedIn, location.search, loginWithClerk, navigate]);
 
   if (error) {
     return (

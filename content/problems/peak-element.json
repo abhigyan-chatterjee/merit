@@ -1050,5 +1050,12 @@
   ],
   "sequence": 23,
   "prevSlug": "next-permutation",
-  "nextSlug": "product-of-array-except-self"
+  "nextSlug": "product-of-array-except-self",
+  "companies": [
+    "Accenture",
+    "Amazon",
+    "Samsung",
+    "Infosys",
+    "Walmart Labs"
+  ]
 }

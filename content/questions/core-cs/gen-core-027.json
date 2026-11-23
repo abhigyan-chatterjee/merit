@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-027",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which model estimates a process's active pages to prevent thrashing?",
+  "options": [
+    "Banker's model",
+    "Producer-consumer model",
+    "Working-set model",
+    "Round-robin model"
+  ],
+  "correct_index": 2,
+  "explanation": "The working-set model tracks recently referenced pages.",
+  "source": "generated",
+  "generator_key": "core_cs.thrashing",
+  "content_hash": "343c6c4f2c253efb2109b1a0bd91e08957c8814b8db4d9dfdb76b9404979ec13",
+  "review_status": "verified"
+}

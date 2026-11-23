@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-003",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: Each of the boys ___ a new pen.",
+  "options": [
+    "had been",
+    "were having",
+    "has",
+    "have"
+  ],
+  "correct_index": 2,
+  "explanation": "Each is singular, so the verb is 'has'.",
+  "source": "generated",
+  "generator_key": "verbal.subject_verb_agreement",
+  "content_hash": "d59d785e58450b1362598df9bf958b644072fc96cd828cd39337fcad203534f1",
+  "review_status": "verified"
+}

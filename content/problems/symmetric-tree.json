@@ -754,7 +754,14 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
+  "sequence": 5,
   "prevSlug": "maximum-depth-of-binary-tree",
-  "nextSlug": "same-tree"
+  "nextSlug": "same-tree",
+  "companies": [
+    "Infosys",
+    "Google",
+    "LinkedIn",
+    "TikTok",
+    "Amazon"
+  ]
 }

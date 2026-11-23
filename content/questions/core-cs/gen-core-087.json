@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-087",
+  "topic": "core-cs",
+  "subtopic": "design-caching",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What bounds how long stale data may remain in a cache?",
+  "options": [
+    "A shard key",
+    "TTL",
+    "A semaphore",
+    "A mutex"
+  ],
+  "correct_index": 1,
+  "explanation": "A time-to-live expires cached entries. The correct answer is TTL.",
+  "source": "generated",
+  "generator_key": "core_cs.caching",
+  "content_hash": "f6ad3dddd16f61af3209a57263471844aa335cd0c1f07bc7c8e6b53bcb618053",
+  "review_status": "verified"
+}

@@ -1589,7 +1589,14 @@
       "isReference": true
     }
   ],
-  "sequence": 16,
+  "sequence": 17,
   "prevSlug": "maximum-subarray",
-  "nextSlug": "partition-equal-subset-sum"
+  "nextSlug": "partition-equal-subset-sum",
+  "companies": [
+    "Infosys",
+    "Google",
+    "Goldman Sachs",
+    "Nvidia",
+    "Zoho"
+  ]
 }

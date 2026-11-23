@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-063",
+  "topic": "aptitude",
+  "subtopic": "number-system",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the HCF of 36 and 60. Give only the number.",
+  "options": [
+    "24",
+    "12",
+    "18",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "HCF(36, 60) = 12.",
+  "source": "generated",
+  "generator_key": "aptitude.divisibility_remainders",
+  "content_hash": "e8e5b32591e1b6e8d646207fd4c522649b0dad8a6683a2038acd995972bf8110",
+  "review_status": "verified"
+}

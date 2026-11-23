@@ -1284,5 +1284,12 @@
   ],
   "sequence": 11,
   "prevSlug": "partition-list",
-  "nextSlug": "reverse-linked-list-ii"
+  "nextSlug": "reverse-linked-list-ii",
+  "companies": [
+    "Intuit",
+    "Infosys",
+    "Google",
+    "Morgan Stanley",
+    "TCS"
+  ]
 }

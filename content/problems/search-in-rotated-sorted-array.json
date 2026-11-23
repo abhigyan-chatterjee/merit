@@ -922,5 +922,12 @@
   ],
   "sequence": 12,
   "prevSlug": "search-a-2d-matrix",
-  "nextSlug": "snapshot-array"
+  "nextSlug": "snapshot-array",
+  "companies": [
+    "Flipkart",
+    "Amazon",
+    "ByteDance",
+    "Cisco",
+    "Adobe"
+  ]
 }

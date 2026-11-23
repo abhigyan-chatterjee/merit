@@ -1173,5 +1173,12 @@
   ],
   "sequence": 14,
   "prevSlug": "lowest-common-ancestor-of-a-binary-tree",
-  "nextSlug": "construct-from-preorder-inorder"
+  "nextSlug": "construct-from-preorder-inorder",
+  "companies": [
+    "Cognizant",
+    "Google",
+    "Wipro",
+    "Oracle",
+    "Microsoft"
+  ]
 }

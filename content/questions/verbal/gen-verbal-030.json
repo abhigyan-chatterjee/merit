@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-030",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word most opposite in meaning to 'beneficial'.",
+  "options": [
+    "Helpful",
+    "Useful",
+    "Advantageous",
+    "Harmful"
+  ],
+  "correct_index": 3,
+  "explanation": "Beneficial means helpful, so its opposite is harmful.",
+  "source": "generated",
+  "generator_key": "verbal.antonyms",
+  "content_hash": "5b6152908b993fa257b70ff3ac727f7bc08ecba3dba86ddab087805b92b75bd8",
+  "review_status": "verified"
+}

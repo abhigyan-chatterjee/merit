@@ -2,7 +2,7 @@
   "slug": "balanced-binary-tree",
   "title": "Height-Balanced Check",
   "topic": "trees",
-  "difficulty": "Medium",
+  "difficulty": "Easy",
   "pattern": "trees / Height diff",
   "statement": "The tree is given as a level-order array `root`: the children of the entry at index `i` live at indices `2i+1` (left) and `2i+2` (right). An entry holding `null` means that child is absent and is skipped while traversing.\n\nA tree is height-balanced when, at every present node, the heights of its left and right subtrees differ by at most one. Height counts nodes along the longest downward path: a leaf has height 1 and an absent child has height 0. An empty tree counts as balanced.\n\nReturn `true` when every node passes this test, otherwise `false`.\n\nConstraints: `0 <= root.length <= 30` and `-100 <= root[i] <= 100`.\n",
   "examples": [
@@ -752,7 +752,14 @@
       "isReference": true
     }
   ],
-  "sequence": 10,
-  "prevSlug": "binary-tree-zigzag-level-order-traversal",
-  "nextSlug": "kth-smallest-element-in-a-bst"
+  "sequence": 2,
+  "prevSlug": "diameter-of-binary-tree",
+  "nextSlug": "invert-binary-tree",
+  "companies": [
+    "Amazon",
+    "Meta",
+    "Visa",
+    "Apple",
+    "Bloomberg"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-023",
+  "topic": "sql",
+  "subtopic": "subqueries",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A table t holds x values 5, 9 and 2. What does SELECT (SELECT MAX(x) FROM t) return?",
+  "options": [
+    "9",
+    "7",
+    "13",
+    "11"
+  ],
+  "correct_index": 0,
+  "explanation": "The maximum value is 9.",
+  "source": "generated",
+  "generator_key": "sql.subqueries",
+  "content_hash": "af8fc0a5d55b241e4ff37a1ed441f1596e656de5e8c84002539761d5ca42235a",
+  "review_status": "verified"
+}

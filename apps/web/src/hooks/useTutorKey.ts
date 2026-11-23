@@ -21,7 +21,8 @@ export const TUTOR_PRESETS: TutorPreset[] = [
 ];
 
 export function catalogIdForBaseUrl(baseUrl: string): string | null {
-  return TUTOR_PRESETS.find((preset) => preset.baseUrl === baseUrl)?.catalogId ?? null;
+  const normalized = baseUrl.trim().replace(/\/+$/, "");
+  return TUTOR_PRESETS.find((preset) => preset.baseUrl === normalized)?.catalogId ?? null;
 }
 
 const LS_BASE_URL = "merit_tutor_base_url";
@@ -71,9 +72,30 @@ let snapshot: TutorSnapshot = {
   baseUrl: readLS(LS_BASE_URL) ?? TUTOR_DEFAULT_BASE_URL,
   apiKey: readSS(SS_API_KEY) ?? "",
   model: readLS(LS_MODEL) ?? "",
-  remember: readSS(SS_API_KEY) !== null || readLS(LS_BASE_URL) !== null || readLS(LS_MODEL) !== null,
+  remember: true,
 };
 const listeners = new Set<() => void>();
+
+export function getTutorSnapshot(): TutorSnapshot {
+  if (snapshot.remember) {
+    const storedBaseUrl = readLS(LS_BASE_URL) ?? TUTOR_DEFAULT_BASE_URL;
+    const storedApiKey = readSS(SS_API_KEY) ?? "";
+    const storedModel = readLS(LS_MODEL) ?? "";
+    if (
+      storedBaseUrl !== snapshot.baseUrl ||
+      storedApiKey !== snapshot.apiKey ||
+      storedModel !== snapshot.model
+    ) {
+      snapshot = {
+        ...snapshot,
+        baseUrl: storedBaseUrl,
+        apiKey: storedApiKey,
+        model: storedModel,
+      };
+    }
+  }
+  return snapshot;
+}
 
 function update(patch: Partial<TutorSnapshot>) {
   snapshot = { ...snapshot, ...patch };
@@ -123,11 +145,10 @@ export function useTutorKey(): TutorKeyState {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
-    () => snapshot,
-    () => snapshot,
+    getTutorSnapshot,
+    getTutorSnapshot,
   );
   useEffect(() => {
-    // Migrate a key left in a previous session's sessionStorage, if any.
     const storedKey = readSS(SS_API_KEY);
     if (storedKey !== null && !snapshot.remember) {
       update({

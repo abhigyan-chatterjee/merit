@@ -3303,5 +3303,12 @@
   ],
   "sequence": 18,
   "prevSlug": "rotting-oranges",
-  "nextSlug": "shortest-path-in-binary-matrix"
+  "nextSlug": "shortest-path-in-binary-matrix",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "Snowflake",
+    "ByteDance",
+    "Salesforce"
+  ]
 }

@@ -983,7 +983,14 @@
       "isReference": true
     }
   ],
-  "sequence": 17,
+  "sequence": 18,
   "prevSlug": "minimum-path-sum",
-  "nextSlug": "unique-paths"
+  "nextSlug": "unique-paths",
+  "companies": [
+    "TCS",
+    "Microsoft",
+    "Salesforce",
+    "Visa",
+    "Goldman Sachs"
+  ]
 }

@@ -1008,6 +1008,66 @@ def test_a_normal_runtime_error_keeps_the_message_the_runtime_gave():
     )
 
 
+def test_submit_compile_error_surfaces_compile_output(client: TestClient):
+    register_user(client, "submit_ce_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": "function solve(nums, target) { return ); }",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] in ("CE", "RE")
+    assert data["compile_output"]
+    assert data["infrastructure_error"] is False
+
+
+def test_js_syntax_error_is_not_reported_as_undefined_function(client: TestClient):
+    register_user(client, "js_syntax_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": "function solve(nums, target) { return ]; }",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] in ("CE", "RE")
+    assert "SyntaxError" in data["compile_output"]
+    assert "Function solve is not defined" not in data["compile_output"]
+
+
+def test_corrupt_submission_results_returns_empty_list(
+    client: TestClient, db_session: Session
+):
+    from app.models.submission import Submission
+
+    user_id = register_user(client, "corrupt_student@merit.org")
+    db_session.add(
+        Submission(
+            user_id=user_id,
+            problem_slug="two-sum",
+            language="javascript",
+            code="function solve() {}",
+            verdict="WA",
+            runtime_ms=1.0,
+            test_results="{not-json",
+            created_at="2026-01-01T00:00:00+00:00",
+        )
+    )
+    db_session.flush()
+    res = client.get("/api/v1/judge/submissions/two-sum")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) >= 1
+    assert data[0]["test_results"] == []
+
+
 @pytest.mark.asyncio
 async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
     """End-to-end: the summary is wired into the interpreted-language path."""
@@ -1029,3 +1089,202 @@ async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
     assert result.verdict == "RE"
     assert "Memory limit exceeded" in result.compile_output
 
+
+# --- OA practice: custom input and hidden-case redaction ---------------------
+
+_TWO_SUM_OK_JS = """
+function solve(nums, target) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    map.set(nums[i], i);
+  }
+  return [];
+}
+"""
+
+
+def test_submit_redacts_hidden_cases_and_counts_passes(client: TestClient):
+    register_user(client, "redact_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": _TWO_SUM_OK_JS,
+        },
+    )
+    assert res.status_code == 200
+    sub = res.json()
+    assert sub["passed_count"] == 3
+    assert sub["total_count"] == 3
+
+    results = sub["test_results"]
+    assert len(results) == 3
+    for sample in results[:2]:
+        assert sample["hidden"] is False
+        assert sample["input"] is not None
+        assert sample["expected"] is not None
+        assert sample["actual"] is not None
+    hidden = results[2]
+    assert hidden["hidden"] is True
+    assert hidden["label"] == "Hidden Case 1"
+    assert hidden["input"] is None
+    assert hidden["expected"] is None
+    assert hidden["actual"] is None
+
+    history = client.get("/api/v1/judge/submissions/two-sum")
+    assert history.status_code == 200
+    stored = history.json()[0]
+    assert stored["passed_count"] == 3
+    assert stored["total_count"] == 3
+    assert stored["test_results"] == results
+
+
+def test_run_with_custom_input_returns_custom_verdict(client: TestClient):
+    register_user(client, "custom_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": _TWO_SUM_OK_JS,
+            "custom_input": [[10, 20, 30], 50],
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] == "CUSTOM"
+    assert data["custom_run"] is True
+    assert data["passed_count"] == 1
+    assert data["total_count"] == 1
+    assert data["test_results"][0]["actual"] == [1, 2]
+
+
+def test_custom_input_arity_and_submit_rejection(client: TestClient):
+    register_user(client, "custom_arity_student@merit.org")
+    code = "function solve(nums, target) { return []; }"
+
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+            "custom_input": [[1, 2]],
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "INVALID_CUSTOM_INPUT"
+
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+            "custom_input": [[1, 2], 3],
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "INVALID_SUBMIT_REQUEST"
+
+
+def test_hidden_error_is_redacted_on_submit(client: TestClient):
+    register_user(client, "hidden_redact@merit.org")
+    bad_code = """
+function solve(nums, target) {
+  throw new Error("leak hidden input [1,2,3]");
+}
+"""
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={"problem_slug": "two-sum", "language": "javascript", "code": bad_code},
+    )
+    assert res.status_code == 200
+    sub = res.json()
+    hidden = [tc for tc in sub["test_results"] if tc["hidden"]]
+    assert hidden, sub["test_results"]
+    for item in hidden:
+        if item["error"]:
+            assert item["error"] == "Runtime error on hidden test"
+        assert "[1,2,3]" not in str(item)
+        assert "leak hidden input" not in str(item)
+
+
+def test_judge_rate_limit_blocks_after_20_requests(client: TestClient):
+    register_user(client, "judge_ratelimit@merit.org")
+    code = "function solve(nums, target) { return []; }"
+    for _ in range(20):
+        res = client.post(
+            "/api/v1/judge/run",
+            json={"problem_slug": "no-such-problem", "language": "javascript", "code": code},
+        )
+        assert res.status_code == 404
+    limited = client.post(
+        "/api/v1/judge/run",
+        json={"problem_slug": "no-such-problem", "language": "javascript", "code": code},
+    )
+    assert limited.status_code == 429
+    assert limited.json()["detail"]["code"] == "JUDGE_RATE_LIMIT"
+
+
+def test_run_fails_closed_without_sample_tests(client: TestClient, db_session: Session):
+    register_user(client, "no_sample@merit.org")
+    db_session.add(
+        Problem(
+            slug="no-sample-problem",
+            topic="arrays-hashing",
+            difficulty="Easy",
+            pattern="Hash Map",
+            title="No Sample Problem",
+            statement="Test problem with only hidden cases.",
+            examples=json.dumps([]),
+            constraints_json=json.dumps([]),
+            hints=json.dumps([]),
+            starter_code=json.dumps(
+                {"javascript": "function solve() {}", "python": "def solve(*args):\n    pass"}
+            ),
+            function_name="solve",
+            review_status="verified",
+        )
+    )
+    db_session.flush()
+    db_session.add(
+        ProblemTestCase(
+            problem_slug="no-sample-problem",
+            ordinal=0,
+            label="Hidden 1",
+            input_json=json.dumps([[1, 2]]),
+            expected_json=json.dumps([1, 2]),
+            is_sample=0,
+        )
+    )
+    db_session.flush()
+
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "no-sample-problem",
+            "language": "javascript",
+            "code": "function solve() { return [1, 2]; }",
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "NO_SAMPLE_TESTS"
+
+
+def test_global_body_limit_returns_413(client: TestClient):
+    register_user(client, "body_limit@merit.org")
+    oversized = "x" * (1_048_576 + 1)
+    res = client.post(
+        "/api/v1/judge/run",
+        json={"problem_slug": "two-sum", "language": "javascript", "code": oversized},
+    )
+    assert res.status_code == 413
+    assert res.json() == {
+        "detail": {"code": "PAYLOAD_TOO_LARGE", "message": "Request body too large."}
+    }

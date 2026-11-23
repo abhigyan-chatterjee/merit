@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-077",
+  "topic": "aptitude",
+  "subtopic": "direction-sense",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A man walks 3 km north and then 4 km east. How far is he from the start?",
+  "options": [
+    "7 km",
+    "4 km",
+    "5 km",
+    "6 km"
+  ],
+  "correct_index": 2,
+  "explanation": "By Pythagoras, sqrt(3^2 + 4^2) = 5 km.",
+  "source": "generated",
+  "generator_key": "aptitude.direction_sense",
+  "content_hash": "8432de8bb36bf3a29ca478a5d6f7dab07af729dc98097d8f382a7ae6b4aa40d8",
+  "review_status": "verified"
+}

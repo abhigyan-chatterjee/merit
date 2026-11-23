@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-073",
+  "topic": "core-cs",
+  "subtopic": "oop-cpp",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which C++ keyword enables runtime polymorphic dispatch through a base pointer?",
+  "options": [
+    "virtual",
+    "const",
+    "inline",
+    "static"
+  ],
+  "correct_index": 0,
+  "explanation": "Declaring a method virtual enables dynamic binding.",
+  "source": "generated",
+  "generator_key": "core_cs.cpp_virtual_dispatch",
+  "content_hash": "c38657ab293322f9a8389670514e99569f1f778ba29fc190d67930e592e9bc16",
+  "review_status": "verified"
+}

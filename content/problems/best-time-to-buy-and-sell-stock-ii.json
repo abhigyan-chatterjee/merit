@@ -1051,5 +1051,12 @@
   ],
   "sequence": 2,
   "prevSlug": "can-place-flowers",
-  "nextSlug": "gas-station"
+  "nextSlug": "gas-station",
+  "companies": [
+    "Accenture",
+    "Microsoft",
+    "Atlassian",
+    "ServiceNow",
+    "DE Shaw"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-023",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Using FIFO replacement with 2 frames and reference string [1, 2, 1, 3, 1, 2], how many page faults occur? Give only the number.",
+  "options": [
+    "9",
+    "3",
+    "7",
+    "5"
+  ],
+  "correct_index": 3,
+  "explanation": "FIFO with 2 frames incurs 5 page faults.",
+  "source": "generated",
+  "generator_key": "core_cs.page_replacement",
+  "content_hash": "4242a1f954701863e1e911862d6f7e9b347263908e549069d41c45d925015d34",
+  "review_status": "verified"
+}

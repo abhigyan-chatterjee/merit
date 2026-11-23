@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-095",
+  "topic": "aptitude",
+  "subtopic": "data-interpretation",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Three categories have values A=120, B=180, C=100. What percentage of the total is B? Give only the number.",
+  "options": [
+    "40",
+    "36",
+    "50",
+    "45"
+  ],
+  "correct_index": 3,
+  "explanation": "Total is 400, so B is 180/400 = 45%.",
+  "source": "generated",
+  "generator_key": "aptitude.data_interpretation",
+  "content_hash": "e5d1695e6c540fd56f372ba75fbc79e4ec8e15f34b5668cb6496634746fda9be",
+  "review_status": "verified"
+}

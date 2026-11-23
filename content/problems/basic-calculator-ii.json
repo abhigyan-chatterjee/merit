@@ -259,5 +259,12 @@
   ],
   "sequence": 8,
   "prevSlug": "valid-parentheses",
-  "nextSlug": "simplify-path"
+  "nextSlug": "simplify-path",
+  "companies": [
+    "Zoho",
+    "Google",
+    "Airbnb",
+    "DE Shaw",
+    "Oracle"
+  ]
 }

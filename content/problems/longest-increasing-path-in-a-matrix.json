@@ -3314,5 +3314,12 @@
   ],
   "sequence": 23,
   "prevSlug": "bus-routes",
-  "nextSlug": "making-a-large-island"
+  "nextSlug": "making-a-large-island",
+  "companies": [
+    "DE Shaw",
+    "PhonePe",
+    "Amazon",
+    "DoorDash",
+    "Adobe"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-015",
+  "topic": "sql",
+  "subtopic": "nulls",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A column x holds 1, 2, NULL and 4. What does SUM(x) return?",
+  "options": [
+    "9",
+    "7",
+    "5",
+    "10"
+  ],
+  "correct_index": 1,
+  "explanation": "SUM ignores NULL and adds 1 + 2 + 4 = 7.",
+  "source": "generated",
+  "generator_key": "sql.null_traps",
+  "content_hash": "665a7023a883e164edc075097dfc2fe216b6a1f60a9940862c0329913c23cbea",
+  "review_status": "verified"
+}

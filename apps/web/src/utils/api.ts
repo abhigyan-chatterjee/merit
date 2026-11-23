@@ -377,6 +377,8 @@ export interface RevisionItem {
   link: string;
 }
 
+export type TargetTier = "service" | "product" | "faang";
+
 /** One scheduled review returned by /api/v1/revision/due. */
 export interface ScheduledReview {
   item_type: "problem" | "question";
@@ -387,6 +389,10 @@ export interface ScheduledReview {
   interval_days: number;
   reps: number;
   lapses: number;
+  difficulty?: string;
+  link?: string;
+  prompt?: string;
+  answer_summary?: string;
 }
 
 export interface RevisionDueResponse {
@@ -419,8 +425,11 @@ export interface ProgressSummary {
   quiz_scores?: Record<string, number>;
   weakest_topics?: string[];
   revision_due?: RevisionItem[];
+  due_today_count?: number;
   preferred_language?: string;
   daily_goal?: { kind: string; label: string; target: number; permanent?: boolean } | null;
+  target_drive_date?: string | null;
+  target_tier?: TargetTier;
 }
 
 export interface DailyGoalPayload {
@@ -487,7 +496,12 @@ export const progressApi = {
     });
   },
 
-  async getSettings(): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+  async getSettings(): Promise<{
+    preferred_language: string;
+    daily_goal: DailyGoalPayload | null;
+    target_drive_date?: string | null;
+    target_tier?: TargetTier;
+  }> {
     return await apiRequest("/api/v1/progress/settings", { method: "GET" });
   },
 
@@ -496,12 +510,23 @@ export const progressApi = {
     daily_goal?: DailyGoalPayload | null;
     clear_daily_goal?: boolean;
     unpin_daily_goal?: boolean;
-  }): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+    target_drive_date?: string | null;
+    clear_target_drive_date?: boolean;
+    target_tier?: TargetTier;
+  }): Promise<{
+    preferred_language: string;
+    daily_goal: DailyGoalPayload | null;
+    target_drive_date?: string | null;
+    target_tier?: TargetTier;
+  }> {
     const body: Record<string, unknown> = {};
     if (data.preferred_language !== undefined) body.preferred_language = data.preferred_language;
     if (data.unpin_daily_goal) body.unpin_daily_goal = true;
     else if (data.clear_daily_goal) body.clear_daily_goal = true;
     else if (data.daily_goal !== undefined) body.daily_goal = data.daily_goal;
+    if (data.clear_target_drive_date) body.clear_target_drive_date = true;
+    else if (data.target_drive_date !== undefined) body.target_drive_date = data.target_drive_date;
+    if (data.target_tier !== undefined) body.target_tier = data.target_tier;
     return await apiRequest("/api/v1/progress/settings", {
       method: "PUT",
       body: JSON.stringify(body),
@@ -538,13 +563,18 @@ export interface TestCaseResult {
   actual: unknown;
   runtime_ms: number;
   error: string | null;
+  hidden?: boolean;
 }
 
 export interface JudgeResponse {
-  verdict: "AC" | "WA" | "TLE" | "RE" | "CE";
+  verdict: "AC" | "WA" | "TLE" | "RE" | "CE" | "CUSTOM";
   runtime_ms: number;
   test_results: TestCaseResult[];
   compile_output: string;
+  infrastructure_error?: boolean;
+  passed_count?: number;
+  total_count?: number;
+  custom_run?: boolean;
 }
 
 export interface SubmissionItem {
@@ -555,6 +585,10 @@ export interface SubmissionItem {
   runtime_ms: number;
   test_results: TestCaseResult[];
   created_at: string;
+  compile_output?: string;
+  infrastructure_error?: boolean;
+  passed_count?: number;
+  total_count?: number;
 }
 
 export const judgeApi = {
@@ -562,6 +596,23 @@ export const judgeApi = {
     return await apiRequest<JudgeResponse>("/api/v1/judge/run", {
       method: "POST",
       body: JSON.stringify({ problem_slug: problemSlug, language, code }),
+    });
+  },
+
+  async runCustom(
+    problemSlug: string,
+    language: string,
+    code: string,
+    customInput: unknown[]
+  ): Promise<JudgeResponse> {
+    return await apiRequest<JudgeResponse>("/api/v1/judge/run", {
+      method: "POST",
+      body: JSON.stringify({
+        problem_slug: problemSlug,
+        language,
+        code,
+        custom_input: customInput,
+      }),
     });
   },
 
@@ -825,5 +876,187 @@ export const revisionApi = {
         body: JSON.stringify({ grade, ...(localDate ? { local_date: localDate } : {}) }),
       },
     );
+  },
+};
+
+export type InterviewDifficulty = "easy" | "medium" | "hard";
+export type InterviewAction = "start" | "message" | "advance_stage" | "evaluate";
+
+export interface InterviewStageDef {
+  id: string;
+  label: string;
+  kind: "theory" | "coding" | "project" | "system_design" | "wrapup" | "rubric";
+  problem_index?: number | null;
+}
+
+export interface InterviewCodingSnapshot {
+  language: string;
+  code: string;
+  verdict?: string | null;
+  passed_count?: number | null;
+  total_count?: number | null;
+}
+
+export interface InterviewMessage {
+  role: "user" | "interviewer";
+  content: string;
+  stage: string;
+  created_at: string;
+}
+
+export interface InterviewProblemSummary {
+  slug: string;
+  title: string;
+  topic: string;
+  difficulty: string;
+  pattern: string;
+  statement: string;
+  examples: Array<{ input: string; output: string; explanation?: string }>;
+  constraints: string[];
+  starter_code: Record<string, string>;
+  function_name: string;
+  test_cases: Array<{ id?: string | number; label: string; input: unknown[]; expected: unknown }>;
+}
+
+export interface InterviewRubricDimension {
+  name: string;
+  score: number;
+  max_score: number;
+  comment: string;
+}
+
+export interface InterviewRubric {
+  dimensions: InterviewRubricDimension[];
+  total: number;
+  max_total: number;
+  verdict: "Strong Hire" | "Hire" | "Leaning Hire" | "No Hire";
+  strengths: string[];
+  improvements: string[];
+  summary: string;
+}
+
+export interface ResumeParseResponse {
+  filename: string;
+  pages: number;
+  char_count: number;
+  truncated: boolean;
+  extracted_text: string;
+}
+
+export interface InterviewSessionSummary {
+  id: string;
+  difficulty: InterviewDifficulty;
+  status: string;
+  current_stage: string;
+  duration_sec: number;
+  elapsed_sec: number;
+  problem_slugs: string[];
+  has_resume: boolean;
+  resume_filename?: string | null;
+  overall_verdict?: string | null;
+  overall_score?: number | null;
+  max_score?: number | null;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string | null;
+}
+
+export interface InterviewSessionDetail extends InterviewSessionSummary {
+  stages: InterviewStageDef[];
+  problems: InterviewProblemSummary[];
+  messages: InterviewMessage[];
+  coding_snapshots: Record<string, InterviewCodingSnapshot>;
+  resume_text?: string | null;
+  project_brief?: string | null;
+  rubric?: InterviewRubric | null;
+}
+
+export interface InterviewTurnResponse {
+  reply: string;
+  suggested_stage?: string | null;
+  session: InterviewSessionDetail;
+}
+
+export interface InterviewTurnPayload {
+  base_url: string;
+  api_key: string;
+  model: string;
+  action: InterviewAction;
+  message?: string;
+  stage?: string;
+  elapsed_sec?: number;
+  active_problem_slug?: string | null;
+  coding_snapshot?: InterviewCodingSnapshot;
+  design_notes?: string;
+}
+
+export const interviewApi = {
+  async listSessions(): Promise<InterviewSessionSummary[]> {
+    return await apiRequest<InterviewSessionSummary[]>("/api/v1/interview/sessions");
+  },
+
+  async createSession(payload: {
+    difficulty: InterviewDifficulty;
+    problem_slugs?: string[];
+    resume_filename?: string | null;
+    resume_text?: string | null;
+    project_brief?: string | null;
+  }): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>("/api/v1/interview/sessions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getSession(sessionId: string): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`,
+    );
+  },
+
+  async updateSession(
+    sessionId: string,
+    payload: {
+      current_stage?: string;
+      elapsed_sec?: number;
+      coding_snapshots?: Record<string, InterviewCodingSnapshot>;
+      project_brief?: string | null;
+      resume_filename?: string | null;
+      resume_text?: string | null;
+      clear_resume?: boolean;
+    },
+  ): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
+  async deleteSession(sessionId: string): Promise<void> {
+    await apiRequest<void>(`/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`, {
+      method: "DELETE",
+    });
+  },
+
+  async sendTurn(sessionId: string, payload: InterviewTurnPayload): Promise<InterviewTurnResponse> {
+    return await apiRequest<InterviewTurnResponse>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}/turn`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
+  async parseResume(file: File): Promise<ResumeParseResponse> {
+    const form = new FormData();
+    form.append("file", file);
+    return await apiRequest<ResumeParseResponse>("/api/v1/interview/parse-resume", {
+      method: "POST",
+      body: form,
+    });
   },
 };

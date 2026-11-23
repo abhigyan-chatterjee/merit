@@ -129,6 +129,11 @@ class Settings(BaseSettings):
     def validate_judge_config(self) -> "Settings":
         """A remote judge without credentials is a broken deploy, not a runtime
         error — catch it at startup instead of on the first submission."""
+        if self.environment.lower() == "production" and not self.judge_url.strip():
+            raise RuntimeError(
+                "CRITICAL CONFIGURATION ERROR: JUDGE_URL must be set in production "
+                "so submissions are graded by the remote judge."
+            )
         for env_name, url in (
             ("JUDGE_URL", self.judge_url),
             ("JUDGE_HEAVY_URL", self.judge_heavy_url),

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-020",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Convert to passive voice: 'The teacher praised the student.'",
+  "options": [
+    "The teacher was praised by the student.",
+    "The student was praised by the teacher.",
+    "The student is praised by the teacher.",
+    "The student has praised the teacher."
+  ],
+  "correct_index": 1,
+  "explanation": "Simple past passive uses 'was praised'. The correct answer is The student was praised by the teacher..",
+  "source": "generated",
+  "generator_key": "verbal.active_passive",
+  "content_hash": "1a29b6bffba8f84b42e44d241a3fe988bef39d11385ff26b56d8c614846711cf",
+  "review_status": "verified"
+}

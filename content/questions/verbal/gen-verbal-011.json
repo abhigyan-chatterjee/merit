@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-011",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the correct version of: 'Each students were present.'",
+  "options": [
+    "Each student was present.",
+    "Each of student were present.",
+    "Each students was present.",
+    "Each student were present."
+  ],
+  "correct_index": 0,
+  "explanation": "Each takes a singular noun and a singular verb. The correct answer is Each student was present..",
+  "source": "generated",
+  "generator_key": "verbal.sentence_correction",
+  "content_hash": "12503955d457eb5bb3b6559a34048e8d6830db16c0a0e78ee9097681f5d9f7e9",
+  "review_status": "verified"
+}

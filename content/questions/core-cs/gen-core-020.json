@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-020",
+  "topic": "core-cs",
+  "subtopic": "os-sync",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which semaphore operation increments the value and may wake a blocked thread?",
+  "options": [
+    "block",
+    "acquire",
+    "wait (P)",
+    "signal (V)"
+  ],
+  "correct_index": 3,
+  "explanation": "The V operation increments and releases a waiter. The correct answer is signal (V).",
+  "source": "generated",
+  "generator_key": "core_cs.semaphores_mutex",
+  "content_hash": "6853545e7d2b4c5b3fa7aa0a14e997ae61d83dcf7e68a0e5c9ac1ae8c88e481a",
+  "review_status": "verified"
+}

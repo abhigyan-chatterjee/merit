@@ -251,5 +251,12 @@
   ],
   "sequence": 2,
   "prevSlug": "baseball-game",
-  "nextSlug": "implement-queue-using-stacks"
+  "nextSlug": "implement-queue-using-stacks",
+  "companies": [
+    "Cognizant",
+    "Google",
+    "Accenture",
+    "Zoho",
+    "Oracle"
+  ]
 }

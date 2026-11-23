@@ -3836,5 +3836,12 @@
   ],
   "sequence": 3,
   "prevSlug": "contains-duplicate",
-  "nextSlug": "find-pivot-index"
+  "nextSlug": "find-pivot-index",
+  "companies": [
+    "Microsoft",
+    "Qualcomm",
+    "Oracle",
+    "Nvidia",
+    "Bloomberg"
+  ]
 }

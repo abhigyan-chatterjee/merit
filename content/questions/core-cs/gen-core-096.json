@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-096",
+  "topic": "core-cs",
+  "subtopic": "design-messaging",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is a dead-letter queue used for?",
+  "options": [
+    "Successful messages only",
+    "Schema migrations",
+    "Messages that repeatedly fail processing",
+    "Cache invalidation"
+  ],
+  "correct_index": 2,
+  "explanation": "Failed messages are moved aside for inspection. The correct answer is Messages that repeatedly fail processing.",
+  "source": "generated",
+  "generator_key": "core_cs.queues",
+  "content_hash": "640170e8e6fc6cae6ce409f8da24ebb74cefe7cf230af29f25659f25b8446eee",
+  "review_status": "verified"
+}

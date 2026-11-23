@@ -493,5 +493,12 @@
   ],
   "sequence": 5,
   "prevSlug": "design-in-memory-file-system",
-  "nextSlug": "word-search-ii"
+  "nextSlug": "word-search-ii",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "Cisco",
+    "Airbnb",
+    "Uber"
+  ]
 }

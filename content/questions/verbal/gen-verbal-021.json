@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-021",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Change to indirect speech: He said, 'I am busy.'",
+  "options": [
+    "He said that he is busy.",
+    "He said that he was busy.",
+    "He says that he was busy.",
+    "He said that I was busy."
+  ],
+  "correct_index": 1,
+  "explanation": "The present tense shifts to the past in reported speech. The correct answer is He said that he was busy..",
+  "source": "generated",
+  "generator_key": "verbal.direct_indirect",
+  "content_hash": "da6b7525322a0a5634af52dd2940415753af9395348fb236083de152812e947f",
+  "review_status": "verified"
+}

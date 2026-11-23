@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-090",
+  "topic": "aptitude",
+  "subtopic": "clocks-calendars",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the angle between the hour and minute hands at 4:00?",
+  "options": [
+    "60 degrees",
+    "120 degrees",
+    "90 degrees",
+    "150 degrees"
+  ],
+  "correct_index": 1,
+  "explanation": "At 4:00 the hands are 4 marks apart, each worth 30 degrees. The correct answer is 120 degrees.",
+  "source": "generated",
+  "generator_key": "aptitude.clocks_calendars",
+  "content_hash": "8571d1a13a62b212c646f3bed72fea668c1ed36b3f6ddcfa83c2896cf3ccf87e",
+  "review_status": "verified"
+}

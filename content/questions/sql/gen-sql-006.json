@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-006",
+  "topic": "sql",
+  "subtopic": "group-having",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Rows have dept values A, A, B, C, C, C. How many groups survive HAVING COUNT(*) > 2?",
+  "options": [
+    "1",
+    "4",
+    "7",
+    "5"
+  ],
+  "correct_index": 0,
+  "explanation": "Only C occurs three times, so one group survives. The correct answer is 1.",
+  "source": "generated",
+  "generator_key": "sql.group_having",
+  "content_hash": "502e6091b4f6da79b5f0e1a5b4c7d8b4d32809676c70bd439fb60ee56249138d",
+  "review_status": "verified"
+}

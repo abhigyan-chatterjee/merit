@@ -240,5 +240,12 @@
   ],
   "sequence": 2,
   "prevSlug": "backspace-string-compare",
-  "nextSlug": "happy-number"
+  "nextSlug": "happy-number",
+  "companies": [
+    "IBM",
+    "Bloomberg",
+    "Salesforce",
+    "Uber",
+    "Oracle"
+  ]
 }

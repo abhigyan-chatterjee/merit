@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-035",
+  "topic": "sql",
+  "subtopic": "dml-indexes",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which index structure speeds up equality lookups on a single column?",
+  "options": [
+    "Bitmap index",
+    "Full-text index",
+    "Hash-only index",
+    "B-tree index"
+  ],
+  "correct_index": 3,
+  "explanation": "A B-tree index supports efficient equality and range searches.",
+  "source": "generated",
+  "generator_key": "sql.dml_indexes",
+  "content_hash": "a23eedb22dde9391aea620e749a1a95fe719872ee63fe2766a7ab7d9d825b7b0",
+  "review_status": "verified"
+}

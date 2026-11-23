@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-056",
+  "topic": "aptitude",
+  "subtopic": "probability",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Two fair coins are tossed. What is the probability that both show heads?",
+  "options": [
+    "3/4",
+    "1/4",
+    "1/2",
+    "1/3"
+  ],
+  "correct_index": 1,
+  "explanation": "One favourable outcome of four gives 1/4.",
+  "source": "generated",
+  "generator_key": "aptitude.probability",
+  "content_hash": "6e5fd05bff1b510abdc6db5fe0ad852d946963abfe1817710f82ac72822e7f67",
+  "review_status": "verified"
+}

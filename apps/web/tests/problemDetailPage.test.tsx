@@ -45,7 +45,7 @@ describe('ProblemDetailPage', () => {
   it('renders the problem statement and metadata', () => {
     renderProblem();
     expect(screen.getByRole('heading', { name: 'Two Sum' })).toBeInTheDocument();
-    expect(screen.getByText('Hash Map / Complement')).toBeInTheDocument();
+    expect(screen.getByText(/Hash Map \/ Complement/)).toBeInTheDocument();
     expect(screen.getByLabelText('Problem Status')).toHaveValue('Todo');
     expect(screen.getByText(/Given an array of integers nums/i)).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe('ProblemDetailPage', () => {
 
   it('saves revision notes once the typing pause elapses', async () => {
     renderProblem();
-    const box = screen.getByPlaceholderText(/Write down edge cases/i);
+    const box = screen.getByPlaceholderText(/Add notes/i);
     fireEvent.change(box, { target: { value: 'complement via hash map' } });
 
     // The textarea echoes immediately; the write is debounced.
@@ -96,6 +96,52 @@ describe('ProblemDetailPage', () => {
   it('links to further reading', () => {
     renderProblem();
     expect(screen.getByText(/Further reading/i)).toBeInTheDocument();
+  });
+
+  it('links company badges to the company-filtered list', () => {
+    renderProblem();
+    expect(screen.getByRole('link', { name: 'TCS', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=TCS',
+    );
+    expect(screen.getByRole('link', { name: 'Infosys', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=Infosys',
+    );
+  });
+
+  it('expands all companies beyond six via +N more', () => {
+    renderProblem();
+    // Two Sum has 7 companies: 6 badges plus the expansion control.
+    expect(screen.queryByRole('link', { name: 'Goldman Sachs', exact: true })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '+1 more' }));
+    expect(screen.getByRole('link', { name: 'Goldman Sachs', exact: true })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    expect(screen.queryByRole('link', { name: 'Goldman Sachs', exact: true })).not.toBeInTheDocument();
+  });
+
+  it('does not offer expansion for six or fewer companies', () => {
+    renderProblem('/problems/stack/baseball-game');
+    expect(screen.getByRole('link', { name: 'Turing', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=Turing',
+    );
+    expect(screen.queryByRole('button', { name: /\+\d+ more/ })).not.toBeInTheDocument();
+  });
+
+  it('saves note typed on Problem A under A when navigating to Problem B', async () => {
+    renderProblem();
+    const box = screen.getByPlaceholderText(/Add notes/i);
+    fireEvent.change(box, { target: { value: 'note for two-sum' } });
+    fireEvent.click(screen.getByRole('link', { name: /^Next$/i }));
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Two Sum II - Input Array Is Sorted' })).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      const notes = (stored().notes as Record<string, string> | undefined) ?? {};
+      expect(notes['two-sum']).toBe('note for two-sum');
+      expect(notes['two-sum-ii-sorted']).toBeUndefined();
+    });
   });
 
   it('renders not-found for an unknown slug', () => {

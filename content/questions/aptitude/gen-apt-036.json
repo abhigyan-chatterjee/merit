@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-036",
+  "topic": "aptitude",
+  "subtopic": "trains-boats",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A boat covers 36 km downstream in 3 hours and 24 km upstream in 4 hours. Find the speed of the stream. Give only the number.",
+  "options": [
+    "4",
+    "2",
+    "3",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "Downstream 12 km/h, upstream 6 km/h, stream = (12 - 6)/2 = 3 km/h.",
+  "source": "generated",
+  "generator_key": "aptitude.trains_boats",
+  "content_hash": "8f885eae58c6f6c6d4f70d840c8a9c96afae9105f7a667e8f23c5055ba3d5e33",
+  "review_status": "verified"
+}

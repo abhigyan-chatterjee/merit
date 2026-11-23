@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-049",
+  "topic": "aptitude",
+  "subtopic": "combinations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of combinations C(5, 2) = 5C2. Give only the number.",
+  "options": [
+    "8",
+    "10",
+    "12",
+    "13"
+  ],
+  "correct_index": 1,
+  "explanation": "5C2 = 5!/(2!*(5-2)!) = 10.",
+  "source": "generated",
+  "generator_key": "aptitude.combinations",
+  "content_hash": "415be01ebc64143e3b460916453f25c1369f2a732d58bd7290d32c6c164a783e",
+  "review_status": "verified"
+}

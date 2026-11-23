@@ -1837,5 +1837,12 @@
   ],
   "sequence": 15,
   "prevSlug": "time-based-key-value-store",
-  "nextSlug": "split-array-largest-sum"
+  "nextSlug": "split-array-largest-sum",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "DE Shaw",
+    "Qualcomm",
+    "Samsung"
+  ]
 }

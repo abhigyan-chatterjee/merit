@@ -247,5 +247,12 @@
   ],
   "sequence": 13,
   "prevSlug": "spiral-matrix",
-  "nextSlug": "zigzag-conversion"
+  "nextSlug": "zigzag-conversion",
+  "companies": [
+    "Accenture",
+    "Bloomberg",
+    "Qualcomm",
+    "Adobe",
+    "Citadel"
+  ]
 }

@@ -480,5 +480,12 @@
   ],
   "sequence": 21,
   "prevSlug": "binary-tree-maximum-path-sum",
-  "nextSlug": "serialize-and-deserialize-binary-tree"
+  "nextSlug": "serialize-and-deserialize-binary-tree",
+  "companies": [
+    "Amazon",
+    "DE Shaw",
+    "Uber",
+    "Goldman Sachs",
+    "Oracle"
+  ]
 }

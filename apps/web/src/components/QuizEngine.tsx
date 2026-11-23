@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Link, useInRouterContext } from 'react-router-dom';
 import {
   CheckCircle2,
   XCircle,
@@ -84,6 +85,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   onQuestionIdsChange,
 }) => {
   const { user, refreshUser } = useAuth();
+  const inRouter = useInRouterContext();
 
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [activeQuestions, setActiveQuestions] = useState<DisplayQuestion[]>([]);
@@ -115,6 +117,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // duplicate attempt for identical params.
   const loadedKeyRef = useRef<string | null>(null);
   const remainingByQidRef = useRef<Record<string, number>>({});
+  const submitInFlightRef = useRef(false);
 
   const changeCurrentIndex = (next: number | ((index: number) => number)) => {
     setCurrentIndex(next);
@@ -194,12 +197,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     }
     if (isStale()) return;
 
+    // Server topic id differs from the client quiz/progress id.
+    const toServerTopic = (t: string) => (t === 'cs-fundamentals' ? 'core-cs' : t);
     const topics =
       examTopics && examTopics.length > 0
-        ? examTopics
+        ? examTopics.map(toServerTopic)
         : topicId === 'mixed'
         ? ['arrays-hashing', 'trees', 'graphs', 'dynamic-programming']
-        : [topicId];
+        : [toServerTopic(topicId)];
     const count = examCount ?? (isMock ? 20 : 10);
     const loadKey = JSON.stringify([
       activeUser?.id ?? null,
@@ -219,6 +224,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setSelectedAnswers({});
     setTimedOut({});
     setSubmitted(false);
+    submitInFlightRef.current = false;
     setSecondsElapsed(0);
     setSecondsRemaining(durationLimitSec);
     setQuestionTimeLeft(perQuestionSec ?? 0);
@@ -443,7 +449,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   };
 
   const handleSubmitQuiz = async () => {
-    if (submitted || activeQuestions.length === 0) return;
+    if (submitInFlightRef.current || submitted || activeQuestions.length === 0) return;
+    submitInFlightRef.current = true;
 
     if (attemptId) {
       // Server-verified grading
@@ -469,6 +476,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         onComplete?.(res.score_pct);
       } catch (err: unknown) {
         console.error('Failed to submit quiz to server:', err);
+        submitInFlightRef.current = false;
         // Server-side questions carry no correctIndex on the client, so local
         // grading would score every question as if option A were correct and
         // then persist that fabrication to progress, goals and weakest-topic
@@ -509,6 +517,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           setServerResults({});
           setServerSummary(null);
           setIsLoading(false);
+          submitInFlightRef.current = false;
           return;
         }
       } catch (err) {
@@ -534,6 +543,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setServerResults({});
     setServerSummary(null);
     setIsLoading(false);
+    submitInFlightRef.current = false;
   };
 
   const formatTime = (sec: number) => {
@@ -568,28 +578,47 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     ? serverSummary.scorePct
     : Math.round((correctCount / (activeQuestions.length || 1)) * 100);
 
+  const topicBreakdown = (() => {
+    if (!submitted) return [];
+    const grouped = new Map<string, { correct: number; total: number }>();
+    for (const q of activeQuestions) {
+      const topic = q.topic || topicId;
+      const entry = grouped.get(topic) ?? { correct: 0, total: 0 };
+      entry.total += 1;
+      const res = serverResults[q.id];
+      const isCorr = res ? res.isCorrect : selectedAnswers[q.id] === q.correctIndex;
+      if (isCorr) entry.correct += 1;
+      grouped.set(topic, entry);
+    }
+    return Array.from(grouped.entries())
+      .map(([topic, v]) => ({
+        topic,
+        correct: v.correct,
+        total: v.total,
+        pct: v.total > 0 ? Math.round((v.correct / v.total) * 100) : 0,
+      }))
+      .sort((a, b) => a.pct - b.pct);
+  })();
+
+  const topicTone = (pct: number) => (pct >= 80 ? 'text-mint' : pct >= 60 ? 'text-amber' : 'text-rose');
+
   if (isLoading) {
     return (
-      <div className="p-12 rounded-xl border border-line bg-surface flex flex-col items-center justify-center space-y-4 text-center">
-        <RefreshCw className="w-8 h-8 text-mint animate-spin" />
-        <div>
-          <h3 className="text-sm font-semibold text-ink">Sampling Verified Questions...</h3>
-          <p className="text-xs text-muted mt-1">Loading questions…</p>
-        </div>
+      <div className="p-8 rounded-xl border border-line bg-surface flex flex-col items-center justify-center space-y-2 text-center">
+        <RefreshCw className="w-6 h-6 text-mint animate-spin" />
+        <h3 className="text-sm font-semibold text-ink">Sampling Verified Questions...</h3>
       </div>
     );
   }
 
   if (loadError || activeQuestions.length === 0) {
     return (
-      <div className="p-8 rounded-xl border border-line bg-surface text-center space-y-4">
-        <AlertCircle className="w-8 h-8 text-amber mx-auto" />
-        <div>
-          <h3 className="text-sm font-semibold text-ink">No Questions Available</h3>
-          <p className="text-xs text-muted mt-1">
-            {loadError || 'Unable to load questions for this topic.'}
-          </p>
-        </div>
+      <div className="p-6 rounded-xl border border-line bg-surface text-center space-y-3">
+        <AlertCircle className="w-6 h-6 text-amber mx-auto" />
+        <h3 className="text-sm font-semibold text-ink">No Questions Available</h3>
+        <p className="text-xs text-muted">
+          {loadError || 'Unable to load questions for this topic.'}
+        </p>
         <button
           onClick={() => void loadQuiz(true)}
           className="px-4 py-2 rounded-lg bg-mint text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer"
@@ -602,27 +631,6 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Sticky Mock Exam Banner */}
-      {isMock && !submitted && (
-        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-surface border border-amber/70 shadow-xl">
-          <div className="flex items-center gap-2.5">
-            <Clock className="w-5 h-5 text-amber" />
-            <div>
-              <div className="text-xs font-bold text-ink uppercase tracking-wider">
-                Placement Timed Mock Exam
-              </div>
-              <div className="text-[10px] font-mono text-muted">
-                {activeQuestions.length} questions across topics · Auto-submits on timeout
-              </div>
-            </div>
-          </div>
-          <div className="px-3.5 py-1.5 rounded-lg bg-amber/15 border border-amber/40 font-mono text-sm font-bold text-amber flex items-center gap-2">
-            <span>Remaining:</span>
-            <span>{formatTime(secondsRemaining)}</span>
-          </div>
-        </div>
-      )}
-
       {/* Quiz Top Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl border border-line bg-surface">
         <div>
@@ -638,26 +646,26 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               </span>
             )}
           </div>
-          <p className="text-xs text-muted">
-            Question {currentIndex + 1} of {activeQuestions.length}
-            {currentQ?.difficulty && (
-              <span className="ml-2 font-mono text-[10px] uppercase text-muted/80">
-                • {currentQ.difficulty}
-              </span>
-            )}
-            {currentQ?.topic && (
-              <span className="ml-2 font-mono text-[10px] uppercase text-violet/90">
-                • {currentQ.topic}
-              </span>
-            )}
+          <p className="text-xs text-muted font-mono">
+            Q {currentIndex + 1}/{activeQuestions.length}
+            {currentQ?.topic && <span> · {currentQ.topic}</span>}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          {isMock && !submitted && (
+            <div
+              title="Auto-submits at 0:00"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-canvas border border-amber/40 font-mono text-xs font-bold text-amber"
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>{formatTime(secondsRemaining)}</span>
+            </div>
+          )}
           {!isMock && !submitted && perQuestionSec != null && perQuestionSec > 0 && (
             <div
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg bg-canvas border font-mono text-xs font-bold ${
-                questionTimeLeft <= 5 ? 'border-rose/60 text-rose' : 'border-amber/40 text-amber'
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg bg-canvas border font-mono text-xs ${
+                questionTimeLeft <= 5 ? 'border-rose/60 text-rose' : 'border-line text-muted'
               }`}
               title="Time left for this question — auto-advances at zero"
             >
@@ -678,6 +686,41 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           )}
         </div>
       </div>
+
+      {/* Topic Breakdown */}
+      {submitted && topicBreakdown.length > 0 && (
+        <div className="p-4 rounded-xl border border-line bg-surface space-y-2.5">
+          <h3 className="text-sm font-bold text-ink">Topic Breakdown</h3>
+          <div className="space-y-2">
+            {topicBreakdown.map((row) => {
+              const practiceTo = `/quiz/${row.topic === 'core-cs' ? 'cs-fundamentals' : row.topic}`;
+              return (
+                <div key={row.topic} className="flex items-center justify-between gap-3 text-xs">
+                  <span className="font-mono text-muted truncate">{row.topic}</span>
+                  <span className="flex items-center gap-2 shrink-0">
+                    <span className={`font-mono tnum ${topicTone(row.pct)}`}>
+                      {row.correct}/{row.total} · {row.pct}%
+                    </span>
+                    {row.pct < 70 &&
+                      (inRouter ? (
+                        <Link
+                          to={practiceTo}
+                          className="text-[11px] font-mono text-mint hover:underline"
+                        >
+                          Practice →
+                        </Link>
+                      ) : (
+                        <a href={practiceTo} className="text-[11px] font-mono text-mint hover:underline">
+                          Practice →
+                        </a>
+                      ))}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Question Card */}
       {currentQ && (

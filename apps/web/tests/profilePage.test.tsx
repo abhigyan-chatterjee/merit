@@ -68,7 +68,7 @@ describe('ProfilePage', () => {
     renderProfile();
     expect(await screen.findByRole('heading', { name: 'Student One' })).toBeInTheDocument();
     expect(screen.getByLabelText('Display name')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: /Breadcrumb/i })).toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: /Breadcrumb/i })).not.toBeInTheDocument();
   });
 
   it('opens the language tab from the ?tab= query', async () => {

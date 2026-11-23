@@ -37,7 +37,15 @@ export const ControlBar: React.FC<ControlBarProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (
+        target &&
+        (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName) ||
+          target.isContentEditable ||
+          target.getAttribute('role') === 'button' ||
+          Boolean(target.closest('button, a, input, textarea, select, [role="button"]')))
+      ) {
+        return;
+      }
 
       if (event.key === ' ') {
         event.preventDefault();
@@ -58,18 +66,6 @@ export const ControlBar: React.FC<ControlBarProps> = ({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-xl border border-line bg-surface">
       <div className="flex flex-wrap items-center gap-2">
-        {/* status lamp */}
-        <span className="hidden sm:flex items-center gap-2 pl-1.5 pr-3 mr-1 border-r border-line">
-          <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              isPlaying ? 'bg-mint animate-pulse-dot' : 'bg-muted/50'
-            }`}
-          />
-          <span className="text-[9px] font-mono uppercase tracking-[0.16em] text-muted">
-            {isPlaying ? 'running' : 'paused'}
-          </span>
-        </span>
-
         <button
           onClick={onPlayPause}
           aria-label={isPlaying ? 'Pause visualization' : 'Play visualization'}

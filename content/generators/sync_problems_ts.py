@@ -81,6 +81,7 @@ export interface Problem {
   topic: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   pattern: string;
+  companies: string[];
   statement: string;
   examples: ProblemExample[];
   constraints: string[];
@@ -171,6 +172,7 @@ def render_problem(data: dict) -> str:
         f"    topic: {ts_string(data['topic'])},",
         f"    difficulty: {ts_string(data['difficulty'])},",
         f"    pattern: {ts_string(data['pattern'])},",
+        f"    companies: {json.dumps(data.get('companies', []), ensure_ascii=False)},",
         f"    statement: {ts_string(data['statement'])},",
         "    examples: [",
     ]
@@ -268,6 +270,8 @@ def sync() -> int:
         prob = ProblemSchema(**raw)
         if prob.review_status != "verified":
             continue
+        if not prob.companies:
+            raise ValueError(f"{prob.slug}: verified problem must define at least 1 company tag")
         problems.append(raw)
 
     # Order deterministically by (topic, difficulty-rank Easy<Medium<Hard, slug)
@@ -314,6 +318,7 @@ def sync() -> int:
         "  topic: string;",
         "  difficulty: 'Easy' | 'Medium' | 'Hard';",
         "  pattern: string;",
+        "  companies: string[];",
         "  sequence?: number | null;",
         "  prevSlug?: string | null;",
         "  nextSlug?: string | null;",
@@ -329,6 +334,9 @@ def sync() -> int:
         manifest_lines.append(f"    topic: {ts_string(d['topic'])},")
         manifest_lines.append(f"    difficulty: {ts_string(d['difficulty'])},")
         manifest_lines.append(f"    pattern: {ts_string(d['pattern'])},")
+        manifest_lines.append(
+            f"    companies: {json.dumps(d.get('companies', []), ensure_ascii=False)},"
+        )
         if d.get("sequence") is not None:
             manifest_lines.append(f"    sequence: {int(d['sequence'])},")
         else:

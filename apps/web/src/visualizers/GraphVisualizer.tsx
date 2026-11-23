@@ -169,15 +169,21 @@ export const GraphVisualizer: React.FC = () => {
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
     const svg = e.currentTarget;
     const [vbW, vbH] = [420, 350];
-    let x: number;
-    let y: number;
+    let x: number | null = null;
+    let y: number | null = null;
 
     const ctm = typeof svg.getScreenCTM === 'function' ? svg.getScreenCTM() : null;
     if (ctm) {
-      const point = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
-      x = Math.round(point.x);
-      y = Math.round(point.y);
-    } else {
+      try {
+        const point = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+        x = Math.round(point.x);
+        y = Math.round(point.y);
+      } catch {
+        // Fall back to getBoundingClientRect if CTM is non-invertible or collapsed
+      }
+    }
+
+    if (x === null || y === null) {
       const rect = svg.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       const scale = Math.min(rect.width / vbW, rect.height / vbH);
@@ -278,12 +284,19 @@ export const GraphVisualizer: React.FC = () => {
       <ControlBar
         isPlaying={isPlaying}
         onPlayPause={() => setIsPlaying((p) => !p)}
-        onStep={() => setStepIdx((i) => Math.min(steps.length - 1, i + 1))}
+        onStep={() => setStepIdx((i) => (steps.length > 0 ? Math.min(steps.length - 1, i + 1) : 0))}
+        onStepBack={() => {
+          setIsPlaying(false);
+          setStepIdx((i) => Math.max(0, i - 1));
+        }}
+        disabledBack={stepIdx <= 0}
+        disabledStep={steps.length === 0 || stepIdx >= steps.length - 1}
         onReset={() => {
           setIsPlaying(false);
           setStepIdx(0);
         }}
         onRandomize={() => {
+          setIsPlaying(false);
           setNodes(DEFAULT_NODES);
           setEdges(DEFAULT_EDGES);
         }}

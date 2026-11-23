@@ -51,6 +51,12 @@ const AdminPage = lazy(() =>
 const ProfilePage = lazy(() =>
   import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
 );
+const ReviewPage = lazy(() =>
+  import('./pages/ReviewPage').then((m) => ({ default: m.ReviewPage }))
+);
+const InterviewPortalPage = lazy(() =>
+  import('./pages/InterviewPortalPage').then((m) => ({ default: m.InterviewPortalPage }))
+);
 
 const RouteLoadingFallback: React.FC = () => (
   <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-8 space-y-3">
@@ -76,11 +82,15 @@ export const AppRoutes: React.FC = () => {
         <Route path="/visualizers/:id" element={<VisualizerDetailPage />} />
         <Route path="/learn" element={<GuidedPathsPage />} />
         <Route path="/learn/:id" element={<GuidedPathDetailPage />} />
+        <Route path="/problems" element={<ProblemListPage />} />
         <Route path="/problems/:topic" element={<ProblemListPage />} />
         <Route path="/problems/:topic/:slug" element={<ProblemDetailPage />} />
         <Route path="/quiz/:topic" element={<QuizPage />} />
+        <Route path="/review" element={<ReviewPage />} />
         <Route path="/exams" element={<ExamsPage />} />
         <Route path="/exams/:id" element={<ExamDetailPage />} />
+        <Route path="/interview" element={<InterviewPortalPage />} />
+        <Route path="/interview/:sessionId" element={<InterviewPortalPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

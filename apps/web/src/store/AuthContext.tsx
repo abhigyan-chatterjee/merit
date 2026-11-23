@@ -24,6 +24,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const HAD_SESSION_KEY = 'merit_had_session';
+export const SIGNOUT_PENDING_KEY = 'merit.clerk.signout_pending';
 
 const signOutClerk = async () => {
   try {
@@ -32,9 +33,26 @@ const signOutClerk = async () => {
     ).Clerk;
     if (clerk && typeof clerk.signOut === "function") {
       await clerk.signOut();
+      try {
+        window.sessionStorage.removeItem(SIGNOUT_PENDING_KEY);
+      } catch {
+        // ignore storage errors
+      }
+    } else {
+      try {
+        window.sessionStorage.setItem(SIGNOUT_PENDING_KEY, '1');
+        window.sessionStorage.removeItem('merit.oauth.state');
+        window.sessionStorage.removeItem('merit.oauth.next');
+      } catch {
+        // ignore storage errors
+      }
     }
   } catch {
-    // Clerk not configured or already unloaded — nothing to clear.
+    try {
+      window.sessionStorage.removeItem(SIGNOUT_PENDING_KEY);
+    } catch {
+      // ignore
+    }
   }
 };
 

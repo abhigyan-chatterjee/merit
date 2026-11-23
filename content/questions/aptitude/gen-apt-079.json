@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-079",
+  "topic": "aptitude",
+  "subtopic": "direction-sense",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Ravi walks 10 m south, turns left and walks 10 m, then turns left and walks 10 m. Where is he relative to the start?",
+  "options": [
+    "20 m east",
+    "10 m west",
+    "10 m east",
+    "10 m north"
+  ],
+  "correct_index": 2,
+  "explanation": "He ends 10 m east of the starting point.",
+  "source": "generated",
+  "generator_key": "aptitude.direction_sense",
+  "content_hash": "654709f4f9484204ec0985383d6092a9cfb4a361852c2ee67329b8a3225bb824",
+  "review_status": "verified"
+}

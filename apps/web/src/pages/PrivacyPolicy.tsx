@@ -44,6 +44,16 @@ export const PrivacyPolicy: React.FC = () => {
         </section>
 
         <section className="space-y-3">
+          <h2 className="text-lg font-semibold text-ink">Bug and feedback reports</h2>
+          <p>
+            When you submit a bug or feedback report, Merit may create a public issue on its GitHub
+            repository. That issue includes the report title, category, description, and the page
+            URL you were on. If you add an optional contact email, it is kept privately in Merit&apos;s
+            database and is never posted publicly.
+          </p>
+        </section>
+
+        <section className="space-y-3">
           <h2 className="text-lg font-semibold text-ink">Your choices</h2>
           <p>
             You can export your learning data or delete your account from the Data section of your

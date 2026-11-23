@@ -601,5 +601,12 @@
   ],
   "sequence": 12,
   "prevSlug": "decode-string",
-  "nextSlug": "min-stack"
+  "nextSlug": "min-stack",
+  "companies": [
+    "Infosys",
+    "Bloomberg",
+    "Citadel",
+    "Goldman Sachs",
+    "LinkedIn"
+  ]
 }

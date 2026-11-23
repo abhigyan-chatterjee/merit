@@ -1346,5 +1346,12 @@
   ],
   "sequence": 13,
   "prevSlug": "evaluate-reverse-polish-notation",
-  "nextSlug": "next-greater-element-ii"
+  "nextSlug": "next-greater-element-ii",
+  "companies": [
+    "Flipkart",
+    "Apple",
+    "Nvidia",
+    "IBM",
+    "Oracle"
+  ]
 }

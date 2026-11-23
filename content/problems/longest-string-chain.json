@@ -840,7 +840,14 @@
       "isReference": true
     }
   ],
-  "sequence": 12,
+  "sequence": 13,
   "prevSlug": "longest-palindromic-substring",
-  "nextSlug": "maximal-square"
+  "nextSlug": "maximal-square",
+  "companies": [
+    "Amazon",
+    "Atlassian",
+    "PayPal",
+    "DE Shaw",
+    "LinkedIn"
+  ]
 }

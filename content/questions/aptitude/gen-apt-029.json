@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-029",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A car covers 180 km in 3 hours. Find its speed in km/h. Give only the number.",
+  "options": [
+    "72",
+    "54",
+    "60",
+    "45"
+  ],
+  "correct_index": 2,
+  "explanation": "Speed = 180/3 = 60 km/h.",
+  "source": "generated",
+  "generator_key": "aptitude.time_speed_distance",
+  "content_hash": "8104c9b603e7b5972a20d58798d70b62a02b4c19cd2ed7c18873a3bdec476db3",
+  "review_status": "verified"
+}

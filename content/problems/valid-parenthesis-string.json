@@ -247,5 +247,12 @@
   ],
   "sequence": 9,
   "prevSlug": "reorganize-string",
-  "nextSlug": "candy"
+  "nextSlug": "candy",
+  "companies": [
+    "Apple",
+    "Goldman Sachs",
+    "Salesforce",
+    "LinkedIn",
+    "TikTok"
+  ]
 }

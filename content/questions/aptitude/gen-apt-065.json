@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-065",
+  "topic": "aptitude",
+  "subtopic": "number-series",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the next term: 2, 6, 12, 20, 30, ?",
+  "options": [
+    "38",
+    "42",
+    "36",
+    "44"
+  ],
+  "correct_index": 1,
+  "explanation": "Differences are 4, 6, 8, 10, 12, so the next term is 42.",
+  "source": "generated",
+  "generator_key": "aptitude.number_series",
+  "content_hash": "d1fe52ed67ef8a21523d65ecf8654a76f454173eb3c1a06859ff03240352c4d0",
+  "review_status": "verified"
+}

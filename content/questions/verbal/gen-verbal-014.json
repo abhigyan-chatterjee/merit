@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-014",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: She has been working here ___ 2015.",
+  "options": [
+    "from",
+    "for",
+    "since",
+    "during"
+  ],
+  "correct_index": 2,
+  "explanation": "Since is used with a starting point in time.",
+  "source": "generated",
+  "generator_key": "verbal.prepositions_idioms",
+  "content_hash": "8cc62bd68627f82e33270181811f6abf618343c236adc25faa0e9494221363c8",
+  "review_status": "verified"
+}

@@ -1039,5 +1039,12 @@
   ],
   "sequence": 18,
   "prevSlug": "contiguous-array",
-  "nextSlug": "find-the-length-of-the-longest-common-prefix"
+  "nextSlug": "find-the-length-of-the-longest-common-prefix",
+  "companies": [
+    "TCS",
+    "Google",
+    "Citadel",
+    "Salesforce",
+    "Cisco"
+  ]
 }

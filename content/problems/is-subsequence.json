@@ -269,5 +269,12 @@
   ],
   "sequence": 4,
   "prevSlug": "happy-number",
-  "nextSlug": "merge-two-sorted-lists"
+  "nextSlug": "merge-two-sorted-lists",
+  "companies": [
+    "Infosys",
+    "Google",
+    "Goldman Sachs",
+    "Adobe",
+    "Qualcomm"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-014",
+  "topic": "core-cs",
+  "subtopic": "os-deadlock",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which condition allows a process to keep resources while waiting for more?",
+  "options": [
+    "No preemption",
+    "Hold and wait",
+    "Circular wait",
+    "Mutual exclusion"
+  ],
+  "correct_index": 1,
+  "explanation": "Hold and wait describes retaining held resources while requesting more.",
+  "source": "generated",
+  "generator_key": "core_cs.deadlock_conditions",
+  "content_hash": "8b2c251b01c72a7d94d83721e80275d39a02a44e3c9b69f607ca2c8796016589",
+  "review_status": "verified"
+}

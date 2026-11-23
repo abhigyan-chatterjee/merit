@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-036",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which anomaly involves new rows appearing in a repeated range query?",
+  "options": [
+    "Lost update",
+    "Phantom read",
+    "Non-repeatable read",
+    "Dirty read"
+  ],
+  "correct_index": 1,
+  "explanation": "A phantom read adds new rows to a result set.",
+  "source": "generated",
+  "generator_key": "core_cs.acid_isolation",
+  "content_hash": "add6735446466aa355c21b120c83ea149714fca895b85327c15f3f9fa227c5d5",
+  "review_status": "verified"
+}

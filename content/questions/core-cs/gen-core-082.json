@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-082",
+  "topic": "core-cs",
+  "subtopic": "code-output",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What is the worst-case time complexity of binary search in an array?",
+  "options": [
+    "O(n)",
+    "O(log n)",
+    "O(1)",
+    "O(n log n)"
+  ],
+  "correct_index": 1,
+  "explanation": "Each comparison halves the search space. The correct answer is O(log n).",
+  "source": "generated",
+  "generator_key": "core_cs.recursion_complexity",
+  "content_hash": "db2e9a809191a87702e7774a333c3e4f479ceae82af447aec018d0d3e7bc8471",
+  "review_status": "verified"
+}

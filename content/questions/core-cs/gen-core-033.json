@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-033",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which ACID property makes concurrent transactions appear to run one after another?",
+  "options": [
+    "Consistency",
+    "Isolation",
+    "Durability",
+    "Atomicity"
+  ],
+  "correct_index": 1,
+  "explanation": "Isolation controls interleaving of transactions.",
+  "source": "generated",
+  "generator_key": "core_cs.acid_isolation",
+  "content_hash": "3385157f6aebb717186696ef7e5c01e5d9c601123bce4926033c48318b196f88",
+  "review_status": "verified"
+}

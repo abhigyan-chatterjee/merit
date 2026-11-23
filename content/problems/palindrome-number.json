@@ -223,5 +223,12 @@
   ],
   "sequence": 4,
   "prevSlug": "fizz-buzz",
-  "nextSlug": "roman-to-integer"
+  "nextSlug": "roman-to-integer",
+  "companies": [
+    "Wipro",
+    "Meta",
+    "Deloitte",
+    "SAP",
+    "Morgan Stanley"
+  ]
 }

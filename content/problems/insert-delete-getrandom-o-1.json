@@ -1153,5 +1153,12 @@
   ],
   "sequence": 16,
   "prevSlug": "valid-anagram",
-  "nextSlug": "contiguous-array"
+  "nextSlug": "contiguous-array",
+  "companies": [
+    "Bloomberg",
+    "DE Shaw",
+    "Cisco",
+    "Snowflake",
+    "LinkedIn"
+  ]
 }

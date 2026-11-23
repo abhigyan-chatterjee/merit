@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session, sessionmaker  # noqa: E402
 from sqlalchemy.pool import StaticPool  # noqa: E402
 
 import app.models.content  # noqa: E402, F401 (register all tables on Base.metadata)
+import app.models.interview  # noqa: E402, F401
 import app.models.progress  # noqa: E402, F401
 import app.models.quiz  # noqa: E402, F401
 import app.models.submission  # noqa: E402, F401
@@ -65,11 +66,15 @@ def _reset_rate_limiters():
     yield
     from app.routers.auth import _auth_limiter, _refresh_limiter
     from app.routers.feedback import _feedback_limiter
+    from app.routers.interview import _interview_session_limiter
+    from app.routers.judge import _judge_limiter
     from app.routers.tutor import _rate_buckets, _rate_lock
 
     _auth_limiter.reset()
     _refresh_limiter.reset()
     _feedback_limiter.reset()
+    _judge_limiter.reset()
+    _interview_session_limiter.reset()
     with _rate_lock:
         _rate_buckets.clear()
 

@@ -1039,5 +1039,12 @@
   ],
   "sequence": 5,
   "prevSlug": "integer-to-roman",
-  "nextSlug": "jump-game-ii"
+  "nextSlug": "jump-game-ii",
+  "companies": [
+    "Cognizant",
+    "Meta",
+    "PhonePe",
+    "Cisco",
+    "Infosys"
+  ]
 }

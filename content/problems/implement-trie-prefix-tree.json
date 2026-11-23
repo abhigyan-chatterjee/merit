@@ -629,5 +629,12 @@
   ],
   "sequence": 2,
   "prevSlug": "longest-common-prefix",
-  "nextSlug": "search-suggestions-system"
+  "nextSlug": "search-suggestions-system",
+  "companies": [
+    "Meta",
+    "DoorDash",
+    "Citadel",
+    "Snowflake",
+    "Goldman Sachs"
+  ]
 }

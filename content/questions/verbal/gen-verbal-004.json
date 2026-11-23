@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-004",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: All of the boys ___ new pens.",
+  "options": [
+    "have",
+    "has",
+    "is having",
+    "was having"
+  ],
+  "correct_index": 0,
+  "explanation": "All is plural here, so the verb is 'have'.",
+  "source": "generated",
+  "generator_key": "verbal.subject_verb_agreement",
+  "content_hash": "61c9b7258a8b9820678e6d55740207a4b16fabe904af7cc8ea5bd813e459f1f3",
+  "review_status": "verified"
+}

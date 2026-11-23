@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-039",
+  "topic": "sql",
+  "subtopic": "aggregates",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A column holds [10, 20, 30]. What does SELECT MAX(x) return? Give only the number.",
+  "options": [
+    "32",
+    "30",
+    "28",
+    "34"
+  ],
+  "correct_index": 1,
+  "explanation": "MAX of [10, 20, 30] is 30.",
+  "source": "generated",
+  "generator_key": "sql.aggregates",
+  "content_hash": "31bf4e5397be6324751695a3bec3490fe6ec9900498cabc230675c308ab8e67b",
+  "review_status": "verified"
+}

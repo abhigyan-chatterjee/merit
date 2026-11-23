@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-074",
+  "topic": "core-cs",
+  "subtopic": "oop-cpp",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What is the consequence of deleting a derived object through a base pointer when the base destructor is not virtual?",
+  "options": [
+    "Automatic memory reclamation",
+    "A thrown exception",
+    "Undefined behavior",
+    "A compile error"
+  ],
+  "correct_index": 2,
+  "explanation": "A non-virtual base destructor leads to undefined behavior.",
+  "source": "generated",
+  "generator_key": "core_cs.cpp_virtual_dispatch",
+  "content_hash": "30b73d4223f31cac25dc2a700ebe21b384c70ea063677ac6d3a2b02b0cd583b8",
+  "review_status": "verified"
+}

@@ -69,9 +69,56 @@ describe('Exams catalog', () => {
     expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
     expect(screen.getByText('Aptitude')).toBeInTheDocument();
     expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
-    // collapsed single meta line: "20 MCQs · 2 coding · 45 min"; aptitude is MCQ-only
-    expect(screen.getAllByText(/20 MCQs · 2 coding/i).length).toBeGreaterThanOrEqual(5);
-    expect(screen.getAllByText(/20 MCQs/i).length).toBeGreaterThanOrEqual(6);
+    // single muted meta line: "20 MCQs · 45 min"
+    expect(screen.getAllByText(/20 MCQs ·/i).length).toBeGreaterThanOrEqual(6);
+  });
+
+  it('filters exams by category tab', async () => {
+    mockGuestFetch();
+    renderExams();
+    expect(await screen.findByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Recruiter Mocks/i }));
+    expect(screen.getByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+    expect(screen.getByText('Infosys SP & DSE Mock')).toBeInTheDocument();
+    expect(screen.getByText('Product OA Simulation')).toBeInTheDocument();
+    expect(screen.queryByText('Aptitude')).not.toBeInTheDocument();
+    expect(screen.queryByText('Foundational DSA')).not.toBeInTheDocument();
+    expect(screen.queryByText('Full Placement Mock')).not.toBeInTheDocument();
+    expect(screen.queryByText('Service Screening Mock')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^Screening$/i }));
+    expect(screen.getByText('Aptitude')).toBeInTheDocument();
+    expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
+    expect(screen.getByText('Service Screening Mock')).toBeInTheDocument();
+    expect(screen.queryByText('TCS NQT & Digital Mock')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /DSA Topics/i }));
+    expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
+    expect(screen.getByText('Intermediate DSA')).toBeInTheDocument();
+    expect(screen.getByText('Sorting & Searching')).toBeInTheDocument();
+    expect(screen.getByText('DP & Greedy')).toBeInTheDocument();
+    expect(screen.getByText('Trees & Graphs')).toBeInTheDocument();
+    expect(screen.queryByText('Aptitude')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^All$/i }));
+    for (const exam of TARGETED_EXAMS) {
+      expect(screen.getByText(exam.title)).toBeInTheDocument();
+    }
+  });
+
+  it('shows a compact company badge on company exam cards', async () => {
+    mockGuestFetch();
+    renderExams();
+    expect(await screen.findByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+    expect(screen.getByText('TCS')).toBeInTheDocument();
+    expect(screen.getByText('Infosys')).toBeInTheDocument();
+    expect(screen.getByText('Product')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /DSA Topics/i }));
+    expect(screen.queryByText('TCS')).not.toBeInTheDocument();
+    expect(screen.queryByText('Infosys')).not.toBeInTheDocument();
+    expect(screen.queryByText('Product')).not.toBeInTheDocument();
   });
 
   it('routes an exam card to its timed detail page', async () => {
@@ -79,7 +126,7 @@ describe('Exams catalog', () => {
     renderExams();
     await screen.findByText('Intermediate DSA');
     fireEvent.click(screen.getAllByText('Start exam')[0]);
-    expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(await screen.findByText(/unanswered counts as wrong/i)).toBeInTheDocument();
     expect(await screen.findAllByText(/coding questions/i)).not.toHaveLength(0);
   });
 
@@ -110,7 +157,7 @@ describe('Exams catalog', () => {
     });
     renderExams('/exams/aptitude');
     await screen.findByText(/Aptitude/);
-    expect(screen.getByText(/20 MCQs · 30 min/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/20 MCQs · 30 min/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText(/2 coding/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByText(/Start timed exam/i));
     expect(
@@ -300,7 +347,7 @@ describe('Exams catalog', () => {
     // Same component instance, new :id param -> exam B must show pristine state.
     fireEvent.click(screen.getByRole('button', { name: /jump-next-exam/i }));
     expect(await screen.findByRole('heading', { name: /Full Placement Mock/i })).toBeInTheDocument();
-    expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(await screen.findByText(/unanswered counts as wrong/i)).toBeInTheDocument();
     expect(screen.queryByText(/Coding accepted/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/MCQ score/i)).not.toBeInTheDocument();
   });
@@ -458,7 +505,7 @@ describe('Exams catalog', () => {
     expect(await screen.findByText('Navigator Accepted')).toBeInTheDocument();
   });
 
-  it('submits an exam and shows a result without a casual retry action', async () => {
+  it('submits an exam and shows weak-topic breakdown plus Retry Wrong Only drill', async () => {
     vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
       id: 'usr-retry',
       email: 'retry@test.com',
@@ -528,7 +575,9 @@ describe('Exams catalog', () => {
       'retry-q-2': 0,
     }));
     expect(await screen.findByText(/Exam Result/i)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Retry/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Weak-Topic Breakdown/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Retry Wrong Only \(1\)/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /New Assessment/i })).not.toBeInTheDocument();
   });
 
   it('auto-submits the timed mock when the countdown reaches zero', async () => {
@@ -605,7 +654,7 @@ describe('Exams catalog', () => {
     );
 
     expect(await screen.findByText(/Auto-submit probe question/i)).toBeInTheDocument();
-    await screen.findByText(/Remaining:/i);
+    await screen.findByTitle(/Auto-submits at 0:00/i);
     await waitFor(
       () => {
         expect(submitSpy).toHaveBeenCalledWith('att-auto-1', expect.any(Number), {});

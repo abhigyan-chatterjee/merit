@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-104",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "At which layer can a balancer route based on URL paths?",
+  "options": [
+    "Layer 3",
+    "Layer 2",
+    "Layer 7",
+    "Layer 4"
+  ],
+  "correct_index": 2,
+  "explanation": "Layer 7 balances using application data such as paths.",
+  "source": "generated",
+  "generator_key": "core_cs.load_balancing",
+  "content_hash": "7d928d6e2e88eca4e45ce5270c8df67657feab796855645235c69a11c5a39932",
+  "review_status": "verified"
+}

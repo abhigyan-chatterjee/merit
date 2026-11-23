@@ -2292,5 +2292,12 @@
   ],
   "sequence": 10,
   "prevSlug": "koko-eating-bananas",
-  "nextSlug": "search-a-2d-matrix"
+  "nextSlug": "search-a-2d-matrix",
+  "companies": [
+    "Apple",
+    "Snowflake",
+    "PayPal",
+    "Adobe",
+    "LinkedIn"
+  ]
 }

@@ -959,5 +959,12 @@
   ],
   "sequence": 4,
   "prevSlug": "find-all-anagrams-in-a-string",
-  "nextSlug": "longest-repeating-character-replacement"
+  "nextSlug": "longest-repeating-character-replacement",
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Salesforce",
+    "PhonePe",
+    "Visa"
+  ]
 }

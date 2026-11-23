@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-092",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is a shard key?",
+  "options": [
+    "The backup schedule",
+    "The replication factor",
+    "The column used to route each row",
+    "The index fill factor"
+  ],
+  "correct_index": 2,
+  "explanation": "The shard key decides which shard owns a row. The correct answer is The column used to route each row.",
+  "source": "generated",
+  "generator_key": "core_cs.sharding",
+  "content_hash": "fe3ab23227d533f5a2521fc4b8feb8cf40a0a57e1031ed7aeea89d2dd9e75a23",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-095",
+  "topic": "core-cs",
+  "subtopic": "design-messaging",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which pattern decouples producers from consumers in time?",
+  "options": [
+    "Message queue",
+    "Remote procedure call",
+    "Polling a database",
+    "Shared memory"
+  ],
+  "correct_index": 0,
+  "explanation": "A queue buffers messages between producers and consumers. The correct answer is Message queue.",
+  "source": "generated",
+  "generator_key": "core_cs.queues",
+  "content_hash": "9fbc5569fa5b9a0d9a16992645e2ee594f7c5a36784e0cf6b5c6b40877770ea9",
+  "review_status": "verified"
+}

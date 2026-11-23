@@ -3262,5 +3262,12 @@
   ],
   "sequence": 3,
   "prevSlug": "design-memory-allocator",
-  "nextSlug": "lru-cache"
+  "nextSlug": "lru-cache",
+  "companies": [
+    "Walmart Labs",
+    "Apple",
+    "DE Shaw",
+    "Adobe",
+    "Airbnb"
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-024",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Using LRU replacement with 4 frames and reference string [1, 2, 3, 4, 5, 1, 2, 3, 4, 5], how many page faults occur? Give only the number.",
+  "options": [
+    "13",
+    "12",
+    "8",
+    "10"
+  ],
+  "correct_index": 3,
+  "explanation": "LRU with 4 frames incurs 10 page faults.",
+  "source": "generated",
+  "generator_key": "core_cs.page_replacement",
+  "content_hash": "a3cf2a2d296b7bf54688f09aeb4ebf79a61c176ed31b88ab20b613f9804fc03e",
+  "review_status": "verified"
+}

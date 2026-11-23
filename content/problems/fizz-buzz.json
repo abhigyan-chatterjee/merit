@@ -1857,5 +1857,12 @@
   ],
   "sequence": 3,
   "prevSlug": "add-strings",
-  "nextSlug": "palindrome-number"
+  "nextSlug": "palindrome-number",
+  "companies": [
+    "TCS",
+    "Apple",
+    "Nvidia",
+    "Cisco",
+    "IBM"
+  ]
 }

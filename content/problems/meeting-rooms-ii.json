@@ -1320,5 +1320,12 @@
   ],
   "sequence": 3,
   "prevSlug": "insert-interval",
-  "nextSlug": "merge-intervals"
+  "nextSlug": "merge-intervals",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Atlassian",
+    "Citadel",
+    "DE Shaw"
+  ]
 }

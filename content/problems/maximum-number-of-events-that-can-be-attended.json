@@ -2661,5 +2661,12 @@
   ],
   "sequence": 7,
   "prevSlug": "jump-game-ii",
-  "nextSlug": "reorganize-string"
+  "nextSlug": "reorganize-string",
+  "companies": [
+    "Zoho",
+    "Google",
+    "PayPal",
+    "Snowflake",
+    "Visa"
+  ]
 }

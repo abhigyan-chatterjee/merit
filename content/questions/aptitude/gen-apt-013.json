@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-013",
+  "topic": "aptitude",
+  "subtopic": "compound-interest",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the compound interest on Rs. 1000 at 10% per annum for 2 years, compounded annually. Give only the number.",
+  "options": [
+    "212",
+    "214",
+    "210",
+    "208"
+  ],
+  "correct_index": 2,
+  "explanation": "CI = 1000 * ((1 + 10/100)^2 - 1) = 210.",
+  "source": "generated",
+  "generator_key": "aptitude.compound_interest",
+  "content_hash": "d35abd5e93ff502e8a37ad4298558358a0505a229ab21046298bf90ab1962c59",
+  "review_status": "verified"
+}

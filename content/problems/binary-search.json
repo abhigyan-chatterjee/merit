@@ -749,5 +749,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "search-insert-position"
+  "nextSlug": "search-insert-position",
+  "companies": [
+    "LinkedIn",
+    "Wipro",
+    "Apple",
+    "SAP",
+    "TCS"
+  ]
 }

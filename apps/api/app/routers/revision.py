@@ -5,6 +5,7 @@ a self-rated review moves an item forward. Both are per-user and tiny by design 
 a due list is capped, so this never scans a whole history.
 """
 
+import json
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -53,6 +54,19 @@ class ReviewItemResponse(BaseModel):
     interval_days: int
     reps: int
     lapses: int
+    difficulty: str = ""
+    link: str = ""
+    prompt: str = ""
+    answer_summary: str = ""
+
+
+def _parse_json(value: str | None) -> Any:
+    if value is None:
+        return None
+    try:
+        return json.loads(value)
+    except (ValueError, TypeError):
+        return None
 
 
 @router.get("/due")
@@ -77,12 +91,26 @@ def due_items(
     qids = [r.item_id for r in rows if r.item_type == "question"]
 
     problems = (
-        {p.slug: p for p in db.scalars(select(Problem).where(Problem.slug.in_(slugs))).all()}
+        {
+            p.slug: p
+            for p in db.scalars(
+                select(Problem).where(
+                    Problem.slug.in_(slugs), Problem.review_status == "verified"
+                )
+            ).all()
+        }
         if slugs
         else {}
     )
     questions = (
-        {q.id: q for q in db.scalars(select(Question).where(Question.id.in_(qids))).all()}
+        {
+            q.id: q
+            for q in db.scalars(
+                select(Question).where(
+                    Question.id.in_(qids), Question.review_status == "verified"
+                )
+            ).all()
+        }
         if qids
         else {}
     )
@@ -97,6 +125,24 @@ def due_items(
                 # The problem was unpublished or removed since it was scheduled.
                 # Skip rather than render a dead link.
                 continue
+            parts: list[str] = []
+            if problem.pattern:
+                parts.append(f"Pattern: {problem.pattern}")
+            hints = _parse_json(problem.hints)
+            first_hint = ""
+            if isinstance(hints, list):
+                for h in hints:
+                    if isinstance(h, str) and h.strip():
+                        first_hint = h.strip()
+                        break
+            if first_hint:
+                parts.append(first_hint)
+            else:
+                editorial = _parse_json(problem.editorial_json)
+                if isinstance(editorial, dict):
+                    approach = editorial.get("approach")
+                    if isinstance(approach, str) and approach.strip():
+                        parts.append(approach.strip())
             payload.append(
                 ReviewItemResponse(
                     item_type="problem",
@@ -107,12 +153,27 @@ def due_items(
                     interval_days=row.interval_days,
                     reps=row.reps,
                     lapses=row.lapses,
+                    difficulty=problem.difficulty or "",
+                    link=f"/problems/{problem.topic}/{row.item_id}",
+                    prompt=(problem.statement or "")[:240].strip(),
+                    answer_summary=" · ".join(parts),
                 )
             )
         else:
             question = questions.get(row.item_id)
             if question is None:
                 continue
+            q_parts: list[str] = []
+            options = _parse_json(question.options)
+            correct_text = ""
+            if isinstance(options, list) and 0 <= question.correct_index < len(options):
+                candidate = options[question.correct_index]
+                if isinstance(candidate, str) and candidate.strip():
+                    correct_text = candidate.strip()
+            if correct_text:
+                q_parts.append(correct_text)
+            if question.explanation and question.explanation.strip():
+                q_parts.append(question.explanation.strip())
             payload.append(
                 ReviewItemResponse(
                     item_type="question",
@@ -123,6 +184,10 @@ def due_items(
                     interval_days=row.interval_days,
                     reps=row.reps,
                     lapses=row.lapses,
+                    difficulty=question.difficulty or "",
+                    link=f"/quiz/{question.topic}",
+                    prompt=question.prompt,
+                    answer_summary=" · ".join(q_parts),
                 )
             )
 
@@ -151,9 +216,17 @@ def review_item(
         )
 
     exists = (
-        db.scalar(select(Problem.slug).where(Problem.slug == item_id))
+        db.scalar(
+            select(Problem.slug).where(
+                Problem.slug == item_id, Problem.review_status == "verified"
+            )
+        )
         if item_type == "problem"
-        else db.scalar(select(Question.id).where(Question.id == item_id))
+        else db.scalar(
+            select(Question.id).where(
+                Question.id == item_id, Question.review_status == "verified"
+            )
+        )
     )
     if exists is None:
         raise HTTPException(

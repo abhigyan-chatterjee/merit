@@ -1507,5 +1507,12 @@
   ],
   "sequence": 11,
   "prevSlug": "subarray-product-less-than-k",
-  "nextSlug": "minimum-window-substring"
+  "nextSlug": "minimum-window-substring",
+  "companies": [
+    "Apple",
+    "DE Shaw",
+    "ByteDance",
+    "Citadel",
+    "DoorDash"
+  ]
 }

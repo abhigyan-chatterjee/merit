@@ -1070,5 +1070,12 @@
   ],
   "sequence": 13,
   "prevSlug": "reverse-linked-list-ii",
-  "nextSlug": "swap-nodes-in-pairs"
+  "nextSlug": "swap-nodes-in-pairs",
+  "companies": [
+    "Meta",
+    "LinkedIn",
+    "Nvidia",
+    "Oracle",
+    "Google"
+  ]
 }

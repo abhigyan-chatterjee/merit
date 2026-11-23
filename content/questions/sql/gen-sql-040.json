@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-040",
+  "topic": "sql",
+  "subtopic": "aggregates",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A column holds [10, 20, 30]. What does SELECT SUM(x) return? Give only the number.",
+  "options": [
+    "58",
+    "62",
+    "60",
+    "63"
+  ],
+  "correct_index": 2,
+  "explanation": "SUM of [10, 20, 30] is 60.",
+  "source": "generated",
+  "generator_key": "sql.aggregates",
+  "content_hash": "bec84cb52f2db6e9ce489f3e5cfcc5cc4be602b8fe9b66bcf9d9f8362d7d0c66",
+  "review_status": "verified"
+}

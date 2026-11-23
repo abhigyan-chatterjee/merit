@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-046",
+  "topic": "aptitude",
+  "subtopic": "permutations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of permutations P(6, 2) = 6P2. Give only the number.",
+  "options": [
+    "30",
+    "32",
+    "34",
+    "33"
+  ],
+  "correct_index": 0,
+  "explanation": "6P2 = 6!/(6-2)! = 30.",
+  "source": "generated",
+  "generator_key": "aptitude.permutations",
+  "content_hash": "45faed73c61c12e668df86f669b32ec7f01d77aee75cb564b5994217a97448dd",
+  "review_status": "verified"
+}

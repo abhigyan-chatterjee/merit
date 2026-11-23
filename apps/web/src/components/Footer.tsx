@@ -24,6 +24,8 @@ const COLUMNS: { title: string; links: { to: string; label: string }[] }[] = [
   {
     title: 'Assess',
     links: [
+      { to: '/exams', label: 'Mock exams' },
+      { to: '/interview', label: 'AI Interview Portal' },
       { to: '/quiz/mixed', label: 'Mixed quiz' },
       { to: '/quiz/arrays-hashing', label: 'Arrays quiz' },
       { to: '/quiz/graphs', label: 'Graphs quiz' },
@@ -121,18 +123,7 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-line">
           <div className="max-w-7xl mx-auto px-4 h-12 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono text-muted">
-            <div className="flex items-center gap-3">
-              <span>MERIT — Make the merit list.</span>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={() => setFeedbackOpen(true)}
-                className="relative inline-block hover:text-mint transition-colors cursor-pointer underline underline-offset-4 py-2"
-              >
-                Report a bug
-              </button>
-            </div>
-            <span>Algorithms, visualised.</span>
+            <span>MERIT — Make the merit list.</span>
           </div>
         </div>
       </footer>

@@ -215,5 +215,12 @@
   ],
   "sequence": 15,
   "prevSlug": "zigzag-conversion",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Morgan Stanley",
+    "Cisco",
+    "LinkedIn"
+  ]
 }

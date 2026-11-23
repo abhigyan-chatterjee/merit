@@ -12,15 +12,23 @@ import pytest
 from app.services.judge import (
     _cpp_double,
     _cpp_literal,
+    _grade_harness_output,
     _java_double,
     _java_literal,
     _parse_harness_output,
-    _verdict_from_harness,
     execute_code,
     run_in_sandbox,
 )
 
 # --- verdict derivation -----------------------------------------------------
+
+
+def _grade(stdout, expected):
+    cases = [
+        {"label": f"Case {index + 1}", "input": [], "expected": item}
+        for index, item in enumerate(expected)
+    ]
+    return _grade_harness_output(stdout, cases, marker="__MERIT_RESULT__")
 
 
 def test_empty_result_set_is_not_ac():
@@ -29,22 +37,24 @@ def test_empty_result_set_is_not_ac():
     AC is what flips ProblemProgress to "Done" in the router, so this was free
     problem completion for any problem whose test rows were missing.
     """
-    result = _verdict_from_harness('__MERIT_RESULT__{"results": [], "totalRuntime": 0}')
+    result = _grade('__MERIT_RESULT__{"results": [], "totalRuntime": 0}', [])
     assert result.verdict == "RE"
     assert result.test_results == []
 
 
 def test_all_passed_cases_are_ac():
-    result = _verdict_from_harness(
-        '__MERIT_RESULT__{"results": [{"passed": true}, {"passed": true}], "totalRuntime": 1.5}'
+    result = _grade(
+        '__MERIT_RESULT__{"results": [{"passed": true}, {"passed": true}], "totalRuntime": 1.5}',
+        [None, None],
     )
     assert result.verdict == "AC"
     assert result.runtime_ms == 1.5
 
 
 def test_one_failed_case_is_wa():
-    result = _verdict_from_harness(
-        '__MERIT_RESULT__{"results": [{"passed": true}, {"passed": false}], "totalRuntime": 1}'
+    result = _grade(
+        '__MERIT_RESULT__{"results": [{"passed": true}, {"passed": false}], "totalRuntime": 1}',
+        [None, 1],
     )
     assert result.verdict == "WA"
 
@@ -59,12 +69,12 @@ def test_student_print_does_not_break_the_verdict():
         'debug: nums=[2,7] target=9\n'
         '__MERIT_RESULT__{"results": [{"passed": true}], "totalRuntime": 1}'
     )
-    result = _verdict_from_harness(stdout)
+    result = _grade(stdout, [None])
     assert result.verdict == "AC", result.compile_output
 
 
 def test_unparseable_output_is_re_not_ac():
-    result = _verdict_from_harness("Traceback (most recent call last): boom")
+    result = _grade("Traceback (most recent call last): boom", [None])
     assert result.verdict == "RE"
     assert "Output parsing error" in result.compile_output
 
@@ -79,9 +89,9 @@ def test_forged_result_block_loses_to_the_marked_one():
     forged = '{"results": [{"passed": true}], "totalRuntime": 0}'
     real = '__MERIT_RESULT__{"results": [{"passed": false}], "totalRuntime": 3}'
 
-    assert _verdict_from_harness(forged + "\n" + real).verdict == "WA"
+    assert _grade(forged + "\n" + real, [1]).verdict == "WA"
     # Order must not matter: the marker is what identifies the block.
-    assert _verdict_from_harness(real + "\n" + forged).verdict == "WA"
+    assert _grade(real + "\n" + forged, [1]).verdict == "WA"
 
 
 def test_unmarked_json_is_never_a_verdict():
@@ -91,10 +101,10 @@ def test_unmarked_json_is_never_a_verdict():
     a free AC to anyone who prints the right JSON.
     """
     unmarked = '{"results": [{"passed": true}], "totalRuntime": 0}'
-    assert _verdict_from_harness(unmarked).verdict == "RE"
+    assert _grade(unmarked, [None]).verdict == "RE"
     # Even sitting behind a real, marked block, an unmarked one cannot win.
     marked_wa = '__MERIT_RESULT__{"results": [{"passed": false}], "totalRuntime": 5}'
-    assert _verdict_from_harness(marked_wa + '\n{"results": [{"passed": true}]}').verdict == "WA"
+    assert _grade(marked_wa + '\n{"results": [{"passed": true}]}', [1]).verdict == "WA"
 
 
 def test_malformed_result_shape_is_re_not_a_crash():
@@ -110,7 +120,7 @@ def test_malformed_result_shape_is_re_not_a_crash():
         '__MERIT_RESULT__{"results": {}}',
         '__MERIT_RESULT__[1, 2, 3]',
     ):
-        result = _verdict_from_harness(payload)
+        result = _grade(payload, [None])
         assert result.verdict == "RE", payload
 
 

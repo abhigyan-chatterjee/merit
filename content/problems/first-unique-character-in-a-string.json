@@ -247,5 +247,12 @@
   ],
   "sequence": 5,
   "prevSlug": "find-pivot-index",
-  "nextSlug": "intersection-of-two-arrays"
+  "nextSlug": "intersection-of-two-arrays",
+  "companies": [
+    "Deloitte",
+    "Amazon",
+    "Morgan Stanley",
+    "Accenture",
+    "Zoho"
+  ]
 }

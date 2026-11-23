@@ -260,5 +260,12 @@
   ],
   "sequence": 16,
   "prevSlug": "remove-all-adjacent-duplicates-in-string-ii",
-  "nextSlug": "sum-of-subarray-minimums"
+  "nextSlug": "sum-of-subarray-minimums",
+  "companies": [
+    "Deloitte",
+    "Microsoft",
+    "Walmart Labs",
+    "PhonePe",
+    "Accenture"
+  ]
 }

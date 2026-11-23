@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-028",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What happens to CPU utilization during thrashing?",
+  "options": [
+    "It becomes zero permanently",
+    "It stays at 100%",
+    "It drops sharply",
+    "It doubles"
+  ],
+  "correct_index": 2,
+  "explanation": "Most CPU time is spent paging rather than executing. The correct answer is It drops sharply.",
+  "source": "generated",
+  "generator_key": "core_cs.thrashing",
+  "content_hash": "a5ef8ad0337239af5224be6575c8fff5ff7d89e3c90fe94d56261bd3c0e44625",
+  "review_status": "verified"
+}

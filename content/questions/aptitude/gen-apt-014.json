@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-014",
+  "topic": "aptitude",
+  "subtopic": "compound-interest",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the compound interest on Rs. 2000 at 5% per annum for 2 years, compounded annually. Give only the number.",
+  "options": [
+    "208",
+    "205",
+    "203",
+    "207"
+  ],
+  "correct_index": 1,
+  "explanation": "CI = 2000 * ((1 + 5/100)^2 - 1) = 205.",
+  "source": "generated",
+  "generator_key": "aptitude.compound_interest",
+  "content_hash": "ce76e50a447dbf44a99671bf1bbfaaf600c5595d2d467dc7e97875c7e680f883",
+  "review_status": "verified"
+}

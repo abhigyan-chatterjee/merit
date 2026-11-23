@@ -7,7 +7,7 @@ import { useTheme } from '../store/ProgressContext';
 import { apiRequest, authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
 import { isClerkConfigured } from '../components/ClerkOAuth';
-import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
+import { getTutorSnapshot, loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
 import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from '../data/languages';
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
@@ -177,59 +177,6 @@ const NativeSecurityForm: React.FC = () => {
   );
 };
 
-const ConnectedOAuthSection: React.FC = () => {
-  const { user } = useAuth();
-  const { getToken, isSignedIn } = useClerkAuth();
-  const [linking, setLinking] = useState(false);
-  const [linkMsg, setLinkMsg] = useState<FormMessage>(null);
-
-  if (!isClerkConfigured() || !CLERK_PUBLISHABLE_KEY || user?.has_clerk_linked) {
-    return null;
-  }
-
-  const handleLink = async () => {
-    setLinking(true);
-    setLinkMsg(null);
-    try {
-      if (!isSignedIn) {
-        setLinkMsg({ ok: false, text: 'Please sign in to your OAuth provider first.' });
-        return;
-      }
-      const token = await getToken();
-      if (!token) {
-        setLinkMsg({ ok: false, text: 'No token available from provider.' });
-        return;
-      }
-      await authApi.linkClerk(token);
-      setLinkMsg({ ok: true, text: 'Account linked successfully.' });
-    } catch (err) {
-      setLinkMsg({ ok: false, text: err instanceof Error ? err.message : 'Could not link account.' });
-    } finally {
-      setLinking(false);
-    }
-  };
-
-  return (
-    <div className="pt-4 border-t border-line space-y-2">
-      <h3 className="text-xs font-mono text-muted">Connected OAuth Account</h3>
-      <p className="text-xs text-muted">Link a social account (Google/GitHub) for one-click sign in.</p>
-      <button
-        type="button"
-        onClick={handleLink}
-        disabled={linking}
-        className="px-4 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-ink hover:border-mint transition cursor-pointer disabled:opacity-50"
-      >
-        {linking ? 'Linking…' : 'Link Social Account'}
-      </button>
-      {linkMsg && (
-        <p role={linkMsg.ok ? 'status' : 'alert'} className={`text-xs font-mono ${linkMsg.ok ? 'text-mint' : 'text-rose'}`}>
-          {linkMsg.text}
-        </p>
-      )}
-    </div>
-  );
-};
-
 /**
  * Clerk's embedded profile only renders for a Clerk user. Rendering it
  * unconditionally left a zero-height box on every password-backed account,
@@ -246,7 +193,6 @@ const ClerkSecurityPanel: React.FC = () => {
       <>
         <SecurityHeading subtitle="Change the email and password used to sign in to Merit." />
         <NativeSecurityForm />
-        <ConnectedOAuthSection />
       </>
     );
   }
@@ -352,13 +298,18 @@ export const ProfilePage: React.FC = () => {
     }
   }, [search, location.hash]);
 
-  const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === tutor.baseUrl) ?? TUTOR_PRESETS[0];
-  const loadCatalog = async (catalogId: string) => {
+  const normalizedBaseUrl = tutor.baseUrl.trim().replace(/\/+$/, '');
+  const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === normalizedBaseUrl) ?? TUTOR_PRESETS[0];
+  const modelOptions = tutor.model.trim() && !models.includes(tutor.model) ? [tutor.model, ...models] : models;
+  const loadCatalog = async (catalogId: string, resetIfUnlisted = false) => {
     setModelsError(null);
     try {
       const list = await loadTutorCatalog(catalogId);
       setModels(list);
-      if (list.length > 0 && !list.includes(tutor.model)) tutor.setModel(list[0]);
+      const currentModel = getTutorSnapshot().model.trim();
+      if (list.length > 0 && (!currentModel || (resetIfUnlisted && !list.includes(currentModel)))) {
+        tutor.setModel(list[0]);
+      }
     } catch (error) {
       setModelsError(error instanceof Error ? error.message : 'Could not load the model catalog.');
     }
@@ -377,9 +328,17 @@ export const ProfilePage: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({ base_url: tutor.baseUrl, api_key: tutor.apiKey }),
       });
-      const list = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
+      const rawList = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
+      const list = selectedPreset.catalogId === 'google'
+        ? rawList.map((item) => item.replace(/^models\//, ''))
+        : rawList;
       setModels(list);
-      if (list.length > 0) tutor.setModel(list[0]);
+      const currentModel = getTutorSnapshot().model.trim().replace(/^models\//, '');
+      if (currentModel && list.includes(currentModel)) {
+        tutor.setModel(currentModel);
+      } else if (list.length > 0 && !currentModel) {
+        tutor.setModel(list[0]);
+      }
       setConnResult({ ok: true, text: `Connection successful! Provider returned ${list.length} models.` });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Could not load provider models.';
@@ -422,16 +381,19 @@ export const ProfilePage: React.FC = () => {
     { id: 'danger', label: 'Danger' },
   ];
 
+  const tabClass = (t: Tab) =>
+    t === 'danger'
+      ? tab === t
+        ? 'px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border border-rose/40 bg-rose/10 text-rose font-semibold'
+        : 'px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border border-transparent text-rose/70 hover:text-rose'
+      : `px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border ${
+          tab === t
+            ? 'bg-mint text-canvas border-mint font-semibold'
+            : 'bg-surface text-muted border-line hover:text-ink'
+        }`;
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/dashboard" className="inline-block py-1.5 hover:text-mint transition-colors">
-          dashboard
-        </Link>
-        <span>/</span>
-        <span className="text-ink">profile</span>
-      </nav>
-
       <div className="flex items-center gap-3 pb-4 border-b border-line">
         <div className="w-10 h-10 rounded-xl border border-line bg-surface grid place-items-center text-mint">
           <UserIcon className="w-5 h-5" />
@@ -447,11 +409,7 @@ export const ProfilePage: React.FC = () => {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border ${
-              tab === t.id
-                ? 'bg-mint text-canvas border-mint font-semibold'
-                : 'bg-surface text-muted border-line hover:text-ink'
-            }`}
+            className={tabClass(t.id)}
           >
             {t.label}
           </button>
@@ -501,14 +459,14 @@ export const ProfilePage: React.FC = () => {
           <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-20">
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
-              <p className="text-xs text-muted mt-1">Your key is kept for this browser session only, never saved to your account. Requests pass through the tutor proxy to reach the provider you selected, so treat it as leaving this device on each call.</p>
+              <p className="text-xs text-muted mt-1">Key stays in this browser only.</p>
             </div>
             <label className="block text-xs font-mono">
               <span className="text-muted">Provider preset</span>
               <select aria-label="Provider preset" value={selectedPreset.id} onChange={(event) => {
                 const preset = TUTOR_PRESETS.find((item) => item.id === event.target.value) ?? TUTOR_PRESETS[0];
                 tutor.setBaseUrl(preset.baseUrl);
-                void loadCatalog(preset.catalogId);
+                void loadCatalog(preset.catalogId, true);
               }} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
                 {TUTOR_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
               </select>
@@ -529,7 +487,7 @@ export const ProfilePage: React.FC = () => {
               <label className="flex-1 min-w-40 block text-xs font-mono">
                 <span className="text-muted">Model</span>
                 <select aria-label="Model" value={tutor.model} onChange={(event) => tutor.setModel(event.target.value)} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
-                  {models.length === 0 ? <option value="">Loading catalog…</option> : models.map((item) => <option key={item} value={item}>{item}</option>)}
+                  {modelOptions.length === 0 ? <option value="">Loading catalog…</option> : modelOptions.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
               </label>
               <button onClick={saveTutorSettings} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-mint text-canvas text-xs font-mono font-semibold hover:brightness-110 transition cursor-pointer"><Save className="w-3.5 h-3.5" />Save</button>

@@ -2416,5 +2416,12 @@
   ],
   "sequence": 7,
   "prevSlug": "find-first-and-last-position-of-element-in-sorted-array",
-  "nextSlug": "find-k-closest-elements"
+  "nextSlug": "find-k-closest-elements",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Snowflake",
+    "Atlassian",
+    "Uber"
+  ]
 }

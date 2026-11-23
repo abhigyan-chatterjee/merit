@@ -270,5 +270,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "add-strings"
+  "nextSlug": "add-strings",
+  "companies": [
+    "Deloitte",
+    "Meta",
+    "Capgemini",
+    "Visa",
+    "Walmart Labs"
+  ]
 }

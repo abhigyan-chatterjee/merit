@@ -567,5 +567,12 @@
   ],
   "sequence": 4,
   "prevSlug": "reverse-bits",
-  "nextSlug": "sum-of-two-integers"
+  "nextSlug": "sum-of-two-integers",
+  "companies": [
+    "TCS",
+    "Microsoft",
+    "Qualcomm",
+    "Adobe",
+    "Cognizant"
+  ]
 }

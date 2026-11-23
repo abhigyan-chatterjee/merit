@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-039",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 12 days and B in 24 days. Working together, how many days do they take? Give only the number.",
+  "options": [
+    "11",
+    "8",
+    "12",
+    "10"
+  ],
+  "correct_index": 1,
+  "explanation": "Combined rate 1/12 + 1/24 per day gives 8.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.time_work",
+  "content_hash": "05c03a2628e2ad4f67a1a9e650d778baf083a9190baf347808f3a02904271486",
+  "review_status": "verified"
+}

@@ -1764,5 +1764,12 @@
   ],
   "sequence": 6,
   "prevSlug": "first-unique-character-in-a-string",
-  "nextSlug": "isomorphic-strings"
+  "nextSlug": "isomorphic-strings",
+  "companies": [
+    "Accenture",
+    "Apple",
+    "Zoho",
+    "Capgemini",
+    "Two Sigma"
+  ]
 }

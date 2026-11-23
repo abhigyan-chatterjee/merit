@@ -1050,5 +1050,12 @@
   ],
   "sequence": 19,
   "prevSlug": "find-the-duplicate-number",
-  "nextSlug": "group-anagrams"
+  "nextSlug": "group-anagrams",
+  "companies": [
+    "Amazon",
+    "Visa",
+    "ByteDance",
+    "Uber",
+    "Capital One"
+  ]
 }

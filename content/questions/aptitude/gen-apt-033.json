@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-033",
+  "topic": "aptitude",
+  "subtopic": "trains-boats",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A 150 m train crosses a pole in 10 seconds. Find its speed in km/h. Give only the number.",
+  "options": [
+    "48",
+    "72",
+    "45",
+    "54"
+  ],
+  "correct_index": 3,
+  "explanation": "Speed = 150/10 = 15 m/s = 15*18/5 = 54 km/h.",
+  "source": "generated",
+  "generator_key": "aptitude.trains_boats",
+  "content_hash": "bb56d72c5723facee2e24a9239e316d9085010473946270024308e15a5665dc7",
+  "review_status": "verified"
+}
