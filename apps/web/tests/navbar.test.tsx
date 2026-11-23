@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from '../src/components/Navbar';
 import { ProgressProvider } from '../src/store/ProgressContext';
+import { AuthProvider } from '../src/store/AuthContext';
+import * as apiModule from '../src/utils/api';
 
 const mockNavigate = vi.hoisted(() => vi.fn());
 vi.mock('react-router-dom', async (importOriginal) => ({
@@ -120,5 +122,80 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
 
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
     expect(mockNavigate).toHaveBeenCalledWith('/quiz/sql');
+  });
+});
+
+describe('Navbar due badge', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    mockNavigate.mockReset();
+    vi.restoreAllMocks();
+  });
+
+  const student = {
+    id: 'usr-1',
+    email: 'student@test.com',
+    display_name: 'Test Student',
+    displayName: 'Test Student',
+    role: 'student',
+    created_at: '2026-09-01T00:00:00Z',
+    last_login_at: null,
+  };
+
+  const summaryWithDue = (due: number) => ({
+    solved_count: 0,
+    doing_count: 0,
+    total_problems: 10,
+    current_streak: 1,
+    activity_days: {},
+    progress: {},
+    notes: {},
+    bookmarks: [],
+    visited_visualizers: [],
+    has_imported_local: true,
+    due_today_count: due,
+  });
+
+  function renderSignedNavbar(due: number) {
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue(student);
+    vi.spyOn(apiModule.progressApi, 'getSummary').mockResolvedValue(summaryWithDue(due) as never);
+    return render(
+      <AuthProvider>
+        <ProgressProvider>
+          <MemoryRouter>
+            <Navbar />
+          </MemoryRouter>
+        </ProgressProvider>
+      </AuthProvider>
+    );
+  }
+
+  it('renders amber due badge linking to /review when signed in with due items', async () => {
+    renderSignedNavbar(3);
+    const badge = await screen.findByRole('link', { name: '3 due for review today' });
+    expect(badge).toHaveAttribute('href', '/review');
+    expect(badge).toHaveTextContent('due');
+    expect(badge).toHaveTextContent('3');
+  });
+
+  it('does not render due badge when count is 0', async () => {
+    renderSignedNavbar(0);
+    await waitFor(() => expect(screen.getByRole('link', { name: /Sign In|Learning streak/i })).toBeInTheDocument());
+    expect(screen.queryByRole('link', { name: /due for review today/ })).not.toBeInTheDocument();
+  });
+
+  it('does not render due badge when signed out', () => {
+    renderNavbar();
+    expect(screen.queryByRole('link', { name: /due for review today/ })).not.toBeInTheDocument();
+  });
+
+  it('finds Spaced Review Deck when searching review', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'review' } });
+    expect(screen.getByText('Spaced Review Deck')).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(mockNavigate).toHaveBeenCalledWith('/review');
   });
 });

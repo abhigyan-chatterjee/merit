@@ -6,6 +6,7 @@ import { ExamMcqSection } from '../src/components/ExamMcqSection';
 import { ExamCodingSection } from '../src/components/ExamCodingSection';
 import { ProgressProvider } from '../src/store/ProgressContext';
 import { PROBLEMS } from '../src/data/problems';
+import * as apiModule from '../src/utils/api';
 
 function json(body: unknown, ok = true, status = 200) {
   return { ok, status, statusText: '', json: async () => body };
@@ -172,5 +173,152 @@ describe('ExamCodingSection', () => {
     expect(await screen.findByText('Coding questions (2)')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Contains Duplicate' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Two Sum' })).not.toBeInTheDocument();
+  });
+});
+
+describe('ExamMcqSection weak-topic breakdown and retry drill', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+    vi.restoreAllMocks();
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  const MULTI = [
+    { id: 'q1', topic: 'arrays-hashing', subtopic: 'maps', difficulty: 'Easy', prompt: 'First prompt?', options: ['a1', 'b1'] },
+    { id: 'q2', topic: 'arrays-hashing', subtopic: 'maps', difficulty: 'Easy', prompt: 'Second prompt?', options: ['a2', 'b2'] },
+    { id: 'q3', topic: 'trees', subtopic: 'bst', difficulty: 'Easy', prompt: 'Third prompt?', options: ['a3', 'b3'] },
+  ];
+
+  const MultiHarness = ({ onComplete }: { onComplete: (pct: number) => void }) => {
+    const [index, setIndex] = useState(0);
+    const [, setAnswers] = useState<Record<string, number>>({});
+    return (
+      <ExamMcqSection
+        examId="ex-multi"
+        examTitle="Foundational DSA"
+        topics={['arrays-hashing', 'trees']}
+        questionCount={3}
+        difficulty="Easy"
+        durationSec={600}
+        currentIndex={index}
+        onCurrentIndexChange={setIndex}
+        onAnswersChange={setAnswers}
+        onQuestionIdsChange={() => {}}
+        onComplete={onComplete}
+      />
+    );
+  };
+
+  it('shows weak-topic breakdown weakest-first and drills wrong-only without touching official score', async () => {
+    const onComplete = vi.fn();
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'a-multi',
+      questions: MULTI as never,
+      total: 3,
+    });
+    const submitSpy = vi
+      .spyOn(apiModule.quizApi, 'submitQuiz')
+      .mockResolvedValueOnce({
+        attempt_id: 'a-multi',
+        total: 3,
+        correct: 1,
+        score_pct: 33,
+        duration_sec: 10,
+        results: [
+          { question_id: 'q1', prompt: '', options: [], selected_index: 0, correct_index: 1, is_correct: false, explanation: '' },
+          { question_id: 'q2', prompt: '', options: [], selected_index: 0, correct_index: 1, is_correct: false, explanation: '' },
+          { question_id: 'q3', prompt: '', options: [], selected_index: 0, correct_index: 0, is_correct: true, explanation: '' },
+        ],
+      })
+      .mockResolvedValueOnce({
+        attempt_id: 'drill-1',
+        total: 2,
+        correct: 2,
+        score_pct: 100,
+        duration_sec: 5,
+        results: [
+          { question_id: 'q1', prompt: '', options: [], selected_index: 0, correct_index: 0, is_correct: true, explanation: '' },
+          { question_id: 'q2', prompt: '', options: [], selected_index: 0, correct_index: 0, is_correct: true, explanation: '' },
+        ],
+      });
+    vi.spyOn(apiModule.quizApi, 'retryWrong').mockResolvedValue({
+      attempt_id: 'drill-1',
+      questions: [MULTI[0], MULTI[1]] as never,
+      total: 2,
+    });
+
+    render(<MultiHarness onComplete={onComplete} />);
+    await screen.findByText('First prompt?');
+
+    fireEvent.click(screen.getByRole('button', { name: /a1/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
+    await screen.findByText('Second prompt?');
+    fireEvent.click(screen.getByRole('button', { name: /a2/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
+    await screen.findByText('Third prompt?');
+    fireEvent.click(screen.getByRole('button', { name: /a3/ }));
+
+    fireEvent.click(screen.getByRole('button', { name: /Submit Exam/i }));
+    expect(await screen.findByText('Exam Result')).toBeInTheDocument();
+    expect(await screen.findByText('Weak-Topic Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('0/2 · 0%')).toBeInTheDocument();
+    expect(screen.getByText('1/1 · 100%')).toBeInTheDocument();
+    expect(screen.getByText('Weak')).toBeInTheDocument();
+    const weakSection = screen.getByText('Weak-Topic Breakdown').parentElement!;
+    expect(weakSection.textContent!.indexOf('arrays-hashing')).toBeLessThan(weakSection.textContent!.indexOf('trees'));
+    await waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1));
+    expect(onComplete).toHaveBeenCalledWith(33);
+
+    fireEvent.click(screen.getByRole('button', { name: /Retry Wrong Only \(2\)/ }));
+    expect(await screen.findByText('Practice Drill — Missed Questions')).toBeInTheDocument();
+    expect(screen.getByText(/Drill Question 1 of 2/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Back to Exam Result/ })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /a1/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Next/i }));
+    await screen.findByText('Second prompt?');
+    fireEvent.click(screen.getByRole('button', { name: /a2/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Submit Drill/i }));
+    expect(await screen.findByText(/Drill score: 2\/2/)).toBeInTheDocument();
+    expect(submitSpy).toHaveBeenCalledTimes(2);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole('button', { name: /Back to Exam Result/ }));
+    expect(await screen.findByText('Exam Result')).toBeInTheDocument();
+    expect(screen.getByText('Weak-Topic Breakdown')).toBeInTheDocument();
+  });
+
+  it('falls back to local missed questions when retryWrong fails', async () => {
+    const onComplete = vi.fn();
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'a-fallback',
+      questions: MULTI.slice(0, 2) as never,
+      total: 2,
+    });
+    vi.spyOn(apiModule.quizApi, 'submitQuiz').mockResolvedValue({
+      attempt_id: 'a-fallback',
+      total: 2,
+      correct: 1,
+      score_pct: 50,
+      duration_sec: 8,
+      results: [
+        { question_id: 'q1', prompt: '', options: [], selected_index: 0, correct_index: 0, is_correct: true, explanation: '' },
+        { question_id: 'q2', prompt: '', options: [], selected_index: 0, correct_index: 1, is_correct: false, explanation: '' },
+      ],
+    });
+    vi.spyOn(apiModule.quizApi, 'retryWrong').mockRejectedValue(new Error('no server drill'));
+
+    render(<MultiHarness onComplete={onComplete} />);
+    await screen.findByText('First prompt?');
+    fireEvent.click(screen.getByRole('button', { name: /a1/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Submit Exam/i }));
+
+    expect(await screen.findByText('Exam Result')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Retry Wrong Only \(1\)/ }));
+    expect(await screen.findByText('Practice Drill — Missed Questions')).toBeInTheDocument();
+    expect(onComplete).toHaveBeenCalledTimes(1);
   });
 });

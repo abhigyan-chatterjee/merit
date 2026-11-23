@@ -506,7 +506,7 @@ describe('Exams catalog', () => {
     expect(await screen.findByText('Navigator Accepted')).toBeInTheDocument();
   });
 
-  it('submits an exam and shows a result without a casual retry action', async () => {
+  it('submits an exam and shows weak-topic breakdown plus Retry Wrong Only drill', async () => {
     vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue({
       id: 'usr-retry',
       email: 'retry@test.com',
@@ -576,7 +576,9 @@ describe('Exams catalog', () => {
       'retry-q-2': 0,
     }));
     expect(await screen.findByText(/Exam Result/i)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Retry/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Weak-Topic Breakdown/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Retry Wrong Only \(1\)/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /New Assessment/i })).not.toBeInTheDocument();
   });
 
   it('auto-submits the timed mock when the countdown reaches zero', async () => {

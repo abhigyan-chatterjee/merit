@@ -377,6 +377,8 @@ export interface RevisionItem {
   link: string;
 }
 
+export type TargetTier = "service" | "product" | "faang";
+
 /** One scheduled review returned by /api/v1/revision/due. */
 export interface ScheduledReview {
   item_type: "problem" | "question";
@@ -387,6 +389,10 @@ export interface ScheduledReview {
   interval_days: number;
   reps: number;
   lapses: number;
+  difficulty?: string;
+  link?: string;
+  prompt?: string;
+  answer_summary?: string;
 }
 
 export interface RevisionDueResponse {
@@ -419,8 +425,11 @@ export interface ProgressSummary {
   quiz_scores?: Record<string, number>;
   weakest_topics?: string[];
   revision_due?: RevisionItem[];
+  due_today_count?: number;
   preferred_language?: string;
   daily_goal?: { kind: string; label: string; target: number; permanent?: boolean } | null;
+  target_drive_date?: string | null;
+  target_tier?: TargetTier;
 }
 
 export interface DailyGoalPayload {
@@ -487,7 +496,12 @@ export const progressApi = {
     });
   },
 
-  async getSettings(): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+  async getSettings(): Promise<{
+    preferred_language: string;
+    daily_goal: DailyGoalPayload | null;
+    target_drive_date?: string | null;
+    target_tier?: TargetTier;
+  }> {
     return await apiRequest("/api/v1/progress/settings", { method: "GET" });
   },
 
@@ -496,12 +510,23 @@ export const progressApi = {
     daily_goal?: DailyGoalPayload | null;
     clear_daily_goal?: boolean;
     unpin_daily_goal?: boolean;
-  }): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
+    target_drive_date?: string | null;
+    clear_target_drive_date?: boolean;
+    target_tier?: TargetTier;
+  }): Promise<{
+    preferred_language: string;
+    daily_goal: DailyGoalPayload | null;
+    target_drive_date?: string | null;
+    target_tier?: TargetTier;
+  }> {
     const body: Record<string, unknown> = {};
     if (data.preferred_language !== undefined) body.preferred_language = data.preferred_language;
     if (data.unpin_daily_goal) body.unpin_daily_goal = true;
     else if (data.clear_daily_goal) body.clear_daily_goal = true;
     else if (data.daily_goal !== undefined) body.daily_goal = data.daily_goal;
+    if (data.clear_target_drive_date) body.clear_target_drive_date = true;
+    else if (data.target_drive_date !== undefined) body.target_drive_date = data.target_drive_date;
+    if (data.target_tier !== undefined) body.target_tier = data.target_tier;
     return await apiRequest("/api/v1/progress/settings", {
       method: "PUT",
       body: JSON.stringify(body),
@@ -538,14 +563,18 @@ export interface TestCaseResult {
   actual: unknown;
   runtime_ms: number;
   error: string | null;
+  hidden?: boolean;
 }
 
 export interface JudgeResponse {
-  verdict: "AC" | "WA" | "TLE" | "RE" | "CE";
+  verdict: "AC" | "WA" | "TLE" | "RE" | "CE" | "CUSTOM";
   runtime_ms: number;
   test_results: TestCaseResult[];
   compile_output: string;
   infrastructure_error?: boolean;
+  passed_count?: number;
+  total_count?: number;
+  custom_run?: boolean;
 }
 
 export interface SubmissionItem {
@@ -558,6 +587,8 @@ export interface SubmissionItem {
   created_at: string;
   compile_output?: string;
   infrastructure_error?: boolean;
+  passed_count?: number;
+  total_count?: number;
 }
 
 export const judgeApi = {
@@ -565,6 +596,23 @@ export const judgeApi = {
     return await apiRequest<JudgeResponse>("/api/v1/judge/run", {
       method: "POST",
       body: JSON.stringify({ problem_slug: problemSlug, language, code }),
+    });
+  },
+
+  async runCustom(
+    problemSlug: string,
+    language: string,
+    code: string,
+    customInput: unknown[]
+  ): Promise<JudgeResponse> {
+    return await apiRequest<JudgeResponse>("/api/v1/judge/run", {
+      method: "POST",
+      body: JSON.stringify({
+        problem_slug: problemSlug,
+        language,
+        code,
+        custom_input: customInput,
+      }),
     });
   },
 

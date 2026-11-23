@@ -481,4 +481,90 @@ describe('QuizEngine Component', () => {
 
     await waitFor(() => expect(submitSpy).toHaveBeenCalledTimes(1));
   });
+
+  it('shows Topic Breakdown weakest-first with Practice link for weak topics', async () => {
+    const { MemoryRouter } = await import('react-router-dom');
+    const student = {
+      id: 'usr-break',
+      email: 'break@test.com',
+      display_name: 'Break Student',
+      displayName: 'Break Student',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    };
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue(student);
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-break',
+      questions: [
+        { id: 'q-b1', topic: 'core-cs', subtopic: 'os', difficulty: 'easy', prompt: 'Weak Q1?', options: ['a', 'b'] },
+        { id: 'q-b2', topic: 'core-cs', subtopic: 'os', difficulty: 'easy', prompt: 'Weak Q2?', options: ['a', 'b'] },
+        { id: 'q-b3', topic: 'trees', subtopic: 'bst', difficulty: 'easy', prompt: 'Strong Q?', options: ['a', 'b'] },
+      ],
+      total: 3,
+    });
+    vi.spyOn(apiModule.quizApi, 'submitQuiz').mockResolvedValue({
+      attempt_id: 'att-break',
+      total: 3,
+      correct: 1,
+      score_pct: 33,
+      duration_sec: 9,
+      results: [
+        { question_id: 'q-b1', prompt: '', options: [], selected_index: 0, correct_index: 1, is_correct: false, explanation: 'e1' },
+        { question_id: 'q-b2', prompt: '', options: [], selected_index: 0, correct_index: 1, is_correct: false, explanation: 'e2' },
+        { question_id: 'q-b3', prompt: '', options: [], selected_index: 0, correct_index: 0, is_correct: true, explanation: 'e3' },
+      ],
+    });
+
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <MemoryRouter>
+            <QuizEngine topicTitle="Mixed" topicId="mixed" questions={[]} perQuestionSec={null} />
+          </MemoryRouter>
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    await screen.findByText(/Weak Q1\?/);
+    fireEvent.click(screen.getByText('a'));
+    fireEvent.click(screen.getByText(/Next →/i));
+    await screen.findByText(/Weak Q2\?/);
+    fireEvent.click(screen.getByText('a'));
+    fireEvent.click(screen.getByText(/Next →/i));
+    await screen.findByText(/Strong Q\?/);
+    fireEvent.click(screen.getByText('a'));
+    fireEvent.click(screen.getByText(/Submit Quiz/i));
+
+    expect(await screen.findByText('Topic Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('0/2 · 0%')).toBeInTheDocument();
+    expect(screen.getByText('1/1 · 100%')).toBeInTheDocument();
+    const breakdown = screen.getByText('Topic Breakdown').parentElement!;
+    expect(breakdown.textContent!.indexOf('core-cs')).toBeLessThan(breakdown.textContent!.indexOf('trees'));
+    const practice = screen.getByText(/Practice →/);
+    expect(practice.closest('a')).toHaveAttribute('href', '/quiz/cs-fundamentals');
+  });
+
+  it('renders Topic Breakdown without a router without throwing', async () => {
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle="Arrays & Pointers"
+            topicId="arrays-hashing"
+            questions={sampleQuestions}
+            perQuestionSec={null}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    fireEvent.click(await screen.findByText('O(log n)'));
+    fireEvent.click(screen.getByText(/Next →/i));
+    fireEvent.click(screen.getByText('Queue'));
+    fireEvent.click(screen.getByText(/Submit Quiz/i));
+
+    expect(await screen.findByText('Topic Breakdown')).toBeInTheDocument();
+    expect(screen.getByText('1/2 · 50%')).toBeInTheDocument();
+  });
 });

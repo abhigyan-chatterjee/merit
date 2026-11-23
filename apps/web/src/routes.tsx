@@ -51,6 +51,9 @@ const AdminPage = lazy(() =>
 const ProfilePage = lazy(() =>
   import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage }))
 );
+const ReviewPage = lazy(() =>
+  import('./pages/ReviewPage').then((m) => ({ default: m.ReviewPage }))
+);
 
 const RouteLoadingFallback: React.FC = () => (
   <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-8 space-y-3">
@@ -80,6 +83,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/problems/:topic" element={<ProblemListPage />} />
         <Route path="/problems/:topic/:slug" element={<ProblemDetailPage />} />
         <Route path="/quiz/:topic" element={<QuizPage />} />
+        <Route path="/review" element={<ReviewPage />} />
         <Route path="/exams" element={<ExamsPage />} />
         <Route path="/exams/:id" element={<ExamDetailPage />} />
         <Route path="*" element={<NotFound />} />

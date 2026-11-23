@@ -13,7 +13,8 @@ import {
   CornerDownLeft,
   Route,
   LogIn,
-  Bug
+  Bug,
+  RotateCcw
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { UserDropdown } from './UserDropdown';
@@ -53,7 +54,7 @@ const KindBadge: React.FC<{ label: string }> = ({ label }) => (
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentStreak } = useProgress();
+  const { currentStreak, dueTodayCount } = useProgress();
   const { user, isLoading: authLoading } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -90,7 +91,8 @@ export const Navbar: React.FC = () => {
     | { kind: 'visualizer'; viz: (typeof VISUALIZERS)[number]; score: number; navigate: () => void }
     | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void }
     | { kind: 'exam'; exam: (typeof TARGETED_EXAMS)[number]; score: number; navigate: () => void }
-    | { kind: 'quiz'; quiz: (typeof QUIZ_TRACKS)[number]; score: number; navigate: () => void };
+    | { kind: 'quiz'; quiz: (typeof QUIZ_TRACKS)[number]; score: number; navigate: () => void }
+    | { kind: 'review'; score: number; navigate: () => void };
 
   const entries = useMemo<PaletteEntry[]>(() => {
     const q = query.trim().toLowerCase();
@@ -206,7 +208,20 @@ export const Navbar: React.FC = () => {
         navigate(`/quiz/${quiz.id}`);
       }
     }));
-    const combined = [...pathHits, ...vizHits, ...probHits, ...examHits, ...quizHits];
+    const reviewHits: PaletteEntry[] =
+      q.includes('review') || q.includes('spaced') || q.includes('sm-2')
+        ? [
+            {
+              kind: 'review',
+              score: scoreMatch('Spaced Review Deck', q, ['review', 'spaced', 'sm-2']),
+              navigate: () => {
+                setSearchOpen(false);
+                navigate('/review');
+              },
+            },
+          ]
+        : [];
+    const combined = [...pathHits, ...vizHits, ...probHits, ...examHits, ...quizHits, ...reviewHits];
     const kindRank = (e: PaletteEntry) => {
       switch (e.kind) {
         case 'path':
@@ -217,8 +232,10 @@ export const Navbar: React.FC = () => {
           return 2;
         case 'quiz':
           return 3;
-        case 'problem':
+        case 'review':
           return 4;
+        case 'problem':
+          return 5;
       }
     };
     const titleOf = (e: PaletteEntry) => {
@@ -233,6 +250,8 @@ export const Navbar: React.FC = () => {
           return e.exam.title;
         case 'quiz':
           return e.quiz.title;
+        case 'review':
+          return 'Spaced Review Deck';
       }
     };
     combined.sort((a, b) => {
@@ -378,6 +397,18 @@ export const Navbar: React.FC = () => {
               <span className="font-bold text-ink tnum">{currentStreak}</span>
               <span className="text-muted text-[10px] uppercase tracking-wider">d</span>
             </Link>
+
+            {user && dueTodayCount > 0 && (
+              <Link
+                to="/review"
+                aria-label={`${dueTodayCount} due for review today`}
+                className="hidden sm:flex relative items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber/40 bg-amber/10 text-xs font-mono text-amber hover:border-amber transition before:absolute before:-inset-2 before:content-['']"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="font-bold tnum">{dueTodayCount}</span>
+                <span className="hidden sm:inline text-[10px] uppercase tracking-wider">due</span>
+              </Link>
+            )}
 
             <ThemeToggle />
 
@@ -603,6 +634,28 @@ export const Navbar: React.FC = () => {
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
                         <KindBadge label="Quiz" />
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'review') {
+                  return (
+                    <button
+                      key="review-deck"
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <RotateCcw className="w-3.5 h-3.5 text-amber shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">Spaced Review Deck</span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Review" />
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>

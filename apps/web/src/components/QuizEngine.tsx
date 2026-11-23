@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Link, useInRouterContext } from 'react-router-dom';
 import {
   CheckCircle2,
   XCircle,
@@ -84,6 +85,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   onQuestionIdsChange,
 }) => {
   const { user, refreshUser } = useAuth();
+  const inRouter = useInRouterContext();
 
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [activeQuestions, setActiveQuestions] = useState<DisplayQuestion[]>([]);
@@ -515,6 +517,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           setServerResults({});
           setServerSummary(null);
           setIsLoading(false);
+          submitInFlightRef.current = false;
           return;
         }
       } catch (err) {
@@ -540,6 +543,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setServerResults({});
     setServerSummary(null);
     setIsLoading(false);
+    submitInFlightRef.current = false;
   };
 
   const formatTime = (sec: number) => {
@@ -573,6 +577,37 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const scorePct = serverSummary
     ? serverSummary.scorePct
     : Math.round((correctCount / (activeQuestions.length || 1)) * 100);
+
+  const topicBreakdown = (() => {
+    if (!submitted) return [];
+    const grouped = new Map<string, { correct: number; total: number }>();
+    for (const q of activeQuestions) {
+      const topic = q.topic || topicId;
+      const entry = grouped.get(topic) ?? { correct: 0, total: 0 };
+      entry.total += 1;
+      const res = serverResults[q.id];
+      const isCorr = res ? res.isCorrect : selectedAnswers[q.id] === q.correctIndex;
+      if (isCorr) entry.correct += 1;
+      grouped.set(topic, entry);
+    }
+    return Array.from(grouped.entries())
+      .map(([topic, v]) => ({
+        topic,
+        correct: v.correct,
+        total: v.total,
+        pct: v.total > 0 ? Math.round((v.correct / v.total) * 100) : 0,
+      }))
+      .sort((a, b) => a.pct - b.pct);
+  })();
+
+  const topicTone = (pct: number) => (pct >= 80 ? 'text-mint' : pct >= 60 ? 'text-amber' : 'text-rose');
+  const topicBarTone = (pct: number) => (pct >= 80 ? 'bg-mint' : pct >= 60 ? 'bg-amber' : 'bg-rose');
+  const topicBadgeTone = (pct: number) =>
+    pct >= 80
+      ? 'bg-mint/15 text-mint border-mint/30'
+      : pct >= 60
+      ? 'bg-amber/15 text-amber border-amber/30'
+      : 'bg-rose/15 text-rose border-rose/30';
 
   if (isLoading) {
     return (
@@ -684,6 +719,56 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           )}
         </div>
       </div>
+
+      {/* Topic Breakdown */}
+      {submitted && topicBreakdown.length > 0 && (
+        <div className="p-5 rounded-xl border border-line bg-surface space-y-3">
+          <h3 className="text-sm font-bold text-ink">Topic Breakdown</h3>
+          <div className="space-y-2.5">
+            {topicBreakdown.map((row) => {
+              const practiceTo = `/quiz/${row.topic === 'core-cs' ? 'cs-fundamentals' : row.topic}`;
+              return (
+                <div key={row.topic} className="space-y-1">
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <span className="font-mono text-muted truncate">{row.topic}</span>
+                    <span className="flex items-center gap-2 shrink-0">
+                      <span className={`font-mono font-bold tnum ${topicTone(row.pct)}`}>
+                        {row.correct}/{row.total} · {row.pct}%
+                      </span>
+                      <span
+                        className={`px-1.5 py-0.5 rounded border text-[10px] font-mono font-semibold ${topicBadgeTone(
+                          row.pct
+                        )}`}
+                      >
+                        {row.pct >= 80 ? 'Strong' : row.pct >= 60 ? 'Fair' : 'Weak'}
+                      </span>
+                      {row.pct < 70 &&
+                        (inRouter ? (
+                          <Link
+                            to={practiceTo}
+                            className="text-[11px] font-mono text-mint hover:underline"
+                          >
+                            Practice →
+                          </Link>
+                        ) : (
+                          <a href={practiceTo} className="text-[11px] font-mono text-mint hover:underline">
+                            Practice →
+                          </a>
+                        ))}
+                    </span>
+                  </div>
+                  <span className="block h-1.5 rounded-full bg-line overflow-hidden">
+                    <span
+                      className={`block h-full rounded-full ${topicBarTone(row.pct)}`}
+                      style={{ width: `${row.pct}%` }}
+                    />
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Question Card */}
       {currentQ && (

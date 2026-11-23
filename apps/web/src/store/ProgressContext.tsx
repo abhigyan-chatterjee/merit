@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useCallback, useRef, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useStreak } from '../hooks/useStreak';
 import { useAuth } from './AuthContext';
@@ -11,9 +11,10 @@ import {
   ProgressStateZodSchema,
   ProblemStatus,
   LastVisitedItem,
+  TargetTier,
 } from './schema';
 
-export type { ProblemStatus, LastVisitedItem, ProgressStateSchema, DailyGoal };
+export type { ProblemStatus, LastVisitedItem, ProgressStateSchema, DailyGoal, TargetTier };
 export { DAILY_GOAL_PRESETS };
 
 interface ProgressContextType {
@@ -31,6 +32,11 @@ interface ProgressContextType {
   clearDailyGoal: () => void;
   unpinDailyGoal: () => void;
   toggleDailyGoal: () => void;
+  dueTodayCount: number;
+  setDueTodayCount: React.Dispatch<React.SetStateAction<number>>;
+  targetDriveDate: string | null;
+  targetTier: TargetTier;
+  savePlacementTarget: (opts: { targetDriveDate?: string | null; targetTier?: TargetTier }) => void;
   setLastVisited: (item: LastVisitedItem) => void;
   recordVisualizerVisit: (id: string) => void;
   currentStreak: number;
@@ -99,6 +105,16 @@ const toStateSlice = (summary: Partial<ProgressSummary>): Partial<ProgressStateS
   }
   if (summary.daily_goal !== undefined) {
     slice.dailyGoal = normalizeGoal(summary.daily_goal);
+  }
+  if (summary.target_drive_date !== undefined) {
+    slice.targetDriveDate = summary.target_drive_date;
+  }
+  if (
+    summary.target_tier === 'service' ||
+    summary.target_tier === 'product' ||
+    summary.target_tier === 'faang'
+  ) {
+    slice.targetTier = summary.target_tier;
   }
   return slice;
 };
@@ -176,6 +192,10 @@ const mergeSlice = (
   }
   if (slice.dailyGoal !== undefined && written.has('dailyGoal')) {
     next.dailyGoal = prev.dailyGoal;
+  }
+  if (written.has('placementTarget')) {
+    next.targetDriveDate = prev.targetDriveDate;
+    next.targetTier = prev.targetTier;
   }
   return next;
 };
@@ -322,6 +342,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const { currentStreak, markTodayActive, today } = useStreak(state.streak, recordActivityDate);
 
+  const [dueTodayCount, setDueTodayCount] = useState(0);
   const queueRef = useRef<PendingWrite[] | null>(null);
   const flushingRef = useRef(false);
   const syncingRef = useRef(false);
@@ -443,6 +464,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         if (currentUserIdRef.current !== userId) return;
         const written = writtenSince(syncStartSeq);
         const slice = toStateSlice(merged);
+        setDueTodayCount(typeof merged.due_today_count === 'number' ? merged.due_today_count : 0);
         setState((prev) => ({
           ...mergeSlice(prev, slice, written),
           ownerUserId: userId,
@@ -452,6 +474,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       const written = writtenSince(syncStartSeq);
       const slice = toStateSlice(summary);
+      setDueTodayCount(typeof summary.due_today_count === 'number' ? summary.due_today_count : 0);
       setState((prev) => ({
         ...mergeSlice(prev, slice, written),
         ownerUserId: userId,
@@ -472,6 +495,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // (`merit_theme_v1`) and the preferred language is stored server-side.
       setState(EMPTY_INITIAL_STATE);
       stateRef.current = EMPTY_INITIAL_STATE;
+      setDueTodayCount(0);
       clearPendingWrites();
       writtenAtRef.current.clear();
     }
@@ -693,9 +717,31 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  const savePlacementTarget = (opts: { targetDriveDate?: string | null; targetTier?: TargetTier }) => {
+    markWritten(['placementTarget']);
+    setState((prev) => ({
+      ...prev,
+      ...(opts.targetDriveDate !== undefined ? { targetDriveDate: opts.targetDriveDate } : {}),
+      ...(opts.targetTier !== undefined ? { targetTier: opts.targetTier } : {}),
+    }));
+    if (user) {
+      progressApi
+        .saveSettings({
+          ...(opts.targetTier !== undefined ? { target_tier: opts.targetTier } : {}),
+          ...(opts.targetDriveDate === null
+            ? { clear_target_drive_date: true }
+            : opts.targetDriveDate !== undefined
+            ? { target_drive_date: opts.targetDriveDate }
+            : {}),
+        })
+        .catch(() => {});
+    }
+  };
+
   const resetAllData = () => {
     setState(EMPTY_INITIAL_STATE);
     stateRef.current = EMPTY_INITIAL_STATE;
+    setDueTodayCount(0);
     clearPendingWrites();
   };
 
@@ -716,6 +762,11 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         clearDailyGoal,
         unpinDailyGoal,
         toggleDailyGoal,
+        dueTodayCount,
+        setDueTodayCount,
+        targetDriveDate: state.targetDriveDate ?? null,
+        targetTier: state.targetTier ?? 'product',
+        savePlacementTarget,
         setLastVisited,
         recordVisualizerVisit,
         currentStreak,

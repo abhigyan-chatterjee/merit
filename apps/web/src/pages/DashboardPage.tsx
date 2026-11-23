@@ -23,6 +23,7 @@ import { useAuth } from '../store/AuthContext';
 import { progressApi, revisionApi, ProgressSummary, RevisionItem } from '../utils/api';
 import { StreakHeatmap } from '../components/StreakHeatmap';
 import { ProgressRing } from '../components/ProgressRing';
+import { PlacementReadinessPanel } from '../components/PlacementReadinessPanel';
 import { DailyGoalMenu } from '../components/DailyGoalMenu';
 import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
@@ -58,7 +59,7 @@ const DashboardPathCard: React.FC<{ path: (typeof LEARNING_PATHS)[number] }> = (
 };
 
 export const DashboardPage: React.FC = () => {
-  const { state, currentStreak, resetAllData } = useProgress();
+  const { state, currentStreak, resetAllData, setDueTodayCount } = useProgress();
   const { user, isLoading: authLoading } = useAuth();
   const [confirmReset, setConfirmReset] = useState(false);
   const resetBtnRef = useRef<HTMLButtonElement>(null);
@@ -84,7 +85,10 @@ export const DashboardPage: React.FC = () => {
     progressApi
       .getSummary()
       .then((s) => {
-        if (!cancelled) setSummary(s);
+        if (!cancelled) {
+          setSummary(s);
+          setDueTodayCount(s.due_today_count ?? 0);
+        }
       })
       .catch(() => {})
       .finally(() => {
@@ -93,7 +97,7 @@ export const DashboardPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, setDueTodayCount]);
 
   /**
    * Rates one scheduled review and re-reads the queue.
@@ -110,6 +114,7 @@ export const DashboardPage: React.FC = () => {
       await revisionApi.review(item.type, item.id, grade);
       const refreshed = await progressApi.getSummary();
       setSummary(refreshed);
+      setDueTodayCount(refreshed.due_today_count ?? 0);
     } catch {
       // Leave the item in place; it stays due and the next load retries.
     } finally {
@@ -209,6 +214,9 @@ export const DashboardPage: React.FC = () => {
         ))}
       </div>
 
+      {/* ===== Placement readiness ===== */}
+      <PlacementReadinessPanel summaryQuizScores={allQuizScores} summaryDueCount={summary?.due_today_count} />
+
       {/* ===== Resume session (top) ===== */}
       <Panel label="Resume session" bracket>
         {state.lastVisited ? (
@@ -291,12 +299,17 @@ export const DashboardPage: React.FC = () => {
                 Due Today for Revision ({revisionItems.length})
               </h3>
             </div>
-            <span
-              className="text-[10px] font-mono text-muted"
-              title="Spaced Repetition (SM-2)"
-            >
-              Spaced Repetition (SM-2)
-            </span>
+            <div className="flex items-center gap-3">
+              <span
+                className="text-[10px] font-mono text-muted"
+                title="Spaced Repetition (SM-2)"
+              >
+                Spaced Repetition (SM-2)
+              </span>
+              <Link to="/review" className="text-[10px] font-mono text-muted hover:text-mint transition-colors">
+                Open Review Deck →
+              </Link>
+            </div>
           </div>
           <p className="text-[10px] text-muted">
             Rate recall to schedule your next review — Got it grows the interval, Again resets to 1 day.
