@@ -81,6 +81,7 @@ describe('ProfilePage account security', () => {
     expect(screen.getByLabelText('Current password')).toBeInTheDocument();
     expect(screen.getByLabelText('New password')).toBeInTheDocument();
     expect(screen.queryByTestId('clerk-user-profile')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Link Social Account/i })).not.toBeInTheDocument();
   });
 
   it('renders the embedded Clerk profile once Clerk reports a signed-in user', async () => {

@@ -177,59 +177,6 @@ const NativeSecurityForm: React.FC = () => {
   );
 };
 
-const ConnectedOAuthSection: React.FC = () => {
-  const { user } = useAuth();
-  const { getToken, isSignedIn } = useClerkAuth();
-  const [linking, setLinking] = useState(false);
-  const [linkMsg, setLinkMsg] = useState<FormMessage>(null);
-
-  if (!isClerkConfigured() || !CLERK_PUBLISHABLE_KEY || user?.has_clerk_linked) {
-    return null;
-  }
-
-  const handleLink = async () => {
-    setLinking(true);
-    setLinkMsg(null);
-    try {
-      if (!isSignedIn) {
-        setLinkMsg({ ok: false, text: 'Please sign in to your OAuth provider first.' });
-        return;
-      }
-      const token = await getToken();
-      if (!token) {
-        setLinkMsg({ ok: false, text: 'No token available from provider.' });
-        return;
-      }
-      await authApi.linkClerk(token);
-      setLinkMsg({ ok: true, text: 'Account linked successfully.' });
-    } catch (err) {
-      setLinkMsg({ ok: false, text: err instanceof Error ? err.message : 'Could not link account.' });
-    } finally {
-      setLinking(false);
-    }
-  };
-
-  return (
-    <div className="pt-4 border-t border-line space-y-2">
-      <h3 className="text-xs font-mono text-muted">Connected OAuth Account</h3>
-      <p className="text-xs text-muted">Link a social account (Google/GitHub) for one-click sign in.</p>
-      <button
-        type="button"
-        onClick={handleLink}
-        disabled={linking}
-        className="px-4 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-ink hover:border-mint transition cursor-pointer disabled:opacity-50"
-      >
-        {linking ? 'Linking…' : 'Link Social Account'}
-      </button>
-      {linkMsg && (
-        <p role={linkMsg.ok ? 'status' : 'alert'} className={`text-xs font-mono ${linkMsg.ok ? 'text-mint' : 'text-rose'}`}>
-          {linkMsg.text}
-        </p>
-      )}
-    </div>
-  );
-};
-
 /**
  * Clerk's embedded profile only renders for a Clerk user. Rendering it
  * unconditionally left a zero-height box on every password-backed account,
@@ -246,7 +193,6 @@ const ClerkSecurityPanel: React.FC = () => {
       <>
         <SecurityHeading subtitle="Change the email and password used to sign in to Merit." />
         <NativeSecurityForm />
-        <ConnectedOAuthSection />
       </>
     );
   }
