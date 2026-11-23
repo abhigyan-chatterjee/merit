@@ -124,6 +124,10 @@ export const InterviewSetupLobby: React.FC<InterviewSetupLobbyProps> = ({
     event.target.value = "";
     if (!file) return;
     setResumeError(null);
+    if (file.size > 2 * 1024 * 1024) {
+      setResumeError("Resume PDF must be 2 MB or smaller.");
+      return;
+    }
     setUploadingResume(true);
     try {
       const parsed = await interviewApi.parseResume(file);

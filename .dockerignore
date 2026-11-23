@@ -5,7 +5,9 @@ load-tests
 design ideas
 .hermes
 .judge
-.env
+**/.env
+**/.env.*
+!**/.env.example
 apps/api/.venv
 apps/api/*.db*
 apps/web/node_modules

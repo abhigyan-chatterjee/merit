@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Problem } from "../data/problems";
 import {
   catalogIdForBaseUrl,
@@ -18,19 +18,14 @@ import {
   ResumeParseResponse,
   interviewApi,
 } from "../utils/api";
-import { stripThinking } from "../components/AiTutor";
 import { InterviewSetupLobby } from "../components/interview/InterviewSetupLobby";
 import { InterviewWorkspace } from "../components/interview/InterviewWorkspace";
-import {
-  TIER_BY_ID,
-  pickRandomProblemsForDifficulty,
-  problemToInterviewSummary,
-} from "../components/interview/interviewConfig";
+import { pickRandomProblemsForDifficulty } from "../components/interview/interviewConfig";
 
 export const InterviewPortalPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId?: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { apiKey, baseUrl, model, setModel } = useTutorKey();
 
   // Setup lobby state
@@ -50,7 +45,6 @@ export const InterviewPortalPage: React.FC = () => {
 
   // Active workspace state
   const [activeSession, setActiveSession] = useState<InterviewSessionDetail | null>(null);
-  const [isGuestSession, setIsGuestSession] = useState(false);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [sending, setSending] = useState(false);
@@ -60,6 +54,7 @@ export const InterviewPortalPage: React.FC = () => {
   const [models, setModels] = useState<string[]>([]);
 
   const snapshotsRef = useRef<Record<string, InterviewCodingSnapshot>>({});
+  const loadedSessionIdRef = useRef<string | null>(null);
   const elapsedRef = useRef(0);
   useEffect(() => {
     elapsedRef.current = elapsedSec;
@@ -67,6 +62,10 @@ export const InterviewPortalPage: React.FC = () => {
 
   const hasCatalog = Boolean(catalogIdForBaseUrl(baseUrl));
   useEffect(() => {
+    if (!user) {
+      setModels([]);
+      return;
+    }
     const catalogId = catalogIdForBaseUrl(baseUrl);
     if (!catalogId) {
       setModels([]);
@@ -85,7 +84,7 @@ export const InterviewPortalPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [baseUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [baseUrl, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectDifficulty = (nextDiff: InterviewDifficulty) => {
     setDifficulty(nextDiff);
@@ -115,14 +114,13 @@ export const InterviewPortalPage: React.FC = () => {
 
   useEffect(() => {
     if (!sessionId) {
-      if (!isGuestSession) {
-        setActiveSession(null);
-        setSuggestedStage(null);
-        setTimerRunning(false);
-      }
+      loadedSessionIdRef.current = null;
+      setActiveSession(null);
+      setSuggestedStage(null);
+      setTimerRunning(false);
       return;
     }
-    if (!user) return;
+    if (!user || loadedSessionIdRef.current === sessionId) return;
     let cancelled = false;
     setLoadingSession(true);
     setSuggestedStage(null);
@@ -131,8 +129,8 @@ export const InterviewPortalPage: React.FC = () => {
       .getSession(sessionId)
       .then((detail) => {
         if (cancelled) return;
+        loadedSessionIdRef.current = detail.id;
         setActiveSession(detail);
-        setIsGuestSession(false);
         snapshotsRef.current = detail.coding_snapshots ?? {};
         setElapsedSec(detail.elapsed_sec ?? 0);
         setTimerRunning(detail.status !== "completed");
@@ -149,7 +147,7 @@ export const InterviewPortalPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [sessionId, user, isGuestSession, navigate]);
+  }, [sessionId, user, navigate]);
 
   // Live countdown ticker
   useEffect(() => {
@@ -166,7 +164,7 @@ export const InterviewPortalPage: React.FC = () => {
   const activeId = activeSession?.id;
   const activeStatus = activeSession?.status;
   useEffect(() => {
-    if (!activeId || isGuestSession || activeStatus === "completed") return;
+    if (!activeId || activeStatus === "completed") return;
     const interval = window.setInterval(() => {
       void interviewApi
         .updateSession(activeId, {
@@ -176,11 +174,10 @@ export const InterviewPortalPage: React.FC = () => {
         .catch(() => undefined);
     }, 15_000);
     return () => window.clearInterval(interval);
-  }, [activeId, activeStatus, isGuestSession]);
+  }, [activeId, activeStatus]);
 
   const executeTurn = async (
     targetSession: InterviewSessionDetail,
-    guestMode: boolean,
     opts: {
       action: "start" | "message" | "advance_stage" | "evaluate";
       message?: string;
@@ -235,79 +232,28 @@ export const InterviewPortalPage: React.FC = () => {
     }
 
     try {
-      if (!guestMode) {
-        const res = await interviewApi.sendTurn(targetSession.id, {
-          base_url: liveBase,
-          api_key: liveKey,
-          model: liveModel,
-          action: opts.action,
-          message: opts.message ?? "",
-          stage: optimisticStage,
-          elapsed_sec: elapsedRef.current,
-          active_problem_slug: activeProb?.slug ?? null,
-          coding_snapshot: codingSnap,
-          design_notes: opts.designNotes,
-        });
-        setActiveSession(res.session);
-        snapshotsRef.current = res.session.coding_snapshots ?? snapshotsRef.current;
-        if (opts.action === "advance_stage" || opts.action === "evaluate") {
-          setSuggestedStage(null);
-        } else {
-          setSuggestedStage(res.suggested_stage ?? null);
-        }
-        if (res.session.status === "completed") {
-          setTimerRunning(false);
-          void refreshSessionsList();
-        }
+      const res = await interviewApi.sendTurn(targetSession.id, {
+        base_url: liveBase,
+        api_key: liveKey,
+        model: liveModel,
+        action: opts.action,
+        message: opts.message ?? "",
+        stage: optimisticStage,
+        elapsed_sec: elapsedRef.current,
+        active_problem_slug: activeProb?.slug ?? null,
+        coding_snapshot: codingSnap,
+        design_notes: opts.designNotes,
+      });
+      setActiveSession(res.session);
+      snapshotsRef.current = { ...(res.session.coding_snapshots ?? {}), ...snapshotsRef.current };
+      if (opts.action === "advance_stage" || opts.action === "evaluate") {
+        setSuggestedStage(null);
       } else {
-        const history = targetSession.messages.slice(-24).map((m) => ({
-          role: (m.role === "interviewer" ? "assistant" : "user") as "user" | "assistant",
-          content: m.content,
-        }));
-        const res = await interviewApi.sendGuestTurn({
-          base_url: liveBase,
-          api_key: liveKey,
-          model: liveModel,
-          action: opts.action,
-          message: opts.message ?? "",
-          stage: optimisticStage,
-          elapsed_sec: elapsedRef.current,
-          active_problem_slug: activeProb?.slug ?? null,
-          coding_snapshot: codingSnap,
-          design_notes: opts.designNotes,
-          difficulty: targetSession.difficulty,
-          problem_slugs: targetSession.problem_slugs,
-          history,
-          resume_text: targetSession.resume_text ?? null,
-          project_brief: targetSession.project_brief ?? null,
-        });
-        const cleanReply = stripThinking(res.reply);
-        const nowIso = new Date().toISOString();
-        setActiveSession((prev) => {
-          if (!prev) return prev;
-          const nextMsgs = [
-            ...prev.messages,
-            { role: "interviewer" as const, content: cleanReply, stage: optimisticStage, created_at: nowIso },
-          ];
-          const done = opts.action === "evaluate" && Boolean(res.rubric);
-          return {
-            ...prev,
-            current_stage: optimisticStage,
-            status: done ? "completed" : prev.status,
-            rubric: res.rubric ?? prev.rubric,
-            overall_verdict: res.rubric?.verdict ?? prev.overall_verdict,
-            overall_score: res.rubric?.total ?? prev.overall_score,
-            messages: nextMsgs,
-            coding_snapshots: { ...snapshotsRef.current },
-            updated_at: nowIso,
-          };
-        });
-        if (opts.action === "evaluate") setTimerRunning(false);
-        if (opts.action === "advance_stage" || opts.action === "evaluate") {
-          setSuggestedStage(null);
-        } else {
-          setSuggestedStage(res.suggested_stage ?? null);
-        }
+        setSuggestedStage(res.suggested_stage ?? null);
+      }
+      if (res.session.status === "completed") {
+        setTimerRunning(false);
+        void refreshSessionsList();
       }
     } catch (err) {
       if (err instanceof ApiError) {
@@ -333,49 +279,21 @@ export const InterviewPortalPage: React.FC = () => {
     const slugs = selectedProblems.map((p) => p.slug);
     setStarting(true);
     try {
-      let detail: InterviewSessionDetail;
-      let guestMode = false;
-      if (user) {
-        detail = await interviewApi.createSession({
-          difficulty,
-          problem_slugs: slugs,
-          resume_filename: resumeData?.filename ?? null,
-          resume_text: resumeData?.extracted_text ?? null,
-          project_brief: projectBrief.trim() || null,
-        });
-        navigate(`/interview/${detail.id}`, { replace: false });
-        void refreshSessionsList();
-      } else {
-        guestMode = true;
-        const tier = TIER_BY_ID[difficulty];
-        const nowIso = new Date().toISOString();
-        detail = {
-          id: `guest-${Date.now()}`,
-          difficulty,
-          status: "in_progress",
-          current_stage: tier.stages[0].id,
-          duration_sec: tier.durationSec,
-          elapsed_sec: 0,
-          problem_slugs: slugs,
-          has_resume: Boolean(resumeData?.extracted_text),
-          resume_filename: resumeData?.filename ?? null,
-          resume_text: resumeData?.extracted_text ?? null,
-          project_brief: projectBrief.trim() || null,
-          stages: tier.stages,
-          problems: selectedProblems.map(problemToInterviewSummary),
-          messages: [],
-          coding_snapshots: {},
-          max_score: tier.maxScore,
-          created_at: nowIso,
-          updated_at: nowIso,
-        };
-      }
+      const detail = await interviewApi.createSession({
+        difficulty,
+        problem_slugs: slugs,
+        resume_filename: resumeData?.filename ?? null,
+        resume_text: resumeData?.extracted_text ?? null,
+        project_brief: projectBrief.trim() || null,
+      });
+      navigate(`/interview/${detail.id}`, { replace: false });
+      void refreshSessionsList();
+      loadedSessionIdRef.current = detail.id;
       snapshotsRef.current = detail.coding_snapshots ?? {};
-      setIsGuestSession(guestMode);
       setActiveSession(detail);
       setElapsedSec(0);
       setTimerRunning(true);
-      await executeTurn(detail, guestMode, { action: "start", stageId: detail.current_stage });
+      await executeTurn(detail, { action: "start", stageId: detail.current_stage });
     } catch (err) {
       if (err instanceof ApiError) {
         setStartError(err.message || "Could not create interview session.");
@@ -391,7 +309,6 @@ export const InterviewPortalPage: React.FC = () => {
     setTimerRunning(false);
     setSuggestedStage(null);
     setActiveSession(null);
-    setIsGuestSession(false);
     setTurnError(null);
     navigate("/interview");
     void refreshSessionsList();
@@ -426,7 +343,7 @@ export const InterviewPortalPage: React.FC = () => {
           : prev,
       );
     }
-    if (flushImmediately && activeSession && !isGuestSession) {
+    if (flushImmediately && activeSession) {
       void interviewApi
         .updateSession(activeSession.id, {
           elapsed_sec: elapsedRef.current,
@@ -438,6 +355,27 @@ export const InterviewPortalPage: React.FC = () => {
 
   const canChat = Boolean(apiKey.trim() && model.trim());
 
+  if (!authLoading && !user) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-ink">Mock Interview</h1>
+            <p className="text-xs text-muted mt-1">
+              Sign in to run live-judged mock interviews and save scorecards.
+            </p>
+          </div>
+          <Link
+            to="/login?next=/interview"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-mint/40 bg-mint/10 text-xs font-mono font-semibold text-mint hover:bg-mint/20 transition"
+          >
+            Sign in
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {loadingSession && !activeSession ? (
@@ -447,7 +385,6 @@ export const InterviewPortalPage: React.FC = () => {
       ) : activeSession ? (
         <InterviewWorkspace
           session={activeSession}
-          isGuest={isGuestSession}
           models={models}
           hasCatalog={hasCatalog}
           model={model}
@@ -466,14 +403,14 @@ export const InterviewPortalPage: React.FC = () => {
               setActiveSession((prev) => (prev ? { ...prev, current_stage: stageId } : prev));
               return;
             }
-            void executeTurn(activeSession, isGuestSession, {
+            void executeTurn(activeSession, {
               action: "advance_stage",
               stageId,
             });
           }}
           onSendMessage={(msg, opts) => {
             if (!activeSession || sending) return;
-            void executeTurn(activeSession, isGuestSession, {
+            void executeTurn(activeSession, {
               action: "message",
               message: msg,
               designNotes: opts?.designNotes,
@@ -482,7 +419,7 @@ export const InterviewPortalPage: React.FC = () => {
           onEvaluate={(designNotes) => {
             if (!activeSession || sending) return;
             setSuggestedStage(null);
-            void executeTurn(activeSession, isGuestSession, {
+            void executeTurn(activeSession, {
               action: "evaluate",
               stageId: "rubric",
               designNotes,

@@ -23,6 +23,8 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: merit-api
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     mem_limit: 350m
     mem_reservation: 200m
     # The local sandbox fallback runs untrusted submissions in this container
@@ -38,7 +40,7 @@ services:
       #   export DATABASE_URL='postgresql+psycopg://USER:PASSWORD@HOST/dbname?sslmode=require'
       - DATABASE_URL=${DATABASE_URL:-sqlite:////data/merit.db}
       - SECRET_KEY=${SECRET_KEY:?SECRET_KEY must be set}
-      - CORS_ORIGINS=["http://localhost", "http://127.0.0.1", "https://merit.nullbit.in"]
+      - CORS_ORIGINS=${CORS_ORIGINS:-["https://merit.nullbit.in"]}
       # OAuth (empty = disabled with 501; set on VPS, never commit).
       - CLERK_JWKS_URL=${CLERK_JWKS_URL:-}
       - CLERK_AUDIENCE=${CLERK_AUDIENCE:-}
@@ -82,6 +84,8 @@ services:
         - VITE_CLERK_JWT_TEMPLATE=${VITE_CLERK_JWT_TEMPLATE:-merit}
     container_name: merit-web
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     mem_limit: 64m
     mem_reservation: 32m
     # Localhost-only: TLS + public traffic go through the host reverse

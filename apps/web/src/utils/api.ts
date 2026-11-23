@@ -977,12 +977,6 @@ export interface InterviewTurnResponse {
   session: InterviewSessionDetail;
 }
 
-export interface InterviewGuestTurnResponse {
-  reply: string;
-  suggested_stage?: string | null;
-  rubric?: InterviewRubric | null;
-}
-
 export interface InterviewTurnPayload {
   base_url: string;
   api_key: string;
@@ -1055,21 +1049,6 @@ export const interviewApi = {
         body: JSON.stringify(payload),
       },
     );
-  },
-
-  async sendGuestTurn(
-    payload: InterviewTurnPayload & {
-      difficulty: InterviewDifficulty;
-      problem_slugs: string[];
-      history: Array<{ role: "user" | "assistant"; content: string }>;
-      resume_text?: string | null;
-      project_brief?: string | null;
-    },
-  ): Promise<InterviewGuestTurnResponse> {
-    return await apiRequest<InterviewGuestTurnResponse>("/api/v1/interview/guest/turn", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
   },
 
   async parseResume(file: File): Promise<ResumeParseResponse> {

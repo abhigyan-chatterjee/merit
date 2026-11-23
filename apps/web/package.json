@@ -23,7 +23,7 @@
     "react-dom": "19.2.6",
     "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
-    "zod": "^4.5.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@clerk/testing": "^2.2.43",
