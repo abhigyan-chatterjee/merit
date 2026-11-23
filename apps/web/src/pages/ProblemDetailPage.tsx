@@ -408,6 +408,7 @@ export const ProblemDetailPage: React.FC = () => {
               starterCodeJava={problem.starterCodeJava}
               starterCodeCpp={problem.starterCodeCpp}
               functionName={problem.functionName}
+              sampleInput={problem.testCases?.[0]?.input}
               onAllPassed={() => setProblemStatus(problem.slug, 'Done')}
             />
         </div>

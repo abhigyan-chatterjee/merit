@@ -489,4 +489,129 @@ describe('CodeRunner Component (Phase 4)', () => {
       'def solve(nums, target):\n    return [0, 1]',
     );
   });
+
+  it('rejects malformed scratchpad input and runs valid custom JSON without an Expected row', async () => {
+    const runCustom = vi.spyOn(judgeApi, 'runCustom').mockResolvedValueOnce({
+      verdict: 'CUSTOM',
+      runtime_ms: 3.2,
+      test_results: [
+        { label: 'Custom', passed: true, input: [[1, 2], 3], expected: null, actual: 3, runtime_ms: 3.2, error: null },
+      ],
+      compile_output: '',
+    });
+
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+      sampleInput: [[2, 7], 9],
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Custom Input/i }));
+    const box = screen.getByLabelText(/Custom Input JSON/i);
+    expect(box).toHaveValue(JSON.stringify([[2, 7], 9], null, 2));
+
+    fireEvent.change(box, { target: { value: '{not json' } });
+    fireEvent.click(screen.getByRole('button', { name: /Run Custom/i }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/valid JSON array/i);
+
+    fireEvent.change(box, { target: { value: '{"a":1}' } });
+    fireEvent.click(screen.getByRole('button', { name: /Run Custom/i }));
+    expect(screen.getByRole('alert')).toHaveTextContent(/JSON array of arguments/i);
+    expect(runCustom).not.toHaveBeenCalled();
+
+    fireEvent.change(box, { target: { value: '[[1, 2], 3]' } });
+    fireEvent.click(screen.getByRole('button', { name: /Run Custom/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Custom Run/i)).toBeVisible();
+    });
+    expect(runCustom).toHaveBeenCalledWith('two-sum', 'python', expect.any(String), [[1, 2], 3]);
+    expect(screen.getByText('[[1,2],3]')).toBeVisible();
+    expect(screen.getByText('Actual Output:')).toBeVisible();
+    expect(screen.getByText('3')).toBeVisible();
+    expect(screen.queryByText('Expected:')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Accepted \(AC\)/i)).not.toBeInTheDocument();
+  });
+
+  it('shows the OA passed/total summary and redacts hidden test cases', async () => {
+    vi.spyOn(judgeApi, 'submit').mockResolvedValueOnce({
+      id: 'sub-oa',
+      problem_slug: 'two-sum',
+      language: 'python',
+      verdict: 'WA',
+      runtime_ms: 9.4,
+      test_results: [
+        { label: 'Case 1', passed: true, input: [[2, 7], 9], expected: [0, 1], actual: [0, 1], runtime_ms: 1, error: null },
+        { label: 'Case 2', passed: true, input: [[3, 2, 4], 6], expected: [1, 2], actual: [1, 2], runtime_ms: 1, error: null },
+        { label: 'Hidden Case 1', passed: false, input: null, expected: null, actual: null, runtime_ms: 1, error: null, hidden: true },
+      ],
+      created_at: '2026-09-07T00:00:00Z',
+      passed_count: 2,
+      total_count: 3,
+    });
+
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Passed 2 \/ 3 test cases/i)).toBeVisible();
+    });
+    expect(screen.getByText(/\(2 sample · 1 hidden\)/i)).toBeVisible();
+    expect(screen.getByText('[[2,7],9]')).toBeVisible();
+    expect(screen.getByText('Expected:')).toBeVisible();
+
+    fireEvent.click(screen.getByRole('tab', { name: /Hidden Case 1/i }));
+
+    expect(
+      screen.getByText(/Hidden test case — input and expected output are redacted in OA mode/i),
+    ).toBeVisible();
+    expect(screen.getByText('Failed')).toBeVisible();
+    expect(screen.queryByText('[[2,7],9]')).not.toBeInTheDocument();
+    expect(screen.queryByText('Expected:')).not.toBeInTheDocument();
+    expect(screen.queryByText('Actual Output:')).not.toBeInTheDocument();
+  });
+
+  it('runs samples on Ctrl+Enter and submits on Ctrl+Shift+Enter', async () => {
+    const runSamples = vi.spyOn(judgeApi, 'runSamples').mockResolvedValueOnce({
+      verdict: 'AC',
+      runtime_ms: 2,
+      test_results: [
+        { label: 'Case 1', passed: true, input: [[2, 7], 9], expected: [0, 1], actual: [0, 1], runtime_ms: 2, error: null },
+      ],
+      compile_output: '',
+    });
+    const submit = vi.spyOn(judgeApi, 'submit').mockResolvedValueOnce({
+      id: 'sub-kb',
+      problem_slug: 'two-sum',
+      language: 'python',
+      verdict: 'AC',
+      runtime_ms: 2,
+      test_results: [
+        { label: 'Case 1', passed: true, input: [[2, 7], 9], expected: [0, 1], actual: [0, 1], runtime_ms: 2, error: null },
+      ],
+      created_at: '2026-09-07T00:00:00Z',
+    });
+
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+
+    expect(screen.getByText(/Ctrl\/⌘\+Enter runs samples/i)).toBeVisible();
+
+    const editor = screen.getByLabelText(/Code Editor/i);
+    fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true });
+    await waitFor(() => expect(runSamples).toHaveBeenCalledTimes(1));
+    expect(submit).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true, shiftKey: true });
+    await waitFor(() => expect(submit).toHaveBeenCalledTimes(1));
+  });
 });

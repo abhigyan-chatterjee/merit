@@ -168,6 +168,7 @@ export const ExamCodingSection: React.FC<{
               starterCodeJava={item.starterCodeJava}
               starterCodeCpp={item.starterCodeCpp}
               functionName={item.functionName}
+              sampleInput={item.testCases?.[0]?.input}
               onVerdict={(passed) => {
                 setItems((prev) =>
                   prev.map((p) => (p.slug === item.slug ? { ...p, passed: passed ? true : false } : p)),

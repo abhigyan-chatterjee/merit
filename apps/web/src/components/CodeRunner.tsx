@@ -53,6 +53,9 @@ const starterByLanguage = (
 const getDraftKey = (slug: string, lang: EditorLang): string =>
   `merit_code_draft_${slug}_${lang}`;
 
+const formatCustomInput = (input?: unknown[]): string =>
+  JSON.stringify(input ?? [], null, 2);
+
 const getInitialCodeByLang = (
   slug: string,
   starters: Record<EditorLang, string>
@@ -81,6 +84,7 @@ interface CodeRunnerProps {
   onAllPassed?: () => void;
   onVerdict?: (passed: boolean) => void;
   tutorEnabled?: boolean;
+  sampleInput?: unknown[];
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
@@ -93,6 +97,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   onAllPassed,
   onVerdict,
   tutorEnabled = true,
+  sampleInput,
 }) => {
   const { user } = useAuth();
   const location = useLocation();
@@ -138,7 +143,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const userChangedLangRef = useRef(false);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState(0);
-  const [activeView, setActiveView] = useState<"results" | "submissions">("results");
+  const [activeView, setActiveView] = useState<"results" | "custom" | "submissions">("results");
+  const [customInputText, setCustomInputText] = useState(() => formatCustomInput(sampleInput));
+  const [customInputError, setCustomInputError] = useState<string | null>(null);
+  const [isCustomRun, setIsCustomRun] = useState(false);
+  const [passedCount, setPassedCount] = useState<number | null>(null);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const [results, setResults] = useState<TestCaseResult[] | null>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [runtimeMs, setRuntimeMs] = useState<number | null>(null);
@@ -207,12 +217,29 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setSelectedSubmission(null);
     setSubmissions([]);
     setNeedsAuth(false);
+    setIsCustomRun(false);
+    setPassedCount(null);
+    setTotalCount(null);
+    setCustomInputText(formatCustomInput(sampleInput));
+    setCustomInputError(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problemSlug]);
 
   // Tab inserts indentation instead of moving focus — a must for any code
   // editor. Plain Tab indents (multiline-aware); Shift+Tab outdents.
   const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      if (isRunning || isSubmitting) return;
+      if (e.shiftKey) {
+        void handleSubmit();
+      } else if (activeView === "custom") {
+        void handleRunCustom();
+      } else {
+        void handleRunSamples();
+      }
+      return;
+    }
     // Tab indents, which is right for a code editor but traps keyboard focus
     // inside the textarea. Escape is the standard escape hatch: it hands focus
     // to the run controls rather than blurring to <body>, which would send the
@@ -294,6 +321,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setCompileError(null);
     setIsInfraError(false);
     setNeedsAuth(false);
+    setPassedCount(null);
+    setTotalCount(null);
   };
 
   const handleReset = () => {
@@ -318,6 +347,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setCompileError(null);
     setIsInfraError(false);
     setNeedsAuth(false);
+    setPassedCount(null);
+    setTotalCount(null);
   };
 
   const starterForCurrentLang = starterByLanguage(
@@ -399,9 +430,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       const res: JudgeResponse = await judgeApi.runSamples(problemSlug, language, code);
       if (token !== runTokenRef.current) return;
       setNeedsAuth(false);
+      setIsCustomRun(false);
       setVerdict(res.verdict);
       setRuntimeMs(res.runtime_ms);
       setResults(res.test_results);
+      setPassedCount(res.passed_count ?? res.test_results.filter((r) => r.passed).length);
+      setTotalCount(res.total_count ?? res.test_results.length);
       setActiveTab(0);
       if (res.compile_output && res.verdict !== "AC") {
         setCompileError(res.compile_output);
@@ -429,9 +463,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       const sub: SubmissionItem = await judgeApi.submit(problemSlug, language, code);
       if (token !== runTokenRef.current) return;
       setNeedsAuth(false);
+      setIsCustomRun(false);
       setVerdict(sub.verdict);
       setRuntimeMs(sub.runtime_ms);
       setResults(sub.test_results);
+      setPassedCount(sub.passed_count ?? sub.test_results.filter((r) => r.passed).length);
+      setTotalCount(sub.total_count ?? sub.test_results.length);
       setActiveTab(0);
       if (sub.compile_output && sub.verdict !== "AC") {
         setCompileError(sub.compile_output);
@@ -448,6 +485,54 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     } finally {
       if (token === runTokenRef.current) {
         setIsSubmitting(false);
+        resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  };
+
+  // Scratchpad run: the parsed array becomes the argument list for one judge
+  // invocation. A malformed scratchpad never reaches the judge, so a typo can
+  // not be mistaken for a wrong answer.
+  const handleRunCustom = async () => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(customInputText);
+    } catch {
+      setCustomInputError("Enter a valid JSON array, e.g. [[2, 7, 11, 15], 9]");
+      return;
+    }
+    if (!Array.isArray(parsed)) {
+      setCustomInputError("Custom input must be a JSON array of arguments.");
+      return;
+    }
+    setCustomInputError(null);
+    const token = ++runTokenRef.current;
+    setIsRunning(true);
+    setCompileError(null);
+    setIsInfraError(false);
+    try {
+      const res: JudgeResponse = await judgeApi.runCustom(problemSlug, language, code, parsed);
+      if (token !== runTokenRef.current) return;
+      setNeedsAuth(false);
+      setIsCustomRun(true);
+      setVerdict(res.verdict);
+      setRuntimeMs(res.runtime_ms);
+      setResults(res.test_results);
+      setPassedCount(res.passed_count ?? null);
+      setTotalCount(res.total_count ?? null);
+      setActiveTab(0);
+      setActiveView("results");
+      if (res.compile_output && res.verdict !== "AC") {
+        setCompileError(res.compile_output);
+        setIsInfraError(Boolean(res.infrastructure_error));
+      }
+    } catch (err: unknown) {
+      if (token !== runTokenRef.current) return;
+      setActiveView("results");
+      handleJudgeError(err, "Execution failed");
+    } finally {
+      if (token === runTokenRef.current) {
+        setIsRunning(false);
         resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
       }
     }
@@ -497,6 +582,15 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     // badge is simply present, which still reads clearly on its own.
     const enter =
       'motion-fade motion-delay-75';
+    if (verdict === "CUSTOM") {
+      return (
+        <div role="status" className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-line bg-canvas text-violet font-mono text-xs font-semibold ${enter}`}>
+          <Terminal className="w-3.5 h-3.5" />
+          <span>Custom Run</span>
+          {runtimeMs !== null && <span className="text-[10px] text-muted">· {runtimeMs.toFixed(1)}ms</span>}
+        </div>
+      );
+    }
     if (verdict === "AC") {
       return (
         <div role="status" className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold ${enter}`}>
@@ -529,6 +623,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       </div>
     );
   };
+
+  const shownResults = results ?? [];
+  const displayPassed = passedCount ?? shownResults.filter((r) => r.passed).length;
+  const displayTotal = totalCount ?? shownResults.length;
+  const hiddenCount = shownResults.filter((r) => r.hidden).length;
+  const sampleCount = shownResults.length - hiddenCount;
 
   return (
     <div className="flex flex-col rounded-xl border border-line bg-surface overflow-y-auto shadow-sm max-h-[calc(100dvh-8rem)]">
@@ -641,6 +741,18 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveView("custom")}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition ${
+              activeView === "custom"
+                ? "bg-surface border border-line text-ink font-semibold"
+                : "text-muted hover:text-ink"
+            }`}
+          >
+            <Terminal className="w-3.5 h-3.5" />
+            <span>Custom Input</span>
+          </button>
+
+          <button
             onClick={() => setActiveView("submissions")}
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded cursor-pointer transition ${
               activeView === "submissions"
@@ -659,7 +771,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             ref={runSamplesRef}
             onClick={handleRunSamples}
             disabled={isRunning || isSubmitting}
-            title={!user ? "Sign in required to run code" : undefined}
+            title={!user ? "Sign in required to run code" : "Ctrl/⌘+Enter to run samples"}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
               isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
             }`}
@@ -671,7 +783,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
-            title={!user ? "Sign in required to submit" : undefined}
+            title={!user ? "Sign in required to submit" : "Ctrl/⌘+Shift+Enter to submit"}
             className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
             }`}
@@ -738,6 +850,19 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
             {results ? (
               <div className="space-y-3">
+                {results.length > 0 && !isCustomRun && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-lg border border-line bg-canvas font-mono text-xs">
+                    <span className="text-ink font-semibold">
+                      Passed {displayPassed} / {displayTotal} test cases
+                    </span>
+                    {hiddenCount > 0 && (
+                      <span className="text-[11px] text-muted">
+                        ({sampleCount} sample · {hiddenCount} hidden)
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Tabs */}
                 <div role="tablist" aria-label="Test cases" className="flex flex-wrap items-center gap-2">
                   {results.map((res, idx) => (
@@ -759,6 +884,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                       ) : (
                         <XCircle className="w-3 h-3 text-rose" />
                       )}
+                      {res.hidden && <Lock className="w-3 h-3 text-muted" aria-hidden="true" />}
                       <span>{res.label || `Case ${idx + 1}`}</span>
                       <span className="sr-only">{res.passed ? "passed" : "failed"}</span>
                     </button>
@@ -766,7 +892,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                 </div>
 
                 {/* Selected Case Details */}
-                {results[activeTab] && (
+                {results[activeTab] && !results[activeTab].hidden && (
                   <div className="p-3 rounded-lg border border-line bg-canvas space-y-2 font-mono text-xs">
                     <div className="flex items-center justify-between text-muted text-[11px] pb-1 border-b border-line">
                       <span>{results[activeTab].label}</span>
@@ -782,12 +908,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                       </pre>
                     </div>
 
-                    <div className="space-y-1">
-                      <span className="text-muted text-[10px] uppercase">Expected:</span>
-                      <pre className="p-2 rounded bg-surface border border-line text-ink overflow-x-auto text-[11px]">
-                        {JSON.stringify(results[activeTab].expected)}
-                      </pre>
-                    </div>
+                    {!isCustomRun && (
+                      <div className="space-y-1">
+                        <span className="text-muted text-[10px] uppercase">Expected:</span>
+                        <pre className="p-2 rounded bg-surface border border-line text-ink overflow-x-auto text-[11px]">
+                          {JSON.stringify(results[activeTab].expected)}
+                        </pre>
+                      </div>
+                    )}
 
                     <div className="space-y-1">
                       <span className="text-muted text-[10px] uppercase">Actual Output:</span>
@@ -805,6 +933,38 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                     </div>
                   </div>
                 )}
+
+                {results[activeTab] && results[activeTab].hidden && (
+                  <div className="p-3 rounded-lg border border-line bg-canvas space-y-2 font-mono text-xs">
+                    <div className="flex items-center justify-between text-muted text-[11px] pb-1 border-b border-line">
+                      <span>{results[activeTab].label}</span>
+                      {results[activeTab].runtime_ms !== undefined && (
+                        <span>Runtime: {results[activeTab].runtime_ms} ms</span>
+                      )}
+                    </div>
+
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                        results[activeTab].passed
+                          ? "bg-mint/20 text-mint"
+                          : "bg-rose/20 text-rose"
+                      }`}
+                    >
+                      {results[activeTab].passed ? "Passed" : "Failed"}
+                    </span>
+
+                    <p className="flex items-start gap-1.5 text-[11px] text-muted">
+                      <Lock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                      Hidden test case — input and expected output are redacted in OA mode.
+                    </p>
+
+                    {results[activeTab].error && (
+                      <pre className="p-2 rounded bg-rose/10 border border-rose/30 text-rose overflow-x-auto text-[11px]">
+                        {results[activeTab].error}
+                      </pre>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center text-muted font-mono text-xs space-y-1">
@@ -817,8 +977,58 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                   Keyboard: Tab indents inside the editor. Press Escape then Tab to
                   reach the run buttons.
                 </p>
+                <p className="text-[11px] text-muted/70">
+                  Ctrl/⌘+Enter runs samples · Ctrl/⌘+Shift+Enter submits
+                </p>
               </div>
             )}
+          </div>
+        ) : activeView === "custom" ? (
+          /* Custom Input Scratchpad */
+          <div className="space-y-2 font-mono text-xs">
+            <textarea
+              aria-label="Custom Input JSON"
+              value={customInputText}
+              onChange={(e) => {
+                setCustomInputText(e.target.value);
+                setCustomInputError(null);
+              }}
+              rows={6}
+              spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
+              className="w-full p-3 rounded-lg bg-canvas border border-line text-ink font-mono text-base sm:text-xs leading-relaxed resize-y focus:border-mint"
+            />
+            <p className="text-[11px] text-muted">
+              Pass arguments as a JSON array, e.g. [[2, 7, 11, 15], 9]
+            </p>
+            {customInputError && (
+              <p role="alert" className="text-[11px] text-rose">
+                {customInputError}
+              </p>
+            )}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => {
+                  setCustomInputText(formatCustomInput(sampleInput));
+                  setCustomInputError(null);
+                }}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface border border-line text-muted hover:text-ink cursor-pointer transition"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset to sample</span>
+              </button>
+              <button
+                onClick={() => void handleRunCustom()}
+                disabled={isRunning || isSubmitting}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-medium transition ${
+                  isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
+                }`}
+              >
+                <Play className={`w-3.5 h-3.5 text-mint ${isRunning ? "animate-spin" : ""}`} />
+                <span>{isRunning ? "Testing…" : "Run Custom"}</span>
+              </button>
+            </div>
           </div>
         ) : (
           /* Submissions History */
