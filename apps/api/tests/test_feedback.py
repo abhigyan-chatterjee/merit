@@ -32,6 +32,16 @@ def test_submit_feedback_persists_to_db():
         assert fb.status == "open"
 
 
+def test_submit_feedback_rejects_unknown_category():
+    payload = {
+        "title": "Valid title here",
+        "description": "Valid description here.",
+        "category": "not-a-category",
+    }
+    response = client.post("/api/v1/feedback", json=payload)
+    assert response.status_code == 422
+
+
 def test_submit_feedback_validation_error():
     # Title too short
     payload = {

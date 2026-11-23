@@ -83,12 +83,11 @@ def test_admin_stats_and_audit_logging(client: TestClient, db_session: Session):
     assert "ac_rate_pct" in data
     assert "verified_questions" in data
 
-    # 2. Verify audit log was recorded
+    # 2. Read-only GETs no longer write audit rows.
     res_logs = client.get("/api/v1/admin/audit-logs")
     assert res_logs.status_code == 200
     logs = res_logs.json()
-    assert len(logs) >= 1
-    assert any(log["action"] == "view_stats" for log in logs)
+    assert not any(log["action"] == "view_stats" for log in logs)
 
 
 def test_admin_question_review_workflow(client: TestClient, db_session: Session):
@@ -141,3 +140,16 @@ def test_admin_question_review_workflow(client: TestClient, db_session: Session)
     cov = res_cov.json()
     assert "trees" in cov["matrix"]
     assert cov["matrix"]["trees"]["medium"] >= 1
+
+
+def test_admin_review_rejects_invalid_action(client: TestClient, db_session: Session):
+    admin, admin_token = create_user_with_role(
+        db_session, "admin_action@example.com", role="admin"
+    )
+    client.cookies.set("merit_access", admin_token)
+    res = client.post("/api/v1/admin/questions/dummy/review", json={"action": "bogus"})
+    assert res.status_code == 422
+    res = client.post("/api/v1/admin/problems/dummy/review", json={"action": "edited"})
+    assert res.status_code == 422
+    res = client.get("/api/v1/admin/review-queue?type=bogus")
+    assert res.status_code == 422

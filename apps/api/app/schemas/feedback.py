@@ -1,10 +1,12 @@
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class FeedbackCreate(BaseModel):
     title: str = Field(..., min_length=3, max_length=150)
     description: str = Field(..., min_length=5, max_length=5000)
-    category: str = Field("bug", description="bug, testcase, feature, other")
+    category: Literal["bug", "testcase", "feature", "other"] = "bug"
     page_url: str | None = Field(None, max_length=500)
     problem_slug: str | None = Field(None, max_length=100)
     email: str | None = Field(None, max_length=200)

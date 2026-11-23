@@ -74,9 +74,9 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     # Note on field inconsistency: question files use snake_case 'review_status',
     # while problem files use camelCase 'reviewStatus'. We accept both spellings.
     # The `scrap-` filename is authoritative for quarantine, so deleting a status
-    # key can never promote a draft into the served set. A missing status on a
-    # non-scrap file means verified, because the 140 curated problems ship
-    # without the field.
+    # key can never promote a draft into the served set. Fail closed on missing
+    # status (matching seed_questions): every verified problem file must declare
+    # reviewStatus="verified" explicitly.
     valid_problems: list[dict] = []
     verified_slugs: set[str] = set()
     skipped: list[str] = []
@@ -87,7 +87,7 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
         try:
             with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
-            status = data.get("reviewStatus") or data.get("review_status") or "verified"
+            status = data.get("reviewStatus") or data.get("review_status") or "draft"
             slug = data["slug"]
         except (OSError, ValueError, KeyError) as err:
             # One unreadable file must not take down the whole seed, and it must
@@ -105,6 +105,12 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
     # Pass 2: Purge stale draft rows on re-seed.
     # If a Problem row exists in the DB whose content file is a draft (or whose file
     # no longer exists), delete it and its dependent rows (test cases, solutions).
+    # An empty verified set means the content tree is missing/corrupt: purging
+    # then would delete every problem in the database.
+    if not verified_slugs:
+        logger.warning("No verified problems found; skipping purge of existing problems")
+        db.commit()
+        return 0
     existing_problems = db.scalars(select(Problem)).all()
     for prob in existing_problems:
         if prob.slug not in verified_slugs:
@@ -312,13 +318,18 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
         return 0
 
     count = 0
+    skipped: list[str] = []
     for q_file in sorted(questions_dir.glob("*/*.json")):
         # `scrap-` is authoritative, same as problems: a missing or edited
         # status key must not be able to smuggle a draft into the served set.
         if q_file.name.startswith("scrap-"):
             continue
-        with open(q_file, encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with open(q_file, encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, ValueError, KeyError) as err:
+            skipped.append(f"{q_file.name}: {err}")
+            continue
 
         qid = data["id"]
         existing = db.scalar(select(Question).where(Question.id == qid))
@@ -346,11 +357,21 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
             db.add(question)
             count += 1
         else:
-            # Backfill topic on existing rows (taxonomy migration).
-            if existing.topic != data["topic"]:
-                existing.topic = data["topic"]
+            # Backfill content fields; review_status is admin moderation, never
+            # overwritten by a re-seed.
+            existing.topic = data["topic"]
+            existing.subtopic = data.get("subtopic")
+            existing.difficulty = data["difficulty"]
+            existing.prompt = data["prompt"]
+            existing.options = json.dumps(data["options"])
+            existing.correct_index = data["correct_index"]
+            existing.explanation = data["explanation"]
 
     db.commit()
+    if skipped:
+        logger.warning(
+            "Skipped %d unreadable question file(s): %s", len(skipped), "; ".join(skipped[:5])
+        )
     return count
 
 
@@ -362,9 +383,14 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
         return 0
 
     count = 0
+    skipped: list[str] = []
     for p_file in sorted(paths_dir.glob("*.json")):
-        with open(p_file, encoding="utf-8") as f:
-            data = json.load(f)
+        try:
+            with open(p_file, encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, ValueError, KeyError) as err:
+            skipped.append(f"{p_file.name}: {err}")
+            continue
 
         slug = data["slug"]
         existing = db.scalar(select(LearningPath).where(LearningPath.slug == slug))
@@ -396,30 +422,50 @@ def seed_paths(db: Session, paths_dir: Path | None = None) -> int:
 
             count += 1
         else:
-            # Re-sync steps on re-seed (path replacement across scope changes).
-            for old_step in db.scalars(select(PathStep).where(PathStep.path_slug == slug)).all():
-                db.delete(old_step)
-            db.flush()
             existing.title = data["title"]
             existing.blurb = data["blurb"]
             existing.icon = data["icon"]
             existing.track = data["track"]
             existing.ordinal = data["ordinal"]
             existing.is_published = 1 if data.get("is_published", True) else 0
+            # Reconcile steps by (step_type, ref_id) so PathStep.id is stable
+            # and PathStepProgress.step_id is not orphaned on re-seed.
+            desired = {}
             for step in data.get("steps", []):
-                db.add(
-                    PathStep(
-                        path_slug=slug,
-                        ordinal=step["ordinal"],
-                        step_type=step["step_type"],
-                        ref_id=step["ref_id"],
-                        title=step.get("title"),
-                        summary=step.get("summary"),
-                        reading_links_json=json.dumps(step.get("reading_links", [])),
+                desired[(step["step_type"], step["ref_id"])] = step
+            current = {
+                (s.step_type, s.ref_id): s
+                for s in db.scalars(select(PathStep).where(PathStep.path_slug == slug)).all()
+            }
+            for key, step in desired.items():
+                row = current.get(key)
+                reading = json.dumps(step.get("reading_links", []))
+                if row is None:
+                    db.add(
+                        PathStep(
+                            path_slug=slug,
+                            ordinal=step["ordinal"],
+                            step_type=step["step_type"],
+                            ref_id=step["ref_id"],
+                            title=step.get("title"),
+                            summary=step.get("summary"),
+                            reading_links_json=reading,
+                        )
                     )
-                )
+                else:
+                    row.ordinal = step["ordinal"]
+                    row.title = step.get("title")
+                    row.summary = step.get("summary")
+                    row.reading_links_json = reading
+            for key, row in current.items():
+                if key not in desired:
+                    db.delete(row)
 
     db.commit()
+    if skipped:
+        logger.warning(
+            "Skipped %d unreadable path file(s): %s", len(skipped), "; ".join(skipped[:5])
+        )
     return count
 
 
@@ -466,6 +512,8 @@ def content_fingerprint() -> str:
         if not directory.exists():
             continue
         for path in sorted(directory.rglob("*.json")):
+            if path.name.startswith("scrap-"):
+                continue
             try:
                 relative = path.relative_to(directory).as_posix()
                 payload = path.read_bytes()

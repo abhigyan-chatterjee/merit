@@ -1,10 +1,10 @@
 """Admin API endpoints for content review queue, coverage matrix, and aggregate stats."""
 
 import json
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -26,12 +26,12 @@ router = APIRouter(
 
 
 class QuestionReviewRequest(BaseModel):
-    action: str = Field(..., description="Action: approved | rejected | edited")
+    action: Literal["approved", "rejected", "edited"]
     note: str | None = None
 
 
 class ProblemReviewRequest(BaseModel):
-    action: str = Field(..., description="Action: approved | rejected")
+    action: Literal["approved", "rejected"]
     note: str | None = None
 
 
@@ -51,8 +51,6 @@ def get_admin_stats(
     admin: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    log_admin_action(db, admin.id, "view_stats", "aggregate_metrics")
-
     user_count = db.scalar(select(func.count(User.id))) or 0
     total_subs = db.scalar(select(func.count(Submission.id))) or 0
     ac_subs = db.scalar(select(func.count(Submission.id)).where(Submission.verdict == "AC")) or 0
@@ -88,17 +86,16 @@ def get_admin_stats(
 
 @router.get("/review-queue")
 def get_review_queue(
-    type: str = Query("questions", description="Type: questions | problems"),  # noqa: A002 - `type` is the public query-param name
+    type: Literal["questions", "problems"] = Query("questions"),  # noqa: A002 - `type` is the public query-param name
     admin: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
-    log_admin_action(db, admin.id, "view_review_queue", f"queue_{type}")
-
     if type == "problems":
         problems = db.scalars(
             select(Problem)
             .where(Problem.review_status == "draft")
             .order_by(Problem.updated_at.desc())
+            .limit(200)
         ).all()
         return [
             {
@@ -230,8 +227,6 @@ def get_coverage_matrix(
     admin: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    log_admin_action(db, admin.id, "view_coverage", "coverage_matrix")
-
     rows = db.execute(
         select(Question.topic, Question.difficulty, func.count(Question.id))
         .where(Question.review_status == "verified")
@@ -275,12 +270,12 @@ def get_audit_logs(
 
 
 class FeedbackStatusRequest(BaseModel):
-    status: str = Field(..., description="open | resolved | dismissed")
+    status: Literal["open", "resolved", "dismissed"]
 
 
 @router.get("/feedback", response_model=list[FeedbackItem])
 def get_admin_feedback(
-    status_filter: str | None = Query(None, alias="status"),
+    status_filter: Literal["open", "resolved", "dismissed"] | None = Query(None, alias="status"),
     limit: int = Query(100, ge=1, le=200),
     admin: User = Depends(require_admin_user),
     db: Session = Depends(get_db),
@@ -290,7 +285,6 @@ def get_admin_feedback(
         stmt = stmt.where(Feedback.status == status_filter)
     stmt = stmt.order_by(Feedback.created_at.desc()).limit(limit)
     rows = db.scalars(stmt).all()
-    log_admin_action(db, admin.id, "view_feedback", f"filter_{status_filter or 'all'}")
     return [FeedbackItem.model_validate(r) for r in rows]
 
 

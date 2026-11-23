@@ -255,6 +255,7 @@ def get_progress_summary(
         select(QuizAttempt)
         .where(QuizAttempt.user_id == user.id)
         .order_by(QuizAttempt.created_at.desc())
+        .limit(500)
     ).all()
 
     quiz_scores: dict[str, int] = {}
@@ -465,7 +466,9 @@ def update_settings(
 ):
     if req.preferred_language is not None:
         user.preferred_language = req.preferred_language
-    if req.clear_daily_goal:
+    if req.unpin_daily_goal:
+        user.daily_goal_json = None
+    elif req.clear_daily_goal:
         # Pinned goals are sticky server-side too: only an explicit clear removes
         # them, and a pinned goal is not cleared by a plain "clear". The client
         # already refuses to drop a permanent goal locally, so clearing it here

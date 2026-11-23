@@ -1,8 +1,13 @@
+import asyncio
+import contextlib
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 from starlette.middleware.base import BaseHTTPMiddleware
 
 import app.models.content  # noqa: F401
@@ -13,7 +18,7 @@ import app.models.revision  # noqa: F401
 import app.models.submission  # noqa: F401
 import app.models.user  # noqa: F401
 from app.config import settings
-from app.db import Base, SessionLocal, engine
+from app.db import Base, SessionLocal, engine, get_db
 from app.routers import (
     admin,
     auth,
@@ -25,7 +30,8 @@ from app.routers import (
     revision,
     tutor,
 )
-from app.seed import seed_if_changed
+from app.seed import seed_admin, seed_if_changed
+from app.services.session_cleanup import cleanup_expired_sessions
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
@@ -58,7 +64,33 @@ async def lifespan(app: FastAPI):
             "Content sync failed; serving the previously seeded content"
         )
 
+    try:
+        with SessionLocal() as db:
+            seed_admin(db)
+    except Exception:
+        logging.getLogger(__name__).exception("Admin seed failed")
+
+    async def _cleanup_loop() -> None:
+        while True:
+            await asyncio.sleep(21600)
+            try:
+                with SessionLocal() as db:
+                    cleanup_expired_sessions(db)
+            except Exception:
+                logging.getLogger(__name__).exception("Session cleanup failed")
+
+    try:
+        with SessionLocal() as db:
+            cleanup_expired_sessions(db)
+    except Exception:
+        logging.getLogger(__name__).exception("Session cleanup failed")
+    cleanup_task = asyncio.create_task(_cleanup_loop())
+
     yield
+
+    cleanup_task.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await cleanup_task
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -71,11 +103,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
+_is_prod = settings.environment == "production"
+
 app = FastAPI(
     title="Merit API",
     version="1.0.0",
-    docs_url="/api/docs",
-    openapi_url="/api/openapi.json",
+    docs_url=None if _is_prod else "/api/docs",
+    redoc_url=None if _is_prod else "/api/redoc",
+    openapi_url=None if _is_prod else "/api/openapi.json",
     lifespan=lifespan,
 )
 
@@ -101,5 +136,10 @@ app.include_router(revision.router)
 
 
 @app.get("/api/v1/health")
-def health_check():
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception:
+        logging.getLogger(__name__).exception("Health check database probe failed")
+        return JSONResponse(status_code=503, content={"status": "error", "service": "merit-api"})
     return {"status": "ok", "service": "merit-api"}

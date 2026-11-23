@@ -45,9 +45,7 @@ async def submit_feedback(
     """
     _feedback_limiter.check(client_key(request))
 
-    category_label = payload.category.strip().lower()
-    if category_label not in {"bug", "testcase", "feature", "other"}:
-        category_label = "bug"
+    category_label = payload.category
 
     feedback_record = Feedback(
         category=category_label,
