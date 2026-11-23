@@ -198,4 +198,18 @@ describe('Navbar due badge', () => {
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
     expect(mockNavigate).toHaveBeenCalledWith('/review');
   });
+
+  it('includes dedicated Interview tab in navigation and global search', () => {
+    renderNavbar();
+    const links = screen.getAllByRole('link', { name: 'Interview' });
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    expect(links[0]).toHaveAttribute('href', '/interview');
+
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'interview' } });
+    expect(screen.getByText('AI Mock Interview Portal')).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(mockNavigate).toHaveBeenCalledWith('/interview');
+  });
 });

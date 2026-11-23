@@ -7,6 +7,7 @@ import {
   Code2,
   BrainCircuit,
   GraduationCap,
+  MessagesSquare,
   Search,
   Flame,
   X,
@@ -92,6 +93,7 @@ export const Navbar: React.FC = () => {
     | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void }
     | { kind: 'exam'; exam: (typeof TARGETED_EXAMS)[number]; score: number; navigate: () => void }
     | { kind: 'quiz'; quiz: (typeof QUIZ_TRACKS)[number]; score: number; navigate: () => void }
+    | { kind: 'interview'; score: number; navigate: () => void }
     | { kind: 'review'; score: number; navigate: () => void };
 
   const entries = useMemo<PaletteEntry[]>(() => {
@@ -208,6 +210,29 @@ export const Navbar: React.FC = () => {
         navigate(`/quiz/${quiz.id}`);
       }
     }));
+    const interviewHits: PaletteEntry[] =
+      q.includes('interview') ||
+      q.includes('mock') ||
+      q.includes('faang') ||
+      q.includes('system design') ||
+      q.includes('resume')
+        ? [
+            {
+              kind: 'interview',
+              score: scoreMatch('AI Mock Interview Portal', q, [
+                'interview',
+                'mock',
+                'faang',
+                'system design',
+                'resume',
+              ]),
+              navigate: () => {
+                setSearchOpen(false);
+                navigate('/interview');
+              },
+            },
+          ]
+        : [];
     const reviewHits: PaletteEntry[] =
       q.includes('review') || q.includes('spaced') || q.includes('sm-2')
         ? [
@@ -221,7 +246,15 @@ export const Navbar: React.FC = () => {
             },
           ]
         : [];
-    const combined = [...pathHits, ...vizHits, ...probHits, ...examHits, ...quizHits, ...reviewHits];
+    const combined = [
+      ...pathHits,
+      ...vizHits,
+      ...probHits,
+      ...examHits,
+      ...quizHits,
+      ...interviewHits,
+      ...reviewHits,
+    ];
     const kindRank = (e: PaletteEntry) => {
       switch (e.kind) {
         case 'path':
@@ -232,10 +265,12 @@ export const Navbar: React.FC = () => {
           return 2;
         case 'quiz':
           return 3;
-        case 'review':
+        case 'interview':
           return 4;
-        case 'problem':
+        case 'review':
           return 5;
+        case 'problem':
+          return 6;
       }
     };
     const titleOf = (e: PaletteEntry) => {
@@ -250,6 +285,8 @@ export const Navbar: React.FC = () => {
           return e.exam.title;
         case 'quiz':
           return e.quiz.title;
+        case 'interview':
+          return 'AI Mock Interview Portal';
         case 'review':
           return 'Spaced Review Deck';
       }
@@ -276,10 +313,12 @@ export const Navbar: React.FC = () => {
     { to: '/visualizers', label: 'Visualizers', icon: Layers },
     { to: '/problems/arrays-hashing', label: 'Problems', icon: Code2 },
     { to: '/quiz/mixed', label: 'Quizzes', icon: BrainCircuit },
-    { to: '/exams', label: 'Exams', icon: GraduationCap }
+    { to: '/exams', label: 'Exams', icon: GraduationCap },
+    { to: '/interview', label: 'Interview', icon: MessagesSquare }
   ];
 
   const isActive = (path: string) => {
+    if (path.startsWith('/interview') && location.pathname.startsWith('/interview')) return true;
     if (path.startsWith('/exams') && location.pathname.startsWith('/exams')) return true;
     if (path.startsWith('/learn') && location.pathname.startsWith('/learn')) return true;
     if (path.startsWith('/problems') && location.pathname.startsWith('/problems')) return true;
@@ -351,7 +390,7 @@ export const Navbar: React.FC = () => {
                   aria-label={link.label}
                   aria-current={active ? 'page' : undefined}
                   title={link.label}
-                  className={`relative inline-flex items-center gap-2 px-3 xl:px-3.5 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
+                  className={`relative inline-flex items-center gap-2 px-2.5 xl:px-3 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
                     active ? 'text-ink' : 'text-muted hover:text-ink'
                   }`}
                 >
@@ -443,7 +482,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile bottom tab bar */}
       <nav aria-label="Mobile navigation" className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-line bg-canvas/95 backdrop-blur-md">
-        <div className="grid grid-cols-6">
+        <div className="grid grid-cols-7">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = isActive(link.to);
@@ -452,7 +491,7 @@ export const Navbar: React.FC = () => {
                 key={link.to}
                 to={link.to}
                 aria-current={active ? 'page' : undefined}
-                className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[11px] font-medium ${
+                className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[10px] font-medium ${
                   active ? 'text-mint' : 'text-muted'
                 }`}
               >
@@ -634,6 +673,30 @@ export const Navbar: React.FC = () => {
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
                         <KindBadge label="Quiz" />
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'interview') {
+                  return (
+                    <button
+                      key="ai-interview-portal"
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <MessagesSquare className="w-3.5 h-3.5 text-violet shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">
+                          AI Mock Interview Portal
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Interview" />
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>

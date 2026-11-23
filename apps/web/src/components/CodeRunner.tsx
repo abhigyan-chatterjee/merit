@@ -85,6 +85,15 @@ interface CodeRunnerProps {
   onVerdict?: (passed: boolean) => void;
   tutorEnabled?: boolean;
   sampleInput?: unknown[];
+  initialCodeByLang?: Partial<Record<EditorLang, string>>;
+  onCodeChange?: (code: string, language: EditorLang) => void;
+  onJudgeResult?: (result: {
+    verdict: string;
+    passedCount: number | null;
+    totalCount: number | null;
+    language: EditorLang;
+    code: string;
+  }) => void;
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
@@ -98,6 +107,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   onVerdict,
   tutorEnabled = true,
   sampleInput,
+  initialCodeByLang,
+  onCodeChange,
+  onJudgeResult,
 }) => {
   const { user } = useAuth();
   const location = useLocation();
@@ -126,8 +138,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // single `code` state plus an `editedCode` guard meant the switch was a
   // no-op after any keystroke, so e.g. the JS boilerplate stuck around
   // after selecting Python.
-  const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() =>
-    getInitialCodeByLang(
+  const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() => ({
+    ...getInitialCodeByLang(
       problemSlug,
       starterByLanguage(
         starterCode,
@@ -136,11 +148,19 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         starterCodeCpp,
         functionName
       )
-    )
-  );
+    ),
+    ...(initialCodeByLang ?? {}),
+  }));
   const code = codeByLang[language];
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
   const userChangedLangRef = useRef(false);
+  const onCodeChangeRef = useRef(onCodeChange);
+  useEffect(() => {
+    onCodeChangeRef.current = onCodeChange;
+  }, [onCodeChange]);
+  useEffect(() => {
+    onCodeChangeRef.current?.(code, language);
+  }, [code, language]);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [activeView, setActiveView] = useState<"results" | "custom" | "submissions">("results");
@@ -196,8 +216,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // previous problem's code (and function name) lingered in the editor.
   useEffect(() => {
     runTokenRef.current += 1;
-    setCodeByLang(
-      getInitialCodeByLang(
+    setCodeByLang({
+      ...getInitialCodeByLang(
         problemSlug,
         starterByLanguage(
           starterCode,
@@ -206,8 +226,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           starterCodeCpp,
           functionName
         )
-      )
-    );
+      ),
+      ...(initialCodeByLang ?? {}),
+    });
     setResults(null);
     setVerdict(null);
     setCompileError(null);
@@ -441,6 +462,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         setCompileError(res.compile_output);
         setIsInfraError(Boolean(res.infrastructure_error));
       }
+      onJudgeResult?.({
+        verdict: res.verdict,
+        passedCount: res.passed_count ?? res.test_results.filter((r) => r.passed).length,
+        totalCount: res.total_count ?? res.test_results.length,
+        language,
+        code,
+      });
     } catch (err: unknown) {
       if (token !== runTokenRef.current) return;
       handleJudgeError(err, "Execution failed");
@@ -474,6 +502,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         setCompileError(sub.compile_output);
         setIsInfraError(Boolean(sub.infrastructure_error));
       }
+      onJudgeResult?.({
+        verdict: sub.verdict,
+        passedCount: sub.passed_count ?? sub.test_results.filter((r) => r.passed).length,
+        totalCount: sub.total_count ?? sub.test_results.length,
+        language,
+        code,
+      });
       onVerdict?.(sub.verdict === "AC");
       if (sub.verdict === "AC" && onAllPassed) {
         onAllPassed();

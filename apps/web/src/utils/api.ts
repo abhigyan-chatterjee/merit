@@ -878,3 +878,206 @@ export const revisionApi = {
     );
   },
 };
+
+export type InterviewDifficulty = "easy" | "medium" | "hard";
+export type InterviewAction = "start" | "message" | "advance_stage" | "evaluate";
+
+export interface InterviewStageDef {
+  id: string;
+  label: string;
+  kind: "theory" | "coding" | "project" | "system_design" | "wrapup" | "rubric";
+  problem_index?: number | null;
+}
+
+export interface InterviewCodingSnapshot {
+  language: string;
+  code: string;
+  verdict?: string | null;
+  passed_count?: number | null;
+  total_count?: number | null;
+}
+
+export interface InterviewMessage {
+  role: "user" | "interviewer";
+  content: string;
+  stage: string;
+  created_at: string;
+}
+
+export interface InterviewProblemSummary {
+  slug: string;
+  title: string;
+  topic: string;
+  difficulty: string;
+  pattern: string;
+  statement: string;
+  examples: Array<{ input: string; output: string; explanation?: string }>;
+  constraints: string[];
+  starter_code: Record<string, string>;
+  function_name: string;
+  test_cases: Array<{ id?: string | number; label: string; input: unknown[]; expected: unknown }>;
+}
+
+export interface InterviewRubricDimension {
+  name: string;
+  score: number;
+  max_score: number;
+  comment: string;
+}
+
+export interface InterviewRubric {
+  dimensions: InterviewRubricDimension[];
+  total: number;
+  max_total: number;
+  verdict: "Strong Hire" | "Hire" | "Leaning Hire" | "No Hire";
+  strengths: string[];
+  improvements: string[];
+  summary: string;
+}
+
+export interface ResumeParseResponse {
+  filename: string;
+  pages: number;
+  char_count: number;
+  truncated: boolean;
+  extracted_text: string;
+}
+
+export interface InterviewSessionSummary {
+  id: string;
+  difficulty: InterviewDifficulty;
+  status: string;
+  current_stage: string;
+  duration_sec: number;
+  elapsed_sec: number;
+  problem_slugs: string[];
+  has_resume: boolean;
+  resume_filename?: string | null;
+  overall_verdict?: string | null;
+  overall_score?: number | null;
+  max_score?: number | null;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string | null;
+}
+
+export interface InterviewSessionDetail extends InterviewSessionSummary {
+  stages: InterviewStageDef[];
+  problems: InterviewProblemSummary[];
+  messages: InterviewMessage[];
+  coding_snapshots: Record<string, InterviewCodingSnapshot>;
+  resume_text?: string | null;
+  project_brief?: string | null;
+  rubric?: InterviewRubric | null;
+}
+
+export interface InterviewTurnResponse {
+  reply: string;
+  suggested_stage?: string | null;
+  session: InterviewSessionDetail;
+}
+
+export interface InterviewGuestTurnResponse {
+  reply: string;
+  suggested_stage?: string | null;
+  rubric?: InterviewRubric | null;
+}
+
+export interface InterviewTurnPayload {
+  base_url: string;
+  api_key: string;
+  model: string;
+  action: InterviewAction;
+  message?: string;
+  stage?: string;
+  elapsed_sec?: number;
+  active_problem_slug?: string | null;
+  coding_snapshot?: InterviewCodingSnapshot;
+  design_notes?: string;
+}
+
+export const interviewApi = {
+  async listSessions(): Promise<InterviewSessionSummary[]> {
+    return await apiRequest<InterviewSessionSummary[]>("/api/v1/interview/sessions");
+  },
+
+  async createSession(payload: {
+    difficulty: InterviewDifficulty;
+    problem_slugs?: string[];
+    resume_filename?: string | null;
+    resume_text?: string | null;
+    project_brief?: string | null;
+  }): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>("/api/v1/interview/sessions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getSession(sessionId: string): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`,
+    );
+  },
+
+  async updateSession(
+    sessionId: string,
+    payload: {
+      current_stage?: string;
+      elapsed_sec?: number;
+      coding_snapshots?: Record<string, InterviewCodingSnapshot>;
+      project_brief?: string | null;
+      resume_filename?: string | null;
+      resume_text?: string | null;
+      clear_resume?: boolean;
+    },
+  ): Promise<InterviewSessionDetail> {
+    return await apiRequest<InterviewSessionDetail>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
+  async deleteSession(sessionId: string): Promise<void> {
+    await apiRequest<void>(`/api/v1/interview/sessions/${encodeURIComponent(sessionId)}`, {
+      method: "DELETE",
+    });
+  },
+
+  async sendTurn(sessionId: string, payload: InterviewTurnPayload): Promise<InterviewTurnResponse> {
+    return await apiRequest<InterviewTurnResponse>(
+      `/api/v1/interview/sessions/${encodeURIComponent(sessionId)}/turn`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
+  },
+
+  async sendGuestTurn(
+    payload: InterviewTurnPayload & {
+      difficulty: InterviewDifficulty;
+      problem_slugs: string[];
+      history: Array<{ role: "user" | "assistant"; content: string }>;
+      resume_text?: string | null;
+      project_brief?: string | null;
+    },
+  ): Promise<InterviewGuestTurnResponse> {
+    return await apiRequest<InterviewGuestTurnResponse>("/api/v1/interview/guest/turn", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async parseResume(file: File): Promise<ResumeParseResponse> {
+    const form = new FormData();
+    form.append("file", file);
+    return await apiRequest<ResumeParseResponse>("/api/v1/interview/parse-resume", {
+      method: "POST",
+      body: form,
+    });
+  },
+};

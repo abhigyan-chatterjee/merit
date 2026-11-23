@@ -7,6 +7,7 @@ import {
   Route,
   ArrowRight,
   Timer,
+  MessagesSquare,
 } from 'lucide-react';
 import {
   BarChart,
@@ -380,25 +381,48 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* ===== Assessment ===== */}
-      <div className="p-6 rounded-2xl border border-violet/30 bg-gradient-to-r from-violet/10 via-surface to-mint/10 flex flex-wrap items-center justify-between gap-6 shadow-sm">
-        <div className="space-y-2 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-violet/20 text-violet border border-violet/30">
-            <Timer className="w-3 h-3" />
-            Assessment
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="p-6 rounded-2xl border border-violet/30 bg-gradient-to-r from-violet/10 via-surface to-mint/10 flex flex-wrap items-center justify-between gap-6 shadow-sm">
+          <div className="space-y-2 max-w-md">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-violet/20 text-violet border border-violet/30">
+              <Timer className="w-3 h-3" />
+              Assessment
+            </div>
+            <h2 className="text-lg font-bold text-ink">Targeted Placement Exams</h2>
+            <p className="text-xs text-muted leading-relaxed">
+              Pick a focused exam — Intermediate DSA, Arrays & HashMaps, Dynamic Programming and more.
+              Strict countdown timer with server-side evaluation.
+            </p>
           </div>
-          <h2 className="text-lg font-bold text-ink">Targeted Placement Exams</h2>
-          <p className="text-xs text-muted leading-relaxed">
-            Pick a focused exam — Intermediate DSA, Arrays & HashMaps, Dynamic Programming and more.
-            Strict countdown timer with server-side evaluation.
-          </p>
+          <Link
+            to="/exams"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition shadow-md cursor-pointer shrink-0"
+          >
+            <Play className="w-4 h-4" />
+            Browse Exams
+          </Link>
         </div>
-        <Link
-          to="/exams"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition shadow-md cursor-pointer shrink-0"
-        >
-          <Play className="w-4 h-4" />
-          Browse Exams
-        </Link>
+
+        <div className="p-6 rounded-2xl border border-mint/30 bg-gradient-to-r from-mint/10 via-surface to-violet/10 flex flex-wrap items-center justify-between gap-6 shadow-sm">
+          <div className="space-y-2 max-w-md">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-mint/20 text-mint border border-mint/30">
+              <MessagesSquare className="w-3 h-3" />
+              AI Interview
+            </div>
+            <h2 className="text-lg font-bold text-ink">AI Mock Interview Portal</h2>
+            <p className="text-xs text-muted leading-relaxed">
+              Easy, Medium & Hard FAANG-level interview loops combining CS theory, live judged coding,
+              CV-aware project deep-dives, and system design.
+            </p>
+          </div>
+          <Link
+            to="/interview"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition shadow-md cursor-pointer shrink-0"
+          >
+            <Play className="w-4 h-4" />
+            Launch Interview
+          </Link>
+        </div>
       </div>
 
       {/* ===== Row: Consistency | Curriculum completion | Weakest topics ===== */}
