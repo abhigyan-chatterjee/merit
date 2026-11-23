@@ -107,6 +107,13 @@ def test_migration_chain_has_clean_upgrade_paths_and_no_sqlite_ddl():
         "op.get_bind().dialect.name != \"sqlite\"", ""
     )
 
+    companies_rev = script.get_revision("f6b2c3d4e5a8")
+    assert companies_rev is not None
+    assert companies_rev.down_revision == "e5a1b2c3d4f6"
+    companies_source = Path(companies_rev.path).read_text()
+    assert "companies_json" in companies_source
+    assert "sa.Text()" in companies_source
+
 
 def test_quiz_answer_unique_constraint_in_metadata():
     import app.models.quiz  # noqa: F401

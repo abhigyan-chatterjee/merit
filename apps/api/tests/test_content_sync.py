@@ -18,6 +18,8 @@ import pytest
 from sqlalchemy import delete, select
 
 from app.models.content import ContentSync, PathStep, Problem, Question
+from app.models.quiz import QuizAttempt, QuizAttemptAnswer
+from app.models.user import User
 from app.seed import (
     content_fingerprint,
     seed_if_changed,
@@ -61,6 +63,21 @@ def test_fingerprint_changes_when_bytes_change(content_tree):
     before = content_fingerprint()
 
     problem.write_text('{"slug": "two-sum", "title": "Two Sum"}', encoding="utf-8")
+
+    assert content_fingerprint() != before
+
+
+def test_fingerprint_changes_when_companies_change(content_tree):
+    problem = content_tree / "problems" / "two-sum.json"
+    problem.write_text(
+        '{"slug": "two-sum", "companies": ["Google"]}', encoding="utf-8"
+    )
+    before = content_fingerprint()
+
+    problem.write_text(
+        '{"slug": "two-sum", "companies": ["Google", "Amazon"]}',
+        encoding="utf-8",
+    )
 
     assert content_fingerprint() != before
 
@@ -223,5 +240,138 @@ def test_seed_questions_backfills_without_touching_review_status(db_session, con
     assert row.prompt == "New prompt?"
     assert row.explanation == "New explanation."
     assert row.review_status == "rejected"
+
+
+def test_seed_problems_companies_backfill_without_touching_review_status(
+    db_session, content_tree
+):
+    problem_dir = content_tree / "problems"
+    payload = {
+        "slug": "company-probe",
+        "title": "Company Probe",
+        "topic": "arrays-hashing",
+        "difficulty": "Easy",
+        "pattern": "hash-map",
+        "statement": "Return the input.",
+        "functionName": "solve",
+        "reviewStatus": "verified",
+        "companies": ["Google", "Amazon"],
+        "constraints": [],
+        "examples": [],
+        "hints": [],
+        "testCases": [{"label": "c1", "input": [1], "expected": [1]}],
+        "solutions": [
+            {
+                "title": "ref",
+                "language": "python",
+                "code": "def solve(a):\n    return a",
+                "isReference": True,
+            }
+        ],
+    }
+    (problem_dir / "company-probe.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+
+    assert seed_problems(db_session, problem_dir) == 1
+    row = db_session.get(Problem, "company-probe")
+    assert row is not None
+    assert json.loads(row.companies_json) == ["Google", "Amazon"]
+
+    row.review_status = "rejected"
+    db_session.commit()
+
+    payload["companies"] = ["Meta", "Google"]
+    (problem_dir / "company-probe.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+    seed_problems(db_session, problem_dir)
+    db_session.refresh(row)
+
+    assert json.loads(row.companies_json) == ["Meta", "Google"]
+    assert row.review_status == "rejected"
+
+
+def test_seed_questions_purges_unreferenced_and_retires_referenced_stale_rows(
+    db_session, content_tree
+):
+    qdir = content_tree / "questions" / "aptitude"
+    qdir.mkdir(parents=True, exist_ok=True)
+    (qdir / "live.json").write_text(
+        json.dumps(
+            {
+                "id": "live-q-1",
+                "topic": "aptitude",
+                "subtopic": "percentages",
+                "difficulty": "Easy",
+                "prompt": "What is 10% of 50?",
+                "options": ["4", "5", "6", "7"],
+                "correct_index": 1,
+                "explanation": "10% of 50 is 5.",
+                "content_hash": "hash-live-q-1",
+                "review_status": "verified",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    user = User(
+        id="user-q-purge-test",
+        email="q_purge@merit.org",
+        display_name="Q Purge",
+        password_hash="x",
+    )
+    stale_unref = Question(
+        id="stale-unref-q",
+        topic="aptitude",
+        difficulty="Easy",
+        prompt="Deleted unreferenced?",
+        options='["a","b","c","d"]',
+        correct_index=0,
+        explanation="Deleted.",
+        source="generated",
+        content_hash="hash-stale-unref",
+        review_status="verified",
+    )
+    stale_ref = Question(
+        id="stale-ref-q",
+        topic="aptitude",
+        difficulty="Easy",
+        prompt="Deleted referenced?",
+        options='["a","b","c","d"]',
+        correct_index=0,
+        explanation="Retired.",
+        source="generated",
+        content_hash="hash-stale-ref",
+        review_status="verified",
+    )
+    attempt = QuizAttempt(
+        id="att-q-purge-1",
+        user_id=user.id,
+        topic_spec='{"topics":["aptitude"]}',
+        question_ids='["stale-ref-q"]',
+        total=1,
+        correct=0,
+        score_pct=0,
+        duration_sec=10,
+    )
+    answer = QuizAttemptAnswer(
+        attempt_id=attempt.id,
+        question_id="stale-ref-q",
+        selected_index=1,
+        is_correct=0,
+    )
+    db_session.add_all([user, stale_unref, stale_ref, attempt, answer])
+    db_session.commit()
+
+    seed_questions(db_session, content_tree / "questions")
+    db_session.expire_all()
+
+    assert db_session.get(Question, "live-q-1") is not None
+    assert db_session.get(Question, "stale-unref-q") is None
+    retired_row = db_session.get(Question, "stale-ref-q")
+    assert retired_row is not None
+    assert retired_row.review_status == "retired"
+
 
 

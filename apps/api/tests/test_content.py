@@ -70,10 +70,70 @@ def test_get_problem_detail():
     assert resp.status_code == 200
     problem = resp.json()
     assert problem["slug"] == "two-sum"
+    assert isinstance(problem["companies"], list)
     assert problem["function_name"] == "solve"
     assert len(problem["test_cases"]) >= 1
     assert all(tc["is_sample"] for tc in problem["test_cases"])
     assert len(problem["solutions"]) >= 1
+
+
+def test_problem_companies_filter_and_catalog():
+    client = TestClient(app)
+    slugs = ("two-sum", "asteroid-collision", "3sum")
+
+    initial_resp = client.get("/api/v1/problems/two-sum")
+    assert initial_resp.status_code == 200
+    assert len(initial_resp.json()["companies"]) >= 1
+
+    originals: dict[str, str | None] = {}
+    with SessionLocal() as db:
+        for slug in slugs:
+            problem = db.scalar(select(Problem).where(Problem.slug == slug))
+            assert problem is not None
+            originals[slug] = problem.companies_json
+            problem.companies_json = json.dumps(["MeritTestCo", "MeritAltCo"])
+        db.commit()
+
+    try:
+        list_resp = client.get("/api/v1/problems?limit=500")
+        assert list_resp.status_code == 200
+        listed = {problem["slug"]: problem for problem in list_resp.json()}
+        assert isinstance(listed["two-sum"]["companies"], list)
+        assert listed["two-sum"]["companies"] == ["MeritTestCo", "MeritAltCo"]
+
+        detail_resp = client.get("/api/v1/problems/two-sum")
+        assert detail_resp.status_code == 200
+        assert detail_resp.json()["companies"] == ["MeritTestCo", "MeritAltCo"]
+
+        filtered = client.get("/api/v1/problems?company=merittestco&limit=500")
+        assert filtered.status_code == 200
+        assert {problem["slug"] for problem in filtered.json()} == set(slugs)
+
+        paged = client.get("/api/v1/problems?company=MERITTESTCO&limit=1&offset=1")
+        assert paged.status_code == 200
+        page = paged.json()
+        assert len(page) == 1
+        assert page[0]["slug"] in set(slugs)
+
+        missing = client.get("/api/v1/problems?company=No-Such-Company")
+        assert missing.status_code == 200
+        assert missing.json() == []
+
+        catalog = client.get("/api/v1/companies")
+        assert catalog.status_code == 200
+        companies = catalog.json()
+        test_co = next(item for item in companies if item["name"] == "MeritTestCo")
+        alt_co = next(item for item in companies if item["name"] == "MeritAltCo")
+        assert test_co["count"] == 3
+        assert alt_co["count"] == 3
+        assert companies == sorted(companies, key=lambda item: (-item["count"], item["name"]))
+    finally:
+        with SessionLocal() as db:
+            for slug, prev in originals.items():
+                problem = db.scalar(select(Problem).where(Problem.slug == slug))
+                if problem is not None:
+                    problem.companies_json = prev
+            db.commit()
 
 
 def test_problem_detail_hides_hidden_test_cases():
@@ -167,7 +227,14 @@ def test_list_and_get_learning_paths():
     paths = resp.json()
     assert len(paths) >= 3
     slugs = {p["slug"] for p in paths}
-    assert slugs == {"foundation", "targeted", "mastery"}
+    assert slugs == {
+        "foundation",
+        "targeted",
+        "mastery",
+        "tcs-nqt",
+        "infosys-sp-dse",
+        "product-50",
+    }
 
     # Detail path
     p_resp = client.get("/api/v1/paths/foundation")

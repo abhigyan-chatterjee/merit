@@ -5,7 +5,7 @@ import json
 import logging
 from pathlib import Path
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
@@ -17,7 +17,9 @@ from app.models.content import (
     ProblemSolution,
     ProblemTestCase,
     Question,
+    QuestionReview,
 )
+from app.models.quiz import QuizAttemptAnswer
 from app.models.user import utcnow_iso
 
 logger = logging.getLogger(__name__)
@@ -164,6 +166,7 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
                 constraints_json=json.dumps(data.get("constraints", [])),
                 hints=json.dumps(data.get("hints", [])),
                 starter_code=json.dumps(starter_dict),
+                companies_json=json.dumps(data.get("companies", [])),
                 editorial_json=json.dumps(data["editorial"])
                 if data.get("editorial") is not None
                 else None,
@@ -226,6 +229,7 @@ def seed_problems(db: Session, content_dir: Path | None = None) -> int:
             existing.constraints_json = json.dumps(data.get("constraints", []))
             existing.hints = json.dumps(data.get("hints", []))
             existing.starter_code = json.dumps(starter_dict)
+            existing.companies_json = json.dumps(data.get("companies", []))
             existing.function_name = data.get("functionName", "solve")
             existing.time_limit_ms = data.get("timeLimitMs", 2000)
             if data.get("editorial") is not None:
@@ -319,6 +323,7 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
 
     count = 0
     skipped: list[str] = []
+    disk_ids: set[str] = set()
     for q_file in sorted(questions_dir.glob("*/*.json")):
         # `scrap-` is authoritative, same as problems: a missing or edited
         # status key must not be able to smuggle a draft into the served set.
@@ -327,11 +332,12 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
         try:
             with open(q_file, encoding="utf-8") as f:
                 data = json.load(f)
+            qid = data["id"]
         except (OSError, ValueError, KeyError) as err:
             skipped.append(f"{q_file.name}: {err}")
             continue
 
-        qid = data["id"]
+        disk_ids.add(qid)
         existing = db.scalar(select(Question).where(Question.id == qid))
 
         if not existing:
@@ -366,6 +372,32 @@ def seed_questions(db: Session, questions_dir: Path | None = None) -> int:
             existing.options = json.dumps(data["options"])
             existing.correct_index = data["correct_index"]
             existing.explanation = data["explanation"]
+
+    # Purge/retire stale questions removed from disk so retired generator items
+    # do not keep serving or violate QAF instance caps on existing deployments.
+    if not disk_ids:
+        logger.warning("No question files found; skipping purge of existing questions")
+    else:
+        stale_rows = db.scalars(select(Question).where(Question.id.notin_(disk_ids))).all()
+        if stale_rows:
+            stale_ids = [row.id for row in stale_rows]
+            referenced_ids = set(
+                db.scalars(
+                    select(QuizAttemptAnswer.question_id).where(
+                        QuizAttemptAnswer.question_id.in_(stale_ids)
+                    )
+                ).all()
+            )
+            unreferenced_ids = [qid for qid in stale_ids if qid not in referenced_ids]
+            if unreferenced_ids:
+                db.execute(
+                    delete(QuestionReview).where(QuestionReview.question_id.in_(unreferenced_ids))
+                )
+            for row in stale_rows:
+                if row.id in referenced_ids:
+                    row.review_status = "retired"
+                else:
+                    db.delete(row)
 
     db.commit()
     if skipped:
