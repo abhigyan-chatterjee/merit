@@ -94,4 +94,31 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
     expect(mockNavigate).toHaveBeenCalledWith('/visualizers/heap');
   });
+
+  it('finds and navigates to targeted exam when searching', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'TCS NQT' } });
+
+    const examOption = screen.getByRole('option', { name: /TCS NQT & Digital Mock/i });
+    expect(examOption).toBeInTheDocument();
+    expect(screen.getByText('Exam')).toBeInTheDocument();
+
+    fireEvent.click(examOption);
+    expect(mockNavigate).toHaveBeenCalledWith('/exams/tcs-nqt');
+  });
+
+  it('finds and navigates to quiz topic when searching', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'SQL' } });
+
+    expect(screen.getByText(/SQL & Databases/i)).toBeInTheDocument();
+    expect(screen.getByText('Quiz')).toBeInTheDocument();
+
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(mockNavigate).toHaveBeenCalledWith('/quiz/sql');
+  });
 });

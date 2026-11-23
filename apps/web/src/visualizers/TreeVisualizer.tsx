@@ -51,7 +51,19 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
   const [traversalOrder, setTraversalOrder] = useState<'inorder' | 'preorder' | 'postorder'>('inorder');
 
   // Playback
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(() =>
+    variant === 'heap'
+      ? [
+          {
+            highlightNodeIds: [],
+            activeNodeId: null,
+            activeLine: -1,
+            log: 'Heap ready. Insert or extract to step through heapify.',
+            heap: [12, 18, 25, 30, 42, 55, 68],
+          },
+        ]
+      : []
+  );
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -116,8 +128,22 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
 
   // Sync frames on tree or traversal change
   useEffect(() => {
-    generateTraversalFrames();
-  }, [generateTraversalFrames]);
+    if (variant === 'heap') {
+      setFrames([
+        {
+          highlightNodeIds: [],
+          activeNodeId: null,
+          activeLine: -1,
+          log: 'Heap ready. Insert or extract to step through heapify.',
+          heap: [...heapInstance.items],
+        },
+      ]);
+      setFrameIdx(0);
+      setIsPlaying(false);
+    } else {
+      generateTraversalFrames();
+    }
+  }, [variant, generateTraversalFrames]);
 
   // Timer loop for animation
   useEffect(() => {
@@ -182,14 +208,21 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       },
     ];
 
+    const findNodeVal = (node: TreeNode | null, id: string): number | null => {
+      if (!node) return null;
+      if (node.id === id) return node.value;
+      return findNodeVal(node.left, id) ?? findNodeVal(node.right, id);
+    };
+
     const currentPath: string[] = [];
     for (let i = 0; i < path.length; i++) {
       currentPath.push(path[i]);
+      const nodeVal = findNodeVal(treeRoot, path[i]) ?? path[i];
       animFrames.push({
         highlightNodeIds: [...currentPath],
         activeNodeId: path[i],
         activeLine: 6,
-        log: `Checking node ${path[i]} against target ${num}`,
+        log: `Checking node ${nodeVal} against target ${num}`,
       });
     }
 
@@ -230,7 +263,15 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     setHeapType(type);
     const rebuilt = new BinaryHeap(type, heapInstance.items);
     setHeapInstance(rebuilt);
-    setFrames([]);
+    setFrames([
+      {
+        highlightNodeIds: [],
+        activeNodeId: null,
+        activeLine: -1,
+        log: 'Heap ready. Insert or extract to step through heapify.',
+        heap: [...rebuilt.items],
+      },
+    ]);
     setFrameIdx(0);
     setIsPlaying(false);
   };
@@ -239,8 +280,17 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
   const handleReset = () => {
     setIsPlaying(false);
     if (variant === 'heap') {
-      setHeapInstance(new BinaryHeap(heapType, [12, 18, 25, 30, 42, 55, 68]));
-      setFrames([]);
+      const resetHeap = new BinaryHeap(heapType, [12, 18, 25, 30, 42, 55, 68]);
+      setHeapInstance(resetHeap);
+      setFrames([
+        {
+          highlightNodeIds: [],
+          activeNodeId: null,
+          activeLine: -1,
+          log: 'Heap ready. Insert or extract to step through heapify.',
+          heap: [...resetHeap.items],
+        },
+      ]);
       setFrameIdx(0);
     } else if (variant === 'bst') {
       let root: TreeNode | null = null;
@@ -265,20 +315,31 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
         onPlayPause={() => setIsPlaying(!isPlaying)}
         onStepForward={() => {
           setIsPlaying(false);
-          setFrameIdx((p) => Math.min(frames.length - 1, p + 1));
+          setFrameIdx((p) => (frames.length > 0 ? Math.min(frames.length - 1, p + 1) : 0));
         }}
         onStepBack={() => {
           setIsPlaying(false);
           setFrameIdx((p) => Math.max(0, p - 1));
         }}
+        disabledBack={frameIdx <= 0}
+        disabledStep={frames.length === 0 || frameIdx >= frames.length - 1}
         onReset={handleReset}
         onRandomize={() => {
+          setIsPlaying(false);
           const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
           if (variant === 'heap') {
-            setHeapInstance(new BinaryHeap(heapType, randoms));
-            setFrames([]);
+            const newHeap = new BinaryHeap(heapType, randoms);
+            setHeapInstance(newHeap);
+            setFrames([
+              {
+                highlightNodeIds: [],
+                activeNodeId: null,
+                activeLine: -1,
+                log: 'Heap ready. Insert or extract to step through heapify.',
+                heap: [...newHeap.items],
+              },
+            ]);
             setFrameIdx(0);
-            setIsPlaying(false);
           } else {
             let root: TreeNode | null = null;
             for (const r of randoms) {

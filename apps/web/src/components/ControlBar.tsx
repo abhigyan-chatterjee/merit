@@ -37,7 +37,15 @@ export const ControlBar: React.FC<ControlBarProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+      if (
+        target &&
+        (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName) ||
+          target.isContentEditable ||
+          target.getAttribute('role') === 'button' ||
+          Boolean(target.closest('button, a, input, textarea, select, [role="button"]')))
+      ) {
+        return;
+      }
 
       if (event.key === ' ') {
         event.preventDefault();

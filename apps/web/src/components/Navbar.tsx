@@ -24,6 +24,15 @@ import { useDialogFocus } from '../hooks/useDialogFocus';
 import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
+import { TARGETED_EXAMS } from '../data/exams';
+
+const QUIZ_TRACKS = [
+  { id: 'aptitude', title: 'Aptitude', description: 'Quant, logical reasoning, and verbal for screening rounds.' },
+  { id: 'verbal', title: 'Verbal Ability', description: 'Grammar correction, vocabulary in context, para-jumbles, and inference.' },
+  { id: 'sql', title: 'SQL & Databases', description: 'Queries, joins, grouping, NULL traps, and window functions.' },
+  { id: 'cs-fundamentals', title: 'CS Fundamentals', description: 'Operating systems, memory management, networks, and DBMS.' },
+  { id: 'mixed', title: 'Mixed Mastery', description: 'Adaptive placement assessment drawn across all verified items.' },
+] as const;
 
 const scoreMatch = (title: string, q: string, extra: string[] = [], blurb?: string) => {
   const t = title.toLowerCase();
@@ -79,7 +88,9 @@ export const Navbar: React.FC = () => {
   type PaletteEntry =
     | { kind: 'path'; path: (typeof LEARNING_PATHS)[number]; score: number; navigate: () => void }
     | { kind: 'visualizer'; viz: (typeof VISUALIZERS)[number]; score: number; navigate: () => void }
-    | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void };
+    | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void }
+    | { kind: 'exam'; exam: (typeof TARGETED_EXAMS)[number]; score: number; navigate: () => void }
+    | { kind: 'quiz'; quiz: (typeof QUIZ_TRACKS)[number]; score: number; navigate: () => void };
 
   const entries = useMemo<PaletteEntry[]>(() => {
     const q = query.trim().toLowerCase();
@@ -166,11 +177,64 @@ export const Navbar: React.FC = () => {
           navigate(`/problems/${p.topic}/${p.slug}`);
         }
       }));
-    const combined = [...pathHits, ...vizHits, ...probHits];
-    const kindRank = (e: PaletteEntry) =>
-      e.kind === 'path' ? 0 : e.kind === 'visualizer' ? 1 : 2;
-    const titleOf = (e: PaletteEntry) =>
-      e.kind === 'path' ? e.path.title : e.kind === 'visualizer' ? e.viz.title : e.problem.title;
+    const examHits: PaletteEntry[] = TARGETED_EXAMS.filter(
+      (e) =>
+        e.title.toLowerCase().includes(q) ||
+        e.description.toLowerCase().includes(q) ||
+        (e.company && e.company.toLowerCase().includes(q)) ||
+        e.category.toLowerCase().includes(q)
+    ).map((e) => ({
+      kind: 'exam',
+      exam: e,
+      score: scoreMatch(e.title, q, [e.company ?? '', e.category], e.description),
+      navigate: () => {
+        setSearchOpen(false);
+        navigate(`/exams/${e.id}`);
+      }
+    }));
+    const quizHits: PaletteEntry[] = QUIZ_TRACKS.filter(
+      (quiz) =>
+        quiz.title.toLowerCase().includes(q) ||
+        quiz.description.toLowerCase().includes(q) ||
+        quiz.id.toLowerCase().includes(q)
+    ).map((quiz) => ({
+      kind: 'quiz',
+      quiz,
+      score: scoreMatch(quiz.title, q, [quiz.id], quiz.description),
+      navigate: () => {
+        setSearchOpen(false);
+        navigate(`/quiz/${quiz.id}`);
+      }
+    }));
+    const combined = [...pathHits, ...vizHits, ...probHits, ...examHits, ...quizHits];
+    const kindRank = (e: PaletteEntry) => {
+      switch (e.kind) {
+        case 'path':
+          return 0;
+        case 'visualizer':
+          return 1;
+        case 'exam':
+          return 2;
+        case 'quiz':
+          return 3;
+        case 'problem':
+          return 4;
+      }
+    };
+    const titleOf = (e: PaletteEntry) => {
+      switch (e.kind) {
+        case 'path':
+          return e.path.title;
+        case 'visualizer':
+          return e.viz.title;
+        case 'problem':
+          return e.problem.title;
+        case 'exam':
+          return e.exam.title;
+        case 'quiz':
+          return e.quiz.title;
+      }
+    };
     combined.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       const kr = kindRank(a) - kindRank(b);
@@ -485,6 +549,60 @@ export const Navbar: React.FC = () => {
                         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
                           {v.category}
                         </span>
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'exam') {
+                  const exam = entry.exam;
+                  return (
+                    <button
+                      key={`exam-${exam.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <GraduationCap className="w-3.5 h-3.5 text-mint shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">{exam.title}</span>
+                        {exam.company && (
+                          <span className="text-[10px] font-mono text-violet truncate hidden sm:inline">
+                            {exam.company}
+                          </span>
+                        )}
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Exam" />
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                          {exam.category}
+                        </span>
+                        <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </span>
+                    </button>
+                  );
+                }
+                if (entry.kind === 'quiz') {
+                  const quiz = entry.quiz;
+                  return (
+                    <button
+                      key={`quiz-${quiz.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
+                    >
+                      <span className="flex items-center gap-2.5 min-w-0">
+                        <BrainCircuit className="w-3.5 h-3.5 text-mint shrink-0" />
+                        <span className="text-xs font-medium text-ink truncate">{quiz.title}</span>
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Quiz" />
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>

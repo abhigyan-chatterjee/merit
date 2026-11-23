@@ -23,9 +23,10 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText(/still loaded/i)).toBeInTheDocument();
     // A reference the user can quote in a bug report.
     expect(screen.getByText(/^ref /)).toBeInTheDocument();
-    // Two ways out, not a dead end.
+    // Three ways out, not a dead end.
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /reload/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /go home/i })).toBeInTheDocument();
 
     spy.mockRestore();
   });

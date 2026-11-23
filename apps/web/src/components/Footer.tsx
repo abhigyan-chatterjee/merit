@@ -24,6 +24,7 @@ const COLUMNS: { title: string; links: { to: string; label: string }[] }[] = [
   {
     title: 'Assess',
     links: [
+      { to: '/exams', label: 'Mock exams' },
       { to: '/quiz/mixed', label: 'Mixed quiz' },
       { to: '/quiz/arrays-hashing', label: 'Arrays quiz' },
       { to: '/quiz/graphs', label: 'Graphs quiz' },

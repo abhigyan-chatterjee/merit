@@ -37,6 +37,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
     window.location.reload();
   };
 
+  private handleGoHome = () => {
+    window.location.assign('/');
+  };
+
   render() {
     const { error } = this.state;
     if (!error) return this.props.children;
@@ -75,6 +79,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink hover:border-steel transition-colors cursor-pointer"
             >
               Reload the app
+            </button>
+            <button
+              type="button"
+              onClick={this.handleGoHome}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink hover:border-steel transition-colors cursor-pointer"
+            >
+              Go home
             </button>
           </div>
         </div>
