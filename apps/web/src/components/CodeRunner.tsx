@@ -622,22 +622,26 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             ref={runSamplesRef}
             onClick={handleRunSamples}
             disabled={isRunning || isSubmitting}
+            title={!user ? "Sign in required to run code" : undefined}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
               isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
             }`}
           >
             <Play className={`w-3.5 h-3.5 text-mint ${isRunning ? "animate-spin" : ""}`} />
             <span>{isRunning ? "Testing…" : "Run Samples"}</span>
+            {!user && <Lock className="w-3 h-3 opacity-70" aria-hidden="true" />}
           </button>
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
+            title={!user ? "Sign in required to submit" : undefined}
             className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
             }`}
           >
             <Send className={`w-3.5 h-3.5 ${isSubmitting ? "animate-spin" : ""}`} />
             <span>{isSubmitting ? "Judging…" : "Submit"}</span>
+            {!user && <Lock className="w-3 h-3 opacity-70" aria-hidden="true" />}
           </button>
         </div>
       </nav>
@@ -650,13 +654,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
               <div className="mb-4 p-2.5 rounded-lg border border-line bg-canvas flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-1.5 font-mono text-xs text-muted">
                   <Lock className="w-3.5 h-3.5 text-muted shrink-0" />
-                  Guest mode: you can test code, but solutions are not saved.
+                  Sign in to run or submit code. Your draft stays saved locally across sign-in.
                 </span>
                 <Link
                   to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`}
                   className="text-mint hover:underline font-semibold font-mono text-xs"
                 >
-                  Log in to track
+                  Sign in
                 </Link>
               </div>
             )}

@@ -376,4 +376,49 @@ describe('CodeRunner Component (Phase 4)', () => {
       'line1\n  line2'
     );
   });
+
+  it('shows upfront sign-in notice for guests without misleading test-code copy', () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+
+    expect(screen.getByText(/Sign in to run or submit code/i)).toBeVisible();
+    expect(screen.getByText(/draft stays saved locally/i)).toBeVisible();
+    expect(screen.queryByText(/you can test code/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+      'href',
+      '/login?next=%2Fproblems%2Farrays-hashing%2Ftwo-sum',
+    );
+    expect(screen.getByRole('button', { name: /Run Samples/i })).toHaveAttribute(
+      'title',
+      'Sign in required to run code',
+    );
+    expect(screen.getByRole('button', { name: /^Submit$/i })).toHaveAttribute(
+      'title',
+      'Sign in required to submit',
+    );
+  });
+
+  it('persists guest editor drafts in localStorage across remounts', () => {
+    const first = renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+
+    const editor = screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement;
+    fireEvent.change(editor, { target: { value: 'def solve(nums, target):\n    return [0, 1]' } });
+    first.unmount();
+
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    expect(screen.getByLabelText(/Code Editor/i)).toHaveValue(
+      'def solve(nums, target):\n    return [0, 1]',
+    );
+  });
 });
