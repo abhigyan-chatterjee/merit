@@ -4,7 +4,6 @@ import { ComplexityBadge } from './ComplexityBadge';
 interface PseudoCodePanelProps {
   title?: string;
   lines?: string[];
-  codeLines?: string[];
   activeLine?: number;
   timeComplexity?: string;
   spaceComplexity?: string;
@@ -13,15 +12,15 @@ interface PseudoCodePanelProps {
 
 export const PseudoCodePanel: React.FC<PseudoCodePanelProps> = ({
   title = 'Algorithm Logic',
-  lines,
-  codeLines,
+  lines = [],
   activeLine,
   timeComplexity = 'O(log n)',
   spaceComplexity = 'O(h)',
   logs = []
 }) => {
-  const displayLines = lines || codeLines || [];
   const logRef = useRef<HTMLDivElement>(null);
+  const highlightedLine =
+    activeLine !== undefined && activeLine >= 0 && activeLine < lines.length ? activeLine : -1;
 
   useEffect(() => {
     if (logRef.current) {
@@ -43,8 +42,8 @@ export const PseudoCodePanel: React.FC<PseudoCodePanelProps> = ({
         </div>
 
         <div className="font-mono text-[11px] leading-relaxed py-1.5 bg-canvas">
-          {displayLines.map((line, index) => {
-            const isActive = activeLine === index;
+          {lines.map((line, index) => {
+            const isActive = index === highlightedLine;
             return (
               <div
                 key={index}

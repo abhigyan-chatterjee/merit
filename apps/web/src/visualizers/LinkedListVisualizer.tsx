@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ControlBar } from '../components/ControlBar';
 import { VisualizerCanvas } from '../components/VisualizerCanvas';
 import { PseudoCodePanel } from '../components/PseudoCodePanel';
@@ -17,35 +17,35 @@ interface Frame {
   log: string;
 }
 
+const INITIAL_NODES: LLNode[] = [
+  { id: 'n1', value: 12 },
+  { id: 'n2', value: 34 },
+  { id: 'n3', value: 56 },
+  { id: 'n4', value: 78 },
+];
+
+const readyFrame = (values: LLNode[]): Frame => ({
+  nodes: values.map((n) => ({ ...n })),
+  activeNodeIds: [],
+  pointers: [
+    { label: 'HEAD', nodeId: values[0]?.id || '', color: 'var(--c-mint)' },
+    { label: 'TAIL', nodeId: values[values.length - 1]?.id || '', color: 'var(--c-violet)' },
+  ],
+  activeLine: -1,
+  log: 'Linked list initialized with head and tail pointers.',
+});
+
 export const LinkedListVisualizer: React.FC = () => {
-  const [nodes, setNodes] = useState<LLNode[]>([
-    { id: 'n1', value: 12 },
-    { id: 'n2', value: 34 },
-    { id: 'n3', value: 56 },
-    { id: 'n4', value: 78 },
-  ]);
+  const [nodes, setNodes] = useState<LLNode[]>(INITIAL_NODES.map((n) => ({ ...n })));
   const [inputVal, setInputVal] = useState('99');
 
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(() => [readyFrame(INITIAL_NODES)]);
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const nextNodeId = useRef(1);
 
-  useEffect(() => {
-    setFrames([
-      {
-        nodes: [...nodes],
-        activeNodeIds: [],
-        pointers: [
-          { label: 'HEAD', nodeId: nodes[0]?.id || '', color: 'var(--c-mint)' },
-          { label: 'TAIL', nodeId: nodes[nodes.length - 1]?.id || '', color: 'var(--c-violet)' },
-        ],
-        activeLine: 0,
-        log: 'Linked list initialized with head and tail pointers.',
-      },
-    ]);
-    setFrameIdx(0);
-  }, [nodes]);
+  const makeNodeId = () => `n-${nextNodeId.current++}`;
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -63,14 +63,15 @@ export const LinkedListVisualizer: React.FC = () => {
 
   // Insert Head
   const handleInsertHead = () => {
-    const val = parseInt(inputVal, 10) || 10;
-    const newNode: LLNode = { id: `n-${Date.now()}`, value: val };
+    const parsed = parseInt(inputVal, 10);
+    const val = Number.isNaN(parsed) ? 10 : parsed;
+    const newNode: LLNode = { id: makeNodeId(), value: val };
 
     const generated: Frame[] = [
       {
         nodes: [...nodes],
         activeNodeIds: [],
-        activeLine: 1,
+        activeLine: 0,
         log: `Allocated new node with value ${val}`,
       },
       {
@@ -80,7 +81,7 @@ export const LinkedListVisualizer: React.FC = () => {
           { label: 'NEW', nodeId: newNode.id, color: 'var(--c-amber)' },
           { label: 'HEAD', nodeId: nodes[0]?.id || '', color: 'var(--c-mint)' },
         ],
-        activeLine: 2,
+        activeLine: 1,
         log: `Pointed newNode.next -> current HEAD (${nodes[0]?.value ?? 'null'})`,
       },
       {
@@ -90,7 +91,7 @@ export const LinkedListVisualizer: React.FC = () => {
           { label: 'HEAD', nodeId: newNode.id, color: 'var(--c-mint)' },
           { label: 'TAIL', nodeId: nodes[nodes.length - 1]?.id || newNode.id, color: 'var(--c-violet)' },
         ],
-        activeLine: 3,
+        activeLine: 2,
         log: `Updated HEAD pointer to new node ${val}. O(1) prepend complete.`,
       },
     ];
@@ -103,14 +104,15 @@ export const LinkedListVisualizer: React.FC = () => {
 
   // Insert Tail
   const handleInsertTail = () => {
-    const val = parseInt(inputVal, 10) || 99;
-    const newNode: LLNode = { id: `n-${Date.now()}`, value: val };
+    const parsed = parseInt(inputVal, 10);
+    const val = Number.isNaN(parsed) ? 99 : parsed;
+    const newNode: LLNode = { id: makeNodeId(), value: val };
 
     const generated: Frame[] = [
       {
         nodes: [...nodes],
         activeNodeIds: [],
-        activeLine: 1,
+        activeLine: 0,
         log: `Allocated new node with value ${val}`,
       },
       {
@@ -120,7 +122,7 @@ export const LinkedListVisualizer: React.FC = () => {
           { label: 'TAIL', nodeId: nodes[nodes.length - 1]?.id || '', color: 'var(--c-violet)' },
           { label: 'NEW', nodeId: newNode.id, color: 'var(--c-amber)' },
         ],
-        activeLine: 2,
+        activeLine: 3,
         log: `Rewired tail.next -> newNode (${val})`,
       },
       {
@@ -151,8 +153,8 @@ export const LinkedListVisualizer: React.FC = () => {
       {
         nodes: [...nodes],
         activeNodeIds: [oldHead.id],
-        pointers: [{ label: 'DEL', nodeId: oldHead.id, color: 'var(--c-rose, #f43f5e)' }],
-        activeLine: 1,
+        pointers: [{ label: 'DEL', nodeId: oldHead.id, color: 'var(--c-rose)' }],
+        activeLine: 4,
         log: `Targeting HEAD node (${oldHead.value}) for removal`,
       },
       {
@@ -162,7 +164,7 @@ export const LinkedListVisualizer: React.FC = () => {
           { label: 'HEAD', nodeId: newHead.id, color: 'var(--c-mint)' },
           { label: 'TAIL', nodeId: nodes[nodes.length - 1].id, color: 'var(--c-violet)' },
         ],
-        activeLine: 2,
+        activeLine: 4,
         log: `Advanced HEAD to next node (${newHead.value}). Free old head memory.`,
       },
     ];
@@ -181,7 +183,7 @@ export const LinkedListVisualizer: React.FC = () => {
         nodes: [...nodes],
         activeNodeIds: [],
         pointers: [{ label: 'CURR', nodeId: nodes[0].id, color: 'var(--c-amber)' }],
-        activeLine: 1,
+        activeLine: 5,
         log: 'Initializing 3-pointer in-place reversal: prev = null, curr = head',
       },
     ];
@@ -199,7 +201,7 @@ export const LinkedListVisualizer: React.FC = () => {
           ...(i > 0 ? [{ label: 'PREV', nodeId: nodes[i - 1].id, color: 'var(--c-mint)' }] : []),
           ...(i < nodes.length - 1 ? [{ label: 'NEXT', nodeId: nodes[i + 1].id, color: 'var(--c-violet)' }] : []),
         ],
-        activeLine: 3,
+        activeLine: 6,
         log: `Reversing link of node ${currNode.value}: curr.next = prev`,
       });
     }
@@ -211,7 +213,7 @@ export const LinkedListVisualizer: React.FC = () => {
         { label: 'HEAD', nodeId: reversed[0].id, color: 'var(--c-mint)' },
         { label: 'TAIL', nodeId: reversed[reversed.length - 1].id, color: 'var(--c-violet)' },
       ],
-      activeLine: 5,
+      activeLine: 7,
       log: 'Reversal complete! New HEAD established.',
     });
 
@@ -221,12 +223,7 @@ export const LinkedListVisualizer: React.FC = () => {
     setIsPlaying(true);
   };
 
-  const curr = frames[frameIdx] || {
-    nodes,
-    activeNodeIds: [],
-    activeLine: 0,
-    log: 'Ready',
-  };
+  const curr = frames[frameIdx] || readyFrame(nodes);
 
   return (
     <div className="space-y-4">
@@ -243,19 +240,19 @@ export const LinkedListVisualizer: React.FC = () => {
         }}
         onReset={() => {
           setIsPlaying(false);
-          setNodes([
-            { id: 'n1', value: 12 },
-            { id: 'n2', value: 34 },
-            { id: 'n3', value: 56 },
-            { id: 'n4', value: 78 },
-          ]);
+          setNodes(INITIAL_NODES.map((n) => ({ ...n })));
+          setFrames([readyFrame(INITIAL_NODES)]);
+          setFrameIdx(0);
         }}
         onRandomize={() => {
-          const rand = Array.from({ length: 5 }, (_, i) => ({
-            id: `r-${i}-${Date.now()}`,
+          const rand = Array.from({ length: 5 }, () => ({
+            id: makeNodeId(),
             value: Math.floor(Math.random() * 90) + 10,
           }));
+          setIsPlaying(false);
           setNodes(rand);
+          setFrames([readyFrame(rand)]);
+          setFrameIdx(0);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -396,8 +393,11 @@ export const LinkedListVisualizer: React.FC = () => {
               'node = new Node(value)',
               'node.next = head',
               'head = node  // Insert Head O(1)',
+              'tail.next = node  // Insert Tail O(1)',
+              'head = head.next  // Delete Head O(1)',
               'prev = null; curr = head',
               'while curr: next = curr.next; curr.next = prev; prev = curr; curr = next',
+              'head = prev  // Reversal complete',
             ]}
             activeLine={curr.activeLine}
             timeComplexity="Insert O(1) · Reverse O(n)"

@@ -136,7 +136,7 @@ export const VISUALIZERS: VisualizerItem[] = [
     title: 'Sorting Algorithms',
     category: 'Algorithms',
     description: 'Compare Bubble, Selection, Insertion, Merge, and Quick Sort with live swap & comparison counters.',
-    timeComplexity: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n²)' },
+    timeComplexity: { best: 'O(n)', avg: 'O(n log n)', worst: 'O(n²)' },
     spaceComplexity: 'O(1) - O(n)',
     keyOperations: ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Merge Sort', 'Quick Sort']
   },
@@ -156,7 +156,7 @@ export const VISUALIZERS: VisualizerItem[] = [
     description: 'Step-by-step pointer rewiring for head/tail insertion, deletion, and iterative reversal.',
     timeComplexity: { best: 'O(1)', avg: 'O(n)', worst: 'O(n)' },
     spaceComplexity: 'O(n)',
-    keyOperations: ['Insert Head', 'Insert Tail', 'Delete Node', 'Reverse List']
+    keyOperations: ['Insert Head', 'Insert Tail', 'Delete Head', 'Reverse List']
   },
   {
     id: 'stack',
@@ -189,10 +189,10 @@ export const VISUALIZERS: VisualizerItem[] = [
     id: 'bst',
     title: 'Binary Search Tree (BST)',
     category: 'Trees',
-    description: 'Ordered binary tree preserving left < root < right invariant with path highlighting.',
+    description: 'Ordered binary tree preserving left < root <= right invariant (duplicates to the right) with path highlighting.',
     timeComplexity: { best: 'O(log n)', avg: 'O(log n)', worst: 'O(n)' },
     spaceComplexity: 'O(h)',
-    keyOperations: ['Insert Key', 'Search Key', 'Delete Key', 'Find Min/Max']
+    keyOperations: ['Insert Key', 'Search Key', 'Inorder Traversal', 'Preorder Traversal', 'Postorder Traversal']
   },
   {
     id: 'heap',
@@ -226,7 +226,7 @@ export const VISUALIZERS: VisualizerItem[] = [
     title: 'Linear vs Binary Search',
     category: 'Algorithms',
     description: 'Side-by-side comparison of sequential O(n) scan against divide-and-conquer O(log n) mid-point halving.',
-    timeComplexity: { best: 'O(1)', avg: 'O(log n)', worst: 'O(log n)' },
+    timeComplexity: { best: 'O(1)', avg: 'O(log n)', worst: 'O(n)' },
     spaceComplexity: 'O(1)',
     keyOperations: ['Binary Search', 'Linear Search', 'Set Target', 'Random Sorted Array']
   },

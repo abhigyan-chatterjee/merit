@@ -19,6 +19,24 @@ interface Frame {
 
 const BUCKET_COUNT = 5;
 
+const INITIAL_BUCKETS: Entry[][] = [
+  [{ key: 'apple', value: '42' }],
+  [{ key: 'banana', value: '18' }],
+  [{ key: 'cherry', value: '99' }, { key: 'date', value: '73' }],
+  [],
+  [{ key: 'elderberry', value: '55' }],
+];
+
+const cloneBuckets = (buckets: Entry[][]): Entry[][] => buckets.map((b) => [...b]);
+
+const readyFrame = (buckets: Entry[][]): Frame => ({
+  buckets: cloneBuckets(buckets),
+  activeBucket: null,
+  activeKey: null,
+  activeLine: -1,
+  log: `Hash Map initialized with ${BUCKET_COUNT} buckets. Separate chaining active.`,
+});
+
 function hashKey(key: string, m: number = BUCKET_COUNT): number {
   let sum = 0;
   for (let i = 0; i < key.length; i++) {
@@ -28,34 +46,15 @@ function hashKey(key: string, m: number = BUCKET_COUNT): number {
 }
 
 export const HashMapVisualizer: React.FC = () => {
-  const [buckets, setBuckets] = useState<Entry[][]>(() => [
-    [{ key: 'apple', value: '42' }],
-    [{ key: 'banana', value: '18' }],
-    [{ key: 'cherry', value: '99' }, { key: 'date', value: '73' }],
-    [],
-    [{ key: 'elderberry', value: '55' }],
-  ]);
+  const [buckets, setBuckets] = useState<Entry[][]>(INITIAL_BUCKETS.map((b) => [...b]));
 
   const [inputKey, setInputKey] = useState('fig');
   const [inputVal, setInputVal] = useState('64');
 
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(() => [readyFrame(INITIAL_BUCKETS)]);
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-
-  useEffect(() => {
-    setFrames([
-      {
-        buckets: buckets.map((b) => [...b]),
-        activeBucket: null,
-        activeKey: null,
-        activeLine: 0,
-        log: `Hash Map initialized with ${BUCKET_COUNT} buckets. Separate chaining active.`,
-      },
-    ]);
-    setFrameIdx(0);
-  }, [buckets]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -80,15 +79,15 @@ export const HashMapVisualizer: React.FC = () => {
     const bIdx = hashKey(k);
     const generated: Frame[] = [
       {
-        buckets: buckets.map((b) => [...b]),
+        buckets: cloneBuckets(buckets),
         activeBucket: bIdx,
         activeKey: null,
-        activeLine: 1,
+        activeLine: 0,
         log: `hash("${k}") = sum(ascii) % ${BUCKET_COUNT} = Bucket [${bIdx}]`,
       },
     ];
 
-    const nextBuckets = buckets.map((b) => [...b]);
+    const nextBuckets = cloneBuckets(buckets);
     const existingIndex = nextBuckets[bIdx].findIndex((e) => e.key === k);
 
     if (existingIndex !== -1) {
@@ -125,10 +124,10 @@ export const HashMapVisualizer: React.FC = () => {
     const bIdx = hashKey(k);
     const generated: Frame[] = [
       {
-        buckets: buckets.map((b) => [...b]),
+        buckets: cloneBuckets(buckets),
         activeBucket: bIdx,
         activeKey: null,
-        activeLine: 1,
+        activeLine: 0,
         log: `Get("${k}"): Computing hash index -> Bucket [${bIdx}].`,
       },
     ];
@@ -139,7 +138,7 @@ export const HashMapVisualizer: React.FC = () => {
       const entry = chain[i];
       if (entry.key === k) {
         generated.push({
-          buckets: buckets.map((b) => [...b]),
+          buckets: cloneBuckets(buckets),
           activeBucket: bIdx,
           activeKey: k,
           activeLine: 2,
@@ -149,10 +148,10 @@ export const HashMapVisualizer: React.FC = () => {
         break;
       } else {
         generated.push({
-          buckets: buckets.map((b) => [...b]),
+          buckets: cloneBuckets(buckets),
           activeBucket: bIdx,
           activeKey: entry.key,
-          activeLine: 2,
+          activeLine: 1,
           log: `Checking "${entry.key}" != "${k}". Advancing collision chain...`,
         });
       }
@@ -160,10 +159,10 @@ export const HashMapVisualizer: React.FC = () => {
 
     if (!found) {
       generated.push({
-        buckets: buckets.map((b) => [...b]),
+        buckets: cloneBuckets(buckets),
         activeBucket: bIdx,
         activeKey: null,
-        activeLine: 5,
+        activeLine: 7,
         log: `Key "${k}" not found in Bucket [${bIdx}]. Returned null.`,
       });
     }
@@ -179,51 +178,50 @@ export const HashMapVisualizer: React.FC = () => {
     if (!k) return;
 
     const bIdx = hashKey(k);
-    const nextBuckets = buckets.map((b) => [...b]);
-    const filtered = nextBuckets[bIdx].filter((e) => e.key !== k);
+    const chain = buckets[bIdx];
+    const index = chain.findIndex((e) => e.key === k);
 
     const generated: Frame[] = [
       {
-        buckets: buckets.map((b) => [...b]),
+        buckets: cloneBuckets(buckets),
         activeBucket: bIdx,
         activeKey: k,
-        activeLine: 1,
+        activeLine: 0,
         log: `Delete("${k}"): Searching Bucket [${bIdx}]...`,
       },
-      {
-        buckets: nextBuckets.map((b, i) => (i === bIdx ? filtered : b)),
+    ];
+
+    if (index === -1) {
+      generated.push({
+        buckets: cloneBuckets(buckets),
         activeBucket: bIdx,
         activeKey: null,
-        activeLine: 4,
-        log: `Key "${k}" unlinked from Bucket [${bIdx}]. Deletion complete.`,
-      },
-    ];
+        activeLine: 7,
+        log: `Key not found: "${k}" is not present in Bucket [${bIdx}]. Nothing deleted.`,
+      });
+      setFrames(generated);
+      setFrameIdx(0);
+      setIsPlaying(true);
+      return;
+    }
 
-    setBuckets(nextBuckets.map((b, i) => (i === bIdx ? filtered : b)));
-    setFrames(generated);
-    setFrameIdx(0);
-    setIsPlaying(true);
-  };
+    generated.push({
+      buckets: cloneBuckets(buckets),
+      activeBucket: bIdx,
+      activeKey: k,
+      activeLine: 5,
+      log: `Found key "${k}" in Bucket [${bIdx}]. Unlinking its entry.`,
+    });
 
-  // Demo Collision
-  const handleTriggerCollision = () => {
-    // Find two keys with identical hash
-    const pair1 = { key: 'cat', value: '100' };
-    const pair2 = { key: 'act', value: '200' }; // anagram of cat -> same ASCII sum!
-
-    const bIdx = hashKey('cat');
-    const nextBuckets = buckets.map((b) => [...b]);
-    nextBuckets[bIdx] = [pair1, pair2];
-
-    const generated: Frame[] = [
-      {
-        buckets: nextBuckets,
-        activeBucket: bIdx,
-        activeKey: 'act',
-        activeLine: 4,
-        log: `Collision demonstration! hash("cat") === hash("act") (${bIdx}). Both stored in Bucket [${bIdx}] via linked chain.`,
-      },
-    ];
+    const nextBuckets = cloneBuckets(buckets);
+    nextBuckets[bIdx] = nextBuckets[bIdx].filter((e) => e.key !== k);
+    generated.push({
+      buckets: nextBuckets,
+      activeBucket: bIdx,
+      activeKey: null,
+      activeLine: 6,
+      log: `Key "${k}" unlinked from Bucket [${bIdx}]. Deletion complete.`,
+    });
 
     setBuckets(nextBuckets);
     setFrames(generated);
@@ -231,16 +229,46 @@ export const HashMapVisualizer: React.FC = () => {
     setIsPlaying(true);
   };
 
-  const totalEntries = buckets.reduce((acc, b) => acc + b.length, 0);
-  const loadFactor = (totalEntries / BUCKET_COUNT).toFixed(2);
+  // Demo Collision
+  const handleTriggerCollision = () => {
+    const working = cloneBuckets(buckets);
+    const bIdx = hashKey('cat');
+    const generated: Frame[] = [];
+    const snapshot = (activeKey: string | null, activeLine: number, log: string) => {
+      generated.push({
+        buckets: cloneBuckets(working),
+        activeBucket: bIdx,
+        activeKey,
+        activeLine,
+        log,
+      });
+    };
 
-  const curr = frames[frameIdx] || {
-    buckets,
-    activeBucket: null,
-    activeKey: null,
-    activeLine: 0,
-    log: 'Ready',
+    snapshot('cat', 0, `hash("cat") = ${bIdx}. Appending without clearing existing chain entries.`);
+    if (!working[bIdx].some((e) => e.key === 'cat')) {
+      working[bIdx].push({ key: 'cat', value: '100' });
+      snapshot('cat', 4, `Appended "cat" to Bucket [${bIdx}]. Existing entries preserved.`);
+    } else {
+      snapshot('cat', 1, `Key "cat" is already chained in Bucket [${bIdx}].`);
+    }
+
+    snapshot('act', 0, `hash("act") = ${bIdx} -> collision with "cat".`);
+    if (!working[bIdx].some((e) => e.key === 'act')) {
+      working[bIdx].push({ key: 'act', value: '200' });
+      snapshot('act', 4, `Chained colliding key "act" alongside the other entries in Bucket [${bIdx}].`);
+    } else {
+      snapshot('act', 1, `Key "act" is already chained in Bucket [${bIdx}].`);
+    }
+
+    setBuckets(working);
+    setFrames(generated);
+    setFrameIdx(0);
+    setIsPlaying(true);
   };
+
+  const curr = frames[frameIdx] || readyFrame(buckets);
+  const totalEntries = curr.buckets.reduce((acc, b) => acc + b.length, 0);
+  const loadFactor = (totalEntries / BUCKET_COUNT).toFixed(2);
 
   return (
     <div className="space-y-4">
@@ -257,13 +285,9 @@ export const HashMapVisualizer: React.FC = () => {
         }}
         onReset={() => {
           setIsPlaying(false);
-          setBuckets([
-            [{ key: 'apple', value: '42' }],
-            [{ key: 'banana', value: '18' }],
-            [{ key: 'cherry', value: '99' }, { key: 'date', value: '73' }],
-            [],
-            [{ key: 'elderberry', value: '55' }],
-          ]);
+          setBuckets(INITIAL_BUCKETS.map((b) => [...b]));
+          setFrames([readyFrame(INITIAL_BUCKETS)]);
+          setFrameIdx(0);
         }}
         onRandomize={() => {
           const words = ['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'theta', 'omega'];
@@ -271,7 +295,10 @@ export const HashMapVisualizer: React.FC = () => {
           for (const w of words) {
             newBuckets[hashKey(w)].push({ key: w, value: `${Math.floor(Math.random() * 90) + 10}` });
           }
+          setIsPlaying(false);
           setBuckets(newBuckets);
+          setFrames([readyFrame(newBuckets)]);
+          setFrameIdx(0);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -408,9 +435,12 @@ export const HashMapVisualizer: React.FC = () => {
             lines={[
               'bucket_index = hash(key) % BUCKET_COUNT',
               'for entry in buckets[bucket_index]:',
-              '    if entry.key == key: return entry.value',
-              'buckets[bucket_index].append(new Entry(key, value))',
-              'return null  // Key not found',
+              '    if entry.key == key: return entry.value  // get',
+              '    if entry.key == key: entry.value = value  // put update',
+              'buckets[bucket_index].append(new Entry(key, value))  // put insert',
+              'for entry in buckets[bucket_index]:',
+              '    if entry.key == key: unlink entry  // delete',
+              'return null  // key not found',
             ]}
             activeLine={curr.activeLine}
             timeComplexity="Average O(1) · Worst O(n)"

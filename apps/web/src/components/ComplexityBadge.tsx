@@ -3,7 +3,7 @@ import React from 'react';
 interface ComplexityBadgeProps {
   label: string;
   value: string;
-  variant?: 'mint' | 'violet' | 'amber';
+  variant?: 'mint' | 'violet';
 }
 
 export const ComplexityBadge: React.FC<ComplexityBadgeProps> = ({
@@ -13,8 +13,7 @@ export const ComplexityBadge: React.FC<ComplexityBadgeProps> = ({
 }) => {
   const tone = {
     mint: 'text-mint',
-    violet: 'text-violet',
-    amber: 'text-amber'
+    violet: 'text-violet'
   }[variant];
 
   return (

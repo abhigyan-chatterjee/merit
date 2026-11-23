@@ -132,12 +132,16 @@ export const GraphVisualizer: React.FC = () => {
       dfsVisit(startId);
     }
 
+    const unreachable = nodes.filter((n) => !visited.has(n.id)).map((n) => n.id);
     frames.push({
       currentNode: null,
       visited: Array.from(visited),
       frontier: [],
       activeLine: 0,
-      log: `Traversal complete. Visited ${visited.size} vertices.`
+      log:
+        unreachable.length > 0
+          ? `Traversal complete. Visited ${visited.size}/${nodes.length} vertices. Unreachable: ${unreachable.join(', ')}.`
+          : `Traversal complete. Visited all ${visited.size} vertices.`
     });
 
     setSteps(frames);
@@ -163,11 +167,26 @@ export const GraphVisualizer: React.FC = () => {
   }, [isPlaying, speed, steps.length]);
 
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    const svg = e.currentTarget;
     const [vbW, vbH] = [420, 350];
-    const x = Math.round((e.clientX - rect.left) * (vbW / rect.width));
-    const y = Math.round((e.clientY - rect.top) * (vbH / rect.height));
+    let x: number;
+    let y: number;
+
+    const ctm = typeof svg.getScreenCTM === 'function' ? svg.getScreenCTM() : null;
+    if (ctm) {
+      const point = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+      x = Math.round(point.x);
+      y = Math.round(point.y);
+    } else {
+      const rect = svg.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const scale = Math.min(rect.width / vbW, rect.height / vbH);
+      const offsetX = (rect.width - vbW * scale) / 2;
+      const offsetY = (rect.height - vbH * scale) / 2;
+      x = Math.round((e.clientX - rect.left - offsetX) / scale);
+      y = Math.round((e.clientY - rect.top - offsetY) / scale);
+    }
+
     // Keep within bounds
     if (x < 20 || x > vbW - 20 || y < 20 || y > vbH - 20) return;
     // Avoid adding on top of existing node
@@ -176,15 +195,34 @@ export const GraphVisualizer: React.FC = () => {
     setNodes([...nodes, { id: newId, x, y }]);
   };
 
-  const handleNodeClick = (e: React.MouseEvent, id: number) => {
-    e.stopPropagation();
+  const selectNode = (id: number) => {
     if (selectedNodeForEdge === null) {
       setSelectedNodeForEdge(id);
     } else if (selectedNodeForEdge === id) {
       setSelectedNodeForEdge(null);
     } else {
-      setEdges((prev) => [...prev, { from: selectedNodeForEdge, to: id }]);
+      const duplicate = edges.some(
+        (edge) =>
+          (edge.from === selectedNodeForEdge && edge.to === id) ||
+          (edge.from === id && edge.to === selectedNodeForEdge)
+      );
+      if (!duplicate) {
+        setEdges((prev) => [...prev, { from: selectedNodeForEdge, to: id }]);
+      }
       setSelectedNodeForEdge(null);
+    }
+  };
+
+  const handleNodeClick = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    selectNode(id);
+  };
+
+  const handleNodeKeyDown = (e: React.KeyboardEvent, id: number) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      selectNode(id);
     }
   };
 
@@ -290,6 +328,7 @@ export const GraphVisualizer: React.FC = () => {
                     y2={v.y}
                     stroke="var(--c-steel)"
                     strokeWidth={2.5}
+                    className="pointer-events-none"
                   />
                 );
               })}
@@ -316,6 +355,10 @@ export const GraphVisualizer: React.FC = () => {
                   <g
                     key={node.id}
                     onClick={(ev) => handleNodeClick(ev, node.id)}
+                    onKeyDown={(ev) => handleNodeKeyDown(ev, node.id)}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Vertex ${node.id}${isVisited ? ', visited' : ''}`}
                     className="cursor-pointer transition-transform hover:scale-110"
                   >
                     <circle

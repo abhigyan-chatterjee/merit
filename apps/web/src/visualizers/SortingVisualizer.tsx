@@ -17,22 +17,23 @@ interface SortStepFrame {
   log: string;
 }
 
+const generateArray = (size: number): number[] => {
+  const arr: number[] = [];
+  for (let i = 0; i < size; i++) {
+    arr.push(Math.floor(Math.random() * 88) + 10);
+  }
+  return arr;
+};
+
 export const SortingVisualizer: React.FC = () => {
   const [algorithm, setAlgorithm] = useState<SortAlgorithm>('quick');
   const [arraySize, setArraySize] = useState<number>(20);
+  const [baseArray, setBaseArray] = useState<number[]>(() => generateArray(20));
   const [speed, setSpeed] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [frames, setFrames] = useState<SortStepFrame[]>([]);
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(0);
   const timerRef = useRef<number | null>(null);
-
-  const generateRandomArray = useCallback((size: number) => {
-    const arr: number[] = [];
-    for (let i = 0; i < size; i++) {
-      arr.push(Math.floor(Math.random() * 88) + 10);
-    }
-    return arr;
-  }, []);
 
   const computeSortFrames = useCallback((initialArr: number[], algo: SortAlgorithm) => {
     const steps: SortStepFrame[] = [];
@@ -45,10 +46,11 @@ export const SortingVisualizer: React.FC = () => {
       comparing: number[],
       swapping: number[],
       activeLine: number,
-      log: string
+      log: string,
+      snapshot?: number[]
     ) => {
       steps.push({
-        array: [...arr],
+        array: snapshot ? [...snapshot] : [...arr],
         comparing,
         swapping,
         sorted: Array.from(sortedSet),
@@ -133,11 +135,13 @@ export const SortingVisualizer: React.FC = () => {
               record([], [i, j], 2, `Swap ${arr[i]} and ${arr[j]}`);
             }
           }
-          swps++;
-          [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
           const pIdx = i + 1;
+          if (pIdx !== high) {
+            swps++;
+            [arr[pIdx], arr[high]] = [arr[high], arr[pIdx]];
+          }
           sortedSet.add(pIdx);
-          record([], [pIdx, high], 2, `Pivot ${pivot} locked at index ${pIdx}`);
+          record([], [pIdx], 2, `Pivot ${pivot} locked at index ${pIdx}`);
           quickSort(low, pIdx - 1);
           quickSort(pIdx + 1, high);
         } else if (low === high) {
@@ -154,23 +158,34 @@ export const SortingVisualizer: React.FC = () => {
           k = l;
         while (i < left.length && j < right.length) {
           comps++;
-          record([l + i, m + 1 + j], [], 5, `Compare ${left[i]} and ${right[j]}`);
+          const compareSnapshot = [...arr];
+          compareSnapshot[l + i] = left[i];
+          compareSnapshot[m + 1 + j] = right[j];
+          record(
+            [l + i, m + 1 + j],
+            [],
+            5,
+            `Compare ${left[i]} at [${l + i}] and ${right[j]} at [${m + 1 + j}]`,
+            compareSnapshot
+          );
           if (left[i] <= right[j]) {
             arr[k] = left[i++];
           } else {
             arr[k] = right[j++];
-            swps++;
           }
-          record([], [k], 5, `Merged ${arr[k]} into position ${k}`);
+          swps++;
+          record([], [k], 5, `Wrote ${arr[k]} into position ${k}`);
           k++;
         }
         while (i < left.length) {
           arr[k] = left[i++];
+          swps++;
           record([], [k], 5, `Copy remaining left ${arr[k]} to index ${k}`);
           k++;
         }
         while (j < right.length) {
           arr[k] = right[j++];
+          swps++;
           record([], [k], 5, `Copy remaining right ${arr[k]} to index ${k}`);
           k++;
         }
@@ -192,17 +207,11 @@ export const SortingVisualizer: React.FC = () => {
     return steps;
   }, []);
 
-  const initWithRandom = useCallback(() => {
-    setIsPlaying(false);
-    const randomArr = generateRandomArray(arraySize);
-    const computed = computeSortFrames(randomArr, algorithm);
-    setFrames(computed);
-    setCurrentFrameIndex(0);
-  }, [arraySize, algorithm, generateRandomArray, computeSortFrames]);
-
   useEffect(() => {
-    initWithRandom();
-  }, [initWithRandom]);
+    setFrames(computeSortFrames(baseArray, algorithm));
+    setCurrentFrameIndex(0);
+    setIsPlaying(false);
+  }, [baseArray, algorithm, computeSortFrames]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -270,7 +279,11 @@ export const SortingVisualizer: React.FC = () => {
             value={arraySize}
             aria-label="Array size"
             aria-valuetext={`${arraySize} elements`}
-            onChange={(e) => setArraySize(parseInt(e.target.value, 10))}
+            onChange={(e) => {
+              const nextSize = parseInt(e.target.value, 10);
+              setArraySize(nextSize);
+              setBaseArray(generateArray(nextSize));
+            }}
             className="w-28 h-6 accent-mint cursor-pointer"
           />
           <span className="text-xs font-mono font-bold text-mint w-6">{arraySize}</span>
@@ -286,7 +299,7 @@ export const SortingVisualizer: React.FC = () => {
           setIsPlaying(false);
           setCurrentFrameIndex(0);
         }}
-        onRandomize={initWithRandom}
+        onRandomize={() => setBaseArray(generateArray(arraySize))}
         speed={speed}
         onSpeedChange={setSpeed}
         disabledStep={currentFrameIndex >= frames.length - 1}

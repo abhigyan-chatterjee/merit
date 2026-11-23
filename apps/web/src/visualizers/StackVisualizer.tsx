@@ -11,27 +11,25 @@ interface Frame {
   log: string;
 }
 
-export const StackVisualizer: React.FC = () => {
-  const [stack, setStack] = useState<number[]>([15, 28, 42, 63]);
-  const [inputVal, setInputVal] = useState('89');
+const INITIAL_STACK = [15, 28, 42, 63];
 
-  const [frames, setFrames] = useState<Frame[]>([]);
+const readyFrame = (values: number[]): Frame => ({
+  stack: [...values],
+  activeIndices: [],
+  topIndex: values.length - 1,
+  activeLine: -1,
+  log: `Stack ready. Size: ${values.length}, Top index: ${values.length - 1}.`,
+});
+
+export const StackVisualizer: React.FC = () => {
+  const [stack, setStack] = useState<number[]>(INITIAL_STACK);
+  const [inputVal, setInputVal] = useState('89');
+  const [status, setStatus] = useState('');
+
+  const [frames, setFrames] = useState<Frame[]>(() => [readyFrame(INITIAL_STACK)]);
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-
-  useEffect(() => {
-    setFrames([
-      {
-        stack: [...stack],
-        activeIndices: [],
-        topIndex: stack.length - 1,
-        activeLine: 0,
-        log: `Stack ready. Size: ${stack.length}, Top index: ${stack.length - 1}.`,
-      },
-    ]);
-    setFrameIdx(0);
-  }, [stack]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -49,11 +47,13 @@ export const StackVisualizer: React.FC = () => {
 
   // Push
   const handlePush = () => {
-    const val = parseInt(inputVal, 10) || 50;
+    const parsed = parseInt(inputVal, 10);
+    const val = Number.isNaN(parsed) ? 50 : parsed;
     if (stack.length >= 8) {
-      alert('Stack overflow visual limit (8 items)');
+      setStatus('Stack overflow: visual limit is 8 items.');
       return;
     }
+    setStatus('');
 
     const nextStack = [...stack, val];
     const generated: Frame[] = [
@@ -61,15 +61,15 @@ export const StackVisualizer: React.FC = () => {
         stack: [...stack],
         activeIndices: [],
         topIndex: stack.length - 1,
-        activeLine: 1,
-        log: `Push request for ${val}. Checking stack capacity...`,
+        activeLine: 0,
+        log: `Push request for ${val}. Increment TOP to ${stack.length}.`,
       },
       {
         stack: nextStack,
         activeIndices: [nextStack.length - 1],
         topIndex: nextStack.length - 1,
-        activeLine: 2,
-        log: `Pushed ${val} onto top of stack. Increment TOP to ${nextStack.length - 1}.`,
+        activeLine: 1,
+        log: `Pushed ${val} onto top of stack. TOP is ${nextStack.length - 1}.`,
       },
     ];
 
@@ -82,6 +82,7 @@ export const StackVisualizer: React.FC = () => {
   // Pop
   const handlePop = () => {
     if (stack.length === 0) return;
+    setStatus('');
     const poppedVal = stack[stack.length - 1];
     const nextStack = stack.slice(0, -1);
 
@@ -90,14 +91,14 @@ export const StackVisualizer: React.FC = () => {
         stack: [...stack],
         activeIndices: [stack.length - 1],
         topIndex: stack.length - 1,
-        activeLine: 3,
+        activeLine: 2,
         log: `Popping top element: ${poppedVal}`,
       },
       {
         stack: nextStack,
         activeIndices: [],
         topIndex: nextStack.length - 1,
-        activeLine: 4,
+        activeLine: 3,
         log: `Popped ${poppedVal} (LIFO order). New TOP: ${nextStack.length > 0 ? nextStack[nextStack.length - 1] : 'empty'}.`,
       },
     ];
@@ -111,6 +112,7 @@ export const StackVisualizer: React.FC = () => {
   // Peek
   const handlePeek = () => {
     if (stack.length === 0) return;
+    setStatus('');
     const topVal = stack[stack.length - 1];
 
     const generated: Frame[] = [
@@ -118,7 +120,7 @@ export const StackVisualizer: React.FC = () => {
         stack: [...stack],
         activeIndices: [stack.length - 1],
         topIndex: stack.length - 1,
-        activeLine: 5,
+        activeLine: 4,
         log: `O(1) Peek(): Top element is ${topVal} at index ${stack.length - 1}. Stack unchanged.`,
       },
     ];
@@ -130,25 +132,21 @@ export const StackVisualizer: React.FC = () => {
 
   // Clear
   const handleClear = () => {
+    setStatus('');
     setStack([]);
     setFrames([
       {
         stack: [],
         activeIndices: [],
         topIndex: -1,
-        activeLine: 0,
+        activeLine: -1,
         log: 'Stack cleared. TOP reset to -1.',
       },
     ]);
+    setFrameIdx(0);
   };
 
-  const curr = frames[frameIdx] || {
-    stack,
-    activeIndices: [],
-    topIndex: stack.length - 1,
-    activeLine: 0,
-    log: 'Ready',
-  };
+  const curr = frames[frameIdx] || readyFrame(stack);
 
   return (
     <div className="space-y-4">
@@ -165,11 +163,18 @@ export const StackVisualizer: React.FC = () => {
         }}
         onReset={() => {
           setIsPlaying(false);
-          setStack([15, 28, 42, 63]);
+          setStatus('');
+          setStack(INITIAL_STACK);
+          setFrames([readyFrame(INITIAL_STACK)]);
+          setFrameIdx(0);
         }}
         onRandomize={() => {
           const rand = Array.from({ length: 4 }, () => Math.floor(Math.random() * 90) + 10);
+          setIsPlaying(false);
+          setStatus('');
           setStack(rand);
+          setFrames([readyFrame(rand)]);
+          setFrameIdx(0);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -211,6 +216,12 @@ export const StackVisualizer: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {status && (
+        <p role="status" className="font-mono text-xs text-rose">
+          {status}
+        </p>
+      )}
 
       {/* Visual Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
