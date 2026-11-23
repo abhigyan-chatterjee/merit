@@ -163,8 +163,16 @@ def _extract_model_ids(payload: object) -> list[str]:
         raise _upstream_error()
     data = payload.get("data")
     if isinstance(data, list):
-        ids = [item["id"] for item in data if isinstance(item, dict)]
-        return [i for i in ids if isinstance(i, str)]
+        ids = [
+            i
+            for item in data
+            if isinstance(item, dict)
+            for i in [item.get("id")]
+            if isinstance(i, str) and i
+        ]
+        if not ids:
+            raise _upstream_error()
+        return ids
     models = payload.get("models")
     if isinstance(models, list):
         return [m for m in models if isinstance(m, str)]

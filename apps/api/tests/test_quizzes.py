@@ -163,6 +163,44 @@ def test_retry_wrong_questions():
     assert retry_qids == {questions[2]["id"], questions[3]["id"]}
 
 
+def test_topic_plan_bounds():
+    client = TestClient(app)
+    register_and_login(client, "quiz_topic_plan@merit.org", "Topic Plan")
+
+    too_many = client.post(
+        "/api/v1/quizzes/generate",
+        json={
+            "topics": ["arrays-hashing"],
+            "count": 1,
+            "topic_plan": [["arrays-hashing", 201]],
+        },
+    )
+    assert too_many.status_code == 422
+
+    total_too_large = client.post(
+        "/api/v1/quizzes/generate",
+        json={
+            "topics": ["arrays-hashing", "trees"],
+            "count": 1,
+            "topic_plan": [["arrays-hashing", 100], ["trees", 101]],
+        },
+    )
+    assert total_too_large.status_code == 422
+
+
+@pytest.mark.parametrize("count", [1, 2])
+def test_small_quiz_counts(count):
+    client = TestClient(app)
+    register_and_login(client, f"quiz_small_{count}@merit.org", f"Quiz Small {count}")
+
+    response = client.post(
+        "/api/v1/quizzes/generate",
+        json={"topics": ["arrays-hashing"], "count": count},
+    )
+    assert response.status_code == 200
+    assert len(response.json()["questions"]) == count
+
+
 def test_generate_unknown_topic_returns_404():
     client = TestClient(app)
     register_and_login(client, "quiz_user_4@merit.org", "Quiz User 4")

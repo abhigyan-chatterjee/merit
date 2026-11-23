@@ -1,6 +1,6 @@
 """Pydantic schemas for quizzes, attempts, and question sampling."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class QuizGenerateRequest(BaseModel):
@@ -14,6 +14,21 @@ class QuizGenerateRequest(BaseModel):
     # Optional per-section quotas, e.g. [["aptitude", 30], ["core-cs", 30]].
     # Sizes hold per topic instead of collapsing into one pool.
     topic_plan: list[tuple[str, int]] | None = None
+
+    @field_validator("topic_plan")
+    @classmethod
+    def validate_topic_plan(
+        cls, topic_plan: list[tuple[str, int]] | None
+    ) -> list[tuple[str, int]] | None:
+        if topic_plan is None:
+            return None
+        if len(topic_plan) > 20:
+            raise ValueError("topic_plan cannot contain more than 20 sections")
+        if any(count < 1 or count > 200 for _, count in topic_plan):
+            raise ValueError("each topic count must be between 1 and 200")
+        if sum(count for _, count in topic_plan) > 200:
+            raise ValueError("topic_plan total cannot exceed 200")
+        return topic_plan
 
 
 class QuizQuestionItem(BaseModel):
