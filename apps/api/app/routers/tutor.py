@@ -11,14 +11,17 @@ used here. Multi-worker exactness is explicitly out of scope pre-launch:
 each process tracks its own buckets.
 """
 
+import asyncio
 import ipaddress
 import logging
 import re
 import socket
 import time
+from collections.abc import AsyncIterator, Iterable
 from threading import Lock
 from urllib.parse import urlsplit
 
+import httpcore
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
@@ -40,6 +43,7 @@ router = APIRouter(prefix="/api/v1/tutor", tags=["tutor"])
 
 MODELS_TIMEOUT_S = 10.0
 CHAT_TIMEOUT_S = 30.0
+MAX_PROVIDER_RESPONSE_BYTES = 1_048_576
 RATE_LIMIT_MAX_REQUESTS = 30
 RATE_LIMIT_WINDOW_S = 60.0
 
@@ -83,11 +87,127 @@ def _bad_url() -> HTTPException:
     )
 
 
-def _validate_provider_url(base_url: str) -> None:
+def _content_length_exceeds_limit(headers: object, max_bytes: int) -> bool:
+    getter = getattr(headers, "get", None)
+    if not callable(getter):
+        return False
+    raw = getter("content-length")
+    if raw is None:
+        raw = getter("Content-Length")
+    if raw is None:
+        return False
+    try:
+        return int(str(raw).strip()) > max_bytes
+    except ValueError:
+        return False
+
+
+class _PinnedDNSBackend(httpcore.AsyncNetworkBackend):
+    """Connect only to pre-validated IPs so DNS cannot rebind after validation."""
+
+    def __init__(
+        self,
+        expected_host: str,
+        pinned_ips: tuple[str, ...],
+        inner: httpcore.AsyncNetworkBackend,
+    ) -> None:
+        self._expected_host = expected_host.strip("[]").lower()
+        self._pinned_ips = pinned_ips
+        self._inner = inner
+
+    async def connect_tcp(
+        self,
+        host: str,
+        port: int,
+        timeout: float | None = None,
+        local_address: str | None = None,
+        socket_options: Iterable[httpcore.SOCKET_OPTION] | None = None,
+    ) -> httpcore.AsyncNetworkStream:
+        if host.strip("[]").lower() != self._expected_host:
+            raise httpcore.ConnectError("Tutor provider host mismatch.")
+        last_err: Exception | None = None
+        for ip in self._pinned_ips:
+            try:
+                return await self._inner.connect_tcp(
+                    host=ip,
+                    port=port,
+                    timeout=timeout,
+                    local_address=local_address,
+                    socket_options=socket_options,
+                )
+            except (httpcore.ConnectError, OSError) as err:
+                last_err = err
+        raise last_err if last_err is not None else httpcore.ConnectError(
+            "Failed to connect to tutor provider."
+        )
+
+    async def connect_unix_socket(
+        self,
+        path: str,
+        timeout: float | None = None,
+        socket_options: Iterable[httpcore.SOCKET_OPTION] | None = None,
+    ) -> httpcore.AsyncNetworkStream:
+        raise httpcore.ConnectError("Unix sockets are not allowed for tutor providers.")
+
+    async def sleep(self, seconds: float) -> None:
+        await self._inner.sleep(seconds)
+
+
+class _BoundedAsyncByteStream(httpx.AsyncByteStream):
+    """Abort streaming upstream responses once cumulative bytes exceed max_bytes."""
+
+    def __init__(self, stream: httpx.AsyncByteStream, max_bytes: int) -> None:
+        self._stream = stream
+        self._max_bytes = max_bytes
+
+    async def __aiter__(self) -> AsyncIterator[bytes]:
+        total = 0
+        async for chunk in self._stream:
+            total += len(chunk)
+            if total > self._max_bytes:
+                await self.aclose()
+                raise httpx.ReadError("Tutor provider response exceeded maximum size.")
+            yield chunk
+
+    async def aclose(self) -> None:
+        await self._stream.aclose()
+
+
+class _PinnedTransport(httpx.AsyncHTTPTransport):
+    """HTTP transport pinned to validated IPs with bounded response sizes."""
+
+    def __init__(
+        self,
+        expected_host: str,
+        pinned_ips: tuple[str, ...],
+        max_response_bytes: int = MAX_PROVIDER_RESPONSE_BYTES,
+    ) -> None:
+        super().__init__(verify=True, trust_env=False)
+        self.expected_host = expected_host.strip("[]").lower()
+        self.pinned_ips = pinned_ips
+        self._max_response_bytes = max_response_bytes
+        self._pool._network_backend = _PinnedDNSBackend(
+            expected_host=self.expected_host,
+            pinned_ips=self.pinned_ips,
+            inner=self._pool._network_backend,
+        )
+
+    async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
+        response = await super().handle_async_request(request)
+        if _content_length_exceeds_limit(response.headers, self._max_response_bytes):
+            await response.aclose()
+            raise httpx.ReadError("Tutor provider response exceeded maximum size.")
+        if isinstance(response.stream, httpx.AsyncByteStream):
+            response.stream = _BoundedAsyncByteStream(response.stream, self._max_response_bytes)
+        return response
+
+
+async def _validate_provider_url(base_url: str) -> tuple[str, tuple[str, ...]]:
     """Allow public HTTPS providers; localhost HTTP is a development-only exception.
 
-    DNS is resolved and checked for every request. This closes the common SSRF
-    path, but a DNS rebinding race remains possible between resolution and connect.
+    DNS is resolved off the event loop and checked on every request; callers
+    connect using a transport pinned to the validated IP(s) so a subsequent
+    DNS change cannot rebind to an internal address.
     """
     try:
         parsed = urlsplit(base_url)
@@ -96,29 +216,45 @@ def _validate_provider_url(base_url: str) -> None:
             raise ValueError
         if parsed.scheme not in {"http", "https"}:
             raise ValueError
-        if parsed.scheme == "http" and hostname.lower() not in {"localhost", "127.0.0.1"}:
+        normalized_host = hostname.strip("[]").lower()
+        if parsed.scheme == "http" and normalized_host not in {"localhost", "127.0.0.1"}:
             raise ValueError
         port = parsed.port or (443 if parsed.scheme == "https" else 80)
         try:
-            addresses = {
-                ipaddress.ip_address(result[4][0])
-                for result in socket.getaddrinfo(hostname, port, type=socket.SOCK_STREAM)
-            }
+            infos = await asyncio.to_thread(
+                socket.getaddrinfo, hostname, port, type=socket.SOCK_STREAM
+            )
+            addresses = list(
+                dict.fromkeys(ipaddress.ip_address(result[4][0]) for result in infos)
+            )
         except socket.gaierror:
             # The reserved fixture hostname is intentionally not published in DNS.
-            if hostname.lower() == "provider.example.com":
-                addresses = {ipaddress.ip_address("93.184.216.34")}
+            if normalized_host == "provider.example.com":
+                addresses = [ipaddress.ip_address("93.184.216.34")]
             else:
                 raise
         if not addresses:
             raise ValueError
-        if parsed.scheme == "http" and hostname.lower() in {"localhost", "127.0.0.1"}:
+        if parsed.scheme == "http" and normalized_host in {"localhost", "127.0.0.1"}:
             if not all(address.is_loopback for address in addresses):
                 raise ValueError
-        elif not all(address.is_global for address in addresses):
+        elif not all(address.is_global and not address.is_multicast for address in addresses):
             raise ValueError
+        return normalized_host, tuple(str(address) for address in addresses)
     except (OSError, TypeError, ValueError):
         raise _bad_url() from None
+
+
+def _parse_json_response(resp: httpx.Response) -> object:
+    if _content_length_exceeds_limit(getattr(resp, "headers", None), MAX_PROVIDER_RESPONSE_BYTES):
+        raise _upstream_error()
+    content = getattr(resp, "content", None)
+    if isinstance(content, (bytes, bytearray)) and len(content) > MAX_PROVIDER_RESPONSE_BYTES:
+        raise _upstream_error()
+    try:
+        return resp.json()
+    except ValueError as err:
+        raise _upstream_error() from err
 
 
 def _sanitize_tutor_reply(text: str) -> str:
@@ -216,18 +352,21 @@ async def list_models(
 ) -> TutorModelsResponse:
     rate_key = user.id if user else (request.client.host if request.client else "guest")
     _check_rate_limit(rate_key)
-    _validate_provider_url(req.base_url)
+    hostname, pinned_ips = await _validate_provider_url(req.base_url)
+    transport = _PinnedTransport(hostname, pinned_ips)
     try:
-        async with httpx.AsyncClient(timeout=MODELS_TIMEOUT_S, follow_redirects=False) as client:
+        async with httpx.AsyncClient(
+            timeout=MODELS_TIMEOUT_S,
+            follow_redirects=False,
+            trust_env=False,
+            transport=transport,
+        ) as client:
             resp = await client.get(f"{req.base_url}/models", headers=_auth_headers(req.api_key))
     except httpx.HTTPError as err:
         raise _upstream_error() from err
     if resp.status_code != status.HTTP_200_OK:
         raise _upstream_error()
-    try:
-        payload = resp.json()
-    except ValueError as err:
-        raise _upstream_error() from err
+    payload = _parse_json_response(resp)
     return TutorModelsResponse(models=_extract_model_ids(payload))
 
 
@@ -240,7 +379,7 @@ async def chat(
 ) -> TutorChatResponse:
     rate_key = user.id if user else (request.client.host if request.client else "guest")
     _check_rate_limit(rate_key)
-    _validate_provider_url(req.base_url)
+    hostname, pinned_ips = await _validate_provider_url(req.base_url)
     problem = db.scalar(
         select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
     )
@@ -260,8 +399,14 @@ async def chat(
         },
         {"role": "user", "content": req.question},
     ]
+    transport = _PinnedTransport(hostname, pinned_ips)
     try:
-        async with httpx.AsyncClient(timeout=CHAT_TIMEOUT_S, follow_redirects=False) as client:
+        async with httpx.AsyncClient(
+            timeout=CHAT_TIMEOUT_S,
+            follow_redirects=False,
+            trust_env=False,
+            transport=transport,
+        ) as client:
             resp = await client.post(
                 f"{req.base_url}/chat/completions",
                 headers=_auth_headers(req.api_key),
@@ -271,10 +416,7 @@ async def chat(
         raise _upstream_error() from err
     if resp.status_code != status.HTTP_200_OK:
         raise _upstream_error()
-    try:
-        payload = resp.json()
-    except ValueError as err:
-        raise _upstream_error() from err
+    payload = _parse_json_response(resp)
     try:
         message = payload["choices"][0]["message"]
     except (KeyError, IndexError, TypeError) as err:

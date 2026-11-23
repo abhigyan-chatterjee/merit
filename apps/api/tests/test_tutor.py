@@ -1,5 +1,8 @@
 """Tests for the BYOK tutor proxy. httpx is mocked via monkeypatch (no network)."""
 
+import asyncio
+
+import httpcore
 import httpx
 import pytest
 from fastapi.testclient import TestClient
@@ -462,3 +465,146 @@ def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
     res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
     assert res.status_code == 429
     assert res.json()["detail"]["code"] == "TUTOR_RATE_LIMIT"
+
+
+def test_provider_url_blocks_multicast_and_dual_homed_private_ip(
+    client: TestClient, monkeypatch
+):
+    res = client.post(
+        "/api/v1/tutor/models",
+        json={"base_url": "https://224.0.0.1/v1", "api_key": API_KEY},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "TUTOR_BAD_URL"
+
+    def dual_homed_resolve(host, port, **kwargs):
+        socket_type = kwargs["type"]
+        return [
+            (tutor_module.socket.AF_INET, socket_type, 6, "", ("93.184.216.34", port)),
+            (tutor_module.socket.AF_INET, socket_type, 6, "", ("127.0.0.1", port)),
+        ]
+
+    monkeypatch.setattr(tutor_module.socket, "getaddrinfo", dual_homed_resolve)
+    res = client.post(
+        "/api/v1/tutor/models",
+        json={"base_url": "https://dual.example.net/v1", "api_key": API_KEY},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "TUTOR_BAD_URL"
+
+
+def test_client_receives_ip_pinned_transport_and_trust_env_false(client: TestClient, monkeypatch):
+    capture: dict = {}
+    install_fake_client(
+        monkeypatch,
+        capture=capture,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
+    )
+
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
+    assert res.status_code == 200
+    assert capture["client_kwargs"]["trust_env"] is False
+    transport = capture["client_kwargs"]["transport"]
+    assert isinstance(transport, tutor_module._PinnedTransport)
+    assert transport.expected_host == "provider.example.com"
+    assert transport.pinned_ips == ("93.184.216.34",)
+
+
+def test_pinned_dns_backend_connects_to_pinned_ip_and_rejects_mismatched_host():
+    class StubInnerBackend(httpcore.AsyncNetworkBackend):
+        def __init__(self, fail_hosts: set[str] | None = None):
+            self.calls: list[tuple[str, int]] = []
+            self.fail_hosts = fail_hosts or set()
+
+        async def connect_tcp(
+            self, host, port, timeout=None, local_address=None, socket_options=None
+        ):
+            self.calls.append((host, port))
+            if host in self.fail_hosts:
+                raise httpcore.ConnectError(f"failed {host}")
+            return object()  # type: ignore[return-value]
+
+        async def connect_unix_socket(self, path, timeout=None, socket_options=None):
+            raise AssertionError("unix socket should not be reached")
+
+        async def sleep(self, seconds):
+            return None
+
+    async def exercise():
+        inner = StubInnerBackend()
+        backend = tutor_module._PinnedDNSBackend(
+            "provider.example.com", ("93.184.216.34",), inner
+        )
+        await backend.connect_tcp("provider.example.com", 443)
+        assert inner.calls == [("93.184.216.34", 443)]
+
+        fallback_inner = StubInnerBackend(fail_hosts={"93.184.216.34"})
+        fallback_backend = tutor_module._PinnedDNSBackend(
+            "provider.example.com", ("93.184.216.34", "93.184.216.35"), fallback_inner
+        )
+        await fallback_backend.connect_tcp("provider.example.com", 443)
+        assert fallback_inner.calls == [("93.184.216.34", 443), ("93.184.216.35", 443)]
+
+        with pytest.raises(httpcore.ConnectError, match="host mismatch"):
+            await backend.connect_tcp("169.254.169.254", 443)
+
+        with pytest.raises(httpcore.ConnectError, match="Unix sockets"):
+            await backend.connect_unix_socket("/var/run/docker.sock")
+
+    asyncio.run(exercise())
+
+
+def test_oversized_response_body_and_stream_map_to_502(client: TestClient, monkeypatch):
+    class RawByteStream(httpx.AsyncByteStream):
+        def __init__(self, chunks: list[bytes]):
+            self._chunks = chunks
+            self.closed = False
+
+        async def __aiter__(self):
+            for chunk in self._chunks:
+                yield chunk
+
+        async def aclose(self):
+            self.closed = True
+
+    async def read_bounded_stream():
+        raw = RawByteStream([b"a" * 6, b"b" * 6])
+        bounded = tutor_module._BoundedAsyncByteStream(raw, max_bytes=10)
+        with pytest.raises(httpx.ReadError, match="maximum size"):
+            async for _ in bounded:
+                pass
+        assert raw.closed is True
+
+    asyncio.run(read_bounded_stream())
+
+    class LargeResponse(FakeResponse):
+        def __init__(self, headers=None, content: bytes = b""):
+            super().__init__(200, {"data": [{"id": "m"}]})
+            self.headers = headers or {}
+            self.content = content
+
+    limit = tutor_module.MAX_PROVIDER_RESPONSE_BYTES
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: LargeResponse(headers={"content-length": str(limit + 1)}),
+        post=lambda url, headers, body: LargeResponse(content=b"x" * (limit + 1)),
+    )
+
+    models_res = client.post(
+        "/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY}
+    )
+    assert models_res.status_code == 502
+    assert models_res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
+
+    chat_res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "question": "Help?",
+        },
+    )
+    assert chat_res.status_code == 502
+    assert chat_res.json()["detail"]["code"] == "TUTOR_UPSTREAM"

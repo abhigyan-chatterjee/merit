@@ -20,6 +20,9 @@ dependencies = [
     "pyjwt[crypto]>=2.9.0",
     "cryptography>=42.0.0",
     "httpx>=0.27.0",
+    # Imported directly by app/routers/tutor.py (_PinnedDNSBackend / ConnectError).
+    # Arrives transitively through httpx, declared explicitly like starlette above.
+    "httpcore>=1.0.0",
     # Mints the identity token used to call the remote judge service. The
     # [requests] extra is load-bearing, not decoration: google-auth's default
     # transport imports `requests` lazily at call time, so without it the app
