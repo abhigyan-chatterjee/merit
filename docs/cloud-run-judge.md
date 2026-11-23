@@ -34,9 +34,8 @@ merit.nullbit.in → Caddy → merit-web (nginx)
 - **`judge-heavy`** serves Java and C++. It is a separate service so the
   compile toolchain's cold start is only paid by Java/C++ users: the same
   `main.py` and the same sandbox, with a Dockerfile that adds JDK and g++.
-- The API **routes by language**: Java and C++ to `JUDGE_HEAVY_URL`, everything
-  else to `JUDGE_URL`. Either URL is a valid fallback for the other, so a
-  single-service deployment still works.
+- The API **routes by language**: Java and C++ require `JUDGE_HEAVY_URL`;
+  Python and JavaScript use `JUDGE_URL`. There is no fallback between tiers.
 - When both are **unset**, the API runs the local sandbox exactly as before.
   Local development, CI, and the test suite need no cloud setup.
 
@@ -231,9 +230,8 @@ GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
 JUDGE_TIMEOUT_SEC=180
 ```
 
-`JUDGE_HEAVY_URL` is optional: with only `JUDGE_URL` set, Java and C++ are sent
-to the light service and come back as a clear Compile Error ("javac is not
-installed on this runner") rather than failing obscurely.
+Java and C++ require `JUDGE_HEAVY_URL`. If it is unset, submissions in those
+languages fail as infrastructure errors; they are never sent to the light tier.
 
 `docker-compose.yml` mounts `.judge/` read-only at `/run/secrets`, so the key is
 never writable from inside the container.

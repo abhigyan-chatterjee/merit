@@ -221,16 +221,27 @@ async def execute(
         )
 
     if resp.status_code == 401:
-        # A stale or wrong-audience token is an operator problem, not the
-        # submitter's. Surface it as an infrastructure failure.
-        logger.error("Judge service rejected our identity token")
-        return JudgeResult(
-            verdict="RE",
-            runtime_ms=0,
-            test_results=[],
-            compile_output="The code runner rejected this request. Nothing was graded.",
-            infrastructure_error=True,
-        )
+        _cached_tokens.pop(target, None)
+        retry_token = await _mint_identity_token(target)
+        if retry_token is not None:
+            try:
+                async with httpx.AsyncClient(timeout=settings.judge_timeout_sec) as client:
+                    resp = await client.post(
+                        f"{target.rstrip('/')}/run",
+                        json=payload,
+                        headers={"Authorization": f"Bearer {retry_token}"},
+                    )
+            except httpx.HTTPError as err:
+                logger.warning("Judge service unreachable after token retry: %s", err)
+        if resp.status_code == 401:
+            logger.error("Judge service rejected the retried identity token")
+            return JudgeResult(
+                verdict="RE",
+                runtime_ms=0,
+                test_results=[],
+                compile_output="The code runner rejected this request. Nothing was graded.",
+                infrastructure_error=True,
+            )
 
     if resp.status_code >= 400:
         logger.warning("Judge service error %s: %s", resp.status_code, resp.text[:200])
@@ -285,9 +296,48 @@ async def execute(
             infrastructure_error=True,
         )
 
+    verdict = data.get("verdict")
+    runtime_ms = data.get("runtime_ms")
+    test_results = data.get("test_results")
+    if verdict not in {"AC", "WA", "TLE", "RE", "CE"}:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="The code runner returned an invalid response. Nothing was graded.",
+            infrastructure_error=True,
+        )
+    if (
+        not isinstance(runtime_ms, (int, float))
+        or isinstance(runtime_ms, bool)
+        or not isinstance(test_results, list)
+        or any(
+            not isinstance(result, dict)
+            or not isinstance(result.get("passed"), bool)
+            for result in test_results
+        )
+    ):
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="The code runner returned an invalid response. Nothing was graded.",
+            infrastructure_error=True,
+        )
+    if verdict in {"AC", "WA"}:
+        if len(test_results) != len(test_cases) or not test_results:
+            return JudgeResult(
+                verdict="RE",
+                runtime_ms=0,
+                test_results=[],
+                compile_output="The code runner returned an invalid response. Nothing was graded.",
+                infrastructure_error=True,
+            )
+        verdict = "AC" if all(result["passed"] for result in test_results) else "WA"
+
     return JudgeResult(
-        verdict=data.get("verdict", "RE"),
-        runtime_ms=data.get("runtime_ms", 0.0),
-        test_results=data.get("test_results", []),
+        verdict=verdict,
+        runtime_ms=float(runtime_ms),
+        test_results=test_results,
         compile_output=data.get("compile_output", ""),
     )

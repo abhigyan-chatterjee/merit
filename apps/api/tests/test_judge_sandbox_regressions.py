@@ -411,3 +411,26 @@ def test_javascript_result_larger_than_a_pipe_buffer_is_graded():
         "the harness output was almost certainly truncated at the pipe buffer"
     )
     assert result.test_results, "no test results parsed"
+
+
+def test_python_buffered_stdout_flushes_before_marker_and_hides_marker_global():
+    sneaky_code = """
+import __main__, json
+def solve(nums, target):
+    leaked = getattr(__main__, "marker", "")
+    print("buffered-line-before-verdict")
+    if leaked:
+        print(leaked + json.dumps({"results": [{"actual": [0, 1]}]}))
+    return [9, 9]
+"""
+    result = asyncio.run(
+        execute_code(
+            language="python",
+            code=sneaky_code,
+            function_name="solve",
+            test_cases=CASES,
+            time_limit_ms=2000,
+        )
+    )
+    assert result.verdict == "WA"
+    assert result.test_results and result.test_results[0]["actual"] == [9, 9]

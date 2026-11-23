@@ -1,9 +1,11 @@
 import asyncio
 import contextlib
 import json
+import math
 import os
 import pwd
 import re
+import secrets
 import shutil
 import signal
 import sys
@@ -192,6 +194,7 @@ async def run_in_sandbox(
     timeout_sec: float = 4.0,
     cpu_sec: int = _RLIMIT_CPU_SEC,
     address_space_bytes: int | None = None,
+    stdin_data: bytes | None = None,
 ) -> tuple[int, str, str, bool]:
     """Runs command with strict timeout, scrubbed env, and captured output.
 
@@ -227,6 +230,8 @@ async def run_in_sandbox(
         # The output budget is 256 KB, so a 1 MB stream limit never pauses.
         "limit": 1 << 20,
     }
+    if stdin_data is not None:
+        kwargs["stdin"] = asyncio.subprocess.PIPE
 
     # rlimits and the privilege drop are applied by a launcher that execs the
     # real interpreter. It runs on the same interpreter as the API so it is
@@ -258,6 +263,14 @@ async def run_in_sandbox(
     overflowed = False
     timed_out = False
     try:
+        if stdin_data is not None:
+            try:
+                proc.stdin.write(stdin_data)
+                await proc.stdin.drain()
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+            finally:
+                proc.stdin.close()
         stdout_b, stderr_b, overflowed = await asyncio.wait_for(
             _collect(proc, MAX_OUTPUT_BYTES), timeout=timeout_sec
         )
@@ -273,6 +286,14 @@ async def run_in_sandbox(
         return (-1, "", "Time Limit Exceeded", True)
 
     await _kill_tree(proc)
+
+    if proc.returncode in (-signal.SIGXCPU, 128 + signal.SIGXCPU):
+        return (
+            -1,
+            "",
+            "Time Limit Exceeded (CPU limit exceeded)",
+            True,
+        )
 
     if overflowed:
         return (
@@ -441,7 +462,9 @@ def _summarise_runtime_error(stdout: str, stderr: str) -> str:
     return text
 
 
-def _parse_harness_output(stdout: str) -> dict[str, Any] | None:
+def _parse_harness_output(
+    stdout: str, marker: str = _RESULT_MARKER
+) -> dict[str, Any] | None:
     """Finds the harness result block in stdout.
 
     The block MUST be marked and MUST be shape-valid. Both requirements are
@@ -464,20 +487,24 @@ def _parse_harness_output(stdout: str) -> dict[str, Any] | None:
 
     for line in reversed(text.splitlines()):
         stripped = line.strip()
-        index = stripped.find(_RESULT_MARKER)
+        index = stripped.find(marker)
         if index == -1:
             continue
         try:
-            parsed = json.loads(stripped[index + len(_RESULT_MARKER) :].strip())
+            parsed = json.loads(stripped[index + len(marker) :].strip())
         except (ValueError, TypeError):
             continue
-        if not _is_well_formed_result(parsed):
+        if not _is_well_formed_result(
+            parsed, require_passed=(marker == _RESULT_MARKER)
+        ):
             continue
         return parsed
     return None
 
 
-def _is_well_formed_result(parsed: Any) -> bool:
+def _is_well_formed_result(
+    parsed: Any, require_passed: bool = True
+) -> bool:
     """True when `parsed` has the exact shape a verdict needs."""
     if not isinstance(parsed, dict):
         return False
@@ -487,7 +514,7 @@ def _is_well_formed_result(parsed: Any) -> bool:
     for entry in results:
         if not isinstance(entry, dict):
             return False
-        if not isinstance(entry.get("passed"), bool):
+        if require_passed and not isinstance(entry.get("passed"), bool):
             return False
     return True
 
@@ -537,6 +564,122 @@ def _verdict_from_harness(stdout: str) -> JudgeResult:
     )
 
 
+def _grade_harness_output(
+    stdout: str,
+    test_cases: list[dict[str, Any]],
+    *,
+    marker: str,
+    compiled_language: bool = False,
+    return_type: str | None = None,
+) -> JudgeResult:
+    parsed = _parse_harness_output(stdout, marker)
+    if parsed is None:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="Output parsing error: the harness produced no result block.",
+        )
+
+    results = parsed.get("results")
+    if not isinstance(results, list) or not results or len(results) != len(test_cases):
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="No test cases ran or the harness returned an invalid result count.",
+        )
+
+    graded: list[dict[str, Any]] = []
+    for index, (tc, raw) in enumerate(zip(test_cases, results, strict=True)):
+        if not isinstance(raw, dict):
+            return JudgeResult(
+                verdict="RE",
+                runtime_ms=0,
+                test_results=[],
+                compile_output="The harness returned a malformed result.",
+            )
+        error = str(raw.get("error")) if raw.get("error") else None
+        actual = raw.get("actual")
+        passed = False
+        if error:
+            actual = None
+        elif compiled_language:
+            expected = tc.get("expected")
+            if return_type == "double":
+                special = {
+                    "Infinity": float("inf"),
+                    "-Infinity": float("-inf"),
+                    "NaN": float("nan"),
+                    "inf": float("inf"),
+                    "-inf": float("-inf"),
+                    "nan": float("nan"),
+                }
+                if isinstance(actual, str) and actual in special:
+                    actual_value = special[actual]
+                else:
+                    try:
+                        actual_value = float(actual)
+                    except (TypeError, ValueError):
+                        actual_value = actual
+                if isinstance(expected, (int, float)) and not isinstance(expected, bool):
+                    if isinstance(actual_value, float) and isinstance(expected, float):
+                        passed = (
+                            (math.isnan(actual_value) and math.isnan(expected))
+                            or (
+                                math.isinf(actual_value)
+                                and math.isinf(expected)
+                                and (actual_value > 0) == (expected > 0)
+                            )
+                            or actual_value == expected
+                        )
+                    else:
+                        passed = actual_value == expected
+                else:
+                    passed = actual_value == expected
+            elif return_type == "TreeNode":
+                trimmed = list(expected) if isinstance(expected, list) else expected
+                if isinstance(trimmed, list):
+                    while trimmed and trimmed[-1] is None:
+                        trimmed.pop()
+                passed = actual == trimmed
+            else:
+                passed = actual == expected
+        else:
+            try:
+                passed = json.dumps(tc.get("expected"), sort_keys=True) == json.dumps(
+                    actual, sort_keys=True
+                )
+            except (TypeError, ValueError):
+                passed = False
+
+        try:
+            runtime_ms = round(float(raw.get("runtime_ms") or 0.0), 2)
+        except (TypeError, ValueError):
+            runtime_ms = 0.0
+        graded.append(
+            {
+                "label": tc.get("label", f"Case {index + 1}"),
+                "passed": passed,
+                "input": tc.get("input"),
+                "expected": tc.get("expected"),
+                "actual": actual,
+                "runtime_ms": runtime_ms,
+                "error": error,
+            }
+        )
+
+    try:
+        runtime_ms = round(float(parsed.get("totalRuntime") or 0.0), 2)
+    except (TypeError, ValueError):
+        runtime_ms = 0.0
+    return JudgeResult(
+        verdict="AC" if all(row["passed"] for row in graded) else "WA",
+        runtime_ms=runtime_ms,
+        test_results=graded,
+    )
+
+
 async def _run_compiled(
     language: str,
     code: str,
@@ -566,11 +709,12 @@ async def _run_compiled(
 
     params = list(signature.get("params") or [])
     return_type = signature.get("returnType")
+    run_marker = f"__MERIT_RESULT_{secrets.token_hex(16)}__"
 
     try:
         if language == "java":
             solution_src, driver_src = java_sources(
-                code, function_name, params, return_type, test_cases
+                code, function_name, params, return_type, test_cases, run_marker
             )
             (tmp_path / "Solution.java").write_text(solution_src, encoding="utf-8")
             (tmp_path / "Main.java").write_text(driver_src, encoding="utf-8")
@@ -595,7 +739,9 @@ async def _run_compiled(
                 "Main",
             ]
         else:
-            source = cpp_source(code, function_name, params, return_type, test_cases)
+            source = cpp_source(
+                code, function_name, params, return_type, test_cases, run_marker
+            )
             (tmp_path / "solution.cpp").write_text(source, encoding="utf-8")
             compiler = shutil.which("g++")
             if not compiler:
@@ -653,8 +799,17 @@ async def _run_compiled(
             compile_output=_summarise_compile_error(build_out, build_err),
         )
 
+    stdin_payload = (
+        run_marker
+        + "\n"
+        + json.dumps({"inputs": [tc.get("input") or [] for tc in test_cases]})
+        + "\n"
+    ).encode("utf-8")
     code_ret, stdout, stderr, timed_out = await run_in_sandbox(
-        run_cmd, cwd=str(tmp_path), timeout_sec=timeout_sec
+        run_cmd,
+        cwd=str(tmp_path),
+        timeout_sec=timeout_sec,
+        stdin_data=stdin_payload,
     )
 
     if timed_out:
@@ -673,7 +828,13 @@ async def _run_compiled(
             compile_output=_summarise_runtime_error(stderr, stdout),
         )
 
-    return _verdict_from_harness(stdout)
+    return _grade_harness_output(
+        stdout,
+        test_cases,
+        marker=run_marker,
+        compiled_language=True,
+        return_type=return_type,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -878,7 +1039,11 @@ _JAVA_HELPERS = """
   static String quoted(String s) { return "\\"" + esc(s) + "\\""; }
   static String serInt(int v) { return String.valueOf(v); }
   static String serLong(long v) { return Long.toString(v); }
-  static String serDbl(double v) { return Double.toString(v); }
+  static String serDbl(double v) {
+    if (Double.isInfinite(v)) return v > 0 ? "\\"Infinity\\"" : "\\"-Infinity\\"";
+    if (Double.isNaN(v)) return "\\"NaN\\"";
+    return Double.toString(v);
+  }
   static String serBool(boolean v) { return v ? "true" : "false"; }
   static String serStr(String v) { return v == null ? "null" : quoted(v); }
   static String serInts(int[] a) {
@@ -927,6 +1092,7 @@ def java_sources(
     params: list[str],
     return_type: str,
     test_cases: list[dict[str, Any]],
+    marker: str = _RESULT_MARKER,
 ) -> tuple[str, str]:
     """Returns (solution_source, driver_source). The driver is Main.java."""
     _check(return_type)
@@ -967,15 +1133,12 @@ def java_sources(
             f"""  static String runCase{index}() {{
     Solution sol = new Solution();
 {chr(10).join(declarations)}
-    {java_return} expected = {_java_literal(return_type, tc.get("expected"))};
     long started = System.nanoTime();
     String actualJson = "null";
     String error = null;
-    boolean passed = false;
     try {{
       {java_return} actual = sol.{function_name}({", ".join(call_args)});
       actualJson = {serialize_return}(actual);
-      passed = actualJson.equals({serialize_return}(expected));
     }} catch (Throwable thrown) {{
       error = thrown.getClass().getSimpleName() + ": " + String.valueOf(thrown.getMessage());
     }}
@@ -983,9 +1146,7 @@ def java_sources(
     totalRuntime += runtimeMs;
     StringBuilder sb = new StringBuilder();
     sb.append("{{\\"label\\":").append(quoted({json.dumps(label)}))
-      .append(",\\"passed\\":").append(passed)
       .append(",\\"input\\":").append({args_json})
-      .append(",\\"expected\\":").append({serialize_return}(expected))
       .append(",\\"actual\\":").append(actualJson)
       .append(",\\"runtime_ms\\":").append(serRuntime(runtimeMs))
       .append(",\\"error\\":").append(error == null ? "null" : quoted(error))
@@ -1017,10 +1178,20 @@ public class Main {{
 {chr(10).join(blocks)}
 
   public static void main(String[] args) {{
+    try {{
+      java.io.BufferedReader reader = new java.io.BufferedReader(
+        new java.io.InputStreamReader(System.in, java.nio.charset.StandardCharsets.UTF_8)
+      );
+      reader.readLine();
+      reader.close();
+    }} catch (Exception err) {{
+      System.err.println("Failed to read judge marker");
+      Runtime.getRuntime().halt(1);
+    }}
     StringBuilder sb = new StringBuilder("{{\\"results\\":[");
 {chr(10).join(appends)}
     sb.append("],\\"totalRuntime\\":").append(serRuntime(totalRuntime)).append("}}");
-    System.out.println("__MERIT_RESULT__" + sb);
+    System.out.println({json.dumps(marker)} + sb);
     // halt(), not exit(): exit runs registered shutdown hooks first, and a
     // student can register one that prints a forged result block after this
     // line. halt() terminates immediately and runs none of them.
@@ -1159,6 +1330,8 @@ static std::string jsonStr(const std::string& s) { return "\\"" + esc(s) + "\\""
 static std::string serInt(int v) { return std::to_string(v); }
 static std::string serLong(long long v) { return std::to_string(v); }
 static std::string serDbl(double v) {
+  if (std::isinf(v)) return v > 0 ? "\\\"Infinity\\\"" : "\\\"-Infinity\\\"";
+  if (std::isnan(v)) return "\\\"NaN\\\"";
   std::ostringstream o;
   o << std::setprecision(17) << v;
   return o.str();
@@ -1194,6 +1367,7 @@ def cpp_source(
     params: list[str],
     return_type: str,
     test_cases: list[dict[str, Any]],
+    marker: str = _RESULT_MARKER,
 ) -> str:
     """Returns one translation unit: includes, user code, helpers, driver."""
     _check(return_type)
@@ -1227,15 +1401,12 @@ def cpp_source(
         blocks.append(
             f"""  {{
 {chr(10).join(declarations)}
-    {cpp_return} expected = {_cpp_literal(return_type, tc.get("expected"))};
     auto started = std::chrono::steady_clock::now();
     std::string actualJson = "null";
     std::string error;
-    bool passed = false;
     try {{
       {cpp_return} actual = sol.{function_name}({", ".join(call_args)});
       actualJson = {serialize_return}(actual);
-      passed = (actualJson == {serialize_return}(expected));
     }} catch (const std::exception& thrown) {{
       error = thrown.what();
     }} catch (...) {{
@@ -1246,9 +1417,7 @@ def cpp_source(
     totalRuntime += runtimeMs;
     if (caseIndex++ > 0) sb += ",";
     sb += "{{\\"label\\":" + jsonStr({json.dumps(label)})
-        + ",\\"passed\\":" + std::string(passed ? "true" : "false")
         + ",\\"input\\":" + {args_json}
-        + ",\\"expected\\":" + {serialize_return}(expected)
         + ",\\"actual\\":" + actualJson
         + ",\\"runtime_ms\\":" + std::to_string(runtimeMs)
         + ",\\"error\\":" + (error.empty() ? std::string("null") : jsonStr(error))
@@ -1258,7 +1427,16 @@ def cpp_source(
 
     return f"""#include <bits/stdc++.h>
 #include <cstdlib>
+#include <unistd.h>
 using namespace std;
+
+__attribute__((constructor(101))) static void merit_read_marker() {{
+  char c;
+  while (read(0, &c, 1) == 1) {{
+    if (c == '\\n') break;
+  }}
+  close(0);
+}}
 
 {_CPP_NODE_DECL}
 
@@ -1273,7 +1451,7 @@ int main() {{
   double totalRuntime = 0.0;
 {chr(10).join(blocks)}
   sb += "],\\"totalRuntime\\":" + std::to_string(totalRuntime) + "}}";
-  cout << "__MERIT_RESULT__" << sb << endl;
+  cout << {json.dumps(marker)} << sb << endl;
   // _Exit(), not return: returning runs static destructors and any atexit
   // handler, which a student could use to print a forged result afterwards.
   std::_Exit(0);
@@ -1290,6 +1468,14 @@ async def execute_code(
     signature: dict[str, Any] | None = None,
 ) -> JudgeResult:
     """Executes code against test cases in an isolated sandbox."""
+    if not test_cases:
+        return JudgeResult(
+            verdict="RE",
+            runtime_ms=0,
+            test_results=[],
+            compile_output="No test cases ran. Nothing was graded.",
+        )
+
     if len(code.encode("utf-8")) > MAX_CODE_BYTES:
         return JudgeResult(
             verdict="CE",
@@ -1315,92 +1501,93 @@ async def execute_code(
     try:
         tmp_path = Path(tmpdir)
         timeout_sec = max(3.0, (time_limit_ms / 1000.0) * 1.5)
+        run_marker = f"__MERIT_RESULT_{secrets.token_hex(16)}__"
+        stdin_payload = json.dumps(
+            {
+                "marker": run_marker,
+                "inputs": [tc.get("input") or [] for tc in test_cases],
+            },
+            separators=(",", ":"),
+        ).encode("utf-8")
 
         if language == "javascript":
-            harness = f"""
-{code}
-
-const cases = {json.dumps(test_cases)};
-
-// Deterministic key order so comparison parity matches the Python judge's
-// json.dumps(..., sort_keys=True).
-const stableStringify = (value) => {{
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return '[' + value.map(stableStringify).join(',') + ']';
-  const entries = Object.keys(value)
-    .sort()
-    .map((k) => JSON.stringify(k) + ':' + stableStringify(value[k]));
-  return '{{' + entries.join(',') + '}}';
-}};
-
+            (tmp_path / "user_code.js").write_text(code, encoding="utf-8")
+            harness = r"""
+import fs from 'node:fs';
+import vm from 'node:vm';
+import { performance } from 'node:perf_hooks';
+const _payload = JSON.parse(fs.readFileSync(0, 'utf8'));
+const marker = _payload.marker;
+const inputs = _payload.inputs;
+const _write = process.stdout.write.bind(process.stdout);
+const _exit = process.reallyExit.bind(process);
+const _JSON = JSON;
+const _now = performance.now.bind(performance);
+const userSrc = fs.readFileSync('user_code.js', 'utf8');
+const ctx = vm.createContext({
+  console, Math, Date, JSON, Array, Object, String, Number, Boolean,
+  Map, Set, RegExp, Error, TypeError, RangeError, SyntaxError,
+  parseInt, parseFloat, isNaN, isFinite, Infinity, NaN, undefined, BigInt
+});
+let fn = null;
+try {
+  vm.runInContext(userSrc, ctx);
+} catch (_) {}
+try {
+  fn = vm.runInContext(
+    "typeof __FUNCTION_NAME__ === 'function' ? __FUNCTION_NAME__ : null",
+    ctx
+  );
+} catch (_) {}
+if (typeof fn !== 'function') {
+  process.stderr.write("Function __FUNCTION_NAME__ is not defined");
+  _exit(1);
+}
 const results = [];
 let totalRuntime = 0;
-
-for (let i = 0; i < cases.length; i++) {{
-  const tc = cases[i];
-  const start = performance.now();
-  try {{
-    if (typeof {function_name} !== 'function') {{
-      throw new TypeError("{function_name} is not defined as a function");
-    }}
-    const out = {function_name}(...tc.input);
-    // `JSON.stringify(undefined)` is undefined rather than a string, so a
-    // solution missing a `return` used to compare undefined against the
-    // expected string, fail, and display as "expected null, actual null". Say
-    // what actually happened instead.
-    if (out === undefined) {{
-      throw new TypeError("Your function returned undefined here. Every path needs a return.");
-    }}
-    const runtime = performance.now() - start;
+for (let i = 0; i < inputs.length; i++) {
+  const start = _now();
+  try {
+    const out = fn(...inputs[i]);
+    const runtime = _now() - start;
     totalRuntime += runtime;
-
-    // Strict comparison
-    const expectedStr = stableStringify(tc.expected);
-    const actualStr = stableStringify(out);
-    const passed = expectedStr === actualStr;
-
-    results.push({{
-      label: tc.label || `Case ${{i + 1}}`,
-      passed,
-      input: tc.input,
-      expected: tc.expected,
-      actual: out,
+    if (out === undefined) {
+      throw new TypeError("Your function returned undefined here. Every path needs a return.");
+    }
+    let serialised;
+    try {
+      serialised = _JSON.stringify(out);
+      if (serialised === undefined) throw new TypeError("Result is not JSON serializable");
+    } catch (serialiseErr) {
+      throw new TypeError(String(serialiseErr.message || serialiseErr));
+    }
+    results.push({
+      label: "Case " + (i + 1),
+      actual: _JSON.parse(serialised),
       runtime_ms: Math.round(runtime * 100) / 100,
       error: null
-    }});
-  }} catch (err) {{
-    results.push({{
-      label: tc.label || `Case ${{i + 1}}`,
-      passed: false,
-      input: tc.input,
-      expected: tc.expected,
+    });
+  } catch (err) {
+    results.push({
+      label: "Case " + (i + 1),
       actual: null,
       runtime_ms: 0,
       error: err.message || String(err)
-    }});
-  }}
-}}
-
-// Write through the callback, then hard-exit. Two constraints collide here:
-// `process.reallyExit` is what stops a submission's 'exit' listener from
-// printing a forged result block afterwards, but it tears the process down
-// without waiting for pending stdout. Against a pipe that is only 64 KB, a
-// larger result was therefore truncated mid-JSON and graded RE — silently,
-// and only for problems whose expected output is long. The callback fires once
-// the write has actually been handed off, so both hold.
-const _payload = '__MERIT_RESULT__' + JSON.stringify({{ results, totalRuntime }});
-process.stdout.write(_payload + '\\n', () => process.reallyExit(0));
-// Backstop: if the write never completes, still exit without running listeners.
-setTimeout(() => process.reallyExit(0), 5000).unref();
+    });
+  }
+}
+_write(marker + _JSON.stringify({ results, totalRuntime }) + "\n", () => _exit(0));
+setTimeout(() => _exit(0), 5000).unref();
 """
-            script_file = tmp_path / "solution.mjs"
-            script_file.write_text(harness, encoding="utf-8")
+            harness = harness.replace("__FUNCTION_NAME__", function_name)
+            (tmp_path / "runner.mjs").write_text(harness, encoding="utf-8")
 
             node_bin = shutil.which("node") or "node"
             code_ret, stdout, stderr, timed_out = await run_in_sandbox(
-                [node_bin, str(script_file)],
+                [node_bin, str(tmp_path / "runner.mjs")],
                 cwd=str(tmp_path),
                 timeout_sec=timeout_sec,
+                stdin_data=stdin_payload,
             )
 
             if timed_out:
@@ -1419,75 +1606,87 @@ setTimeout(() => process.reallyExit(0), 5000).unref();
                     compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
-            return _verdict_from_harness(stdout)
+            return _grade_harness_output(stdout, test_cases, marker=run_marker)
 
         elif language == "python":
-            cases_json_literal = json.dumps(test_cases)
-            harness = f"""
-import json, time, sys, os
+            (tmp_path / "user_code.py").write_text(code, encoding="utf-8")
+            harness = r"""
+def _merit_run():
+    import importlib
+    import json
+    import os
+    import sys
+    import time
 
-{code}
-
-cases = json.loads({json.dumps(cases_json_literal)})
-results = []
-total_runtime = 0.0
-
-if '{function_name}' not in globals() or not callable(globals()['{function_name}']):
-    sys.stderr.write("Function '{function_name}' is not defined")
-    sys.exit(1)
-
-fn = globals()['{function_name}']
-
-for i, tc in enumerate(cases):
-    start = time.perf_counter()
+    payload = json.loads(sys.stdin.read())
+    marker = payload["marker"]
+    inputs = payload["inputs"]
+    _write = os.write
+    _exit = os._exit
+    _dumps = json.dumps
+    _perf = time.perf_counter
+    _stdout_flush = sys.stdout.flush
+    _stderr_flush = sys.stderr.flush
     try:
-        out = fn(*tc['input'])
-        runtime = (time.perf_counter() - start) * 1000.0
-        total_runtime += runtime
-
-        # Exact JSON equality comparison
-        expected_str = json.dumps(tc['expected'], sort_keys=True)
-        actual_str = json.dumps(out, sort_keys=True)
-        passed = expected_str == actual_str
-
-        results.append({{
-            'label': tc.get('label', f"Case {{i + 1}}"),
-            'passed': passed,
-            'input': tc['input'],
-            'expected': tc['expected'],
-            'actual': out,
-            'runtime_ms': round(runtime, 2),
-            'error': None
-        }})
+        user_code = importlib.import_module("user_code")
     except Exception as err:
-        results.append({{
-            'label': tc.get('label', f"Case {{i + 1}}"),
-            'passed': False,
-            'input': tc['input'],
-            'expected': tc['expected'],
-            'actual': None,
-            'runtime_ms': 0.0,
-            'error': str(err)
-        }})
+        sys.stderr.write(str(err))
+        _stderr_flush()
+        _exit(1)
+    fn = getattr(user_code, __FUNCTION_NAME__, None)
+    if not callable(fn):
+        sys.stderr.write("Function __FUNCTION_NAME__ is not defined")
+        _stderr_flush()
+        _exit(1)
+    results = []
+    total_runtime = 0.0
+    for index, args in enumerate(inputs):
+        start = _perf()
+        try:
+            out = fn(*args)
+            runtime = (_perf() - start) * 1000.0
+            total_runtime += runtime
+            try:
+                _dumps(out)
+            except (TypeError, ValueError) as err:
+                raise TypeError(str(err)) from err
+            results.append({
+                "label": "Case " + str(index + 1),
+                "actual": out,
+                "runtime_ms": round(runtime, 2),
+                "error": None,
+            })
+        except Exception as err:
+            results.append({
+                "label": "Case " + str(index + 1),
+                "actual": None,
+                "runtime_ms": 0.0,
+                "error": str(err),
+            })
+    _stdout_flush()
+    _stderr_flush()
+    payload_json = _dumps({"results": results, "totalRuntime": total_runtime})
+    data = (marker + payload_json + "\n").encode("utf-8")
+    view = memoryview(data)
+    while view:
+        written = _write(1, view)
+        if written <= 0:
+            break
+        view = view[written:]
+    _exit(0)
 
-print(
-    "__MERIT_RESULT__" + json.dumps({{"results": results, "totalRuntime": total_runtime}}),
-    flush=True,
-)
-sys.stdout.flush()
-# os._exit skips atexit handlers and finally blocks. Without it a submission can
-# register an atexit hook that prints a forged result block after the real one,
-# and the parser takes the last marked line.
-os._exit(0)
+
+_merit_run()
 """
-            script_file = tmp_path / "solution.py"
-            script_file.write_text(harness, encoding="utf-8")
+            harness = harness.replace("__FUNCTION_NAME__", repr(function_name))
+            (tmp_path / "runner.py").write_text(harness, encoding="utf-8")
 
             py_bin = shutil.which("python3") or shutil.which("python") or "python3"
             code_ret, stdout, stderr, timed_out = await run_in_sandbox(
-                [py_bin, str(script_file)],
+                [py_bin, str(tmp_path / "runner.py")],
                 cwd=str(tmp_path),
                 timeout_sec=timeout_sec,
+                stdin_data=stdin_payload,
             )
 
             if timed_out:
@@ -1506,7 +1705,7 @@ os._exit(0)
                     compile_output=_summarise_runtime_error(stderr, stdout),
                 )
 
-            return _verdict_from_harness(stdout)
+            return _grade_harness_output(stdout, test_cases, marker=run_marker)
 
         elif language in ("java", "cpp"):
             return await _run_compiled(

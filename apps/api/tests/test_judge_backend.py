@@ -59,6 +59,96 @@ def test_judge_url_with_credentials_is_accepted():
     assert cfg.judge_url == "https://judge.example.run.app"
 
 
+@pytest.mark.asyncio
+async def test_401_evicts_token_and_retries_once(settings_snapshot, monkeypatch):
+    settings_snapshot.judge_url = "https://judge.example.run.app"
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+    judge_backend._cached_tokens.clear()
+
+    tokens = iter(["stale-token", "fresh-token"])
+
+    async def fake_mint(audience: str) -> str:
+        return next(tokens)
+
+    class Response:
+        def __init__(self, status_code: int):
+            self.status_code = status_code
+            self.text = ""
+
+        def json(self):
+            return {"verdict": "AC", "runtime_ms": 1, "test_results": [{"passed": True}]}
+
+    class Client:
+        calls = 0
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, *args, **kwargs):
+            Client.calls += 1
+            return Response(401 if Client.calls == 1 else 200)
+
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", fake_mint)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", Client)
+
+    result = await judge_backend.execute(
+        language="python",
+        code="def solve(): pass",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+    assert Client.calls == 2
+    assert result.verdict == "AC"
+
+
+@pytest.mark.asyncio
+async def test_malformed_200_fails_closed(settings_snapshot, monkeypatch):
+    settings_snapshot.judge_url = "https://judge.example.run.app"
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+
+    async def fake_mint(audience: str) -> str:
+        return "fake-token"
+
+    class Response:
+        status_code = 200
+        text = ""
+
+        def json(self):
+            return {"verdict": "AC", "runtime_ms": "bad", "test_results": "bad"}
+
+    class Client:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, *args, **kwargs):
+            return Response()
+
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", fake_mint)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", Client)
+
+    result = await judge_backend.execute(
+        language="python",
+        code="def solve(): pass",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+    assert result.verdict == "RE"
+    assert result.infrastructure_error is True
+    assert "invalid response" in result.compile_output.lower()
+
+
 def test_local_sandbox_is_the_default():
     cfg = Settings(**_base_env())
     assert cfg.judge_url == ""
