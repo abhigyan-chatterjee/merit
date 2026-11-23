@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from app.schemas.tutor import TutorMessageTurn, _normalize_base_url
+from app.schemas.tutor import _normalize_base_url
 
 InterviewDifficulty = Literal["easy", "medium", "hard"]
 InterviewAction = Literal["start", "message", "advance_stage", "evaluate"]
@@ -175,8 +175,8 @@ class InterviewUpdateRequest(BaseModel):
 
 class InterviewTurnRequest(BaseModel):
     base_url: str
-    api_key: str = Field(..., min_length=1)
-    model: str = Field(..., min_length=1)
+    api_key: str = Field(..., min_length=1, max_length=512)
+    model: str = Field(..., min_length=1, max_length=256)
     action: InterviewAction = "message"
     message: str = Field(default="", max_length=8000)
     stage: str | None = Field(default=None, max_length=64)
@@ -195,14 +195,6 @@ class InterviewTurnRequest(BaseModel):
         if self.action == "message" and not self.message.strip():
             raise ValueError("message must be non-empty when action is 'message'")
         return self
-
-
-class InterviewGuestTurnRequest(InterviewTurnRequest):
-    difficulty: InterviewDifficulty
-    problem_slugs: list[str] = Field(default_factory=list, max_length=2)
-    history: list[TutorMessageTurn] = Field(default_factory=list, max_length=40)
-    resume_text: str | None = Field(default=None, max_length=10000)
-    project_brief: str | None = Field(default=None, max_length=2000)
 
 
 class InterviewSessionSummary(BaseModel):
@@ -236,10 +228,4 @@ class InterviewSessionDetail(InterviewSessionSummary):
 class InterviewTurnResponse(BaseModel):
     reply: str
     session: InterviewSessionDetail
-    suggested_stage: str | None = None
-
-
-class InterviewGuestTurnResponse(BaseModel):
-    reply: str
-    rubric: InterviewRubric | None = None
     suggested_stage: str | None = None

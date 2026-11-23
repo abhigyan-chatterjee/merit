@@ -116,18 +116,19 @@ def test_models_passthrough(client: TestClient, monkeypatch):
     assert API_KEY not in res.text
 
 
-def test_models_allow_guest_access(client: TestClient, monkeypatch):
+def test_models_requires_auth(client: TestClient, monkeypatch):
     install_fake_client(
         monkeypatch,
         get=lambda url, headers: FakeResponse(200, {"data": [{"id": "guest-model"}]}),
     )
 
     res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
-    assert res.status_code == 200
-    assert res.json() == {"models": ["guest-model"]}
+    assert res.status_code == 401
+    assert res.json()["detail"]["code"] == "UNAUTHORIZED"
 
 
 def test_models_missing_id_maps_to_502(client: TestClient, monkeypatch):
+    register_user(client, "tutor_missing_id@merit.org")
     install_fake_client(
         monkeypatch,
         get=lambda url, headers: FakeResponse(200, {"data": [{"name": "unnamed"}]}),
@@ -217,7 +218,7 @@ def test_chat_forwards_system_and_problem_context(client: TestClient, monkeypatc
     assert API_KEY not in str(sent["json"])
 
 
-def test_chat_allows_guest_access(client: TestClient, monkeypatch):
+def test_chat_requires_auth(client: TestClient, monkeypatch):
     install_fake_client(
         monkeypatch,
         post=lambda url, headers, body: FakeResponse(
@@ -235,8 +236,8 @@ def test_chat_allows_guest_access(client: TestClient, monkeypatch):
             "question": "Help?",
         },
     )
-    assert res.status_code == 200
-    assert res.json() == {"reply": "Guest hint"}
+    assert res.status_code == 401
+    assert res.json()["detail"]["code"] == "UNAUTHORIZED"
 
 
 def test_chat_tripwire_blocks_solution_code_reply(client: TestClient, monkeypatch):
@@ -365,7 +366,7 @@ def test_chat_unknown_problem_404(client: TestClient, monkeypatch):
     assert res.json()["detail"]["code"] == "PROBLEM_NOT_FOUND"
 
 
-def test_unauthenticated_allowed_on_both(client: TestClient, monkeypatch):
+def test_unauthenticated_rejected_on_both(client: TestClient, monkeypatch):
     install_fake_client(
         monkeypatch,
         get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
@@ -375,7 +376,7 @@ def test_unauthenticated_allowed_on_both(client: TestClient, monkeypatch):
     )
 
     res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
-    assert res.status_code == 200
+    assert res.status_code == 401
 
     res = client.post(
         "/api/v1/tutor/chat",
@@ -387,7 +388,7 @@ def test_unauthenticated_allowed_on_both(client: TestClient, monkeypatch):
             "question": "Help?",
         },
     )
-    assert res.status_code == 200
+    assert res.status_code == 401
 
 
 def test_chat_sanitizes_thought_and_think_tags(client: TestClient, monkeypatch):
@@ -470,6 +471,7 @@ def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
 def test_provider_url_blocks_multicast_and_dual_homed_private_ip(
     client: TestClient, monkeypatch
 ):
+    register_user(client, "tutor_multicast@merit.org")
     res = client.post(
         "/api/v1/tutor/models",
         json={"base_url": "https://224.0.0.1/v1", "api_key": API_KEY},
@@ -494,6 +496,7 @@ def test_provider_url_blocks_multicast_and_dual_homed_private_ip(
 
 
 def test_client_receives_ip_pinned_transport_and_trust_env_false(client: TestClient, monkeypatch):
+    register_user(client, "tutor_pinned@merit.org")
     capture: dict = {}
     install_fake_client(
         monkeypatch,
@@ -555,6 +558,8 @@ def test_pinned_dns_backend_connects_to_pinned_ip_and_rejects_mismatched_host():
 
 
 def test_oversized_response_body_and_stream_map_to_502(client: TestClient, monkeypatch):
+    register_user(client, "tutor_oversized@merit.org")
+
     class RawByteStream(httpx.AsyncByteStream):
         def __init__(self, chunks: list[bytes]):
             self._chunks = chunks
@@ -690,6 +695,7 @@ def test_chat_mode_directives_keep_no_solution_guardrail(
 
 
 def test_chat_rejects_invalid_mode_and_history_role(client: TestClient, monkeypatch):
+    register_user(client, "tutor_mode_reject@merit.org")
     capture: dict = {}
     install_fake_client(
         monkeypatch,
@@ -713,3 +719,34 @@ def test_chat_rejects_invalid_mode_and_history_role(client: TestClient, monkeypa
     )
     assert rejected_role.status_code == 422
     assert "post" not in capture
+
+
+def test_production_rejects_loopback_provider_urls(client: TestClient, monkeypatch):
+    register_user(client, "tutor_prod_loopback@merit.org")
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
+    )
+    monkeypatch.setattr(tutor_module.settings, "environment", "production", raising=False)
+
+    for base_url in ("http://localhost/v1", "http://127.0.0.1/v1"):
+        res = client.post(
+            "/api/v1/tutor/models", json={"base_url": base_url, "api_key": API_KEY}
+        )
+        assert res.status_code == 422, base_url
+        assert res.json()["detail"]["code"] == "TUTOR_BAD_URL"
+
+
+def test_non_default_port_rejected_for_public_providers(client: TestClient, monkeypatch):
+    register_user(client, "tutor_nondefault_port@merit.org")
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"id": "m"}]}),
+    )
+
+    res = client.post(
+        "/api/v1/tutor/models",
+        json={"base_url": "https://provider.example.com:8443/v1", "api_key": API_KEY},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "TUTOR_BAD_URL"

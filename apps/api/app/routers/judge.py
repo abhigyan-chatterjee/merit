@@ -1,8 +1,9 @@
+import asyncio
 import json
 import logging
 import re
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -21,6 +22,7 @@ from app.schemas.judge import (
 from app.security import get_current_user, require_same_origin
 from app.services.judge import JudgeResult
 from app.services.judge_backend import execute as execute_code
+from app.services.rate_limit import SlidingWindowLimiter
 from app.services.revision import record_submission
 from app.services.signatures import get_signature
 from app.services.streak import record_activity
@@ -37,6 +39,14 @@ router = APIRouter(
 # generated code — enforce a plain identifier before anything reaches it.
 FUNCTION_NAME_RE = re.compile(r"^[A-Za-z_$][\w$]*\Z")
 DUNDER_NAME_RE = re.compile(r"^__.*__\Z")
+
+_judge_limiter = SlidingWindowLimiter(
+    max_hits=20,
+    window_sec=60,
+    code="JUDGE_RATE_LIMIT",
+    message="Too many judge requests. Try again shortly.",
+)
+_judge_semaphore = asyncio.Semaphore(4)
 
 
 def _get_verified_problem(db: Session, slug: str) -> Problem:
@@ -128,7 +138,7 @@ def _redact_hidden_results(rows: list[dict], tc_rows: list[ProblemTestCase]) -> 
                 "expected": None,
                 "actual": None,
                 "runtime_ms": row.get("runtime_ms", 0.0),
-                "error": row.get("error"),
+                "error": "Runtime error on hidden test" if row.get("error") else None,
                 "hidden": True,
             }
         )
@@ -210,6 +220,7 @@ async def run_samples(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _judge_limiter.check(user.id)
     problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
@@ -260,16 +271,17 @@ async def run_samples(
                     ),
                 },
             )
-        res = await _execute(
-            language=req.language,
-            code=req.code,
-            function_name=problem.function_name,
-            test_cases=[
-                {"label": "Custom Input", "input": req.custom_input, "expected": None}
-            ],
-            time_limit_ms=problem.time_limit_ms,
-            signature=signature,
-        )
+        async with _judge_semaphore:
+            res = await _execute(
+                language=req.language,
+                code=req.code,
+                function_name=problem.function_name,
+                test_cases=[
+                    {"label": "Custom Input", "input": req.custom_input, "expected": None}
+                ],
+                time_limit_ms=problem.time_limit_ms,
+                signature=signature,
+            )
         if (
             res.infrastructure_error
             or res.verdict in {"CE", "TLE", "RE"}
@@ -314,27 +326,28 @@ async def run_samples(
         .order_by(ProblemTestCase.ordinal)
     ).all()
 
-    # Fallback to first two if none marked sample
     if not tc_rows:
-        tc_rows = db.scalars(
-            select(ProblemTestCase)
-            .where(ProblemTestCase.problem_slug == req.problem_slug)
-            .order_by(ProblemTestCase.ordinal)
-            .limit(2)
-        ).all()
+        raise HTTPException(
+            status_code=HTTP_422,
+            detail={
+                "code": "NO_SAMPLE_TESTS",
+                "message": "This problem has no sample test cases on this deployment.",
+            },
+        )
 
     cases = _cases_from_rows(tc_rows)
 
-    res = await _execute(
-        language=req.language,
-        code=req.code,
-        function_name=problem.function_name,
-        test_cases=cases,
-        time_limit_ms=problem.time_limit_ms,
-        # Compiled languages need the recorded types to generate their
-        # harness; the interpreted languages ignore it.
-        signature=signature,
-    )
+    async with _judge_semaphore:
+        res = await _execute(
+            language=req.language,
+            code=req.code,
+            function_name=problem.function_name,
+            test_cases=cases,
+            time_limit_ms=problem.time_limit_ms,
+            # Compiled languages need the recorded types to generate their
+            # harness; the interpreted languages ignore it.
+            signature=signature,
+        )
 
     models = _result_models(res.test_results)
 
@@ -356,6 +369,7 @@ async def submit_solution(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _judge_limiter.check(user.id)
     problem = _get_verified_problem(db, req.problem_slug)
 
     if not req.code.strip():
@@ -385,16 +399,17 @@ async def submit_solution(
 
     cases = _cases_from_rows(tc_rows)
 
-    res = await _execute(
-        language=req.language,
-        code=req.code,
-        function_name=problem.function_name,
-        test_cases=cases,
-        time_limit_ms=problem.time_limit_ms,
-        # Compiled languages need the recorded types to generate their
-        # harness; the interpreted languages ignore it.
-        signature=get_signature(problem.slug),
-    )
+    async with _judge_semaphore:
+        res = await _execute(
+            language=req.language,
+            code=req.code,
+            function_name=problem.function_name,
+            test_cases=cases,
+            time_limit_ms=problem.time_limit_ms,
+            # Compiled languages need the recorded types to generate their
+            # harness; the interpreted languages ignore it.
+            signature=get_signature(problem.slug),
+        )
 
     now_str = utcnow_iso()
 
@@ -486,6 +501,7 @@ async def submit_solution(
 @router.get("/submissions/{problem_slug}", response_model=list[SubmissionResponse])
 def get_submissions(
     problem_slug: str,
+    limit: int = Query(default=50, ge=1, le=200),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -496,6 +512,7 @@ def get_submissions(
             Submission.problem_slug == problem_slug,
         )
         .order_by(Submission.created_at.desc())
+        .limit(limit)
     ).all()
 
     resp = []

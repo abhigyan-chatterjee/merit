@@ -152,6 +152,8 @@ def test_production_postgres_without_sslmode_warns():
             secret_key=SECRET,
             environment="production",
             database_url="postgresql+psycopg://merit:x@ep-host.aws.neon.tech/merit",
+            judge_url="https://judge.example.com",
+            google_application_credentials="/tmp/fake-service-account.json",
         )
     assert any("sslmode" in str(w.message) for w in caught)
 
@@ -161,5 +163,11 @@ def test_production_postgres_with_sslmode_no_warning():
 
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        Settings(secret_key=SECRET, environment="production", database_url=PG_URL)
+        Settings(
+            secret_key=SECRET,
+            environment="production",
+            database_url=PG_URL,
+            judge_url="https://judge.example.com",
+            google_application_credentials="/tmp/fake-service-account.json",
+        )
     assert not any("sslmode" in str(w.message) for w in caught)

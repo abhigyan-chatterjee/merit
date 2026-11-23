@@ -8,7 +8,7 @@ SUPPORTED_LANGUAGES = frozenset({"javascript", "python", "java", "cpp"})
 class JudgeRunRequest(BaseModel):
     problem_slug: str
     language: str = Field(..., description="Language: javascript | python | java | cpp")
-    code: str
+    code: str = Field(..., max_length=65536)
     custom_input: list[Any] | None = None
 
     @field_validator("language")

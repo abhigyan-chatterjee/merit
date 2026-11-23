@@ -91,12 +91,26 @@ def due_items(
     qids = [r.item_id for r in rows if r.item_type == "question"]
 
     problems = (
-        {p.slug: p for p in db.scalars(select(Problem).where(Problem.slug.in_(slugs))).all()}
+        {
+            p.slug: p
+            for p in db.scalars(
+                select(Problem).where(
+                    Problem.slug.in_(slugs), Problem.review_status == "verified"
+                )
+            ).all()
+        }
         if slugs
         else {}
     )
     questions = (
-        {q.id: q for q in db.scalars(select(Question).where(Question.id.in_(qids))).all()}
+        {
+            q.id: q
+            for q in db.scalars(
+                select(Question).where(
+                    Question.id.in_(qids), Question.review_status == "verified"
+                )
+            ).all()
+        }
         if qids
         else {}
     )
@@ -202,9 +216,17 @@ def review_item(
         )
 
     exists = (
-        db.scalar(select(Problem.slug).where(Problem.slug == item_id))
+        db.scalar(
+            select(Problem.slug).where(
+                Problem.slug == item_id, Problem.review_status == "verified"
+            )
+        )
         if item_type == "problem"
-        else db.scalar(select(Question.id).where(Question.id == item_id))
+        else db.scalar(
+            select(Question.id).where(
+                Question.id == item_id, Question.review_status == "verified"
+            )
+        )
     )
     if exists is None:
         raise HTTPException(

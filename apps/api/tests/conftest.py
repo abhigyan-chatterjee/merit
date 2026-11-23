@@ -66,11 +66,15 @@ def _reset_rate_limiters():
     yield
     from app.routers.auth import _auth_limiter, _refresh_limiter
     from app.routers.feedback import _feedback_limiter
+    from app.routers.interview import _interview_session_limiter
+    from app.routers.judge import _judge_limiter
     from app.routers.tutor import _rate_buckets, _rate_lock
 
     _auth_limiter.reset()
     _refresh_limiter.reset()
     _feedback_limiter.reset()
+    _judge_limiter.reset()
+    _interview_session_limiter.reset()
     with _rate_lock:
         _rate_buckets.clear()
 

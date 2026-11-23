@@ -124,7 +124,7 @@ def clear_auth_cookies(response: Response) -> None:
     kwargs = {
         "path": "/",
         "httponly": True,
-        "secure": settings.environment == "production",
+        "secure": settings.environment.lower() == "production",
         "samesite": "strict",
     }
     response.delete_cookie(key="merit_access", **kwargs)

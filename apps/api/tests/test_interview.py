@@ -332,16 +332,7 @@ def test_evaluate_non_json_fallback_does_not_fail(client: TestClient, monkeypatc
     assert "Great work overall" in session_data["rubric"]["summary"]
 
 
-def test_guest_turn_and_ssrf_protection(client: TestClient, monkeypatch):
-    capture: dict = {}
-    install_fake_client(
-        monkeypatch,
-        capture=capture,
-        post=lambda url, headers, body: FakeResponse(
-            200, {"choices": [{"message": {"content": "Tell me about hash collisions."}}]}
-        ),
-    )
-
+def test_guest_endpoint_removed_and_session_ssrf_protection(client: TestClient, monkeypatch):
     guest_res = client.post(
         "/api/v1/interview/guest/turn",
         json={
@@ -354,20 +345,26 @@ def test_guest_turn_and_ssrf_protection(client: TestClient, monkeypatch):
             "history": [],
         },
     )
-    assert guest_res.status_code == 200
-    assert guest_res.json()["reply"] == "Tell me about hash collisions."
-    assert API_KEY not in guest_res.text
+    assert guest_res.status_code == 404
+
+    register_and_login(client, "ssrf_session@merit.org")
+    capture: dict = {}
+    install_fake_client(
+        monkeypatch,
+        capture=capture,
+        post=lambda url, headers, body: FakeResponse(
+            200, {"choices": [{"message": {"content": "Tell me about hash collisions."}}]}
+        ),
+    )
+    sid = client.post("/api/v1/interview/sessions", json={"difficulty": "easy"}).json()["id"]
 
     ssrf_res = client.post(
-        "/api/v1/interview/guest/turn",
+        f"/api/v1/interview/sessions/{sid}/turn",
         json={
             "base_url": "http://169.254.169.254/v1",
             "api_key": API_KEY,
             "model": "gpt-4o-mini",
-            "difficulty": "easy",
-            "problem_slugs": ["two-sum"],
             "action": "start",
-            "history": [],
         },
     )
     assert ssrf_res.status_code == 422
@@ -445,22 +442,6 @@ def test_suggest_next_marker_is_stripped_and_returned(client: TestClient, monkey
     stored = client.get(f"/api/v1/interview/sessions/{sid}").json()
     assert all("SUGGEST_NEXT" not in msg["content"] for msg in stored["messages"])
 
-    guest = client.post(
-        "/api/v1/interview/guest/turn",
-        json={
-            "base_url": BASE_URL,
-            "api_key": API_KEY,
-            "model": "gpt-4o-mini",
-            "difficulty": "easy",
-            "action": "message",
-            "stage": "theory",
-            "message": "Hash maps bucket keys and resolve collisions.",
-        },
-    )
-    assert guest.status_code == 200
-    assert guest.json()["suggested_stage"] == "coding_1"
-    assert guest.json()["reply"] == "Nice work on hashing."
-
 
 def test_stage_fallback_signal_only_on_message_action(client: TestClient, monkeypatch):
     register_and_login(client, "stage_fallback@merit.org")
@@ -493,12 +474,11 @@ def test_stage_fallback_signal_only_on_message_action(client: TestClient, monkey
 
     reply["text"] = "Welcome! We'll cover theory first and we'll move to coding later."
     start_res = client.post(
-        "/api/v1/interview/guest/turn",
+        f"/api/v1/interview/sessions/{sid}/turn",
         json={
             "base_url": BASE_URL,
             "api_key": API_KEY,
             "model": "gpt-4o-mini",
-            "difficulty": "easy",
             "action": "start",
         },
     )
@@ -538,26 +518,26 @@ def test_marker_only_reply_uses_fallback_filler(client: TestClient, monkeypatch)
     assert data["session"]["messages"][-1]["content"] == data["reply"]
 
     reply["text"] = "[[SUGGEST_NEXT:rubric]]"
-    guest_res = client.post(
-        "/api/v1/interview/guest/turn",
+    session_res2 = client.post(
+        f"/api/v1/interview/sessions/{sid}/turn",
         json={
             "base_url": BASE_URL,
             "api_key": API_KEY,
             "model": "gpt-4o-mini",
-            "difficulty": "easy",
             "action": "message",
             "stage": "wrapup",
             "message": "Done with follow-ups.",
         },
     )
-    assert guest_res.status_code == 200
-    guest_data = guest_res.json()
+    assert session_res2.status_code == 200
+    guest_data = session_res2.json()
     assert guest_data["suggested_stage"] == "rubric"
     assert "SUGGEST_NEXT" not in guest_data["reply"]
     assert "End & Score" in guest_data["reply"]
 
 
 def test_parse_resume_pdf_upload(client: TestClient):
+    register_and_login(client, "resume_pdf@merit.org")
     pdf_bytes = _build_pdf_bytes("Distributed Systems Intern built Go microservice on Kafka")
     ok = client.post(
         "/api/v1/interview/parse-resume",
@@ -590,3 +570,66 @@ def test_parse_resume_pdf_upload(client: TestClient):
     )
     assert empty_pdf.status_code == 422
     assert empty_pdf.json()["detail"]["code"] == "EMPTY_RESUME_TEXT"
+
+
+def test_interview_requires_auth(client: TestClient):
+    pdf_bytes = _build_pdf_bytes("Candidate profile")
+    res = client.post(
+        "/api/v1/interview/parse-resume",
+        files={"file": ("cv.pdf", pdf_bytes, "application/pdf")},
+    )
+    assert res.status_code == 401
+    assert client.post("/api/v1/interview/sessions", json={"difficulty": "easy"}).status_code == 401
+    assert client.get("/api/v1/interview/sessions").status_code == 401
+
+
+def test_completed_session_rejects_turn_and_patch(client: TestClient, monkeypatch):
+    register_and_login(client, "completed_guard@merit.org")
+    install_fake_client(
+        monkeypatch,
+        post=lambda url, headers, body: FakeResponse(
+            200, {"choices": [{"message": {"content": "Great work overall."}}]}
+        ),
+    )
+    sid = client.post("/api/v1/interview/sessions", json={"difficulty": "easy"}).json()["id"]
+    completed = client.post(
+        f"/api/v1/interview/sessions/{sid}/turn",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "action": "evaluate",
+        },
+    )
+    assert completed.status_code == 200
+    assert completed.json()["session"]["status"] == "completed"
+
+    turn = client.post(
+        f"/api/v1/interview/sessions/{sid}/turn",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "action": "message",
+            "message": "One more question.",
+        },
+    )
+    assert turn.status_code == 409
+    assert turn.json()["detail"]["code"] == "SESSION_COMPLETED"
+
+    patch = client.patch(
+        f"/api/v1/interview/sessions/{sid}", json={"elapsed_sec": 99}
+    )
+    assert patch.status_code == 409
+    assert patch.json()["detail"]["code"] == "SESSION_COMPLETED"
+
+
+def test_coding_snapshots_restricted_to_assigned_problems(client: TestClient):
+    register_and_login(client, "snapshot_guard@merit.org")
+    sid = client.post("/api/v1/interview/sessions", json={"difficulty": "easy"}).json()["id"]
+    res = client.patch(
+        f"/api/v1/interview/sessions/{sid}",
+        json={"coding_snapshots": {"not-assigned-slug": {"language": "python", "code": "x = 1"}}},
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "INVALID_CODING_SNAPSHOT"

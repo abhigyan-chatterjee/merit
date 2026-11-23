@@ -33,3 +33,40 @@ def test_sqlite_relative_url_normalized_to_apps_api():
     )
     assert settings.database_url.startswith("sqlite:////")
     assert settings.database_url.endswith("apps/api/merit.db")
+
+
+def test_production_rejects_missing_judge_url():
+    with pytest.raises(RuntimeError, match="JUDGE_URL"):
+        Settings(
+            secret_key="test_secret_for_config_validation_32chars",
+            environment="production",
+            judge_url="",
+        )
+
+
+def test_production_rejects_blank_judge_url():
+    with pytest.raises(RuntimeError, match="JUDGE_URL"):
+        Settings(
+            secret_key="test_secret_for_config_validation_32chars",
+            environment="Production",
+            judge_url="   ",
+        )
+
+
+def test_production_accepts_judge_url_with_credentials():
+    settings = Settings(
+        secret_key="test_secret_for_config_validation_32chars",
+        environment="production",
+        judge_url="https://judge.example.com",
+        google_application_credentials="/tmp/fake-service-account.json",
+    )
+    assert settings.judge_url == "https://judge.example.com"
+
+
+def test_development_allows_missing_judge_url():
+    settings = Settings(
+        secret_key="test_secret_for_config_validation_32chars",
+        environment="development",
+        judge_url="",
+    )
+    assert settings.judge_url == ""

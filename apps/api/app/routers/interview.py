@@ -1,5 +1,6 @@
 """Dedicated AI Interview Portal API endpoints (Phase 1 + Phase 2 CV PDF + DB sessions)."""
 
+import asyncio
 import io
 import json
 import random
@@ -9,7 +10,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
 from pypdf import PdfReader
 from pypdf.errors import PdfReadError
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
@@ -23,8 +24,6 @@ from app.schemas.interview import (
     InterviewCodingSnapshot,
     InterviewCreateRequest,
     InterviewDifficulty,
-    InterviewGuestTurnRequest,
-    InterviewGuestTurnResponse,
     InterviewMessageRecord,
     InterviewProblemSummary,
     InterviewRubric,
@@ -37,9 +36,14 @@ from app.schemas.interview import (
     InterviewUpdateRequest,
     ResumeParseResponse,
 )
-from app.security import get_current_user, get_optional_current_user
+from app.security import get_current_user, require_same_origin
+from app.services.rate_limit import SlidingWindowLimiter
 
-router = APIRouter(prefix="/api/v1/interview", tags=["interview"])
+router = APIRouter(
+    prefix="/api/v1/interview",
+    tags=["interview"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 MAX_RESUME_BYTES = 2 * 1024 * 1024
 MAX_RESUME_PAGES = 8
@@ -49,6 +53,13 @@ _SYS_RNG = random.SystemRandom()
 _JSON_FENCE_RE = re.compile(r"```json\s*([\s\S]*?)```", re.IGNORECASE)
 _ANY_FENCE_RE = re.compile(r"```\s*(\{[\s\S]*?\})\s*```")
 _SUGGEST_NEXT_RE = re.compile(r"\[\[SUGGEST_NEXT:([a-z0-9_]+)\]\]", re.IGNORECASE)
+
+_interview_session_limiter = SlidingWindowLimiter(
+    max_hits=10,
+    window_sec=60,
+    code="INTERVIEW_RATE_LIMIT",
+    message="Too many interview session requests. Try again shortly.",
+)
 
 
 def _rate_key(request: Request, user: User | None) -> str:
@@ -614,11 +625,41 @@ def _parse_rubric(raw_reply: str, difficulty: InterviewDifficulty) -> tuple[dict
     return rubric, summary
 
 
+def _extract_resume_text(raw: bytes) -> tuple[str, int, bool]:
+    reader = PdfReader(io.BytesIO(raw))
+    if reader.is_encrypted and reader.decrypt("") == 0:
+        raise HTTPException(
+            status_code=HTTP_422,
+            detail={
+                "code": "INVALID_PDF",
+                "message": "Encrypted PDFs are not supported. Upload an unlocked PDF.",
+            },
+        )
+    total_pages = len(reader.pages)
+    parts: list[str] = []
+    total_chars = 0
+    overflowed = False
+    for i in range(min(total_pages, MAX_RESUME_PAGES)):
+        page_text = reader.pages[i].extract_text() or ""
+        remaining = MAX_RESUME_CHARS - total_chars
+        if remaining <= 0:
+            overflowed = True
+            break
+        if len(page_text) > remaining:
+            parts.append(page_text[:remaining])
+            overflowed = True
+            break
+        parts.append(page_text)
+        total_chars += len(page_text)
+    joined = re.sub(r"\n{3,}", "\n\n", "\n".join(parts)).strip()
+    return joined, total_pages, overflowed
+
+
 @router.post("/parse-resume", response_model=ResumeParseResponse)
 async def parse_resume(
     request: Request,
     file: UploadFile = File(...),
-    user: User | None = Depends(get_optional_current_user),
+    user: User = Depends(get_current_user),
 ) -> ResumeParseResponse:
     _check_rate_limit(_rate_key(request, user))
 
@@ -648,20 +689,20 @@ async def parse_resume(
         )
 
     try:
-        reader = PdfReader(io.BytesIO(raw))
-        if reader.is_encrypted and reader.decrypt("") == 0:
-            raise HTTPException(
-                status_code=HTTP_422,
-                detail={
-                    "code": "INVALID_PDF",
-                    "message": "Encrypted PDFs are not supported. Upload an unlocked PDF.",
-                },
-            )
-        total_pages = len(reader.pages)
-        page_limit = min(total_pages, MAX_RESUME_PAGES)
-        page_texts = [(reader.pages[i].extract_text() or "") for i in range(page_limit)]
+        joined, total_pages, overflowed = await asyncio.wait_for(
+            asyncio.to_thread(_extract_resume_text, raw),
+            timeout=10.0,
+        )
     except HTTPException:
         raise
+    except TimeoutError as err:
+        raise HTTPException(
+            status_code=HTTP_422,
+            detail={
+                "code": "INVALID_PDF",
+                "message": "Could not read text from this PDF file.",
+            },
+        ) from err
     except (PdfReadError, Exception) as err:
         raise HTTPException(
             status_code=HTTP_422,
@@ -671,7 +712,6 @@ async def parse_resume(
             },
         ) from err
 
-    joined = re.sub(r"\n{3,}", "\n\n", "\n".join(page_texts)).strip()
     if not joined:
         raise HTTPException(
             status_code=HTTP_422,
@@ -684,7 +724,7 @@ async def parse_resume(
             },
         )
 
-    truncated = total_pages > MAX_RESUME_PAGES or len(joined) > MAX_RESUME_CHARS
+    truncated = total_pages > MAX_RESUME_PAGES or overflowed
     extracted_text = joined[:MAX_RESUME_CHARS]
     filename = (file.filename or "resume.pdf").strip()[:255] or "resume.pdf"
     return ResumeParseResponse(
@@ -720,6 +760,18 @@ def create_session(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> InterviewSessionDetail:
+    _interview_session_limiter.check(user.id)
+    total = db.scalar(
+        select(func.count(InterviewSession.id)).where(InterviewSession.user_id == user.id)
+    )
+    if total is not None and total >= 50:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail={
+                "code": "SESSION_LIMIT_REACHED",
+                "message": "Maximum interview sessions reached.",
+            },
+        )
     blueprint = INTERVIEW_BLUEPRINTS[req.difficulty]
     expected_count = len(blueprint["coding_difficulties"])
 
@@ -798,6 +850,14 @@ def update_session(
     db: Session = Depends(get_db),
 ) -> InterviewSessionDetail:
     row = _get_owned_session(db, user.id, session_id)
+    if row.status == "completed":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "SESSION_COMPLETED",
+                "message": "Interview session is already completed.",
+            },
+        )
 
     if req.current_stage is not None:
         _stage_by_id(row.difficulty, req.current_stage)
@@ -805,6 +865,15 @@ def update_session(
     if req.elapsed_sec is not None:
         row.elapsed_sec = req.elapsed_sec
     if req.coding_snapshots is not None:
+        assigned = {str(s) for s in _load_json_list(row.problem_slugs_json)}
+        if any(slug not in assigned for slug in req.coding_snapshots):
+            raise HTTPException(
+                status_code=HTTP_422,
+                detail={
+                    "code": "INVALID_CODING_SNAPSHOT",
+                    "message": "Coding snapshots are limited to the assigned problems.",
+                },
+            )
         existing = _load_json_dict(row.coding_snapshots_json)
         for slug, snap in req.coding_snapshots.items():
             existing[slug] = snap.model_dump()
@@ -862,6 +931,25 @@ async def send_session_turn(
     db: Session = Depends(get_db),
 ) -> InterviewTurnResponse:
     row = _get_owned_session(db, user.id, session_id)
+    if row.status == "completed":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "SESSION_COMPLETED",
+                "message": "Interview session is already completed.",
+            },
+        )
+    history_rows = [
+        item for item in _load_json_list(row.messages_json) if isinstance(item, dict)
+    ]
+    if len(history_rows) >= 120:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "SESSION_TURN_LIMIT",
+                "message": "Maximum interview turns reached for this session.",
+            },
+        )
     difficulty: InterviewDifficulty = row.difficulty  # type: ignore[assignment]
     target_stage_id = req.stage or ("rubric" if req.action == "evaluate" else row.current_stage)
     stage = _stage_by_id(difficulty, target_stage_id)
@@ -895,9 +983,6 @@ async def send_session_turn(
         req, stage, active_problem, difficulty
     )
 
-    history_rows = [
-        item for item in _load_json_list(row.messages_json) if isinstance(item, dict)
-    ]
     llm_messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
     for item in history_rows[-24:]:
         role = "assistant" if item.get("role") == "interviewer" else "user"
@@ -952,66 +1037,5 @@ async def send_session_turn(
     return InterviewTurnResponse(
         reply=display_reply,
         session=_session_to_detail(db, row),
-        suggested_stage=suggested_stage,
-    )
-
-
-@router.post("/guest/turn", response_model=InterviewGuestTurnResponse)
-async def guest_turn(
-    req: InterviewGuestTurnRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
-    db: Session = Depends(get_db),
-) -> InterviewGuestTurnResponse:
-    blueprint = INTERVIEW_BLUEPRINTS[req.difficulty]
-    target_stage_id = (
-        req.stage
-        or ("rubric" if req.action == "evaluate" else blueprint["stages"][0]["id"])
-    )
-    stage = _stage_by_id(req.difficulty, target_stage_id)
-    problems = _resolve_problems_by_slugs(db, req.problem_slugs)
-    active_problem = _select_active_problem(stage, problems, req.active_problem_slug)
-
-    system_prompt = _build_interview_system_prompt(
-        difficulty=req.difficulty,
-        stage=stage,
-        action=req.action,
-        problems=problems,
-        active_problem=active_problem,
-        coding_snapshot=req.coding_snapshot,
-        resume_text=req.resume_text,
-        project_brief=req.project_brief,
-        design_notes=req.design_notes,
-    )
-    llm_user_prompt, _ = _synthetic_prompt_for_action(
-        req, stage, active_problem, req.difficulty
-    )
-
-    llm_messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
-    llm_messages.extend(
-        {"role": turn.role, "content": turn.content} for turn in req.history[-24:]
-    )
-    llm_messages.append({"role": "user", "content": llm_user_prompt})
-
-    raw_reply = await call_byok_completion(
-        req.base_url,
-        req.api_key,
-        req.model,
-        llm_messages,
-        _rate_key(request, user),
-        sanitize_code_tripwire=(req.action != "evaluate"),
-    )
-
-    if req.action == "evaluate":
-        rubric_dict, summary = _parse_rubric(raw_reply, req.difficulty)
-        return InterviewGuestTurnResponse(
-            reply=summary, rubric=InterviewRubric.model_validate(rubric_dict)
-        )
-    display_reply, suggested_stage = _extract_suggested_stage(
-        raw_reply, req.difficulty, stage["id"], req.action
-    )
-    return InterviewGuestTurnResponse(
-        reply=display_reply,
-        rubric=None,
         suggested_stage=suggested_stage,
     )

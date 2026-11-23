@@ -23,10 +23,11 @@ from urllib.parse import urlsplit
 
 import httpcore
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db import get_db
 from app.http_status import HTTP_422
 from app.models.content import Problem
@@ -37,9 +38,13 @@ from app.schemas.tutor import (
     TutorModelsRequest,
     TutorModelsResponse,
 )
-from app.security import get_optional_current_user
+from app.security import get_current_user, require_same_origin
 
-router = APIRouter(prefix="/api/v1/tutor", tags=["tutor"])
+router = APIRouter(
+    prefix="/api/v1/tutor",
+    tags=["tutor"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 MODELS_TIMEOUT_S = 10.0
 CHAT_TIMEOUT_S = 30.0
@@ -49,11 +54,22 @@ RATE_LIMIT_WINDOW_S = 60.0
 
 _rate_buckets: dict[str, list[float]] = {}
 _rate_lock = Lock()
+_rate_sweep_at = 1024
 _logger = logging.getLogger(__name__)
 _CODE_BLOCK_RE = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 _TRUNCATED_REPLY = (
     "I can’t provide solution code. Let’s work through the next reasoning step instead."
 )
+
+
+def _sweep_rate_buckets(now: float) -> None:
+    stale = [
+        key
+        for key, hits in _rate_buckets.items()
+        if not hits or now - max(hits) >= RATE_LIMIT_WINDOW_S
+    ]
+    for key in stale:
+        del _rate_buckets[key]
 
 
 def _check_rate_limit(user_id: str) -> None:
@@ -71,6 +87,10 @@ def _check_rate_limit(user_id: str) -> None:
             )
         hits.append(now)
         _rate_buckets[user_id] = hits
+        global _rate_sweep_at
+        if len(_rate_buckets) >= _rate_sweep_at:
+            _sweep_rate_buckets(now)
+            _rate_sweep_at = max(1024, len(_rate_buckets) * 2)
 
 
 def _upstream_error() -> HTTPException:
@@ -217,22 +237,20 @@ async def _validate_provider_url(base_url: str) -> tuple[str, tuple[str, ...]]:
         if parsed.scheme not in {"http", "https"}:
             raise ValueError
         normalized_host = hostname.strip("[]").lower()
-        if parsed.scheme == "http" and normalized_host not in {"localhost", "127.0.0.1"}:
+        is_loopback = normalized_host in {"localhost", "127.0.0.1"}
+        if parsed.scheme == "http" and not is_loopback:
+            raise ValueError
+        if is_loopback and settings.environment.lower() == "production":
+            raise ValueError
+        if not is_loopback and parsed.port is not None and parsed.port not in (80, 443):
             raise ValueError
         port = parsed.port or (443 if parsed.scheme == "https" else 80)
-        try:
-            infos = await asyncio.to_thread(
-                socket.getaddrinfo, hostname, port, type=socket.SOCK_STREAM
-            )
-            addresses = list(
-                dict.fromkeys(ipaddress.ip_address(result[4][0]) for result in infos)
-            )
-        except socket.gaierror:
-            # The reserved fixture hostname is intentionally not published in DNS.
-            if normalized_host == "provider.example.com":
-                addresses = [ipaddress.ip_address("93.184.216.34")]
-            else:
-                raise
+        infos = await asyncio.to_thread(
+            socket.getaddrinfo, hostname, port, type=socket.SOCK_STREAM
+        )
+        addresses = list(
+            dict.fromkeys(ipaddress.ip_address(result[4][0]) for result in infos)
+        )
         if not addresses:
             raise ValueError
         if parsed.scheme == "http" and normalized_host in {"localhost", "127.0.0.1"}:
@@ -374,11 +392,9 @@ def _build_system_prompt(
 @router.post("/models", response_model=TutorModelsResponse)
 async def list_models(
     req: TutorModelsRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
+    user: User = Depends(get_current_user),
 ) -> TutorModelsResponse:
-    rate_key = user.id if user else (request.client.host if request.client else "guest")
-    _check_rate_limit(rate_key)
+    _check_rate_limit(user.id)
     hostname, pinned_ips = await _validate_provider_url(req.base_url)
     transport = _PinnedTransport(hostname, pinned_ips)
     try:
@@ -459,11 +475,10 @@ async def call_byok_completion(
 @router.post("/chat", response_model=TutorChatResponse)
 async def chat(
     req: TutorChatRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
+    user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> TutorChatResponse:
-    rate_key = user.id if user else (request.client.host if request.client else "guest")
+    rate_key = user.id
     problem = db.scalar(
         select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
     )

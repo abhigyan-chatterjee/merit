@@ -12,7 +12,7 @@ from app.models.content import LearningPath, PathStep, Problem, Question
 from app.models.progress import ProblemProgress, VisualizerCompletion
 from app.models.quiz import PathStepProgress, QuizAttempt, QuizAttemptAnswer
 from app.models.user import User, utcnow_iso
-from app.security import get_current_user, get_optional_current_user
+from app.security import get_current_user, get_optional_current_user, require_same_origin
 
 router = APIRouter(prefix="/api/v1", tags=["content"])
 
@@ -601,7 +601,7 @@ def get_path(
     }
 
 
-@router.post("/paths/steps/{step_id}/complete")
+@router.post("/paths/steps/{step_id}/complete", dependencies=[Depends(require_same_origin)])
 def complete_path_step(
     step_id: int,
     current_user: User = Depends(get_current_user),

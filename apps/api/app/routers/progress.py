@@ -279,7 +279,11 @@ def get_progress_summary(
         ).all()
         q_ids = list({ans.question_id for ans in answers})
         if q_ids:
-            q_rows = db.scalars(select(Question).where(Question.id.in_(q_ids))).all()
+            q_rows = db.scalars(
+                select(Question).where(
+                    Question.id.in_(q_ids), Question.review_status == "verified"
+                )
+            ).all()
             q_map = {q.id: q for q in q_rows}
             for ans in answers:
                 q = q_map.get(ans.question_id)
@@ -299,7 +303,11 @@ def get_progress_summary(
     p_map: dict[str, Problem] = {}
 
     if sub_slugs:
-        p_rows = db.scalars(select(Problem).where(Problem.slug.in_(sub_slugs))).all()
+        p_rows = db.scalars(
+            select(Problem).where(
+                Problem.slug.in_(sub_slugs), Problem.review_status == "verified"
+            )
+        ).all()
         p_map = {p.slug: p for p in p_rows}
         for sub in recent_subs:
             p = p_map.get(sub.problem_slug)
@@ -348,12 +356,26 @@ def get_progress_summary(
     due_slugs = [r.item_id for r in due_rows if r.item_type == "problem"]
     due_qids = [r.item_id for r in due_rows if r.item_type == "question"]
     due_problems = (
-        {p.slug: p for p in db.scalars(select(Problem).where(Problem.slug.in_(due_slugs))).all()}
+        {
+            p.slug: p
+            for p in db.scalars(
+                select(Problem).where(
+                    Problem.slug.in_(due_slugs), Problem.review_status == "verified"
+                )
+            ).all()
+        }
         if due_slugs
         else {}
     )
     due_questions = (
-        {q.id: q for q in db.scalars(select(Question).where(Question.id.in_(due_qids))).all()}
+        {
+            q.id: q
+            for q in db.scalars(
+                select(Question).where(
+                    Question.id.in_(due_qids), Question.review_status == "verified"
+                )
+            ).all()
+        }
         if due_qids
         else {}
     )
@@ -409,7 +431,10 @@ def get_progress_summary(
         {
             p.slug
             for p in db.scalars(
-                select(Problem).where(Problem.slug.in_(due_all_slugs))
+                select(Problem).where(
+                    Problem.slug.in_(due_all_slugs),
+                    Problem.review_status == "verified",
+                )
             ).all()
         }
         if due_all_slugs
@@ -419,7 +444,10 @@ def get_progress_summary(
         {
             q.id
             for q in db.scalars(
-                select(Question).where(Question.id.in_(due_all_qids))
+                select(Question).where(
+                    Question.id.in_(due_all_qids),
+                    Question.review_status == "verified",
+                )
             ).all()
         }
         if due_all_qids

@@ -150,7 +150,10 @@ async def test_malformed_200_fails_closed(settings_snapshot, monkeypatch):
 
 
 def test_local_sandbox_is_the_default():
-    cfg = Settings(**_base_env())
+    cfg = Settings(
+        secret_key="a-sufficiently-long-test-secret-key-for-validation",
+        environment="development",
+    )
     assert cfg.judge_url == ""
 
 

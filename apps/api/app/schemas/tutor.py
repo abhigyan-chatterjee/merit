@@ -19,7 +19,7 @@ def _normalize_base_url(v: str) -> str:
 
 class TutorModelsRequest(BaseModel):
     base_url: str
-    api_key: str = Field(..., min_length=1)
+    api_key: str = Field(..., min_length=1, max_length=512)
 
     @field_validator("base_url")
     @classmethod
@@ -48,11 +48,11 @@ class TutorMessageTurn(BaseModel):
 
 class TutorChatRequest(BaseModel):
     base_url: str
-    api_key: str = Field(..., min_length=1)
-    model: str = Field(..., min_length=1)
+    api_key: str = Field(..., min_length=1, max_length=512)
+    model: str = Field(..., min_length=1, max_length=256)
     problem_slug: str = Field(..., min_length=1)
-    code: str | None = None
-    question: str = Field(..., min_length=1)
+    code: str | None = Field(default=None, max_length=65536)
+    question: str = Field(..., min_length=1, max_length=8000)
     failed_attempts: int = Field(default=0, ge=0)
     mode: str = Field(default="socratic")
     history: list[TutorMessageTurn] = Field(default_factory=list, max_length=20)
