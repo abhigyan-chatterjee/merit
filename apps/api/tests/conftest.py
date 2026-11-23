@@ -63,9 +63,12 @@ def _reset_rate_limiters():
     eleven times would start failing depending on what ran before it.
     """
     yield
+    from app.routers.auth import _auth_limiter, _refresh_limiter
     from app.routers.feedback import _feedback_limiter
     from app.routers.tutor import _rate_buckets, _rate_lock
 
+    _auth_limiter.reset()
+    _refresh_limiter.reset()
     _feedback_limiter.reset()
     with _rate_lock:
         _rate_buckets.clear()

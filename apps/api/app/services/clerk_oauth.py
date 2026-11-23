@@ -275,10 +275,9 @@ def verify_clerk_session_token(token: str) -> dict:
             },
         )
 
-    display_name = (
-        claims.get("name")
-        or claims.get("username")
-        or claims.get("given_name")
-        or email.split("@")[0]
+    candidates = (claims.get("name"), claims.get("username"), claims.get("given_name"))
+    display_name = next(
+        (v.strip() for v in candidates if isinstance(v, str) and v.strip()),
+        email.split("@")[0],
     )
-    return {"clerk_id": clerk_id, "email": email, "display_name": str(display_name).strip()}
+    return {"clerk_id": clerk_id, "email": email, "display_name": display_name}

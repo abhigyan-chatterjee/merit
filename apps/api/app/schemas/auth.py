@@ -1,6 +1,6 @@
 import re
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 
@@ -36,8 +36,19 @@ class UserResponse(BaseModel):
     role: str
     created_at: str
     last_login_at: str | None = None
+    has_clerk_linked: bool = False
 
     model_config = {"from_attributes": True}
+
+    @model_validator(mode="before")
+    @classmethod
+    def _set_has_clerk_linked(cls, data):
+        if isinstance(data, dict):
+            if "has_clerk_linked" not in data:
+                data = {**data, "has_clerk_linked": bool(data.get("clerk_id"))}
+            return data
+        object.__setattr__(data, "has_clerk_linked", bool(getattr(data, "clerk_id", None)))
+        return data
 
 
 class ProfileUpdate(BaseModel):

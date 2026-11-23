@@ -31,8 +31,22 @@ from app.security import (
     verify_password_safe,
 )
 from app.services.clerk_oauth import verify_clerk_session_token
+from app.services.rate_limit import SlidingWindowLimiter, client_key
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+
+_auth_limiter = SlidingWindowLimiter(
+    max_hits=20,
+    window_sec=900,
+    code="RATE_LIMITED",
+    message="Too many authentication attempts. Please try again later.",
+)
+_refresh_limiter = SlidingWindowLimiter(
+    max_hits=60,
+    window_sec=900,
+    code="RATE_LIMITED",
+    message="Too many refresh requests. Please try again later.",
+)
 
 # Kept as a module alias: other modules and tests import this name. The digest
 # itself now lives in app.security so verify_password_safe can reuse it.
@@ -58,9 +72,11 @@ def _has_password_credential(user: User) -> bool:
 def register(
     req: RegisterRequest,
     response: Response,
+    request: Request,
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _auth_limiter.check(client_key(request))
     # Check existing email
     existing = db.scalar(select(User).where(User.email == req.email))
     if existing:
@@ -116,6 +132,7 @@ def login(
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _auth_limiter.check(client_key(request))
     user = db.scalar(select(User).where(User.email == req.email))
 
     # Constant-work comparison: always run the KDF. A missing account is
@@ -193,6 +210,7 @@ def refresh_token_rotation(
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _refresh_limiter.check(client_key(request))
     raw_refresh = request.cookies.get("merit_refresh")
     if not raw_refresh:
         clear_auth_cookies(response)
@@ -329,6 +347,7 @@ def clerk_oauth(
     links or creates the user row, then issues the standard merit_access /
     merit_refresh cookies through the same rotation code path as login.
     """
+    _auth_limiter.check(client_key(request))
     if not settings.clerk_jwks_url.strip():
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
@@ -345,6 +364,13 @@ def clerk_oauth(
 
     created = False
     user = db.scalar(select(User).where(User.clerk_id == clerk_id))
+    if user is not None:
+        if display_name and display_name != user.display_name:
+            user.display_name = display_name
+        if email != user.email:
+            owner = db.scalar(select(User).where(User.email == email))
+            if owner is None:
+                user.email = email
     if user is None:
         user = db.scalar(select(User).where(User.email == email))
         if user is not None:
@@ -422,6 +448,49 @@ def clerk_oauth(
     return user
 
 
+@router.post("/oauth/clerk/link", response_model=UserResponse)
+def clerk_oauth_link(
+    req: ClerkOAuthRequest,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
+):
+    _auth_limiter.check(client_key(request))
+    if not settings.clerk_jwks_url.strip():
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail={
+                "code": "OAUTH_NOT_CONFIGURED",
+                "message": "Clerk OAuth is not configured on this server.",
+            },
+        )
+    claims = verify_clerk_session_token(req.clerk_token)
+    if claims["email"] != current_user.email.lower():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "OAUTH_EMAIL_MISMATCH",
+                "message": "Your OAuth email does not match your account email.",
+            },
+        )
+    other = db.scalar(
+        select(User).where(User.clerk_id == claims["clerk_id"], User.id != current_user.id)
+    )
+    if other is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "OAUTH_ALREADY_LINKED",
+                "message": "This OAuth account is already linked to a different user.",
+            },
+        )
+    current_user.clerk_id = claims["clerk_id"]
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
     return user
@@ -494,8 +563,8 @@ def change_password(
             detail={
                 "code": "NO_PASSWORD_CREDENTIAL",
                 "message": (
-                    "This account signs in with a provider and has no password yet. "
-                    "Use 'Forgot password' to set one."
+                    "This account signs in via Google, GitHub, or Microsoft "
+                    "and has no local password."
                 ),
             },
         )

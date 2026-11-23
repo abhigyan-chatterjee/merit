@@ -121,8 +121,14 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str) 
 
 
 def clear_auth_cookies(response: Response) -> None:
-    response.delete_cookie(key="merit_access", path="/")
-    response.delete_cookie(key="merit_refresh", path="/")
+    kwargs = {
+        "path": "/",
+        "httponly": True,
+        "secure": settings.environment == "production",
+        "samesite": "strict",
+    }
+    response.delete_cookie(key="merit_access", **kwargs)
+    response.delete_cookie(key="merit_refresh", **kwargs)
 
 
 def require_same_origin(request: Request) -> None:
@@ -132,8 +138,8 @@ def require_same_origin(request: Request) -> None:
         return
     origin_parsed = urlparse(origin)
     host = (
-        request.headers.get("x-forwarded-host")
-        or request.headers.get("host")
+        request.headers.get("host")
+        or request.headers.get("x-forwarded-host")
         or request.url.netloc
     ).lower()
 

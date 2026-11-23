@@ -160,6 +160,39 @@ def test_new_password_is_the_one_that_works(client):
     assert new.status_code == 200, new.text
 
 
+def test_change_password_message_for_provider_only_account(client, db_session):
+    user = _oauth_only_user(db_session, email="oauth-msg@example.com")
+    _authenticate(client, user)
+    response = client.post(
+        "/api/v1/auth/password",
+        json={"current_password": "whatever", "new_password": "NewStrongPassw0rd!"},
+    )
+    assert response.status_code == 400
+    assert (
+        response.json()["detail"]["message"]
+        == "This account signs in via Google, GitHub, or Microsoft and has no local password."
+    )
+
+
+def test_clear_cookies_match_set_cookie_attributes(client):
+    from fastapi import Response
+
+    from app.security import clear_auth_cookies, set_auth_cookies
+
+    response = Response()
+    set_auth_cookies(response, "a", "r")
+    set_headers = response.headers.getlist("set-cookie")
+    assert len(set_headers) == 2
+    response2 = Response()
+    clear_auth_cookies(response2)
+    clear_headers = response2.headers.getlist("set-cookie")
+    assert len(clear_headers) == 2
+    for header in clear_headers:
+        assert "Path=/" in header
+        assert "HttpOnly" in header
+        assert "SameSite=strict" in header
+
+
 def test_change_password_rejects_wrong_current_password(client):
     _register(client, email="wrongpw@example.com")
     response = client.post(
