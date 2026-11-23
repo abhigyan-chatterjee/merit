@@ -115,6 +115,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // duplicate attempt for identical params.
   const loadedKeyRef = useRef<string | null>(null);
   const remainingByQidRef = useRef<Record<string, number>>({});
+  const submitInFlightRef = useRef(false);
 
   const changeCurrentIndex = (next: number | ((index: number) => number)) => {
     setCurrentIndex(next);
@@ -194,12 +195,14 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     }
     if (isStale()) return;
 
+    // Server topic id differs from the client quiz/progress id.
+    const toServerTopic = (t: string) => (t === 'cs-fundamentals' ? 'core-cs' : t);
     const topics =
       examTopics && examTopics.length > 0
-        ? examTopics
+        ? examTopics.map(toServerTopic)
         : topicId === 'mixed'
         ? ['arrays-hashing', 'trees', 'graphs', 'dynamic-programming']
-        : [topicId];
+        : [toServerTopic(topicId)];
     const count = examCount ?? (isMock ? 20 : 10);
     const loadKey = JSON.stringify([
       activeUser?.id ?? null,
@@ -219,6 +222,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setSelectedAnswers({});
     setTimedOut({});
     setSubmitted(false);
+    submitInFlightRef.current = false;
     setSecondsElapsed(0);
     setSecondsRemaining(durationLimitSec);
     setQuestionTimeLeft(perQuestionSec ?? 0);
@@ -443,7 +447,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   };
 
   const handleSubmitQuiz = async () => {
-    if (submitted || activeQuestions.length === 0) return;
+    if (submitInFlightRef.current || submitted || activeQuestions.length === 0) return;
+    submitInFlightRef.current = true;
 
     if (attemptId) {
       // Server-verified grading
@@ -469,6 +474,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         onComplete?.(res.score_pct);
       } catch (err: unknown) {
         console.error('Failed to submit quiz to server:', err);
+        submitInFlightRef.current = false;
         // Server-side questions carry no correctIndex on the client, so local
         // grading would score every question as if option A were correct and
         // then persist that fabrication to progress, goals and weakest-topic

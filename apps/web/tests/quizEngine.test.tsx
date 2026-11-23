@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { StrictMode } from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { QuizEngine } from '../src/components/QuizEngine';
 import { QUIZ_TOPICS, QUIZZES } from '../src/data/quizzes';
@@ -337,4 +338,147 @@ describe('QuizEngine Component', () => {
       vi.useRealTimers();
     }
   }, 15000);
+
+  it('maps cs-fundamentals to core-cs only for server generation', async () => {
+    const student = {
+      id: 'usr-core',
+      email: 'core@test.com',
+      display_name: 'Core Student',
+      displayName: 'Core Student',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    };
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue(student);
+    const generateSpy = vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-core',
+      questions: [
+        {
+          id: 'q-core-1',
+          topic: 'core-cs',
+          subtopic: 'os',
+          difficulty: 'easy',
+          prompt: 'Core topic question?',
+          options: ['a', 'b', 'c', 'd'],
+        },
+      ],
+      total: 1,
+    });
+
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle="CS Fundamentals"
+            topicId="cs-fundamentals"
+            questions={sampleQuestions}
+            perQuestionSec={null}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    expect(await screen.findByText(/Core topic question\?/i)).toBeInTheDocument();
+    expect(generateSpy).toHaveBeenCalledTimes(1);
+    expect(generateSpy.mock.calls[0][0]).toEqual(['core-cs']);
+  });
+
+  it('submits only once on a rapid double click', async () => {
+    const student = {
+      id: 'usr-double',
+      email: 'double@test.com',
+      display_name: 'Double Student',
+      displayName: 'Double Student',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    };
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue(student);
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-double',
+      questions: [
+        {
+          id: 'q-double-1',
+          topic: 'trees',
+          subtopic: 'bst',
+          difficulty: 'easy',
+          prompt: 'Double submit question?',
+          options: ['a', 'b', 'c', 'd'],
+        },
+      ],
+      total: 1,
+    });
+    const submitSpy = vi
+      .spyOn(apiModule.quizApi, 'submitQuiz')
+      .mockImplementation(() => new Promise<never>(() => {}));
+
+    render(
+      <AuthProvider>
+        <ProgressProvider>
+          <QuizEngine
+            topicTitle="Trees"
+            topicId="trees"
+            questions={sampleQuestions}
+            perQuestionSec={null}
+          />
+        </ProgressProvider>
+      </AuthProvider>
+    );
+
+    const submitBtn = await screen.findByText(/Submit Quiz/i);
+    expect(submitBtn).toBeDisabled();
+    fireEvent.click(screen.getByText('a'));
+    fireEvent.click(submitBtn);
+    fireEvent.click(submitBtn);
+    await waitFor(() => expect(submitSpy).toHaveBeenCalledTimes(1));
+  });
+
+  it('auto-submits only once under StrictMode', async () => {
+    const student = {
+      id: 'usr-strict',
+      email: 'strict@test.com',
+      display_name: 'Strict Student',
+      displayName: 'Strict Student',
+      role: 'student',
+      created_at: '2026-09-01T00:00:00Z',
+      last_login_at: null,
+    };
+    vi.spyOn(apiModule.authApi, 'getMe').mockResolvedValue(student);
+    vi.spyOn(apiModule.quizApi, 'generateQuiz').mockResolvedValue({
+      attempt_id: 'att-strict',
+      questions: [
+        {
+          id: 'q-strict-1',
+          topic: 'trees',
+          subtopic: 'bst',
+          difficulty: 'easy',
+          prompt: 'Strict auto-submit question?',
+          options: ['a', 'b', 'c', 'd'],
+        },
+      ],
+      total: 1,
+    });
+    const submitSpy = vi
+      .spyOn(apiModule.quizApi, 'submitQuiz')
+      .mockImplementation(() => new Promise<never>(() => {}));
+
+    render(
+      <StrictMode>
+        <AuthProvider>
+          <ProgressProvider>
+            <QuizEngine
+              topicTitle="Mock"
+              topicId="mixed"
+              questions={[]}
+              isMock
+              durationLimitSec={0}
+              perQuestionSec={null}
+            />
+          </ProgressProvider>
+        </AuthProvider>
+      </StrictMode>
+    );
+
+    await waitFor(() => expect(submitSpy).toHaveBeenCalledTimes(1));
+  });
 });

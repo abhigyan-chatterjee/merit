@@ -75,6 +75,9 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
   const prevResolved = prevStep ? resolveStep(prevStep) : null;
   const nextResolved = nextStep ? resolveStep(nextStep) : null;
 
+  const stepHref = (link: string, idx: number) =>
+    `${link}${link.includes('?') ? '&' : '?'}path=${matchedPath.id}&step=${idx}`;
+
   const handleNext = () => {
     // Mark current step complete if visualizer
     if (currentType === 'visualizer') {
@@ -85,7 +88,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
     }
 
     if (nextResolved) {
-      navigate(`${nextResolved.link}?path=${matchedPath.id}&step=${currentStepIndex + 1}`);
+      navigate(stepHref(nextResolved.link, currentStepIndex + 1));
     } else {
       navigate(`/learn/${matchedPath.id}`);
     }
@@ -93,7 +96,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
 
   const handlePrev = () => {
     if (prevResolved) {
-      navigate(`${prevResolved.link}?path=${matchedPath.id}&step=${currentStepIndex - 1}`);
+      navigate(stepHref(prevResolved.link, currentStepIndex - 1));
     }
   };
 
@@ -159,7 +162,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
                     return (
                       <Link
                         key={`${step.type}-${step.id}-${idx}`}
-                        to={`${resolved.link}?path=${matchedPath.id}&step=${idx}`}
+                        to={stepHref(resolved.link, idx)}
                         onClick={() => setIsDropdownOpen(false)}
                         className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs transition ${
                           isStepActive

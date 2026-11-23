@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ExamDetailPage } from '../src/pages/ExamDetailPage';
 import { AuthProvider } from '../src/store/AuthContext';
@@ -137,5 +137,80 @@ describe('ExamDetailPage', () => {
     renderExam('foundational-dsa', true);
 
     expect(await screen.findByLabelText(/Time remaining (19:\d\d|20:00)/i)).toBeInTheDocument();
+  });
+
+  it('counts a paired blur and visibilitychange as one proctor warning', async () => {
+    stubFetch({ signedIn: true });
+    renderExam();
+
+    const start = await screen.findByRole('button', { name: /Start timed exam/i });
+    fireEvent.click(start);
+
+    const hiddenSpy = vi.spyOn(document, 'hidden', 'get').mockReturnValue(false);
+    try {
+      fireEvent.blur(window);
+      expect(await screen.findByText(/Warning 1 of 2/i)).toBeInTheDocument();
+
+      hiddenSpy.mockReturnValue(true);
+      fireEvent(document, new Event('visibilitychange'));
+
+      expect(screen.getByText(/Warning 1 of 2/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Warning 2 of 2/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Exam auto-submitted/i)).not.toBeInTheDocument();
+    } finally {
+      hiddenSpy.mockRestore();
+    }
+  });
+
+  it('auto-submits a coding exam, clears its session and locks the coding section', async () => {
+    const questions = [
+      {
+        id: 'q1',
+        topic: 'arrays-hashing',
+        subtopic: 'maps',
+        difficulty: 'Easy',
+        prompt: 'First prompt?',
+        options: ['a1', 'b1'],
+      },
+    ];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = typeof input === 'string' ? input : String(input);
+        if (url.includes('/auth/me')) return jsonResponse(PROFILE);
+        if (url.includes('/progress/summary')) return jsonResponse(SUMMARY);
+        if (url.includes('/attempts/')) {
+          return jsonResponse({
+            total: 1,
+            correct: 0,
+            score_pct: 0,
+            results: [{ question_id: 'q1', is_correct: false }],
+          });
+        }
+        if (url.includes('/quizzes/generate')) {
+          return jsonResponse({ attempt_id: 'a1', questions, total: 1 });
+        }
+        return jsonResponse({});
+      })
+    );
+
+    renderExam();
+    const start = await screen.findByRole('button', { name: /Start timed exam/i });
+    fireEvent.click(start);
+    expect(await screen.findByText('First prompt?')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Two Sum/i }));
+    expect(await screen.findByText('Coding questions (2)')).toBeInTheDocument();
+    expect(window.sessionStorage.getItem('merit_exam_foundational-dsa')).not.toBeNull();
+
+    fireEvent.blur(window);
+    fireEvent.blur(window);
+    fireEvent.blur(window);
+
+    await waitFor(() => {
+      expect(window.sessionStorage.getItem('merit_exam_foundational-dsa')).toBeNull();
+    });
+    expect(screen.getByText(/Coding is now locked/i)).toBeInTheDocument();
+    expect(screen.queryByText('Coding questions (2)')).not.toBeInTheDocument();
   });
 });

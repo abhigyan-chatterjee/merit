@@ -34,6 +34,10 @@ export const ExamDetailPage: React.FC = () => {
   const [proctorNotice, setProctorNotice] = useState<string | null>(null);
   const [warningCount, setWarningCount] = useState(0);
   const warningsRef = useRef(0);
+  const lastProctorEventRef = useRef<{ source: 'blur' | 'visibility'; at: number }>({
+    source: 'blur',
+    at: 0,
+  });
 
   useEffect(() => {
     setStarted(false);
@@ -48,6 +52,7 @@ export const ExamDetailPage: React.FC = () => {
     setProctorNotice(null);
     setWarningCount(0);
     warningsRef.current = 0;
+    lastProctorEventRef.current = { source: 'blur', at: 0 };
 
     try {
       const raw = sessionStorage.getItem(`merit_exam_${id}`);
@@ -118,7 +123,18 @@ export const ExamDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (!started || examSubmitted) return;
-    const handleSwitch = () => {
+    const handleSwitch = (source: 'blur' | 'visibility') => {
+      const now = Date.now();
+      // A real tab switch fires blur and visibilitychange together; count
+      // that pair as a single warning.
+      if (
+        lastProctorEventRef.current.source !== source &&
+        now - lastProctorEventRef.current.at < 250
+      ) {
+        return;
+      }
+      lastProctorEventRef.current = { source, at: now };
+
       const next = warningsRef.current + 1;
       warningsRef.current = next;
       setWarningCount(next);
@@ -142,11 +158,12 @@ export const ExamDetailPage: React.FC = () => {
     };
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        handleSwitch();
+        handleSwitch('visibility');
       }
     };
     const handleBlur = () => {
-      handleSwitch();
+      if (document.hidden) return;
+      handleSwitch('blur');
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
@@ -388,7 +405,7 @@ export const ExamDetailPage: React.FC = () => {
                     setLoadedMcqCount(ids.length);
                   }}
                   onComplete={(pct) => {
-                    if (exam.coding.length === 0) {
+                    if (exam.coding.length === 0 || isAutoSubmitRequested) {
                       setExamSubmitted(true);
                     }
                     setMcqPct(pct);
@@ -398,11 +415,17 @@ export const ExamDetailPage: React.FC = () => {
                 />
               </div>
               {exam.coding.length > 0 && selectedItem.type === 'coding' && (
-                <ExamCodingSection
-                  coding={exam.coding}
-                  selectedSlug={exam.coding[selectedItem.index]?.slug}
-                  onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
-                />
+                examSubmitted ? (
+                  <div role="status" className="rounded-xl border border-line bg-surface p-6 text-center text-sm text-muted">
+                    Exam submitted. Coding is now locked.
+                  </div>
+                ) : (
+                  <ExamCodingSection
+                    coding={exam.coding}
+                    selectedSlug={exam.coding[selectedItem.index]?.slug}
+                    onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
+                  />
+                )
               )}
             </div>
           </div>

@@ -44,6 +44,8 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<{ correct: number; total: number; scorePct: number; correctById: Record<string, boolean> } | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const loadRunRef = useRef(0);
+  const inflightRef = useRef<{ key: string; promise: ReturnType<typeof quizApi.generateQuiz> } | null>(null);
   const submitStartedRef = useRef(false);
   const callbacksRef = useRef({ onAnswersChange, onComplete, onCurrentIndexChange, onQuestionIdsChange });
   useEffect(() => {
@@ -58,6 +60,18 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
   const topicPlanKey = JSON.stringify(topicPlan ?? null);
 
   const loadQuestions = useCallback(async () => {
+    const runToken = ++loadRunRef.current;
+    const isStale = () => runToken !== loadRunRef.current;
+    const key = JSON.stringify([
+      examId,
+      topicsKey,
+      topicPlanKey,
+      questionCount,
+      difficulty,
+      durationSec,
+      retryKey,
+    ]);
+
     setIsLoading(true);
     setLoadError(null);
     setSubmitError(null);
@@ -68,14 +82,28 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
     setResult(null);
     submitStartedRef.current = false;
     try {
-      const response = await quizApi.generateQuiz(
-        topics,
-        questionCount,
-        difficulty,
-        true,
-        durationSec,
-        topicPlan,
-      );
+      let response;
+      if (inflightRef.current && inflightRef.current.key === key) {
+        response = await inflightRef.current.promise;
+      } else {
+        const promise = quizApi.generateQuiz(
+          topics,
+          questionCount,
+          difficulty,
+          true,
+          durationSec,
+          topicPlan,
+        );
+        inflightRef.current = { key, promise };
+        try {
+          response = await promise;
+        } finally {
+          if (inflightRef.current && inflightRef.current.key === key) {
+            inflightRef.current = null;
+          }
+        }
+      }
+      if (isStale()) return;
       const loaded = (response?.questions || []) as ExamQuestion[];
       setQuestions(loaded);
       setAttemptId(response?.attempt_id || null);
@@ -83,11 +111,12 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
       callbacksRef.current.onAnswersChange({});
       callbacksRef.current.onCurrentIndexChange(0);
     } catch (error) {
+      if (isStale()) return;
       console.error('Failed to load exam questions:', error);
       setLoadError('Could not load the exam questions. Please try again.');
-      onQuestionIdsChange([]);
+      callbacksRef.current.onQuestionIdsChange([]);
     } finally {
-      setIsLoading(false);
+      if (!isStale()) setIsLoading(false);
     }
     // Reads `topics`/`topicPlan` through the closure, guarded by their
     // serialized keys above rather than by array identity.

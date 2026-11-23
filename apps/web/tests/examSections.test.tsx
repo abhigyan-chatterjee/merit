@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { useState } from 'react';
+import { StrictMode, useState } from 'react';
 import { ExamMcqSection } from '../src/components/ExamMcqSection';
 import { ExamCodingSection } from '../src/components/ExamCodingSection';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -114,6 +114,19 @@ describe('ExamMcqSection', () => {
     const callsBefore = fetchSpy.mock.calls.length;
     fireEvent.click(screen.getByRole('button', { name: /Try Again/i }));
     await waitFor(() => expect(fetchSpy.mock.calls.length).toBeGreaterThan(callsBefore));
+  });
+
+  it('issues only one generateQuiz request under StrictMode', async () => {
+    const fetchSpy = vi.fn(async () => json({ attempt_id: 'a1', questions: QUESTIONS, total: 2 }));
+    vi.stubGlobal('fetch', fetchSpy);
+    render(
+      <StrictMode>
+        <McqHarness onComplete={() => {}} />
+      </StrictMode>
+    );
+
+    expect(await screen.findByText('First prompt?')).toBeInTheDocument();
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });
 
