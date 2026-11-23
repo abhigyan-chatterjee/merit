@@ -4,6 +4,7 @@
   "title": "Find if Path Exists in Graph",
   "topic": "graphs",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "BFS / Union-Find Connectivity",
   "statement": "There is a bi-directional graph with n vertices. Given n, an edge list edges, source, and destination, return true if there is a valid path from source to destination.",
   "examples": [
@@ -33,7 +34,7 @@
     },
     {
       "title": "Disjoint Set Union (DSU)",
-      "complexity": "Time: O(E \u03b1(V)) | Space: O(V)",
+      "complexity": "Time: O(E α(V)) | Space: O(V)",
       "code": "function solve(n, edges, source, destination) {\n  const p = Array.from({ length: n }, (_, i) => i);\n  const find = x => p[x] === x ? x : (p[x] = find(p[x]));\n  for (const [u, v] of edges) p[find(u)] = find(v);\n  return find(source) === find(destination);\n}",
       "language": "javascript"
     }

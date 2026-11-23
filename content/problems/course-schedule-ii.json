@@ -4,6 +4,7 @@
   "title": "Course Schedule II",
   "topic": "graphs",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Kahn Topological Order",
   "statement": "There are numCourses courses labeled 0 to numCourses - 1. Given prerequisites[i] = [ai, bi] meaning bi must be taken before ai, return any valid course order. If no valid order exists, return an empty array.",
   "examples": [

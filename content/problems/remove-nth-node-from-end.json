@@ -4,6 +4,7 @@
   "title": "Remove Nth Node From End of List",
   "topic": "two-pointers",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Two Pointers with Gap N",
   "statement": "Given the head of a linked list, remove the nth node from the end of the list and return the resulting node values.",
   "examples": [

@@ -4,6 +4,7 @@
   "title": "House Robber",
   "topic": "dynamic-programming",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Include / Exclude Choice DP",
   "statement": "Given an integer array nums representing the amount of money of each house along a street, return the maximum amount of money you can rob tonight without alerting the police (cannot rob two adjacent houses).",
   "examples": [

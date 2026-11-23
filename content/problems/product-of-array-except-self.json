@@ -4,6 +4,7 @@
   "title": "Product of Array Except Self",
   "topic": "arrays-hashing",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Prefix & Suffix Products",
   "statement": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. Must run in O(n) without division.",
   "examples": [

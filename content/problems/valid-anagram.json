@@ -4,6 +4,7 @@
   "title": "Valid Anagram",
   "topic": "arrays-hashing",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Frequency Counter",
   "statement": "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
   "examples": [

@@ -4,6 +4,7 @@
   "title": "Validate Binary Search Tree",
   "topic": "trees",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Range Bound DFS (min, max)",
   "statement": "Given the level-order representation of a binary tree, determine if it is a valid Binary Search Tree (BST).",
   "examples": [

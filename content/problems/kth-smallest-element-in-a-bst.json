@@ -4,6 +4,7 @@
   "title": "Kth Smallest Element in a BST",
   "topic": "trees",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Inorder Traversal (Sorted Order)",
   "statement": "Given the level-order array of a Binary Search Tree and an integer k (1-indexed), return the kth smallest value in the tree.",
   "examples": [

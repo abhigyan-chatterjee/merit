@@ -4,6 +4,7 @@
   "title": "Decode String",
   "topic": "stack",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Stack Unwinding",
   "statement": "Given an encoded string where k[encoded] means the encoded part repeats exactly k times, return the fully decoded string. Inputs are always valid with balanced brackets.",
   "examples": [

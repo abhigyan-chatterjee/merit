@@ -4,6 +4,7 @@
   "title": "Reverse Linked List",
   "topic": "linked-lists",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "In-Place Pointer Reversal",
   "statement": "Given the head of a singly linked list represented as a sequence of values, reverse the list and return the reversed sequence.",
   "examples": [

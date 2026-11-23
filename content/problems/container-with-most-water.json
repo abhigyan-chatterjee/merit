@@ -4,6 +4,7 @@
   "title": "Container With Most Water",
   "topic": "two-pointers",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Two Pointers",
   "statement": "Given n non-negative integers height where each represents a point at coordinate (i, height[i]), find two lines that together with the x-axis form a container that holds the most water.",
   "examples": [
@@ -28,7 +29,7 @@
   "solutions": [
     {
       "title": "All Pairs Check",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(height) {\n  let max = 0;\n  for (let i = 0; i < height.length; i++) {\n    for (let j = i + 1; j < height.length; j++) {\n      max = Math.max(max, (j - i) * Math.min(height[i], height[j]));\n    }\n  }\n  return max;\n}",
       "language": "javascript"
     },

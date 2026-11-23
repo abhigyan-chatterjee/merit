@@ -4,6 +4,7 @@
   "title": "Spiral Matrix",
   "topic": "math-matrices",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Boundary Shrinking",
   "statement": "Given an m x n matrix, return all elements of the matrix in clockwise spiral order starting from the top-left cell.",
   "examples": [

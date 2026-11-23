@@ -4,6 +4,7 @@
   "title": "Merge Two Sorted Lists",
   "topic": "two-pointers",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Two-Pointer Merge",
   "statement": "You are given two sorted linked lists list1 and list2. Merge the two lists into one sorted list and return its values.",
   "examples": [

@@ -4,6 +4,7 @@
   "title": "Climbing Stairs",
   "topic": "dynamic-programming",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "1D Fibonacci State Transition",
   "statement": "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
   "examples": [

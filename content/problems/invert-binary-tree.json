@@ -4,6 +4,7 @@
   "title": "Invert Binary Tree",
   "topic": "trees",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Recursive Subtree Swap",
   "statement": "Given the root of a complete binary tree level-order array, invert the tree by swapping every left and right child and return the inverted level-order array.",
   "examples": [

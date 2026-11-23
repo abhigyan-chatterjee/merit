@@ -4,6 +4,7 @@
   "title": "Valid Parentheses",
   "topic": "stack",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Stack Matching",
   "statement": "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
   "examples": [

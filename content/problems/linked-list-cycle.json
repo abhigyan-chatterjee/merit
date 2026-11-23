@@ -4,6 +4,7 @@
   "title": "Linked List Cycle",
   "topic": "linked-lists",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Fast & Slow Pointers",
   "statement": "A singly linked list is given as an array of values plus an integer pos, where pos is the index that the tail connects back to (-1 means the tail points to null). Return true if the list contains a cycle, otherwise false. A pos of 0 with a non-empty list is a cycle.",
   "examples": [

@@ -4,6 +4,7 @@
   "title": "Add Two Numbers",
   "topic": "linked-lists",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Digit Carry Simulation",
   "statement": "Two non-negative integers are stored as arrays of digits in reverse order (least significant digit first). Add them and return the sum in the same reverse-digit array format.",
   "examples": [

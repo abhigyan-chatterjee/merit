@@ -4,6 +4,7 @@
   "title": "Longest Consecutive Sequence",
   "topic": "arrays-hashing",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Union-Find / Set Streaks",
   "statement": "Given an unsorted array of integers nums, return the length of the longest run of consecutive integers. The algorithm must run in O(n) time.",
   "examples": [

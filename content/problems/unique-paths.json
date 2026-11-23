@@ -4,6 +4,7 @@
   "title": "Unique Paths in Grid",
   "topic": "dynamic-programming",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "2D Grid Path DP",
   "statement": "There is a robot on an m x n grid at top-left (0, 0). The robot can only move down or right. Return the number of possible unique paths to reach the bottom-right corner (m - 1, n - 1).",
   "examples": [

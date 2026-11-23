@@ -4,6 +4,7 @@
   "title": "Middle of the Linked List",
   "topic": "linked-lists",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Fast & Slow Pointers",
   "statement": "Given the head of a singly linked list, return the values starting from the middle node to the end. If there are two middle nodes, return from the second middle node.",
   "examples": [

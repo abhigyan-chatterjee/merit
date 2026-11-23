@@ -4,6 +4,7 @@
   "title": "Longest Common Prefix",
   "topic": "trie",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Horizontal / Vertical Scan",
   "statement": "Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string \"\".",
   "examples": [

@@ -4,6 +4,7 @@
   "title": "Maximum Depth of Binary Tree",
   "topic": "trees",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Postorder DFS Depth",
   "statement": "Given the level-order array representation of a binary tree, return its maximum depth (number of nodes along the longest path from root to leaf).",
   "examples": [

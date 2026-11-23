@@ -4,6 +4,7 @@
   "title": "Roman to Integer",
   "topic": "math-matrices",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Subtractive Peek",
   "statement": "Given a valid roman numeral string s using symbols I, V, X, L, C, D, M, convert it to its integer value using standard subtractive notation (IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900).",
   "examples": [

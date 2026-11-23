@@ -4,6 +4,7 @@
   "title": "Same Tree",
   "topic": "trees",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Simultaneous DFS Comparison",
   "statement": "Given the level-order arrays of two binary trees p and q, write a function to check if they are structurally identical and nodes have the same values.",
   "examples": [

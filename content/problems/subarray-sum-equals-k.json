@@ -4,6 +4,7 @@
   "title": "Subarray Sum Equals K",
   "topic": "arrays-hashing",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Prefix Sum Hash Map",
   "statement": "Given an array of integers nums and an integer k, return the number of contiguous subarrays whose elements sum to exactly k.",
   "examples": [
@@ -31,7 +32,7 @@
   "solutions": [
     {
       "title": "All Start-End Pairs",
-      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "complexity": "Time: O(n²) | Space: O(1)",
       "code": "function solve(nums, k) {\n  let count = 0;\n  for (let i = 0; i < nums.length; i++) {\n    let sum = 0;\n    for (let j = i; j < nums.length; j++) {\n      sum += nums[j];\n      if (sum === k) count++;\n    }\n  }\n  return count;\n}",
       "language": "javascript"
     },
