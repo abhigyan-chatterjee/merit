@@ -465,9 +465,9 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   useEffect(() => {
     const nextId = user?.id ?? null;
-    if (lastUserIdRef.current !== null && nextId === null) {
-      // Signed out (or account deleted): everything account-scoped goes, so a
-      // later login — possibly as somebody else — starts from a clean cache.
+    if (lastUserIdRef.current !== null && lastUserIdRef.current !== nextId) {
+      // Signed out (or account deleted) or switched accounts: everything
+      // account-scoped goes, so a later login starts from a clean cache.
       // UI preferences survive: the theme lives under its own key
       // (`merit_theme_v1`) and the preferred language is stored server-side.
       setState(EMPTY_INITIAL_STATE);
@@ -638,9 +638,9 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const clearDailyGoal = () => {
+    if (stateRef.current.dailyGoal?.permanent) return;
     markWritten(['dailyGoal']);
     setState((prev) => {
-      // Pinned goals are sticky: an explicit unpin is required to remove them.
       if (prev.dailyGoal?.permanent) return prev;
       return { ...prev, dailyGoal: null };
     });

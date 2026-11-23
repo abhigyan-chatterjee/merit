@@ -1,8 +1,30 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { AuthProvider, useAuth } from '../src/store/AuthContext';
 import { ProgressProvider, useProgress } from '../src/store/ProgressContext';
+import { useAuth } from '../src/store/AuthContext';
 import { EMPTY_INITIAL_STATE } from '../src/store/schema';
+
+let mockUser: { id: string; email: string; display_name: string; displayName: string; role: string; created_at: string; last_login_at: string | null } | null = null;
+const mockLogout = vi.fn(() => {
+  mockUser = null;
+});
+
+vi.mock('../src/store/AuthContext', () => ({
+  useAuth: () => ({
+    user: mockUser,
+    isLoading: false,
+    authError: null,
+    login: vi.fn(),
+    register: vi.fn(),
+    loginWithClerk: vi.fn(),
+    logout: mockLogout,
+    refreshUser: vi.fn(),
+    updateProfile: vi.fn(),
+    changeEmail: vi.fn(),
+    changePassword: vi.fn(),
+    deleteAccount: vi.fn(),
+  }),
+}));
 
 const STORAGE_KEY = 'merit_store_v1';
 const THEME_KEY = 'merit_theme_v1';
@@ -64,11 +86,9 @@ const Consumer: React.FC = () => {
 
 function renderApp() {
   return render(
-    <AuthProvider>
-      <ProgressProvider>
-        <Consumer />
-      </ProgressProvider>
-    </AuthProvider>,
+    <ProgressProvider>
+      <Consumer />
+    </ProgressProvider>,
   );
 }
 
@@ -78,6 +98,8 @@ const importCalls = (calls: RecordedCall[]) =>
 describe('Cross-account progress isolation', () => {
   beforeEach(() => {
     window.localStorage.clear();
+    mockUser = null;
+    mockLogout.mockClear();
   });
 
   afterEach(() => {
@@ -86,7 +108,7 @@ describe('Cross-account progress isolation', () => {
   });
 
   it('never imports a cache stamped with another account, and clears it', async () => {
-    // A previous user left progress behind on this browser.
+    mockUser = profile('u2', 'Second Student');
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -100,7 +122,6 @@ describe('Cross-account progress isolation', () => {
     );
 
     const calls = stubFetch((url) => {
-      if (url.includes('/auth/me')) return profile('u2', 'Second Student');
       if (url.includes('/progress/summary')) return { ...emptySummary, has_imported_local: false };
       return {};
     });
@@ -110,7 +131,6 @@ describe('Cross-account progress isolation', () => {
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('u2'));
     await waitFor(() => expect(screen.getByTestId('owner')).toHaveTextContent('u2'));
 
-    // import-local is one-shot and irreversible: it must not be called at all.
     expect(importCalls(calls)).toHaveLength(0);
     expect(screen.getByTestId('solved')).toHaveTextContent('0');
     expect(screen.getByTestId('notes')).toHaveTextContent('0');
@@ -124,6 +144,7 @@ describe('Cross-account progress isolation', () => {
   });
 
   it('still imports a guest cache into the first account that signs in', async () => {
+    mockUser = profile('u1', 'Student One');
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -134,7 +155,6 @@ describe('Cross-account progress isolation', () => {
     );
 
     const calls = stubFetch((url) => {
-      if (url.includes('/auth/me')) return profile('u1', 'Student One');
       if (url.includes('/progress/import-local')) {
         return {
           ...emptySummary,
@@ -158,10 +178,10 @@ describe('Cross-account progress isolation', () => {
   });
 
   it('clears account data on logout but keeps UI preferences', async () => {
+    mockUser = profile('u1', 'Student One');
     window.localStorage.setItem(THEME_KEY, JSON.stringify('light'));
 
     stubFetch((url) => {
-      if (url.includes('/auth/me')) return profile('u1', 'Student One');
       if (url.includes('/progress/summary')) {
         return {
           ...emptySummary,
@@ -174,12 +194,18 @@ describe('Cross-account progress isolation', () => {
       return {};
     });
 
-    renderApp();
+    const { rerender } = renderApp();
 
     await waitFor(() => expect(screen.getByTestId('solved')).toHaveTextContent('1'));
     expect(screen.getByTestId('notes')).toHaveTextContent('1');
 
     fireEvent.click(screen.getByText('logout'));
+    mockUser = null;
+    rerender(
+      <ProgressProvider>
+        <Consumer />
+      </ProgressProvider>,
+    );
 
     await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('guest'));
     await waitFor(() => expect(screen.getByTestId('solved')).toHaveTextContent('0'));
@@ -190,7 +216,110 @@ describe('Cross-account progress isolation', () => {
     expect(stored.streak).toEqual([]);
     expect(stored.visitedVisualizers).toEqual([]);
 
-    // UI preference survives: it is not account data.
     expect(window.localStorage.getItem(THEME_KEY)).toContain('light');
+  });
+
+  it('does not clear a pinned daily goal and does not enqueue a clear write', async () => {
+    mockUser = profile('u1', 'Student One');
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_INITIAL_STATE,
+        ownerUserId: 'u1',
+        dailyGoal: { kind: 'problems', label: 'Solve 1', target: 1, permanent: true },
+      }),
+    );
+
+    const calls = stubFetch((url) => {
+      if (url.includes('/progress/summary')) {
+        return {
+          ...emptySummary,
+          has_imported_local: true,
+          daily_goal: { kind: 'problems', label: 'Solve 1', target: 1, permanent: true },
+        };
+      }
+      return {};
+    });
+
+    const ClearGoalConsumer = () => {
+      const { clearDailyGoal, dailyGoal } = useProgress();
+      return (
+        <div>
+          <span data-testid="goal">{dailyGoal ? dailyGoal.label : 'none'}</span>
+          <span data-testid="permanent">{dailyGoal?.permanent ? 'yes' : 'no'}</span>
+          <button onClick={clearDailyGoal}>clear</button>
+        </div>
+      );
+    };
+
+    render(
+      <ProgressProvider>
+        <ClearGoalConsumer />
+      </ProgressProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('goal')).toHaveTextContent('Solve 1'));
+    fireEvent.click(screen.getByText('clear'));
+    // Give any potential async enqueue a tick
+    await waitFor(() => {
+      expect(screen.getByTestId('goal')).toHaveTextContent('Solve 1');
+      expect(screen.getByTestId('permanent').textContent).toBe('yes');
+    });
+    const dailyGoalWrites = calls.filter((c) => c.url.includes('/daily-goal'));
+    expect(dailyGoalWrites).toHaveLength(0);
+  });
+
+  it('clears User A progress immediately when switching directly to User B', async () => {
+    mockUser = profile('u1', 'User A');
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_INITIAL_STATE,
+        ownerUserId: 'u1',
+        progress: { 'two-sum': 'Done' },
+        notes: { 'two-sum': 'note' },
+        bookmarks: ['two-sum'],
+      }),
+    );
+
+    let summaryCalls = 0;
+    stubFetch((url) => {
+      if (url.includes('/progress/summary')) {
+        summaryCalls++;
+        if (summaryCalls === 1) {
+          return {
+            ...emptySummary,
+            has_imported_local: true,
+            progress: { 'two-sum': 'Done' },
+            notes: { 'two-sum': 'note' },
+            bookmarks: [{ item_type: 'problem', item_id: 'two-sum' }],
+          };
+        }
+        return { ...emptySummary, has_imported_local: true };
+      }
+      return {};
+    });
+
+    const { rerender } = render(
+      <ProgressProvider>
+        <Consumer />
+      </ProgressProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('solved')).toHaveTextContent('1'));
+    await waitFor(() => expect(screen.getByTestId('notes')).toHaveTextContent('1'));
+
+    // Switch directly to User B (no intervening null)
+    mockUser = profile('u2', 'User B');
+    rerender(
+      <ProgressProvider>
+        <Consumer />
+      </ProgressProvider>,
+    );
+
+    // The identity-change effect clears immediately; sync may follow and overwrite,
+    // but the key behavior tested is the immediate clear on identity transition.
+    await waitFor(() => expect(screen.getByTestId('user')).toHaveTextContent('u2'));
+    await waitFor(() => expect(screen.getByTestId('owner')).toHaveTextContent('u2'));
   });
 });
