@@ -222,3 +222,103 @@ def test_import_local_caps_rejected(client: TestClient):
     assert res.status_code == 422
     res = client.put("/api/v1/progress/notes/two-sum", json={"text": "x" * 20001})
     assert res.status_code == 422
+
+
+def test_settings_target_saving_reading_and_clearing(client: TestClient):
+    register_user(client, "targets@example.com")
+
+    res = client.put(
+        "/api/v1/progress/settings",
+        json={"target_drive_date": "2027-01-15", "target_tier": "faang"},
+    )
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["target_drive_date"] == "2027-01-15"
+    assert body["target_tier"] == "faang"
+
+    res = client.get("/api/v1/progress/settings")
+    assert res.status_code == 200
+    assert res.json()["target_drive_date"] == "2027-01-15"
+    assert res.json()["target_tier"] == "faang"
+
+    summary = client.get("/api/v1/progress/summary").json()
+    assert summary["target_drive_date"] == "2027-01-15"
+    assert summary["target_tier"] == "faang"
+    assert summary["due_today_count"] == 0
+
+    res = client.put(
+        "/api/v1/progress/settings",
+        json={"clear_target_drive_date": True},
+    )
+    assert res.status_code == 200
+    assert res.json()["target_drive_date"] is None
+    # Tier untouched by clearing the date.
+    assert res.json()["target_tier"] == "faang"
+
+    res = client.get("/api/v1/progress/settings")
+    assert res.json()["target_drive_date"] is None
+
+
+def test_settings_rejects_invalid_tier_and_drive_date(client: TestClient):
+    register_user(client, "bad-targets@example.com")
+
+    res = client.put("/api/v1/progress/settings", json={"target_tier": "manga"})
+    assert res.status_code == 422
+
+    res = client.put("/api/v1/progress/settings", json={"target_drive_date": "not-a-date"})
+    assert res.status_code == 422
+
+    res = client.put(
+        "/api/v1/progress/settings", json={"target_drive_date": "2027-02-30"}
+    )
+    assert res.status_code == 422
+
+    res = client.put("/api/v1/progress/settings", json={"target_drive_date": "1999-01-01"})
+    assert res.status_code == 422
+
+
+def test_due_today_count_counts_due_but_not_future(client, db_session):
+    """Strictly due items (<= today) count; future items and other users' do not."""
+    from datetime import timedelta
+
+    from sqlalchemy import select
+
+    from app.models.revision import RevisionItem
+    from app.models.user import User
+
+    register_user(client, "duecount@example.com")
+
+    user = db_session.scalar(select(User).where(User.email == "duecount@example.com"))
+    assert user is not None
+
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d")
+    db_session.add(
+        RevisionItem(
+            user_id=user.id,
+            item_type="problem",
+            item_id="two-sum",
+            due_date=TODAY,
+            interval_days=1,
+            ease=2.5,
+            reps=1,
+            lapses=0,
+        )
+    )
+    db_session.add(
+        RevisionItem(
+            user_id=user.id,
+            item_type="problem",
+            item_id="3sum",
+            due_date=tomorrow,
+            interval_days=1,
+            ease=2.5,
+            reps=1,
+            lapses=0,
+        )
+    )
+    db_session.flush()
+
+    summary = client.get("/api/v1/progress/summary").json()
+    assert summary["due_today_count"] == 1
+    # Future item is still surfaced in revision_due (window) but not counted.
+    assert client.get("/api/v1/revision/due").json()["today"] == TODAY

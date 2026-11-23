@@ -1089,3 +1089,105 @@ async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
     assert result.verdict == "RE"
     assert "Memory limit exceeded" in result.compile_output
 
+
+# --- OA practice: custom input and hidden-case redaction ---------------------
+
+_TWO_SUM_OK_JS = """
+function solve(nums, target) {
+  const map = new Map();
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+    if (map.has(complement)) {
+      return [map.get(complement), i];
+    }
+    map.set(nums[i], i);
+  }
+  return [];
+}
+"""
+
+
+def test_submit_redacts_hidden_cases_and_counts_passes(client: TestClient):
+    register_user(client, "redact_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": _TWO_SUM_OK_JS,
+        },
+    )
+    assert res.status_code == 200
+    sub = res.json()
+    assert sub["passed_count"] == 3
+    assert sub["total_count"] == 3
+
+    results = sub["test_results"]
+    assert len(results) == 3
+    for sample in results[:2]:
+        assert sample["hidden"] is False
+        assert sample["input"] is not None
+        assert sample["expected"] is not None
+        assert sample["actual"] is not None
+    hidden = results[2]
+    assert hidden["hidden"] is True
+    assert hidden["label"] == "Hidden Case 1"
+    assert hidden["input"] is None
+    assert hidden["expected"] is None
+    assert hidden["actual"] is None
+
+    history = client.get("/api/v1/judge/submissions/two-sum")
+    assert history.status_code == 200
+    stored = history.json()[0]
+    assert stored["passed_count"] == 3
+    assert stored["total_count"] == 3
+    assert stored["test_results"] == results
+
+
+def test_run_with_custom_input_returns_custom_verdict(client: TestClient):
+    register_user(client, "custom_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": _TWO_SUM_OK_JS,
+            "custom_input": [[10, 20, 30], 50],
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] == "CUSTOM"
+    assert data["custom_run"] is True
+    assert data["passed_count"] == 1
+    assert data["total_count"] == 1
+    assert data["test_results"][0]["actual"] == [1, 2]
+
+
+def test_custom_input_arity_and_submit_rejection(client: TestClient):
+    register_user(client, "custom_arity_student@merit.org")
+    code = "function solve(nums, target) { return []; }"
+
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+            "custom_input": [[1, 2]],
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "INVALID_CUSTOM_INPUT"
+
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": code,
+            "custom_input": [[1, 2], 3],
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"]["code"] == "INVALID_SUBMIT_REQUEST"

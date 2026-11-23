@@ -9,6 +9,7 @@ class JudgeRunRequest(BaseModel):
     problem_slug: str
     language: str = Field(..., description="Language: javascript | python | java | cpp")
     code: str
+    custom_input: list[Any] | None = None
 
     @field_validator("language")
     @classmethod
@@ -29,6 +30,7 @@ class TestCaseResult(BaseModel):
     actual: Any
     runtime_ms: float
     error: str | None = None
+    hidden: bool = False
 
 
 class JudgeRunResponse(BaseModel):
@@ -37,6 +39,9 @@ class JudgeRunResponse(BaseModel):
     test_results: list[TestCaseResult]
     compile_output: str = ""
     infrastructure_error: bool = False
+    passed_count: int = 0
+    total_count: int = 0
+    custom_run: bool = False
 
 
 class SubmissionResponse(BaseModel):
@@ -50,5 +55,7 @@ class SubmissionResponse(BaseModel):
     created_at: str
     compile_output: str = ""
     infrastructure_error: bool = False
+    passed_count: int = 0
+    total_count: int = 0
 
     model_config = {"from_attributes": True}

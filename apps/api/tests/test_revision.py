@@ -253,3 +253,84 @@ def test_summary_exposes_the_scheduled_item(client, db_session):
     assert entry["id"] == "two-sum"
     # The old implementation hardcoded this string; it is a date now.
     assert entry["due_stage"] == get_current_date_str()
+
+
+def test_due_returns_enriched_problem_card(client, db_session):
+    """Problem cards carry difficulty, link, prompt preview and answer summary."""
+    from sqlalchemy import select
+
+    from app.models.content import Problem
+    from app.models.revision import RevisionItem
+    from app.models.user import User
+
+    _register(client, email="enriched-problem@example.com")
+    user = db_session.scalar(select(User).where(User.email == "enriched-problem@example.com"))
+    assert user is not None
+    problem = db_session.scalar(select(Problem).where(Problem.slug == "two-sum"))
+    assert problem is not None
+
+    db_session.add(
+        RevisionItem(
+            user_id=user.id,
+            item_type="problem",
+            item_id="two-sum",
+            due_date=get_current_date_str(),
+            interval_days=1,
+            ease=2.5,
+            reps=1,
+            lapses=0,
+        )
+    )
+    db_session.flush()
+
+    due = client.get("/api/v1/revision/due").json()
+    assert due["count"] == 1, due
+    item = due["items"][0]
+    assert item["difficulty"] == problem.difficulty
+    assert item["link"] == f"/problems/{problem.topic}/two-sum"
+    assert item["prompt"] == (problem.statement or "")[:240].strip()
+    assert item["prompt"]
+    assert problem.pattern in item["answer_summary"]
+
+
+def test_due_returns_enriched_question_card(client, db_session):
+    """Question cards carry difficulty, quiz link, full prompt and answer summary."""
+    import json
+
+    from sqlalchemy import select
+
+    from app.models.content import Question
+    from app.models.revision import RevisionItem
+    from app.models.user import User
+
+    _register(client, email="enriched-question@example.com")
+    user = db_session.scalar(select(User).where(User.email == "enriched-question@example.com"))
+    assert user is not None
+    question = db_session.scalar(select(Question).limit(1))
+    assert question is not None
+
+    db_session.add(
+        RevisionItem(
+            user_id=user.id,
+            item_type="question",
+            item_id=question.id,
+            due_date=get_current_date_str(),
+            interval_days=1,
+            ease=2.5,
+            reps=1,
+            lapses=0,
+        )
+    )
+    db_session.flush()
+
+    due = client.get("/api/v1/revision/due").json()
+    assert due["count"] == 1, due
+    item = due["items"][0]
+    assert item["item_type"] == "question"
+    assert item["difficulty"] == question.difficulty
+    assert item["link"] == f"/quiz/{question.topic}"
+    assert item["prompt"] == question.prompt
+    options = json.loads(question.options)
+    correct_text = options[question.correct_index]
+    assert correct_text in item["answer_summary"]
+    assert question.explanation in item["answer_summary"]

@@ -114,6 +114,14 @@ def test_migration_chain_has_clean_upgrade_paths_and_no_sqlite_ddl():
     assert "companies_json" in companies_source
     assert "sa.Text()" in companies_source
 
+    targets_rev = script.get_revision("a7c3d4e5f6b9")
+    assert targets_rev is not None
+    assert targets_rev.down_revision == "f6b2c3d4e5a8"
+    targets_source = Path(targets_rev.path).read_text()
+    assert "target_drive_date" in targets_source
+    assert "target_tier" in targets_source
+    assert "server_default" in targets_source
+
 
 def test_quiz_answer_unique_constraint_in_metadata():
     import app.models.quiz  # noqa: F401
