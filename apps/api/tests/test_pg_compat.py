@@ -95,3 +95,48 @@ def test_migration_chain_has_clean_upgrade_paths_and_no_sqlite_ddl():
     assert clerk is not None
     clerk_source = Path(clerk.path).read_text()
     assert 'op.create_index("uq_users_clerk_id"' in clerk_source
+
+    # New revision: unique quiz answers + preferred_language default.
+    new_rev = script.get_revision("e5a1b2c3d4f6")
+    assert new_rev is not None
+    assert new_rev.down_revision == "d1f4b8c2e9a7"
+    new_source = Path(new_rev.path).read_text()
+    assert "uq_quiz_attempt_answers_attempt_question" in new_source
+    assert "server_default" in new_source
+    assert "sqlite" not in new_source.lower().replace(
+        "op.get_bind().dialect.name != \"sqlite\"", ""
+    )
+
+
+def test_quiz_answer_unique_constraint_in_metadata():
+    import app.models.quiz  # noqa: F401
+    from app.db import Base
+
+    table = Base.metadata.tables["quiz_attempt_answers"]
+    names = {c.name for c in table.constraints}
+    assert "uq_quiz_attempt_answers_attempt_question" in names
+    dialect = postgresql.dialect()
+    ddl = str(CreateTable(table).compile(dialect=dialect))
+    assert "UNIQUE" in ddl.upper()
+
+
+def test_production_postgres_without_sslmode_warns():
+    import warnings
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        Settings(
+            secret_key=SECRET,
+            environment="production",
+            database_url="postgresql+psycopg://merit:x@ep-host.aws.neon.tech/merit",
+        )
+    assert any("sslmode" in str(w.message) for w in caught)
+
+
+def test_production_postgres_with_sslmode_no_warning():
+    import warnings
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        Settings(secret_key=SECRET, environment="production", database_url=PG_URL)
+    assert not any("sslmode" in str(w.message) for w in caught)

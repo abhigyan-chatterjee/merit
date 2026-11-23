@@ -1,3 +1,4 @@
+import warnings
 from typing import Any
 
 from pydantic import model_validator
@@ -107,6 +108,22 @@ class Settings(BaseSettings):
                 values.secret_key = dev_key
 
         return values
+
+    @model_validator(mode="after")
+    def validate_security(self) -> "Settings":
+        if (
+            self.environment == "production"
+            and self.database_url.startswith("postgresql")
+            and "sslmode=" not in self.database_url
+            and "localhost" not in self.database_url
+            and "127.0.0.1" not in self.database_url
+        ):
+            warnings.warn(
+                "Production Postgres DATABASE_URL lacks sslmode=; connections may be unencrypted.",
+                UserWarning,
+                stacklevel=2,
+            )
+        return self
 
     @model_validator(mode="after")
     def validate_judge_config(self) -> "Settings":

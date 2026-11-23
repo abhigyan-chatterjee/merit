@@ -18,14 +18,28 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _inspector():
+    return sa.inspect(op.get_bind())
+
+
+def _has_column(table: str, column: str) -> bool:
+    if table not in _inspector().get_table_names():
+        return False
+    return any(c["name"] == column for c in _inspector().get_columns(table))
+
+
 def upgrade() -> None:
-    op.add_column(
-        "users",
-        sa.Column("preferred_language", sa.String(), server_default="javascript", nullable=False),
-    )
-    op.add_column("users", sa.Column("daily_goal_json", sa.String(), nullable=True))
+    if not _has_column("users", "preferred_language"):
+        op.add_column(
+            "users",
+            sa.Column("preferred_language", sa.String(), server_default="javascript", nullable=False),
+        )
+    if not _has_column("users", "daily_goal_json"):
+        op.add_column("users", sa.Column("daily_goal_json", sa.String(), nullable=True))
 
 
 def downgrade() -> None:
-    op.drop_column("users", "daily_goal_json")
-    op.drop_column("users", "preferred_language")
+    if _has_column("users", "daily_goal_json"):
+        op.drop_column("users", "daily_goal_json")
+    if _has_column("users", "preferred_language"):
+        op.drop_column("users", "preferred_language")

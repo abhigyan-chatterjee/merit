@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy import ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -28,6 +28,11 @@ class QuizAttempt(Base):
 
 class QuizAttemptAnswer(Base):
     __tablename__ = "quiz_attempt_answers"
+    __table_args__ = (
+        UniqueConstraint(
+            "attempt_id", "question_id", name="uq_quiz_attempt_answers_attempt_question"
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     attempt_id: Mapped[str] = mapped_column(

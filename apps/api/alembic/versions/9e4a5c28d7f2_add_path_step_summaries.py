@@ -18,14 +18,28 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _inspector():
+    return sa.inspect(op.get_bind())
+
+
+def _has_column(table: str, column: str) -> bool:
+    if table not in _inspector().get_table_names():
+        return False
+    return any(c["name"] == column for c in _inspector().get_columns(table))
+
+
 def upgrade() -> None:
-    op.add_column("path_steps", sa.Column("summary", sa.Text(), nullable=True))
-    op.add_column(
-        "path_steps",
-        sa.Column("reading_links_json", sa.Text(), server_default="[]", nullable=False),
-    )
+    if not _has_column("path_steps", "summary"):
+        op.add_column("path_steps", sa.Column("summary", sa.Text(), nullable=True))
+    if not _has_column("path_steps", "reading_links_json"):
+        op.add_column(
+            "path_steps",
+            sa.Column("reading_links_json", sa.Text(), server_default="[]", nullable=False),
+        )
 
 
 def downgrade() -> None:
-    op.drop_column("path_steps", "reading_links_json")
-    op.drop_column("path_steps", "summary")
+    if _has_column("path_steps", "reading_links_json"):
+        op.drop_column("path_steps", "reading_links_json")
+    if _has_column("path_steps", "summary"):
+        op.drop_column("path_steps", "summary")

@@ -12,30 +12,39 @@ import sqlalchemy as sa
 
 from alembic import op
 
-# revision identifiers, used by Alembic.
 revision: str = "42c0c100af20"
 down_revision: str | Sequence[str] | None = "c4f1a2b3d4e5"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _inspector():
+    return sa.inspect(op.get_bind())
+
+
+def _has_table(name: str) -> bool:
+    return name in _inspector().get_table_names()
+
+
 def upgrade() -> None:
-    op.create_table(
-        "feedbacks",
-        sa.Column("id", sa.String(), nullable=False),
-        sa.Column("category", sa.String(), nullable=False),
-        sa.Column("title", sa.String(), nullable=False),
-        sa.Column("description", sa.Text(), nullable=False),
-        sa.Column("page_url", sa.String(), nullable=True),
-        sa.Column("problem_slug", sa.String(), nullable=True),
-        sa.Column("email", sa.String(), nullable=True),
-        sa.Column("github_issue_url", sa.String(), nullable=True),
-        sa.Column("github_issue_number", sa.Integer(), nullable=True),
-        sa.Column("status", sa.String(), nullable=False, server_default="open"),
-        sa.Column("created_at", sa.String(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-    )
+    if not _has_table("feedbacks"):
+        op.create_table(
+            "feedbacks",
+            sa.Column("id", sa.String(), nullable=False),
+            sa.Column("category", sa.String(), nullable=False),
+            sa.Column("title", sa.String(), nullable=False),
+            sa.Column("description", sa.Text(), nullable=False),
+            sa.Column("page_url", sa.String(), nullable=True),
+            sa.Column("problem_slug", sa.String(), nullable=True),
+            sa.Column("email", sa.String(), nullable=True),
+            sa.Column("github_issue_url", sa.String(), nullable=True),
+            sa.Column("github_issue_number", sa.Integer(), nullable=True),
+            sa.Column("status", sa.String(), nullable=False, server_default="open"),
+            sa.Column("created_at", sa.String(), nullable=False),
+            sa.PrimaryKeyConstraint("id"),
+        )
 
 
 def downgrade() -> None:
-    op.drop_table("feedbacks")
+    if _has_table("feedbacks"):
+        op.drop_table("feedbacks")

@@ -23,7 +23,9 @@ if settings.database_url.startswith("sqlite"):
 elif settings.database_url.startswith("postgresql"):
     # Neon pooled connections can go stale (scale-to-zero / idle timeout);
     # pre-ping keeps prod checkouts honest. SQLite path untouched.
-    engine_kwargs["pool_pre_ping"] = True
+    engine_kwargs.update(
+        pool_pre_ping=True, pool_recycle=300, pool_timeout=15, pool_size=5, max_overflow=5
+    )
 
 engine = create_engine(
     settings.database_url,
