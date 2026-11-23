@@ -32,6 +32,7 @@ export const ProblemDetailPage: React.FC = () => {
   const [hintsOpen, setHintsOpen] = useState(false);
   const [editorialOpen, setEditorialOpen] = useState(false);
   const [activeSolutionTab, setActiveSolutionTab] = useState<number | null>(null);
+  const [mobileView, setMobileView] = useState<'statement' | 'editor'>('statement');
   const [noteText, setNoteText] = useState(problem ? state.notes[problem.slug] || '' : '');
 
   useEffect(() => {
@@ -82,7 +83,7 @@ export const ProblemDetailPage: React.FC = () => {
 
       {/* Prev / Next in category sequence */}
       {(problem.prevSlug || problem.nextSlug) && (
-        <nav aria-label="Sequence" className="flex items-center justify-between gap-3 text-xs font-mono">
+        <nav aria-label="Sequence" className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
           {problem.prevSlug ? (
             <Link
               to={`/problems/${problem.topic}/${problem.prevSlug}`}
@@ -156,10 +157,28 @@ export const ProblemDetailPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile view switch: the editor is a tap away instead of a long scroll.
+          Both columns stay mounted; CSS decides which one is visible below lg. */}
+      <div className="flex lg:hidden items-center gap-1 p-1 rounded-lg border border-line bg-surface" role="group" aria-label="Problem view">
+        {(['statement', 'editor'] as const).map((view) => (
+          <button
+            key={view}
+            type="button"
+            onClick={() => setMobileView(view)}
+            aria-pressed={mobileView === view}
+            className={`flex-1 py-2 rounded-md text-xs font-mono transition ${
+              mobileView === view ? 'bg-mint text-canvas font-semibold' : 'text-muted hover:text-ink'
+            }`}
+          >
+            {view === 'statement' ? 'Statement' : 'Code Editor'}
+          </button>
+        ))}
+      </div>
+
       {/* Main Split Grid: Left = Statement, Hints, Solutions, Notes | Right = Interactive CodeRunner */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column */}
-        <div className="lg:col-span-5 space-y-5">
+        <div className={`lg:col-span-5 space-y-5 ${mobileView === 'editor' ? 'hidden lg:block' : ''}`}>
           {/* Statement & Examples Card */}
           <div className="p-5 rounded-xl border border-line bg-surface space-y-4">
             <MarkdownStatement statement={problem.statement} />
@@ -191,9 +210,9 @@ export const ProblemDetailPage: React.FC = () => {
 
             {/* Constraints */}
             <div className="pt-2">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-muted mb-2">
+              <h2 className="text-xs font-mono uppercase tracking-wider text-muted mb-2">
                 Constraints:
-              </h4>
+              </h2>
               <ul className="list-disc list-inside text-xs font-mono text-ink space-y-1">
                 {problem.constraints.map((c, i) => (
                   <li key={i}>{c}</li>
@@ -238,17 +257,20 @@ export const ProblemDetailPage: React.FC = () => {
                 Reference Solutions & Big-O
               </span>
               <div className="flex items-center gap-1.5">
-                {problem.solutions.map((_, idx) => (
+                {problem.solutions.map((sol, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveSolutionTab(activeSolutionTab === idx ? null : idx)}
-                    className={`px-2.5 py-1 rounded text-xs font-mono border cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono border cursor-pointer ${
                       activeSolutionTab === idx
                         ? 'border-violet bg-violet/15 text-ink'
                         : 'border-line bg-canvas text-muted'
                     }`}
                   >
-                    {idx === 0 ? 'Brute Force' : 'Optimal Solution'}
+                    {sol.title}
+                    <span className="px-1 py-0.5 rounded bg-canvas border border-line text-[9px] uppercase text-violet">
+                      {sol.language === 'python' ? 'PY' : 'JS'}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -343,7 +365,7 @@ export const ProblemDetailPage: React.FC = () => {
         </div>
 
         {/* Right Column: Interactive Sandbox Code Runner */}
-        <div className="lg:col-span-7">
+        <div className={`lg:col-span-7 ${mobileView === 'statement' ? 'hidden lg:block' : ''}`}>
           <CodeRunner
               problemSlug={problem.slug}
               starterCode={problem.starterCode}
@@ -351,7 +373,6 @@ export const ProblemDetailPage: React.FC = () => {
               starterCodeJava={problem.starterCodeJava}
               starterCodeCpp={problem.starterCodeCpp}
               functionName={problem.functionName}
-              testCases={problem.testCases}
               onAllPassed={() => setProblemStatus(problem.slug, 'Done')}
             />
         </div>

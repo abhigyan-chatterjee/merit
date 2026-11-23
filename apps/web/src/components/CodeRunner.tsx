@@ -16,7 +16,6 @@ import {
   Copy,
   X,
 } from "lucide-react";
-import { TestCase } from "../data/problems";
 import {
   ApiError,
   judgeApi,
@@ -51,14 +50,34 @@ const starterByLanguage = (
   cpp: starterCodeCpp,
 });
 
+const getDraftKey = (slug: string, lang: EditorLang): string =>
+  `merit_code_draft_${slug}_${lang}`;
+
+const getInitialCodeByLang = (
+  slug: string,
+  starters: Record<EditorLang, string>
+): Record<EditorLang, string> => {
+  const res = { ...starters };
+  (Object.keys(starters) as EditorLang[]).forEach((lang) => {
+    try {
+      const draft = window.localStorage.getItem(getDraftKey(slug, lang));
+      if (draft !== null) {
+        res[lang] = draft;
+      }
+    } catch {
+      // storage unavailable: ignore
+    }
+  });
+  return res;
+};
+
 interface CodeRunnerProps {
   problemSlug: string;
   starterCode: string;
-  starterCodePython: string;
-  starterCodeJava: string;
-  starterCodeCpp: string;
-  functionName: string;
-  testCases: TestCase[];
+  starterCodePython?: string;
+  starterCodeJava?: string;
+  starterCodeCpp?: string;
+  functionName?: string;
   onAllPassed?: () => void;
   onVerdict?: (passed: boolean) => void;
   tutorEnabled?: boolean;
@@ -67,11 +86,10 @@ interface CodeRunnerProps {
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   problemSlug,
   starterCode,
-  starterCodePython,
-  starterCodeJava,
-  starterCodeCpp,
-  functionName,
-  testCases: _testCases,
+  starterCodePython = "",
+  starterCodeJava = "",
+  starterCodeCpp = "",
+  functionName = "solve",
   onAllPassed,
   onVerdict,
   tutorEnabled = true,
@@ -104,16 +122,21 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // no-op after any keystroke, so e.g. the JS boilerplate stuck around
   // after selecting Python.
   const [codeByLang, setCodeByLang] = useState<Record<EditorLang, string>>(() =>
-    starterByLanguage(
-      starterCode,
-      starterCodePython,
-      starterCodeJava,
-      starterCodeCpp,
-      functionName
+    getInitialCodeByLang(
+      problemSlug,
+      starterByLanguage(
+        starterCode,
+        starterCodePython,
+        starterCodeJava,
+        starterCodeCpp,
+        functionName
+      )
     )
   );
   const code = codeByLang[language];
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
+  const userChangedLangRef = useRef(false);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [activeView, setActiveView] = useState<"results" | "submissions">("results");
   const [results, setResults] = useState<TestCaseResult[] | null>(null);
@@ -124,11 +147,19 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needsAuth, setNeedsAuth] = useState(false);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
+  const [submissionsError, setSubmissionsError] = useState<string | null>(null);
   const [showTutor, setShowTutor] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionItem | null>(null);
   const [copied, setCopied] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const resetBtnRef = useRef<HTMLButtonElement | null>(null);
+  const prevConfirmReset = useRef(confirmReset);
+  useEffect(() => {
+    if (prevConfirmReset.current && !confirmReset) {
+      requestAnimationFrame(() => resetBtnRef.current?.focus());
+    }
+    prevConfirmReset.current = confirmReset;
+  }, [confirmReset]);
   const runSamplesRef = useRef<HTMLButtonElement | null>(null);
 
   // Same dialog contract as the feedback modal and the search palette: focus
@@ -141,18 +172,28 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
   const setCode = (next: string) => {
     setCodeByLang((prev) => ({ ...prev, [language]: next }));
+    try {
+      window.localStorage.setItem(getDraftKey(problemSlug, language), next);
+    } catch {
+      // storage unavailable: ignore
+    }
   };
 
   // Fresh skeletons when navigating between problems: without this the
   // previous problem's code (and function name) lingered in the editor.
   useEffect(() => {
-    setCodeByLang(starterByLanguage(
-      starterCode,
-      starterCodePython,
-      starterCodeJava,
-      starterCodeCpp,
-      functionName
-    ));
+    setCodeByLang(
+      getInitialCodeByLang(
+        problemSlug,
+        starterByLanguage(
+          starterCode,
+          starterCodePython,
+          starterCodeJava,
+          starterCodeCpp,
+          functionName
+        )
+      )
+    );
     setResults(null);
     setVerdict(null);
     setCompileError(null);
@@ -228,6 +269,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // keeps its own buffer, so the user's edits in one language are never
   // clobbered by switching to the other and back.
   const handleLanguageChange = (lang: EditorLang) => {
+    userChangedLangRef.current = true;
     setLanguage(lang);
     try {
       window.localStorage.setItem('merit_lang_v1', lang);
@@ -244,6 +286,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   const handleReset = () => {
+    try {
+      window.localStorage.removeItem(getDraftKey(problemSlug, language));
+    } catch {
+      // ignore
+    }
     setCodeByLang((prev) => ({
       ...prev,
       [language]: starterByLanguage(
@@ -278,11 +325,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
   const fetchSubmissions = useCallback(async () => {
     if (!user) return;
+    setSubmissionsError(null);
     try {
       const subs = await judgeApi.getSubmissions(problemSlug);
       setSubmissions(subs);
     } catch {
-      // Offline / guest
+      setSubmissionsError("Unable to load submissions at this time.");
     }
   }, [user, problemSlug]);
 
@@ -296,7 +344,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     progressApi
       .getSettings()
       .then((s) => {
-        if (isEditorLang(s.preferred_language)) {
+        if (!userChangedLangRef.current && isEditorLang(s.preferred_language)) {
           setLanguage(s.preferred_language);
         }
       })
@@ -324,6 +372,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setIsRunning(true);
     setCompileError(null);
     setActiveView("results");
+    resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     try {
       const res: JudgeResponse = await judgeApi.runSamples(problemSlug, language, code);
       setNeedsAuth(false);
@@ -338,6 +387,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       handleJudgeError(err, "Execution failed");
     } finally {
       setIsRunning(false);
+      resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     }
   };
 
@@ -345,6 +395,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setIsSubmitting(true);
     setCompileError(null);
     setActiveView("results");
+    resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     try {
       const sub: SubmissionItem = await judgeApi.submit(problemSlug, language, code);
       setNeedsAuth(false);
@@ -361,6 +412,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       handleJudgeError(err, "Submission failed");
     } finally {
       setIsSubmitting(false);
+      resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     }
   };
 
@@ -410,7 +462,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       'motion-fade motion-delay-75';
     if (verdict === "AC") {
       return (
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold ${enter}`}>
+        <div role="status" className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold ${enter}`}>
           <CheckCircle2 className="w-3.5 h-3.5" />
           <span>Accepted (AC)</span>
           {runtimeMs !== null && <span className="text-[10px] text-muted">· {runtimeMs.toFixed(1)}ms</span>}
@@ -419,7 +471,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     }
     if (verdict === "WA") {
       return (
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold ${enter}`}>
+        <div role="status" className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold ${enter}`}>
           <XCircle className="w-3.5 h-3.5" />
           <span>Wrong Answer (WA)</span>
         </div>
@@ -427,14 +479,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     }
     if (verdict === "TLE") {
       return (
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber/40 bg-amber/10 text-amber font-mono text-xs font-semibold ${enter}`}>
+        <div role="status" className={`flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber/40 bg-amber/10 text-amber font-mono text-xs font-semibold ${enter}`}>
           <Clock className="w-3.5 h-3.5" />
           <span>Time Limit Exceeded (TLE)</span>
         </div>
       );
     }
     return (
-      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold">
+      <div role="status" className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose/40 bg-rose/10 text-rose font-mono text-xs font-semibold">
         <AlertCircle className="w-3.5 h-3.5" />
         <span>{verdict === "CE" ? "Compile Error" : "Runtime Error"} ({verdict})</span>
       </div>
@@ -442,7 +494,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   return (
-    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-y-auto shadow-sm max-h-[calc(100vh-8rem)]">
+    <div className="flex flex-col rounded-xl border border-line bg-surface overflow-y-auto shadow-sm max-h-[calc(100dvh-8rem)]">
       {/* Code Editor Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-b border-line bg-canvas">
         <div className="flex items-center gap-3">
@@ -534,6 +586,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
       {/* Results / Submissions Navigation Bar */}
       <nav
+        ref={resultsRef}
         aria-label="Results navigation"
         className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b border-line bg-canvas text-xs font-mono"
       >
@@ -593,6 +646,21 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       <div className="p-4 bg-surface min-h-[160px]">
         {activeView === "results" ? (
           <div>
+            {!user && !needsAuth && (
+              <div className="mb-4 p-2.5 rounded-lg border border-line bg-canvas flex flex-wrap items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 font-mono text-xs text-muted">
+                  <Lock className="w-3.5 h-3.5 text-muted shrink-0" />
+                  Guest mode: you can test code, but solutions are not saved.
+                </span>
+                <Link
+                  to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`}
+                  className="text-mint hover:underline font-semibold font-mono text-xs"
+                >
+                  Log in to track
+                </Link>
+              </div>
+            )}
+
             {needsAuth && (
               <div className="mb-4 p-3 rounded-lg border border-amber/30 bg-amber/10 flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-1.5 font-mono text-xs text-ink">
@@ -620,7 +688,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                 </div>
                 {compileError}
                 <p className="mt-2 font-sans text-muted normal-case">
-                  Check the judge service is reachable, then run again.
+                  The code runner is temporarily unavailable. Please try again shortly.
                 </p>
               </div>
             )}
@@ -628,10 +696,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             {results ? (
               <div className="space-y-3">
                 {/* Tabs */}
-                <div className="flex flex-wrap items-center gap-2">
+                <div role="tablist" aria-label="Test cases" className="flex flex-wrap items-center gap-2">
                   {results.map((res, idx) => (
                     <button
                       key={idx}
+                      role="tab"
+                      aria-selected={activeTab === idx}
                       onClick={() => setActiveTab(idx)}
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono border cursor-pointer transition ${
                         activeTab === idx
@@ -647,6 +717,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                         <XCircle className="w-3 h-3 text-rose" />
                       )}
                       <span>{res.label || `Case ${idx + 1}`}</span>
+                      <span className="sr-only">{res.passed ? "passed" : "failed"}</span>
                     </button>
                   ))}
                 </div>
@@ -709,7 +780,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
         ) : (
           /* Submissions History */
           <div className="space-y-2 font-mono text-xs">
-            {submissions.length === 0 ? (
+            {submissionsError ? (
+              <div className="py-8 text-center text-rose font-mono text-xs">
+                <p>{submissionsError}</p>
+              </div>
+            ) : submissions.length === 0 ? (
               <div className="py-8 text-center text-muted">
                 <p>No submissions recorded for this problem yet.</p>
               </div>
@@ -761,9 +836,6 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       {/* Previous-submission code viewer */}
       {selectedSubmission && (
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Submitted code"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
           onClick={() => setSelectedSubmission(null)}
         >

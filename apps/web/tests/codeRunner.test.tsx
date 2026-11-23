@@ -20,17 +20,11 @@ describe('CodeRunner Component (Phase 4)', () => {
     window.localStorage.clear();
   });
 
-  const mockTestCases = [
-    { label: 'Case 1', input: [[2, 7, 11, 15], 9], expected: [0, 1] },
-    { label: 'Case 2', input: [[3, 2, 4], 6], expected: [1, 2] },
-  ];
-
   it('renders language selector and defaults to Python', () => {
     renderRunner({
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const select = screen.getByLabelText(/Execution Language/i);
@@ -57,7 +51,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       starterCodeJava: 'class Solution {\n    public String solve(String a, String b) {}\n}',
       starterCodeCpp: 'class Solution {};',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const textarea = screen.getByLabelText(/Code Editor/i);
@@ -75,7 +68,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const tutor = screen.getByRole('button', { name: /ask the tutor/i });
@@ -101,7 +93,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const runBtn = screen.getByRole('button', { name: /Run Samples/i });
@@ -109,7 +100,7 @@ describe('CodeRunner Component (Phase 4)', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Accepted \(AC\)/i)).toBeVisible();
-      expect(screen.getByRole('button', { name: /Case 1/i })).toBeVisible();
+      expect(screen.getByRole('tab', { name: /Case 1/i })).toBeVisible();
     });
   });
 
@@ -131,7 +122,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
       onAllPassed,
     });
 
@@ -153,7 +143,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     fireEvent.click(screen.getByRole('button', { name: /Run Samples/i }));
@@ -177,7 +166,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     fireEvent.click(screen.getByRole('button', { name: /Run Samples/i }));
@@ -205,14 +193,13 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const runBtn = screen.getByRole('button', { name: /Run Samples/i });
     fireEvent.click(runBtn);
     await waitFor(() => {
       expect(screen.getByText(/Accepted \(AC\)/i)).toBeVisible();
-      expect(screen.getByRole('button', { name: /Case 1/i })).toBeVisible();
+      expect(screen.getByRole('tab', { name: /Case 1/i })).toBeVisible();
     });
 
     fireEvent.click(runBtn);
@@ -220,7 +207,7 @@ describe('CodeRunner Component (Phase 4)', () => {
       expect(screen.getByText(/Runtime Error \(RE\)/i)).toBeVisible();
     });
     expect(screen.getByText('Judge exploded')).toBeVisible();
-    expect(screen.queryByRole('button', { name: /Case 1/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /Case 1/i })).not.toBeInTheDocument();
     expect(screen.getByText(/Ready to run\./i)).toBeVisible();
   });
 
@@ -248,21 +235,20 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const runBtn = screen.getByRole('button', { name: /Run Samples/i });
     fireEvent.click(runBtn);
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Case 2/i })).toBeVisible();
+      expect(screen.getByRole('tab', { name: /Case 2/i })).toBeVisible();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /Case 2/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /Case 2/i }));
     expect(screen.getByText('[[3,2,4],6]')).toBeVisible();
 
     fireEvent.click(runBtn);
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: /Case 2/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('tab', { name: /Case 2/i })).not.toBeInTheDocument();
     });
     // activeTab reset to 0: Case 1 details render instead of a blank panel.
     expect(screen.getByText('[[2,7],9]')).toBeVisible();
@@ -273,7 +259,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const select = screen.getByLabelText(/Execution Language/i);
@@ -290,12 +275,86 @@ describe('CodeRunner Component (Phase 4)', () => {
     expect(textarea).toHaveValue('def solve(*args):\n    return 42');
   });
 
+  it('skips confirm and resets directly when code equals starter', () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    // Code defaults to the Python skeleton; the JS buffer opens on the
+    // problem's own starter, so there is nothing to discard.
+    const select = screen.getByLabelText(/Execution Language/i);
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    const textarea = screen.getByLabelText(/Code Editor/i);
+    expect(textarea).toHaveValue('function solve() {}');
+
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    expect(screen.queryByText(/discard your edits/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Code Editor/i)).toHaveValue('function solve() {}');
+  });
+
+  it('Confirm Reset restores edited code back to the starter', () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    const select = screen.getByLabelText(/Execution Language/i);
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    const textarea = screen.getByLabelText(/Code Editor/i);
+    fireEvent.change(textarea, { target: { value: 'function solve() { return 1; }' } });
+    expect(textarea).toHaveValue('function solve() { return 1; }');
+
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    fireEvent.click(screen.getByRole('button', { name: /discard/i }));
+    expect(screen.getByLabelText(/Code Editor/i)).toHaveValue('function solve() {}');
+  });
+
+  it('does not steal focus on mount', () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    expect(screen.getByRole('button', { name: /reset/i })).not.toHaveFocus();
+    expect(screen.getByLabelText(/Code Editor/i)).not.toHaveFocus();
+  });
+
+  it('shows InlineConfirm when code differs from starter', () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    const select = screen.getByLabelText(/Execution Language/i);
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    const textarea = screen.getByLabelText(/Code Editor/i);
+    fireEvent.change(textarea, { target: { value: 'function solve() { return 1; }' } });
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    expect(screen.getByText(/discard your edits/i)).toBeInTheDocument();
+  });
+
+  it('restores focus to Reset button after confirm closes', async () => {
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    const select = screen.getByLabelText(/Execution Language/i);
+    fireEvent.change(select, { target: { value: 'javascript' } });
+    const textarea = screen.getByLabelText(/Code Editor/i);
+    fireEvent.change(textarea, { target: { value: 'function solve() { return 1; }' } });
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    // cancel
+    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    await waitFor(() => expect(screen.getByRole('button', { name: /reset/i })).toHaveFocus());
+  });
+
   it('hides the tutor when tutorEnabled is false', () => {
     renderRunner({
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
       tutorEnabled: false,
     });
 
@@ -307,7 +366,6 @@ describe('CodeRunner Component (Phase 4)', () => {
       problemSlug: 'two-sum',
       starterCode: 'function solve() {}',
       functionName: 'solve',
-      testCases: mockTestCases,
     });
 
     const textarea = screen.getByLabelText(/Code Editor/i) as HTMLTextAreaElement;

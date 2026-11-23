@@ -8,7 +8,8 @@ interface MarkdownStatementProps {
 
 export function renderInlineMarkdown(text: string): React.ReactNode {
   // Regex to match inline code (`...`) or bold (**...**) or italic (*...*)
-  const regex = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g;
+  // Negative lookahead/lookbehind ensures arithmetic like O(n * m) or a * b * c isn't converted to italics
+  const regex = /(`[^`]+`|\*\*[^*]+?\*\*|\*(?!\s)[^*]+?(?<!\s)\*)/g;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -63,14 +64,39 @@ export const MarkdownStatement: React.FC<MarkdownStatementProps> = ({
     cleaned = cleaned.replace(/^#\s+[^\n]+(?:\n+|$)/, '').trim();
   }
 
-  // Split into paragraph blocks on two or more newlines
-  const blocks = cleaned.split(/\n{2,}/);
+  // Split into blocks: keep fenced code blocks intact, split other text by \n{2,}
+  const rawParts = cleaned.split(/(```[\s\S]*?```)/g);
+  const blocks: string[] = [];
+  for (const part of rawParts) {
+    if (part.startsWith('```') && part.endsWith('```')) {
+      blocks.push(part);
+    } else {
+      const sub = part.split(/\n{2,}/);
+      for (const s of sub) {
+        if (s.trim()) blocks.push(s);
+      }
+    }
+  }
 
   return (
     <div className={className}>
       {blocks.map((block, idx) => {
         const trimmed = block.trim();
         if (!trimmed) return null;
+
+        // Fenced code blocks
+        if (trimmed.startsWith('```') && trimmed.endsWith('```')) {
+          const match = trimmed.match(/^```([a-zA-Z0-9_-]*)\n?([\s\S]*?)\n?```$/);
+          const codeContent = match ? match[2] : trimmed.replace(/^```[^\n]*\n?/, '').replace(/\n?```$/, '');
+          return (
+            <pre
+              key={idx}
+              className="p-3 rounded-lg bg-canvas border border-line font-mono text-xs text-ink overflow-x-auto whitespace-pre"
+            >
+              <code>{codeContent}</code>
+            </pre>
+          );
+        }
 
         // Subheadings
         if (trimmed.startsWith('### ') || trimmed.startsWith('## ')) {

@@ -87,7 +87,7 @@ describe('ProblemDetailPage', () => {
 
   it('shows a reference solution when a tab is chosen', () => {
     renderProblem();
-    fireEvent.click(screen.getByRole('button', { name: 'Brute Force' }));
+    fireEvent.click(screen.getByRole('button', { name: /Brute Force/i }));
     // The solution panel renders its Big-O annotation and code block.
     expect(screen.getByText(/Reference Solutions & Big-O/i)).toBeInTheDocument();
     expect(document.querySelector('pre')).not.toBeNull();
