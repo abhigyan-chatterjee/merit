@@ -179,7 +179,7 @@ describe('DashboardPage Placement Readiness (Web-4)', () => {
     renderDashboard();
     expect(screen.getByText('Placement Readiness')).toBeInTheDocument();
     expect(screen.getAllByText('0/100').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('Getting Started')).toBeInTheDocument();
+    expect(screen.getByText(/Getting Started/)).toBeInTheDocument();
   });
 
   it('toggles target tier metadata', () => {

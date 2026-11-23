@@ -45,7 +45,7 @@ describe('ProblemDetailPage', () => {
   it('renders the problem statement and metadata', () => {
     renderProblem();
     expect(screen.getByRole('heading', { name: 'Two Sum' })).toBeInTheDocument();
-    expect(screen.getByText('Hash Map / Complement')).toBeInTheDocument();
+    expect(screen.getByText(/Hash Map \/ Complement/)).toBeInTheDocument();
     expect(screen.getByLabelText('Problem Status')).toHaveValue('Todo');
     expect(screen.getByText(/Given an array of integers nums/i)).toBeInTheDocument();
   });
@@ -64,7 +64,7 @@ describe('ProblemDetailPage', () => {
 
   it('saves revision notes once the typing pause elapses', async () => {
     renderProblem();
-    const box = screen.getByPlaceholderText(/Write down edge cases/i);
+    const box = screen.getByPlaceholderText(/Add notes/i);
     fireEvent.change(box, { target: { value: 'complement via hash map' } });
 
     // The textarea echoes immediately; the write is debounced.
@@ -131,9 +131,9 @@ describe('ProblemDetailPage', () => {
 
   it('saves note typed on Problem A under A when navigating to Problem B', async () => {
     renderProblem();
-    const box = screen.getByPlaceholderText(/Write down edge cases/i);
+    const box = screen.getByPlaceholderText(/Add notes/i);
     fireEvent.change(box, { target: { value: 'note for two-sum' } });
-    fireEvent.click(screen.getByRole('link', { name: /Next in/i }));
+    fireEvent.click(screen.getByRole('link', { name: /^Next$/i }));
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Two Sum II - Input Array Is Sorted' })).toBeInTheDocument();
     });

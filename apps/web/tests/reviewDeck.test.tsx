@@ -64,11 +64,8 @@ describe('ReviewDeck', () => {
     renderDeck();
 
     expect(await screen.findByText('Two Sum')).toBeInTheDocument();
-    expect(screen.getByText(/Card 1 of 2/)).toBeInTheDocument();
-    expect(screen.getByText('PROBLEM')).toBeInTheDocument();
-    expect(screen.getByText('arrays-hashing')).toBeInTheDocument();
-    expect(screen.getByText('Easy')).toBeInTheDocument();
-    expect(screen.getByText(/reps 2/)).toBeInTheDocument();
+    expect(screen.getByText(/Card 1\/2/)).toBeInTheDocument();
+    expect(screen.getByText(/arrays-hashing/)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByTestId('due-count')).toHaveTextContent('2'));
     const openLink = screen.getByText(/Open full item/);
     expect(openLink.closest('a')).toHaveAttribute('href', '/problems/arrays-hashing/two-sum');
@@ -102,8 +99,7 @@ describe('ReviewDeck', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Good' }));
     await waitFor(() => expect(reviewSpy).toHaveBeenCalledWith('problem', 'two-sum', 4));
     expect(await screen.findByText('BST Concept')).toBeInTheDocument();
-    expect(screen.getByText(/Card 2 of 2/)).toBeInTheDocument();
-    expect(screen.getByText('CONCEPT')).toBeInTheDocument();
+    expect(screen.getByText(/Card 2\/2/)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByTestId('due-count')).toHaveTextContent('1'));
   });
 

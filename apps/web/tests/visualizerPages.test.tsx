@@ -40,9 +40,7 @@ describe('VisualizersListPage', () => {
   it('lists every visualizer', () => {
     renderList();
     expect(
-      screen.getByRole('heading', {
-        name: new RegExp(`${VISUALIZERS.length} interactive structures`, 'i'),
-      }),
+      screen.getByRole('heading', { name: /visualizers/i }),
     ).toBeInTheDocument();
     // Each card carries the visualizer title and its own "Open workbench" link.
     for (const vis of VISUALIZERS) {

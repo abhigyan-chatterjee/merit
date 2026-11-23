@@ -51,7 +51,7 @@ describe('OnboardingDiagnostic', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Take 12-Q Calibration Diagnostic/i }));
     expect(screen.getByRole('dialog', { name: '12-Question Placement Diagnostic' })).toBeInTheDocument();
-    expect(screen.getByText('Question 1 of 12')).toBeInTheDocument();
+    expect(screen.getByText(/Q1 ·/)).toBeInTheDocument();
 
     for (let i = 0; i < DIAGNOSTIC_QUESTIONS.length; i++) {
       const q = DIAGNOSTIC_QUESTIONS[i];
@@ -69,7 +69,7 @@ describe('OnboardingDiagnostic', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish Diagnostic' }));
 
-    expect(screen.getByText('12/12')).toBeInTheDocument();
+    expect(screen.getByText(/12\/12/)).toBeInTheDocument();
     expect(screen.getAllByText(/100%/).length).toBeGreaterThanOrEqual(5);
     expect(screen.getAllByText(/3\/3/).length).toBeGreaterThanOrEqual(4);
     expect(screen.getAllByText(/FAANG & Dream/).length).toBeGreaterThanOrEqual(1);

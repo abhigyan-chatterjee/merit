@@ -27,7 +27,6 @@ import { formatClock, shortStageLabel } from "./interviewConfig";
 
 interface InterviewWorkspaceProps {
   session: InterviewSessionDetail;
-  isGuest: boolean;
   models: string[];
   hasCatalog: boolean;
   model: string;
@@ -105,7 +104,6 @@ function renderProblemStatement(problem: InterviewProblemSummary) {
 
 export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
   session,
-  isGuest,
   models,
   hasCatalog,
   model,
@@ -197,13 +195,6 @@ export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
         {activeSnapshot && (
           <span className="px-2 py-0.5 rounded border border-line bg-surface text-[10px] font-mono text-muted">
             {activeSnapshot.language}
-            {activeSnapshot.verdict
-              ? ` · ${activeSnapshot.verdict}${
-                  activeSnapshot.passed_count !== null && activeSnapshot.passed_count !== undefined
-                    ? ` (${activeSnapshot.passed_count}/${activeSnapshot.total_count ?? "?"})`
-                    : ""
-                }`
-              : " · unsaved run"}
           </span>
         )}
       </div>
@@ -343,79 +334,37 @@ export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
   return (
     <div className="space-y-5">
       {/* Top Control Header */}
-      <div className="p-4 rounded-xl border border-line bg-surface flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onBackToLobby}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-muted hover:text-ink cursor-pointer transition"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Lobby</span>
-          </button>
-
-          <span className="px-2 py-0.5 rounded border border-violet/40 bg-violet/10 font-mono text-[10px] uppercase font-bold text-violet">
-            {session.difficulty}
-          </span>
-
-          {session.has_resume && session.resume_filename && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-mint/40 bg-mint/10 font-mono text-[10px] text-mint max-w-[140px] truncate">
-              <FileText className="w-3 h-3" />
-              <span className="truncate">CV: {session.resume_filename}</span>
-            </span>
-          )}
-
-          {isGuest && (
-            <span className="px-2 py-0.5 rounded border border-line bg-canvas font-mono text-[10px] text-muted">
-              Guest session (local)
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg border border-line bg-canvas font-mono text-xs">
-            <Clock className="w-3.5 h-3.5 text-violet" />
-            <span aria-label="Interview timer" className="font-bold text-ink tnum">
-              {formatClock(remainingSec)}
-            </span>
-            {session.status !== "completed" && (
-              <button
-                type="button"
-                onClick={onToggleTimer}
-                aria-label={timerRunning ? "Pause timer" : "Resume timer"}
-                className="text-muted hover:text-ink cursor-pointer"
-              >
-                {timerRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-              </button>
-            )}
-          </div>
-
-          {hasCatalog && modelOptions.length > 0 && (
-            <select
-              aria-label="Workspace Model"
-              value={model}
-              onChange={(e) => onModelChange(e.target.value)}
-              className="px-2 py-1.5 rounded-lg bg-canvas border border-line text-[11px] font-mono text-ink max-w-[155px]"
-            >
-              {modelOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {session.status !== "completed" && nextStage && nextStage.kind !== "rubric" && (
+      <div className="p-4 rounded-xl border border-line bg-surface space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 text-xs font-mono">
             <button
               type="button"
-              disabled={!canChat || sending}
-              onClick={() => onSelectStage(nextStage.id)}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-mint/40 bg-mint/10 text-mint font-mono text-xs font-semibold hover:bg-mint/20 disabled:opacity-50 cursor-pointer transition shrink-0"
+              onClick={onBackToLobby}
+              className="inline-flex items-center gap-1 text-muted hover:text-ink cursor-pointer transition"
             >
-              <span>Next Round</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Lobby</span>
             </button>
-          )}
+            <span aria-hidden="true" className="text-muted">·</span>
+            <span className="uppercase font-bold text-violet">{session.difficulty}</span>
+            <span aria-hidden="true" className="text-muted">·</span>
+            <span className="inline-flex items-center gap-1 text-ink">
+              <Clock className="w-3.5 h-3.5 text-violet" />
+              <span aria-label="Interview timer" className="font-bold tnum">
+                {formatClock(remainingSec)}
+              </span>
+              {session.status !== "completed" && (
+                <button
+                  type="button"
+                  onClick={onToggleTimer}
+                  aria-label={timerRunning ? "Pause timer" : "Resume timer"}
+                  className="text-muted hover:text-ink cursor-pointer"
+                >
+                  {timerRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                </button>
+              )}
+            </span>
+          </div>
 
           {session.status !== "completed" && (
             <button
@@ -429,6 +378,44 @@ export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
             </button>
           )}
         </div>
+
+        {(hasCatalog && modelOptions.length > 0) ||
+        (session.status !== "completed" && nextStage && nextStage.kind !== "rubric") ||
+        (session.has_resume && session.resume_filename) ? (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono text-muted">
+            {hasCatalog && modelOptions.length > 0 && (
+              <select
+                aria-label="Workspace Model"
+                value={model}
+                onChange={(e) => onModelChange(e.target.value)}
+                className="px-2 py-1 rounded-lg bg-canvas border border-line text-[11px] font-mono text-muted max-w-[155px]"
+              >
+                {modelOptions.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            )}
+            {session.status !== "completed" && nextStage && nextStage.kind !== "rubric" && (
+              <button
+                type="button"
+                disabled={!canChat || sending}
+                onClick={() => onSelectStage(nextStage.id)}
+                className="inline-flex items-center gap-1 text-muted hover:text-ink disabled:opacity-50 cursor-pointer transition shrink-0"
+              >
+                <span>Next Round</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {session.has_resume && session.resume_filename && (
+              <span className="inline-flex items-center gap-1 truncate max-w-[200px]">
+                <FileText className="w-3 h-3 shrink-0" />
+                <span className="truncate">{session.resume_filename}</span>
+              </span>
+            )}
+          </div>
+        ) : null}
       </div>
 
       {/* Stage Stepper */}
@@ -561,22 +548,6 @@ export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
                 {!statementCollapsed && <div className="p-1">{renderProblemStatement(activeProblem)}</div>}
               </div>
 
-              <div className="flex items-center justify-end">
-                <button
-                  type="button"
-                  disabled={!canChat || sending}
-                  onClick={() =>
-                    onSendMessage(
-                      "Walk through my current code in the editor and review its correctness and Big-O complexity.",
-                    )
-                  }
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-violet/40 bg-violet/10 text-violet font-mono text-xs font-semibold hover:bg-violet/20 disabled:opacity-50 cursor-pointer transition"
-                >
-                  <MessagesSquare className="w-3.5 h-3.5" />
-                  <span>Discuss My Code</span>
-                </button>
-              </div>
-
               <CodeRunner
                 key={activeProblem.slug}
                 problemSlug={activeProblem.slug}
@@ -640,12 +611,9 @@ export const InterviewWorkspace: React.FC<InterviewWorkspaceProps> = ({
             </div>
 
             {(session.resume_filename || session.project_brief) && (
-              <div className="p-4 rounded-xl border border-line bg-surface space-y-2 text-xs font-mono">
-                <div className="text-[10px] uppercase tracking-wider text-muted">
-                  Active Candidate Context
-                </div>
+              <div className="p-4 rounded-xl border border-line bg-surface space-y-1.5 text-xs font-mono">
                 {session.resume_filename && (
-                  <div className="text-mint truncate">CV: {session.resume_filename}</div>
+                  <div className="text-muted truncate">{session.resume_filename}</div>
                 )}
                 {session.project_brief && (
                   <p className="text-[11px] text-muted line-clamp-4">{session.project_brief}</p>

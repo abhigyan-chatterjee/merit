@@ -99,22 +99,12 @@ export const ReviewDeck: React.FC = () => {
   const fallbackLink =
     current.link ||
     (current.item_type === 'problem' ? `/problems/${current.topic}/${current.item_id}` : `/quiz/${current.topic}`);
-  const typeLabel = current.item_type === 'problem' ? 'PROBLEM' : 'CONCEPT';
 
   return (
     <div className="p-6 rounded-xl border border-line bg-surface space-y-4">
-      <div className="flex items-center justify-between gap-3 text-[11px] font-mono text-muted">
-        <span>Card {done + 1} of {total}</span>
-        <span className="px-1.5 py-0.5 rounded border border-amber/40 text-amber">SM-2</span>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="px-2 py-0.5 rounded border border-line text-[10px] font-mono font-semibold text-ink">{typeLabel}</span>
-        <span className="px-2 py-0.5 rounded-full bg-violet/10 border border-violet/30 text-[10px] font-mono text-violet">{current.topic}</span>
-        {current.difficulty && (
-          <span className="px-2 py-0.5 rounded-full bg-canvas border border-line text-[10px] font-mono text-muted">{current.difficulty}</span>
-        )}
-        <span className="text-[10px] font-mono text-muted">reps {current.reps} · every {current.interval_days}d</span>
-      </div>
+      <p className="text-[11px] font-mono text-muted">
+        Card {done + 1}/{total} · {current.topic} · every {current.interval_days}d
+      </p>
       <h2 className="text-base font-bold text-ink">{current.title}</h2>
       <p className="text-xs text-muted leading-relaxed">
         {current.prompt && current.prompt.trim().length > 0

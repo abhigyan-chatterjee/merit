@@ -117,7 +117,7 @@ describe('Auth Integration and UI', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Create a MERIT Account/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Create account' })).toBeInTheDocument();
     });
     expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
     expect(screen.getByText('Sign-in is not available in this environment.')).toBeInTheDocument();
@@ -176,7 +176,7 @@ describe('Auth Integration and UI', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Sign in to MERIT/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
     });
     expect(document.querySelectorAll('input[type="password"]')).toHaveLength(0);
     expect(screen.getByText('Sign-in is not available in this environment.')).toBeInTheDocument();

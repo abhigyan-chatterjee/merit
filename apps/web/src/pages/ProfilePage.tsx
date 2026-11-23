@@ -381,16 +381,19 @@ export const ProfilePage: React.FC = () => {
     { id: 'danger', label: 'Danger' },
   ];
 
+  const tabClass = (t: Tab) =>
+    t === 'danger'
+      ? tab === t
+        ? 'px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border border-rose/40 bg-rose/10 text-rose font-semibold'
+        : 'px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border border-transparent text-rose/70 hover:text-rose'
+      : `px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border ${
+          tab === t
+            ? 'bg-mint text-canvas border-mint font-semibold'
+            : 'bg-surface text-muted border-line hover:text-ink'
+        }`;
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/dashboard" className="inline-block py-1.5 hover:text-mint transition-colors">
-          dashboard
-        </Link>
-        <span>/</span>
-        <span className="text-ink">profile</span>
-      </nav>
-
       <div className="flex items-center gap-3 pb-4 border-b border-line">
         <div className="w-10 h-10 rounded-xl border border-line bg-surface grid place-items-center text-mint">
           <UserIcon className="w-5 h-5" />
@@ -406,11 +409,7 @@ export const ProfilePage: React.FC = () => {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono transition cursor-pointer border ${
-              tab === t.id
-                ? 'bg-mint text-canvas border-mint font-semibold'
-                : 'bg-surface text-muted border-line hover:text-ink'
-            }`}
+            className={tabClass(t.id)}
           >
             {t.label}
           </button>
@@ -460,7 +459,7 @@ export const ProfilePage: React.FC = () => {
           <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-20">
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
-              <p className="text-xs text-muted mt-1">Your key is kept for this browser session only, never saved to your account. Requests pass through the tutor proxy to reach the provider you selected, so treat it as leaving this device on each call.</p>
+              <p className="text-xs text-muted mt-1">Key stays in this browser only.</p>
             </div>
             <label className="block text-xs font-mono">
               <span className="text-muted">Provider preset</span>

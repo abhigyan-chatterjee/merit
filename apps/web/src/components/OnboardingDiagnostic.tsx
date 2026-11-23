@@ -256,16 +256,13 @@ export const OnboardingDiagnostic: React.FC<{ isOpen: boolean; onClose: () => vo
           </div>
 
           <div className="space-y-1">
-            <p className="text-2xl font-bold font-mono text-ink tnum">{totalCorrect}/12</p>
-            <p className="text-sm text-muted">
-              Overall Score: <span className="font-mono font-bold text-mint tnum">{overallPct}%</span>
-            </p>
+            <p className="text-2xl font-bold font-mono text-ink tnum">{totalCorrect}/12 · {overallPct}%</p>
           </div>
 
           <div className="space-y-2">
             {perPillar.map((p) => (
               <div key={p.topic} className="flex items-center justify-between text-xs border-b border-line pb-2">
-                <span className="text-ink font-medium">{p.pillarLabel} ({p.topic})</span>
+                <span className="text-ink font-medium">{p.pillarLabel}</span>
                 <span className="font-mono text-muted tnum">
                   {p.correct}/3 · {p.pillarPct}%
                 </span>
@@ -316,23 +313,15 @@ export const OnboardingDiagnostic: React.FC<{ isOpen: boolean; onClose: () => vo
     >
       <div className="w-full max-w-lg rounded-2xl border border-line bg-surface p-6 space-y-5 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-mono text-muted">Question {index + 1} of 12</span>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded border border-line bg-canvas text-[10px] font-mono uppercase tracking-wider text-violet">
-              {question.pillarLabel}
-            </span>
-            <span className="px-2 py-0.5 rounded border border-line bg-canvas text-[10px] font-mono uppercase tracking-wider text-amber">
-              {question.difficulty}
-            </span>
-            <button
-              type="button"
-              aria-label="Close diagnostic"
-              onClick={onClose}
-              className="px-2 py-1 rounded border border-line text-muted hover:text-ink cursor-pointer"
-            >
-              ✕
-            </button>
-          </div>
+          <span className="text-xs font-mono text-muted">Q{index + 1} · {question.pillarLabel} · {question.difficulty}</span>
+          <button
+            type="button"
+            aria-label="Close diagnostic"
+            onClick={onClose}
+            className="px-2 py-1 rounded border border-line text-muted hover:text-ink cursor-pointer"
+          >
+            ✕
+          </button>
         </div>
 
         <p className="text-sm font-medium text-ink leading-relaxed">{question.prompt}</p>
@@ -363,26 +352,28 @@ export const OnboardingDiagnostic: React.FC<{ isOpen: boolean; onClose: () => vo
             type="button"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0}
-            className="px-3 py-2 rounded-lg border border-line text-xs text-ink disabled:opacity-40 cursor-pointer"
+            className="px-3 py-2 rounded-lg text-xs text-muted hover:text-ink disabled:opacity-40 cursor-pointer"
           >
             ← Previous
           </button>
-          <button
-            type="button"
-            onClick={handleFinish}
-            disabled={answeredCount === 0}
-            className="px-3 py-2 rounded-lg bg-violet text-canvas font-semibold text-xs disabled:opacity-40 cursor-pointer"
-          >
-            Finish Diagnostic
-          </button>
-          <button
-            type="button"
-            onClick={() => setIndex((i) => Math.min(DIAGNOSTIC_QUESTIONS.length - 1, i + 1))}
-            disabled={index === DIAGNOSTIC_QUESTIONS.length - 1}
-            className="px-3 py-2 rounded-lg border border-line text-xs text-ink disabled:opacity-40 cursor-pointer"
-          >
-            Next →
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIndex((i) => Math.min(DIAGNOSTIC_QUESTIONS.length - 1, i + 1))}
+              disabled={index === DIAGNOSTIC_QUESTIONS.length - 1}
+              className="px-3 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink disabled:opacity-40 cursor-pointer"
+            >
+              Next →
+            </button>
+            <button
+              type="button"
+              onClick={handleFinish}
+              disabled={answeredCount === 0}
+              className="px-3 py-2 rounded-lg bg-mint text-canvas font-semibold text-xs disabled:opacity-40 cursor-pointer"
+            >
+              Finish Diagnostic
+            </button>
+          </div>
         </div>
       </div>
     </div>

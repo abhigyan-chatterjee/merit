@@ -9,11 +9,6 @@ export const ReviewPage: React.FC = () => {
   if (!authLoading && !user) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-          <Link to="/dashboard" className="text-mint hover:underline">dashboard</Link>
-          <span>/</span>
-          <span className="text-ink">review</span>
-        </nav>
         <div className="p-8 rounded-xl border border-line bg-surface text-center space-y-3">
           <h1 className="text-lg font-bold text-ink">Spaced Review Deck</h1>
           <p className="text-xs text-muted">Sign in to review items due today.</p>
@@ -30,12 +25,10 @@ export const ReviewPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/dashboard" className="text-mint hover:underline">dashboard</Link>
-        <span>/</span>
-        <span className="text-ink">review</span>
-      </nav>
-      <h1 className="text-2xl font-bold tracking-tight text-ink">Spaced Review Deck</h1>
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-ink">Spaced Review Deck</h1>
+        <p className="text-xs text-muted">Rate recall to schedule the next review.</p>
+      </div>
       <ReviewDeck />
     </div>
   );

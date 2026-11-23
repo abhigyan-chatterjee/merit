@@ -293,7 +293,6 @@ export const LandingPage: React.FC = () => {
             Quick start
           </span>
           <span className="flex-1 h-px bg-line" />
-          <span className="text-[11px] text-muted">One tap to begin</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
@@ -305,13 +304,10 @@ export const LandingPage: React.FC = () => {
           >
             <div className="flex items-start justify-between gap-3">
               <Route className="w-5 h-5 text-mint shrink-0" />
-              <span className="px-1.5 py-0.5 rounded bg-mint text-canvas text-[9px] font-mono uppercase tracking-widest shrink-0">
-                Start here
-              </span>
             </div>
             <div>
               <div className="text-lg font-bold text-ink group-hover:text-mint transition-colors leading-tight">
-                Start the Foundations path
+                Foundations path
               </div>
               <p className="text-xs text-muted mt-1.5 leading-relaxed max-w-xs">
                 {`${LEARNING_PATHS[0]?.steps.length ?? 21} steps from arrays to dynamic programming and graphs. Each step pairs interactive workbenches with coding practice and quizzes.`}

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { VISUALIZERS } from '../data/curriculum';
 import { SortingVisualizer } from '../visualizers/SortingVisualizer';
 import { GraphVisualizer } from '../visualizers/GraphVisualizer';
@@ -166,35 +166,19 @@ export const VisualizerDetailPage: React.FC = () => {
       {/* Guided Path Lesson Navigation */}
       <LessonNav currentType="visualizer" currentId={currentItem.id} />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/visualizers" className="inline-block py-1.5 hover:text-mint transition-colors">
-          visualizers
-        </Link>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-ink">{currentItem.id}</span>
-      </nav>
-
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 pb-5 border-b border-line">
-        <div className="flex items-start gap-3 min-w-0">
+        <div className="min-w-0 space-y-1">
           <Link
             to="/visualizers"
             aria-label="Back to all visualizers"
-            className="mt-0.5 grid place-items-center w-8 h-8 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-steel transition shrink-0"
+            className="inline-flex items-center gap-1.5 text-[11px] font-mono text-muted hover:text-mint transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Visualizers
           </Link>
-
-          <div className="min-w-0 space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-ink">{currentItem.title}</h1>
-              <span className="px-1.5 py-0.5 rounded border border-line bg-surface text-[9px] font-mono uppercase tracking-[0.14em] text-mint">
-                {currentItem.category}
-              </span>
-            </div>
-            <p className="text-xs text-muted max-w-2xl">{currentItem.description}</p>
-          </div>
+          <h1 className="text-xl font-bold tracking-tight text-ink">{currentItem.title}</h1>
+          <p className="text-xs text-muted">{currentItem.description}</p>
         </div>
 
         {/* Wraps rather than overflowing: at 16px on a phone this select is

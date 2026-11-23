@@ -6,8 +6,6 @@ import {
   Target,
   Route,
   ArrowRight,
-  Timer,
-  MessagesSquare,
 } from 'lucide-react';
 import {
   BarChart,
@@ -162,9 +160,6 @@ export const DashboardPage: React.FC = () => {
       {/* ===== Header ===== */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1.5">
-          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-mint">
-            Control room
-          </span>
           <h1 className="text-2xl font-bold tracking-tight text-ink">
             {user ? `Welcome ${user.displayName || user.display_name}` : 'Learning dashboard'}
           </h1>
@@ -220,13 +215,13 @@ export const DashboardPage: React.FC = () => {
       {/* ===== Placement readiness ===== */}
       <PlacementReadinessPanel summaryQuizScores={allQuizScores} summaryDueCount={summary?.due_today_count} />
 
-      <div>
+      <div className="flex justify-end">
         <button
           type="button"
           onClick={() => setDiagOpen(true)}
-          className="px-4 py-2.5 rounded-lg border border-mint/50 bg-mint/10 text-mint font-semibold text-xs hover:brightness-110 transition cursor-pointer"
+          className="text-xs font-mono text-muted hover:text-mint transition cursor-pointer"
         >
-          Take 12-Q Calibration Diagnostic
+          Take 12-Q Calibration Diagnostic →
         </button>
       </div>
       <OnboardingDiagnostic isOpen={diagOpen} onClose={() => setDiagOpen(false)} />
@@ -276,7 +271,7 @@ export const DashboardPage: React.FC = () => {
             >
               <span className="inline-flex items-center gap-2">
                 <Play className="w-3.5 h-3.5" />
-                Start your first problem
+                Start now
               </span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -290,7 +285,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <RotateCcw className="w-4 h-4 text-amber" />
             <span className="text-sm font-bold text-ink uppercase tracking-wider">
-              Due Today for Revision
+              Due Today
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
@@ -310,24 +305,13 @@ export const DashboardPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <RotateCcw className="w-4 h-4 text-amber" />
               <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-                Due Today for Revision ({revisionItems.length})
+                Due Today ({revisionItems.length})
               </h3>
             </div>
-            <div className="flex items-center gap-3">
-              <span
-                className="text-[10px] font-mono text-muted"
-                title="Spaced Repetition (SM-2)"
-              >
-                Spaced Repetition (SM-2)
-              </span>
-              <Link to="/review" className="text-[10px] font-mono text-muted hover:text-mint transition-colors">
-                Open Review Deck →
-              </Link>
-            </div>
+            <Link to="/review" className="text-[10px] font-mono text-muted hover:text-mint transition-colors">
+              Open deck →
+            </Link>
           </div>
-          <p className="text-[10px] text-muted">
-            Rate recall to schedule your next review — Got it grows the interval, Again resets to 1 day.
-          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {revisionItems.map((item, idx) => (
               <div
@@ -382,47 +366,31 @@ export const DashboardPage: React.FC = () => {
 
       {/* ===== Assessment ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="p-6 rounded-2xl border border-violet/30 bg-gradient-to-r from-violet/10 via-surface to-mint/10 flex flex-wrap items-center justify-between gap-6 shadow-sm">
-          <div className="space-y-2 max-w-md">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-violet/20 text-violet border border-violet/30">
-              <Timer className="w-3 h-3" />
-              Assessment
-            </div>
-            <h2 className="text-lg font-bold text-ink">Targeted Placement Exams</h2>
-            <p className="text-xs text-muted leading-relaxed">
-              Pick a focused exam — Intermediate DSA, Arrays & HashMaps, Dynamic Programming and more.
-              Strict countdown timer with server-side evaluation.
-            </p>
-          </div>
+        <Panel label="Exams">
+          <h2 className="text-lg font-bold text-ink">Targeted Placement Exams</h2>
+          <p className="text-xs text-muted leading-relaxed mt-1">
+            Focused exams with server-side evaluation.
+          </p>
           <Link
             to="/exams"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition shadow-md cursor-pointer shrink-0"
+            className="mt-3 inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-mint transition-colors"
           >
-            <Play className="w-4 h-4" />
-            Browse Exams
+            Browse Exams →
           </Link>
-        </div>
+        </Panel>
 
-        <div className="p-6 rounded-2xl border border-mint/30 bg-gradient-to-r from-mint/10 via-surface to-violet/10 flex flex-wrap items-center justify-between gap-6 shadow-sm">
-          <div className="space-y-2 max-w-md">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-mint/20 text-mint border border-mint/30">
-              <MessagesSquare className="w-3 h-3" />
-              AI Interview
-            </div>
-            <h2 className="text-lg font-bold text-ink">AI Mock Interview Portal</h2>
-            <p className="text-xs text-muted leading-relaxed">
-              Easy, Medium & Hard FAANG-level interview loops combining CS theory, live judged coding,
-              CV-aware project deep-dives, and system design.
-            </p>
-          </div>
+        <Panel label="Interview">
+          <h2 className="text-lg font-bold text-ink">AI Mock Interview Portal</h2>
+          <p className="text-xs text-muted leading-relaxed mt-1">
+            FAANG-level loops with live judged coding.
+          </p>
           <Link
             to="/interview"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-mint text-canvas font-semibold text-xs hover:brightness-110 transition shadow-md cursor-pointer shrink-0"
+            className="mt-3 inline-flex items-center gap-2 text-xs font-mono text-muted hover:text-mint transition-colors"
           >
-            <Play className="w-4 h-4" />
-            Launch Interview
+            Launch Interview →
           </Link>
-        </div>
+        </Panel>
       </div>
 
       {/* ===== Row: Consistency | Curriculum completion | Weakest topics ===== */}

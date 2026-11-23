@@ -40,33 +40,17 @@ export const QuizPage: React.FC = () => {
       {/* Guided Path Lesson Navigation */}
       <LessonNav currentType={isMock ? 'mock' : 'quiz'} currentId={currentTopic.id} />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <span className="text-mint">assessment</span>
-        <span>/</span>
-        <span className="text-ink">{currentTopic.id}</span>
-      </nav>
-
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4 pb-4 border-b border-line">
-        <div className="space-y-1.5">
-          <h1 className="text-2xl font-bold tracking-tight text-ink flex items-center gap-2.5">
-            <BrainCircuit className="w-6 h-6 text-violet" />
-            {currentTopic.title}
-          </h1>
-          <p className="text-xs text-muted">{currentTopic.description}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setDiagOpen(true)}
-          className="px-3 py-1.5 rounded-full border border-mint/50 bg-mint/10 text-mint font-mono text-[11px] hover:brightness-110 transition cursor-pointer shrink-0"
-        >
-          12-Q Diagnostic
-        </button>
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-ink flex items-center gap-2.5">
+          <BrainCircuit className="w-6 h-6 text-violet" />
+          {currentTopic.title}
+        </h1>
+        <p className="text-xs text-muted">{currentTopic.description}</p>
       </div>
       <OnboardingDiagnostic isOpen={diagOpen} onClose={() => setDiagOpen(false)} />
 
-      {/* Unified Topic Bar: Screening & Mixed pills + DSA topics dropdown */}
+      {/* Unified Topic Bar: Screening & Mixed pills + DSA topics dropdown + quiet diagnostic */}
       <div className="flex flex-wrap items-center gap-2">
         {QUICK_TOPICS.map((id) => {
           const meta = QUIZ_TOPICS.find((t) => t.id === id)!;
@@ -112,6 +96,13 @@ export const QuizPage: React.FC = () => {
             </option>
           ))}
         </select>
+        <button
+          type="button"
+          onClick={() => setDiagOpen(true)}
+          className="px-2.5 py-1.5 rounded-full font-mono text-[11px] text-muted hover:text-ink transition cursor-pointer"
+        >
+          12-Q Diagnostic
+        </button>
       </div>
 
       {/* Interactive Quiz Engine */}

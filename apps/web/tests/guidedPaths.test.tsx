@@ -31,14 +31,13 @@ describe('guided paths', () => {
     vi.unstubAllGlobals();
   });
 
-  it('lists every path with its step count and progress', () => {
+  it('lists every path with its progress', () => {
     renderAt('/learn', <GuidedPathsPage />, '/learn');
     expect(screen.getByRole('heading', { name: /Learning paths/i })).toBeInTheDocument();
 
     for (const path of LEARNING_PATHS) {
       const card = screen.getByRole('link', { name: new RegExp(path.title, 'i') });
-      expect(within(card).getByText(new RegExp(`${path.steps.length} steps`))).toBeInTheDocument();
-      expect(within(card).getByText(/0 \d+ complete|0\/\d+ complete/)).toBeInTheDocument();
+      expect(within(card).getByText(/0%/)).toBeInTheDocument();
     }
   });
 
@@ -77,14 +76,11 @@ describe('guided paths', () => {
     }
   });
 
-  it('shows a compact step breakdown on each path card', () => {
+  it('shows a one-line blurb on each path card', () => {
     renderAt('/learn', <GuidedPathsPage />, '/learn');
     for (const path of LEARNING_PATHS) {
-      const counts: Record<string, number> = {};
-      for (const step of path.steps) counts[step.type] = (counts[step.type] ?? 0) + 1;
       const card = screen.getByRole('link', { name: new RegExp(path.title, 'i') });
-      expect(within(card).getByText(new RegExp(`\\b${counts.problem} problems\\b`))).toBeInTheDocument();
-      expect(within(card).getByText(new RegExp(`\\b${counts.quiz} quizzes\\b`))).toBeInTheDocument();
+      expect(within(card).getByText(path.blurb)).toBeInTheDocument();
     }
   });
 

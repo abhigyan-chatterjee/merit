@@ -5,9 +5,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
-  ChevronUp,
   Search,
-  Sparkles,
 } from 'lucide-react';
 import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { TOPICS } from '../data/curriculum';
@@ -142,6 +140,7 @@ export const ProblemListPage: React.FC = () => {
   }, [hasActiveFilter, filterSignature, filteredProblems]);
 
   const solvedCount = PROBLEM_MANIFEST.filter((problem) => state.progress[problem.slug] === 'Done').length;
+  const starredCount = state.bookmarks.length;
 
   const toggleTag = (tag: string) => {
     setSelectedTags((current) =>
@@ -178,43 +177,14 @@ export const ProblemListPage: React.FC = () => {
     );
   };
 
-  const topicTitle = (slug: string) => TOPICS.find((item) => item.slug === slug)?.title ?? slug;
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-      <section className="rounded-2xl border border-line bg-surface p-6 md:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <div className="max-w-2xl space-y-2">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-mint">
-              <Sparkles className="w-3.5 h-3.5" />
-              Problem set
-            </span>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink">
-              Master the patterns
-            </h1>
-            <p className="text-sm text-muted leading-relaxed">
-              A focused, pattern-first path through the problems that matter most for technical
-              interviews.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-6 font-mono">
-            <div>
-              <div className="text-lg font-bold text-mint tnum">
-                {solvedCount}/{PROBLEM_MANIFEST.length}
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Done</div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 text-lg font-bold text-amber tnum">
-                <Bookmark className="w-4 h-4 fill-amber" />
-                {state.bookmarks.length}
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Starred</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-ink">Problems</h1>
+        <p className="text-xs text-muted font-mono">
+          {filteredProblems.length} problems · {solvedCount} done · {starredCount} starred
+        </p>
+      </div>
 
       <section className="space-y-3" aria-label="Problem filters">
         <div className="relative">
@@ -233,7 +203,7 @@ export const ProblemListPage: React.FC = () => {
           <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
             Tags
           </span>
-          {visibleTags.map(([tag, count]) => {
+          {visibleTags.map(([tag]) => {
             const active = selectedTags.includes(tag);
             const label = TOPICS.find((item) => item.slug === tag)?.title ?? tag;
             return (
@@ -249,7 +219,6 @@ export const ProblemListPage: React.FC = () => {
                 }`}
               >
                 {label}
-                <span className={active ? 'text-canvas/70' : 'text-muted'}>{count}</span>
               </button>
             );
           })}
@@ -259,8 +228,7 @@ export const ProblemListPage: React.FC = () => {
               onClick={() => setShowAllTags((current) => !current)}
               className="inline-flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono text-mint hover:text-ink"
             >
-              {showAllTags ? 'Show fewer' : 'Expand'}
-              {showAllTags ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+{showAllTags ? 'Show fewer' : 'Expand'}
             </button>
           )}
         </div>
@@ -269,7 +237,7 @@ export const ProblemListPage: React.FC = () => {
           <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
             Companies
           </span>
-          {visibleCompanies.map(([company, count]) => {
+          {visibleCompanies.map(([company]) => {
             const active = selectedCompanies.includes(company);
             return (
               <button
@@ -284,7 +252,6 @@ export const ProblemListPage: React.FC = () => {
                 }`}
               >
                 {company}
-                <span className={active ? 'text-canvas/70' : 'text-muted'}>{count}</span>
               </button>
             );
           })}
@@ -294,8 +261,7 @@ export const ProblemListPage: React.FC = () => {
               onClick={() => setShowAllCompanies((current) => !current)}
               className="inline-flex items-center gap-1 px-2 py-1.5 text-[11px] font-mono text-mint hover:text-ink"
             >
-              {showAllCompanies ? 'Fewer' : 'All companies'}
-              {showAllCompanies ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+{showAllCompanies ? 'Fewer' : 'All companies'}
             </button>
           )}
         </div>
@@ -392,7 +358,6 @@ export const ProblemListPage: React.FC = () => {
                 )}
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold text-ink">{topicItem.title}</span>
-                  <span className="block mt-0.5 text-[11px] text-muted">{topicItem.description}</span>
                 </span>
                 <span className="w-24 shrink-0 space-y-1.5">
                   <span className="block text-right text-[11px] font-mono text-muted tnum">
@@ -437,16 +402,6 @@ export const ProblemListPage: React.FC = () => {
                           <span className={`text-[11px] font-mono font-semibold ${difficultyTone[problem.difficulty]}`}>
                             {problem.difficulty}
                           </span>
-                          <span className="hidden md:inline-flex items-center gap-1 shrink-0">
-                            {problem.companies.slice(0, 3).map((company) => (
-                              <span
-                                key={company}
-                                className="rounded border border-line bg-canvas px-1.5 py-0.5 text-[10px] font-mono text-muted"
-                              >
-                                {company}
-                              </span>
-                            ))}
-                          </span>
                           <button
                             type="button"
                             onClick={() => toggleBookmark(problem.slug)}
@@ -470,8 +425,7 @@ export const ProblemListPage: React.FC = () => {
       </section>
 
       <p className="text-center text-[11px] font-mono text-muted">
-        Showing {filteredProblems.length} of {PROBLEM_MANIFEST.length} problems
-        {selectedTags.length > 0 && ` across ${selectedTags.map(topicTitle).join(', ')}`}
+        {filteredProblems.length} / {PROBLEM_MANIFEST.length}
       </p>
     </div>
   );

@@ -379,7 +379,7 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
           <p className="mt-1 text-3xl font-bold text-mint">{result.scorePct}%</p>
         </div>
         <p className="text-sm text-muted">Correct: {result.correct}/{result.total}</p>
-        <div className="space-y-2.5">
+        <div className="space-y-1.5">
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Weak-Topic Breakdown</h3>
           {topicRows.map((row) => (
             <div key={row.topic} className="space-y-1">
@@ -398,17 +398,6 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
               </div>
               <span className="block h-1.5 rounded-full bg-line overflow-hidden">
                 <span className={`block h-full rounded-full ${topicBarTone(row.pct)}`} style={{ width: `${row.pct}%` }} />
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="space-y-1.5">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Review breakdown</h3>
-          {questions.map((question, index) => (
-            <div key={question.id} className="flex justify-between gap-3 text-xs">
-              <span className="truncate text-ink">Question {index + 1}</span>
-              <span className={result.correctById[question.id] ? 'text-mint' : 'text-rose'}>
-                {result.correctById[question.id] ? 'Correct' : 'Incorrect'}
               </span>
             </div>
           ))}

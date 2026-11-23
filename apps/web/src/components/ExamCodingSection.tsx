@@ -104,7 +104,7 @@ export const ExamCodingSection: React.FC<{
       <div className="space-y-1.5">
         <h2 className="text-base font-bold text-ink">Coding questions ({items.length})</h2>
         <p className="text-xs text-muted">
-          Judge-graded against hidden tests. Submit each one — an Accepted verdict counts toward the exam score.
+          Submit each one — Accepted counts toward the exam score.
         </p>
       </div>
       {items.filter((item) => !selectedSlug || item.slug === selectedSlug).map((item) => (

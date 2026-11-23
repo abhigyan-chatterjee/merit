@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
+import { ArrowLeft, BrainCircuit, Clock } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
 import { ExamMcqSection } from '../components/ExamMcqSection';
 import { ExamCodingSection } from '../components/ExamCodingSection';
@@ -209,14 +209,6 @@ export const ExamDetailPage: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/exams" className="inline-block py-1.5 hover:text-mint transition-colors">
-          exams
-        </Link>
-        <span>/</span>
-        <span className="text-ink">{exam.id}</span>
-      </nav>
-
       <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-line">
         <div className="space-y-1.5 min-w-0">
           <h1 className="text-2xl font-bold tracking-tight text-ink flex items-center gap-2.5">
@@ -224,14 +216,11 @@ export const ExamDetailPage: React.FC = () => {
             {exam.title}
           </h1>
           <p className="text-xs text-muted">{exam.description}</p>
-          <div className="flex items-center gap-4 text-[11px] font-mono text-muted pt-1">
-            <span className="inline-flex items-center gap-1.5">
-              <ListChecks className="w-3.5 h-3.5 text-mint" />
-              {exam.questionCount} MCQs
-              {exam.coding.length > 0 && ` · ${exam.coding.length} coding`} ·{' '}
-              {Math.round(exam.durationSec / 60)} min · auto-submits
-            </span>
-          </div>
+          <p className="text-[11px] font-mono text-muted">
+            {exam.questionCount} MCQs
+            {exam.coding.length > 0 && ` · ${exam.coding.length} coding`} ·{' '}
+            {Math.round(exam.durationSec / 60)} min · auto-submits
+          </p>
         </div>
         <button
           onClick={() => navigate('/exams')}
@@ -243,14 +232,13 @@ export const ExamDetailPage: React.FC = () => {
       </div>
 
       {!started ? (
-        <div className="p-6 rounded-xl border border-line bg-surface space-y-4 text-center">
-          <p className="text-sm text-ink font-semibold">Ready when you are.</p>
-          <p className="text-xs text-muted max-w-lg mx-auto">
+        <div className="p-6 rounded-xl border border-line bg-surface space-y-2 text-center">
+          <p className="text-xs text-muted">
             {exam.questionCount} MCQs
-            {exam.coding.length > 0 && ` · ${exam.coding.length} coding questions`} ·{' '}
-            {Math.round(exam.durationSec / 60)}-minute countdown · Leaving the tab or window gives 2 warnings; on the 3rd, the exam auto-submits · unanswered questions count as
-            wrong. The timer auto-submits at zero.
+            {exam.coding.length > 0 && ` · ${exam.coding.length} coding`} ·{' '}
+            {Math.round(exam.durationSec / 60)} min · unanswered counts as wrong · auto-submits at zero
           </p>
+          <p className="text-[11px] font-mono text-muted">Leaving the tab gives 2 warnings; the 3rd auto-submits.</p>
           {user ? (
             <button
               onClick={handleStartExam}
@@ -272,7 +260,7 @@ export const ExamDetailPage: React.FC = () => {
           <div className="sticky top-16 z-30 flex justify-end">
             <div
               aria-label={`Time remaining ${formatTime(secondsRemaining)}`}
-              className={`inline-flex items-center rounded-lg border px-3 py-1.5 font-mono text-sm font-bold shadow-sm ${
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-sm font-bold shadow-sm ${
                 secondsRemaining < 60
                   ? 'border-rose/60 bg-rose/15 text-rose animate-pulse'
                   : secondsRemaining < 300
@@ -280,7 +268,8 @@ export const ExamDetailPage: React.FC = () => {
                     : 'border-line bg-surface text-ink'
               }`}
             >
-              ⏱ {formatTime(secondsRemaining)}
+              <Clock className="w-4 h-4" />
+              {formatTime(secondsRemaining)}
             </div>
           </div>
           {proctorNotice && (

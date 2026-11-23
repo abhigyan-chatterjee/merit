@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutGrid, GitCommit, Network, Cpu, Briefcase, Target, ChevronRight } from 'lucide-react';
 import { LEARNING_PATHS, LearningPath } from '../data/learningPaths';
-import { resolveStep } from '../utils/stepLink';
 import { useProgress } from '../store/ProgressContext';
 import { Reveal } from '../components/ui/Reveal';
 
@@ -51,28 +50,10 @@ export function usePathProgress(pathId: string): { done: number; total: number; 
   return { done, total, pct };
 }
 
-const STEP_BREAKDOWN_LABELS: Record<LearningPath['steps'][number]['type'], string> = {
-  problem: 'problems',
-  quiz: 'quizzes',
-  mock: 'mocks',
-  visualizer: 'workbenches',
-};
-
-function formatBreakdown(steps: LearningPath['steps']): string {
-  const counts: Record<string, number> = {};
-  for (const step of steps) counts[step.type] = (counts[step.type] ?? 0) + 1;
-  const parts = (['problem', 'quiz', 'mock', 'visualizer'] as const)
-    .filter((type) => counts[type] > 0)
-    .map((type) => `${counts[type]} ${STEP_BREAKDOWN_LABELS[type]}`);
-  return parts.join(' · ');
-}
-
 const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }) => {
   const path = LEARNING_PATHS.find((p) => p.id === pathId)!;
   const Icon = PATH_ICONS[path.icon] ?? LayoutGrid;
   const { done, total, pct } = usePathProgress(path.id);
-  const preview = path.steps.slice(0, 3).map((s) => resolveStep(s).title);
-  const breakdown = formatBreakdown(path.steps);
   const complete = pct === 100;
   const recommended = path.id === 'foundation';
 
@@ -107,25 +88,7 @@ const PathCard: React.FC<{ pathId: string; index: number }> = ({ pathId, index }
             <ChevronRight className="w-4 h-4 text-muted group-hover:text-mint transition-colors shrink-0" />
           </div>
 
-          <p className="text-xs text-muted leading-relaxed">{path.blurb}</p>
-
-          <p className="text-[10px] font-mono text-muted/80">{breakdown}</p>
-
-          <div className="flex flex-wrap gap-1.5">
-            {preview.map((t) => (
-              <span
-                key={t}
-                className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-canvas border border-line text-muted"
-              >
-                {t}
-              </span>
-            ))}
-            {path.steps.length > 3 && (
-              <span className="text-[10px] font-mono text-muted">
-                +{path.steps.length - 3} more
-              </span>
-            )}
-          </div>
+          <p className="text-xs text-muted leading-relaxed line-clamp-1">{path.blurb}</p>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-[10px] font-mono text-muted">

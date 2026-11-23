@@ -46,12 +46,6 @@ const scoreMatch = (title: string, q: string, extra: string[] = [], blurb?: stri
   return 0;
 };
 
-const KindBadge: React.FC<{ label: string }> = ({ label }) => (
-  <span className="px-1.5 py-0.5 rounded border border-line text-[9px] font-mono uppercase tracking-wider text-muted shrink-0">
-    {label}
-  </span>
-);
-
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -590,7 +584,6 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">{p.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Path" />
                         <span className="font-mono text-[10px] text-muted">
                           {p.steps.length} steps
                         </span>
@@ -615,7 +608,6 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">{v.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Visualizer" />
                         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
                           {v.category}
                         </span>
@@ -646,7 +638,6 @@ export const Navbar: React.FC = () => {
                         )}
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Exam" />
                         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
                           {exam.category}
                         </span>
@@ -672,7 +663,9 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">{quiz.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Quiz" />
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                          {quiz.id}
+                        </span>
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>
@@ -696,7 +689,6 @@ export const Navbar: React.FC = () => {
                         </span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Interview" />
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>
@@ -718,7 +710,6 @@ export const Navbar: React.FC = () => {
                         <span className="text-xs font-medium text-ink truncate">Spaced Review Deck</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
-                        <KindBadge label="Review" />
                         <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
                     </button>
@@ -751,7 +742,6 @@ export const Navbar: React.FC = () => {
                       </span>
                     </span>
                     <span className="flex items-center gap-2 shrink-0">
-                      <KindBadge label="Problem" />
                       <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                     </span>
                   </button>

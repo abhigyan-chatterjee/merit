@@ -90,8 +90,8 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
     fireEvent.change(input, { target: { value: 'heap' } });
     const options = screen.getAllByRole('option');
     expect(options[0]).toHaveTextContent('Min / Max Binary Heap');
-    expect(options[0]).toHaveTextContent('Visualizer');
-    expect(options.findIndex((o) => o.textContent?.includes('Problem'))).toBeGreaterThan(0);
+    expect(options[0]).toHaveTextContent('Trees');
+    expect(options.some((o) => /Easy|Medium|Hard/.test(o.textContent ?? ''))).toBe(true);
 
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
     expect(mockNavigate).toHaveBeenCalledWith('/visualizers/heap');
@@ -105,7 +105,7 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
 
     const examOption = screen.getByRole('option', { name: /TCS NQT & Digital Mock/i });
     expect(examOption).toBeInTheDocument();
-    expect(screen.getByText('Exam')).toBeInTheDocument();
+    expect(screen.getByText('company')).toBeInTheDocument();
 
     fireEvent.click(examOption);
     expect(mockNavigate).toHaveBeenCalledWith('/exams/tcs-nqt');
@@ -118,7 +118,7 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
     fireEvent.change(input, { target: { value: 'SQL' } });
 
     expect(screen.getByText(/SQL & Databases/i)).toBeInTheDocument();
-    expect(screen.getByText('Quiz')).toBeInTheDocument();
+    expect(screen.getByText('sql')).toBeInTheDocument();
 
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
     expect(mockNavigate).toHaveBeenCalledWith('/quiz/sql');

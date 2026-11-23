@@ -5,6 +5,12 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { InterviewPortalPage } from "../src/pages/InterviewPortalPage";
 import { AuthProvider } from "../src/store/AuthContext";
 import { ProgressProvider } from "../src/store/ProgressContext";
+import {
+  TIER_BY_ID,
+  pickRandomProblemsForDifficulty,
+  problemToInterviewSummary,
+} from "../src/components/interview/interviewConfig";
+import { InterviewSessionDetail } from "../src/utils/api";
 
 const GEMINI_CATALOG = {
   google: {
@@ -14,6 +20,73 @@ const GEMINI_CATALOG = {
     },
   },
 };
+
+const PROFILE = {
+  id: "u1",
+  email: "abhi@nullbit.in",
+  display_name: "Abhi",
+  role: "student",
+  created_at: "2026-11-01T00:00:00Z",
+};
+
+const PROGRESS = { due_today_count: 0, activity_days: {}, quiz_scores: {} };
+
+const RUBRIC = {
+  dimensions: [
+    { name: "CS Fundamentals", score: 4, max_score: 5, comment: "Clear answers" },
+    { name: "Problem Solving & Approach", score: 5, max_score: 5, comment: "Optimal" },
+  ],
+  total: 9,
+  max_total: 10,
+  verdict: "Strong Hire",
+  strengths: ["Fast Big-O explanation"],
+  improvements: ["Talk through base cases early"],
+  summary: "Strong fundamentals and clean coding.",
+};
+
+const NOW = "2026-11-24T00:00:00Z";
+
+function makeDetail(): InterviewSessionDetail {
+  const tier = TIER_BY_ID.easy;
+  const problems = pickRandomProblemsForDifficulty("easy");
+  return {
+    id: "sess-live",
+    difficulty: "easy",
+    status: "in_progress",
+    current_stage: "theory",
+    duration_sec: tier.durationSec,
+    elapsed_sec: 0,
+    problem_slugs: problems.map((p) => p.slug),
+    has_resume: false,
+    resume_filename: null,
+    resume_text: null,
+    project_brief: null,
+    stages: tier.stages,
+    problems: problems.map(problemToInterviewSummary),
+    messages: [],
+    coding_snapshots: {},
+    max_score: tier.maxScore,
+    created_at: NOW,
+    updated_at: NOW,
+  };
+}
+
+function withMessage(session: InterviewSessionDetail, reply: string, stage: string): InterviewSessionDetail {
+  return {
+    ...session,
+    messages: [
+      ...session.messages,
+      { role: "interviewer", content: reply, stage, created_at: NOW },
+    ],
+  };
+}
+
+function jsonResponse(payload: unknown): Response {
+  return new Response(JSON.stringify(payload), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
 function renderPortal(initialEntry = "/interview") {
   return render(
@@ -46,29 +119,55 @@ describe("InterviewPortalPage", () => {
     vi.restoreAllMocks();
   });
 
-  it("pins configured model, switches difficulties, and uploads CV PDF", async () => {
-    const user = userEvent.setup();
-    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+  it("gates the portal behind sign-in and creates no interview session", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
       const url = String(input);
       if (url.includes("/api/v1/auth/me") || url.includes("/api/v1/auth/refresh")) {
         return new Response(JSON.stringify({ detail: { code: "UNAUTHORIZED" } }), { status: 401 });
       }
+      return new Response("{}", { status: 200 });
+    });
+
+    renderPortal();
+
+    expect(
+      await screen.findByText(/sign in to run live-judged mock interviews and save scorecards/i),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      "/login?next=/interview",
+    );
+    expect(
+      fetchSpy.mock.calls.some(([input]) => String(input).includes("/api/v1/interview/")),
+    ).toBe(false);
+  });
+
+  it("pins configured model, switches difficulties, and uploads CV PDF", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes("/api/v1/auth/me")) {
+        return jsonResponse(PROFILE);
+      }
+      if (url.includes("/api/v1/progress/summary")) {
+        return jsonResponse(PROGRESS);
+      }
+      if (url.endsWith("/api/v1/interview/sessions")) {
+        return jsonResponse([]);
+      }
       if (url === "https://models.dev/api.json") {
-        return new Response(JSON.stringify(GEMINI_CATALOG), { status: 200 });
+        return jsonResponse(GEMINI_CATALOG);
       }
       if (url.endsWith("/api/v1/interview/parse-resume")) {
-        return new Response(
-          JSON.stringify({
-            filename: "abhi_resume.pdf",
-            pages: 1,
-            char_count: 1420,
-            truncated: false,
-            extracted_text: "Built sharded task queue in Go & Redis.",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+        return jsonResponse({
+          filename: "abhi_resume.pdf",
+          pages: 1,
+          char_count: 1420,
+          truncated: false,
+          extracted_text: "Built sharded task queue in Go & Redis.",
+        });
       }
-      return new Response("{}", { status: 200 });
+      return jsonResponse({});
     });
 
     renderPortal();
@@ -87,61 +186,92 @@ describe("InterviewPortalPage", () => {
     expect(await screen.findByText("abhi_resume.pdf")).toBeInTheDocument();
   });
 
-  it("runs interactive guest interview loop from kickoff to coding stage and final rubric", async () => {
+  it("rejects a resume larger than 2 MB before uploading", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes("/api/v1/auth/me")) return jsonResponse(PROFILE);
+      if (url.includes("/api/v1/progress/summary")) return jsonResponse(PROGRESS);
+      if (url.endsWith("/api/v1/interview/sessions")) return jsonResponse([]);
+      if (url === "https://models.dev/api.json") return jsonResponse(GEMINI_CATALOG);
+      return jsonResponse({});
+    });
+
+    renderPortal();
+    await screen.findByLabelText("Interviewer Model");
+
+    const fileInput = screen.getByLabelText("Upload CV PDF") as HTMLInputElement;
+    const bigPdf = new File([new Uint8Array(2 * 1024 * 1024 + 1)], "big.pdf", {
+      type: "application/pdf",
+    });
+    fireEvent.change(fileInput, { target: { files: [bigPdf] } });
+
+    expect(await screen.findByText("Resume PDF must be 2 MB or smaller.")).toBeInTheDocument();
+    expect(globalThis.fetch).not.toHaveBeenCalledWith(
+      expect.stringContaining("/api/v1/interview/parse-resume"),
+      expect.anything(),
+    );
+  });
+
+  it("runs the signed-in interview loop from kickoff to coding stage and final rubric", async () => {
     const user = userEvent.setup();
-    let resolveTurn!: (r: Response) => void;
+    let live = makeDetail();
+    let resolveTurn!: (reply: string) => void;
     const capturedTurns: Array<Record<string, unknown>> = [];
 
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
-      if (url.includes("/api/v1/auth/me") || url.includes("/api/v1/auth/refresh")) {
-        return new Response(JSON.stringify({ detail: { code: "UNAUTHORIZED" } }), { status: 401 });
+      if (url.includes("/api/v1/auth/me")) {
+        return jsonResponse(PROFILE);
+      }
+      if (url.includes("/api/v1/progress/summary")) {
+        return jsonResponse(PROGRESS);
+      }
+      if (url.endsWith("/api/v1/interview/sessions") && init?.method === "POST") {
+        live = makeDetail();
+        return jsonResponse(live);
+      }
+      if (url.endsWith("/api/v1/interview/sessions") && (!init?.method || init.method === "GET")) {
+        return jsonResponse([]);
+      }
+      if (url.endsWith("/api/v1/interview/sessions/sess-live")) {
+        return jsonResponse(live);
       }
       if (url === "https://models.dev/api.json") {
-        return new Response(JSON.stringify(GEMINI_CATALOG), { status: 200 });
+        return jsonResponse(GEMINI_CATALOG);
       }
-      if (url.endsWith("/api/v1/interview/guest/turn")) {
+      if (url.endsWith("/api/v1/interview/sessions/sess-live/turn")) {
         const parsed = JSON.parse(String(init?.body ?? "{}"));
         capturedTurns.push(parsed);
         if (parsed.action === "start") {
           return new Promise<Response>((resolve) => {
-            resolveTurn = resolve;
+            resolveTurn = (reply) => {
+              live = withMessage(live, reply, "theory");
+              resolve(jsonResponse({ reply, session: live }));
+            };
           });
         }
         if (parsed.action === "advance_stage") {
-          return new Response(
-            JSON.stringify({ reply: "Let's solve the coding problem in the editor." }),
-            { status: 200, headers: { "Content-Type": "application/json" } },
-          );
+          const reply = "Let's solve the coding problem in the editor.";
+          live = { ...withMessage(live, reply, "coding_1"), current_stage: "coding_1" };
+          return jsonResponse({ reply, session: live });
         }
         if (parsed.action === "message") {
-          return new Response(
-            JSON.stringify({ reply: "What is the time complexity of your solution?" }),
-            { status: 200, headers: { "Content-Type": "application/json" } },
-          );
+          const reply = "What is the time complexity of your solution?";
+          live = withMessage(live, reply, "coding_1");
+          return jsonResponse({ reply, session: live });
         }
         if (parsed.action === "evaluate") {
-          return new Response(
-            JSON.stringify({
-              reply: "Strong fundamentals and clean coding.",
-              rubric: {
-                dimensions: [
-                  { name: "CS Fundamentals", score: 4, max_score: 5, comment: "Clear answers" },
-                  { name: "Problem Solving & Approach", score: 5, max_score: 5, comment: "Optimal" },
-                ],
-                total: 9,
-                max_total: 10,
-                verdict: "Strong Hire",
-                strengths: ["Fast Big-O explanation"],
-                improvements: ["Talk through base cases early"],
-                summary: "Strong fundamentals and clean coding.",
-              },
-            }),
-            { status: 200, headers: { "Content-Type": "application/json" } },
-          );
+          const reply = "Strong fundamentals and clean coding.";
+          live = {
+            ...withMessage(live, reply, "rubric"),
+            status: "completed",
+            current_stage: "rubric",
+            rubric: RUBRIC,
+          };
+          return jsonResponse({ reply, session: live });
         }
       }
-      return new Response("{}", { status: 200 });
+      return jsonResponse({});
     });
 
     renderPortal();
@@ -150,12 +280,7 @@ describe("InterviewPortalPage", () => {
 
     expect(await screen.findByRole("status", { name: "Interviewer is responding" })).toBeInTheDocument();
 
-    resolveTurn(
-      new Response(JSON.stringify({ reply: "Welcome! Explain how hash maps handle collisions." }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
+    resolveTurn("Welcome! Explain how hash maps handle collisions.");
 
     expect(
       await screen.findByText("Welcome! Explain how hash maps handle collisions."),
@@ -167,7 +292,9 @@ describe("InterviewPortalPage", () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Code Editor")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /Discuss My Code/i }));
+    const responseBox = screen.getByLabelText("Your interview response");
+    await user.type(responseBox, "My approach is O(n) with a hash map.");
+    await user.click(screen.getByRole("button", { name: /Send response/i }));
     await waitFor(() => expect(capturedTurns.some((t) => t.action === "message")).toBe(true));
     const msgTurn = capturedTurns.find((t) => t.action === "message");
     expect((msgTurn?.coding_snapshot as { language?: string })?.language).toBeTruthy();
@@ -179,36 +306,45 @@ describe("InterviewPortalPage", () => {
 
   it("shows inline stage-transition CTA and renders interviewer Markdown", async () => {
     const user = userEvent.setup();
+    let live = makeDetail();
     const capturedTurns: Array<Record<string, unknown>> = [];
 
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
-      if (url.includes("/api/v1/auth/me") || url.includes("/api/v1/auth/refresh")) {
-        return new Response(JSON.stringify({ detail: { code: "UNAUTHORIZED" } }), { status: 401 });
+      if (url.includes("/api/v1/auth/me")) {
+        return jsonResponse(PROFILE);
+      }
+      if (url.includes("/api/v1/progress/summary")) {
+        return jsonResponse(PROGRESS);
+      }
+      if (url.endsWith("/api/v1/interview/sessions") && init?.method === "POST") {
+        live = makeDetail();
+        return jsonResponse(live);
+      }
+      if (url.endsWith("/api/v1/interview/sessions") && (!init?.method || init.method === "GET")) {
+        return jsonResponse([]);
+      }
+      if (url.endsWith("/api/v1/interview/sessions/sess-live")) {
+        return jsonResponse(live);
       }
       if (url === "https://models.dev/api.json") {
-        return new Response(JSON.stringify(GEMINI_CATALOG), { status: 200 });
+        return jsonResponse(GEMINI_CATALOG);
       }
-      if (url.endsWith("/api/v1/interview/guest/turn")) {
+      if (url.endsWith("/api/v1/interview/sessions/sess-live/turn")) {
         const parsed = JSON.parse(String(init?.body ?? "{}"));
         capturedTurns.push(parsed);
         if (parsed.action === "start") {
-          return new Response(
-            JSON.stringify({
-              reply: "**Problem:** Use `nums` to find the pair",
-              suggested_stage: "coding_1",
-            }),
-            { status: 200, headers: { "Content-Type": "application/json" } },
-          );
+          const reply = "**Problem:** Use `nums` to find the pair";
+          live = withMessage(live, reply, "theory");
+          return jsonResponse({ reply, suggested_stage: "coding_1", session: live });
         }
         if (parsed.action === "advance_stage") {
-          return new Response(JSON.stringify({ reply: "Let's code it up." }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          });
+          const reply = "Let's code it up.";
+          live = { ...withMessage(live, reply, "coding_1"), current_stage: "coding_1" };
+          return jsonResponse({ reply, session: live });
         }
       }
-      return new Response("{}", { status: 200 });
+      return jsonResponse({});
     });
 
     renderPortal();
@@ -258,33 +394,22 @@ describe("InterviewPortalPage", () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
       if (url.includes("/api/v1/auth/me")) {
-        return new Response(
-          JSON.stringify({
-            id: "u1",
-            email: "abhi@nullbit.in",
-            display_name: "Abhi",
-            role: "student",
-            created_at: "2026-11-01T00:00:00Z",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+        return jsonResponse(PROFILE);
       }
       if (url.includes("/api/v1/progress/summary")) {
-        return new Response(JSON.stringify({ due_today_count: 0, activity_days: {}, quiz_scores: {} }), {
-          status: 200,
-        });
+        return jsonResponse(PROGRESS);
       }
       if (url.endsWith("/api/v1/interview/sessions") && (!init?.method || init.method === "GET")) {
-        return new Response(JSON.stringify(sessionsState), { status: 200 });
+        return jsonResponse(sessionsState);
       }
       if (url.endsWith("/api/v1/interview/sessions/sess-123") && init?.method === "DELETE") {
         sessionsState = [];
         return new Response(null, { status: 204 });
       }
       if (url === "https://models.dev/api.json") {
-        return new Response(JSON.stringify(GEMINI_CATALOG), { status: 200 });
+        return jsonResponse(GEMINI_CATALOG);
       }
-      return new Response("{}", { status: 200 });
+      return jsonResponse({});
     });
 
     renderPortal();

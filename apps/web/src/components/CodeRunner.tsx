@@ -669,25 +669,20 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     <div className="flex flex-col rounded-xl border border-line bg-surface overflow-y-auto shadow-sm max-h-[calc(100dvh-8rem)]">
       {/* Code Editor Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-b border-line bg-canvas">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-mint" />
-            <select
-              value={language}
-              aria-label="Execution Language"
-              onChange={(e) => handleLanguageChange(e.target.value as EditorLang)}
-              className="bg-surface border border-line rounded px-2 py-0.5 text-base sm:text-xs font-mono text-ink focus:border-mint cursor-pointer"
-            >
-              {EDITOR_LANGUAGES.map((l) => (
-                <option key={l.value} value={l.value}>
-                  {l.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <span className="hidden sm:inline text-[11px] font-mono text-muted">
-            Sandboxed Judge
-          </span>
+        <div className="flex items-center gap-2">
+          <Terminal className="w-4 h-4 text-mint" />
+          <select
+            value={language}
+            aria-label="Execution Language"
+            onChange={(e) => handleLanguageChange(e.target.value as EditorLang)}
+            className="bg-surface border border-line rounded px-2 py-0.5 text-base sm:text-xs font-mono text-ink focus:border-mint cursor-pointer"
+          >
+            {EDITOR_LANGUAGES.map((l) => (
+              <option key={l.value} value={l.value}>
+                {l.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex items-center gap-2">
@@ -806,7 +801,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             ref={runSamplesRef}
             onClick={handleRunSamples}
             disabled={isRunning || isSubmitting}
-            title={!user ? "Sign in required to run code" : "Ctrl/⌘+Enter to run samples"}
+            title={!user ? "Sign in required to run code · Ctrl/⌘+Enter runs samples · Tab indents, Esc focuses controls" : "Ctrl/⌘+Enter to run samples · Tab indents inside the editor, Esc focuses controls"}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded bg-surface border border-line text-ink font-mono font-medium text-xs transition ${
               isRunning ? "opacity-50 cursor-not-allowed" : "hover:border-mint hover:text-mint cursor-pointer"
             }`}
@@ -818,7 +813,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
           <button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
-            title={!user ? "Sign in required to submit" : "Ctrl/⌘+Shift+Enter to submit"}
+            title={!user ? "Sign in required to submit · Ctrl/⌘+Shift+Enter submits" : "Ctrl/⌘+Shift+Enter to submit"}
             className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded bg-mint text-canvas font-mono font-semibold text-xs transition ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-mint/90 cursor-pointer"
             }`}
@@ -834,7 +829,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       <div className="p-4 bg-surface min-h-[160px]">
         {activeView === "results" ? (
           <div>
-            {!user && !needsAuth && (
+            {(!user || needsAuth) && (
               <div className="mb-4 p-2.5 rounded-lg border border-line bg-canvas flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-1.5 font-mono text-xs text-muted">
                   <Lock className="w-3.5 h-3.5 text-muted shrink-0" />
@@ -843,21 +838,6 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
                 <Link
                   to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`}
                   className="text-mint hover:underline font-semibold font-mono text-xs"
-                >
-                  Sign in
-                </Link>
-              </div>
-            )}
-
-            {needsAuth && (
-              <div className="mb-4 p-3 rounded-lg border border-amber/30 bg-amber/10 flex flex-wrap items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 font-mono text-xs text-ink">
-                  <Lock className="w-3.5 h-3.5 text-amber shrink-0" />
-                  Sign in to run code
-                </span>
-                <Link
-                  to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`}
-                  className="px-2.5 py-1 rounded bg-mint text-canvas font-mono text-xs font-semibold hover:bg-mint/90"
                 >
                   Sign in
                 </Link>
@@ -1004,17 +984,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center text-muted font-mono text-xs space-y-1">
                 <Terminal className="w-6 h-6 text-mint/60 mb-1" />
-                <p>Ready to run.</p>
-                <p className="text-[11px] text-muted/70">
-                  Click &ldquo;Run Samples&rdquo; to test sample cases or &ldquo;Submit&rdquo; to evaluate all test cases.
-                </p>
-                <p className="text-[11px] text-muted/70">
-                  Keyboard: Tab indents inside the editor. Press Escape then Tab to
-                  reach the run buttons.
-                </p>
-                <p className="text-[11px] text-muted/70">
-                  Ctrl/⌘+Enter runs samples · Ctrl/⌘+Shift+Enter submits
-                </p>
+                <p>Run samples or submit to see results.</p>
               </div>
             )}
           </div>

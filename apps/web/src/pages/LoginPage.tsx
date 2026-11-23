@@ -1,8 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
 import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
-import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
 import { getLoginDestination } from "../utils/redirect";
 
@@ -19,12 +17,11 @@ export const LoginPage: React.FC = () => {
       <div className="w-full max-w-md space-y-6">
         <Reveal>
           <div className="text-center space-y-2">
-            <SectionLabel title="Account Authentication" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
-              Sign in to MERIT
+              Sign in
             </h1>
             <p className="text-xs text-muted">
-              Sync your problem submissions, quiz exposure, and learning progress.
+              Sync your progress across devices.
             </p>
           </div>
         </Reveal>
@@ -42,15 +39,6 @@ export const LoginPage: React.FC = () => {
               </p>
             </div>
           )}
-        </Reveal>
-
-        <Reveal delay={0.15}>
-          <div className="flex justify-center text-center text-xs">
-            <div className="flex items-center gap-2 text-[11px] text-muted/70 font-mono">
-              <ShieldCheck className="w-3.5 h-3.5 text-mint" />
-              <span>Secure Clerk authentication · Zero tracking</span>
-            </div>
-          </div>
         </Reveal>
       </div>
     </div>

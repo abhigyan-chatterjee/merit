@@ -148,7 +148,7 @@ describe('CodeRunner Component (Phase 4)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Run Samples/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/sign in to run code/i)).toBeVisible();
+      expect(screen.getByText(/sign in to run or submit code/i)).toBeVisible();
     });
     expect(screen.queryByText(/runtime error/i)).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
@@ -208,7 +208,7 @@ describe('CodeRunner Component (Phase 4)', () => {
     });
     expect(screen.getByText('Judge exploded')).toBeVisible();
     expect(screen.queryByRole('tab', { name: /Case 1/i })).not.toBeInTheDocument();
-    expect(screen.getByText(/Ready to run\./i)).toBeVisible();
+    expect(screen.getByText(/Run samples or submit to see results\./i)).toBeVisible();
   });
 
   it('resets the selected case tab when new results arrive', async () => {
@@ -393,11 +393,11 @@ describe('CodeRunner Component (Phase 4)', () => {
     );
     expect(screen.getByRole('button', { name: /Run Samples/i })).toHaveAttribute(
       'title',
-      'Sign in required to run code',
+      expect.stringContaining('Sign in required to run code'),
     );
     expect(screen.getByRole('button', { name: /^Submit$/i })).toHaveAttribute(
       'title',
-      'Sign in required to submit',
+      expect.stringContaining('Sign in required to submit'),
     );
   });
 
@@ -466,7 +466,7 @@ describe('CodeRunner Component (Phase 4)', () => {
       });
     });
     expect(screen.queryByText(/Accepted \(AC\)/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Ready to run\./i)).toBeVisible();
+    expect(screen.getByText(/Run samples or submit to see results\./i)).toBeVisible();
   });
 
   it('persists guest editor drafts in localStorage across remounts', () => {
@@ -604,7 +604,7 @@ describe('CodeRunner Component (Phase 4)', () => {
       functionName: 'solve',
     });
 
-    expect(screen.getByText(/Ctrl\/⌘\+Enter runs samples/i)).toBeVisible();
+    expect(screen.getByRole('button', { name: /Run Samples/i })).toHaveAttribute('title', expect.stringContaining('Ctrl'));
 
     const editor = screen.getByLabelText(/Code Editor/i);
     fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true });

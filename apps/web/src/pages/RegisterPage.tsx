@@ -1,8 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ClerkOAuthSection, isClerkConfigured } from "../components/ClerkOAuth";
-import { SectionLabel } from "../components/ui/SectionLabel";
 import { Reveal } from "../components/ui/Reveal";
 import { getLoginDestination } from "../utils/redirect";
 
@@ -15,12 +14,11 @@ export const RegisterPage: React.FC = () => {
       <div className="w-full max-w-md space-y-6">
         <Reveal>
           <div className="text-center space-y-2">
-            <SectionLabel title="New Student Registration" />
             <h1 className="text-2xl font-mono font-bold text-ink tracking-tight">
-              Create a MERIT Account
+              Create account
             </h1>
             <p className="text-xs text-muted">
-              Track your DSA practice, mock exams, and spaced revision in one place.
+              Track your practice and revision in one place.
             </p>
           </div>
         </Reveal>
@@ -52,10 +50,6 @@ export const RegisterPage: React.FC = () => {
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </p>
-            <div className="flex items-center gap-2 text-[11px] text-muted/70 font-mono">
-              <ShieldCheck className="w-3.5 h-3.5 text-mint" />
-              <span>Secure Clerk authentication · Zero tracking</span>
-            </div>
           </div>
         </Reveal>
       </div>

@@ -30,9 +30,9 @@ describe('AdminPage Component (Phase 9)', () => {
     );
 
     expect(
-      await screen.findByText(/Administrative Privileges Required/i)
+      await screen.findByText(/Admin only/i)
     ).toBeInTheDocument();
-    expect(screen.queryByText(/Admin Control Center/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Admin' })).not.toBeInTheDocument();
   });
 
   it('allows authorized admins to view stats and approve items in review queue', async () => {
@@ -85,7 +85,7 @@ describe('AdminPage Component (Phase 9)', () => {
 
     // Header and stats rendered. AdminPage loads stats asynchronously in
     // useEffect, so wait for the async fetch to resolve first.
-    expect(await screen.findByText(/Admin Control Center/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Admin' })).toBeInTheDocument();
     expect(await screen.findByText('Registered Users')).toBeInTheDocument();
     expect(screen.getByText('42')).toBeInTheDocument(); // users count
     expect(screen.getByText('831')).toBeInTheDocument(); // verified questions
@@ -173,7 +173,7 @@ describe('AdminPage Component (Phase 9)', () => {
         </MemoryRouter>
       </AuthProvider>,
     );
-    expect(await screen.findByText(/Admin Control Center/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Admin' })).toBeInTheDocument();
     fireEvent.click(screen.getByText(/Review Queue/i));
     fireEvent.click(screen.getByText(/Draft Problems/i));
     expect(await screen.findByText(/Given an array, return its reverse\./i)).toBeInTheDocument();

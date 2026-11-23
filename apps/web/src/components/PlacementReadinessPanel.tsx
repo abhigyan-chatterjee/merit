@@ -49,11 +49,11 @@ export const PlacementReadinessPanel: React.FC<PlacementReadinessPanelProps> = (
             <p className="text-2xl font-bold font-mono text-ink tnum">
               {readiness.score}/100
             </p>
-            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border border-mint/40 bg-mint/10 text-mint">
-              {readiness.band}
-            </span>
             <p className="text-[11px] text-muted">
-              {TARGET_TIER_META[targetTier].label} · {TARGET_TIER_META[targetTier].subtitle}
+              {readiness.band} · {TARGET_TIER_META[targetTier].label}
+            </p>
+            <p className="text-[11px] text-muted">
+              {TARGET_TIER_META[targetTier].subtitle}
             </p>
           </div>
         </div>
@@ -137,9 +137,6 @@ export const PlacementReadinessPanel: React.FC<PlacementReadinessPanelProps> = (
                 {String(idx + 1).padStart(2, '0')}
               </span>
               <span className="min-w-0 flex-1 space-y-1">
-                <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-line bg-surface text-violet">
-                  {item.tag}
-                </span>
                 <span className="block text-sm font-semibold text-ink group-hover:text-mint transition-colors">
                   {item.title}
                 </span>

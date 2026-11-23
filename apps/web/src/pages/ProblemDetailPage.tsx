@@ -94,73 +94,53 @@ export const ProblemDetailPage: React.FC = () => {
       {/* Guided Path Lesson Navigation */}
       <LessonNav currentType="problem" currentId={problem.slug} />
 
-      {/* Prev / Next in category sequence */}
-      {(problem.prevSlug || problem.nextSlug) && (
-        <nav aria-label="Sequence" className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-          {problem.prevSlug ? (
-            <Link
-              to={`/problems/${problem.topic}/${problem.prevSlug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-steel transition"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Previous in {problem.topic}
-            </Link>
-          ) : (
-            <span />
-          )}
-          {problem.nextSlug && (
-            <Link
-              to={`/problems/${problem.topic}/${problem.nextSlug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-muted hover:text-ink hover:border-steel transition"
-            >
-              Next in {problem.topic}
-              <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
-            </Link>
-          )}
-        </nav>
-      )}
+      {/* Unified breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] font-mono text-muted">
+        <Link to="/problems" className="inline-flex items-center gap-1 hover:text-mint transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Problems
+        </Link>
+        <span aria-hidden="true">/</span>
+        <Link to={`/problems/${topic}`} className="hover:text-mint transition-colors">
+          {TOPICS.find((t) => t.slug === topic)?.title ?? topic}
+        </Link>
+      </nav>
 
-      {/* Top Breadcrumb & Action Bar */}
+      {/* Title & Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-line">
-        <div className="flex items-center gap-3">
-          <Link
-            to={`/problems/${topic}`}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-xs font-mono text-muted hover:text-ink"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to {TOPICS.find((t) => t.slug === topic)?.title ?? topic}
-          </Link>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-ink">{problem.title}</h1>
-              <span className="px-2 py-0.5 rounded bg-canvas border border-line text-[11px] font-mono text-violet">
-                {problem.pattern}
-              </span>
-            </div>
+        <div className="min-w-0">
+          <h1 className="text-lg font-bold text-ink">{problem.title}</h1>
+          <p className="mt-1 text-[11px] font-mono text-muted">
+            {problem.difficulty} · {problem.pattern}
             {(problem.companies ?? []).length > 0 && (
-              <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-label="Companies that ask this problem">
-                {(showAllCompanies ? problem.companies : problem.companies.slice(0, 6)).map((company) => (
-                  <Link
-                    key={company}
-                    to={`/problems?company=${encodeURIComponent(company)}`}
-                    className="rounded border border-line bg-canvas px-1.5 py-0.5 text-[10px] font-mono text-muted hover:text-mint hover:border-mint transition"
-                  >
-                    {company}
-                  </Link>
+              <>
+                {' '}· Asked at{' '}
+                {(showAllCompanies ? problem.companies : problem.companies.slice(0, 6)).map((company, idx, arr) => (
+                  <span key={company}>
+                    <Link
+                      to={`/problems?company=${encodeURIComponent(company)}`}
+                      className="hover:text-mint hover:underline transition"
+                    >
+                      {company}
+                    </Link>
+                    {idx < arr.length - 1 && ', '}
+                  </span>
                 ))}
                 {problem.companies.length > 6 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAllCompanies((current) => !current)}
-                    className="px-1 py-0.5 text-[10px] font-mono text-mint hover:text-ink"
-                  >
-                    {showAllCompanies ? 'Show less' : `+${problem.companies.length - 6} more`}
-                  </button>
+                  <>
+                    {' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowAllCompanies((current) => !current)}
+                      className="text-mint hover:text-ink"
+                    >
+                      {showAllCompanies ? 'Show less' : `+${problem.companies.length - 6} more`}
+                    </button>
+                  </>
                 )}
-              </div>
+              </>
             )}
-          </div>
+          </p>
         </div>
 
 
@@ -303,9 +283,6 @@ export const ProblemDetailPage: React.FC = () => {
                     }`}
                   >
                     {sol.title}
-                    <span className="px-1 py-0.5 rounded bg-canvas border border-line text-[9px] uppercase text-violet">
-                      {sol.language === 'python' ? 'PY' : 'JS'}
-                    </span>
                   </button>
                 ))}
               </div>
@@ -386,12 +363,12 @@ export const ProblemDetailPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <label className="text-xs font-mono font-semibold text-ink flex items-center gap-1.5">
                 <FileText className="w-4 h-4 text-mint" />
-                Revision Notes
+                Notes
               </label>
             </div>
             <textarea
               rows={3}
-              placeholder="Write down edge cases, time complexity notes, or key invariants..."
+              placeholder="Add notes…"
               value={noteText}
               onChange={(e) => handleNoteChange(e.target.value)}
               className="w-full p-3 rounded-lg bg-canvas border border-line text-base sm:text-xs font-mono text-ink placeholder-muted focus:border-mint"
@@ -413,6 +390,31 @@ export const ProblemDetailPage: React.FC = () => {
             />
         </div>
       </div>
+
+      {(problem.prevSlug || problem.nextSlug) && (
+        <nav aria-label="Sequence" className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-line text-xs font-mono">
+          {problem.prevSlug ? (
+            <Link
+              to={`/problems/${problem.topic}/${problem.prevSlug}`}
+              className="inline-flex items-center gap-1.5 text-muted hover:text-ink transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Prev
+            </Link>
+          ) : (
+            <span />
+          )}
+          {problem.nextSlug && (
+            <Link
+              to={`/problems/${problem.topic}/${problem.nextSlug}`}
+              className="inline-flex items-center gap-1.5 text-muted hover:text-ink transition"
+            >
+              Next
+              <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+            </Link>
+          )}
+        </nav>
+      )}
     </div>
   );
 };

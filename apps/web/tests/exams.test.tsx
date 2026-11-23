@@ -69,9 +69,8 @@ describe('Exams catalog', () => {
     expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
     expect(screen.getByText('Aptitude')).toBeInTheDocument();
     expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
-    // collapsed single meta line: "20 MCQs · 2 coding · 45 min"; aptitude is MCQ-only
-    expect(screen.getAllByText(/20 MCQs · 2 coding/i).length).toBeGreaterThanOrEqual(5);
-    expect(screen.getAllByText(/20 MCQs/i).length).toBeGreaterThanOrEqual(6);
+    // single muted meta line: "20 MCQs · 45 min"
+    expect(screen.getAllByText(/20 MCQs ·/i).length).toBeGreaterThanOrEqual(6);
   });
 
   it('filters exams by category tab', async () => {
@@ -127,7 +126,7 @@ describe('Exams catalog', () => {
     renderExams();
     await screen.findByText('Intermediate DSA');
     fireEvent.click(screen.getAllByText('Start exam')[0]);
-    expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(await screen.findByText(/unanswered counts as wrong/i)).toBeInTheDocument();
     expect(await screen.findAllByText(/coding questions/i)).not.toHaveLength(0);
   });
 
@@ -158,7 +157,7 @@ describe('Exams catalog', () => {
     });
     renderExams('/exams/aptitude');
     await screen.findByText(/Aptitude/);
-    expect(screen.getByText(/20 MCQs · 30 min/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/20 MCQs · 30 min/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByText(/2 coding/i)).not.toBeInTheDocument();
     fireEvent.click(screen.getByText(/Start timed exam/i));
     expect(
@@ -348,7 +347,7 @@ describe('Exams catalog', () => {
     // Same component instance, new :id param -> exam B must show pristine state.
     fireEvent.click(screen.getByRole('button', { name: /jump-next-exam/i }));
     expect(await screen.findByRole('heading', { name: /Full Placement Mock/i })).toBeInTheDocument();
-    expect(await screen.findByText(/Ready when you are/i)).toBeInTheDocument();
+    expect(await screen.findByText(/unanswered counts as wrong/i)).toBeInTheDocument();
     expect(screen.queryByText(/Coding accepted/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/MCQ score/i)).not.toBeInTheDocument();
   });
@@ -655,7 +654,7 @@ describe('Exams catalog', () => {
     );
 
     expect(await screen.findByText(/Auto-submit probe question/i)).toBeInTheDocument();
-    await screen.findByText(/Remaining:/i);
+    await screen.findByTitle(/Auto-submits at 0:00/i);
     await waitFor(
       () => {
         expect(submitSpy).toHaveBeenCalledWith('att-auto-1', expect.any(Number), {});

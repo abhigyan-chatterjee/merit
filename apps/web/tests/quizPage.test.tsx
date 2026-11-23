@@ -56,11 +56,10 @@ describe('QuizPage', () => {
     expect(screen.getByRole('heading', { name: /Trees & BST/i })).toBeInTheDocument();
   });
 
-  it('shows the assessment breadcrumb', () => {
+  it('has no assessment breadcrumb and keeps a quiet diagnostic action', () => {
     renderQuiz('graphs');
-    expect(screen.getByRole('navigation', { name: /Breadcrumb/i })).toHaveTextContent(
-      'assessment',
-    );
+    expect(screen.queryByRole('navigation', { name: /Breadcrumb/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '12-Q Diagnostic' })).toBeInTheDocument();
   });
 
   it('quick-switches to screening and mixed topics via pills', () => {

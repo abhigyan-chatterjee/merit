@@ -44,7 +44,7 @@ describe('QuizEngine Component', () => {
       </AuthProvider>
     );
 
-    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Q 1\/10/i)).toBeInTheDocument();
     expect(QUIZZES[id]).toHaveLength(15);
   });
 
@@ -64,12 +64,12 @@ describe('QuizEngine Component', () => {
       );
 
     const first = renderQuiz();
-    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Q 1\/10/i)).toBeInTheDocument();
     const firstQuestion = screen.getByText(/1\./i).textContent;
     first.unmount();
 
     renderQuiz();
-    expect(await screen.findByText(/Question 1 of 10/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Q 1\/10/i)).toBeInTheDocument();
     expect(screen.getByText(/1\./i).textContent).not.toBe(firstQuestion);
   });
 
@@ -146,7 +146,7 @@ describe('QuizEngine Component', () => {
     fireEvent.click(retryWrongBtn);
 
     // Now active questions should only have question 2
-    expect(screen.getByText(/Question 1 of 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Q 1\/1/i)).toBeInTheDocument();
     expect(screen.getByText(/Which data structure follows LIFO\?/i)).toBeInTheDocument();
   });
 

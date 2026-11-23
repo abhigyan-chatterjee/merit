@@ -60,8 +60,8 @@ describe('ProblemListPage', () => {
 
   it('renders the catalog header with the full problem count', () => {
     renderList();
-    expect(screen.getByRole('heading', { name: /Master the patterns/i })).toBeInTheDocument();
-    expect(screen.getByText(`0/${PROBLEMS.length}`)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Problems$/i })).toBeInTheDocument();
+    expect(screen.getByText(`${PROBLEMS.length} problems · 0 done · 0 starred`)).toBeInTheDocument();
   });
 
   it('expands the routed topic so its problems are listed', () => {
@@ -76,7 +76,7 @@ describe('ProblemListPage', () => {
 
   it('filters by search query', () => {
     renderList('arrays-hashing');
-    expect(screen.getByText(new RegExp(`Showing ${PROBLEMS.length} of ${PROBLEMS.length}`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${PROBLEMS.length} / ${PROBLEMS.length}`))).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Search problems'), {
       target: { value: 'two sum' },
@@ -84,7 +84,7 @@ describe('ProblemListPage', () => {
 
     // Fewer than the full set remain, and the match is still listed.
     expect(
-      screen.queryByText(new RegExp(`Showing ${PROBLEMS.length} of ${PROBLEMS.length}`)),
+      screen.queryByText(new RegExp(`${PROBLEMS.length} / ${PROBLEMS.length}`)),
     ).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Two Sum', exact: true })).toBeInTheDocument();
   });
@@ -200,7 +200,7 @@ describe('ProblemListPage', () => {
     expect(screen.getByLabelText('Search problems')).toHaveValue('');
     expect(pill(filterRow(/^Companies$/), /TCS/)).toHaveAttribute('aria-pressed', 'false');
     expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument();
-    expect(screen.getByText(new RegExp(`Showing ${PROBLEMS.length} of ${PROBLEMS.length}`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${PROBLEMS.length} / ${PROBLEMS.length}`))).toBeInTheDocument();
   });
 
   it('reflects solved progress from storage', () => {
@@ -209,7 +209,7 @@ describe('ProblemListPage', () => {
       JSON.stringify({ progress: { 'two-sum': 'Done' } }),
     );
     renderList('arrays-hashing');
-    expect(screen.getByText(`1/${PROBLEMS.length}`)).toBeInTheDocument();
+    expect(screen.getByText(`${PROBLEMS.length} problems · 1 done · 0 starred`)).toBeInTheDocument();
     expect(screen.getByLabelText('Solved')).toBeInTheDocument();
   });
 });

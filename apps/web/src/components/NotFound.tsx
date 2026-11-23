@@ -21,10 +21,9 @@ export const NotFound: React.FC<NotFoundProps> = ({
       className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16"
     >
       <div className="w-16 h-16 rounded-2xl bg-surface border border-line flex items-center justify-center mb-6 text-mint">
-        <Compass className="w-8 h-8 animate-pulse" />
+        <Compass className="w-8 h-8" />
       </div>
 
-      <span className="font-mono text-xs uppercase tracking-widest text-mint mb-2">404 Error</span>
       <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink mb-3">{title}</h1>
       <p className="text-sm text-muted max-w-md mb-8 leading-relaxed">{message}</p>
 
@@ -38,7 +37,7 @@ export const NotFound: React.FC<NotFoundProps> = ({
         </Link>
         <button
           onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink hover:bg-surface transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 text-xs text-muted hover:text-ink transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           Go Back

@@ -5,6 +5,12 @@ import { AiTutor } from "../src/components/AiTutor";
 import { catalogIdForBaseUrl, useTutorKey } from "../src/hooks/useTutorKey";
 import { useEffect } from "react";
 
+const authState = vi.hoisted(() => ({ user: { id: "u1" } as { id: string } | null }));
+
+vi.mock("../src/store/AuthContext", () => ({
+  useAuth: () => ({ user: authState.user }),
+}));
+
 function SetCustomBaseUrl() {
   const tutor = useTutorKey();
   useEffect(() => {
@@ -54,6 +60,7 @@ function expandPanel() {
 describe("AiTutor", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    authState.user = { id: "u1" };
     window.localStorage.clear();
     window.sessionStorage.clear();
   });
@@ -72,6 +79,23 @@ describe("AiTutor", () => {
     expandPanel();
     expect(screen.getByText(/set up a provider and key on your account/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /open account/i })).toHaveAttribute("href", "/profile#tutor");
+  });
+
+  it("shows a sign-in gate and makes no tutor request when signed out", () => {
+    authState.user = null;
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(async () => jsonOk([]));
+    render(
+      <MemoryRouter initialEntries={["/problems/arrays-hashing/two-sum?tab=code"]}>
+        <AiTutor problemSlug="two-sum" defaultOpen />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText(/sign in to use the ai tutor/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      `/login?next=${encodeURIComponent("/problems/arrays-hashing/two-sum?tab=code")}`,
+    );
+    expect(screen.queryByLabelText(/your question/i)).not.toBeInTheDocument();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("switching problemSlug resets chat messages", async () => {
@@ -226,11 +250,12 @@ describe("AiTutor", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Mock Interview" }));
     expect(screen.getByText("30:00")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /start mock/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Stages & scoring/i));
     expect(screen.getByText("1. Clarify")).toBeInTheDocument();
     expect(screen.getByText("2. Approach & Big-O")).toBeInTheDocument();
     expect(screen.getByText("3. Dry-Run & Edge Cases")).toBeInTheDocument();
     expect(screen.getByText("4. Rubric")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /start 30m interview/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /score my interview \(rubric\)/i }));
     await waitFor(() => expect(bodies).toHaveLength(1));
@@ -303,7 +328,7 @@ describe("AiTutor", () => {
     expect(screen.queryByRole("status", { name: /tutor is responding/i })).not.toBeInTheDocument();
   });
 
-  it("starts an interactive mock interview session when clicking Start 30m Interview", async () => {
+  it("starts an interactive mock interview session when clicking Start mock", async () => {
     const INTERVIEW_OPENING = "Welcome! Before you write any code for Two Sum, what clarifying questions do you have about the input constraints?";
     const bodies: Array<Record<string, unknown>> = [];
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
@@ -328,7 +353,7 @@ describe("AiTutor", () => {
 
     await waitFor(() => expect(screen.getByLabelText("Model")).toHaveValue("gpt-4o-mini"));
     fireEvent.click(screen.getByRole("button", { name: "Mock Interview" }));
-    fireEvent.click(screen.getByRole("button", { name: /start 30m interview/i }));
+    fireEvent.click(screen.getByRole("button", { name: /start mock/i }));
 
     await waitFor(() => expect(bodies).toHaveLength(1));
     expect(bodies[0]).toMatchObject({ mode: "interview" });

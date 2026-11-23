@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bot, ChevronDown, ChevronUp, ExternalLink, Send } from "lucide-react";
 import { catalogIdForBaseUrl, getTutorSnapshot, loadTutorCatalog, useTutorKey } from "../hooks/useTutorKey";
+import { useAuth } from "../store/AuthContext";
 import { ApiError, apiRequest } from "../utils/api";
 
 interface AiTutorProps {
@@ -60,6 +61,8 @@ export function stripThinking(text: string): string {
 }
 
 export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failedAttempts = 0, defaultOpen = false }) => {
+  const { user } = useAuth();
+  const location = useLocation();
   const { apiKey, baseUrl, model, setModel } = useTutorKey();
   const [open, setOpen] = useState(defaultOpen);
   const [models, setModels] = useState<string[]>([]);
@@ -79,7 +82,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
   }, [apiKey, models.length]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !user) return;
     const catalogId = catalogIdForBaseUrl(baseUrl);
     if (!catalogId) {
       setModels([]);
@@ -104,7 +107,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
     return () => {
       cancelled = true;
     };
-  }, [open, baseUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, baseUrl, user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setMessages([]);
@@ -125,7 +128,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
   }, [interviewRunning, interviewSeconds]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !user) return;
     let cancelled = false;
     // Routed through apiRequest so an expired 15-minute access token is
     // silently refreshed (single 401 retry) instead of surfacing
@@ -141,7 +144,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
     return () => {
       cancelled = true;
     };
-  }, [open, problemSlug]);
+  }, [open, problemSlug, user]);
 
   const sendMessage = async (text: string) => {
     setError(null);
@@ -199,7 +202,12 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
         <span className="flex items-center gap-2"><Bot className="w-4 h-4" /> Ask the tutor {model && <span className="text-muted font-normal">· {model}</span>}</span>
         {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
       </button>
-      {open && (
+      {open && (!user ? (
+        <div className="p-4 pt-3 border-t border-line text-xs font-mono text-muted">
+          Sign in to use the AI Tutor.{" "}
+          <Link to={`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`} className="text-violet hover:underline">Sign in</Link>
+        </div>
+      ) : (
         <div className="p-4 pt-0 space-y-3 border-t border-line">
           {!apiKey.trim() && (
             <div className="pt-3 text-xs font-mono text-muted">
@@ -261,28 +269,31 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
                     disabled={!canChat && !interviewRunning}
                     className="px-2.5 py-1.5 rounded-lg bg-violet text-canvas font-mono font-semibold text-[11px] disabled:opacity-50 cursor-pointer"
                   >
-                    {interviewRunning ? "Pause" : messages.length > 0 ? "Resume" : "Start 30m Interview"}
+                    {interviewRunning ? "Pause" : messages.length > 0 ? "Resume" : "Start mock"}
                   </button>
-                  <button onClick={() => { setInterviewRunning(false); setInterviewSeconds(INTERVIEW_SECONDS); }} className="px-2.5 py-1.5 rounded-lg border border-line bg-canvas font-mono text-[11px] text-muted hover:text-ink cursor-pointer">Reset Timer</button>
+                  <button onClick={() => { setInterviewRunning(false); setInterviewSeconds(INTERVIEW_SECONDS); }} className="px-2.5 py-1.5 rounded-lg border border-line bg-canvas font-mono text-[11px] text-muted hover:text-ink cursor-pointer">Reset</button>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-1 font-mono text-[10px] text-muted">
-                {INTERVIEW_STAGES.map((stage) => (
-                  <button
-                    key={stage.label}
-                    type="button"
-                    disabled={!canChat || sending}
-                    onClick={() => {
-                      if (!interviewRunning && stage.label !== "4. Rubric") setInterviewRunning(true);
-                      void sendMessage(stage.prompt);
-                    }}
-                    className="px-1.5 py-0.5 rounded-full border border-line bg-canvas hover:border-violet hover:text-ink disabled:opacity-50 cursor-pointer transition"
-                  >
-                    {stage.label}
-                  </button>
-                ))}
-              </div>
-              <button onClick={() => void sendMessage(RUBRIC_PROMPT)} disabled={!canChat || sending} className="w-full px-2.5 py-1.5 rounded-lg border border-violet/40 bg-canvas font-mono text-[11px] font-semibold text-violet disabled:opacity-50 cursor-pointer">Score My Interview (Rubric)</button>
+              <details className="rounded-md border border-line bg-canvas px-2 py-1.5">
+                <summary className="cursor-pointer font-mono text-[11px] text-muted hover:text-ink">Stages & scoring</summary>
+                <div className="flex flex-wrap gap-1 pt-1.5 font-mono text-[10px] text-muted">
+                  {INTERVIEW_STAGES.map((stage) => (
+                    <button
+                      key={stage.label}
+                      type="button"
+                      disabled={!canChat || sending}
+                      onClick={() => {
+                        if (!interviewRunning && stage.label !== "4. Rubric") setInterviewRunning(true);
+                        void sendMessage(stage.prompt);
+                      }}
+                      className="px-1.5 py-0.5 rounded-full border border-line bg-canvas hover:border-violet hover:text-ink disabled:opacity-50 cursor-pointer transition"
+                    >
+                      {stage.label}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={() => void sendMessage(RUBRIC_PROMPT)} disabled={!canChat || sending} className="mt-1.5 w-full px-2.5 py-1.5 rounded-lg border border-violet/40 bg-canvas font-mono text-[11px] font-semibold text-violet disabled:opacity-50 cursor-pointer">Score My Interview (Rubric)</button>
+              </details>
             </div>
           )}
           {messages.length > 0 && (
@@ -291,7 +302,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
             </div>
           )}
           <div aria-label="Tutor chat log" className="space-y-2 max-h-72 overflow-y-auto p-2 rounded-lg bg-canvas border border-line">
-            {messages.length === 0 ? <p className="text-[11px] font-mono text-muted text-center py-4">{canChat ? "Ask about the problem — your tutor will guide your reasoning." : "Choose a model and configure a key to start chatting."}</p> : messages.map((message, index) => <div key={index} className={`p-2.5 rounded-lg border text-xs font-mono leading-relaxed whitespace-pre-wrap ${message.role === "user" ? "bg-surface border-line text-ink ml-6" : "bg-violet/10 border-violet/30 text-ink mr-6"}`}><div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-violet">{message.role === "user" ? "You" : "Tutor"}</div>{message.content}</div>)}
+            {messages.length === 0 ? <p className="text-[11px] font-mono text-muted text-center py-4">{canChat ? "No messages yet." : "Choose a model and configure a key to start chatting."}</p> : messages.map((message, index) => <div key={index} className={`p-2.5 rounded-lg border text-xs font-mono leading-relaxed whitespace-pre-wrap ${message.role === "user" ? "bg-surface border-line text-ink ml-6" : "bg-violet/10 border-violet/30 text-ink mr-6"}`}><div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-violet">{message.role === "user" ? "You" : "Tutor"}</div>{message.content}</div>)}
             {sending && (
               <div role="status" aria-label="Tutor is responding" className="p-2.5 rounded-lg border bg-violet/10 border-violet/30 text-ink mr-6 text-xs font-mono">
                 <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-violet">Tutor</div>
@@ -309,7 +320,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
             <button onClick={() => void handleSend()} disabled={!canChat || !question.trim() || sending} aria-label="Send question" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet text-canvas font-mono font-semibold text-xs disabled:opacity-50 cursor-pointer"><Send className="w-3.5 h-3.5" />{sending ? "Sending…" : "Send"}</button>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };

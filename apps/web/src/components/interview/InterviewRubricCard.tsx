@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Award, Check, Copy, FileText, RotateCcw, Sparkles } from "lucide-react";
+import { RotateCcw, Sparkles } from "lucide-react";
 import { InterviewSessionDetail } from "../../utils/api";
 import { formatRubricMarkdown } from "./interviewConfig";
 
@@ -52,31 +52,16 @@ export const InterviewRubricCard: React.FC<InterviewRubricCardProps> = ({
 
   return (
     <div className="rounded-xl border border-line bg-surface p-6 space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-line">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.18em] text-violet">
-            <Award className="w-3.5 h-3.5" />
-            <span>Final Hiring Evaluation · {session.difficulty}</span>
-          </div>
-          <h2 className="text-xl font-bold text-ink">Interview Scorecard</h2>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="text-right font-mono">
-            <div className="text-2xl font-bold text-ink tnum">
-              {rubric.total} <span className="text-sm text-muted">/ {rubric.max_total}</span>
-            </div>
-            <div className="text-[10px] uppercase tracking-wider text-muted">Total score</div>
-          </div>
-          <span
-            data-testid="rubric-verdict"
-            className={`px-3 py-1.5 rounded-lg border font-mono text-xs font-bold ${
-              VERDICT_STYLE[rubric.verdict] ?? "border-line bg-canvas text-ink"
-            }`}
-          >
-            {rubric.verdict}
-          </span>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line">
+        <h2 className="text-xl font-bold text-ink">Scorecard · {rubric.total}/{rubric.max_total}</h2>
+        <span
+          data-testid="rubric-verdict"
+          className={`px-3 py-1.5 rounded-lg border font-mono text-xs font-bold ${
+            VERDICT_STYLE[rubric.verdict] ?? "border-line bg-canvas text-ink"
+          }`}
+        >
+          {rubric.verdict}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -142,44 +127,40 @@ export const InterviewRubricCard: React.FC<InterviewRubricCardProps> = ({
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-muted">
           <button
             type="button"
             onClick={() => void handleCopy()}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-ink hover:border-mint transition cursor-pointer"
+            className="hover:text-ink transition cursor-pointer"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-mint" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? "Copied!" : "Copy Markdown Report"}</span>
+            {copied ? "Copied!" : "Copy report"}
           </button>
           {onToggleTranscript && (
             <button
               type="button"
               onClick={onToggleTranscript}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-muted hover:text-ink transition cursor-pointer"
+              className="hover:text-ink transition cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5" />
-              <span>{showTranscript ? "Hide Transcript" : "View Full Transcript"}</span>
+              {showTranscript ? "Hide Transcript" : "Transcript"}
             </button>
           )}
-        </div>
-
-        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBackToLobby}
-            className="px-3.5 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-muted hover:text-ink transition cursor-pointer"
+            className="hover:text-ink transition cursor-pointer"
           >
-            Back to Lobby
-          </button>
-          <button
-            type="button"
-            onClick={onStartNew}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-violet text-canvas text-xs font-mono font-semibold hover:brightness-110 transition cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>New Interview</span>
+            Lobby
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={onStartNew}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-violet text-canvas text-xs font-mono font-semibold hover:brightness-110 transition cursor-pointer"
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+          <span>New interview</span>
+        </button>
       </div>
     </div>
   );

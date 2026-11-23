@@ -36,12 +36,6 @@ const STEP_ICONS: Record<PathStep['type'], React.ComponentType<any>> = {
   quiz: BrainCircuit,
   mock: ClipboardCheck,
 };
-const STEP_TONE: Record<PathStep['type'], string> = {
-  visualizer: 'text-mint',
-  problem: 'text-violet',
-  quiz: 'text-amber',
-  mock: 'text-amber',
-};
 const STEP_LABEL: Record<PathStep['type'], string> = {
   visualizer: 'Workbench',
   problem: 'Problem',
@@ -179,15 +173,6 @@ export const GuidedPathDetailPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[10px] font-mono text-muted">
-        <Link to="/learn" className="inline-block py-1.5 hover:text-mint transition-colors">
-          learning paths
-        </Link>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-ink">{id}</span>
-      </nav>
-
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-5 pb-6 border-b border-line">
         <div className="flex items-start gap-4 min-w-0">
@@ -233,7 +218,6 @@ export const GuidedPathDetailPage: React.FC = () => {
           const resolved = resolveStep(step);
           const status = stepStatus[i] || { done: false, next: false };
           const StepIcon = STEP_ICONS[step.type] || Code2;
-          const tone = STEP_TONE[step.type] || 'text-mint';
 
           return (
             <li key={`${step.type}-${step.id}-${i}`} className="relative flex gap-4 pb-2">
@@ -273,19 +257,6 @@ export const GuidedPathDetailPage: React.FC = () => {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[9px] font-mono uppercase tracking-[0.16em] ${tone}`}>
-                          {STEP_LABEL[step.type] || 'Step'}
-                        </span>
-                        {status.done && (
-                          <span className="text-[9px] font-mono text-mint">✓ done</span>
-                        )}
-                        {status.next && (
-                          <span className="text-[9px] font-mono text-mint bg-mint/10 px-1.5 py-0.5 rounded font-semibold">
-                            current
-                          </span>
-                        )}
-                      </div>
                       <span
                         className={`text-sm font-semibold group-hover:text-mint transition-colors ${
                           status.done ? 'text-muted' : status.next ? 'text-mint font-bold' : 'text-ink'
@@ -293,10 +264,7 @@ export const GuidedPathDetailPage: React.FC = () => {
                       >
                         {resolved.title}
                       </span>
-                      <div className="text-[10px] font-mono text-muted">{resolved.subtitle}</div>
-                      {step.summary && (
-                        <p className="text-xs text-muted leading-relaxed mt-1">{step.summary}</p>
-                      )}
+                      <div className="text-[11px] font-mono text-muted truncate">{resolved.subtitle}{step.summary ? ` — ${step.summary}` : ''}</div>
                     </div>
                   </div>
                 </Link>

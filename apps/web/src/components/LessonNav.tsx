@@ -126,7 +126,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
               aria-expanded={isDropdownOpen}
             >
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-mint animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-mint" />
                 <span className="text-[10px] font-mono text-mint font-semibold uppercase tracking-wider">
                   {`Step ${currentStepIndex + 1} of ${steps.length}`}
                 </span>
@@ -205,9 +205,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
             className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-mint text-canvas font-semibold text-xs hover:bg-mint/90 transition shadow-sm cursor-pointer"
           >
             <span>
-              {nextResolved
-                ? `Next: ${nextResolved.title}`
-                : 'Finish Path 🎉'}
+              {nextResolved ? `Next: ${nextResolved.title}` : 'Finish path'}
             </span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>

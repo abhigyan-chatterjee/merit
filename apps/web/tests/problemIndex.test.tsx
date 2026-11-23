@@ -50,14 +50,13 @@ describe('ProblemListPage', () => {
     expect(screen.queryByText('Contains Duplicate')).not.toBeInTheDocument();
   });
 
-  it('updates the starred hero count when a problem is bookmarked', () => {
+  it('updates the starred count when a problem is bookmarked', () => {
     renderPage();
     expandArrays();
 
-    expect(screen.getByText('Starred', { selector: 'div' })).toBeInTheDocument();
-    expect(screen.getByText('0', { selector: 'div' })).toBeInTheDocument();
+    expect(screen.getByText(/0 starred/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Add bookmark for Two Sum' }));
 
-    expect(screen.getByText('1', { selector: 'div' })).toBeInTheDocument();
+    expect(screen.getByText(/1 starred/i)).toBeInTheDocument();
   });
 });
