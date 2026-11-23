@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session, sessionmaker  # noqa: E402
 from sqlalchemy.pool import StaticPool  # noqa: E402
 
 import app.models.content  # noqa: E402, F401 (register all tables on Base.metadata)
+import app.models.interview  # noqa: E402, F401
 import app.models.progress  # noqa: E402, F401
 import app.models.quiz  # noqa: E402, F401
 import app.models.submission  # noqa: E402, F401

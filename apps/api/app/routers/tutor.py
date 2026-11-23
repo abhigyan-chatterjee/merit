@@ -397,38 +397,18 @@ async def list_models(
     return TutorModelsResponse(models=_extract_model_ids(payload))
 
 
-@router.post("/chat", response_model=TutorChatResponse)
-async def chat(
-    req: TutorChatRequest,
-    request: Request,
-    user: User | None = Depends(get_optional_current_user),
-    db: Session = Depends(get_db),
-) -> TutorChatResponse:
-    rate_key = user.id if user else (request.client.host if request.client else "guest")
+async def call_byok_completion(
+    base_url: str,
+    api_key: str,
+    model: str,
+    messages: list[dict[str, str]],
+    rate_key: str,
+    *,
+    sanitize_code_tripwire: bool = True,
+) -> str:
+    """Execute one rate-limited, IP-pinned BYOK chat completion request."""
     _check_rate_limit(rate_key)
-    hostname, pinned_ips = await _validate_provider_url(req.base_url)
-    problem = db.scalar(
-        select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
-    )
-    if not problem:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "code": "PROBLEM_NOT_FOUND",
-                "message": f"Problem '{req.problem_slug}' not found",
-            },
-        )
-
-    messages = [
-        {
-            "role": "system",
-            "content": _build_system_prompt(problem, req.code, req.failed_attempts, req.mode),
-        },
-    ]
-    messages.extend(
-        {"role": turn.role, "content": turn.content} for turn in req.history[-12:]
-    )
-    messages.append({"role": "user", "content": req.question})
+    hostname, pinned_ips = await _validate_provider_url(base_url)
     transport = _PinnedTransport(hostname, pinned_ips)
     try:
         async with httpx.AsyncClient(
@@ -438,9 +418,9 @@ async def chat(
             transport=transport,
         ) as client:
             resp = await client.post(
-                f"{req.base_url}/chat/completions",
-                headers=_auth_headers(req.api_key),
-                json={"model": req.model, "messages": messages},
+                f"{base_url}/chat/completions",
+                headers=_auth_headers(api_key),
+                json={"model": model, "messages": messages},
             )
     except httpx.HTTPError as err:
         raise _upstream_error() from err
@@ -472,4 +452,46 @@ async def chat(
                 break
     if not isinstance(reply, str) or not reply.strip():
         raise _upstream_error()
-    return TutorChatResponse(reply=_sanitize_reply(_sanitize_tutor_reply(reply)))
+    cleaned = _sanitize_tutor_reply(reply)
+    return _sanitize_reply(cleaned) if sanitize_code_tripwire else cleaned
+
+
+@router.post("/chat", response_model=TutorChatResponse)
+async def chat(
+    req: TutorChatRequest,
+    request: Request,
+    user: User | None = Depends(get_optional_current_user),
+    db: Session = Depends(get_db),
+) -> TutorChatResponse:
+    rate_key = user.id if user else (request.client.host if request.client else "guest")
+    problem = db.scalar(
+        select(Problem).where(Problem.slug == req.problem_slug, Problem.review_status == "verified")
+    )
+    if not problem:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROBLEM_NOT_FOUND",
+                "message": f"Problem '{req.problem_slug}' not found",
+            },
+        )
+
+    messages = [
+        {
+            "role": "system",
+            "content": _build_system_prompt(problem, req.code, req.failed_attempts, req.mode),
+        },
+    ]
+    messages.extend(
+        {"role": turn.role, "content": turn.content} for turn in req.history[-12:]
+    )
+    messages.append({"role": "user", "content": req.question})
+    reply = await call_byok_completion(
+        req.base_url,
+        req.api_key,
+        req.model,
+        messages,
+        rate_key,
+        sanitize_code_tripwire=True,
+    )
+    return TutorChatResponse(reply=reply)

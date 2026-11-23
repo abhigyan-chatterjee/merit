@@ -12,6 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 import app.models.content  # noqa: F401
 import app.models.feedback  # noqa: F401
+import app.models.interview  # noqa: F401
 import app.models.progress  # noqa: F401
 import app.models.quiz  # noqa: F401
 import app.models.revision  # noqa: F401
@@ -24,6 +25,7 @@ from app.routers import (
     auth,
     content,
     feedback,
+    interview,
     judge,
     progress,
     quizzes,
@@ -131,6 +133,7 @@ app.include_router(content.router)
 app.include_router(quizzes.router)
 app.include_router(admin.router)
 app.include_router(tutor.router)
+app.include_router(interview.router)
 app.include_router(feedback.router)
 app.include_router(revision.router)
 

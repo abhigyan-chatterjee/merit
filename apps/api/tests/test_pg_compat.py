@@ -50,6 +50,7 @@ def test_engine_builds_from_pg_url_without_connecting():
 
 def test_metadata_compiles_on_postgres_dialect():
     import app.models.content  # noqa: F401 (register tables)
+    import app.models.interview  # noqa: F401
     import app.models.progress  # noqa: F401
     import app.models.quiz  # noqa: F401
     import app.models.submission  # noqa: F401
@@ -121,6 +122,13 @@ def test_migration_chain_has_clean_upgrade_paths_and_no_sqlite_ddl():
     assert "target_drive_date" in targets_source
     assert "target_tier" in targets_source
     assert "server_default" in targets_source
+
+    interview_rev = script.get_revision("b8d4e5f6a7c0")
+    assert interview_rev is not None
+    assert interview_rev.down_revision == "a7c3d4e5f6b9"
+    interview_source = Path(interview_rev.path).read_text()
+    assert "interview_sessions" in interview_source
+    assert "ix_interview_sessions_user_id" in interview_source
 
 
 def test_quiz_answer_unique_constraint_in_metadata():

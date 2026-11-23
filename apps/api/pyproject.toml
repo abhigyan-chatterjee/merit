@@ -29,6 +29,8 @@ dependencies = [
     # starts clean, passes every test, and then fails every single submission
     # with "The code runner is temporarily unavailable."
     "google-auth[requests]>=2.35.0",
+    "pypdf>=5.0.0",
+    "python-multipart>=0.0.9",
 ]
 
 [project.optional-dependencies]
