@@ -17,7 +17,7 @@ import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
 import { Reveal } from '../components/ui/Reveal';
 import { useAuth } from '../store/AuthContext';
-import { PROBLEMS } from '../data/problems';
+import { PROBLEM_MANIFEST } from '../data/problemManifest';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
 
@@ -110,8 +110,32 @@ export const LandingPage: React.FC = () => {
   // starts it deliberately. Autostarting motion is the thing the preference
   // exists to stop.
   const [demoPlaying, setDemoPlaying] = useState(!reduce);
+  // The trace is ambient decoration: it must not burn CPU in a hidden tab or
+  // while its card is scrolled out of view.
+  const heroCardRef = useRef<HTMLDivElement>(null);
+  const [pageVisible, setPageVisible] = useState(
+    () => typeof document === 'undefined' || !document.hidden
+  );
+  const [cardVisible, setCardVisible] = useState(true);
+
+  useEffect(() => {
+    const onVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
+
+  useEffect(() => {
+    const card = heroCardRef.current;
+    if (!card || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setCardVisible(entry.isIntersecting)
+    );
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, []);
+
   const { arr, pair, sortedFrom, comparisons, swaps, sorted } =
-    useLiveSortDemo(demoPlaying);
+    useLiveSortDemo(demoPlaying && pageVisible && cardVisible);
 
   return (
     <div className="pb-10">
@@ -178,7 +202,7 @@ export const LandingPage: React.FC = () => {
 
           {/* Right column — live terminal demo */}
           <div className="lg:col-span-5 w-full">
-            <div className="rounded-xl border border-line bg-surface overflow-hidden shadow-2xl">
+            <div ref={heroCardRef} className="rounded-xl border border-line bg-surface overflow-hidden shadow-2xl">
               {/* Title bar */}
               <div className="flex items-center justify-between px-3 h-9 border-b border-line bg-canvas">
                 <div className="flex items-center gap-2">
@@ -290,8 +314,7 @@ export const LandingPage: React.FC = () => {
                 Start the Foundations path
               </div>
               <p className="text-xs text-muted mt-1.5 leading-relaxed max-w-xs">
-                Eight steps from empty graph to working BST. Each step pairs a workbench you can drive with a
-                problem you can submit.
+                {`${LEARNING_PATHS[0]?.steps.length ?? 21} steps from arrays to dynamic programming and graphs. Each step pairs interactive workbenches with coding practice and quizzes.`}
               </p>
               <span className="inline-flex items-center gap-1.5 mt-3 text-xs font-mono font-semibold text-mint">
                 Begin step 1
@@ -363,7 +386,7 @@ export const LandingPage: React.FC = () => {
             ·
           </span>
           <span>
-            <span className="text-violet font-bold tnum">{PROBLEMS.length}</span> problems
+            <span className="text-violet font-bold tnum">{PROBLEM_MANIFEST.length}</span> problems
           </span>
           <span className="text-muted select-none" aria-hidden="true">
             ·
@@ -374,7 +397,7 @@ export const LandingPage: React.FC = () => {
           <span className="text-muted select-none" aria-hidden="true">
             ·
           </span>
-          <span>every problem passes the judge before it ships</span>
+          <span>Python · JavaScript · Java · C++</span>
         </div>
       </section>
 
@@ -430,7 +453,7 @@ export const LandingPage: React.FC = () => {
               {
                 i: Code2,
                 t: 'Instant code verification',
-                d: 'Write a solution and run it against three test cases. See pass or fail per case, with output diffs and runtime.',
+                d: 'Write solutions in Python, JavaScript, Java, or C++ and verify against sample and hidden test cases with per-case diffs and runtime.',
                 tone: 'text-violet'
               },
               {
@@ -468,7 +491,7 @@ export const LandingPage: React.FC = () => {
             {
               n: '02',
               t: 'Implement & verify',
-              d: 'Solve curated problems across six patterns and get pass/fail per case with execution timings.',
+              d: 'Solve placement-grade problems across 18 core topics with per-case diffs and execution timings.',
               c: 'text-violet'
             },
             {

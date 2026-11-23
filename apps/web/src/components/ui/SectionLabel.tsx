@@ -26,9 +26,9 @@ export const SectionLabel: React.FC<SectionLabelProps> = ({
             {index}
           </span>
         )}
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted shrink-0">
+        <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted shrink-0">
           {title}
-        </span>
+        </h2>
         <span className="flex-1 h-px bg-line" />
         {action}
       </div>

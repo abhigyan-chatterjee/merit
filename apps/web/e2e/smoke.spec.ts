@@ -52,8 +52,12 @@ test.describe('Merit Golden Smoke & Invariants', () => {
     await page.goto('/visualizers/sorting');
     const stepFwdBtn = page.getByLabel('Step forward');
     await expect(stepFwdBtn).toBeVisible();
-    await stepFwdBtn.click();
-    // After step forward, comparisons or swaps counter updates
-    await expect(page.getByText(/Comparisons/i)).toBeVisible();
+    const comparisons = page.getByText('Comparisons', { exact: true }).locator('..');
+    const before = Number(await comparisons.locator('.tnum').innerText());
+    // The init and partition frames do not compare yet, so step a few times.
+    for (let i = 0; i < 3; i++) await stepFwdBtn.click();
+    await expect
+      .poll(async () => Number(await comparisons.locator('.tnum').innerText()))
+      .toBeGreaterThan(before);
   });
 });
