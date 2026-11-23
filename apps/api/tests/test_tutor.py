@@ -415,6 +415,40 @@ def test_chat_sanitizes_thought_and_think_tags(client: TestClient, monkeypatch):
         assert res.json() == {"reply": "Real answer"}
 
 
+def test_chat_list_of_parts_content_is_joined(client: TestClient, monkeypatch):
+    register_user(client, "tutor_chat_parts@merit.org")
+    install_fake_client(
+        monkeypatch,
+        post=lambda url, headers, body: FakeResponse(
+            200,
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": [
+                                {"type": "text", "text": "First part. "},
+                                {"type": "text", "text": "Second part."},
+                            ]
+                        }
+                    }
+                ]
+            },
+        ),
+    )
+    res = client.post(
+        "/api/v1/tutor/chat",
+        json={
+            "base_url": BASE_URL,
+            "api_key": API_KEY,
+            "model": "gpt-4o-mini",
+            "problem_slug": "two-sum",
+            "question": "Help?",
+        },
+    )
+    assert res.status_code == 200
+    assert res.json() == {"reply": "First part. Second part."}
+
+
 def test_rate_limit_30_per_minute(client: TestClient, monkeypatch):
     register_user(client, "tutor_ratelimit@merit.org")
     install_fake_client(

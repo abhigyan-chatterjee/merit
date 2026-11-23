@@ -1530,9 +1530,8 @@ const ctx = vm.createContext({
   parseInt, parseFloat, isNaN, isFinite, Infinity, NaN, undefined, BigInt
 });
 let fn = null;
-try {
-  vm.runInContext(userSrc, ctx);
-} catch (_) {}
+let loadErr = null;
+try { vm.runInContext(userSrc, ctx); } catch (err) { loadErr = err; }
 try {
   fn = vm.runInContext(
     "typeof __FUNCTION_NAME__ === 'function' ? __FUNCTION_NAME__ : null",
@@ -1540,7 +1539,10 @@ try {
   );
 } catch (_) {}
 if (typeof fn !== 'function') {
-  process.stderr.write("Function __FUNCTION_NAME__ is not defined");
+  const msg = loadErr !== null
+    ? String((loadErr && (loadErr.stack || loadErr.message)) || loadErr)
+    : "Function __FUNCTION_NAME__ is not defined";
+  process.stderr.write(msg);
   _exit(1);
 }
 const results = [];

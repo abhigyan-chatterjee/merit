@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Bot, ChevronDown, ChevronUp, ExternalLink, Send } from "lucide-react";
 import { catalogIdForBaseUrl, loadTutorCatalog, useTutorKey } from "../hooks/useTutorKey";
 import { ApiError, apiRequest } from "../utils/api";
@@ -67,6 +68,12 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
       cancelled = true;
     };
   }, [open, baseUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setMessages([]);
+    setError(null);
+    setFailedCount(failedAttempts);
+  }, [problemSlug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!open) return;
@@ -141,7 +148,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
           {!apiKey.trim() && (
             <div className="pt-3 text-xs font-mono text-muted">
               Set up a provider and key on your account to start a guided session.{" "}
-              <a href="/profile#tutor" className="inline-flex items-center gap-1 text-violet hover:underline">Open account <ExternalLink className="w-3 h-3" /></a>
+              <Link to="/profile#tutor" className="inline-flex items-center gap-1 text-violet hover:underline">Open account <ExternalLink className="w-3 h-3" /></Link>
             </div>
           )}
           {models.length > 0 && (
@@ -150,6 +157,12 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
               <select aria-label="Model" value={model} onChange={(event) => { setError(null); setStatus("models-loaded"); setModel(event.target.value); }} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
                 {models.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
+            </label>
+          )}
+          {open && apiKey.trim() && !catalogIdForBaseUrl(baseUrl) && models.length === 0 && (
+            <label className="block pt-3 text-xs font-mono">
+              <span className="text-muted">Model</span>
+              <input type="text" aria-label="Model" value={model} onChange={(e) => { setError(null); setModel(e.target.value); }} placeholder="Enter model id (e.g. llama3.2)" className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink" />
             </label>
           )}
           <div aria-label="Tutor chat log" className="space-y-2 max-h-72 overflow-y-auto p-2 rounded-lg bg-canvas border border-line">

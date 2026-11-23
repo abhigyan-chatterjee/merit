@@ -545,6 +545,7 @@ export interface JudgeResponse {
   runtime_ms: number;
   test_results: TestCaseResult[];
   compile_output: string;
+  infrastructure_error?: boolean;
 }
 
 export interface SubmissionItem {
@@ -555,6 +556,8 @@ export interface SubmissionItem {
   runtime_ms: number;
   test_results: TestCaseResult[];
   created_at: string;
+  compile_output?: string;
+  infrastructure_error?: boolean;
 }
 
 export const judgeApi = {

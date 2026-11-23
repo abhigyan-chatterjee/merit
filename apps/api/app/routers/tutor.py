@@ -276,9 +276,28 @@ async def chat(
     except ValueError as err:
         raise _upstream_error() from err
     try:
-        reply = payload["choices"][0]["message"]["content"]
+        message = payload["choices"][0]["message"]
     except (KeyError, IndexError, TypeError) as err:
         raise _upstream_error() from err
+    if not isinstance(message, dict):
+        raise _upstream_error()
+    content = message.get("content")
+    if isinstance(content, str):
+        reply = content
+    elif isinstance(content, list):
+        reply = "".join(
+            part.get("text", "")
+            for part in content
+            if isinstance(part, dict) and isinstance(part.get("text"), str)
+        )
+    else:
+        reply = ""
+    if not reply.strip():
+        for key in ("reasoning_content", "reasoning"):
+            fallback = message.get(key)
+            if isinstance(fallback, str) and fallback.strip():
+                reply = fallback
+                break
     if not isinstance(reply, str) or not reply.strip():
         raise _upstream_error()
     return TutorChatResponse(reply=_sanitize_reply(_sanitize_tutor_reply(reply)))

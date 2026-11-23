@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PROBLEMS } from '../data/problems';
 import { TOPICS } from '../data/curriculum';
@@ -49,13 +49,24 @@ export const ProblemDetailPage: React.FC = () => {
   }, [problem?.slug, problem?.topic]);
 
   const noteSlug = problem?.slug ?? '';
-  // One write per typing pause instead of one per keystroke. The hook cancels
-  // a pending save on unmount, so navigating away mid-word does not write to
-  // the problem the user just left.
-  const persistNote = useDebouncedCallback((text: string) => {
-    if (!noteSlug) return;
-    saveNote(noteSlug, text);
+  const pendingNoteRef = useRef<{ slug: string; text: string } | null>(null);
+  const saveNoteRef = useRef(saveNote);
+  useEffect(() => {
+    saveNoteRef.current = saveNote;
+  }, [saveNote]);
+  const persistNote = useDebouncedCallback((targetSlug: string, text: string) => {
+    if (targetSlug) {
+      pendingNoteRef.current = null;
+      saveNoteRef.current(targetSlug, text);
+    }
   }, NOTE_SAVE_DEBOUNCE_MS);
+  useEffect(() => () => {
+    const pending = pendingNoteRef.current;
+    if (pending) {
+      pendingNoteRef.current = null;
+      saveNoteRef.current(pending.slug, pending.text);
+    }
+  }, [problem?.slug]);
 
 
   if (!problem) {
@@ -74,7 +85,8 @@ export const ProblemDetailPage: React.FC = () => {
 
   const handleNoteChange = (val: string) => {
     setNoteText(val);
-    persistNote(val);
+    pendingNoteRef.current = { slug: noteSlug, text: val };
+    persistNote(noteSlug, val);
   };
 
   return (

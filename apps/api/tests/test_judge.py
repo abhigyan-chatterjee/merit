@@ -1008,6 +1008,66 @@ def test_a_normal_runtime_error_keeps_the_message_the_runtime_gave():
     )
 
 
+def test_submit_compile_error_surfaces_compile_output(client: TestClient):
+    register_user(client, "submit_ce_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/submit",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": "function solve(nums, target) { return ); }",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] in ("CE", "RE")
+    assert data["compile_output"]
+    assert data["infrastructure_error"] is False
+
+
+def test_js_syntax_error_is_not_reported_as_undefined_function(client: TestClient):
+    register_user(client, "js_syntax_student@merit.org")
+    res = client.post(
+        "/api/v1/judge/run",
+        json={
+            "problem_slug": "two-sum",
+            "language": "javascript",
+            "code": "function solve(nums, target) { return ]; }",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["verdict"] in ("CE", "RE")
+    assert "SyntaxError" in data["compile_output"]
+    assert "Function solve is not defined" not in data["compile_output"]
+
+
+def test_corrupt_submission_results_returns_empty_list(
+    client: TestClient, db_session: Session
+):
+    from app.models.submission import Submission
+
+    user_id = register_user(client, "corrupt_student@merit.org")
+    db_session.add(
+        Submission(
+            user_id=user_id,
+            problem_slug="two-sum",
+            language="javascript",
+            code="function solve() {}",
+            verdict="WA",
+            runtime_ms=1.0,
+            test_results="{not-json",
+            created_at="2026-01-01T00:00:00+00:00",
+        )
+    )
+    db_session.flush()
+    res = client.get("/api/v1/judge/submissions/two-sum")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) >= 1
+    assert data[0]["test_results"] == []
+
+
 @pytest.mark.asyncio
 async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
     """End-to-end: the summary is wired into the interpreted-language path."""

@@ -41,6 +41,14 @@ export const ProblemListPage: React.FC = () => {
   const [expandedTopics, setExpandedTopics] = useState<string[]>(
     topic && TOPICS.some((item) => item.slug === topic) ? [topic] : []
   );
+  const prevTopicParamRef = useRef<string | undefined>(topic);
+  useEffect(() => {
+    if (prevTopicParamRef.current === topic) return;
+    prevTopicParamRef.current = topic;
+    if (topic && TOPICS.some((item) => item.slug === topic)) {
+      setExpandedTopics((prev) => (prev.includes(topic) ? prev : [...prev, topic]));
+    }
+  }, [topic]);
 
   // Selected companies live in the URL (`?company=TCS[&company=...]`) so a
   // badge link from a problem page lands pre-filtered and filters are

@@ -29,6 +29,7 @@ export const AdminPage: React.FC = () => {
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -50,8 +51,10 @@ export const AdminPage: React.FC = () => {
         const data = await adminApi.getAuditLogs();
         setAuditLogs(data);
       }
+      setLoadError(null);
     } catch (err: any) {
       console.error('Failed to load admin data:', err);
+      setLoadError(err?.message ? `Failed to load admin data: ${err.message}` : 'Failed to load admin data. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -157,6 +160,19 @@ export const AdminPage: React.FC = () => {
         <div className="p-3.5 rounded-xl bg-mint/10 border border-mint/30 text-xs font-mono text-mint flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
           <span>{actionSuccess}</span>
+        </div>
+      )}
+
+      {loadError && (
+        <div role="alert" className="p-3.5 rounded-xl bg-rose/10 border border-rose/30 text-xs font-mono text-rose flex items-center justify-between gap-2">
+          <span>{loadError}</span>
+          <button
+            onClick={() => void loadData()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose/40 bg-rose/10 text-rose font-semibold text-xs hover:bg-rose/20 transition cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Retry
+          </button>
         </div>
       )}
 
@@ -451,6 +467,14 @@ export const AdminPage: React.FC = () => {
                   <h3 className="text-sm font-semibold text-ink">
                     {item.prompt || item.title}
                   </h3>
+
+                  {queueType === 'problems' && item.statement && (
+                    <div className="p-3 rounded-lg bg-canvas border border-line text-xs space-y-1">
+                      <span className="font-mono text-[10px] text-muted uppercase">Statement:</span>
+                      <p className="text-ink leading-relaxed whitespace-pre-wrap">{item.statement}</p>
+                      {item.pattern && <p className="text-muted font-mono text-[11px]">Pattern: {item.pattern}</p>}
+                    </div>
+                  )}
 
                   {item.options && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">

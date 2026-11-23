@@ -143,6 +143,9 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const [verdict, setVerdict] = useState<string | null>(null);
   const [runtimeMs, setRuntimeMs] = useState<number | null>(null);
   const [compileError, setCompileError] = useState<string | null>(null);
+  const [isInfraError, setIsInfraError] = useState(false);
+  const runTokenRef = useRef(0);
+  const submissionsTokenRef = useRef(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [needsAuth, setNeedsAuth] = useState(false);
@@ -182,6 +185,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // Fresh skeletons when navigating between problems: without this the
   // previous problem's code (and function name) lingered in the editor.
   useEffect(() => {
+    runTokenRef.current += 1;
     setCodeByLang(
       getInitialCodeByLang(
         problemSlug,
@@ -197,6 +201,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setIsInfraError(false);
+    setIsRunning(false);
+    setIsSubmitting(false);
+    setSelectedSubmission(null);
+    setSubmissions([]);
     setNeedsAuth(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problemSlug]);
@@ -269,6 +278,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   // keeps its own buffer, so the user's edits in one language are never
   // clobbered by switching to the other and back.
   const handleLanguageChange = (lang: EditorLang) => {
+    runTokenRef.current += 1;
     userChangedLangRef.current = true;
     setLanguage(lang);
     try {
@@ -282,10 +292,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setIsInfraError(false);
     setNeedsAuth(false);
   };
 
   const handleReset = () => {
+    runTokenRef.current += 1;
     try {
       window.localStorage.removeItem(getDraftKey(problemSlug, language));
     } catch {
@@ -304,6 +316,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     setResults(null);
     setVerdict(null);
     setCompileError(null);
+    setIsInfraError(false);
     setNeedsAuth(false);
   };
 
@@ -324,12 +337,18 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   const fetchSubmissions = useCallback(async () => {
-    if (!user) return;
+    const token = ++submissionsTokenRef.current;
+    if (!user) {
+      setSubmissions([]);
+      return;
+    }
     setSubmissionsError(null);
     try {
       const subs = await judgeApi.getSubmissions(problemSlug);
+      if (token !== submissionsTokenRef.current) return;
       setSubmissions(subs);
     } catch {
+      if (token !== submissionsTokenRef.current) return;
       setSubmissionsError("Unable to load submissions at this time.");
     }
   }, [user, problemSlug]);
@@ -362,6 +381,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     } else {
       setNeedsAuth(false);
       setVerdict("RE");
+      setIsInfraError(true);
       setCompileError(err instanceof Error ? err.message : fallbackMessage);
     }
     setResults(null);
@@ -369,12 +389,15 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   };
 
   const handleRunSamples = async () => {
+    const token = ++runTokenRef.current;
     setIsRunning(true);
     setCompileError(null);
+    setIsInfraError(false);
     setActiveView("results");
     resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     try {
       const res: JudgeResponse = await judgeApi.runSamples(problemSlug, language, code);
+      if (token !== runTokenRef.current) return;
       setNeedsAuth(false);
       setVerdict(res.verdict);
       setRuntimeMs(res.runtime_ms);
@@ -382,37 +405,51 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       setActiveTab(0);
       if (res.compile_output && res.verdict !== "AC") {
         setCompileError(res.compile_output);
+        setIsInfraError(Boolean(res.infrastructure_error));
       }
     } catch (err: unknown) {
+      if (token !== runTokenRef.current) return;
       handleJudgeError(err, "Execution failed");
     } finally {
-      setIsRunning(false);
-      resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      if (token === runTokenRef.current) {
+        setIsRunning(false);
+        resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      }
     }
   };
 
   const handleSubmit = async () => {
+    const token = ++runTokenRef.current;
     setIsSubmitting(true);
     setCompileError(null);
+    setIsInfraError(false);
     setActiveView("results");
     resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     try {
       const sub: SubmissionItem = await judgeApi.submit(problemSlug, language, code);
+      if (token !== runTokenRef.current) return;
       setNeedsAuth(false);
       setVerdict(sub.verdict);
       setRuntimeMs(sub.runtime_ms);
       setResults(sub.test_results);
       setActiveTab(0);
+      if (sub.compile_output && sub.verdict !== "AC") {
+        setCompileError(sub.compile_output);
+        setIsInfraError(Boolean(sub.infrastructure_error));
+      }
       onVerdict?.(sub.verdict === "AC");
       if (sub.verdict === "AC" && onAllPassed) {
         onAllPassed();
       }
       fetchSubmissions();
     } catch (err: unknown) {
+      if (token !== runTokenRef.current) return;
       handleJudgeError(err, "Submission failed");
     } finally {
-      setIsSubmitting(false);
-      resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      if (token === runTokenRef.current) {
+        setIsSubmitting(false);
+        resultsRef.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      }
     }
   };
 
@@ -562,7 +599,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
 
       {tutorEnabled && showTutor && (
         <div className="p-2 border-b border-line bg-surface">
-          <AiTutor problemSlug={problemSlug} code={code} defaultOpen />
+          <AiTutor key={problemSlug} problemSlug={problemSlug} code={code} defaultOpen />
         </div>
       )}
 
@@ -688,12 +725,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
               >
                 <div className="flex items-center gap-1.5 font-bold mb-1">
                   <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>Run failed, nothing was graded</span>
+                  <span>{isInfraError ? "Run failed, nothing was graded" : "Compile / Runtime Output"}</span>
                 </div>
                 {compileError}
-                <p className="mt-2 font-sans text-muted normal-case">
-                  The code runner is temporarily unavailable. Please try again shortly.
-                </p>
+                {isInfraError && (
+                  <p className="mt-2 font-sans text-muted normal-case">
+                    The code runner is temporarily unavailable. Please try again shortly.
+                  </p>
+                )}
               </div>
             )}
 

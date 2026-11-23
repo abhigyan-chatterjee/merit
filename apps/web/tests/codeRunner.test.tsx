@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CodeRunner } from '../src/components/CodeRunner';
 import { ApiError, judgeApi } from '../src/utils/api';
@@ -399,6 +399,74 @@ describe('CodeRunner Component (Phase 4)', () => {
       'title',
       'Sign in required to submit',
     );
+  });
+
+  it('submit CE shows compile_output without temporarily unavailable when not infra', async () => {
+    vi.spyOn(judgeApi, 'submit').mockResolvedValueOnce({
+      id: 'sub-ce',
+      problem_slug: 'two-sum',
+      language: 'javascript',
+      verdict: 'CE',
+      runtime_ms: 0,
+      test_results: [],
+      created_at: '2026-09-07T00:00:00Z',
+      compile_output: 'SyntaxError: Unexpected token )',
+      infrastructure_error: false,
+    });
+    renderRunner({
+      problemSlug: 'two-sum',
+      starterCode: 'function solve() {}',
+      functionName: 'solve',
+    });
+    fireEvent.click(screen.getByRole('button', { name: /^Submit$/i }));
+    await waitFor(() => {
+      expect(screen.getByText('SyntaxError: Unexpected token )')).toBeVisible();
+    });
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Compile \/ Runtime Output/i)).toBeVisible();
+  });
+
+  it('late runSamples resolution after problem switch does not overwrite clean state', async () => {
+    let resolveRun!: (v: unknown) => void;
+    const pending = new Promise((resolve) => {
+      resolveRun = resolve;
+    });
+    vi.spyOn(judgeApi, 'runSamples').mockReturnValueOnce(pending as never);
+    const { rerender } = render(
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/problems/arrays-hashing/two-sum']}>
+          <CodeRunner
+            problemSlug="two-sum"
+            starterCode="function solve() {}"
+            functionName="solve"
+          />
+        </MemoryRouter>
+      </AuthProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Run Samples/i }));
+    rerender(
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/problems/arrays-hashing/two-sum']}>
+          <CodeRunner
+            problemSlug="two-sum-ii-sorted"
+            starterCode="function solve() {}"
+            functionName="solve"
+          />
+        </MemoryRouter>
+      </AuthProvider>,
+    );
+    await act(async () => {
+      resolveRun({
+        verdict: 'AC',
+        runtime_ms: 1,
+        test_results: [
+          { label: 'Case 1', passed: true, input: [], expected: [], actual: [], runtime_ms: 1, error: null },
+        ],
+        compile_output: '',
+      });
+    });
+    expect(screen.queryByText(/Accepted \(AC\)/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Ready to run\./i)).toBeVisible();
   });
 
   it('persists guest editor drafts in localStorage across remounts', () => {

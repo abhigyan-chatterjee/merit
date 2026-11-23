@@ -36,6 +36,7 @@ class JudgeRunResponse(BaseModel):
     runtime_ms: float
     test_results: list[TestCaseResult]
     compile_output: str = ""
+    infrastructure_error: bool = False
 
 
 class SubmissionResponse(BaseModel):
@@ -47,5 +48,7 @@ class SubmissionResponse(BaseModel):
     runtime_ms: float
     test_results: list[TestCaseResult]
     created_at: str
+    compile_output: str = ""
+    infrastructure_error: bool = False
 
     model_config = {"from_attributes": True}

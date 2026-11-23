@@ -129,6 +129,21 @@ describe('ProblemDetailPage', () => {
     expect(screen.queryByRole('button', { name: /\+\d+ more/ })).not.toBeInTheDocument();
   });
 
+  it('saves note typed on Problem A under A when navigating to Problem B', async () => {
+    renderProblem();
+    const box = screen.getByPlaceholderText(/Write down edge cases/i);
+    fireEvent.change(box, { target: { value: 'note for two-sum' } });
+    fireEvent.click(screen.getByRole('link', { name: /Next in/i }));
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Two Sum II - Input Array Is Sorted' })).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      const notes = (stored().notes as Record<string, string> | undefined) ?? {};
+      expect(notes['two-sum']).toBe('note for two-sum');
+      expect(notes['two-sum-ii-sorted']).toBeUndefined();
+    });
+  });
+
   it('renders not-found for an unknown slug', () => {
     renderProblem('/problems/arrays-hashing/does-not-exist');
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();

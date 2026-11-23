@@ -68,7 +68,9 @@ def _get_verified_problem(db: Session, slug: str) -> Problem:
     return problem
 
 
-def _result_models(rows: list[dict]) -> list[TestCaseResult]:
+def _result_models(rows) -> list[TestCaseResult]:
+    if not isinstance(rows, list):
+        return []
     """Builds response models defensively.
 
     The rows come from student-visible process output, so a missing or wrong-typed
@@ -152,14 +154,21 @@ def _cases_from_rows(tc_rows: list[ProblemTestCase]) -> list[dict]:
                 ),
             },
         )
-    return [
-        {
-            "label": tc.label,
-            "input": json.loads(tc.input_json),
-            "expected": json.loads(tc.expected_json),
-        }
-        for tc in tc_rows
-    ]
+    cases = []
+    for tc in tc_rows:
+        try:
+            input_data = json.loads(tc.input_json)
+            expected_data = json.loads(tc.expected_json)
+        except (TypeError, ValueError):
+            raise HTTPException(
+                status_code=HTTP_422,
+                detail={
+                    "code": "INVALID_TEST_CASE",
+                    "message": "Problem test case data is malformed.",
+                },
+            ) from None
+        cases.append({"label": tc.label, "input": input_data, "expected": expected_data})
+    return cases
 
 
 @router.post("/run", response_model=JudgeRunResponse)
@@ -213,6 +222,7 @@ async def run_samples(
         runtime_ms=res.runtime_ms,
         test_results=_result_models(res.test_results),
         compile_output=res.compile_output,
+        infrastructure_error=res.infrastructure_error,
     )
 
 
@@ -268,6 +278,8 @@ async def submit_solution(
             runtime_ms=res.runtime_ms,
             test_results=[],
             created_at=now_str,
+            compile_output=res.compile_output,
+            infrastructure_error=res.infrastructure_error,
         )
 
     test_results_json = json.dumps(res.test_results)
@@ -326,6 +338,8 @@ async def submit_solution(
         runtime_ms=res.runtime_ms,
         test_results=_result_models(res.test_results),
         created_at=created_at,
+        compile_output=res.compile_output,
+        infrastructure_error=res.infrastructure_error,
     )
 
 
@@ -346,7 +360,10 @@ def get_submissions(
 
     resp = []
     for s in rows:
-        results_data = json.loads(s.test_results) if s.test_results else []
+        try:
+            results_data = json.loads(s.test_results) if s.test_results else []
+        except (TypeError, ValueError):
+            results_data = []
         resp.append(
             SubmissionResponse(
                 id=s.id,
