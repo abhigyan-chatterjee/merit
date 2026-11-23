@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useCallback, useRef } from
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useStreak } from '../hooks/useStreak';
 import { useAuth } from './AuthContext';
-import { progressApi, ProgressSummary, DailyGoalPayload } from '../utils/api';
+import { ApiError, progressApi, ProgressSummary, DailyGoalPayload } from '../utils/api';
 import {
   EMPTY_INITIAL_STATE,
   DAILY_GOAL_PRESETS,
@@ -128,6 +128,25 @@ function mergeRecord<T>(
   return out;
 }
 
+function mergeQuizScores(
+  local: Record<string, number>,
+  server: Record<string, number>,
+  written: ReadonlySet<string>,
+): Record<string, number> {
+  const out: Record<string, number> = { ...server };
+  Object.keys(local).forEach((key) => {
+    if (key.startsWith('exam:')) {
+      out[key] = local[key];
+    } else if (typeof local[key] === 'number') {
+      const serverVal = out[key] ?? 0;
+      if (local[key] > serverVal || written.has(`quiz:${key}`)) {
+        out[key] = Math.max(local[key], serverVal);
+      }
+    }
+  });
+  return out;
+}
+
 const mergeSlice = (
   prev: ProgressStateSchema,
   slice: Partial<ProgressStateSchema>,
@@ -142,7 +161,7 @@ const mergeSlice = (
     next.notes = mergeRecord(prev.notes, slice.notes, 'note', written);
   }
   if (slice.quizzes) {
-    next.quizzes = mergeRecord(prev.quizzes, slice.quizzes, 'quiz', written);
+    next.quizzes = mergeQuizScores(prev.quizzes, slice.quizzes, written);
   }
   if (slice.streak) {
     next.streak = written.has('streak') ? prev.streak : slice.streak;
@@ -176,7 +195,7 @@ type PendingWrite =
   | { kind: 'note'; key: string; slug: string; text: string; localDate: string }
   | { kind: 'bookmark'; key: string; itemType: string; itemId: string }
   | { kind: 'visualizer'; key: string; id: string }
-  | { kind: 'dailyGoal'; key: string; goal: DailyGoalPayload | null };
+  | { kind: 'dailyGoal'; key: string; goal: DailyGoalPayload | null; unpin?: boolean };
 
 const isPendingWrite = (value: unknown): value is PendingWrite => {
   if (!value || typeof value !== 'object') return false;
@@ -223,7 +242,11 @@ const sendPendingWrite = async (write: PendingWrite): Promise<void> => {
       await progressApi.visitVisualizer(write.id);
       return;
     case 'dailyGoal':
-      await progressApi.saveDailyGoal(write.goal);
+      if (write.unpin) {
+        await progressApi.unpinDailyGoal();
+      } else {
+        await progressApi.saveDailyGoal(write.goal);
+      }
       return;
   }
 };
@@ -321,7 +344,20 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       while (queue.length > 0) {
         try {
           await sendPendingWrite(queue[0]);
-        } catch {
+        } catch (err) {
+          if (
+            err instanceof ApiError &&
+            err.status >= 400 &&
+            err.status < 500 &&
+            err.status !== 401 &&
+            err.status !== 408 &&
+            err.status !== 429
+          ) {
+            console.warn('Dropping unrecoverable pending write:', queue[0], err);
+            queue.shift();
+            persistPendingWrites(queue);
+            continue;
+          }
           // Still offline / server unhappy: keep the head entry (and order)
           // for the next flush instead of dropping or reordering writes.
           break;
@@ -609,7 +645,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return { ...prev, dailyGoal: null };
     });
     if (user) {
-      enqueueWrite({ kind: 'dailyGoal', key: 'dailyGoal', goal: null });
+      enqueueWrite({ kind: 'dailyGoal', key: 'dailyGoal', goal: null, unpin: false });
     }
   };
 
@@ -617,7 +653,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     markWritten(['dailyGoal']);
     setState((prev) => ({ ...prev, dailyGoal: null }));
     if (user) {
-      enqueueWrite({ kind: 'dailyGoal', key: 'dailyGoal', goal: null });
+      enqueueWrite({ kind: 'dailyGoal', key: 'dailyGoal', goal: null, unpin: true });
     }
   };
 
@@ -696,4 +732,13 @@ export const useProgress = () => {
   const ctx = useContext(ProgressContext);
   if (!ctx) throw new Error('useProgress must be used within a ProgressProvider');
   return ctx;
+};
+
+export const useTheme = (): 'dark' | 'light' => {
+  const ctx = useContext(ProgressContext);
+  if (ctx) return ctx.theme;
+  if (typeof document !== 'undefined' && document.documentElement.classList.contains('light')) {
+    return 'light';
+  }
+  return 'dark';
 };

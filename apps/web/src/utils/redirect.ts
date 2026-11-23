@@ -12,11 +12,19 @@ export const isSafeLoginDestination = (value: string): boolean => {
   if (/[\\\u0000-\u001f\u007f]/.test(value)) return false;
   try {
     const parsed = new URL(value, window.location.origin);
-    return (
-      parsed.origin === window.location.origin &&
-      parsed.pathname.startsWith("/") &&
-      !parsed.pathname.startsWith("//")
-    );
+    if (
+      parsed.origin !== window.location.origin ||
+      !parsed.pathname.startsWith("/") ||
+      parsed.pathname.startsWith("//")
+    ) {
+      return false;
+    }
+    const pathname = parsed.pathname.toLowerCase();
+    const blocked = ["/login", "/register", "/sso-callback"];
+    if (blocked.some((b) => pathname === b || pathname.startsWith(`${b}/`))) {
+      return false;
+    }
+    return true;
   } catch {
     return false;
   }

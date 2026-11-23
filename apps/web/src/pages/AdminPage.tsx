@@ -191,7 +191,7 @@ export const AdminPage: React.FC = () => {
       {/* Tab 1: Stats */}
       {activeTab === 'stats' && stats && (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="p-5 rounded-xl border border-line bg-surface">
               <div className="text-[10px] font-mono text-muted uppercase">Registered Users</div>
               <div className="text-3xl font-bold font-mono text-ink mt-1">{stats.users_count}</div>
@@ -212,6 +212,15 @@ export const AdminPage: React.FC = () => {
               </div>
               <div className="text-[10px] font-mono text-muted mt-1">
                 {stats.draft_questions} pending review
+              </div>
+            </div>
+            <div className="p-5 rounded-xl border border-line bg-surface">
+              <div className="text-[10px] font-mono text-muted uppercase">Verified Problems</div>
+              <div className="text-3xl font-bold font-mono text-violet mt-1">
+                {stats.verified_problems}
+              </div>
+              <div className="text-[10px] font-mono text-muted mt-1">
+                {stats.draft_problems} draft problems
               </div>
             </div>
             <div className="p-5 rounded-xl border border-line bg-surface">

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ClerkProvider, SignIn, SignUp, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/AuthContext";
+import { useTheme } from "../store/ProgressContext";
 import { ApiError } from "../utils/api";
 import { isSafeLoginDestination } from "../utils/redirect";
 
@@ -72,6 +73,7 @@ export const ClerkOAuthSection: React.FC<ClerkOAuthSectionProps> = ({ mode, next
 };
 
 const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, next }) => {
+  const theme = useTheme();
   // Recorded before the redirect so the callback can restore it. Validated
   // again on read, since sessionStorage is not a trusted source.
   useEffect(() => {
@@ -82,33 +84,43 @@ const ClerkOAuthInner: React.FC<ClerkOAuthSectionProps> = ({ mode, next }) => {
     }
   }, [next]);
 
+  const appearance = useMemo(() => ({
+    variables: theme === 'dark' ? {
+      colorBackground: '#12181f',
+      colorInputBackground: '#0d1117',
+      colorText: '#e6edf3',
+      colorTextSecondary: '#8b949e',
+      colorPrimary: '#3fb950',
+      colorInputText: '#e6edf3',
+      borderRadius: '0.75rem',
+    } : {
+      colorBackground: '#ffffff',
+      colorInputBackground: '#f6f8fa',
+      colorText: '#1f2328',
+      colorTextSecondary: '#656d76',
+      colorPrimary: '#1a7f37',
+      colorInputText: '#1f2328',
+      borderRadius: '0.75rem',
+    },
+    elements: {
+      card: "bg-surface border border-line shadow-none",
+      headerTitle: "text-ink",
+      headerSubtitle: "text-muted",
+      socialButtonsBlockButton: "bg-canvas border border-line text-ink hover:bg-surface",
+      formFieldLabel: "text-ink",
+      formFieldInput: "bg-canvas border-line text-ink",
+      footer: "bg-surface border-t border-line",
+      footerActionText: "text-muted",
+      footerActionLink: "text-mint hover:underline",
+    },
+  }), [theme]);
+
   return (
     <div className="space-y-4">
       <div className="flex justify-center">
         <ClerkProvider
           publishableKey={PUBLISHABLE_KEY as string}
-          appearance={{
-            variables: {
-              colorBackground: '#12181f',
-              colorInputBackground: '#0d1117',
-              colorText: '#e6edf3',
-              colorTextSecondary: '#8b949e',
-              colorPrimary: '#3fb950',
-              colorInputText: '#e6edf3',
-              borderRadius: '0.75rem',
-            },
-            elements: {
-              card: "bg-surface border border-line shadow-none",
-              headerTitle: "text-ink",
-              headerSubtitle: "text-muted",
-              socialButtonsBlockButton: "bg-canvas border border-line text-ink hover:bg-surface-elevated",
-              formFieldLabel: "text-ink",
-              formFieldInput: "bg-canvas border-line text-ink",
-              footer: "bg-surface border-t border-line",
-              footerActionText: "text-muted",
-              footerActionLink: "text-mint hover:underline",
-            },
-          }}
+          appearance={appearance}
         >
           <ClerkBridge mode={mode} />
         </ClerkProvider>

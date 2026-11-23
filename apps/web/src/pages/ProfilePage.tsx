@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ClerkProvider, UserProfile, useAuth as useClerkAuth } from '@clerk/clerk-react';
 import { ArrowLeft, User as UserIcon, Code2, Download, Trash2, KeyRound, RefreshCw, Save } from 'lucide-react';
 import { useAuth } from '../store/AuthContext';
-import { authApi, progressApi } from '../utils/api';
+import { useTheme } from '../store/ProgressContext';
+import { apiRequest, authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
 import { isClerkConfigured } from '../components/ClerkOAuth';
 import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
@@ -12,28 +13,6 @@ import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from '../data/languages';
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
 
 type Tab = 'profile' | 'tutor' | 'language' | 'data' | 'danger';
-
-// Hoisted so ClerkProvider does not receive a fresh object on every render,
-// which would re-render the embedded widget through componentDidUpdate.
-const CLERK_APPEARANCE = {
-  variables: {
-    colorBackground: '#12181f',
-    colorInputBackground: '#0d1117',
-    colorText: '#e6edf3',
-    colorTextSecondary: '#8b949e',
-    colorPrimary: '#3fb950',
-    colorInputText: '#e6edf3',
-    borderRadius: '0.75rem',
-  },
-  elements: {
-    rootBox: 'w-full max-w-4xl mx-auto',
-    cardBox: 'w-full shadow-none border-0 bg-transparent',
-    card: 'w-full shadow-none border-0 bg-transparent',
-    navbar: 'border-r border-line bg-transparent',
-    navbarButton: 'text-muted hover:text-ink hover:bg-canvas',
-    pageScrollBox: 'p-4 sm:p-6 bg-transparent',
-  },
-};
 
 const SecurityHeading: React.FC<{ subtitle: string }> = ({ subtitle }) => (
   <div>
@@ -198,6 +177,59 @@ const NativeSecurityForm: React.FC = () => {
   );
 };
 
+const ConnectedOAuthSection: React.FC = () => {
+  const { user } = useAuth();
+  const { getToken, isSignedIn } = useClerkAuth();
+  const [linking, setLinking] = useState(false);
+  const [linkMsg, setLinkMsg] = useState<FormMessage>(null);
+
+  if (!isClerkConfigured() || !CLERK_PUBLISHABLE_KEY || user?.has_clerk_linked) {
+    return null;
+  }
+
+  const handleLink = async () => {
+    setLinking(true);
+    setLinkMsg(null);
+    try {
+      if (!isSignedIn) {
+        setLinkMsg({ ok: false, text: 'Please sign in to your OAuth provider first.' });
+        return;
+      }
+      const token = await getToken();
+      if (!token) {
+        setLinkMsg({ ok: false, text: 'No token available from provider.' });
+        return;
+      }
+      await authApi.linkClerk(token);
+      setLinkMsg({ ok: true, text: 'Account linked successfully.' });
+    } catch (err) {
+      setLinkMsg({ ok: false, text: err instanceof Error ? err.message : 'Could not link account.' });
+    } finally {
+      setLinking(false);
+    }
+  };
+
+  return (
+    <div className="pt-4 border-t border-line space-y-2">
+      <h3 className="text-xs font-mono text-muted">Connected OAuth Account</h3>
+      <p className="text-xs text-muted">Link a social account (Google/GitHub) for one-click sign in.</p>
+      <button
+        type="button"
+        onClick={handleLink}
+        disabled={linking}
+        className="px-4 py-2 rounded-lg border border-line bg-canvas text-xs font-mono text-ink hover:border-mint transition cursor-pointer disabled:opacity-50"
+      >
+        {linking ? 'Linking…' : 'Link Social Account'}
+      </button>
+      {linkMsg && (
+        <p role={linkMsg.ok ? 'status' : 'alert'} className={`text-xs font-mono ${linkMsg.ok ? 'text-mint' : 'text-rose'}`}>
+          {linkMsg.text}
+        </p>
+      )}
+    </div>
+  );
+};
+
 /**
  * Clerk's embedded profile only renders for a Clerk user. Rendering it
  * unconditionally left a zero-height box on every password-backed account,
@@ -214,6 +246,7 @@ const ClerkSecurityPanel: React.FC = () => {
       <>
         <SecurityHeading subtitle="Change the email and password used to sign in to Merit." />
         <NativeSecurityForm />
+        <ConnectedOAuthSection />
       </>
     );
   }
@@ -228,24 +261,56 @@ const ClerkSecurityPanel: React.FC = () => {
   );
 };
 
-const AccountSecuritySection: React.FC = () => (
-  <section aria-label="Account security" className="w-full rounded-xl border border-line bg-surface p-6 sm:p-8 space-y-4">
-    {isClerkConfigured() && CLERK_PUBLISHABLE_KEY ? (
-      <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} appearance={CLERK_APPEARANCE}>
-        <ClerkSecurityPanel />
-      </ClerkProvider>
-    ) : (
-      <>
-        <SecurityHeading subtitle="Change the email and password used to sign in to Merit." />
-        <NativeSecurityForm />
-      </>
-    )}
-  </section>
-);
+const AccountSecuritySection: React.FC = () => {
+  const theme = useTheme();
+  const clerkAppearance = useMemo(() => ({
+    variables: theme === 'dark' ? {
+      colorBackground: '#12181f',
+      colorInputBackground: '#0d1117',
+      colorText: '#e6edf3',
+      colorTextSecondary: '#8b949e',
+      colorPrimary: '#3fb950',
+      colorInputText: '#e6edf3',
+      borderRadius: '0.75rem',
+    } : {
+      colorBackground: '#ffffff',
+      colorInputBackground: '#f6f8fa',
+      colorText: '#1f2328',
+      colorTextSecondary: '#656d76',
+      colorPrimary: '#1a7f37',
+      colorInputText: '#1f2328',
+      borderRadius: '0.75rem',
+    },
+    elements: {
+      rootBox: 'w-full max-w-4xl mx-auto',
+      cardBox: 'w-full shadow-none border-0 bg-transparent',
+      card: 'w-full shadow-none border-0 bg-transparent',
+      navbar: 'border-r border-line bg-transparent',
+      navbarButton: 'text-muted hover:text-ink hover:bg-canvas',
+      pageScrollBox: 'p-4 sm:p-6 bg-transparent',
+    },
+  }), [theme]);
+
+  return (
+    <section aria-label="Account security" className="w-full rounded-xl border border-line bg-surface p-6 sm:p-8 space-y-4">
+      {isClerkConfigured() && CLERK_PUBLISHABLE_KEY ? (
+        <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} appearance={clerkAppearance}>
+          <ClerkSecurityPanel />
+        </ClerkProvider>
+      ) : (
+        <>
+          <SecurityHeading subtitle="Change the email and password used to sign in to Merit." />
+          <NativeSecurityForm />
+        </>
+      )}
+    </section>
+  );
+};
 
 export const ProfilePage: React.FC = () => {
   const { user, updateProfile, deleteAccount } = useAuth();
-  const { search } = useLocation();
+  const location = useLocation();
+  const search = location.search;
   const [tab, setTab] = useState<Tab>(() => {
     const q = new URLSearchParams(search).get('tab');
     return q === 'data' || q === 'danger' || q === 'language' || q === 'tutor' ? q : 'profile';
@@ -279,8 +344,13 @@ export const ProfilePage: React.FC = () => {
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (window.location.hash === '#tutor') setTab('tutor');
-  }, []);
+    const q = new URLSearchParams(search).get('tab');
+    if (q === 'data' || q === 'danger' || q === 'language' || q === 'tutor' || q === 'profile') {
+      setTab(q);
+    } else if (location.hash === '#tutor') {
+      setTab('tutor');
+    }
+  }, [search, location.hash]);
 
   const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === tutor.baseUrl) ?? TUTOR_PRESETS[0];
   const loadCatalog = async (catalogId: string) => {
@@ -303,24 +373,10 @@ export const ProfilePage: React.FC = () => {
     setModelsError(null);
     setConnResult(null);
     try {
-      const response = await fetch('/api/v1/tutor/models', {
+      const data = await apiRequest<{ models?: string[] }>('/api/v1/tutor/models', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ base_url: tutor.baseUrl, api_key: tutor.apiKey }),
       });
-      if (!response.ok) {
-        let detail = `HTTP ${response.status}`;
-        try {
-          const data = (await response.json()) as { detail?: unknown; error?: { message?: unknown } };
-          if (typeof data.detail === 'string' && data.detail) detail = data.detail;
-          else if (data.error && typeof data.error.message === 'string') detail = data.error.message;
-        } catch {
-          // Non-JSON error body — keep the status fallback.
-        }
-        throw new Error(detail);
-      }
-      const data = (await response.json()) as { models?: unknown };
       const list = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
       setModels(list);
       if (list.length > 0) tutor.setModel(list[0]);
@@ -442,7 +498,7 @@ export const ProfilePage: React.FC = () => {
 
       {tab === 'tutor' && (
         <div className="space-y-5">
-          <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-6">
+          <section id="tutor" className="p-5 rounded-xl border border-line bg-surface space-y-4 scroll-mt-20">
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2"><KeyRound className="w-4 h-4 text-mint" /> Tutor settings</h2>
               <p className="text-xs text-muted mt-1">Your key is kept for this browser session only, never saved to your account. Requests pass through the tutor proxy to reach the provider you selected, so treat it as leaving this device on each call.</p>
@@ -574,7 +630,7 @@ export const ProfilePage: React.FC = () => {
                   await deleteAccount();
                   window.location.href = '/';
                 }}
-                className="px-4 py-2 rounded-lg bg-rose text-white text-xs font-semibold hover:brightness-110 transition cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-rose text-canvas text-xs font-semibold hover:brightness-110 transition cursor-pointer"
               >
                 Yes, delete everything
               </button>

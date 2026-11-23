@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bug, X, Send, CheckCircle2, Loader2, ExternalLink } from 'lucide-react';
 import { useDialogFocus } from '../hooks/useDialogFocus';
+import { feedbackApi } from '../utils/api';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -64,25 +65,15 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
     setErrorMsg(null);
 
     try {
-      const res = await fetch('/api/v1/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title.trim(),
-          description: description.trim(),
-          category,
-          page_url: pageUrl || undefined,
-          problem_slug: problemSlug.trim() || undefined,
-          email: email.trim() || undefined,
-        }),
+      const data = await feedbackApi.submit({
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        page_url: pageUrl || undefined,
+        problem_slug: problemSlug.trim() || undefined,
+        email: email.trim() || undefined,
       });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || 'Failed to submit feedback. Please try again.');
-      }
-
-      const data = await res.json();
       setSuccessData({
         message: data.message || 'Feedback submitted successfully!',
         issueUrl: data.issue_url || undefined,
@@ -170,16 +161,16 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
         ) : (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             {errorMsg && (
-              <div className="p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-xs text-red-400">
+              <div role="alert" className="p-3 rounded-xl border border-rose/30 bg-rose/10 text-xs text-rose">
                 {errorMsg}
               </div>
             )}
 
             {/* Category selection */}
             <div>
-              <label className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
+              <span className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
                 Feedback Type
-              </label>
+              </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {[
                   { id: 'bug', label: 'Bug' },
@@ -190,6 +181,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
                   <button
                     key={item.id}
                     type="button"
+                    aria-pressed={category === item.id}
                     onClick={() => setCategory(item.id as any)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition cursor-pointer text-center ${
                       category === item.id
@@ -205,59 +197,63 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
 
             {/* Title */}
             <div>
-              <label className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
-                Summary / Title <span className="text-red-400">*</span>
+              <label htmlFor="feedback-title" className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
+                Summary / Title <span className="text-rose">*</span>
               </label>
               <input
+                id="feedback-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Empty input test case causes crash in Two Sum"
                 maxLength={150}
                 required
-                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint"
+                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-base sm:text-xs text-ink placeholder:text-muted/60 focus:border-mint"
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
-                Details <span className="text-red-400">*</span>
+              <label htmlFor="feedback-description" className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
+                Details <span className="text-rose">*</span>
               </label>
               <textarea
+                id="feedback-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Provide steps to reproduce or details on what needs fixing..."
                 rows={4}
                 required
-                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-canvas border border-line text-base sm:text-xs text-ink placeholder:text-muted/60 focus:border-mint resize-none"
               />
             </div>
 
             {/* Context & Email in 2 cols */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
+                <label htmlFor="feedback-problem-slug" className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
                   Problem Context (Optional)
                 </label>
                 <input
+                  id="feedback-problem-slug"
                   type="text"
                   value={problemSlug}
                   onChange={(e) => setProblemSlug(e.target.value)}
                   placeholder="e.g. two-sum"
-                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder:text-muted/60 focus:border-mint"
+                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-base sm:text-xs font-mono text-ink placeholder:text-muted/60 focus:border-mint"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
+                <label htmlFor="feedback-email" className="block text-[11px] font-mono text-muted uppercase tracking-wider mb-1.5">
                   Your Email (Optional)
                 </label>
                 <input
+                  id="feedback-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="for follow-up"
-                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-xs text-ink placeholder:text-muted/60 focus:border-mint"
+                  className="w-full px-3 py-1.5 rounded-lg bg-canvas border border-line text-base sm:text-xs text-ink placeholder:text-muted/60 focus:border-mint"
                 />
               </div>
             </div>

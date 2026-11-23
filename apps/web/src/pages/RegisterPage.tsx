@@ -20,7 +20,7 @@ export const RegisterPage: React.FC = () => {
               Create a MERIT Account
             </h1>
             <p className="text-xs text-muted">
-              Get an isolated, verified workspace for placement practice.
+              Track your DSA practice, mock exams, and spaced revision in one place.
             </p>
           </div>
         </Reveal>

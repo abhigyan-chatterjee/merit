@@ -23,6 +23,7 @@ export interface UserProfile {
   role: string;
   created_at: string;
   last_login_at: string | null;
+  has_clerk_linked?: boolean;
 }
 
 function normalizeUser(raw: Record<string, unknown>): UserProfile {
@@ -36,6 +37,7 @@ function normalizeUser(raw: Record<string, unknown>): UserProfile {
     role: String(data.role || "student"),
     created_at: String(data.created_at || ""),
     last_login_at: data.last_login_at ? String(data.last_login_at) : null,
+    has_clerk_linked: Boolean(data.has_clerk_linked),
   };
 }
 
@@ -179,16 +181,30 @@ async function crossTabRefresh(): Promise<void> {
 
 let refreshPromise: Promise<void> | null = null;
 
-export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = endpoint;
-  const headers = new Headers(options.headers || {});
+export interface ApiRequestOptions extends RequestInit {
+  skipRefreshOn401?: boolean;
+}
 
-  if (options.body && typeof options.body === "string" && !headers.has("Content-Type")) {
-    headers.set("Content-Type", "application/json");
+export async function apiRequest<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  const url = endpoint;
+  let headers: HeadersInit;
+  if (options.headers instanceof Headers) {
+    headers = options.headers;
+    if (options.body && typeof options.body === "string" && !headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+  } else if (Array.isArray(options.headers)) {
+    headers = [...options.headers];
+  } else {
+    headers = {
+      ...(options.body && typeof options.body === "string" ? { "Content-Type": "application/json" } : {}),
+      ...((options.headers as Record<string, string>) || {}),
+    };
   }
 
+  const { skipRefreshOn401, ...restOptions } = options;
   const fetchOptions: RequestInit = {
-    ...options,
+    ...restOptions,
     headers,
     credentials: "include",
   };
@@ -202,7 +218,7 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     endpoint.includes("/auth/refresh") ||
     endpoint.includes("/auth/oauth");
 
-  if (response.status === 401 && !isAuthEndpoint) {
+  if (response.status === 401 && !isAuthEndpoint && !skipRefreshOn401) {
     if (!refreshPromise) {
       refreshPromise = crossTabRefresh().finally(() => {
         refreshPromise = null;
@@ -288,17 +304,32 @@ export const authApi = {
     return normalizeUser(res);
   },
 
+  async linkClerk(clerkToken: string): Promise<UserProfile> {
+    const res = await apiRequest<Record<string, unknown>>("/api/v1/auth/oauth/clerk/link", {
+      method: "POST",
+      body: JSON.stringify({
+        clerk_token: clerkToken,
+      }),
+    });
+    return normalizeUser(res);
+  },
+
   async logout(): Promise<void> {
     await apiRequest<{ message: string }>("/api/v1/auth/logout", {
       method: "POST",
     });
   },
 
-  async getMe(): Promise<UserProfile> {
+  async getMe(options?: { skipRefreshOn401?: boolean }): Promise<UserProfile> {
     const res = await apiRequest<Record<string, unknown>>("/api/v1/auth/me", {
       method: "GET",
+      skipRefreshOn401: options?.skipRefreshOn401,
     });
     return normalizeUser(res);
+  },
+
+  async probeSession(): Promise<UserProfile> {
+    return await authApi.getMe({ skipRefreshOn401: true });
   },
 
   async deleteAccount(): Promise<void> {
@@ -464,10 +495,12 @@ export const progressApi = {
     preferred_language?: string;
     daily_goal?: DailyGoalPayload | null;
     clear_daily_goal?: boolean;
+    unpin_daily_goal?: boolean;
   }): Promise<{ preferred_language: string; daily_goal: DailyGoalPayload | null }> {
     const body: Record<string, unknown> = {};
     if (data.preferred_language !== undefined) body.preferred_language = data.preferred_language;
-    if (data.clear_daily_goal) body.clear_daily_goal = true;
+    if (data.unpin_daily_goal) body.unpin_daily_goal = true;
+    else if (data.clear_daily_goal) body.clear_daily_goal = true;
     else if (data.daily_goal !== undefined) body.daily_goal = data.daily_goal;
     return await apiRequest("/api/v1/progress/settings", {
       method: "PUT",
@@ -486,6 +519,13 @@ export const progressApi = {
     await apiRequest("/api/v1/progress/settings", {
       method: "PUT",
       body: JSON.stringify({ daily_goal: goal }),
+    });
+  },
+
+  async unpinDailyGoal(): Promise<void> {
+    await apiRequest("/api/v1/progress/settings", {
+      method: "PUT",
+      body: JSON.stringify({ unpin_daily_goal: true }),
     });
   },
 };
@@ -664,12 +704,29 @@ export const contentApi = {
   async getVisualizers(): Promise<any[]> {
     return await apiRequest<any[]>("/api/v1/visualizers");
   },
+};
 
-  async completeStep(stepId: number): Promise<{ step_id: number; completed: boolean }> {
-    return await apiRequest<{ step_id: number; completed: boolean }>(
-      `/api/v1/paths/steps/${stepId}/complete`,
-      { method: "POST" }
-    );
+export interface FeedbackPayload {
+  title: string;
+  description: string;
+  category: string;
+  page_url?: string;
+  problem_slug?: string;
+  email?: string;
+}
+
+export interface FeedbackResponse {
+  status: string;
+  message: string;
+  issue_url?: string;
+}
+
+export const feedbackApi = {
+  async submit(data: FeedbackPayload): Promise<FeedbackResponse> {
+    return await apiRequest<FeedbackResponse>("/api/v1/feedback", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   },
 };
 
