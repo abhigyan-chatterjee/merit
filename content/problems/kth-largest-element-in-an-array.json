@@ -1098,7 +1098,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "last-stone-weight",
+  "sequence": 4,
+  "prevSlug": "k-closest-points-to-origin",
   "nextSlug": "task-scheduler"
 }

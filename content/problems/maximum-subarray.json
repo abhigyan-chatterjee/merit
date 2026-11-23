@@ -4,6 +4,7 @@
   "title": "Maximum Subarray (Kadane)",
   "topic": "dynamic-programming",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Kadane's Algorithm",
   "statement": "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
   "examples": [
@@ -42,7 +43,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -88,9 +89,9 @@
       "label": "[5,4,-1,7,8]"
     }
   ],
-  "sequence": 9,
+  "sequence": 15,
   "prevSlug": "maximum-product-subarray",
-  "nextSlug": "partition-equal-subset-sum",
+  "nextSlug": "minimum-path-sum",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
   ],

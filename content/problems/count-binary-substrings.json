@@ -1,0 +1,244 @@
+{
+  "slug": "count-binary-substrings",
+  "title": "Count Binary Substrings",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "run-length grouping of adjacent runs",
+  "statement": "Given a bit string `s`, count its substrings in which the number of `'0'` characters equals the number of `'1'` characters and all `'0'`s are consecutive with each other, as are all `'1'`s. Every such substring is therefore a block of one character directly followed by an equally long block of the other.\n\nReturn that count, treating substrings that occupy different index ranges as distinct even when they read the same.\n\nFor example, `s = \"00110011\"` contains 6 such substrings.\n\nConstraints: `1 <= s.length <= 200`, and `s` consists only of the characters `'0'` and `'1'`.\n",
+  "examples": [
+    {
+      "input": "s = \"0\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"10\"",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The only interesting places in the string are the indices where the character changes; a valid substring always contains exactly one such change.",
+    "Compress the string into the lengths of its runs, for instance \"001110\" becomes [2, 3, 1].",
+    "For two neighbouring runs of lengths p and q, exactly min(p, q) substrings straddle their boundary: keep the previous run length and add min(previous, current)."
+  ],
+  "editorial": {
+    "approach": "The brute force enumerates substrings by their start index: for each i it extends j to the right, counting zeros and ones, and abandons the start as soon as the slice would span a third run of equal characters, adding one to the answer whenever the two counters match. That is O(n\u00b2) starts-and-extensions. The optimal observes that a valid substring can only live across the boundary of two neighbouring runs, so the string is first compressed into run lengths, and each adjacent pair of runs of lengths p and q contributes exactly min(p, q) substrings (the shorter run decides how many centred pairs fit).",
+    "why_optimal": "The compressed form is produced in one pass over the n characters, and every adjacent pair of runs is then resolved in O(1), so O(n) time and O(1) extra space (only the previous run length is carried). The brute force pays an extra factor of n by restarting a fresh scan at every start index, and the answer never exceeds the string length, so n = s.length up to 200 is comfortably within range.",
+    "pitfalls": "Using the current run length instead of min(previous run, current run). Adding a contribution for the first run, which has no left neighbour; initializing the previous length to 0 removes that case. Trying to count substrings that span two runs of the same character, which the run formulation excludes by construction, and forgetting that a single run alone can never be valid."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Run-length_encoding",
+    "https://www.geeksforgeeks.org/dsa/two-pointers-technique/",
+    "https://en.wikipedia.org/wiki/Substring"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.3085650000000051,
+    "optimalRuntimeMs": 0.13815599999999506,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "0"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "10"
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "00010000"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "00101100"
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "11100100101110101011000"
+      ],
+      "expected": 15,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "0100011110110100001110"
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "1000111001011101001111"
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "01000001"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "01111001101101010010"
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "10011"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "100000100010"
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "100111110"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "00100000"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "00001001100101100011111"
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "000110000101011001000000"
+      ],
+      "expected": 13,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "11010010111111"
+      ],
+      "expected": 6,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "01000"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "10010000000100001110101101110010001010011011010010001101011100110010101100000101001101000110000100110100101001110000111011110010"
+      ],
+      "expected": 88,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "10011110101010011011011111100110110110111110100110010000001011011100001001000101111101110110110101110000100011111001101101111010"
+      ],
+      "expected": 79,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "11011101001001010011101111111010010000000000100111000100111000010011101011011101011111100110111011010111110000110111001010111111"
+      ],
+      "expected": 75,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "11110001000011100101010010010100111110011001100001000101111110000100000001111001110010100010000111011111100111000010011101101111"
+      ],
+      "expected": 81,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const size = s.length;\n  let total = 0;\n  for (let i = 0; i < size; i++) {\n    let zeros = 0;\n    let ones = 0;\n    let runs = 1;\n    let current = s[i];\n    for (let j = i; j < size; j++) {\n      if (s[j] !== current) {\n        runs++;\n        if (runs > 2) break;\n        current = s[j];\n      }\n      if (s[j] === '0') zeros++; else ones++;\n      if (zeros === ones) total++;\n    }\n  }\n  return total;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let total = 0;\n  let previousRun = 0;\n  let i = 0;\n  const size = s.length;\n  while (i < size) {\n    let j = i;\n    while (j < size && s[j] === s[i]) j++;\n    const run = j - i;\n    total += Math.min(previousRun, run);\n    previousRun = run;\n    i = j;\n  }\n  return total;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "backspace-string-compare",
+  "nextSlug": "happy-number"
+}

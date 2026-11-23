@@ -1,0 +1,273 @@
+{
+  "slug": "isomorphic-strings",
+  "title": "Isomorphic Strings",
+  "topic": "arrays-hashing",
+  "difficulty": "Easy",
+  "pattern": "hashing / two-way character mapping",
+  "statement": "Two strings are called isomorphic when the characters of the first string can be renamed into the characters of the second, keeping the order the same. That means every character of `s` is assigned exactly one character of `t`, and two different characters of `s` may never be assigned the same character of `t`, so the correspondence works in both directions.\n\nGiven the strings `s` and `t`, return `true` if they are isomorphic and `false` otherwise. The two strings are guaranteed to have the same length; if they ever differ in length, no correspondence exists and the answer is `false`.\n\nBoth strings contain only lowercase English letters.\n\nConstraints: `1 <= s.length <= 200` and `1 <= t.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\", t = \"x\"",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"hh\", t = \"xd\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, t: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Two strings with the same set of characters are not automatically isomorphic. Walk them left to right and demand a consistent renaming.",
+    "Remember which character of t you have already chosen for each character of s, and when a character of s shows up again its partner must be unchanged.",
+    "You also need the opposite direction. No two different characters of s may be assigned the same character of t, so keep a second map from t back to s."
+  ],
+  "editorial": {
+    "approach": "The brute force compares every pair of positions i and j: the characters at those positions must be equal in s exactly when they are equal in t, which costs O(n\u00b2) comparisons. The optimal version walks both strings once and stores the rename in two hash maps, one from s characters to t characters and one back, so every position is checked in O(1).",
+    "why_optimal": "A solution must look at every character of both strings at least once, so O(n) time is a lower bound, and since character equality decisions need only constant work per position, two hash maps reach that bound. The string alphabet is fixed, so the extra space stays O(1) as well.",
+    "pitfalls": "Keeping only the map from s to t passes 'ab' against 'aa', because two characters of s silently share one character of t; the reverse map is required. Forgetting the equal-length guard gives out-of-range reads or a wrong true for strings of different length. Comparing character frequency multisets is not equivalent to isomorphism: 'aabb' and 'abba' have identical frequencies but are not isomorphic."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Bijection",
+    "https://en.wikipedia.org/wiki/Hash_table"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, t):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s, String t) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s, std::string t) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.06941999999999382,
+    "optimalRuntimeMs": 0.08938100000000304,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjchdmioulfl"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngryxwg"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hivpgrexssphzpzng"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxbvuudbmxkzd"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdburacyhfn"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbbsp"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrgqielchlj"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjvdeiddxreijtgwkg"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibw",
+        "aqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtky"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "txqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzthphinpamkvvzmxfoetramssvacuneofbimkgokkymiynicpaxrblhucyu",
+        "yahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluowenfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpry"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "wpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfggxpixsyqtjdgjhlfjawreibbrjweuypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdy",
+        "ugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueiecbfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqav"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "onbgqltypuoybgirejowpdautzhwfjrarnchdoduepwjqwinpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecp",
+        "ktwmuckvrmkuwyprbtchuvjhxcndyuwdofwjabkzbjllnehqnsvzfffctmtvhpsehouioivazojvrfcolsjunwiojgmpdhmslsjwjavmiasvyxbtxpjyzhtzlhugtivy"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  for (let i = 0; i < s.length; i++) {\n    for (let j = 0; j < i; j++) {\n      if ((s[i] === s[j]) !== (t[i] === t[j])) return false;\n    }\n  }\n  return true;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  if (s.length !== t.length) return false;\n  const forward = new Map();\n  const backward = new Map();\n  for (let i = 0; i < s.length; i++) {\n    const a = s[i];\n    const b = t[i];\n    if (forward.has(a)) {\n      if (forward.get(a) !== b) return false;\n    } else {\n      forward.set(a, b);\n    }\n    if (backward.has(b)) {\n      if (backward.get(b) !== a) return false;\n    } else {\n      backward.set(b, a);\n    }\n  }\n  return true;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 7,
+  "prevSlug": "intersection-of-two-arrays",
+  "nextSlug": "logger-rate-limiter"
+}

@@ -7,19 +7,14 @@
   "statement": "Given two strings `s1` and `s2`, return `true` if `s2` contains a permutation of `s1`, or `false` otherwise.\n\nIn other words, check if some rearrangement of `s1`'s characters exists as a contiguous substring of `s2`.\n\nConstraints: `1 <= s1.length <= 100` and `1 <= s2.length <= 100`.\n",
   "examples": [
     {
-      "input": "s1 = \"ba\", s2 = \"aaab\"",
-      "output": "true",
-      "explanation": "The substring \"ab\" at position 2 is a permutation of \"ba\" (same character counts: one 'a', one 'b')."
-    },
-    {
-      "input": "s1 = \"0a\", s2 = \"x2b\"",
+      "input": "s1 = \"b\", s2 = \"y\"",
       "output": "false",
-      "explanation": "No character of s1 appears in s2, so no window can match."
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
-      "input": "s1 = \"aa\", s2 = \"baaa\"",
-      "output": "true",
-      "explanation": "The substring \"aa\" at position 1 matches s1's frequency profile exactly."
+      "input": "s1 = \"xc\", s2 = \"b2\"",
+      "output": "false",
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -27,14 +22,14 @@
     "Inputs are JSON-serializable values satisfying the bounds stated above."
   ],
   "hints": [
-    "A permutation of s1 has identical character counts—compare frequency profiles instead of sorting.",
+    "A permutation of s1 has identical character counts\u2014compare frequency profiles instead of sorting.",
     "Slide a window of length m across s2, updating one incoming and one outgoing character per step.",
     "Two frequency maps match iff every key has the same count on both sides; watch for zero-count keys."
   ],
   "editorial": {
     "approach": "Sort s1 and compare against every sorted window of s2 (brute). The optimal slides a fixed-size window with frequency counters, updating one incoming and one outgoing character per step.",
-    "why_optimal": "The brute sort-each-window approach is O((n - m + 1) * m log m) due to repeated sorting. The frequency-map sliding window is O(m + (n - m) * Sigma) per step—linear in the alphabet size. On 22 cases the times were close (0.36 ms brute vs 0.48 ms optimal) because the alphabet is tiny; on larger alphabets the optimal wins by avoiding re-sorting.",
-    "pitfalls": "When a character's count drops to zero, delete it from the map so match checks stay accurate. If s1 is longer than s2, return false immediately—no substring can exist."
+    "why_optimal": "The brute sort-each-window approach is O((n - m + 1) * m log m) due to repeated sorting. The frequency-map sliding window is O(m + (n - m) * Sigma) per step\u2014linear in the alphabet size. On 22 cases the times were close (0.36 ms brute vs 0.48 ms optimal) because the alphabet is tiny; on larger alphabets the optimal wins by avoiding re-sorting.",
+    "pitfalls": "When a character's count drops to zero, delete it from the map so match checks stay accurate. If s1 is longer than s2, return false immediately\u2014no substring can exist."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Anagram",
@@ -52,8 +47,8 @@
   "pafVerification": {
     "seed": 42,
     "generatedCaseCount": 22,
-    "bruteForceRuntimeMs": 0.3575579999999938,
-    "optimalRuntimeMs": 0.47815700000000305
+    "bruteForceRuntimeMs": 0.37085800000000546,
+    "optimalRuntimeMs": 0.4092330000000075
   },
   "testCases": [
     {
@@ -221,8 +216,8 @@
     {
       "label": "stress-19",
       "input": [
-        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1",
-        "bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1"
+        "b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1ca",
+        "0zx1zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx01"
       ],
       "expected": false,
       "isSample": false
@@ -230,8 +225,8 @@
     {
       "label": "stress-20",
       "input": [
-        "ay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca011yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax",
-        "z11axy2cy11baxcy2a20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz0cx20cccb0"
+        "x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1bay111zcay1bb01baccybxb20x2011y0yabxxybcxc2bca",
+        "11yaxyy1bxyx0b2xcycbacyy1b1y0y2211ba0zyabxayac121yc01b1z0zzbcz01y02a1bzyzb02a210ax2z11axy2cy11baxcy2"
       ],
       "expected": false,
       "isSample": false
@@ -239,8 +234,8 @@
     {
       "label": "stress-21",
       "input": [
-        "x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2zxb1y0bcaay1bbx2c01z20c0b10yazx11xzbz",
-        "za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b11bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xb"
+        "20bxb1bc1y2y011x12c0x2cby0z2yayy1c121zz2201zxx0x0az100c1ac2zb1b21ac0cb1yz0bz20z12abxyxb0bb1cyaazayzz",
+        "cx20cccb0x1cx1y1ya1y2cb1zy0y1yx01bx0zyya0yaa1yxzxxycbay1azcbyz0cxc2z22ycy1yzb1bcx02zb0ay2b1zy0zbx1a2"
       ],
       "expected": false,
       "isSample": false
@@ -248,8 +243,8 @@
     {
       "label": "stress-22",
       "input": [
-        "2zbyx022ayacyyzzacc0bcab2x001zczyzbaccaby10110yx2bz0by12yax0aaxyxcyyzba10cc02x22zb0a0a1bz000yb0azc1zb0bx002b0yzxzcb2b22xzzcxbcyx",
-        "cbc111zzc1b11yyaz2by11aazybb2012a1xz12ca1bzb2cax1122czzy00zazbzb20yyczbczy0cby20zc2b02zazycxz1xxccbyb222azc0cccc1a0zx1y1x2xy1xz1"
+        "xb1y0bcaay1bbx2c01z20c0b10yazx11xzbz2za0yxb1bxaazxcxb2xxxzcaycc2ycbacazxzacyac02bb11z2b12xa2y1aa100b",
+        "1bbzcbcy2z02y120bb2x01x0z100bz0zyzc1bbbb0bzc2a22zb0z0ayyzb2xc1xbz2zbyx022ayacyyzzacc0bcab2x001zczyzb"
       ],
       "expected": false,
       "isSample": false
@@ -265,7 +260,7 @@
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m + (n - m) * Σ) | Space: O(Σ)",
+      "complexity": "Time: O(m + (n - m) * \u03a3) | Space: O(\u03a3)",
       "language": "javascript",
       "code": "function checkInclusion(s1, s2) {\n  const m = s1.length;\n  const n = s2.length;\n  if (m > n) return false;\n\n  const count1 = {};\n  const count2 = {};\n  for (let i = 0; i < m; i++) {\n    count1[s1[i]] = (count1[s1[i]] || 0) + 1;\n    count2[s2[i]] = (count2[s2[i]] || 0) + 1;\n  }\n\n  function isMatch(c1, c2) {\n    for (const ch in c1) {\n      if (c1[ch] !== (c2[ch] || 0)) return false;\n    }\n    for (const ch in c2) {\n      if (c2[ch] > 0 && (c1[ch] || 0) !== c2[ch]) return false;\n    }\n    return true;\n  }\n\n  if (isMatch(count1, count2)) return true;\n\n  for (let i = m; i < n; i++) {\n    const incoming = s2[i];\n    const outgoing = s2[i - m];\n    count2[incoming] = (count2[incoming] || 0) + 1;\n    count2[outgoing]--;\n    if (count2[outgoing] === 0) {\n      delete count2[outgoing];\n    }\n    if (isMatch(count1, count2)) {\n      return true;\n    }\n  }\n\n  return false;\n}",
       "isReference": true
@@ -279,13 +274,13 @@
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(m + (n - m) * Σ) | Space: O(Σ)",
+      "complexity": "Time: O(m + (n - m) * \u03a3) | Space: O(\u03a3)",
       "language": "python",
       "code": "def checkInclusion(s1, s2):\n    m = len(s1)\n    n = len(s2)\n    if m > n:\n        return False\n    count1 = {}\n    count2 = {}\n    for i in range(m):\n        count1[s1[i]] = count1.get(s1[i], 0) + 1\n        count2[s2[i]] = count2.get(s2[i], 0) + 1\n\n    def is_match(c1, c2):\n        for ch in c1:\n            if c1[ch] != c2.get(ch, 0):\n                return False\n        for ch in c2:\n            if c2[ch] > 0 and c1.get(ch, 0) != c2[ch]:\n                return False\n        return True\n\n    if is_match(count1, count2):\n        return True\n    for i in range(m, n):\n        incoming = s2[i]\n        outgoing = s2[i - m]\n        count2[incoming] = count2.get(incoming, 0) + 1\n        count2[outgoing] -= 1\n        if count2[outgoing] == 0:\n            del count2[outgoing]\n        if is_match(count1, count2):\n            return True\n    return False\n",
       "isReference": true
     }
   ],
-  "sequence": 4,
-  "prevSlug": "max-consecutive-ones-iii",
-  "nextSlug": "sliding-window-maximum"
+  "sequence": 9,
+  "prevSlug": "minimum-size-subarray-sum",
+  "nextSlug": "subarray-product-less-than-k"
 }

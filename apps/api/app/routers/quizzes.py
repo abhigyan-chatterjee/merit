@@ -1,11 +1,13 @@
 """Quiz API endpoints: generate quiz, submit attempt, retry wrong questions, and view attempt."""
 
 import json
+import logging
 import uuid
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
@@ -20,11 +22,17 @@ from app.schemas.quiz import (
     QuizSubmitRequest,
     QuizSubmitResponse,
 )
-from app.security import get_current_user
+from app.security import get_current_user, require_same_origin
 from app.services.sampler import sample_questions
 from app.services.streak import record_activity
 
-router = APIRouter(prefix="/api/v1/quizzes", tags=["quizzes"])
+logger = logging.getLogger(__name__)
+
+router = APIRouter(
+    prefix="/api/v1/quizzes",
+    tags=["quizzes"],
+    dependencies=[Depends(require_same_origin)],
+)
 
 
 @router.post("/generate", response_model=QuizGenerateResponse)
@@ -83,11 +91,14 @@ def submit_attempt(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> QuizSubmitResponse:
-    attempt = db.scalar(
+    attempt_query = (
         select(QuizAttempt)
         .options(selectinload(QuizAttempt.answers))
         .where(QuizAttempt.id == attempt_id, QuizAttempt.user_id == current_user.id)
     )
+    if db.bind.dialect.name != "sqlite":
+        attempt_query = attempt_query.with_for_update()
+    attempt = db.scalar(attempt_query)
     if not attempt:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -170,7 +181,34 @@ def submit_attempt(
 
     # Increment streak activity
     record_activity(db, current_user.id)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "ATTEMPT_ALREADY_SUBMITTED",
+                "message": "Quiz attempt already submitted",
+            },
+        ) from None
+
+    # Feed spaced repetition: a question answered wrong is the single best signal
+    # that it needs to come back, and the review queue is where it should land.
+    # Done after the commit so a scheduling problem cannot lose the attempt.
+    from app.services.revision import apply_review, grade_for_submission
+
+    try:
+        for result in results:
+            grade = grade_for_submission("AC" if result.is_correct else "WA")
+            if grade is None:
+                continue
+            apply_review(db, current_user.id, "question", result.question_id, grade)
+    except Exception:
+        # The attempt is already committed. Scheduling is a follow-on and must
+        # not fail the request the user is waiting on.
+        logger.exception("Could not schedule revision items for attempt %s", attempt.id)
+        db.rollback()
 
     return QuizSubmitResponse(
         attempt_id=attempt.id,
@@ -214,10 +252,16 @@ def retry_wrong_questions(
     ordered_questions = [q_dict[qid] for qid in wrong_qids if qid in q_dict]
 
     new_attempt_id = str(uuid.uuid4())
+    try:
+        retry_spec = json.loads(attempt.topic_spec) if attempt.topic_spec else {}
+    except (json.JSONDecodeError, TypeError):
+        retry_spec = {}
+    retry_spec.pop("expires_at", None)
+    retry_spec["is_mock"] = False
     new_attempt = QuizAttempt(
         id=new_attempt_id,
         user_id=current_user.id,
-        topic_spec=attempt.topic_spec,
+        topic_spec=json.dumps(retry_spec),
         question_ids=json.dumps([q.id for q in ordered_questions]),
         total=len(ordered_questions),
         correct=0,

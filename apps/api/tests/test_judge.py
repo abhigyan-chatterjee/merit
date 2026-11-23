@@ -99,50 +99,23 @@ function solve(nums, target) {
     assert all(tc["passed"] for tc in data["test_results"])
 
 
-def test_guest_can_run_and_submit_without_login(client: TestClient):
-    # Guests (unauthenticated) must be able to run samples and submit solutions
-    # so they can freely solve and test problems.
-    code = """
-function solve(nums, target) {
-  const map = new Map();
-  for (let i = 0; i < nums.length; i++) {
-    const complement = target - nums[i];
-    if (map.has(complement)) {
-      return [map.get(complement), i];
-    }
-    map.set(nums[i], i);
-  }
-  return [];
-}
-"""
-    # 1. Run samples as guest (no cookies/auth header)
-    run_res = client.post(
-        "/api/v1/judge/run",
-        json={
-            "problem_slug": "two-sum",
-            "language": "javascript",
-            "code": code,
-        },
-    )
-    assert run_res.status_code == 200
-    run_data = run_res.json()
-    assert run_data["verdict"] == "AC"
-    assert len(run_data["test_results"]) >= 1
+def test_guest_cannot_run_or_submit(client: TestClient):
+    """The judge requires a session.
 
-    # 2. Submit as guest (grades all cases without requiring user account)
-    sub_res = client.post(
-        "/api/v1/judge/submit",
-        json={
-            "problem_slug": "two-sum",
-            "language": "javascript",
-            "code": code,
-        },
-    )
-    assert sub_res.status_code == 200
-    sub_data = sub_res.json()
-    assert sub_data["id"] == "guest"
-    assert sub_data["verdict"] == "AC"
-    assert len(sub_data["test_results"]) >= 1
+    It used to accept anonymous callers, which made every request a paid Cloud
+    Run invocation on the operator's bill with no rate limit in front of it. The
+    client already renders a sign-in gate when it sees a 401 here, so this is the
+    behaviour the UI was built for.
+    """
+    client.cookies.clear()
+    code = "function solve(nums, target) { return []; }"
+
+    for path in ("/api/v1/judge/run", "/api/v1/judge/submit"):
+        response = client.post(
+            path,
+            json={"problem_slug": "two-sum", "language": "javascript", "code": code},
+        )
+        assert response.status_code == 401, f"{path} let an anonymous caller through"
 
 
 def test_judge_run_samples_wa(client: TestClient):
@@ -996,4 +969,63 @@ async def test_sandbox_privilege_drop_runs_in_the_launcher(monkeypatch, tmp_path
     # The child must report the identity the launcher was asked to drop to,
     # which proves the drop was applied rather than skipped.
     assert stdout.split() == [str(os.getuid()), str(os.getgid())]
+
+
+def test_heap_exhaustion_is_reported_in_words_not_as_a_native_dump():
+    """V8's heap crash must not reach the learner verbatim.
+
+    Node answers heap exhaustion with a GC log, a FATAL ERROR line and a native
+    stack trace naming the binary and its shared objects. That used to be passed
+    straight through as the run's message: it explains nothing about the
+    learner's code and leaks container paths into the response.
+    """
+    from app.services.judge import _summarise_runtime_error
+
+    dump = (
+        "<--- Last few GCs --->\n\n"
+        "[1:0x1]      867 ms: Mark-Compact 263.3 (267.2) -> 263.3 (267.2) MB, "
+        "allocation failure; GC in old space requested\n\n"
+        "FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - "
+        "JavaScript heap out of memory\n"
+        "----- Native stack trace -----\n\n"
+        " 1: 0x82153b node::OOMErrorHandler(char const*, v8::OOMDetails const&)\n"
+    )
+
+    message = _summarise_runtime_error("", dump)
+
+    assert "Memory limit exceeded" in message
+    assert "FATAL ERROR" not in message
+    assert "0x82153b" not in message
+
+
+def test_a_normal_runtime_error_keeps_the_message_the_runtime_gave():
+    """Only the heap dump is rewritten; a genuine error still names itself."""
+    from app.services.judge import _summarise_runtime_error
+
+    assert (
+        _summarise_runtime_error("", "TypeError: x is not a function")
+        == "TypeError: x is not a function"
+    )
+
+
+@pytest.mark.asyncio
+async def test_a_solution_that_blows_the_js_heap_reports_re_in_words():
+    """End-to-end: the summary is wired into the interpreted-language path."""
+    code = (
+        "function solve(n) {\n"
+        "  const a = [];\n"
+        "  while (true) a.push(new Array(100000).fill(n));\n"
+        "}\n"
+    )
+
+    result = await execute_code(
+        language="javascript",
+        code=code,
+        function_name="solve",
+        test_cases=[{"label": "c1", "input": [1], "expected": 1}],
+        time_limit_ms=5000,
+    )
+
+    assert result.verdict == "RE"
+    assert "Memory limit exceeded" in result.compile_output
 

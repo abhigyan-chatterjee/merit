@@ -1,0 +1,273 @@
+{
+  "slug": "is-subsequence",
+  "title": "Is Subsequence",
+  "topic": "two-pointers",
+  "difficulty": "Easy",
+  "pattern": "Suffix DP table collapsed into a greedy two-pointer scan",
+  "statement": "Given two lowercase strings `s` and `t`, decide whether `s` is a subsequence of `t`. A string is a subsequence of another string when it can be obtained by deleting zero or more characters from the other string without changing the order of the remaining characters.\n\nThe empty string is a subsequence of every string. Return `true` when `s` is a subsequence of `t`, and `false` otherwise.\n\nConstraints: `0 <= s.length <= 100` and `1 <= t.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\", t = \"x\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"hh\", t = \"xd\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, t: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "For s = \"abc\" and t = \"ahbgdc\", walk t left to right and try to match a, then b, then c, each one after the position of the previous match.",
+    "Matching the earliest possible occurrence never hurts: any later match leaves strictly fewer characters of t for the characters that follow. That exchange argument is why a single greedy scan suffices.",
+    "Define dp[i][j] as whether s[i:] is a subsequence of t[j:], write the two-case transition, then notice the table only ever needs one pointer because the answer is monotone in j."
+  ],
+  "editorial": {
+    "approach": "The brute force is the textbook suffix table: dp[i][j] is true when s[i:] is a subsequence of t[j:], with the base row dp[n][j] = true because an empty remainder always matches, and dp[i][m] = false for i > 0 because a non-empty remainder cannot match an exhausted second string. The transition consumes t[j] when it equals s[i] and skips it otherwise. The optimal is the greedy two-pointer scan: one index drives through t, and a second index advances into s whenever the current characters agree. It is the same recurrence collapsed, because each table cell reads only the cell below-right or the cell to its right, and the table is monotone in j, so the earliest usable match is always at least as good as any later one.",
+    "why_optimal": "Any correct algorithm must read t at least up to the character that matches the last character of s, and a subsequence whose final character sits at the end of t forces a full scan of both strings, so \u03a9(n + m) is a lower bound; the two-pointer scan meets it exactly. O(1) extra space is minimal because the answer depends only on two positions. The DP does \u0398(n\u00b7m) work and allocates the same number of cells for the identical answer; with |s| \u2264 100 and |t| \u2264 200 that is at most 20 200 cells, comfortable but roughly twenty times the work of the scan.",
+    "pitfalls": "Answering false for an empty `s`: the loop must be skipped and the counter (0) must compare equal to s.length (0); in the DP version initialising the base row dp[n][j] to false, or letting dp[i][m] become true, either of which turns the whole table into true; in the greedy version forgetting to advance the index into `s` on a match, or exiting early with a hard `return false` as soon as a character of t does not match instead of continuing the scan; off-by-one loop bounds in the DP so dp[0][0] is never written."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Subsequence",
+    "https://en.wikipedia.org/wiki/Longest_common_subsequence_problem"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, t) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, t):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s, String t) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s, std::string t) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 2.208452999999995,
+    "optimalRuntimeMs": 0.10058099999999115,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        "x"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "hh",
+        "xd"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "xrcsnbacghqtargwuwrnho",
+        "izayzfwnkiegykdcmdl"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "tizbxordmcrj",
+        "tlsgwcbvhyjchdmioulfl"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "gviwvuctufrx",
+        "fomiuwrh"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kyybhbzkmicgswkgupmuoe",
+        "ehxrrixsn"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "mlheqpcybdeufzvntcm",
+        "toqiravxdvryi"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        "lyfry"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "atkpadlzjhbhsccxp",
+        "yry"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "evprf",
+        "qtngryxwg"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "jmvuloqodhhckasrhshacwu",
+        "hc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "kc",
+        "hivpgrexssphzpzng"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "dvnl",
+        "noxbvuudbmxkzd"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "ggroenfi",
+        "hcozrdburacyhfn"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "pgmbfmamizzojnwx",
+        "vwpegjgbsxrbxkbbsp"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "qfbqcfctcvhmdshst",
+        "tc"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "vssqkigvwkhime",
+        "ujokycaotsdcrgqielchlj"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "orwjtz",
+        "qavrjvdeiddxreijtgwkg"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "uiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluq",
+        "vrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmhe"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "wayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljymnrxxrzth",
+        "hinpamkvvzmxfoetramssvacuneofbimkgokkymiynicpaxrblhucyubyahgatehepvdsgowiylfttxwdyfjdsajsvmmwgcswuhdwyjvtzdzszblrnvlcqukanpdnluo"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "enfxquitzryponxsikhciohyostvmkapkfpglzikitwiraqgchxnpryhwpuwpozacjhmwhjvslprqlnxrklwoijihdxgkdxrywfg",
+        "xpixsyqtjdgjhlfjawreibbrjweuypdasjppokfbipdcmpcsuvbeezsjchdrynttzthyqmoojsnjstbtxdygugivcfhfrcfanowtpjbhjwjwocvhizzusvzgndrhueie"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "bfzjtxsjodowjwmiqrpoctbnxktiachvssayvisbyyfpquoifsnupcplnkkvdfknwpjvmyrbockikdymqavronbgqltypuoybgir",
+        "jowpdautzhwfjrarnchdoduepwjqwinpphoremgtqxeciyznkzqiajxjssvpeorplkryrmokgwhsmhynbkxpwzmmvzuepbeqskdodqoaxenuecpziktwmuckvrmkuwyp"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n*m) | Space: O(n*m)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  const n = s.length;\n  const m = t.length;\n  const dp = [];\n  for (let i = 0; i <= n; i++) {\n    dp.push(new Array(m + 1).fill(false));\n  }\n  for (let j = 0; j <= m; j++) dp[n][j] = true;\n  for (let i = n - 1; i >= 0; i--) {\n    for (let j = m - 1; j >= 0; j--) {\n      if (s[i] === t[j]) dp[i][j] = dp[i + 1][j + 1];\n      else dp[i][j] = dp[i][j + 1];\n    }\n  }\n  return dp[0][0];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n + m) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, t) {\n  let i = 0;\n  for (let j = 0; j < t.length && i < s.length; j++) {\n    if (t[j] === s[i]) i++;\n  }\n  return i === s.length;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 4,
+  "prevSlug": "happy-number",
+  "nextSlug": "merge-two-sorted-lists"
+}

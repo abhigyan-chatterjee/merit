@@ -98,6 +98,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(perQuestionSec ?? 0);
   const [timedOut, setTimedOut] = useState<Record<string, true>>({});
+  const [autoSubmitPending, setAutoSubmitPending] = useState(false);
   // Echo of the topics the server actually sampled from (kept in state for
   // debuggability; not rendered to keep the header lean).
   const [, setServedTopics] = useState<string[] | null>(null);
@@ -113,6 +114,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // by context identity churn must not wipe an in-progress quiz or mint a
   // duplicate attempt for identical params.
   const loadedKeyRef = useRef<string | null>(null);
+  const remainingByQidRef = useRef<Record<string, number>>({});
 
   const changeCurrentIndex = (next: number | ((index: number) => number)) => {
     setCurrentIndex(next);
@@ -252,7 +254,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
               setAttemptId(null);
               setServedTopics(null);
               setActiveQuestions([]);
-              setLoadError(`No verified questions for topic${topics.length > 1 ? 's' : ''}: ${topics.join(', ')}.`);
+              setLoadError(`No questions available for topic${topics.length > 1 ? 's' : ''}: ${topics.join(', ')}.`);
               setIsLoading(false);
               return;
             }
@@ -354,11 +356,18 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           return rem - 1;
         });
       } else if (perQuestionSec && perQuestionSec > 0) {
-        setQuestionTimeLeft((left) => (left <= 1 ? 0 : left - 1));
+        setQuestionTimeLeft((left) => {
+          const next = left <= 1 ? 0 : left - 1;
+          const currentQuestion = activeQuestions[currentIndex];
+          if (currentQuestion) {
+            remainingByQidRef.current[currentQuestion.id] = next;
+          }
+          return next;
+        });
       }
     }, 1000);
     return () => clearInterval(timer);
-  }, [submitted, isLoading, isMock]);
+  }, [submitted, isLoading, isMock, activeQuestions, currentIndex, perQuestionSec]);
 
   // Time-up handling lives in an effect, not inside the countdown updater:
   // state updaters must stay pure (StrictMode double-invokes them, so side
@@ -366,30 +375,40 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // parent notification). Running at questionTimeLeft === 0 also makes the
   // "stop at the last question" case emerge from state instead of calling
   // clearInterval from inside an updater.
+  const answeredCount = Object.keys(selectedAnswers).length;
+
   useEffect(() => {
     if (submitted || isLoading || isMock) return;
     if (!perQuestionSec || questionTimeLeft !== 0) return;
     const currentQuestion = activeQuestions[currentIndex];
-    const atLast = currentIndex >= activeQuestions.length - 1;
-    if (currentQuestion) {
-      const timedId = currentQuestion.id;
-      setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
-    }
-    if (!atLast) {
-      changeCurrentIndex(Math.min(activeQuestions.length - 1, currentIndex + 1));
-      setQuestionTimeLeft(perQuestionSec);
-    }
-    // intentionally not depending on currentQ/changeCurrentIndex identity:
-    // questionTimeLeft transitions drive exactly one advance per question
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questionTimeLeft]);
+    if (!currentQuestion || timedOut[currentQuestion.id]) return;
 
-  // Reset the per-question clock whenever the question changes.
-  useEffect(() => {
-    if (!isMock && perQuestionSec && perQuestionSec > 0) {
-      setQuestionTimeLeft(perQuestionSec);
+    const timedId = currentQuestion.id;
+    setTimedOut((prev) => (prev[timedId] ? prev : { ...prev, [timedId]: true }));
+
+    const atLast = currentIndex >= activeQuestions.length - 1;
+    if (!atLast) {
+      const nextIndex = Math.min(activeQuestions.length - 1, currentIndex + 1);
+      changeCurrentIndex(nextIndex);
+      const nextQ = activeQuestions[nextIndex];
+      const saved = nextQ ? remainingByQidRef.current[nextQ.id] : undefined;
+      setQuestionTimeLeft(saved !== undefined ? saved : perQuestionSec);
+    } else {
+      if (answeredCount > 0 || Object.keys(timedOut).length + 1 >= activeQuestions.length) {
+        setAutoSubmitPending(true);
+      }
     }
-  }, [currentIndex, isMock, perQuestionSec]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionTimeLeft, timedOut]);
+
+  // Restore the per-question clock whenever the question changes.
+  useEffect(() => {
+    if (!isMock && perQuestionSec && perQuestionSec > 0 && activeQuestions[currentIndex]) {
+      const qid = activeQuestions[currentIndex].id;
+      const saved = remainingByQidRef.current[qid];
+      setQuestionTimeLeft(saved !== undefined ? saved : perQuestionSec);
+    }
+  }, [currentIndex, isMock, perQuestionSec, activeQuestions]);
 
 
   const currentQ = activeQuestions[currentIndex];
@@ -422,8 +441,6 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setSubmitted(true);
     onComplete?.(pct);
   };
-
-  const answeredCount = Object.keys(selectedAnswers).length;
 
   const handleSubmitQuiz = async () => {
     if (submitted || activeQuestions.length === 0) return;
@@ -467,10 +484,6 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       gradeLocally();
     }
   };
-  const handleSubmitQuizRef = useRef(handleSubmitQuiz);
-  useEffect(() => {
-    handleSubmitQuizRef.current = handleSubmitQuiz;
-  });
 
   const handleRetryWrongOnly = async () => {
     if (attemptId) {
@@ -511,6 +524,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     });
 
     if (wrongList.length === 0) return;
+    remainingByQidRef.current = {};
     setActiveQuestions(wrongList);
     changeCurrentIndex(0);
     setSelectedAnswers({});
@@ -528,15 +542,20 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  // Auto-submit the mock exam when the countdown hits zero. Placed after
-  // handleSubmitQuiz is defined so the effect never references a binding
-  // that is still in its temporal dead zone. Goes through a ref so the
-  // timer always calls the latest closure (current attemptId, answers).
+  // Auto-submit the mock exam when the countdown hits zero, or the regular quiz
+  // when the final question times out. Placed after handleSubmitQuiz so it
+  // reads the latest closure without mutating a ref during render/effects.
   useEffect(() => {
-    if (isMock && !submitted && !isLoading && secondsRemaining <= 0 && activeQuestions.length > 0) {
-      void handleSubmitQuizRef.current();
+    const mockExpired =
+      isMock && !submitted && !isLoading && secondsRemaining <= 0 && activeQuestions.length > 0;
+    const lastTimedOut =
+      autoSubmitPending && !submitted && !isLoading && activeQuestions.length > 0;
+    if (mockExpired || lastTimedOut) {
+      if (autoSubmitPending) setAutoSubmitPending(false);
+      void handleSubmitQuiz();
     }
-  }, [isMock, submitted, isLoading, secondsRemaining, activeQuestions.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMock, submitted, isLoading, secondsRemaining, activeQuestions.length, autoSubmitPending]);
 
   const correctCount = serverSummary
     ? serverSummary.correct
@@ -555,7 +574,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <RefreshCw className="w-8 h-8 text-mint animate-spin" />
         <div>
           <h3 className="text-sm font-semibold text-ink">Sampling Verified Questions...</h3>
-          <p className="text-xs text-muted mt-1">Loading verified questions…</p>
+          <p className="text-xs text-muted mt-1">Loading questions…</p>
         </div>
       </div>
     );
@@ -652,7 +671,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           </div>
 
           {submitted && (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-mint/15 border border-mint font-mono text-xs text-mint font-bold">
+            <div role="status" className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-mint/15 border border-mint font-mono text-xs text-mint font-bold">
               <Award className="w-4 h-4" />
               Score: {scorePct}% ({correctCount}/{activeQuestions.length})
             </div>

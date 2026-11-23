@@ -12,7 +12,6 @@ import { QueueVisualizer } from '../visualizers/QueueVisualizer';
 import { HashMapVisualizer } from '../visualizers/HashMapVisualizer';
 import { SearchingVisualizer } from '../visualizers/SearchingVisualizer';
 import { RecursionTreeVisualizer } from '../visualizers/RecursionTreeVisualizer';
-import { LinearVisualizer } from '../visualizers/LinearVisualizer';
 import { useProgress } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
 import { LessonNav } from '../components/LessonNav';
@@ -124,8 +123,6 @@ export const VisualizerDetailPage: React.FC = () => {
         return <SearchingVisualizer />;
       case 'recursion-tree':
         return <RecursionTreeVisualizer />;
-      default:
-        return <LinearVisualizer id={id} />;
     }
   };
 

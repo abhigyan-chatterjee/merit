@@ -1,5 +1,59 @@
 {
+  "3sum": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "4sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "accounts-merge": {
+    "params": [
+      "List<List<String>>"
+    ],
+    "returnType": "List<List<String>>"
+  },
+  "add-binary": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "add-strings": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "String"
+  },
   "add-two-numbers": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "alien-dictionary": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "String"
+  },
+  "all-nodes-distance-k-in-binary-tree": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "all-o-one-data-structure": {
     "params": [
       "List<Integer>",
       "List<Integer>"
@@ -11,6 +65,13 @@
       "List<List<Integer>>"
     ],
     "returnType": "List<List<Integer>>"
+  },
+  "amount-of-time-for-binary-tree-to-be-infected": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
   },
   "asteroid-collision": {
     "params": [
@@ -37,6 +98,12 @@
     ],
     "returnType": "int"
   },
+  "basic-calculator": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
   "basic-calculator-ii": {
     "params": [
       "String"
@@ -45,9 +112,34 @@
     "returnType": "int",
     "reviewedIntVsDouble": true
   },
+  "basic-calculator-iii": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
   "best-time-to-buy-and-sell-stock": {
     "params": [
       "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "best-time-to-buy-and-sell-stock-ii": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "best-time-to-buy-and-sell-stock-iii": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "best-time-to-buy-and-sell-stock-iv": {
+    "params": [
+      "List<Integer>",
+      "int"
     ],
     "returnType": "int"
   },
@@ -55,6 +147,12 @@
     "params": [
       "List<Integer>",
       "int"
+    ],
+    "returnType": "int"
+  },
+  "binary-tree-cameras": {
+    "params": [
+      "List<Integer>"
     ],
     "returnType": "int"
   },
@@ -76,9 +174,59 @@
     ],
     "returnType": "List<Integer>"
   },
+  "binary-tree-zigzag-level-order-traversal": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
   "boats-to-save-people": {
     "params": [
       "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "burst-balloons": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "bus-routes": {
+    "params": [
+      "List<List<Integer>>",
+      "int",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "can-place-flowers": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "candy": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "capacity-to-ship-packages-within-d-days": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "cheapest-flights-within-k-stops": {
+    "params": [
+      "int",
+      "List<List<Integer>>",
+      "int",
+      "int",
       "int"
     ],
     "returnType": "int"
@@ -89,6 +237,13 @@
     ],
     "returnType": "int"
   },
+  "clone-graph": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
   "coin-change": {
     "params": [
       "List<Integer>",
@@ -97,6 +252,13 @@
     "returnType": "int"
   },
   "combination-sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "combination-sum-ii": {
     "params": [
       "List<Integer>",
       "int"
@@ -122,15 +284,40 @@
     ],
     "returnType": "boolean"
   },
+  "contains-duplicate-ii": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "boolean"
+  },
+  "contiguous-array": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
   "copy-list-with-random-pointer": {
     "params": [
       "List<List<Integer>>"
     ],
     "returnType": "List<List<Integer>>"
   },
+  "count-binary-substrings": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
   "count-good-nodes": {
     "params": [
       "TreeNode"
+    ],
+    "returnType": "int"
+  },
+  "count-primes": {
+    "params": [
+      "int"
     ],
     "returnType": "int"
   },
@@ -172,6 +359,49 @@
     ],
     "returnType": "int"
   },
+  "delete-and-earn": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "design-circular-queue": {
+    "params": [
+      "int",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "design-hit-counter": {
+    "params": [
+      "int",
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "design-in-memory-file-system": {
+    "params": [
+      "List<String>",
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "design-memory-allocator": {
+    "params": [
+      "int",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "design-twitter": {
+    "params": [
+      "List<List<Integer>>",
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
   "diameter-of-binary-tree": {
     "params": [
       "List<Integer>"
@@ -185,11 +415,39 @@
     ],
     "returnType": "int"
   },
+  "evaluate-division": {
+    "params": [
+      "List<List<String>>",
+      "List<Integer>",
+      "List<List<String>>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "evaluate-reverse-polish-notation": {
     "params": [
       "List<String>"
     ],
     "returnType": "int"
+  },
+  "fibonacci-number": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "find-all-anagrams-in-a-string": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "find-first-and-last-position-of-element-in-sorted-array": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
   },
   "find-if-path-exists-in-graph": {
     "params": [
@@ -200,7 +458,46 @@
     ],
     "returnType": "boolean"
   },
+  "find-k-closest-elements": {
+    "params": [
+      "List<Integer>",
+      "int",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "find-median-from-data-stream": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
   "find-minimum-in-rotated-sorted-array": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "find-pivot-index": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "find-the-duplicate-number": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "find-the-index-of-the-first-occurrence-in-a-string": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "find-the-length-of-the-longest-common-prefix": {
     "params": [
       "List<Integer>"
     ],
@@ -226,11 +523,30 @@
     ],
     "returnType": "int"
   },
+  "first-unique-character-in-a-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "fizz-buzz": {
+    "params": [
+      "int"
+    ],
+    "returnType": "List<String>"
+  },
   "flatten-binary-tree-preorder": {
     "params": [
       "TreeNode"
     ],
     "returnType": "List<Integer>"
+  },
+  "flatten-nested-list-iterator": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "int"
   },
   "flood-fill": {
     "params": [
@@ -248,11 +564,23 @@
     ],
     "returnType": "int"
   },
+  "generate-parentheses": {
+    "params": [
+      "int"
+    ],
+    "returnType": "List<String>"
+  },
   "group-anagrams": {
     "params": [
       "List<String>"
     ],
     "returnType": "List<List<String>>"
+  },
+  "happy-number": {
+    "params": [
+      "int"
+    ],
+    "returnType": "boolean"
   },
   "house-robber": {
     "params": [
@@ -266,6 +594,24 @@
     ],
     "returnType": "int"
   },
+  "implement-queue-using-stacks": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "implement-trie-prefix-tree": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "int"
+  },
+  "insert-delete-getrandom-o-1": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "insert-interval": {
     "params": [
       "List<List<Integer>>",
@@ -273,11 +619,52 @@
     ],
     "returnType": "List<List<Integer>>"
   },
+  "integer-to-english-words": {
+    "params": [
+      "int"
+    ],
+    "returnType": "String"
+  },
+  "integer-to-roman": {
+    "params": [
+      "int"
+    ],
+    "returnType": "String"
+  },
+  "intersection-of-two-arrays": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "intersection-of-two-linked-lists": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
   "invert-binary-tree": {
     "params": [
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
+  },
+  "is-subsequence": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "isomorphic-strings": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
   },
   "jump-game": {
     "params": [
@@ -290,6 +677,13 @@
       "List<Integer>"
     ],
     "returnType": "int"
+  },
+  "k-closest-points-to-origin": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
   },
   "keys-and-rooms": {
     "params": [
@@ -342,6 +736,13 @@
     ],
     "returnType": "List<String>"
   },
+  "lfu-cache": {
+    "params": [
+      "int",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "linked-list-cycle": {
     "params": [
       "List<Integer>",
@@ -349,15 +750,42 @@
     ],
     "returnType": "boolean"
   },
+  "logger-rate-limiter": {
+    "params": [
+      "List<Integer>",
+      "List<String>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "longest-common-prefix": {
     "params": [
       "List<String>"
     ],
     "returnType": "String"
   },
+  "longest-common-subsequence": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "int"
+  },
   "longest-consecutive-sequence": {
     "params": [
       "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "longest-increasing-path-in-a-matrix": {
+    "params": [
+      "List<List<Integer>>"
     ],
     "returnType": "int"
   },
@@ -380,7 +808,19 @@
     ],
     "returnType": "int"
   },
+  "longest-string-chain": {
+    "params": [
+      "List<String>"
+    ],
+    "returnType": "int"
+  },
   "longest-substring-without-repeating": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "longest-valid-parentheses": {
     "params": [
       "String"
     ],
@@ -402,6 +842,13 @@
     ],
     "returnType": "int"
   },
+  "lru-cache": {
+    "params": [
+      "int",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "majority-element": {
     "params": [
       "List<Integer>"
@@ -414,10 +861,40 @@
     ],
     "returnType": "String"
   },
+  "making-a-large-island": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "max-area-of-island": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
   "max-consecutive-ones-iii": {
     "params": [
       "List<Integer>",
       "int"
+    ],
+    "returnType": "int"
+  },
+  "max-points-on-a-line": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "maximal-rectangle": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "maximal-square": {
+    "params": [
+      "List<List<Integer>>"
     ],
     "returnType": "int"
   },
@@ -427,8 +904,22 @@
     ],
     "returnType": "int"
   },
+  "maximum-number-of-events-that-can-be-attended": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
   "maximum-product-subarray": {
     "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "maximum-profit-in-job-scheduling": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>",
       "List<Integer>"
     ],
     "returnType": "int"
@@ -438,6 +929,14 @@
       "List<Integer>"
     ],
     "returnType": "int"
+  },
+  "median-of-two-sorted-arrays": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "double",
+    "reviewedIntVsDouble": true
   },
   "meeting-rooms": {
     "params": [
@@ -485,6 +984,39 @@
     ],
     "returnType": "List<Integer>"
   },
+  "min-stack": {
+    "params": [
+      "String",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "minimum-absolute-difference": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "minimum-path-sum": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "minimum-size-subarray-sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "minimum-window-substring": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "String"
+  },
   "missing-number": {
     "params": [
       "List<Integer>"
@@ -497,6 +1029,19 @@
     ],
     "returnType": "List<Integer>"
   },
+  "multiply-strings": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "n-queens": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
   "n-queens-count": {
     "params": [
       "int"
@@ -506,6 +1051,18 @@
   "next-greater-element-i": {
     "params": [
       "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "next-greater-element-ii": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "next-permutation": {
+    "params": [
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
@@ -528,11 +1085,24 @@
     ],
     "returnType": "int"
   },
+  "number-of-visible-people-in-a-queue": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "odd-even-linked-list": {
     "params": [
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
+  },
+  "open-the-lock": {
+    "params": [
+      "List<String>",
+      "String"
+    ],
+    "returnType": "int"
   },
   "pacific-atlantic-water-flow": {
     "params": [
@@ -546,11 +1116,23 @@
     ],
     "returnType": "boolean"
   },
+  "palindrome-number": {
+    "params": [
+      "int"
+    ],
+    "returnType": "boolean"
+  },
   "palindrome-partitioning": {
     "params": [
       "String"
     ],
     "returnType": "List<List<String>>"
+  },
+  "palindromic-substrings": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
   },
   "partition-equal-subset-sum": {
     "params": [
@@ -564,6 +1146,18 @@
       "int"
     ],
     "returnType": "List<Integer>"
+  },
+  "pascal-s-triangle": {
+    "params": [
+      "int"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "peak-element": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
   },
   "permutation-in-string": {
     "params": [
@@ -598,15 +1192,48 @@
     ],
     "returnType": "List<Integer>"
   },
+  "random-pick-with-weight": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "reconstruct-itinerary": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "redundant-connection": {
     "params": [
       "List<List<Integer>>"
     ],
     "returnType": "List<Integer>"
   },
+  "regular-expression-matching": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
   "remove-all-adjacent-duplicates": {
     "params": [
       "String"
+    ],
+    "returnType": "String"
+  },
+  "remove-all-adjacent-duplicates-in-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "remove-all-adjacent-duplicates-in-string-ii": {
+    "params": [
+      "String",
+      "int"
     ],
     "returnType": "String"
   },
@@ -615,6 +1242,13 @@
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
+  },
+  "remove-k-digits": {
+    "params": [
+      "String",
+      "int"
+    ],
+    "returnType": "String"
   },
   "remove-linked-list-elements": {
     "params": [
@@ -636,11 +1270,29 @@
     ],
     "returnType": "List<Integer>"
   },
+  "reorganize-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "restore-ip-addresses": {
+    "params": [
+      "String"
+    ],
+    "returnType": "List<String>"
+  },
   "reverse-bits": {
     "params": [
       "long"
     ],
     "returnType": "long"
+  },
+  "reverse-integer": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
   },
   "reverse-linked-list": {
     "params": [
@@ -663,11 +1315,36 @@
     ],
     "returnType": "List<Integer>"
   },
+  "reverse-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "reverse-words-in-a-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
   "roman-to-integer": {
     "params": [
       "String"
     ],
     "returnType": "int"
+  },
+  "rotate-array": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
+  "rotate-image": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
   },
   "rotate-list": {
     "params": [
@@ -696,6 +1373,13 @@
     ],
     "returnType": "boolean"
   },
+  "search-a-2d-matrix-ii": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "List<Integer>"
+  },
   "search-in-rotated-sorted-array": {
     "params": [
       "List<Integer>",
@@ -709,6 +1393,63 @@
       "int"
     ],
     "returnType": "int"
+  },
+  "search-suggestions-system": {
+    "params": [
+      "List<String>",
+      "String"
+    ],
+    "returnType": "List<List<String>>"
+  },
+  "second-highest-salary": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
+  },
+  "serialize-and-deserialize-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "String"
+  },
+  "set-matrix-zeroes": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<List<Integer>>"
+  },
+  "shortest-bridge": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "shortest-distance-from-all-buildings": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "shortest-path-in-a-grid-with-obstacles-elimination": {
+    "params": [
+      "List<List<Integer>>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "shortest-path-in-binary-matrix": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "simple-bank-system": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
   },
   "simplify-path": {
     "params": [
@@ -729,11 +1470,24 @@
     ],
     "returnType": "List<Integer>"
   },
+  "snapshot-array": {
+    "params": [
+      "List<List<Integer>>",
+      "List<List<Integer>>"
+    ],
+    "returnType": "List<Integer>"
+  },
   "sort-an-array": {
     "params": [
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
+  },
+  "sort-characters-by-frequency": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
   },
   "sort-colors": {
     "params": [
@@ -747,13 +1501,52 @@
     ],
     "returnType": "List<Integer>"
   },
+  "split-array-largest-sum": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "sqrt-x": {
+    "params": [
+      "int"
+    ],
+    "returnType": "int"
+  },
   "squares-of-sorted-array": {
     "params": [
       "List<Integer>"
     ],
     "returnType": "List<Integer>"
   },
+  "string-compression": {
+    "params": [
+      "String"
+    ],
+    "returnType": "String"
+  },
+  "string-to-integer-atoi": {
+    "params": [
+      "String"
+    ],
+    "returnType": "int"
+  },
+  "subarray-product-less-than-k": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
   "subarray-sum-equals-k": {
+    "params": [
+      "List<Integer>",
+      "int"
+    ],
+    "returnType": "int"
+  },
+  "subarrays-with-k-different-integers": {
     "params": [
       "List<Integer>",
       "int"
@@ -765,6 +1558,18 @@
       "List<Integer>"
     ],
     "returnType": "List<List<Integer>>"
+  },
+  "sudoku-solver": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "int"
+  },
+  "sum-of-subarray-minimums": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "int"
   },
   "sum-of-two-integers": {
     "params": [
@@ -804,11 +1609,26 @@
     ],
     "returnType": "int"
   },
+  "text-justification": {
+    "params": [
+      "List<String>",
+      "int"
+    ],
+    "returnType": "List<String>"
+  },
   "three-sum": {
     "params": [
       "List<Integer>"
     ],
     "returnType": "List<List<Integer>>"
+  },
+  "time-based-key-value-store": {
+    "params": [
+      "List<Integer>",
+      "List<Integer>",
+      "List<Integer>"
+    ],
+    "returnType": "List<Integer>"
   },
   "top-k-frequent-elements": {
     "params": [
@@ -816,6 +1636,13 @@
       "int"
     ],
     "returnType": "List<Integer>"
+  },
+  "top-k-frequent-words": {
+    "params": [
+      "List<String>",
+      "int"
+    ],
+    "returnType": "List<String>"
   },
   "trapping-rain-water": {
     "params": [
@@ -869,11 +1696,29 @@
     ],
     "returnType": "boolean"
   },
+  "valid-parenthesis-string": {
+    "params": [
+      "String"
+    ],
+    "returnType": "boolean"
+  },
+  "valid-sudoku": {
+    "params": [
+      "List<List<Integer>>"
+    ],
+    "returnType": "boolean"
+  },
   "validate-binary-search-tree": {
     "params": [
       "TreeNode"
     ],
     "returnType": "boolean"
+  },
+  "vertical-order-traversal-of-a-binary-tree": {
+    "params": [
+      "List<Integer>"
+    ],
+    "returnType": "List<List<Integer>>"
   },
   "wiggle-sort-ii-lite": {
     "params": [
@@ -881,12 +1726,26 @@
     ],
     "returnType": "List<Integer>"
   },
+  "wildcard-matching": {
+    "params": [
+      "String",
+      "String"
+    ],
+    "returnType": "boolean"
+  },
   "word-break": {
     "params": [
       "String",
       "List<String>"
     ],
     "returnType": "boolean"
+  },
+  "word-break-ii": {
+    "params": [
+      "String",
+      "List<String>"
+    ],
+    "returnType": "List<String>"
   },
   "word-ladder": {
     "params": [
@@ -896,11 +1755,33 @@
     ],
     "returnType": "int"
   },
+  "word-ladder-ii": {
+    "params": [
+      "String",
+      "String",
+      "List<String>"
+    ],
+    "returnType": "List<List<String>>"
+  },
   "word-search": {
     "params": [
       "List<List<String>>",
       "String"
     ],
     "returnType": "boolean"
+  },
+  "word-search-ii": {
+    "params": [
+      "List<String>",
+      "List<String>"
+    ],
+    "returnType": "List<String>"
+  },
+  "zigzag-conversion": {
+    "params": [
+      "String",
+      "int"
+    ],
+    "returnType": "String"
   }
 }

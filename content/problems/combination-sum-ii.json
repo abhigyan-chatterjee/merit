@@ -1,0 +1,843 @@
+{
+  "slug": "combination-sum-ii",
+  "title": "Combination Sum II",
+  "topic": "backtracking",
+  "difficulty": "Medium",
+  "pattern": "backtracking with sorted duplicate skipping",
+  "statement": "Given a list of positive integers `candidates`, which may repeat a value, and a `target`, return every distinct group of entries whose values add up to `target`.\n\nEach position of `candidates` may be used at most once, so a value that occurs twice can appear twice in a group only through its two separate positions. Two groups count as the same group when they hold the same multiset of values, and the answer must list each distinct group once. If nothing sums to `target`, return an empty list.\n\nThe output shape is fixed so that the check is unambiguous: the values inside a group are listed in non-decreasing order, and the groups themselves are sorted ascending, compared element by element, with the shorter group first when one is a prefix of the other.\n\nConstraints: `1 <= candidates.length <= 16`, `1 <= candidates[i] <= 50`, `1 <= target <= 100`.\n",
+  "examples": [
+    {
+      "input": "candidates = [1], target = 1",
+      "output": "[[1]]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "candidates = [49, 4, 8], target = 20",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(candidates: number[], target: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "You are choosing how many copies of each distinct value to take; the only difficulty is that different positions can hold the same value.",
+    "Sort the input, then at each level of the search skip a value equal to the one you just tried at that same level. Those two sibling branches would produce identical groups.",
+    "Sorted input also gives you a stopping rule: once a candidate exceeds the remaining target, every later candidate is at least as large, so abandon the rest of the loop instead of testing them."
+  ],
+  "editorial": {
+    "approach": "The brute force enumerates the choices directly, but value by value instead of position by position. Collapse equal entries into (value, copies) pairs, then recurse over the pairs deciding how many copies of the current value to take, from zero up to the number of times it occurs, and only while those copies still fit in the target that is left. Every multiset reachable from `candidates` is built exactly once that way, so no de-duplication pass is needed, and a group is recorded the moment the remaining target hits zero. The optimal version sorts `candidates` once and runs a DFS over positions instead: each call tries every remaining index, pushes the value, recurses with `index + 1` so a position is never reused, and pops on the way out. Two prunes do the real work. `nums[i] == nums[i - 1]` with `i > index` skips a duplicate value at the same depth of the search, which is precisely the reason duplicate groups are never generated. Because the array is sorted, `nums[i] > remaining` lets the loop `break` instead of testing every later value.",
+    "why_optimal": "The output itself can be exponential in `n`, so an exponential worst case is inherent to the problem and both versions share it. The difference is in how much of the search tree is walked to get there. The brute force groups equal entries and stops a branch as soon as the copies would overshoot the target, which keeps it close to the size of the answer at the maximum length of 16, but it visits every multiplicity combination with no shortcut for equal values. Sorting turns duplicate avoidance into a constant-time comparison and turns the update on a sorted prefix into a `break`, so the DFS only descends into branches that can still reach the target.",
+    "pitfalls": "Letting a branch take more copies than fit, because the loop bound is `copies` alone instead of `copies` together with the remaining target: with positive values such a branch can never return to zero, and the work is pure waste. Pushing the chosen copies without popping the same number on the way out, so sibling branches inherit values from the branch just abandoned and emit groups that do not sum to `target`. Enumerating the `2^n` subsets of positions with a 32-bit bitmask: past 30 positions the shift wraps, the loop runs the wrong number of times, and the answer silently comes back empty. Testing `i > 0` instead of `i > index` when skipping equal values in the DFS: that forbids the second copy of a repeated value even inside one group, and the answer loses groups such as `[1, 1, 6]`. Pushing the working list without copying it, so every recorded group aliases the same array and ends up empty. Skipping duplicates on the *values* instead of the *positions*, which collapses legitimate repeats. Placing the `break` before the duplicate skip, or using `continue` for the too-large case and paying for the rest of the loop. Forgetting that the empty selection is only valid when `target` is 0, which the constraints exclude but the recursion must still not emit."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Backtracking",
+    "https://en.wikipedia.org/wiki/Combination"
+  ],
+  "starterCode": {
+    "javascript": "function solve(candidates, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(candidates, target):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] solve(int[] candidates, int target) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<int> candidates, int target) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 1.0737330000000327,
+    "optimalRuntimeMs": 0.6250730000000004,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          1
+        ],
+        1
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50,
+          50
+        ],
+        100
+      ],
+      "expected": [
+        [
+          50,
+          50
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          2,
+          48,
+          18,
+          16
+        ],
+        29
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          48,
+          7,
+          44,
+          48,
+          35
+        ],
+        12
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          3,
+          2,
+          6,
+          14,
+          15,
+          33,
+          39,
+          2,
+          36,
+          13,
+          46,
+          42,
+          45,
+          35
+        ],
+        54
+      ],
+      "expected": [
+        [
+          2,
+          2,
+          3,
+          14,
+          33
+        ],
+        [
+          2,
+          2,
+          14,
+          36
+        ],
+        [
+          2,
+          2,
+          15,
+          35
+        ],
+        [
+          2,
+          3,
+          13,
+          36
+        ],
+        [
+          2,
+          3,
+          14,
+          35
+        ],
+        [
+          2,
+          6,
+          13,
+          33
+        ],
+        [
+          2,
+          6,
+          46
+        ],
+        [
+          2,
+          13,
+          39
+        ],
+        [
+          3,
+          6,
+          45
+        ],
+        [
+          3,
+          15,
+          36
+        ],
+        [
+          6,
+          13,
+          35
+        ],
+        [
+          6,
+          15,
+          33
+        ],
+        [
+          15,
+          39
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          29,
+          38,
+          18,
+          1,
+          49,
+          11,
+          45,
+          28
+        ],
+        44
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          10,
+          14,
+          49,
+          22,
+          7,
+          6,
+          25,
+          7,
+          23
+        ],
+        45
+      ],
+      "expected": [
+        [
+          6,
+          7,
+          7,
+          25
+        ],
+        [
+          6,
+          7,
+          10,
+          22
+        ],
+        [
+          6,
+          14,
+          25
+        ],
+        [
+          22,
+          23
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          3,
+          47,
+          30,
+          35,
+          8,
+          25,
+          6,
+          36,
+          19
+        ],
+        81
+      ],
+      "expected": [
+        [
+          3,
+          6,
+          25,
+          47
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          37,
+          13,
+          46,
+          5,
+          3,
+          43,
+          15,
+          50,
+          19,
+          6,
+          15,
+          7
+        ],
+        49
+      ],
+      "expected": [
+        [
+          3,
+          5,
+          6,
+          7,
+          13,
+          15
+        ],
+        [
+          3,
+          5,
+          7,
+          15,
+          19
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          5,
+          7,
+          37
+        ],
+        [
+          6,
+          13,
+          15,
+          15
+        ],
+        [
+          6,
+          43
+        ],
+        [
+          15,
+          15,
+          19
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          30,
+          41,
+          24,
+          11,
+          24,
+          23,
+          14,
+          43,
+          18
+        ],
+        90
+      ],
+      "expected": [
+        [
+          11,
+          14,
+          18,
+          23,
+          24
+        ],
+        [
+          11,
+          14,
+          24,
+          41
+        ],
+        [
+          23,
+          24,
+          43
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          39,
+          41,
+          11
+        ],
+        69
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          11,
+          30,
+          25,
+          18,
+          41,
+          45,
+          36,
+          15
+        ],
+        88
+      ],
+      "expected": [
+        [
+          11,
+          36,
+          41
+        ],
+        [
+          15,
+          18,
+          25,
+          30
+        ],
+        [
+          18,
+          25,
+          45
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          50,
+          50,
+          4,
+          15,
+          3,
+          21,
+          26,
+          18,
+          5,
+          14,
+          37
+        ],
+        92
+      ],
+      "expected": [
+        [
+          3,
+          4,
+          5,
+          15,
+          18,
+          21,
+          26
+        ],
+        [
+          3,
+          4,
+          14,
+          21,
+          50
+        ],
+        [
+          3,
+          5,
+          14,
+          15,
+          18,
+          37
+        ],
+        [
+          3,
+          5,
+          21,
+          26,
+          37
+        ],
+        [
+          3,
+          18,
+          21,
+          50
+        ],
+        [
+          4,
+          5,
+          15,
+          18,
+          50
+        ],
+        [
+          5,
+          14,
+          15,
+          21,
+          37
+        ],
+        [
+          5,
+          37,
+          50
+        ],
+        [
+          14,
+          15,
+          26,
+          37
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          14,
+          42,
+          32,
+          26,
+          42,
+          30,
+          10,
+          17,
+          9,
+          16,
+          48
+        ],
+        72
+      ],
+      "expected": [
+        [
+          9,
+          14,
+          17,
+          32
+        ],
+        [
+          9,
+          16,
+          17,
+          30
+        ],
+        [
+          10,
+          14,
+          16,
+          32
+        ],
+        [
+          10,
+          14,
+          48
+        ],
+        [
+          10,
+          30,
+          32
+        ],
+        [
+          14,
+          16,
+          42
+        ],
+        [
+          14,
+          26,
+          32
+        ],
+        [
+          16,
+          26,
+          30
+        ],
+        [
+          30,
+          42
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          48,
+          38,
+          28,
+          38,
+          26,
+          24,
+          15,
+          9,
+          33
+        ],
+        64
+      ],
+      "expected": [
+        [
+          26,
+          38
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          49,
+          4,
+          8
+        ],
+        20
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          44,
+          28,
+          39,
+          5,
+          25,
+          25
+        ],
+        77
+      ],
+      "expected": [
+        [
+          5,
+          28,
+          44
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          34,
+          17,
+          36,
+          1,
+          44,
+          47,
+          8,
+          44,
+          35,
+          49,
+          18,
+          50,
+          42,
+          22,
+          8
+        ],
+        38
+      ],
+      "expected": [
+        [
+          8,
+          8,
+          22
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          50,
+          1,
+          50,
+          1,
+          50,
+          1,
+          1,
+          50,
+          1,
+          1,
+          50,
+          1,
+          1,
+          50,
+          50,
+          1
+        ],
+        1
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          50,
+          50,
+          1,
+          1,
+          1,
+          1,
+          1,
+          50,
+          1,
+          1,
+          1,
+          50,
+          1,
+          50,
+          50,
+          1
+        ],
+        1
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          50,
+          50,
+          50,
+          50,
+          50,
+          1,
+          1,
+          1,
+          1,
+          50,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        1
+      ],
+      "expected": [
+        [
+          1
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          1,
+          1,
+          50,
+          1,
+          1,
+          50,
+          50,
+          1,
+          1,
+          50,
+          1,
+          50,
+          50,
+          1,
+          1,
+          1
+        ],
+        100
+      ],
+      "expected": [
+        [
+          50,
+          50
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^n) enumeration paths, O(n) per recorded group | Space: O(n) plus the output",
+      "language": "javascript",
+      "code": "function solve(candidates, target) {\n  const nums = candidates.slice().sort((a, b) => a - b);\n  const values = [];\n  const counts = [];\n  for (const v of nums) {\n    if (values.length > 0 && values[values.length - 1] === v) counts[counts.length - 1]++;\n    else { values.push(v); counts.push(1); }\n  }\n  const results = [];\n  const combo = [];\n  function record(gi, remaining) {\n    if (remaining === 0) { results.push(combo.slice()); return; }\n    if (gi === values.length || remaining < 0) return;\n    const value = values[gi];\n    for (let take = 0; take <= counts[gi] && take * value <= remaining; take++) {\n      for (let t = 0; t < take; t++) combo.push(value);\n      record(gi + 1, remaining - take * value);\n      for (let t = 0; t < take; t++) combo.pop();\n    }\n  }\n  record(0, target);\n  results.sort((a, b) => {\n    const len = Math.min(a.length, b.length);\n    for (let i = 0; i < len; i++) { if (a[i] !== b[i]) return a[i] - b[i]; }\n    return a.length - b.length;\n  });\n  return results;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(2^n + R log R) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(candidates, target) {\n  const nums = candidates.slice().sort((a, b) => a - b);\n  const results = [];\n  const combo = [];\n  function backtrack(index, remaining) {\n    if (remaining === 0) { results.push(combo.slice()); return; }\n    for (let i = index; i < nums.length; i++) {\n      if (i > index && nums[i] === nums[i - 1]) continue;\n      if (nums[i] > remaining) break;\n      combo.push(nums[i]);\n      backtrack(i + 1, remaining - nums[i]);\n      combo.pop();\n    }\n  }\n  backtrack(0, target);\n  results.sort((a, b) => {\n    const len = Math.min(a.length, b.length);\n    for (let i = 0; i < len; i++) { if (a[i] !== b[i]) return a[i] - b[i]; }\n    return a.length - b.length;\n  });\n  return results;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "combination-sum",
+  "nextSlug": "generate-parentheses"
+}

@@ -68,6 +68,12 @@ class ProblemSpec:
     editorial: dict[str, str] | None = None
     reading_links: list[str] = field(default_factory=list)
     hints: list[str] | None = None
+    # Per-parameter alphabets for string inputs. The generic generator draws
+    # from a fixed `abcxyz012` pool, which is invalid for a problem whose domain
+    # is e.g. binary digits. Declaring `{"a": "01"}` keeps the synthesised
+    # inputs inside the stated domain. Absent/empty means the default pool, so
+    # every existing spec is unaffected.
+    string_alphabets: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def from_author_inputs(

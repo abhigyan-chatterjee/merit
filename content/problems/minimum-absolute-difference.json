@@ -1,0 +1,1191 @@
+{
+  "slug": "minimum-absolute-difference",
+  "title": "Minimum Absolute Difference",
+  "topic": "sorting",
+  "difficulty": "Easy",
+  "pattern": "sorting / adjacent difference scan",
+  "statement": "You are given an integer array `nums`. Look at every pair of different positions `i` and `j`, take the absolute difference of their values and find the smallest such difference over the whole array. Then report every unordered pair of values `[a, b]` with `a <= b` whose absolute difference equals that smallest value.\n\nValues may repeat, so one pair of values can be produced by several different pairs of positions. List each distinct pair of values only once, and return the pairs sorted in ascending order, comparing the smaller element first and the larger element second. If `nums` holds fewer than two elements there is no pair at all, so return an empty list.\n\nConstraints: `1 <= nums.length <= 200` and `-10000 <= nums[i] <= 10000`.\n",
+  "examples": [
+    {
+      "input": "nums = [-10000]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "nums = [-221, 6635, 9954, -3483]",
+      "output": "[[-3483, -221]]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(nums: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Sorting the values first does not change any absolute difference, but it puts the closest pairs next to each other.",
+    "If two values have something between them after sorting, then one of the adjacent gaps inside that range is strictly smaller, so the minimum difference always appears between neighbours.",
+    "Take the smallest adjacent gap, then collect every adjacent pair that produces it, and swap the two values inside a pair if they are out of order."
+  ],
+  "editorial": {
+    "approach": "The brute force measures the difference of every pair of positions once to learn the minimum, then walks all pairs a second time to collect the winners, deduplicating the value pairs before sorting them, which is O(n\u00b2). The optimal version sorts the array, reads the minimum of the adjacent differences in a single pass, then emits each adjacent pair that hits that minimum; every minimum difference pair is adjacent once the values are in order.",
+    "why_optimal": "Sorting costs O(n log n) and the two scans that follow are linear, so the sort dominates. Reaching a better bound would need a different notion than comparing values, since finding the closest pair by comparisons alone is at least as hard as sorting here, and the constraint values fit comfortably in the linear scan the sort feeds.",
+    "pitfalls": "Collecting index pairs instead of value pairs makes the answer depend on which equal positions were picked, so duplicates such as `[5, 5]` must collapse to one pair. A minimum difference of 0 is possible and must not be treated as 'no answer'. Reporting pairs in the order the scan encounters equal values without a sort, or returning a pair as `[b, a]`, breaks the required ordering. A single element array has no pairs, so the answer is empty rather than `[[nums[0], nums[0]]]`."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sorting_algorithm",
+    "https://en.wikipedia.org/wiki/Absolute_difference"
+  ],
+  "starterCode": {
+    "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[][] solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 4.334268000000016,
+    "optimalRuntimeMs": 0.4662520000000008,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          -10000
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000
+        ]
+      ],
+      "expected": [
+        [
+          10000,
+          10000
+        ]
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          -6352,
+          -9181,
+          -988,
+          -1976,
+          -2686,
+          -5428,
+          -6642,
+          7870,
+          -7152,
+          9349,
+          3825,
+          -8959,
+          -9024,
+          -6930,
+          -2836,
+          -2377,
+          6559,
+          9726,
+          -9131,
+          8390,
+          -3485
+        ]
+      ],
+      "expected": [
+        [
+          -9181,
+          -9131
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          7856,
+          3746,
+          -2777,
+          4719,
+          9309,
+          -885,
+          -9788,
+          -4769,
+          3848,
+          1149,
+          -895,
+          -4906,
+          -2945,
+          1029,
+          -6651,
+          -6961,
+          2449,
+          -6831,
+          1763,
+          1270,
+          9782,
+          -1333,
+          -8577
+        ]
+      ],
+      "expected": [
+        [
+          -895,
+          -885
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          5054,
+          7571,
+          -5910,
+          2403,
+          -7418,
+          8089,
+          -394,
+          1850,
+          8918,
+          -3700,
+          -7721,
+          -8499,
+          -2533,
+          -518,
+          -7386,
+          -2372,
+          -6691,
+          2455,
+          -892,
+          4857,
+          1954,
+          -4671,
+          2130,
+          1641
+        ]
+      ],
+      "expected": [
+        [
+          -7418,
+          -7386
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          -1252,
+          -7661,
+          9960,
+          -4393,
+          7502,
+          -1979,
+          -4646
+        ]
+      ],
+      "expected": [
+        [
+          -4646,
+          -4393
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          2433,
+          -1155,
+          8250,
+          -2804,
+          626,
+          -8168,
+          -2495,
+          -8949,
+          336,
+          3145,
+          -1227,
+          -7832,
+          -3087,
+          8585,
+          311
+        ]
+      ],
+      "expected": [
+        [
+          311,
+          336
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          6358,
+          2964,
+          5035,
+          -5319,
+          -1321,
+          -5425,
+          -1919
+        ]
+      ],
+      "expected": [
+        [
+          -5425,
+          -5319
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          8394,
+          7661,
+          -1391,
+          9155,
+          4038,
+          9121,
+          3087,
+          1861,
+          -2814,
+          -5468,
+          6696,
+          6171,
+          -7022,
+          -8457,
+          -6408,
+          -4992,
+          -4758,
+          3833,
+          9543,
+          -7919,
+          2608,
+          2504,
+          9526,
+          5337
+        ]
+      ],
+      "expected": [
+        [
+          9526,
+          9543
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          -1762,
+          8128,
+          -9624,
+          -6247,
+          7595,
+          -1257,
+          1146,
+          -6345,
+          -383,
+          4246,
+          -4818,
+          4867,
+          -9894,
+          -1370,
+          6403,
+          -4146,
+          6635
+        ]
+      ],
+      "expected": [
+        [
+          -6345,
+          -6247
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          -221,
+          6635,
+          9954,
+          -3483
+        ]
+      ],
+      "expected": [
+        [
+          -3483,
+          -221
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          2252,
+          -4707,
+          7674,
+          7378,
+          -9982
+        ]
+      ],
+      "expected": [
+        [
+          7378,
+          7674
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          621,
+          6010,
+          -9362,
+          -6335,
+          1894,
+          76,
+          -2154,
+          -8102,
+          -2108,
+          8591,
+          -7420,
+          -7194,
+          5924,
+          -7733,
+          7455,
+          -5880,
+          -5793,
+          5574,
+          8015,
+          -4590
+        ]
+      ],
+      "expected": [
+        [
+          -2154,
+          -2108
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          7290,
+          9876,
+          3865,
+          -3060,
+          7671,
+          -3409,
+          214,
+          3074,
+          2236
+        ]
+      ],
+      "expected": [
+        [
+          -3409,
+          -3060
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          6959,
+          4794,
+          -6035,
+          -1877,
+          -2638,
+          -7902,
+          1078,
+          -9311,
+          9277,
+          8150,
+          -2460,
+          9282,
+          -2784,
+          -9765,
+          -7674
+        ]
+      ],
+      "expected": [
+        [
+          9277,
+          9282
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          -8071,
+          -2499,
+          -7792,
+          -8971,
+          827,
+          -7679,
+          6847,
+          -2202,
+          -875,
+          5906,
+          -2980,
+          7669,
+          -5665,
+          8711,
+          8881,
+          5488,
+          -2038,
+          5498,
+          3338,
+          -3761,
+          -6910,
+          -6824,
+          4124
+        ]
+      ],
+      "expected": [
+        [
+          5488,
+          5498
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          3879,
+          3470,
+          5303,
+          -8225,
+          -6776,
+          -8014,
+          3193,
+          1118,
+          -6420,
+          -1853,
+          -3722,
+          -3768
+        ]
+      ],
+      "expected": [
+        [
+          -3768,
+          -3722
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          4700,
+          -5407,
+          3824,
+          -3988,
+          -873,
+          5159,
+          -1815,
+          -7530,
+          4520,
+          8033,
+          -6792,
+          -8343,
+          7713,
+          -9517,
+          -6944,
+          -2255,
+          -4551,
+          3317
+        ]
+      ],
+      "expected": [
+        [
+          -6944,
+          -6792
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          10000,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          0,
+          0,
+          0,
+          -10000,
+          0,
+          10000,
+          -10000,
+          -10000,
+          0,
+          10000,
+          0,
+          0,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          0,
+          0,
+          0,
+          10000,
+          10000,
+          -10000,
+          0,
+          0,
+          10000,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          0,
+          0,
+          10000,
+          10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          0,
+          0,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          0,
+          0,
+          10000,
+          0,
+          0,
+          0,
+          -10000,
+          0,
+          0,
+          10000,
+          0,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          0,
+          0,
+          -10000,
+          10000,
+          10000,
+          0,
+          -10000,
+          0,
+          10000,
+          -10000,
+          0,
+          0,
+          10000,
+          0,
+          10000,
+          10000,
+          -10000,
+          -10000
+        ]
+      ],
+      "expected": [
+        [
+          -10000,
+          -10000
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          10000,
+          10000
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          0,
+          10000,
+          0,
+          0,
+          10000,
+          0,
+          -10000,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          0,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          10000,
+          0,
+          0,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          0,
+          10000,
+          10000,
+          0,
+          0,
+          -10000,
+          10000,
+          -10000,
+          0,
+          -10000,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          -10000,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          0,
+          0,
+          10000,
+          0,
+          0,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          -10000,
+          0,
+          10000,
+          10000,
+          0,
+          10000,
+          10000,
+          0,
+          0,
+          -10000,
+          10000,
+          0,
+          -10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          0,
+          10000,
+          0,
+          -10000
+        ]
+      ],
+      "expected": [
+        [
+          -10000,
+          -10000
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          10000,
+          10000
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          0,
+          10000,
+          0,
+          10000,
+          0,
+          10000,
+          10000,
+          10000,
+          0,
+          10000,
+          0,
+          -10000,
+          -10000,
+          10000,
+          0,
+          10000,
+          0,
+          0,
+          -10000,
+          0,
+          0,
+          10000,
+          10000,
+          0,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          0,
+          0,
+          0,
+          10000,
+          10000,
+          10000,
+          10000,
+          0,
+          -10000,
+          0,
+          10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          0,
+          0,
+          0,
+          10000,
+          -10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          10000,
+          0,
+          -10000,
+          10000,
+          10000,
+          0,
+          0,
+          -10000,
+          0,
+          0,
+          10000,
+          10000,
+          10000,
+          -10000,
+          -10000,
+          0,
+          0,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          0,
+          0,
+          10000,
+          -10000,
+          0,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          10000,
+          0,
+          0,
+          0,
+          0,
+          10000,
+          10000,
+          0,
+          0,
+          0,
+          10000,
+          0,
+          10000,
+          -10000,
+          0,
+          10000,
+          10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          0,
+          10000,
+          0,
+          -10000,
+          10000,
+          10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          0,
+          -10000,
+          -10000
+        ]
+      ],
+      "expected": [
+        [
+          -10000,
+          -10000
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          10000,
+          10000
+        ]
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          -10000,
+          -10000,
+          10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          0,
+          10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          0,
+          0,
+          -10000,
+          0,
+          10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          0,
+          0,
+          10000,
+          0,
+          -10000,
+          10000,
+          -10000,
+          0,
+          0,
+          -10000,
+          10000,
+          0,
+          0,
+          0,
+          -10000,
+          -10000,
+          0,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          -10000,
+          10000,
+          -10000,
+          0,
+          0,
+          -10000,
+          10000,
+          -10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          -10000,
+          0,
+          -10000,
+          -10000,
+          -10000,
+          10000,
+          0,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          10000,
+          10000,
+          -10000,
+          0,
+          0,
+          0,
+          0,
+          -10000,
+          -10000,
+          10000,
+          -10000,
+          0,
+          -10000,
+          10000,
+          0,
+          0,
+          10000,
+          10000,
+          0,
+          -10000,
+          -10000,
+          0,
+          0,
+          0,
+          -10000
+        ]
+      ],
+      "expected": [
+        [
+          -10000,
+          -10000
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          10000,
+          10000
+        ]
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(nums) {\n  const n = nums.length;\n  if (n < 2) return [];\n  let best = Infinity;\n  for (let i = 0; i < n; i++) {\n    for (let j = i + 1; j < n; j++) {\n      const d = Math.abs(nums[i] - nums[j]);\n      if (d < best) best = d;\n    }\n  }\n  const seen = new Set();\n  const pairs = [];\n  for (let i = 0; i < n; i++) {\n    for (let j = i + 1; j < n; j++) {\n      if (Math.abs(nums[i] - nums[j]) !== best) continue;\n      const a = nums[i] < nums[j] ? nums[i] : nums[j];\n      const b = nums[i] < nums[j] ? nums[j] : nums[i];\n      const key = a + ',' + b;\n      if (!seen.has(key)) {\n        seen.add(key);\n        pairs.push([a, b]);\n      }\n    }\n  }\n  pairs.sort((p, q) => (p[0] - q[0]) || (p[1] - q[1]));\n  return pairs;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(nums) {\n  if (nums.length < 2) return [];\n  const a = nums.slice().sort((x, y) => x - y);\n  let best = Infinity;\n  for (let i = 1; i < a.length; i++) {\n    const d = a[i] - a[i - 1];\n    if (d < best) best = d;\n  }\n  const res = [];\n  for (let i = 1; i < a.length; i++) {\n    if (a[i] - a[i - 1] === best) {\n      const pair = [a[i - 1], a[i]];\n      const m = res.length;\n      if (m === 0 || res[m - 1][0] !== pair[0] || res[m - 1][1] !== pair[1]) {\n        res.push(pair);\n      }\n    }\n  }\n  return res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "merge-sorted-array",
+  "nextSlug": "largest-number"
+}

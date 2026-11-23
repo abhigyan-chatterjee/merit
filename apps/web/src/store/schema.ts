@@ -35,6 +35,12 @@ export const DAILY_GOAL_PRESETS: DailyGoal[] = [
 ];
 
 export const ProgressStateZodSchema = z.object({
+  /**
+   * Account this local cache belongs to, or null when it was produced by a
+   * guest. Used to stop one account's data being imported into another (the
+   * server-side `import-local` call is one-shot and irreversible).
+   */
+  ownerUserId: z.string().nullable().optional().default(null),
   progress: z.record(z.string(), ProblemStatusSchema).default({}),
   quizzes: z.record(z.string(), z.number()).default({}),
   streak: z.array(z.string()).default([]),
@@ -52,6 +58,7 @@ export type ProblemStatus = z.infer<typeof ProblemStatusSchema>;
 export type LastVisitedItem = z.infer<typeof LastVisitedItemSchema>;
 
 export const EMPTY_INITIAL_STATE: ProgressStateSchema = {
+  ownerUserId: null,
   progress: {},
   quizzes: {},
   streak: [],

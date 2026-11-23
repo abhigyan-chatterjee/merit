@@ -175,3 +175,50 @@ def test_import_local_max_wins(client: TestClient):
     assert res2.status_code == 200
     # Two-sum remains Done
     assert res2.json()["progress"]["two-sum"] == "Done"
+
+
+def test_unpin_daily_goal_clears_permanent_goal(client: TestClient):
+    register_user(client, "unpin@example.com")
+    res = client.put(
+        "/api/v1/progress/settings",
+        json={
+            "daily_goal": {
+                "kind": "problems",
+                "label": "Pin",
+                "target": 5,
+                "permanent": True,
+            }
+        },
+    )
+    assert res.status_code == 200
+    assert res.json()["daily_goal"]["permanent"] is True
+
+    # A plain clear must not drop the pinned goal.
+    res = client.put("/api/v1/progress/settings", json={"clear_daily_goal": True})
+    assert res.json()["daily_goal"] is not None
+
+    # unpin_daily_goal clears it unconditionally.
+    res = client.put("/api/v1/progress/settings", json={"unpin_daily_goal": True})
+    assert res.status_code == 200
+    assert res.json()["daily_goal"] is None
+
+
+def test_import_local_caps_rejected(client: TestClient):
+    register_user(client, "caps@example.com")
+    res = client.post(
+        "/api/v1/progress/import-local",
+        json={"activity_days": ["not-a-date"]},
+    )
+    assert res.status_code == 422
+    res = client.post(
+        "/api/v1/progress/import-local",
+        json={"visited_visualizers": [f"v{i}" for i in range(51)]},
+    )
+    assert res.status_code == 422
+    res = client.post(
+        "/api/v1/progress/import-local",
+        json={"progress": {f"p{i}": "Done" for i in range(1001)}},
+    )
+    assert res.status_code == 422
+    res = client.put("/api/v1/progress/notes/two-sum", json={"text": "x" * 20001})
+    assert res.status_code == 422

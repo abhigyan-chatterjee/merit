@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   RotateCcw,
@@ -20,14 +20,15 @@ import {
 } from 'recharts';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
-import { progressApi, ProgressSummary, RevisionItem } from '../utils/api';
+import { progressApi, revisionApi, ProgressSummary, RevisionItem } from '../utils/api';
 import { StreakHeatmap } from '../components/StreakHeatmap';
 import { ProgressRing } from '../components/ProgressRing';
 import { DailyGoalMenu } from '../components/DailyGoalMenu';
 import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
 import { Reveal } from '../components/ui/Reveal';
-import { PROBLEMS } from '../data/problems';
+import { InlineConfirm } from '../components/ui/InlineConfirm';
+import { PROBLEM_MANIFEST } from '../data/problemManifest';
 import { TOPICS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
 import { usePathProgress } from './GuidedPathsPage';
@@ -58,32 +59,70 @@ const DashboardPathCard: React.FC<{ path: (typeof LEARNING_PATHS)[number] }> = (
 
 export const DashboardPage: React.FC = () => {
   const { state, currentStreak, resetAllData } = useProgress();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const [confirmReset, setConfirmReset] = useState(false);
+  const resetBtnRef = useRef<HTMLButtonElement>(null);
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
+  const [dueLoading, setDueLoading] = useState(false);
+
+  const prevConfirmResetRef = useRef(confirmReset);
+  useEffect(() => {
+    if (prevConfirmResetRef.current && !confirmReset) {
+      requestAnimationFrame(() => resetBtnRef.current?.focus());
+    }
+    prevConfirmResetRef.current = confirmReset;
+  }, [confirmReset]);
 
   useEffect(() => {
     if (!user) {
       setSummary(null);
+      setDueLoading(false);
       return;
     }
     let cancelled = false;
+    setDueLoading(true);
     progressApi
       .getSummary()
       .then((s) => {
         if (!cancelled) setSummary(s);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setDueLoading(false);
+      });
     return () => {
       cancelled = true;
     };
   }, [user]);
 
+  /**
+   * Rates one scheduled review and re-reads the queue.
+   *
+   * The SM-2 schedule lives on the server, so the only correct way to move an
+   * item is to tell it a grade and then refetch — flipping local state would
+   * put the UI out of step with the due dates that drive everything else.
+   */
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
+  const rateReview = async (item: RevisionItem, grade: number) => {
+    if (!user || reviewingId) return;
+    setReviewingId(`${item.type}:${item.id}`);
+    try {
+      await revisionApi.review(item.type, item.id, grade);
+      const refreshed = await progressApi.getSummary();
+      setSummary(refreshed);
+    } catch {
+      // Leave the item in place; it stays due and the next load retries.
+    } finally {
+      setReviewingId(null);
+    }
+  };
+
   const solvedCount = Object.values(state.progress).filter((s) => s === 'Done').length;
   const inProgress = Object.values(state.progress).filter((s) => s === 'Doing').length;
-  const totalProblems = PROBLEMS.length;
+  const totalProblems = PROBLEM_MANIFEST.length;
 
   const chartData = TOPICS.map((t) => {
-    const topicProblems = PROBLEMS.filter((p) => p.topic === t.slug);
+    const topicProblems = PROBLEM_MANIFEST.filter((p) => p.topic === t.slug);
     const done = topicProblems.filter((p) => state.progress[p.slug] === 'Done').length;
     return {
       name: t.title.split('&')[0].trim(),
@@ -99,6 +138,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   const weakTopics = Object.entries(allQuizScores)
+    .filter(([slug]) => !slug.startsWith('exam:'))
     .sort(([, a], [, b]) => a - b)
     .slice(0, 4);
 
@@ -124,21 +164,38 @@ export const DashboardPage: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <DailyGoalMenu />
-          <button
-            onClick={resetAllData}
-            title="Reset all locally stored progress"
-            aria-label="Reset all locally stored progress"
-            className="p-2 rounded-lg border border-line bg-surface text-muted hover:text-rose hover:border-rose/40 transition cursor-pointer"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          {!authLoading && !user && (
+            confirmReset ? (
+              <InlineConfirm
+                title="Clear progress on this device?"
+                body="Problem status, notes, bookmarks and streak on this browser will be deleted. This cannot be undone."
+                confirmLabel="Clear progress"
+                cancelLabel="Cancel"
+                onConfirm={() => {
+                  resetAllData();
+                  setConfirmReset(false);
+                }}
+                onCancel={() => setConfirmReset(false)}
+              />
+            ) : (
+              <button
+                ref={resetBtnRef}
+                onClick={() => setConfirmReset(true)}
+                title="Reset all locally stored progress"
+                aria-label="Reset all locally stored progress"
+                className="p-2 rounded-lg border border-line bg-surface text-muted hover:text-rose hover:border-rose/40 transition cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            )
+          )}
         </div>
       </div>
 
       {/* ===== KPI strip ===== */}
       <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-line">
         {[
-          { v: `${solvedCount}/${totalProblems}`, l: 'Problems solved', c: 'text-mint' },
+          { v: `${solvedCount}/${totalProblems}`, l: 'Problems done', c: 'text-mint' },
           { v: inProgress, l: 'In progress', c: 'text-amber' },
           { v: `${currentStreak}d`, l: 'Day streak', c: 'text-violet' },
           { v: Object.keys(allQuizScores).length, l: 'Quizzes taken', c: 'text-ink' },
@@ -206,7 +263,26 @@ export const DashboardPage: React.FC = () => {
       </Panel>
 
       {/* ===== Spaced Repetition Due Today Card (if items due) ===== */}
-      {revisionItems.length > 0 && (
+      {dueLoading && user && (
+        <div className="space-y-4" aria-busy="true" aria-label="Loading due revisions">
+          <div className="flex items-center gap-2">
+            <RotateCcw className="w-4 h-4 text-amber" />
+            <span className="text-sm font-bold text-ink uppercase tracking-wider">
+              Due Today for Revision
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="p-4 rounded-xl border border-line bg-surface space-y-3">
+                <div className="h-3 w-1/3 rounded bg-line/60 animate-pulse" />
+                <div className="h-3 w-4/5 rounded bg-line/60 animate-pulse" />
+                <div className="h-3 w-2/3 rounded bg-line/60 animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {!dueLoading && revisionItems.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -217,19 +293,21 @@ export const DashboardPage: React.FC = () => {
             </div>
             <span
               className="text-[10px] font-mono text-muted"
-              title="Spaced Repetition (1d / 3d / 7d interval)"
+              title="Spaced Repetition (SM-2)"
             >
-              Spaced Repetition
+              Spaced Repetition (SM-2)
             </span>
           </div>
+          <p className="text-[10px] text-muted">
+            Rate recall to schedule your next review — Got it grows the interval, Again resets to 1 day.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {revisionItems.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.link}
+              <div
+                key={`${item.type}:${item.id}:${idx}`}
                 className="p-4 rounded-xl border border-line bg-surface hover:border-amber transition flex flex-col justify-between space-y-2 group"
               >
-                <div>
+                <Link to={item.link} className="block">
                   <div className="flex items-center justify-between gap-2 text-[10px] font-mono mb-1">
                     <span className="px-1.5 py-0.5 rounded bg-amber/10 text-amber border border-amber/20 uppercase">
                       {item.due_stage}
@@ -240,12 +318,36 @@ export const DashboardPage: React.FC = () => {
                     {item.title}
                   </h4>
                   <p className="text-[10px] text-muted mt-1">{item.reason}</p>
+                </Link>
+                {/* Self-rating is what moves the schedule; opening the problem
+                    alone does not count as a review. */}
+                <div className="pt-2 border-t border-line/60 flex items-center justify-between gap-2 text-[10px] font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={reviewingId === `${item.type}:${item.id}`}
+                      onClick={() => rateReview(item, 4)}
+                      className="px-2 py-1 rounded border border-mint/40 text-mint hover:bg-mint/10 disabled:opacity-40 transition"
+                      aria-label={`Mark ${item.title} as recalled`}
+                    >
+                      Got it
+                    </button>
+                    <button
+                      type="button"
+                      disabled={reviewingId === `${item.type}:${item.id}`}
+                      onClick={() => rateReview(item, 2)}
+                      className="px-2 py-1 rounded border border-line text-muted hover:border-amber hover:text-amber disabled:opacity-40 transition"
+                      aria-label={`Mark ${item.title} as needing another pass`}
+                    >
+                      Again
+                    </button>
+                  </div>
+                  <Link to={item.link} className="inline-flex items-center gap-1 text-muted hover:text-amber">
+                    Solve
+                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
                 </div>
-                <div className="pt-2 border-t border-line/60 flex items-center justify-between text-[10px] font-mono text-muted">
-                  <span>Solve / Review</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform text-amber" />
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -276,7 +378,11 @@ export const DashboardPage: React.FC = () => {
       {/* ===== Row: Consistency | Curriculum completion | Weakest topics ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         <Panel label="Consistency" className="lg:col-span-4" bracket>
-          <StreakHeatmap streakDates={state.streak} currentStreak={currentStreak} />
+          <StreakHeatmap
+            streakDates={state.streak}
+            currentStreak={currentStreak}
+            activityCounts={summary?.activity_days}
+          />
         </Panel>
 
         <Panel label="Curriculum completion" className="lg:col-span-4" bracket>
@@ -284,10 +390,10 @@ export const DashboardPage: React.FC = () => {
             <ProgressRing completed={solvedCount} total={totalProblems} size={116} strokeWidth={8} />
             <div className="space-y-2.5 min-w-0">
               <p className="text-xs text-muted leading-relaxed">
-                Six core patterns. Finish them all to cover the standard interview surface area.
+                Track mastery across all 18 core placement topics.
               </p>
               <div className="space-y-1.5">
-                {chartData.slice(0, 3).map((c) => (
+                {chartData.slice(0, 6).map((c) => (
                   <div key={c.name} className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-muted w-16 truncate">{c.name}</span>
                     <span className="flex-1 h-1 rounded-full bg-line overflow-hidden">
@@ -428,8 +534,8 @@ export const DashboardPage: React.FC = () => {
           <Panel label="Modules" className="lg:col-span-5" flush>
             <div className="divide-y divide-line max-h-[420px] overflow-y-auto">
               {TOPICS.map((t) => {
-                const total = PROBLEMS.filter((p) => p.topic === t.slug).length;
-                const solved = PROBLEMS.filter(
+                const total = PROBLEM_MANIFEST.filter((p) => p.topic === t.slug).length;
+                const solved = PROBLEM_MANIFEST.filter(
                   (p) => p.topic === t.slug && state.progress[p.slug] === 'Done'
                 ).length;
                 const complete = total > 0 && solved === total;

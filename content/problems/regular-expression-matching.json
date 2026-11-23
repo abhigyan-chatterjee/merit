@@ -1,0 +1,273 @@
+{
+  "slug": "regular-expression-matching",
+  "title": "Regular Expression Matching",
+  "topic": "dynamic-programming",
+  "difficulty": "Hard",
+  "pattern": "two-dimensional DP over string and pattern positions with a star operator",
+  "statement": "Given a string `s` and a pattern `p`, decide whether `p` matches the whole of `s`. Inside `p`, a `.` matches any single character of `s`, and a `*` means zero or more repetitions of the element immediately before it, which is either a letter or a `.`. A `*` with no element before it is ignored, so a `*` at the very start of `p`, or a `*` written directly after another `*`, matches the empty string only and constrains nothing. The match must consume every character of `s` and every element of `p`. Return `true` when `p` matches all of `s` and `false` otherwise.\n\nFor example `s = \"abc\"` and `p = \".*c\"` match, while `s = \"abc\"` and `p = \"a*c\"` do not.\n\nConstraints: `1 <= s.length <= 10`, `1 <= p.length <= 10`, every character of `s` is `a`, `b` or `c`, and every character of `p` is `a`, `b`, `c`, `.` or `*`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\", p = \"c\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"aa\", p = \"a*\"",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, p: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Decide the state first: which suffix of s and which suffix of the pattern you are matching. Nothing else about the earlier characters matters.",
+    "A starred element has exactly two options: skip it and move to the next pattern element, or consume one matching character of s and stay on the same element. An unstarred element has only one.",
+    "Compute the table from the ends of both strings towards the front so that every state you need has already been filled in."
+  ],
+  "editorial": {
+    "approach": "Both solutions first turn the pattern into a list of elements, each one a character (or `.`) with a flag saying whether a `*` follows it; an ignored `*` is simply dropped here, which is what makes the leading and doubled stars harmless. The brute force then matches with plain recursion on the pair of positions `(i, k)`: an unstarred element advances both positions when it matches, and a starred element either skips itself or consumes one more matching character of `s` and stays on the same element. It is correct but re-explores the same `(i, k)` pairs many times, which is exponential. The optimal solution is bottom-up dynamic programming: `dp[i][k]` is true when the suffix `s[i:]` is matched by the elements `k, k+1, ...` of the pattern. The table is filled from `i = n` and `k = m` downwards, so both branches of every transition are already known, and each of the `(n+1)*(m+1)` states costs constant time.",
+    "why_optimal": "There are only `(n+1)*(m+1)` distinct pairs of positions, and the answer can depend on every one of them, so O(n*m) states with an O(1) transition is optimal in the worst case; the exponential recursion is exactly this table computed over and over. With `s` and `p` capped at 10 characters the table has at most 121 cells, which is why the hard part of this problem is the recurrence and not the running time.",
+    "pitfalls": "Skipping the preprocessing of ignored stars, so a pattern such as `**a` or `*a` either produces a leading star element or crashes while looking at the character before it. Initialising the table wrongly: `dp[n][m]` must be true, and `dp[i][m]` must be false for every `i < n` because an empty pattern cannot match a non-empty string. In the starred transition `dp[i][k] = dp[i][k + 1] or (hit and dp[i + 1][k])`, using `dp[i + 1][k + 1]` in the second branch, which silently allows only a single repetition instead of many. Replacing the repetition with a greedy two-pointer scan, which fails on patterns such as `.*c` against `abc`. Off-by-one on the `i < n` guard used for the character comparison."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Regular_expression",
+    "https://en.wikipedia.org/wiki/Dynamic_programming"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, p) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, p):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s, String p) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s, std::string p) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.19096000000000757,
+    "optimalRuntimeMs": 0.39694100000000176,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a",
+        "c"
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "aa",
+        "a*"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "cba",
+        "a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "accacac",
+        "*.b.*cab.c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "aabaababb",
+        "ca.*a.a*c*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "cacaacabaa",
+        ".c.c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "bbacbc",
+        "a*b*bb..c*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "cbaaabbb",
+        "b*c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "cbbcbab",
+        "b**c*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "cbbaacbaaa",
+        "b.*a."
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "cbcbcaccac",
+        "ccac.b.ac*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "cacbcc",
+        "bbcb**a*c."
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "a",
+        "cbab*aa.a*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "acbca",
+        "**.b*bc.c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "cbaaaabacc",
+        "*baaabaa"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "acabcbacac",
+        "*.b..baa.c"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "bbcacccaab",
+        "cabbb*.b.b"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "baabcaacc",
+        "a"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "abbbabaaba",
+        "c.c.*.bbcb"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "cccacbaacb",
+        "*ba*aba*ab"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "acaccacabc",
+        "**ccbcbc.b"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "cbbbaabcca",
+        "*b*cbcabcc"
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^(n+m)) | Space: O(n+m)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  const el = [];\n  for (let idx = 0; idx < p.length; idx++) {\n    const ch = p[idx];\n    if (ch === '*') {\n      if (el.length > 0 && el[el.length - 1][1] === false) el[el.length - 1][1] = true;\n    } else {\n      el.push([ch, false]);\n    }\n  }\n  const m = el.length;\n  function match(i, k) {\n    if (k === m) return i === s.length;\n    const c = el[k][0];\n    const starred = el[k][1];\n    if (!starred) {\n      if (i < s.length && (c === '.' || c === s[i])) return match(i + 1, k + 1);\n      return false;\n    }\n    if (match(i, k + 1)) return true;\n    let j = i;\n    while (j < s.length && (c === '.' || c === s[j])) {\n      j++;\n      if (match(j, k + 1)) return true;\n    }\n    return false;\n  }\n  return match(0, 0);\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n*m) | Space: O(n*m)",
+      "language": "javascript",
+      "code": "function solve(s, p) {\n  const el = [];\n  for (let idx = 0; idx < p.length; idx++) {\n    const ch = p[idx];\n    if (ch === '*') {\n      if (el.length > 0 && el[el.length - 1][1] === false) el[el.length - 1][1] = true;\n    } else {\n      el.push([ch, false]);\n    }\n  }\n  const n = s.length;\n  const m = el.length;\n  const dp = [];\n  for (let i = 0; i <= n; i++) dp.push(new Array(m + 1).fill(false));\n  dp[n][m] = true;\n  for (let i = n; i >= 0; i--) {\n    for (let k = m - 1; k >= 0; k--) {\n      const c = el[k][0];\n      const starred = el[k][1];\n      const hit = i < n && (c === '.' || c === s[i]);\n      if (!starred) {\n        dp[i][k] = hit && dp[i + 1][k + 1];\n      } else {\n        dp[i][k] = dp[i][k + 1] || (hit && dp[i + 1][k]);\n      }\n    }\n  }\n  return dp[0][0];\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 26,
+  "prevSlug": "maximum-profit-in-job-scheduling",
+  "nextSlug": "wildcard-matching"
+}

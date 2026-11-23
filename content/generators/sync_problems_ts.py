@@ -24,6 +24,7 @@ from content.validators.schema import ProblemSchema
 
 PROBLEMS_DIR = REPO_ROOT / "content" / "problems"
 OUTPUT_TS = REPO_ROOT / "apps" / "web" / "src" / "data" / "problems.ts"
+MANIFEST_TS = REPO_ROOT / "apps" / "web" / "src" / "data" / "problemManifest.ts"
 
 DIFF_RANK = {"Easy": 0, "Medium": 1, "Hard": 2}
 
@@ -86,6 +87,7 @@ export interface Problem {
   hints: string[];
   solutions: ProblemSolution[];
   starterCode: string;
+  starterCodePython: string;
   starterCodeJava: string;
   starterCodeCpp: string;
   functionName: string;
@@ -198,6 +200,12 @@ def render_problem(data: dict) -> str:
         lines.append("      },")
     lines.append("    ],")
     lines.append(f"    starterCode: {ts_string(starter)},")
+    # The Python starter is optional: the editor falls back to a `def fn(*args)`
+    # skeleton when it is absent, which is correct for the problems whose stored
+    # starter is that same skeleton, and wrong for the ones carrying their real
+    # signature. Emitting whatever the problem actually has keeps the editor from
+    # showing a signature the judge does not compile.
+    lines.append(f"    starterCodePython: {ts_string(starters.get('python', ''))},")
     # Required, not optional: the editor offers Java and C++ on every problem, so
     # a missing starter is a problem with no runnable code in that language.
     # Failing here names the problem; emitting nothing would surface much later
@@ -213,8 +221,11 @@ def render_problem(data: dict) -> str:
         lines.append(f"    prevSlug: {ts_string(data['prevSlug'])},")
     if data.get("nextSlug"):
         lines.append(f"    nextSlug: {ts_string(data['nextSlug'])},")
+    sample_cases = [tc for tc in data.get("testCases", []) if tc.get("isSample")]
+    if not sample_cases:
+        sample_cases = data.get("testCases", [])[:2]
     lines.append("    testCases: [")
-    for tc in data.get("testCases", []):
+    for tc in sample_cases:
         lines.append(
             f"      {{ input: {json.dumps(tc['input'], ensure_ascii=False)}, "
             f"expected: {json.dumps(tc['expected'], ensure_ascii=False)}, "
@@ -294,7 +305,49 @@ def sync() -> int:
     chunks.append("];\n")
 
     OUTPUT_TS.write_text("\n".join(chunks), encoding="utf-8")
+
+    manifest_lines = [
+        "export interface ProblemManifestItem {",
+        "  id: string;",
+        "  slug: string;",
+        "  title: string;",
+        "  topic: string;",
+        "  difficulty: 'Easy' | 'Medium' | 'Hard';",
+        "  pattern: string;",
+        "  sequence?: number | null;",
+        "  prevSlug?: string | null;",
+        "  nextSlug?: string | null;",
+        "}",
+        "",
+        "export const PROBLEM_MANIFEST: ProblemManifestItem[] = [",
+    ]
+    for d in problems:
+        manifest_lines.append("  {")
+        manifest_lines.append(f"    id: {ts_string(d['id'])},")
+        manifest_lines.append(f"    slug: {ts_string(d['slug'])},")
+        manifest_lines.append(f"    title: {ts_string(d['title'])},")
+        manifest_lines.append(f"    topic: {ts_string(d['topic'])},")
+        manifest_lines.append(f"    difficulty: {ts_string(d['difficulty'])},")
+        manifest_lines.append(f"    pattern: {ts_string(d['pattern'])},")
+        if d.get("sequence") is not None:
+            manifest_lines.append(f"    sequence: {int(d['sequence'])},")
+        else:
+            manifest_lines.append("    sequence: null,")
+        if d.get("prevSlug"):
+            manifest_lines.append(f"    prevSlug: {ts_string(d['prevSlug'])},")
+        else:
+            manifest_lines.append("    prevSlug: null,")
+        if d.get("nextSlug"):
+            manifest_lines.append(f"    nextSlug: {ts_string(d['nextSlug'])},")
+        else:
+            manifest_lines.append("    nextSlug: null,")
+        manifest_lines.append("  },")
+    manifest_lines.append("];")
+    manifest_lines.append("")
+    MANIFEST_TS.write_text("\n".join(manifest_lines), encoding="utf-8")
+
     print(f"Synced {len(problems)} verified problems -> {OUTPUT_TS.relative_to(REPO_ROOT)}")
+    print(f"Wrote manifest with {len(problems)} items -> {MANIFEST_TS.relative_to(REPO_ROOT)}")
     print("Per-topic: " + ", ".join(f"{t}={counts.get(t, 0)}" for t in TOPIC_ORDER if t in counts))
     return len(problems)
 

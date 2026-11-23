@@ -3417,7 +3417,7 @@
       "isReference": true
     }
   ],
-  "sequence": 14,
+  "sequence": 15,
   "prevSlug": "swap-nodes-in-pairs",
   "nextSlug": "reverse-nodes-in-k-group"
 }

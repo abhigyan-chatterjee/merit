@@ -1259,7 +1259,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function swapPairs(nums) {\n  if (nums.length <= 1) return nums.slice();\n  function swapHelper(arr, i) {\n    if (i >= arr.length - 1) return arr.slice(i);\n    const pair = [arr[i + 1], arr[i]];\n    return pair.concat(swapHelper(arr, i + 2));\n  }\n  return swapHelper(nums, 0);\n}",
       "isReference": false
@@ -1273,7 +1273,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def swapPairs(nums: list[int]) -> list[int]:\n    if len(nums) <= 1:\n        return list(nums)\n    def helper(arr: list[int], i: int) -> list[int]:\n        if i >= len(arr) - 1:\n            return arr[i:]\n        pair = [arr[i + 1], arr[i]]\n        return pair + helper(arr, i + 2)\n    return helper(nums, 0)\n",
       "isReference": false
@@ -1286,7 +1286,7 @@
       "isReference": true
     }
   ],
-  "sequence": 13,
+  "sequence": 14,
   "prevSlug": "rotate-list",
   "nextSlug": "merge-k-sorted-lists"
 }

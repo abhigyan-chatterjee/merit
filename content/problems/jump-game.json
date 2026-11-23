@@ -32,8 +32,8 @@
     "Update your maximum reach as max(maxReach, i + nums[i]) and return true as soon as it reaches or exceeds the last index."
   ],
   "editorial": {
-    "approach": "### Greedy Furthest-Reach & Dynamic Programming Equivalence\n\nThis problem can be modeled as dynamic programming reachability, which simplifies to a greedy single-pass scan.\n\n#### 1. DP State & Recurrence Formulation\nLet dp[i] be a boolean indicating whether the target index n - 1 can be reached starting from index i:\ndp[i] = OR_{j = i + 1}^{min(i + nums[i], n - 1)} dp[j]\nwith base case dp[n - 1] = true. A backward DP computes this in O(n²) time.\n\n#### 2. Greedy Invariant & Transition\nInstead of quadratic search, observe the prefix reachability invariant: all indices in [0, maxReach] are reachable. At index i:\n1. If i > maxReach, we cannot reach index i, so return false.\n2. Otherwise, update the furthest reachable boundary:\n   maxReach = max(maxReach, i + nums[i])\n3. If maxReach >= n - 1, the destination is reachable; return true immediately.\n\n#### 3. Base Cases\n- maxReach = 0: Initially, only index 0 is reached.\n- If n = 1, return true immediately.\n\n#### 4. Answer Extraction\nans = (maxReach >= n - 1).",
-    "why_optimal": "Backward dynamic programming examines every possible jump from each index in O(n²) time, whereas tracking the single greedy maxReach boundary solves the problem in a single O(n) pass with O(1) memory. On 30 verified test cases, the greedy approach executed in 0.10 ms compared to 0.18 ms for the quadratic DP.",
+    "approach": "### Greedy Furthest-Reach & Dynamic Programming Equivalence\n\nThis problem can be modeled as dynamic programming reachability, which simplifies to a greedy single-pass scan.\n\n#### 1. DP State & Recurrence Formulation\nLet dp[i] be a boolean indicating whether the target index n - 1 can be reached starting from index i:\ndp[i] = OR_{j = i + 1}^{min(i + nums[i], n - 1)} dp[j]\nwith base case dp[n - 1] = true. A backward DP computes this in O(n\u00b2) time.\n\n#### 2. Greedy Invariant & Transition\nInstead of quadratic search, observe the prefix reachability invariant: all indices in [0, maxReach] are reachable. At index i:\n1. If i > maxReach, we cannot reach index i, so return false.\n2. Otherwise, update the furthest reachable boundary:\n   maxReach = max(maxReach, i + nums[i])\n3. If maxReach >= n - 1, the destination is reachable; return true immediately.\n\n#### 3. Base Cases\n- maxReach = 0: Initially, only index 0 is reached.\n- If n = 1, return true immediately.\n\n#### 4. Answer Extraction\nans = (maxReach >= n - 1).",
+    "why_optimal": "Backward dynamic programming examines every possible jump from each index in O(n\u00b2) time, whereas tracking the single greedy maxReach boundary solves the problem in a single O(n) pass with O(1) memory. On 30 verified test cases, the greedy approach executed in 0.10 ms compared to 0.18 ms for the quadratic DP.",
     "pitfalls": "Do not assume a 0 is always an impassable blocker: as long as a preceding index had a jump length capable of vaulting over the 0, maxReach will exceed the 0's index and continue progressing."
   },
   "reading_links": [
@@ -1010,7 +1010,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function canJump(nums) {\n  const n = nums.length;\n  const dp = new Array(n).fill(false);\n  dp[n - 1] = true;\n  for (let i = n - 2; i >= 0; i--) {\n    const furthest = Math.min(i + nums[i], n - 1);\n    for (let j = i + 1; j <= furthest; j++) {\n      if (dp[j]) {\n        dp[i] = true;\n        break;\n      }\n    }\n  }\n  return dp[0];\n}",
       "isReference": false
@@ -1024,7 +1024,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def canJump(nums: list[int]) -> bool:\n    n = len(nums)\n    dp = [False] * n\n    dp[-1] = True\n    for i in range(n - 2, -1, -1):\n        furthest = min(i + nums[i], n - 1)\n        for j in range(i + 1, furthest + 1):\n            if dp[j]:\n                dp[i] = True\n                break\n    return dp[0]\n",
       "isReference": false
@@ -1037,7 +1037,7 @@
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "gas-station",
+  "sequence": 5,
+  "prevSlug": "integer-to-roman",
   "nextSlug": "jump-game-ii"
 }

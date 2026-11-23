@@ -1,0 +1,633 @@
+{
+  "slug": "implement-trie-prefix-tree",
+  "title": "Implement Trie (Prefix Tree)",
+  "topic": "trie",
+  "difficulty": "Medium",
+  "pattern": "trie node counting",
+  "statement": "You are given `words`, a list of non-empty lowercase words. Inserting them one by one into a prefix tree (trie) creates one node per distinct prefix: the root stands for nothing, and every other node stands for one specific non-empty prefix that at least one word starts with.\n\nReturn how many distinct non-empty prefixes the words in `words` have.\n\nConstraints: `1 <= words.length <= 50` and `1 <= words[i].length <= 10`.\n",
+  "examples": [
+    {
+      "input": "words = [\"d\"]",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "words = [\"rjvdeiddxr\"]",
+      "output": "10",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(words: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Distinct prefixes depend only on the characters consumed so far, so two words that both begin with 'ca' must share whatever stores 'c' and 'ca'.",
+    "A node of a prefix tree represents exactly one prefix; count it the first time some word forces you to create it.",
+    "A hash set of the prefix strings reaches the same O(total characters) time if all you need is the count; the trie is the structure you keep when you later need prefix queries."
+  ],
+  "editorial": {
+    "approach": "The direct approach keeps a plain list of the prefixes found so far: for every word, cut each prefix of length 1 up to the word length, scan the list to check whether that exact string is already there, and append it when it is not. The list size at the end is the answer, and every scan walks up to P strings of up to L characters. Building a trie does the same deduplication structurally: start at the root, and for each character of each word either follow the existing child edge or create a node and bump a counter. Exactly one node is created per distinct non-empty prefix, so the counter is the answer, and the total work is one step per input character.",
+    "why_optimal": "Every character of every word has to be read at least once, so O(P) time with P the sum of the word lengths is the floor and the trie lands on it, spending one node per distinct prefix. The list-scan version pays O(P\u00b2 * L) because it compares prefixes with each other; with words.length <= 50 and word length <= 10 there are at most 500 prefixes, so roughly a quarter of a million character comparisons, fast at these bounds but two orders of magnitude more work than the single pass. A hash set of prefix strings reaches the same O(P) bound; the trie earns its nodes because it also answers 'is this a prefix of something' without hashing whole strings.",
+    "pitfalls": "Counting words instead of prefixes, or counting the root as well: the root stands for the empty prefix, which is a prefix of every word but is not a non-empty prefix and must stay out of the count. A duplicate word must add nothing on its second insertion, which the child lookup handles automatically as long as you increment only when a node is newly created. A word that is itself a prefix of a longer word creates nodes only along its own path; the shared part must not be counted twice. A zero-length word contributes no nodes, so the character loop has to cope with it without creating anything. In the list version, testing membership with a substring search rather than full string equality counts prefixes such as 'ab' inside 'abc' that were never recorded."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Trie",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+  ],
+  "starterCode": {
+    "javascript": "function solve(words) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(words):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String[] words) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<std::string> words) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 11.929472999999994,
+    "optimalRuntimeMs": 4.410367999999995,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          "d"
+        ]
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          "xi",
+          "he",
+          "dv",
+          "rc",
+          "nb",
+          "cg",
+          "qt",
+          "rg",
+          "uw",
+          "nh",
+          "si",
+          "yz",
+          "wn",
+          "ie",
+          "yk",
+          "cm",
+          "ll",
+          "iz",
+          "xo",
+          "dm",
+          "rj",
+          "tl",
+          "gw",
+          "bv"
+        ]
+      ],
+      "expected": 40,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          "chdmioulfl",
+          "gviwvuctuf",
+          "xhfomiuwrh",
+          "kyybhbzkmi",
+          "gsw",
+          "gupmuoeieh",
+          "rrixsnsmlh",
+          "qpcyb"
+        ]
+      ],
+      "expected": 66,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          "ufzvn",
+          "cmmtoqirav",
+          "dvryiyukdj",
+          "foaxxiqyfq"
+        ]
+      ],
+      "expected": 35,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          "juqtgelyfr",
+          "atkpadlzjh",
+          "hs",
+          "cxp"
+        ]
+      ],
+      "expected": 25,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          "yeevprfiqt",
+          "gryxwgwjmv",
+          "loqodhhcka"
+        ]
+      ],
+      "expected": 30,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          "hshacwubhc",
+          "kc",
+          "hivpgrexss",
+          "hzpzngddvn",
+          "nnoxbvuudb",
+          "xkzdhggroe",
+          "fiohcozrdb",
+          "racyhfnppg",
+          "bfmamizzoj",
+          "wxzrvwpegj",
+          "bsxrbxk",
+          "bs",
+          "qqfbqcfctc",
+          "hmdshstbtc",
+          "vssqkigvwk",
+          "imevujok",
+          "aot",
+          "dcrgqielch",
+          "jforwjtzuq"
+        ]
+      ],
+      "expected": 156,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          "rjvdeiddxr"
+        ]
+      ],
+      "expected": 10,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          "jtgwkgvui",
+          "pibcunibak",
+          "uifxo",
+          "wnradcwerb",
+          "srenebjlzb"
+        ]
+      ],
+      "expected": 44,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          "vhvdlyr",
+          "txehfzzfna",
+          "xkznzv",
+          "zhifzwdmbp",
+          "goljzhha",
+          "gmkicyiluq",
+          "vrkadifsib",
+          "tnlx",
+          "ntqdmsgibw",
+          "aqzrvxxxvg",
+          "ncvktkvdxj",
+          "jvnkmwjreg"
+        ]
+      ],
+      "expected": 101,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          "mvxftsjmra",
+          "jgnzstukoo",
+          "vgqpzzxfvc",
+          "qvutkcyhvj",
+          "zgeabhpt",
+          "onu",
+          "gwwmpmheuw",
+          "y",
+          "ynhf",
+          "qobrhdoezo",
+          "qrtkyotxqn",
+          "ofxpoiyhui",
+          "puhiocwjhi",
+          "krceehmwew"
+        ]
+      ],
+      "expected": 112,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          "nnk",
+          "onbgnmyswa",
+          "mpaljymnrx",
+          "rzthphinpa",
+          "kvvzmxfoet",
+          "amssvacune",
+          "fbimkgokky"
+        ]
+      ],
+      "expected": 63,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          "ynicpaxrb",
+          "hucyubyahg",
+          "t",
+          "hepvd",
+          "gowiylfttx",
+          "dyfjdsajsv",
+          "mwgcswuhdw",
+          "vtzdzszblr",
+          "vlcqukanpd",
+          "luowenfxqu",
+          "tzryponxs",
+          "khciohyos",
+          "vmkapkfpgl"
+        ]
+      ],
+      "expected": 109,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          "itwiraqgch",
+          "npryhwpuwp",
+          "zacjhmwhjv",
+          "lprqlnxrkl",
+          "oijihdxgkd",
+          "rywfggxpix",
+          "yqtjdgjhlf",
+          "awreibbrjw",
+          "uypda"
+        ]
+      ],
+      "expected": 85,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          "ppokfbipdc",
+          "pcsuvbeezs",
+          "chdrynttzt",
+          "yqmoojsn",
+          "stbtxdygug",
+          "vcfhfrcfa",
+          "owtpjbhjwj",
+          "ocvhizzusv",
+          "ndrhuei",
+          "cbfzj",
+          "xsjodowjwm",
+          "qrpoctbnx",
+          "tiachvssay",
+          "isbyyfpquo",
+          "fsnupcpln",
+          "kvdfknwpjv",
+          "yrbockikdy",
+          "qavronbgql",
+          "ypuoybgire"
+        ]
+      ],
+      "expected": 171,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          "wpdautzhwf",
+          "rarnchdodu",
+          "pwjqw",
+          "npphoremg",
+          "qxeciyznkz",
+          "iajxjssvpe",
+          "rplkryrmok",
+          "whsmhyn",
+          "kx",
+          "wzmmvzuepb"
+        ]
+      ],
+      "expected": 80,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          "skdodqoaxe",
+          "uecpziktwm",
+          "ckvrmkuwyp",
+          "btchuvjhxc",
+          "dyuwdofwja"
+        ]
+      ],
+      "expected": 50,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          "zbjllnehqn",
+          "vzfffctmtv"
+        ]
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          "psehouioiv",
+          "zojvrfcols",
+          "unwiojgmpd",
+          "mslsjwjavm",
+          "asvyxbtxpj",
+          "tzlhugtivy",
+          "yvveuduubj",
+          "bslxecjkxn",
+          "gezrlqqifi",
+          "zjxkzdocey",
+          "vxvmzrlczm",
+          "irdolvxvis",
+          "uldvhpatrk",
+          "hucuowjund",
+          "bbjpddhrem",
+          "lvxwrnsxxe",
+          "udptnibwlg",
+          "ohldvlrulb",
+          "igdocvguut",
+          "bzkhezsgcy",
+          "gsghkyezta",
+          "eerizfdvae",
+          "lzzhskafib",
+          "xnqdxcpoyl",
+          "sdoqhtbxzv",
+          "jouabpmnvd",
+          "woccktecei",
+          "usrwkmtqjo",
+          "tndzwduuyr",
+          "gnohnkomnx",
+          "knkvilevpc",
+          "ccndxxlzer",
+          "srrkvdnlvy",
+          "xbjtjldsqg",
+          "vphdlrldyi",
+          "hznryttvur",
+          "tvwiafiwyj",
+          "lafesvmcex",
+          "acxqgmnokf",
+          "jxkystcbef",
+          "bvciovnpto",
+          "igyqdlndjv",
+          "spqvjbhmtb",
+          "gjgyeyijkd",
+          "pxnfemrwhq",
+          "vzlcmxbnao",
+          "ksnsmwunjd",
+          "akfztowlcn",
+          "hnsmqcmjxk",
+          "kyfcqudqqg"
+        ]
+      ],
+      "expected": 470,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          "lxuehdeigf",
+          "eyyucfyupo",
+          "ysovsuutku",
+          "eocpoujzis",
+          "lqcjoobblj",
+          "ucttqmosrz",
+          "bozsugktpq",
+          "bodzkwcquf",
+          "hwooqqtfll",
+          "mnykvtbzuu",
+          "ckdrvmjixv",
+          "ekcsveljuw",
+          "metwcjrmuz",
+          "evwxvqcuvn",
+          "laljfgkypg",
+          "eecjzdqyrx",
+          "bvkytetmef",
+          "wytzfxobnl",
+          "xhotjyxzoh",
+          "hjzzpglvso",
+          "yjymqqnfgz",
+          "eibuplrdwq",
+          "jcyfioqenc",
+          "olanbmqlhm",
+          "lhakdwukze",
+          "bjpweywpot",
+          "caigerxtqn",
+          "yjhjdbhnuz",
+          "ocdptrauqs",
+          "wejnatlhsn",
+          "vvcqlcqrqz",
+          "rampbumlix",
+          "lzclhxvudy",
+          "xykeblrkuf",
+          "owpufzecwy",
+          "bjgbzgbkjq",
+          "rpibyugjly",
+          "ukidzlnmxo",
+          "kfpwplzqiz",
+          "xncntfrjkd",
+          "kvjjotwnfw",
+          "lobxltniuz",
+          "cvumlqzxvf",
+          "etvzobechy",
+          "llmsbtevol",
+          "oycseqlmku",
+          "hdaxfpqmrd",
+          "yiwogtjwpg",
+          "ecofwoczvk",
+          "lwcrrjjfww"
+        ]
+      ],
+      "expected": 462,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          "ufzlqhdgze",
+          "zpalrslozr",
+          "tccjmwxpqn",
+          "scekucoovq",
+          "eyrusfyenq",
+          "dqejffkwhl",
+          "jcigurieuj",
+          "rcqufssefv",
+          "xtksbacbuy",
+          "iugysntuap",
+          "rjujphzzvm",
+          "ocwbfonpog",
+          "tekwkxlmey",
+          "qrdkhodioh",
+          "dbjmtnhfks",
+          "kgyfpqopjp",
+          "cmqohgslbb",
+          "ptuvpjradn",
+          "ixlymlbmbs",
+          "glrjcmqoyr",
+          "tvtdedmlzk",
+          "lyegtqmqbb",
+          "ewkzpqoetq",
+          "ktkfmtxjsk",
+          "qrpwsjpalk",
+          "dnsjzxwuat",
+          "iuzysshxbs",
+          "fquxtymevh",
+          "swdgaoknen",
+          "gnqytpxxbw",
+          "qgrkvpqmkf",
+          "rkrlvyxvuz",
+          "itpghirjhj",
+          "wgwwpkplrz",
+          "ijdsvrmmly",
+          "jbjwclouix",
+          "ggrirwiedt",
+          "shhbvqhuhb",
+          "nkwpdvyear",
+          "nuppugyjkj",
+          "bycushrxxb",
+          "nfbmzpfxjb",
+          "jstdkjourq",
+          "eqoigzdkfx",
+          "uiwfaxkzjs",
+          "ygftumnqkc",
+          "vdfepkhaim",
+          "oyikjsxsai",
+          "lwhbvdojfm",
+          "qwyjwdujlt"
+        ]
+      ],
+      "expected": 471,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          "hepeoxtlnw",
+          "pyrzvgyhvy",
+          "zcqoqwlcsd",
+          "rqgsrefkqo",
+          "vgwspcqozb",
+          "eqnosbrovz",
+          "xamiaxgscb",
+          "lwcrbcpbjn",
+          "yeyuxunlmo",
+          "mcvvreuldf",
+          "mqexhayajo",
+          "xrnrmhhole",
+          "gxydbzvnty",
+          "hgcdtbotvw",
+          "hxbmohrgyy",
+          "eqjhxsksty",
+          "khjevqhnji",
+          "rsxfuvnrpb",
+          "uvmzqkwnne",
+          "mfyrphhjwe",
+          "brnnrqemhi",
+          "kucolcrxgb",
+          "mvttbcgzys",
+          "vrgpgkjagg",
+          "dxyphwtwgm",
+          "rkyjmorulj",
+          "lqpodzxpyk",
+          "lknbshxeai",
+          "ssxnjegkhm",
+          "hpruvkiypx",
+          "xpofxzlfex",
+          "pfrubqbcvb",
+          "neuhcweagq",
+          "lbtuvtpvpa",
+          "rrnaaqxirj",
+          "qwvnzfddqe",
+          "gtqilizmcl",
+          "oshwhjvcuu",
+          "cmmmrpbuaw",
+          "cpnuzksdqb",
+          "gwspibcvir",
+          "vbfkagseyw",
+          "cjfshsmvrk",
+          "yxezwxcqxl",
+          "dnhcktyttm",
+          "auizophlrm",
+          "fvsvmcytjz",
+          "wcciemwzue",
+          "mkldcajoly",
+          "decfnorrqn"
+        ]
+      ],
+      "expected": 472,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(P\u00b2 * L) | Space: O(P * L)",
+      "language": "javascript",
+      "code": "function solve(words) {\n  const found = [];\n  for (const w of words) {\n    for (let len = 1; len <= w.length; len++) {\n      const p = w.slice(0, len);\n      let exists = false;\n      for (const q of found) {\n        if (q === p) {\n          exists = true;\n          break;\n        }\n      }\n      if (!exists) found.push(p);\n    }\n  }\n  return found.length;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(P) | Space: O(P)",
+      "language": "javascript",
+      "code": "function solve(words) {\n  const root = new Map();\n  let count = 0;\n  for (const w of words) {\n    let node = root;\n    for (const ch of w) {\n      let next = node.get(ch);\n      if (next === undefined) {\n        next = new Map();\n        node.set(ch, next);\n        count += 1;\n      }\n      node = next;\n    }\n  }\n  return count;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 2,
+  "prevSlug": "longest-common-prefix",
+  "nextSlug": "search-suggestions-system"
+}

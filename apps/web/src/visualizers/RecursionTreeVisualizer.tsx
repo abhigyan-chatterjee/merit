@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ControlBar } from '../components/ControlBar';
 import { VisualizerCanvas } from '../components/VisualizerCanvas';
 import { PseudoCodePanel } from '../components/PseudoCodePanel';
@@ -47,14 +47,13 @@ export const RecursionTreeVisualizer: React.FC = () => {
     const treeEdges: { x1: number; y1: number; x2: number; y2: number }[] = [];
     const animFrames: Frame[] = [];
     const memo = new Map<number, number>();
-    const seenArgs = new Set<number>();
     let idCounter = 1;
 
     animFrames.push({
       activeNodeId: null,
       memoizedNodeIds: [],
       callStack: [],
-      activeLine: 1,
+      activeLine: 0,
       log: `Starting fib(${n}) execution ${memoEnabled ? 'with Memoization cache' : 'without memoization'}.`,
     });
 
@@ -93,8 +92,8 @@ export const RecursionTreeVisualizer: React.FC = () => {
       animFrames.push({
         activeNodeId: nodeId,
         memoizedNodeIds: isHit ? [nodeId] : [],
-        callStack: [{ id: nodeId, func: 'fib', arg: val, ret: null }],
-        activeLine: isHit ? 4 : 2,
+        callStack: [],
+        activeLine: isHit ? 1 : 2,
         log: isHit
           ? `MEMO HIT: fib(${val}) already cached = ${memo.get(val)}! Branch pruned.`
           : `Call fib(${val})`,
@@ -112,7 +111,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
           activeNodeId: nodeId,
           memoizedNodeIds: [],
           callStack: [],
-          activeLine: 3,
+          activeLine: 2,
           log: `Base case fib(${val}) = ${val}`,
         });
         return { id: nodeId, result: val };
@@ -126,13 +125,12 @@ export const RecursionTreeVisualizer: React.FC = () => {
       const total = leftChild.result + rightChild.result;
       node.returnValue = total;
       memo.set(val, total);
-      seenArgs.add(val);
 
       animFrames.push({
         activeNodeId: nodeId,
         memoizedNodeIds: [],
         callStack: [],
-        activeLine: 5,
+        activeLine: 4,
         log: `Returned fib(${val}) = ${leftChild.result} + ${rightChild.result} = ${total}`,
       });
 
@@ -152,7 +150,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
       activeNodeId: null,
       memoizedNodeIds: [],
       callStack: [],
-      activeLine: 1,
+      activeLine: 0,
       log: `Starting fact(${n}) call stack simulation.`,
     });
 
@@ -163,7 +161,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
         activeNodeId: `f-${k}`,
         memoizedNodeIds: [],
         callStack: [...stack],
-        activeLine: k === 1 ? 2 : 3,
+        activeLine: k === 1 ? 1 : 2,
         log: k === 1 ? `Base case fact(1) reached. Ret = 1.` : `Push frame: fact(${k}) waiting on fact(${k - 1})`,
       });
     }
@@ -177,7 +175,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
         activeNodeId: `f-${k}`,
         memoizedNodeIds: [],
         callStack: [...unwound],
-        activeLine: 4,
+        activeLine: 2,
         log: `Unwinding: fact(${k}) returns ${currentVal}. Frame popped.`,
       });
       stack.pop();
@@ -219,9 +217,14 @@ export const RecursionTreeVisualizer: React.FC = () => {
     activeNodeId: null,
     memoizedNodeIds: [],
     callStack: [],
-    activeLine: 0,
+    activeLine: -1,
     log: 'Ready',
   };
+
+  const fibViewHeight = useMemo(
+    () => Math.max(300, ...nodes.map((node) => node.y + 30)),
+    [nodes]
+  );
 
   return (
     <div className="space-y-4">
@@ -241,7 +244,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
           setFrameIdx(0);
         }}
         onRandomize={() => {
-          setInputN(mode === 'fib' ? Math.floor(Math.random() * 2) + 3 : 4);
+          setInputN(mode === 'fib' ? Math.floor(Math.random() * 2) + 3 : Math.floor(Math.random() * 4) + 2);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -307,7 +310,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
             metrics={[
               { label: 'Algorithm', value: mode === 'fib' ? `fib(${inputN})` : `fact(${inputN})`, color: 'var(--c-mint)' },
               { label: 'Memoized', value: useMemoization ? 'Enabled' : 'Disabled', color: 'var(--c-violet)' },
-              { label: 'Call Depth', value: `${inputN} levels`, color: 'var(--c-amber)' },
+              { label: 'Call Depth', value: mode === 'fib' ? `${inputN + 1} levels` : `${inputN} levels`, color: 'var(--c-amber)' },
             ]}
             legend={[
               { label: 'Pending Frame', color: 'var(--c-steel)' },
@@ -317,7 +320,7 @@ export const RecursionTreeVisualizer: React.FC = () => {
           >
             <div data-testid="recursion-workbench" className="py-6 px-4 flex flex-col items-center justify-center min-h-[300px]">
               {mode === 'fib' ? (
-                <svg className="w-full h-80 select-none" viewBox="0 0 440 300">
+                <svg className="w-full h-80 select-none" viewBox={`0 0 440 ${fibViewHeight}`}>
                   {/* Edges */}
                   {edges.map((e, idx) => (
                     <line
@@ -343,15 +346,15 @@ export const RecursionTreeVisualizer: React.FC = () => {
                     if (isActive) {
                       fill = 'var(--c-amber)';
                       stroke = 'var(--c-amber)';
-                      text = '#0f141c';
+                      text = 'var(--c-canvas)';
                     } else if (isMemo) {
                       fill = 'var(--c-violet)';
                       stroke = 'var(--c-violet)';
-                      text = '#ffffff';
+                      text = 'var(--c-canvas)';
                     } else if (node.returnValue !== null) {
                       fill = 'var(--c-mint)';
                       stroke = 'var(--c-mint)';
-                      text = '#0f141c';
+                      text = 'var(--c-canvas)';
                     }
 
                     return (

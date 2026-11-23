@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Divide-and-Conquer: Merge Sort\n\nSorting an array of $n$ elements with guaranteed $O(n \\log n)$ time complexity and stability is achieved via Merge Sort.\n\n#### 1. Recurrence and Structure\nDivide the array segment $nums[left \\dots right]$ at $mid = \\lfloor(left + right) / 2\\rfloor$:\n1. Recursively sort left subarray $nums[left \\dots mid]$.\n2. Recursively sort right subarray $nums[mid + 1 \\dots right]$.\n3. Merge the two sorted subarrays into an auxiliary scratch buffer `temp` and copy back to $nums$.\n\n#### 2. Merge Procedure\nMaintain two pointers $i = left$ and $j = mid + 1$. Compare $nums[i]$ and $nums[j]$, copying the smaller value to $temp[k++]$. Append any remaining elements once one half is exhausted.\n\n#### 3. Complexity\n$$T(n) = 2T(n/2) + O(n) \\implies O(n \\log n)$$\nAllocating a single scratch buffer of size $n$ upfront keeps auxiliary space to $O(n)$.",
-    "why_optimal": "Quadratic comparison sorts like insertion sort degrade to O(n²) on reverse or large arrays. Merge sort guarantees O(n log n) worst-case time by halving subproblems and merging in linear time. On 24 verified test cases, merge sort executed in 0.79 ms compared to 0.88 ms for insertion sort.",
+    "why_optimal": "Quadratic comparison sorts like insertion sort degrade to O(n\u00b2) on reverse or large arrays. Merge sort guarantees O(n log n) worst-case time by halving subproblems and merging in linear time. On 24 verified test cases, merge sort executed in 0.79 ms compared to 0.88 ms for insertion sort.",
     "pitfalls": "Allocating new slices or arrays on every recursive call causes excessive garbage collection. Allocate one temporary buffer of size n upfront."
   },
   "reading_links": [
@@ -1782,7 +1782,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function sortArray(nums) {\n  const arr = nums.slice();\n  for (let i = 1; i < arr.length; i++) {\n    const key = arr[i];\n    let j = i - 1;\n    while (j >= 0 && arr[j] > key) {\n      arr[j + 1] = arr[j];\n      j--;\n    }\n    arr[j + 1] = key;\n  }\n  return arr;\n}",
       "isReference": false
@@ -1796,7 +1796,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def sortArray(nums: list[int]) -> list[int]:\n    arr = list(nums)\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n        while j >= 0 and arr[j] > key:\n            arr[j + 1] = arr[j]\n            j -= 1\n        arr[j + 1] = key\n    return arr\n",
       "isReference": false
@@ -1809,7 +1809,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
+  "sequence": 4,
   "prevSlug": "largest-number",
   "nextSlug": "wiggle-sort-ii-lite"
 }

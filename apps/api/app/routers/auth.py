@@ -19,6 +19,7 @@ from app.schemas.auth import (
     UserResponse,
 )
 from app.security import (
+    DUMMY_VERIFY_HASH,
     clear_auth_cookies,
     create_access_token,
     generate_opaque_token,
@@ -27,14 +28,29 @@ from app.security import (
     hash_token,
     require_same_origin,
     set_auth_cookies,
-    verify_password,
+    verify_password_safe,
 )
 from app.services.clerk_oauth import verify_clerk_session_token
+from app.services.rate_limit import SlidingWindowLimiter, client_key
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
-# Dummy hash for timing attack mitigation on missing email lookups
-DUMMY_PASSWORD_HASH = hash_password("dummy_password_timing_pad_123")
+_auth_limiter = SlidingWindowLimiter(
+    max_hits=20,
+    window_sec=900,
+    code="RATE_LIMITED",
+    message="Too many authentication attempts. Please try again later.",
+)
+_refresh_limiter = SlidingWindowLimiter(
+    max_hits=60,
+    window_sec=900,
+    code="RATE_LIMITED",
+    message="Too many refresh requests. Please try again later.",
+)
+
+# Kept as a module alias: other modules and tests import this name. The digest
+# itself now lives in app.security so verify_password_safe can reuse it.
+DUMMY_PASSWORD_HASH = DUMMY_VERIFY_HASH
 
 # Marker stored in password_hash for accounts that only ever signed in through a
 # provider. Any other value means a real password was set on the row.
@@ -56,9 +72,11 @@ def _has_password_credential(user: User) -> bool:
 def register(
     req: RegisterRequest,
     response: Response,
+    request: Request,
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _auth_limiter.check(client_key(request))
     # Check existing email
     existing = db.scalar(select(User).where(User.email == req.email))
     if existing:
@@ -114,11 +132,15 @@ def login(
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _auth_limiter.check(client_key(request))
     user = db.scalar(select(User).where(User.email == req.email))
 
-    # Constant-time comparison: always run verify_password
+    # Constant-work comparison: always run the KDF. A missing account is
+    # checked against a real dummy digest, and a provider-only account is
+    # checked against the sentinel (which verify_password_safe treats as a
+    # non-match rather than letting pwdlib raise).
     target_hash = user.password_hash if user else DUMMY_PASSWORD_HASH
-    is_valid = verify_password(req.password, target_hash)
+    is_valid = verify_password_safe(req.password, target_hash)
 
     if not user or not is_valid:
         raise HTTPException(
@@ -188,6 +210,7 @@ def refresh_token_rotation(
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
+    _refresh_limiter.check(client_key(request))
     raw_refresh = request.cookies.get("merit_refresh")
     if not raw_refresh:
         clear_auth_cookies(response)
@@ -324,6 +347,7 @@ def clerk_oauth(
     links or creates the user row, then issues the standard merit_access /
     merit_refresh cookies through the same rotation code path as login.
     """
+    _auth_limiter.check(client_key(request))
     if not settings.clerk_jwks_url.strip():
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
@@ -340,6 +364,13 @@ def clerk_oauth(
 
     created = False
     user = db.scalar(select(User).where(User.clerk_id == clerk_id))
+    if user is not None:
+        if display_name and display_name != user.display_name:
+            user.display_name = display_name
+        if email != user.email:
+            owner = db.scalar(select(User).where(User.email == email))
+            if owner is None:
+                user.email = email
     if user is None:
         user = db.scalar(select(User).where(User.email == email))
         if user is not None:
@@ -417,6 +448,49 @@ def clerk_oauth(
     return user
 
 
+@router.post("/oauth/clerk/link", response_model=UserResponse)
+def clerk_oauth_link(
+    req: ClerkOAuthRequest,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _: None = Depends(require_same_origin),
+):
+    _auth_limiter.check(client_key(request))
+    if not settings.clerk_jwks_url.strip():
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail={
+                "code": "OAUTH_NOT_CONFIGURED",
+                "message": "Clerk OAuth is not configured on this server.",
+            },
+        )
+    claims = verify_clerk_session_token(req.clerk_token)
+    if claims["email"] != current_user.email.lower():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "OAUTH_EMAIL_MISMATCH",
+                "message": "Your OAuth email does not match your account email.",
+            },
+        )
+    other = db.scalar(
+        select(User).where(User.clerk_id == claims["clerk_id"], User.id != current_user.id)
+    )
+    if other is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "OAUTH_ALREADY_LINKED",
+                "message": "This OAuth account is already linked to a different user.",
+            },
+        )
+    current_user.clerk_id = claims["clerk_id"]
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
     return user
@@ -443,7 +517,18 @@ def change_email(
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
-    if not verify_password(req.current_password, user.password_hash):
+    if not _has_password_credential(user):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "NO_PASSWORD_CREDENTIAL",
+                "message": (
+                    "This account signs in with a provider and has no password. "
+                    "Manage your address with that provider instead."
+                ),
+            },
+        )
+    if not verify_password_safe(req.current_password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "INVALID_PASSWORD", "message": "Current password is incorrect."},
@@ -466,18 +551,60 @@ def change_email(
 @router.post("/password", response_model=AuthMessageResponse)
 def change_password(
     req: PasswordChange,
+    response: Response,
+    request: Request,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
     _: None = Depends(require_same_origin),
 ):
-    if not verify_password(req.current_password, user.password_hash):
+    if not _has_password_credential(user):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "NO_PASSWORD_CREDENTIAL",
+                "message": (
+                    "This account signs in via Google, GitHub, or Microsoft "
+                    "and has no local password."
+                ),
+            },
+        )
+    if not verify_password_safe(req.current_password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "INVALID_PASSWORD", "message": "Current password is incorrect."},
         )
+
+    now_str = utcnow_iso()
     user.password_hash = hash_password(req.new_password)
+
+    # A password change is the action a user takes when they believe their
+    # account is compromised. Revoking every existing refresh token is the whole
+    # point: without it a stolen session survives the reset. The calling device
+    # then gets a brand new session so the legitimate user is not logged out.
+    db.execute(
+        update(RefreshToken)
+        .where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
+        .values(revoked_at=now_str)
+        .execution_options(synchronize_session=False)
+    )
+
+    raw_refresh = generate_opaque_token()
+    db.add(
+        RefreshToken(
+            user_id=user.id,
+            token_hash=hash_token(raw_refresh),
+            expires_at=(
+                datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
+            ).isoformat(),
+            created_at=now_str,
+            ip=request.client.host if request.client else None,
+            user_agent=request.headers.get("user-agent"),
+        )
+    )
     db.commit()
-    return {"message": "Password changed successfully."}
+
+    set_auth_cookies(response, create_access_token(user.id, user.role), raw_refresh)
+    return {"message": "Password changed successfully. Other sessions have been signed out."}
 
 
 @router.delete("/account", response_model=AuthMessageResponse)

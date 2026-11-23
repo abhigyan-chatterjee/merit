@@ -1,0 +1,251 @@
+{
+  "slug": "reorganize-string",
+  "title": "Reorganize String",
+  "topic": "greedy",
+  "difficulty": "Medium",
+  "pattern": "greedy with multiset feasibility check",
+  "statement": "You are given a string `s` made of the letters `'a'`, `'b'` and `'c'`. Rearrange all of its letters so that no two equal letters end up next to each other, and return the lexicographically smallest rearrangement that satisfies the rule. If no such rearrangement exists, return an empty string.\n\nMany rearrangements are usually valid, so the answer is pinned down by dictionary order: between two candidates the one whose first differing letter is smaller wins, which means `\"abab\"` beats `\"abba\"`.\n\nExamples: `s = \"aab\"` gives `\"aba\"`; `s = \"aaab\"` cannot be arranged, because the three `a` letters would need three other letters to separate them and only one `b` is available, so the answer is `\"\"`.\n\nConstraints: `1 <= s.length <= 60`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\"",
+      "output": "\"a\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"cb\"",
+      "output": "\"bc\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Only the counts of the letters matter, and you can tell before searching whether any answer exists at all.",
+    "If the most frequent letter appears more than `ceil(n/2)` times there is no answer; otherwise build the answer left to right, always eager for the smallest letter.",
+    "A choice is safe when the letters that would remain can still be arranged: their largest count must be at most `floor(m/2)`, or exactly `ceil(m/2)` with `m` odd, in which case that letter is forced to go next and therefore must differ from the letter just placed."
+  ],
+  "editorial": {
+    "approach": "The brute force is a memoised search over (letter counts, letter just placed) that returns the lexicographically smallest valid suffix: it tries letters in alphabetical order, keeps the best completion, and the memo collapses repeated subproblems, so it is exact but its state count grows as the product of the counts, `O(n^\u03c3)` for \u03c3 distinct letters. The optimal sweep builds the answer left to right and, at every position, takes the smallest letter that differs from the letter just placed and leaves a multiset that can still be arranged. The feasibility test for a multiset of `m` letters whose largest count is `p` is O(\u03c3): it is arrangeable when `p <= floor(m/2)`, and when `m` is odd and `p = (m+1)/2` the peak letter must occupy every even position, so it must not equal the letter already placed. Taking the smallest admissible letter forces the smallest possible first difference, which is what lexicographic order compares, so the greedy string is optimal.",
+    "why_optimal": "The construction decides one position at a time and each decision costs O(\u03c3) for the count scan, so the whole answer is O(\u03c3n) time with O(\u03c3) counters, against the brute force's `n^\u03c3` memo states and O(n) strings per state. With `s.length <= 60` and only three letters the memo search stays under a tenth of a second, so it is a real reference implementation, but its cost explodes as soon as the alphabet grows, which is exactly why the O(\u03c3n) greedy is the version to submit.",
+    "pitfalls": "The impossibility test is `p > ceil(n/2)`, that is `p > (n+1)/2`, not `p > n/2`. The odd case is the subtle one: a plain `p <= ceil(m/2)` test approves a choice that leaves the peak letter equal to the letter just placed, and the search then dead-ends, so the peak letter must be forced to differ from the previous one. A greedy that always takes the most frequent letter also dead-ends, because `\"aab\"` needs the `b` in the middle, not at the end. Getting the alphabet size wrong breaks the counts: read letters through `ord(ch) - ord('a')` so counts never land in another slot, and remember an input with only one distinct letter and length above 1, or with three `a` letters and one other letter, has to return the empty string rather than a partial arrangement."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Greedy_algorithm",
+    "https://en.wikipedia.org/wiki/Lexicographic_order"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 124.06970199999999,
+    "optimalRuntimeMs": 0.7207789999999967,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a"
+      ],
+      "expected": "a",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "cb"
+      ],
+      "expected": "bc",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "aacaccca"
+      ],
+      "expected": "acacacac",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "baaaaaccacaccccbabc"
+      ],
+      "expected": "ababcacacacacacacbc",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "aacbbbaab"
+      ],
+      "expected": "ababababc",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "abab"
+      ],
+      "expected": "abab",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "cbacbcabacbc"
+      ],
+      "expected": "abacacbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "bcacaacabaaabbbcbabb"
+      ],
+      "expected": "ababababababacacbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "cbcccac"
+      ],
+      "expected": "",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "accaabbbcccacbaaabbba"
+      ],
+      "expected": "abababababcacacacbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "ccbacbb"
+      ],
+      "expected": "abcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "babaacccbccbcbbaacbaa"
+      ],
+      "expected": "ababababcacacacbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "acac"
+      ],
+      "expected": "acac",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "cabbcbcbcaccac"
+      ],
+      "expected": "acacacbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "bcbabbabaccbcacacb"
+      ],
+      "expected": "abababacacbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "ccaabaccacbbaabbaaaca"
+      ],
+      "expected": "abababababcacacacacac",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "cba"
+      ],
+      "expected": "abc",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "aacbcabccbacccacbb"
+      ],
+      "expected": "abacacacacbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "cbbcbaaaabaccacaaaccaaaabacabcbacacccbabbaaacbbbbbcacccaabcb"
+      ],
+      "expected": "abababababababababababacacacacacacacacacacacacacbcbcbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "aaacbababbaabcaaccaaaabbbabaababbbbbcccccbaabaacccacbaacbcca"
+      ],
+      "expected": "ababababababababababababababacacacacacacacacacacacbcbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "caaacacabacaccacabccccbbaccbabbaccbbbaabccaacacbabaabbabccbc"
+      ],
+      "expected": "ababababababababacacacacacacacacacacacacacbcbcbcbcbcbcbcbcbc",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "caccbcaabaaccabbcacbaccbcbbaacbbaabacbacbccbcaaacacabccabaab"
+      ],
+      "expected": "abababababababababacacacacacacacacacacacacacbcbcbcbcbcbcbcbc",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u2074) (memoised over count triples, 3 letters) | Space: O(n\u2074)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const cnt = new Array(26).fill(0);\n  for (const ch of s) cnt[ch.charCodeAt(0) - 97] += 1;\n  const n = s.length;\n  let peak0 = 0;\n  for (const c of cnt) if (c > peak0) peak0 = c;\n  if (peak0 > Math.ceil(n / 2)) return \"\";\n  const memo = new Map();\n  function go(counts, prev) {\n    let total = 0;\n    for (const c of counts) total += c;\n    if (total === 0) return \"\";\n    const key = counts.join(\",\") + \"|\" + prev;\n    if (memo.has(key)) return memo.get(key);\n    let best = null;\n    for (let c = 0; c < 26; c++) {\n      if (counts[c] === 0 || c === prev) continue;\n      counts[c] -= 1;\n      const rest = go(counts, c);\n      counts[c] += 1;\n      if (rest !== null) {\n        const cand = String.fromCharCode(97 + c) + rest;\n        if (best === null || cand < best) best = cand;\n      }\n    }\n    memo.set(key, best);\n    return best;\n  }\n  const res = go(cnt, -1);\n  return res === null ? \"\" : res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(26 \u00b7 n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const cnt = new Array(26).fill(0);\n  for (const ch of s) cnt[ch.charCodeAt(0) - 97] += 1;\n  const n = s.length;\n  let peak0 = 0;\n  for (const c of cnt) if (c > peak0) peak0 = c;\n  if (peak0 > Math.ceil(n / 2)) return \"\";\n  function feasible(counts, prev) {\n    let m = 0;\n    let peak = 0;\n    let arg = -1;\n    for (let c = 0; c < 26; c++) {\n      m += counts[c];\n      if (counts[c] > peak) {\n        peak = counts[c];\n        arg = c;\n      }\n    }\n    if (m === 0) return true;\n    if (peak <= Math.floor(m / 2)) return true;\n    if (m % 2 === 1 && peak === (m + 1) / 2) return prev !== arg;\n    return false;\n  }\n  const out = [];\n  let prev = -1;\n  for (let pos = 0; pos < n; pos++) {\n    for (let c = 0; c < 26; c++) {\n      if (cnt[c] === 0 || c === prev) continue;\n      cnt[c] -= 1;\n      if (feasible(cnt, c)) {\n        out.push(String.fromCharCode(97 + c));\n        prev = c;\n        break;\n      }\n      cnt[c] += 1;\n    }\n  }\n  return out.join(\"\");\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 8,
+  "prevSlug": "maximum-number-of-events-that-can-be-attended",
+  "nextSlug": "valid-parenthesis-string"
+}

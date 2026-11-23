@@ -1,0 +1,686 @@
+{
+  "slug": "word-search-ii",
+  "title": "Word Search II",
+  "topic": "trie",
+  "difficulty": "Hard",
+  "pattern": "trie of words + DFS pruning on a grid",
+  "statement": "You are given a board as a list of row strings `board`, so `board[r][c]` is the lowercase letter in row `r`, column `c`, together with a list of words. Rows are not guaranteed to be equally long: a row may end before the row above it does.\n\nA word can be formed by walking from a cell to a side-adjacent cell (up, down, left or right) without visiting the same cell twice, so the letters read along the walk spell the word exactly. Two cells are adjacent only when both of them exist, so a step that would leave the end of a shorter row is not a legal step. A word may start at any cell, and different words may reuse the same cells.\n\nReturn every word from the list that can be formed on the board, with no duplicates, sorted in ascending lexicographic order.\n\nConstraints: `1 <= board.length <= 8` and `1 <= board[i].length <= 24` and `1 <= words.length <= 15` and `1 <= words[i].length <= 24`. Every row holds at least one lowercase letter, every word holds at least one lowercase letter, and a word longer than the total number of letters on the board simply cannot be formed.\n",
+  "examples": [
+    {
+      "input": "board = [\"a\"], words = [\"c\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "board = [\"c\", \"bacadcbbabbcabdcbbbc\", \"cacbbdcbdaaabbadacbbcbca\"], words = [\"bacac\"]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(board: string[], words: string[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Searching each word separately repeats a lot of work, because many of the words in the list begin with the same letters.",
+    "Put the whole list into a prefix tree, then walk the board once, descending the tree by the letter of the current cell.",
+    "Cut a branch the moment the letter is not a child of the current trie node, and remove a node's word marker once that word has been collected."
+  ],
+  "editorial": {
+    "approach": "The brute force handles each word independently: it starts a fresh depth-first search from every cell, matches characters one by one, and keeps a visited set so a cell is not reused inside the same word. A step is only taken when the target cell exists, which matters because the rows arrive as strings of different lengths. The optimal version inserts all words into a prefix tree and then runs a single DFS over the board, descending the tree by the letter of the current cell, so a branch dies as soon as the cell's letter is not a trie child of the current node.",
+    "why_optimal": "The brute force pays the full search cost once per word, W times the number of cells times the 4^L walk factor, and it only discovers a mismatch when the whole candidate word has been walked. The trie shares the common prefixes of the dictionary, so the board is traversed once and rejection happens at the first letter that leaves the tree. The asymptotic worst case is still exponential, because a single long word that is almost present everywhere forces deep walks, but the factor of W and the wasted suffix walks disappear, which is what matters once the list grows.",
+    "pitfalls": "Reading `board[r][c]` without checking that row `r` is long enough, so a short row throws in Python and reads `undefined` in JavaScript instead of simply ending the walk. Treating `board` as a grid of rows of equal width and deriving the column count once from `board[0]`, which silently ignores the tail of every longer row. Allowing a cell to be revisited inside one word, or clearing the visited mark only on the success path. Collecting the same word more than once when it is reachable from several starting cells, instead of clearing the word marker on its trie node the first time it is found. Returning words in discovery order rather than sorted order, and letting a trie node's letter collide with an inherited object property."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Trie",
+    "https://en.wikipedia.org/wiki/Backtracking"
+  ],
+  "starterCode": {
+    "javascript": "function solve(board, words) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(board, words):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String[] solve(String[] board, String[] words) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<std::string> solve(std::vector<std::string> board, std::vector<std::string> words) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 9.064725000000013,
+    "optimalRuntimeMs": 11.763541,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          "a"
+        ],
+        [
+          "c"
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          "bb",
+          "aa",
+          "da",
+          "ab",
+          "ab",
+          "db",
+          "ca",
+          "dc"
+        ],
+        [
+          "bb",
+          "aa",
+          "ac",
+          "ca",
+          "da",
+          "ac",
+          "cb",
+          "aa",
+          "bc",
+          "ba",
+          "cd",
+          "cb",
+          "cb",
+          "ca",
+          "bb"
+        ]
+      ],
+      "expected": [
+        "aa",
+        "ac",
+        "ba",
+        "bb",
+        "ca",
+        "cd",
+        "da"
+      ],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          "dcbcabacdcabcbd",
+          "dbcbbcddcbbda",
+          "ab"
+        ],
+        [
+          "dadddc",
+          "aaccacdbdacbacbbcb",
+          "acdaaccbabaadabbdb",
+          "dbbcdcdda",
+          "bacabbaa",
+          "abaacabcdbbdbddbaadcddd",
+          "aaadcabbbdbdbcdbadaaaabb",
+          "ddbdabdadcdcdd",
+          "bcbaa",
+          "caadbaabaabdabaadccbcbcd",
+          "cdcaa"
+        ]
+      ],
+      "expected": [
+        "dbbcdcdda"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          "aabcbcabccbdcacabcaa",
+          "bccbcbcdcaadcaacbcbddaaa",
+          "bacbdbaccacbbacdbbbbdab",
+          "cdbcbadadbbdccbbabdccacc",
+          "dcaacbcaadccdadbcadab",
+          "daccaccdcdcb",
+          "ddbcdac",
+          "bdcdddbdba"
+        ],
+        [
+          "cabcbbbaabdaddbdd",
+          "bbaadbbdabadb",
+          "cdddbddcbcdbcda",
+          "cbcccabbbdbbaddcddabdda",
+          "ddaccddbdbcddadcdbd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          "adaadbdbacdcbdccdcdc",
+          "daa",
+          "baaabbabbbda"
+        ],
+        [
+          "dccbabc",
+          "acdd",
+          "babacaacdcacaddadcdbdbc",
+          "dddccbacdbddcadcbdbc",
+          "cccababdd",
+          "bdddaacbdbccdcdccd",
+          "ccbabcabb",
+          "dccabcb",
+          "bcabcaacbdaa",
+          "cdddcbacdaaddaabbca"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          "dbdd",
+          "cdcaabbcabbbaba",
+          "ddcabccdabcbda",
+          "bbcbaabccdadcdcdda"
+        ],
+        [
+          "dc",
+          "caabacabddcbddadcdcc",
+          "abcddcdadacccadaddabcd",
+          "dabcbcddaabbcadabadab",
+          "ccdddbdbdbbacdcc",
+          "c",
+          "cdbddccddcbbdbdacdddbdab",
+          "cadadabdbadccdacd",
+          "daabcbadaad",
+          "caacac"
+        ]
+      ],
+      "expected": [
+        "c",
+        "dc"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          "dbbdbbbadbdb",
+          "dcdcadcb",
+          "dcc",
+          "dcdcbddabdcccadcaadcb",
+          "cbbcbaacdacbaccdbbbc",
+          "cbcdccadabbdcadac"
+        ],
+        [
+          "dccd",
+          "cabdacbadcdabaacdaabb",
+          "dcdbdaddcacbd",
+          "bcaccadcbadabaa",
+          "bbbabbbcbac",
+          "bcbaa",
+          "acbca",
+          "cabdaa",
+          "dcadbacdaadddadd"
+        ]
+      ],
+      "expected": [
+        "bcbaa",
+        "dccd"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          "cba",
+          "ccdcd"
+        ],
+        [
+          "daabddbdcdddacdcccbd",
+          "aaa",
+          "acbacadcdaccca",
+          "bbdbaccacbdacabcccc",
+          "b",
+          "dabaa",
+          "bdddcbcccaabbaacdddddcba",
+          "dacdcabdaabc",
+          "bcccaad"
+        ]
+      ],
+      "expected": [
+        "b"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          "bdbcad",
+          "adadacdddcadacbdcadabdda",
+          "ccbcbaabccbba",
+          "cbbba",
+          "dddccb",
+          "addccacacddaacc",
+          "add"
+        ],
+        [
+          "adbcdbadacababddbc",
+          "cddcacacadcc",
+          "bcabccdbacdcbadcaccbbcdb",
+          "bbacaacb",
+          "dbbbbdadcbdcdbbcdbcd",
+          "cddbbbcadcaacab",
+          "dbdabdcad",
+          "dc",
+          "dacbacac",
+          "bacdb"
+        ]
+      ],
+      "expected": [
+        "dc"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          "aaacbbdacbcaabd",
+          "daadabbcdacbdbacaadda",
+          "dccacacbacbaccbddbbad",
+          "cb",
+          "ba",
+          "cddcabccacc",
+          "cddd",
+          "cbddccadadbcc"
+        ],
+        [
+          "ccc",
+          "dbdcdacdcaadcba"
+        ]
+      ],
+      "expected": [
+        "ccc"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          "dababccdabdccdabcdcc",
+          "aabddacc",
+          "dbcdbabadbdaccaccbbcbab"
+        ],
+        [
+          "bdacc",
+          "baacddddabcaddc",
+          "bbdaa",
+          "bcbbcbccacbcbcabb",
+          "caaaac",
+          "bdadccdbdcdaabddddbcb",
+          "ccdbcacbdac",
+          "bbaacddbbccbbdd",
+          "cdaaddbbcaacddca",
+          "dbcc",
+          "cadabccaddcab",
+          "dccc",
+          "bdaaa"
+        ]
+      ],
+      "expected": [
+        "bdaaa",
+        "bdacc",
+        "dbcc",
+        "dccc"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          "cddbbccbdccdcdaccadcadc",
+          "badbdbbaabadcdbdbddab",
+          "bcddcbdcccdbbccbc"
+        ],
+        [
+          "bdcdcccadd",
+          "bcacacdcdbbc",
+          "cbabbabbaadcdababd",
+          "ddbcccaababdbaddbcaac",
+          "accddbdcbacbdcbaccb",
+          "ddcada",
+          "bdcbac",
+          "bdcccaccbaadc",
+          "dcaccb",
+          "bdbdcddb",
+          "adcaaabb",
+          "cdabda",
+          "dadbddadcadcabaad"
+        ]
+      ],
+      "expected": [
+        "bdcbac"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          "aaadacdbbdcddddabcabdbb",
+          "a",
+          "dddbbdcbcb",
+          "aadabbaaadabaddbbabcbccb",
+          "bbdccabdda",
+          "dcddbcdbdbbc"
+        ],
+        [
+          "bdaddbdbcbcadcabacdaabb",
+          "bccabbadbbdbccdd",
+          "ccccddadcbccdabbac",
+          "dcbbcbdbdccdddbcbb",
+          "dbaaaaadbbababdcaddaadaa",
+          "ccadbaabbbcccdacd",
+          "bbcaaaddddaabad",
+          "caabbdcaacabca",
+          "bdacbbd",
+          "cdbacaadbacdcacddbcddb",
+          "dacbaacbdbdccaaacdccab",
+          "bdd",
+          "daaacacdacddabbdbb",
+          "ccdbabdcd"
+        ]
+      ],
+      "expected": [
+        "bdd"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          "accbdbdabcadcdcd",
+          "dbccbdcbdcc",
+          "dbcdcdcabbadbdcaddbcbcbd",
+          "addddacaabcba",
+          "dcdaaacbbdcddbcadac"
+        ],
+        [
+          "abc",
+          "cdbdcdaddc",
+          "caa",
+          "c",
+          "abbbbcddbdbbddabdddab",
+          "caabccb",
+          "acdcddaccdbcabc"
+        ]
+      ],
+      "expected": [
+        "abc",
+        "c",
+        "caa"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          "cabcbddb",
+          "ddbdbbdcbbcdacadbbd"
+        ],
+        [
+          "ddddddbaabcacbcbd",
+          "daaccadbdabcadccada",
+          "bcdbbbba",
+          "ccbccccabdacbbbbcbd",
+          "bcdddaadccddcaad",
+          "cadbdbdccccbdcaaadaab",
+          "dadbbcbcaccacba",
+          "cbdaaabdabbda",
+          "c"
+        ]
+      ],
+      "expected": [
+        "c"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          "bdabdaaacccbdb",
+          "baabdcbbddbaabadcdcbb"
+        ],
+        [
+          "abcacbbdcabddabdaaccb",
+          "dcbdaaaacbaad",
+          "cdddabcacabbcdacd",
+          "babadadacbaababdccbcbcaa",
+          "dcacaddcadb"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          "caabaa",
+          "b",
+          "dc",
+          "bbadbcbdccaca",
+          "abbadadcccadacbcc",
+          "bdcdbbbadabcacadcabbddab"
+        ],
+        [
+          "aabdcdaab",
+          "daadbbcccdccdcbabbaba",
+          "ddcdac",
+          "dcdcaab",
+          "cabcbabcdaccbaddbadaba",
+          "a",
+          "bbdcacaa",
+          "bdb",
+          "caa",
+          "abdddaddbcbbccd",
+          "abcdd",
+          "daacdbdbbadcddccdc"
+        ]
+      ],
+      "expected": [
+        "a",
+        "bdb",
+        "caa"
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          "c",
+          "bacadcbbabbcabdcbbbc",
+          "cacbbdcbdaaabbadacbbcbca"
+        ],
+        [
+          "bacac"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          "dacccbbddcbcbbdccbbadabc",
+          "badbcabccbacdacbbaccaaad",
+          "dbdddcdadbbdaacaccaacbdb",
+          "aacdadbdbaacbbdcccbaaddb",
+          "cadacdbaabbcadacdddcadbc",
+          "cbdacddcbcabaacdbadddbdc",
+          "dabadbbbbbadadbbccaaddcc",
+          "dadadbbaaaccdcdddabcdbda"
+        ],
+        [
+          "cbadccaccccdabbcdccdabdb",
+          "dcabacdbabbbabadacbccdda",
+          "abcddbdccbcacadabbbbbcda",
+          "adbbabcccddcdcbdcdaaccca",
+          "accccccbbbadcbadccdddabc",
+          "bdccbbcadbcbcabcbcdccccd",
+          "daadbadcdabbbcddbcbadcbc",
+          "aadcbbbdabddddddaabcacba",
+          "abbccbadcbaaccdcdbcdcbbd",
+          "bbbbabacadcaaaaaadddacdb",
+          "acdacbdaacaadbbcbcdcbadb",
+          "dcbaaaadbaaacbdccdaabacc",
+          "cdaaaabbccdcaccbadddcddd",
+          "bababadddbdcabddaddaacca",
+          "bcadbdcdbaabddbadcbccabd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          "badddaddcadaaddaaacbdcca",
+          "dcdcdaabaccccaabdbdacbba",
+          "bdbcadaaddbdaaddbbbadcdd",
+          "bcdccdbbdccbbbccbbcacddc",
+          "aaadbaabcbccbacbacdabdbc",
+          "adddcaacbdbcbbcdbabbadad",
+          "cbbcacdbabcacdcacbbabdda",
+          "bbccccbdaacdbbacdadccacd"
+        ],
+        [
+          "acbcaabaabbdabdabadcaaaa",
+          "cabcdddddcadaaaaacaccacd",
+          "dadbbbdcbccabaaadacbcbdb",
+          "bbcbabadacacabdccbbacabc",
+          "dccbccdbacbbdccbcdddccda",
+          "acbbcaaaadbacdbcdbcbdadc",
+          "abbbdbbbdcabdbaccbabcddd",
+          "acaccbddcacdbdccddabdbba",
+          "cbbbbcabdcadddbbdababbba",
+          "babcbdacabdddbbdbbcbcdab",
+          "dbaabdbabdaaadbaddcadbdd",
+          "adbcdbacdcbaaaadbcdcabdc",
+          "dccdbddbcdcccdbabdbabdca",
+          "daabddaacbcaaddcabddabcb",
+          "bbacbabacdcddbaaaccccbbd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          "acbdaaccaccdddbcddadacad",
+          "bbcdcacbcadcabdccbcbbdbb",
+          "bcbbbbcbaaadaadccdcdbcdb",
+          "baddacdbdadcaabdacccbcbc",
+          "ccbddbdccdcdbbbacbddbbbd",
+          "bddbcdccadababcdadcccccc",
+          "dacbbcccddadcdbbcddaabcb",
+          "cccdcdcddbbabbcabbdaaada"
+        ],
+        [
+          "daacbadcbbcdbbbaaccddcdb",
+          "bddccdbadccdcbcaabccdadd",
+          "adcbacbdddbbddbcadbcccdb",
+          "bbcaddcdbcabaabaccbdabab",
+          "dbcdcdcdacabacdadbbcdaab",
+          "dbabdabddccbaacdcbcababd",
+          "abcadbaadbcabbdacaacbabd",
+          "ccdbadcbcaddcdbbccdcbabd",
+          "ccdadbacbcadbdbccdcaaaab",
+          "abadbaaddcacbaabdadacdca",
+          "caacabaabdbbbbdacddabbdc",
+          "bdccccddcbbdccdddaacabca",
+          "bbcacbaadcbbccbbccadbacd",
+          "dacadaaccddabadacacbcbba",
+          "ddabdcdbbcadadcaddbbdbdd"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          "bbbacdcaaddccbccacbcdbda",
+          "bcbaaabbcacacddacbbbcdba",
+          "acbacbcadaadccaacdbdacda",
+          "bdaabccddbaccccbcacdacbb",
+          "dbadbdbbdccdbbbbbcbdbbca",
+          "abcbacddcdcbbabbacbbbaca",
+          "dbdcbdddbbbbadacdbbbabdd",
+          "cdbddadcdaaddabdadabcddc"
+        ],
+        [
+          "dbdcabddaabbddcdabdbdacc",
+          "baaadcadbddabcbbbbadccdc",
+          "babbacadddadbbddddaabcba",
+          "bacabaccaaadbbcbdcaacccd",
+          "dacdbaccdbbaaadcdcccbddd",
+          "bcbaaadabddaccbabccaccca",
+          "ccdabbccddabdbdcddaccabc",
+          "abcacdbdbaccacdadbcdcbcb",
+          "cabadadbbcdccbabbaddaaca",
+          "acdaacacbcbbcccdacbbcaaa",
+          "cccbcbbaccdabadaadaaddbd",
+          "cccbadbadadcddbbbccdbccd",
+          "aadacddbccbadacacdddbbbd",
+          "acbddcbbadadcadbcdaadcda",
+          "bbabbdcddbbcccdcaadbcaca"
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(W * R * C * 4^L) | Space: O(L) recursion depth",
+      "language": "javascript",
+      "code": "function solve(board, words) {\n  const rows = board.length;\n  const unique = [];\n  const seen = new Set();\n  for (const w of words) {\n    if (w !== '' && !seen.has(w)) { seen.add(w); unique.push(w); }\n  }\n  function dfs(r, c, word, k, visited) {\n    if (r < 0 || r >= rows || c < 0 || c >= board[r].length) return false;\n    if (board[r][c] !== word[k]) return false;\n    const key = r + ',' + c;\n    if (visited.has(key)) return false;\n    if (k === word.length - 1) return true;\n    visited.add(key);\n    const found =\n      dfs(r + 1, c, word, k + 1, visited) ||\n      dfs(r - 1, c, word, k + 1, visited) ||\n      dfs(r, c + 1, word, k + 1, visited) ||\n      dfs(r, c - 1, word, k + 1, visited);\n    visited.delete(key);\n    return found;\n  }\n  const found = [];\n  for (const w of unique) {\n    let ok = false;\n    for (let r = 0; r < rows && !ok; r++) {\n      for (let c = 0; c < board[r].length && !ok; c++) {\n        if (board[r][c] === w[0] && dfs(r, c, w, 0, new Set())) ok = true;\n      }\n    }\n    if (ok) found.push(w);\n  }\n  found.sort();\n  return found;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(R * C * 4^L) pruned by the trie | Space: O(S + L), S = total letters in the dictionary",
+      "language": "javascript",
+      "code": "function solve(board, words) {\n  const rows = board.length;\n  const root = {};\n  for (const w of words) {\n    if (w === '') continue;\n    let node = root;\n    for (const ch of w) {\n      if (!node[ch]) node[ch] = {};\n      node = node[ch];\n    }\n    node['$'] = w;\n  }\n  const found = [];\n  const visited = new Set();\n  function dfs(r, c, node) {\n    if (r < 0 || r >= rows || c < 0 || c >= board[r].length) return;\n    const key = r + ',' + c;\n    if (visited.has(key)) return;\n    const nxt = node[board[r][c]];\n    if (!nxt) return;\n    if (nxt['$'] !== undefined) {\n      found.push(nxt['$']);\n      nxt['$'] = undefined;\n    }\n    visited.add(key);\n    dfs(r + 1, c, nxt);\n    dfs(r - 1, c, nxt);\n    dfs(r, c + 1, nxt);\n    dfs(r, c - 1, nxt);\n    visited.delete(key);\n  }\n  for (let r = 0; r < rows; r++) {\n    for (let c = 0; c < board[r].length; c++) {\n      dfs(r, c, root);\n    }\n  }\n  found.sort();\n  return found;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 6,
+  "prevSlug": "find-words-on-board",
+  "nextSlug": null
+}

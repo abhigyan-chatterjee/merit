@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { z } from 'zod';
 
 export function useLocalStorage<T>(
@@ -61,29 +61,43 @@ export function useLocalStorage<T>(
 
   const [storedValue, setStoredValue] = useState<T>(readAndValidate);
 
+  /**
+   * Guards the persistence effect below: the value read from storage on mount
+   * is already persisted, so it must not be written back.
+   */
+  const hasUpdatedRef = useRef(false);
+
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
-      try {
-        setStoredValue((prev) => {
-          const valueToStore = value instanceof Function ? value(prev) : value;
-          if (schema) {
-            const validated = schema.safeParse(valueToStore);
-            if (!validated.success) {
-              console.warn(`Refusing to store invalid data in "${key}":`, validated.error);
-              return prev;
-            }
-            window.localStorage.setItem(key, JSON.stringify(validated.data));
-            return validated.data;
+      // The updater must stay pure — StrictMode invokes it twice in
+      // development and any localStorage write here would be duplicated (and,
+      // with a non-idempotent payload, could persist a value React discards).
+      // Persistence happens once per committed value in the effect below.
+      hasUpdatedRef.current = true;
+      setStoredValue((prev) => {
+        const valueToStore = value instanceof Function ? value(prev) : value;
+        if (schema) {
+          const validated = schema.safeParse(valueToStore);
+          if (!validated.success) {
+            console.warn(`Refusing to store invalid data in "${key}":`, validated.error);
+            return prev;
           }
-          window.localStorage.setItem(key, JSON.stringify(valueToStore));
-          return valueToStore;
-        });
-      } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error);
-      }
+          return validated.data;
+        }
+        return valueToStore;
+      });
     },
     [key, schema]
   );
+
+  useEffect(() => {
+    if (!hasUpdatedRef.current) return;
+    try {
+      window.localStorage.setItem(key, JSON.stringify(storedValue));
+    } catch (error) {
+      console.warn(`Error setting localStorage key "${key}":`, error);
+    }
+  }, [key, storedValue]);
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {

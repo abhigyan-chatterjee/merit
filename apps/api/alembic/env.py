@@ -6,6 +6,7 @@ import app.models.content  # noqa: F401
 import app.models.feedback  # noqa: F401
 import app.models.progress  # noqa: F401
 import app.models.quiz  # noqa: F401
+import app.models.revision  # noqa: F401
 import app.models.submission  # noqa: F401
 import app.models.user  # noqa: F401
 from alembic import context

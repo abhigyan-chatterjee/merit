@@ -1,0 +1,251 @@
+{
+  "slug": "string-compression",
+  "title": "String Compression",
+  "topic": "two-pointers",
+  "difficulty": "Medium",
+  "pattern": "run detection / two pointers over one string",
+  "statement": "You are given a string `s` of lowercase English letters. Compress it with run-length encoding and return the compressed string.\n\nSplit `s` into maximal runs of equal characters, scanning from left to right. A run of length 1 is written as just the character. A run of length L greater than 1 is written as the character followed by the decimal representation of L. The encoded pieces are concatenated in the order the runs appear.\n\nFor example `\"aabbbcc\"` becomes `\"a2b3c2\"` and `\"abcd\"` is returned unchanged as `\"abcd\"`.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"a\"",
+      "output": "\"a\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"cb\"",
+      "output": "\"cb\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "What does one pass need to know at each position: is this character the same as the one before it, and how long does that sameness last?",
+    "Hold one index at the start of the run and a second index that walks forward while the character matches. The second index never moves backwards, so the total work is linear.",
+    "After emitting the character (with the length only when it is greater than 1), jump the start index to the second index instead of incrementing it, and check the single-character case where no number should be written."
+  ],
+  "editorial": {
+    "approach": "The brute force visits every position, skips the ones that do not start a run, and measures the run by repeatedly increasing a candidate length and re-verifying the whole prefix from the run start to that candidate end. Re-checking the entire prefix on every extension costs O(L\u00b2) for a run of length L, so a string that is a single long run costs O(n\u00b2) overall. The optimal solution keeps two indices: `i` at the current run start and `j` advancing while `s[j]` equals `s[i]`. When `j` stops, the run length is `j - i`; the character is emitted, the length is appended when it exceeds one, and `i` jumps to `j` so no character is ever examined twice.",
+    "why_optimal": "Every input character has to be read and every output character written, so O(n) is the floor for run-length encoding, and the two-pointer scan reaches it: `j` only moves forward and `i` only jumps to where `j` stopped, so at most n comparisons run past the ends of the runs plus n comparisons that start new runs. The O(n) space is the output itself; apart from it the algorithm holds two integers.",
+    "pitfalls": "Appending a `1` for single-character runs, which turns `\"abcd\"` into `\"a1b1c1d1\"`; the length is written only when the run is longer than one. Advancing `i` by one instead of jumping to `j`, which re-emits characters inside a long run and duplicates output. Reading the run length while the counter is still being incremented, which makes the emitted number off by one. Letting the inner comparison run one character too far, so the next run starts on the wrong character. Runs of ten or more produce a two- or three-digit length, so the count has to be formatted as a decimal number rather than a single digit."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Run-length_encoding",
+    "https://en.wikipedia.org/wiki/Data_compression"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.26989900000001654,
+    "optimalRuntimeMs": 0.18575999999999837,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "a"
+      ],
+      "expected": "a",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "cb"
+      ],
+      "expected": "cb",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "aacaccca"
+      ],
+      "expected": "a2cac3a",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "baaaaaccacaccccbabc"
+      ],
+      "expected": "ba5c2acac4babc",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "aacbbbaab"
+      ],
+      "expected": "a2cb3a2b",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "abab"
+      ],
+      "expected": "abab",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "cbacbcabacbc"
+      ],
+      "expected": "cbacbcabacbc",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "bcacaacabaaabbbcbabb"
+      ],
+      "expected": "bcaca2caba3b3cbab2",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "cbcccac"
+      ],
+      "expected": "cbc3ac",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "accaabbbcccacbaaabbba"
+      ],
+      "expected": "ac2a2b3c3acba3b3a",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "ccbacbb"
+      ],
+      "expected": "c2bacb2",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "babaacccbccbcbbaacbaa"
+      ],
+      "expected": "baba2c3bc2bcb2a2cba2",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "acac"
+      ],
+      "expected": "acac",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "cabbcbcbcaccac"
+      ],
+      "expected": "cab2cbcbcac2ac",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "bcbabbabaccbcacacb"
+      ],
+      "expected": "bcbab2abac2bcacacb",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "ccaabaccacbbaabbaaaca"
+      ],
+      "expected": "c2a2bac2acb2a2b2a3ca",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "cba"
+      ],
+      "expected": "cba",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "aacbcabccbacccacbb"
+      ],
+      "expected": "a2cbcabc2bac3acb2",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "cbbcbaaaabaccacaaaccaaaabacabcbacacccbabbaaacbbbbbcacccaabcbaaaacbababbaabcaaccaaaabbbabaababbbbbcccccbaabaacccacbaacbccaacaaaca"
+      ],
+      "expected": "cb2cba4bac2aca3c2a4bacabcbacac3bab2a3cb5cac3a2bcba4cbabab2a2bca2c2a4b3aba2bab5c5ba2ba2c3acba2cbc2a2ca3ca",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "abacaccacabccccbbaccbabbaccbbbaabccaacacbabaabbabccbcccaccbcaabaaccabbcacbaccbcbbaacbbaabacbacbccbcaaacacabccabaabbabacacabcbcca"
+      ],
+      "expected": "abacac2acabc4b2ac2bab2ac2b3a2bc2a2cacbaba2b2abc2bc3ac2bca2ba2c2ab2cacbac2bcb2a2cb2a2bacbacbc2bca3cacabc2aba2b2abacacabcbc2a",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "aabaacbbccabacababaabbbaaacabbbabbccbccbaabacbaacbbcbbccabcabacbacccccccabbacbcbcacbcbcbbbcbcaabcbccaccbbcabbabcccbbbbcacbcacabc"
+      ],
+      "expected": "a2ba2cb2c2abacababa2b3a3cab3ab2c2bc2ba2bacba2cb2cb2c2abcabacbac7ab2acbcbcacbcbcb3cbca2bcbc2ac2b2cab2abc3b4cacbcacabc",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "ccbaacbaaaaaabcabbccaccbbbaaccaabaaccbacaababccccbbcccbcbacbbbacbcbcabbacbabbbcaaaabcacaabbbcbbaabbccacbbabbbbcccccababbbabbccbc"
+      ],
+      "expected": "c2ba2cba6bcab2c2ac2b3a2c2a2ba2c2baca2babc4b2c3bcbacb3acbcbcab2acbab3ca4bcaca2b3cb2a2b2c2acb2ab4c5abab3ab2c2bc",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let out = \"\";\n  for (let i = 0; i < n; i++) {\n    if (i > 0 && s[i] === s[i - 1]) continue;\n    let run = 1;\n    while (i + run < n) {\n      let same = true;\n      for (let t = i; t <= i + run; t++) {\n        if (s[t] !== s[i]) {\n          same = false;\n          break;\n        }\n      }\n      if (!same) break;\n      run++;\n    }\n    out += s[i];\n    if (run > 1) out += String(run);\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let out = \"\";\n  let i = 0;\n  while (i < n) {\n    let j = i;\n    while (j < n && s[j] === s[i]) j++;\n    const run = j - i;\n    out += s[i];\n    if (run > 1) out += String(run);\n    i = j;\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 17,
+  "prevSlug": "reverse-words-in-a-string",
+  "nextSlug": "three-sum"
+}

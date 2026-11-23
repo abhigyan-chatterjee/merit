@@ -1,48 +1,66 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { GraphVisualizer } from '../src/visualizers/GraphVisualizer';
 
-describe('Graph Visualizer Coordinates (D3)', () => {
-  it('correctly maps client coordinates to viewBox units (0..420, 0..350)', () => {
-    const { container } = render(<GraphVisualizer />);
-    const svg = screen.getByTestId('graph-svg');
-    expect(svg).toBeInTheDocument();
+const VIEWBOX_WIDTH = 420;
+const VIEWBOX_HEIGHT = 350;
 
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
-      left: 100,
-      top: 50,
-      right: 1100,
-      bottom: 850,
-      width: 1000,
-      height: 800,
-      x: 100,
-      y: 50,
-      toJSON: () => {},
-    } as DOMRect);
+function mockBounds(left: number, top: number, width: number, height: number) {
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+    left,
+    top,
+    right: left + width,
+    bottom: top + height,
+    width,
+    height,
+    x: left,
+    y: top,
+    toJSON: () => {},
+  } as DOMRect);
+}
 
-    // Click at 90% width (100 + 900 = 1000) and 84% height (50 + 672 = 722)
-    // 90% of 420 = 378, 84% of 350 = 294
-    fireEvent.click(svg!, {
-      clientX: 1000,
-      clientY: 722,
-    });
+function clickAtViewBoxPoint(left: number, top: number, width: number, height: number, x: number, y: number) {
+  const scale = Math.min(width / VIEWBOX_WIDTH, height / VIEWBOX_HEIGHT);
+  const offsetX = (width - VIEWBOX_WIDTH * scale) / 2;
+  const offsetY = (height - VIEWBOX_HEIGHT * scale) / 2;
+  const svg = screen.getByTestId('graph-svg');
+  fireEvent.click(svg, {
+    clientX: left + offsetX + x * scale,
+    clientY: top + offsetY + y * scale,
+  });
+  return svg;
+}
 
-    // Verify a circle was added with viewBox coordinates within [0, 420] and [0, 350]
-    const circles = container.querySelectorAll('circle');
-    // Default nodes: 6 (ids 0-5). We expect 7 now.
-    expect(circles.length).toBeGreaterThanOrEqual(6);
+describe('Graph Visualizer Coordinates', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('maps client coordinates inside the letterboxed viewBox (1000x800)', () => {
+    render(<GraphVisualizer />);
+    mockBounds(100, 50, 1000, 800);
+
+    const svg = clickAtViewBoxPoint(100, 50, 1000, 800, 385, 294);
+
+    const circles = svg.querySelectorAll('circle');
+    expect(circles.length).toBe(7);
 
     const lastCircle = circles[circles.length - 1];
-    const cx = Number(lastCircle.getAttribute('cx'));
-    const cy = Number(lastCircle.getAttribute('cy'));
+    expect(Number(lastCircle.getAttribute('cx'))).toBeCloseTo(385, 0);
+    expect(Number(lastCircle.getAttribute('cy'))).toBeCloseTo(294, 0);
+  });
 
-    expect(cx).toBeGreaterThanOrEqual(0);
-    expect(cx).toBeLessThanOrEqual(420);
-    expect(cy).toBeGreaterThanOrEqual(0);
-    expect(cy).toBeLessThanOrEqual(350);
+  it('accounts for horizontal letterboxing on a wide aspect ratio (800x320)', () => {
+    render(<GraphVisualizer />);
+    mockBounds(100, 50, 800, 320);
 
-    // Specifically around 378 and 294
-    expect(cx).toBeCloseTo(378, -1);
-    expect(cy).toBeCloseTo(294, -1);
+    const svg = clickAtViewBoxPoint(100, 50, 800, 320, 300, 160);
+
+    const circles = svg.querySelectorAll('circle');
+    expect(circles.length).toBe(7);
+
+    const lastCircle = circles[circles.length - 1];
+    expect(Number(lastCircle.getAttribute('cx'))).toBeCloseTo(300, 0);
+    expect(Number(lastCircle.getAttribute('cy'))).toBeCloseTo(160, 0);
   });
 });

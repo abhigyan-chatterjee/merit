@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "Binary search the answer space for eating speed k between 1 and the largest pile size. For each candidate speed, compute total hours required by summing ceiling division across all piles.",
-    "why_optimal": "Brute-force linear checking tests each speed sequentially taking O(m · n) time, whereas binary search over the monotonic answer space runs in O(n log m) time and O(1) extra space. On the 30 verified test cases, the optimal implementation took 0.54 ms compared to 3.44 ms for brute force.",
+    "why_optimal": "Brute-force linear checking tests each speed sequentially taking O(m \u00b7 n) time, whereas binary search over the monotonic answer space runs in O(n log m) time and O(1) extra space. On the 30 verified test cases, the optimal implementation took 0.54 ms compared to 3.44 ms for brute force.",
     "pitfalls": "Ensure integer ceiling division when calculating hours for each pile. Watch for off-by-one errors when updating search boundaries low and high."
   },
   "reading_links": [
@@ -988,7 +988,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m · n) | Space: O(1)",
+      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
       "language": "javascript",
       "code": "function minEatingSpeed(piles, h) {\n  let maxPile = 0;\n  for (let i = 0; i < piles.length; i++) {\n    if (piles[i] > maxPile) maxPile = piles[i];\n  }\n  for (let k = 1; k <= maxPile; k++) {\n    let hours = 0;\n    for (let i = 0; i < piles.length; i++) {\n      hours += Math.ceil(piles[i] / k);\n    }\n    if (hours <= h) return k;\n  }\n  return maxPile;\n}",
       "isReference": false
@@ -1002,7 +1002,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(m · n) | Space: O(1)",
+      "complexity": "Time: O(m \u00b7 n) | Space: O(1)",
       "language": "python",
       "code": "def minEatingSpeed(piles: list[int], h: int) -> int:\n    import math\n    max_pile = max(piles)\n    for k in range(1, max_pile + 1):\n        hours = sum(math.ceil(p / k) for p in piles)\n        if hours <= h:\n            return k\n    return max_pile\n",
       "isReference": false
@@ -1015,7 +1015,7 @@
       "isReference": true
     }
   ],
-  "sequence": 4,
-  "prevSlug": "find-minimum-in-rotated-sorted-array",
-  "nextSlug": "search-a-2d-matrix"
+  "sequence": 9,
+  "prevSlug": "find-k-closest-elements",
+  "nextSlug": "random-pick-with-weight"
 }

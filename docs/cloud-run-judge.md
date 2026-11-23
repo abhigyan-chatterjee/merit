@@ -34,9 +34,8 @@ merit.nullbit.in → Caddy → merit-web (nginx)
 - **`judge-heavy`** serves Java and C++. It is a separate service so the
   compile toolchain's cold start is only paid by Java/C++ users: the same
   `main.py` and the same sandbox, with a Dockerfile that adds JDK and g++.
-- The API **routes by language**: Java and C++ to `JUDGE_HEAVY_URL`, everything
-  else to `JUDGE_URL`. Either URL is a valid fallback for the other, so a
-  single-service deployment still works.
+- The API **routes by language**: Java and C++ require `JUDGE_HEAVY_URL`;
+  Python and JavaScript use `JUDGE_URL`. There is no fallback between tiers.
 - When both are **unset**, the API runs the local sandbox exactly as before.
   Local development, CI, and the test suite need no cloud setup.
 
@@ -231,9 +230,8 @@ GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
 JUDGE_TIMEOUT_SEC=180
 ```
 
-`JUDGE_HEAVY_URL` is optional: with only `JUDGE_URL` set, Java and C++ are sent
-to the light service and come back as a clear Compile Error ("javac is not
-installed on this runner") rather than failing obscurely.
+Java and C++ require `JUDGE_HEAVY_URL`. If it is unset, submissions in those
+languages fail as infrastructure errors; they are never sent to the light tier.
 
 `docker-compose.yml` mounts `.judge/` read-only at `/run/secrets`, so the key is
 never writable from inside the container.
@@ -249,7 +247,7 @@ cd /home/ubuntu/merit
 git pull
 docker compose up -d --build
 docker compose ps                 # merit-piston should be gone
-docker rm -f merit-piston 2>/dev/null || true
+docker rm -f merit-piston 2>/dev/null || true   # legacy cleanup: nothing calls Piston
 docker volume rm merit_merit-piston-packages 2>/dev/null || true
 ```
 
@@ -290,9 +288,16 @@ Answer. That is the lesson "selecting the proper type of data matters".
   typed source from the problem's recorded signature plus the test data: input
   values become typed literals, results are serialised and compared exactly as
   the interpreted languages do.
+- **Result protocol.** Every harness prints one line behind the
+  `__MERIT_RESULT__` marker and then hard-exits (`Runtime.halt`, `std::_Exit`,
+  `os._exit`, `process.reallyExit`). The marker alone is not a secret — student
+  code shares the process — so the exit is what carries the guarantee: an
+  `atexit`/shutdown hook cannot print a second block afterwards. The parser
+  rejects unmarked output entirely and requires each result to be an object with
+  a boolean `passed`; anything else grades `RE` rather than being coerced.
 - **Signatures** come from `content/signatures.json`, read through
   `app/services/signatures.py` and gated in CI by
-  `content/validators/verify_signatures.py`. All 140 problems carry one, so every
+  `content/validators/verify_signatures.py`. All 274 problems carry one, so every
   problem can be submitted in every language. The vocabulary is intentionally
   small — `int`, `long`, `double`, `boolean`, `String`, the four `List<…>` shapes,
   and `TreeNode` — and each entry is checked against the test data rather than

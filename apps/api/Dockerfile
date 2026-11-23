@@ -21,7 +21,8 @@ RUN uv venv /app/.venv && uv pip install -e .
 
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:/content"
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips \"${FORWARDED_ALLOW_IPS:-127.0.0.1,172.16.0.0/12,10.0.0.0/8}\""]

@@ -25,7 +25,8 @@ services:
     restart: unless-stopped
     mem_limit: 350m
     mem_reservation: 200m
-    # The judge runs untrusted submissions in this container. A PID cap is the
+    # The local sandbox fallback runs untrusted submissions in this container
+    # when JUDGE_URL is unset (Cloud Run otherwise). A PID cap is the
     # structural backstop against a fork bomb: RLIMIT_NPROC is per-UID across
     # the host, so it cannot be used for this (it also counts the API's own
     # threads and stops Node from starting).
@@ -71,7 +72,7 @@ services:
     networks:
       - merit-net
 
-  # 3. Static Web Frontend with Nginx & SPA Fallback
+  # 2. Static Web Frontend with Nginx & SPA Fallback
   web:
     build:
       context: .

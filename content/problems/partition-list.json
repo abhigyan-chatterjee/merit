@@ -1086,7 +1086,7 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
+  "sequence": 10,
   "prevSlug": "odd-even-linked-list",
   "nextSlug": "reorder-list"
 }

@@ -9,17 +9,12 @@
     {
       "input": "s = \"b\", k = 0",
       "output": "1",
-      "explanation": "A single character needs zero replacements, so the longest valid window is length 1."
+      "explanation": "Generated from the verified optimal implementation."
     },
     {
-      "input": "s = \"cb2b0aab\", k = 13",
-      "output": "8",
-      "explanation": "With 13 replacements out of 8 characters, every character can be unified, so the whole 8-character string is the answer."
-    },
-    {
-      "input": "s = \"ac0zycxzb\", k = 5",
-      "output": "7",
-      "explanation": "With 5 replacements allowed, a 7-character window can be unified while the 9th character stays unreplaceable."
+      "input": "s = \"yx\", k = 50",
+      "output": "2",
+      "explanation": "Generated from the verified optimal implementation."
     }
   ],
   "constraints": [
@@ -51,8 +46,8 @@
   "pafVerification": {
     "seed": 42,
     "generatedCaseCount": 22,
-    "bruteForceRuntimeMs": 4.950000999999997,
-    "optimalRuntimeMs": 1.3869780000000098
+    "bruteForceRuntimeMs": 2.923182999999998,
+    "optimalRuntimeMs": 1.0183509999999956
   },
   "testCases": [
     {
@@ -220,71 +215,71 @@
     {
       "label": "stress-19",
       "input": [
-        "c011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0yaazcyc1202abbc2az2c0cayzazxxb",
-        50
+        "c011x0ac0a0y1y021cxyxa2azaa122ca2bcbbx0bxab02zyxzxy0cy1zba1bb2x2yczbxzyc12y2a2ybcybb2cyyxzxy21yab0ya",
+        0
       ],
-      "expected": 64,
+      "expected": 2,
       "isSample": false
     },
     {
       "label": "stress-20",
       "input": [
-        "0cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2cx00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1",
+        "cyc1202abbc2az2c0cayzazxxbz20cxcc0acz0xycb0a1xx1zyxxax0zybyz202zabycyab0zz02b0xya0a22xz0bzzby2y0z0y2",
+        0
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "00cy02ayyx0z111x21cby2zbxyxxcaax1b10x010xcab0xc21a2xb1c122z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00",
         0
       ],
       "expected": 3,
       "isSample": false
     },
     {
-      "label": "stress-21",
-      "input": [
-        "22z12021c11yxy21xy1byxyzz2bccx0cxb00z210ax00a01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz2",
-        50
-      ],
-      "expected": 67,
-      "isSample": false
-    },
-    {
       "label": "stress-22",
       "input": [
-        "zb2za01b0z1c0c2y2110yzxby1x10za1zc1xzyzyy2a2xbx012x111abyx0xyz122z02zz1yyyxbxzb2cxx1y2ybxyxzcya2cyaa2yc1bay111zcay1bb01baccybxb2",
+        "01azy0022x1xy01a0z0c1c2a0ab0c1cay0zx1zz0y0yb1a2azxbaaxxacxc1bx1yzcbcybay00xbxbybaz20zb2za01b0z1c0c2y",
         50
       ],
-      "expected": 63,
+      "expected": 61,
       "isSample": false
     }
   ],
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(Σ)",
+      "complexity": "Time: O(n\u00b2) | Space: O(\u03a3)",
       "language": "javascript",
       "code": "function characterReplacement(s, k) {\n  let maxLen = 0;\n  const n = s.length;\n\n  for (let i = 0; i < n; i++) {\n    const counts = {};\n    let maxFreq = 0;\n\n    for (let j = i; j < n; j++) {\n      const ch = s[j];\n      counts[ch] = (counts[ch] || 0) + 1;\n      if (counts[ch] > maxFreq) {\n        maxFreq = counts[ch];\n      }\n\n      const windowLen = j - i + 1;\n      if (windowLen - maxFreq <= k) {\n        if (windowLen > maxLen) {\n          maxLen = windowLen;\n        }\n      }\n    }\n  }\n\n  return maxLen;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n) | Space: O(Σ)",
+      "complexity": "Time: O(n) | Space: O(\u03a3)",
       "language": "javascript",
       "code": "function characterReplacement(s, k) {\n  const counts = {};\n  let left = 0;\n  let maxLen = 0;\n\n  for (let right = 0; right < s.length; right++) {\n    const ch = s[right];\n    counts[ch] = (counts[ch] || 0) + 1;\n\n    let maxFreq = 0;\n    for (const key in counts) {\n      if (counts[key] > maxFreq) {\n        maxFreq = counts[key];\n      }\n    }\n\n    while ((right - left + 1) - maxFreq > k) {\n      counts[s[left]]--;\n      left++;\n      maxFreq = 0;\n      for (const key in counts) {\n        if (counts[key] > maxFreq) {\n          maxFreq = counts[key];\n        }\n      }\n    }\n\n    const windowLen = right - left + 1;\n    if (windowLen > maxLen) {\n      maxLen = windowLen;\n    }\n  }\n\n  return maxLen;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(Σ)",
+      "complexity": "Time: O(n\u00b2) | Space: O(\u03a3)",
       "language": "python",
       "code": "def characterReplacement(s, k):\n    maxLen = 0\n    n = len(s)\n    for i in range(n):\n        counts = {}\n        maxFreq = 0\n        for j in range(i, n):\n            ch = s[j]\n            counts[ch] = counts.get(ch, 0) + 1\n            if counts[ch] > maxFreq:\n                maxFreq = counts[ch]\n            windowLen = j - i + 1\n            if windowLen - maxFreq <= k:\n                if windowLen > maxLen:\n                    maxLen = windowLen\n    return maxLen\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(n) | Space: O(Σ)",
+      "complexity": "Time: O(n) | Space: O(\u03a3)",
       "language": "python",
       "code": "def characterReplacement(s, k):\n    counts = {}\n    left = 0\n    maxLen = 0\n    for right in range(len(s)):\n        ch = s[right]\n        counts[ch] = counts.get(ch, 0) + 1\n        maxFreq = 0\n        for key in counts:\n            if counts[key] > maxFreq:\n                maxFreq = counts[key]\n        while (right - left + 1) - maxFreq > k:\n            counts[s[left]] -= 1\n            left += 1\n            maxFreq = 0\n            for key in counts:\n                if counts[key] > maxFreq:\n                    maxFreq = counts[key]\n        windowLen = right - left + 1\n        if windowLen > maxLen:\n            maxLen = windowLen\n    return maxLen\n",
       "isReference": true
     }
   ],
-  "sequence": 1,
-  "prevSlug": null,
+  "sequence": 5,
+  "prevSlug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
   "nextSlug": "longest-substring-without-repeating"
 }

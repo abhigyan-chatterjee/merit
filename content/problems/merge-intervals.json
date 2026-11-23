@@ -4,6 +4,7 @@
   "title": "Merge Intervals",
   "topic": "intervals",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Sort & Sweep Merge",
   "statement": "Given an array of intervals where intervals[i] = [start, end], merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals.",
   "examples": [
@@ -43,7 +44,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(intervals) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(intervals):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[][] solve(int[][] intervals) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<std::vector<int>> solve(std::vector<std::vector<int>> intervals) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },

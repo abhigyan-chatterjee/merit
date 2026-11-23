@@ -4,6 +4,7 @@
   "title": "Climbing Stairs",
   "topic": "dynamic-programming",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "1D Fibonacci State Transition",
   "statement": "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
   "examples": [
@@ -39,8 +40,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(n,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(n):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -70,7 +71,7 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "coin-change",
+  "nextSlug": "fibonacci-number",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Dynamic_programming"
   ],

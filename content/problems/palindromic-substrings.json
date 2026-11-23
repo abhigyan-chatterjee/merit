@@ -1,0 +1,251 @@
+{
+  "slug": "palindromic-substrings",
+  "title": "Palindromic Substrings",
+  "topic": "two-pointers",
+  "difficulty": "Medium",
+  "pattern": "Expand around center / two pointers",
+  "statement": "A substring is a contiguous slice of the string `s`. Count how many substrings of `s` read the same forwards and backwards.\n\nSubstrings are counted with multiplicity: two different start and end positions that happen to spell the same text count as two palindromic substrings. For example `\"aaa\"` contains `\"a\"` at index 0, `\"a\"` at index 1, `\"a\"` at index 2, `\"aa\"` at 0..1, `\"aa\"` at 1..2 and `\"aaa\"` at 0..2, so the answer is 6.\n\nEvery character of `s` is a lowercase English letter.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\"",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"xi\"",
+      "output": "2",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Testing every substring against its reverse is O(n^3); instead think about what a palindrome looks like when you start from its middle.",
+    "There are 2n - 1 possible centres: one for each character (odd lengths) and one for each gap between neighbouring characters (even lengths).",
+    "Walk outwards from each centre while the two characters match, incrementing a counter once per successful step; a mismatch or a boundary ends that centre."
+  ],
+  "editorial": {
+    "approach": "The brute force enumerates all n(n + 1)/2 substrings (start index, end index) and tests each one with a two-pointer walk from both ends, so it costs O(n^3) time and O(1) extra space. The optimal solution flips the loop: instead of asking which substrings are palindromes, it picks the centre of a palindrome and grows outwards. A palindrome with an odd length is centred on a character, one with an even length is centred on the gap between two characters, so there are exactly 2n - 1 centres (n characters plus n - 1 gaps). While the two characters at distance k from the centre are equal, the slice between them is a new palindrome, so each matching expansion step adds one to the count and a mismatch ends that centre. Every palindromic substring has exactly one centre, so this counts each one exactly once in O(n^2) time.",
+    "why_optimal": "The answer itself can be quadratic (a string of 200 identical characters has 20100 palindromic substrings), and reporting it requires touching each one, so O(n^2) is the natural cost of any solution that counts palindromes by looking at them: with n <= 200 the 2n - 1 centres together expand about n^2 / 2 times, roughly 20,000 steps. Within that model the expansion is optimal, and it needs no table at all, unlike the O(n^2) time and O(n^2) space DP that stores a boolean for every substring. Manacher's algorithm does answer the same question in O(n) by inserting separators and tracking the rightmost palindrome's mirror, but that is a specialised refinement outside the scope of this bound.",
+    "pitfalls": "Handling only odd centres silently drops every even-length palindrome, which hides most of the answer on inputs such as \"aa\". Starting the odd and even loops from the same index without shifting the even centre to (c, c + 1) double counts single characters. Testing palindromes by building substring copies inside the expansion turns the work into O(n^3). The empty string must return 0 and the loops must not run at all for n = 0. Finally, expanding while s[lo] == s[hi] but checking bounds after the comparison indexes out of range, so the bound test must come first."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Palindrome",
+    "https://cp-algorithms.com/string/manacher.html"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.9079509999999971,
+    "optimalRuntimeMs": 0.21433999999999997,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d"
+      ],
+      "expected": 1,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xi"
+      ],
+      "expected": 2,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "hexdvxrc"
+      ],
+      "expected": 8,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "nbacghqtargwuwrnhos"
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "zayzfwnki"
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "gykdc"
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "dlltizbxordmc"
+      ],
+      "expected": 14,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "jutlsgwcbvhyjchdmi"
+      ],
+      "expected": 18,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "ulfllgviwvuctuf"
+      ],
+      "expected": 17,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "xhfomiuwrhvkyybhbz"
+      ],
+      "expected": 20,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "micgswkgupm"
+      ],
+      "expected": 11,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "oeiehxrrixsnsmlheqpcy"
+      ],
+      "expected": 24,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "de"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "fzvntcmmtoqiravxdvryi"
+      ],
+      "expected": 22,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg"
+      ],
+      "expected": 23,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "lyfry"
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "atkpadlzjhbhsccxp"
+      ],
+      "expected": 19,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "yry"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "evprfiqtngryxwgwjmvuloqodhhckasrhshacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdburacyhfnppgmbfmamizzojnwxzrv"
+      ],
+      "expected": 142,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "pegjgbsxrbxkbbspqqfbqcfctcvhmdshstbtcnvssqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeiddxreijtgwkgvuiqpibcunibakyeuifxorwn"
+      ],
+      "expected": 137,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "adcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqj"
+      ],
+      "expected": 141,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "nkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhio"
+      ],
+      "expected": 139,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n^3) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let count = 0;\n  for (let i = 0; i < n; i++) {\n    for (let j = i; j < n; j++) {\n      let lo = i;\n      let hi = j;\n      let ok = true;\n      while (lo < hi) {\n        if (s[lo] !== s[hi]) {\n          ok = false;\n          break;\n        }\n        lo++;\n        hi--;\n      }\n      if (ok) count++;\n    }\n  }\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n^2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let count = 0;\n  for (let c = 0; c < n; c++) {\n    let lo = c;\n    let hi = c;\n    while (lo >= 0 && hi < n && s[lo] === s[hi]) {\n      count++;\n      lo--;\n      hi++;\n    }\n    lo = c;\n    hi = c + 1;\n    while (lo >= 0 && hi < n && s[lo] === s[hi]) {\n      count++;\n      lo--;\n      hi++;\n    }\n  }\n  return count;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 14,
+  "prevSlug": "container-with-most-water",
+  "nextSlug": "remove-nth-node-from-end"
+}

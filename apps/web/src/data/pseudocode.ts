@@ -128,13 +128,17 @@ export const PSEUDOCODE_MAP: Record<string, PseudoCodeBlock> = {
     spaceComplexity: 'O(h)'
   },
   bst: {
-    title: 'Binary Search Tree (BST)',
+    title: 'Binary Search Tree (insert / search)',
     lines: [
       'function insert(root, val):',
       '  if root == null: return new Node(val)',
       '  if val < root.val: root.left = insert(root.left, val)',
       '  else: root.right = insert(root.right, val)  // BST: Left < Root <= Right',
-      '  return root'
+      '  return root',
+      'function search(node, target):',
+      '  while node != null and node.val != target:',
+      '    node = target < node.val ? node.left : node.right',
+      '  return node'
     ],
     timeComplexity: 'O(log n) avg, O(n) worst',
     spaceComplexity: 'O(h)'
@@ -149,18 +153,6 @@ export const PSEUDOCODE_MAP: Record<string, PseudoCodeBlock> = {
       '  siftDown(heap, 0)                          // Restore heap invariant'
     ],
     timeComplexity: 'O(log n)',
-    spaceComplexity: 'O(1)'
-  },
-  linear: {
-    title: 'Data Structure Operation',
-    lines: [
-      'function performOperation(ds, val):',
-      '  validateBounds(ds)',
-      '  allocateNodeOrSlot(val)',
-      '  updatePointers(ds.head, ds.tail)',
-      '  return ds.size'
-    ],
-    timeComplexity: 'O(1)',
     spaceComplexity: 'O(1)'
   }
 };

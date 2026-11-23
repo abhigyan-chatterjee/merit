@@ -20,41 +20,35 @@ interface Frame {
 
 const CAPACITY = 8;
 
+const INITIAL_SLOTS: QueueSlot[] = Array.from({ length: CAPACITY }, (_, index) => ({
+  index,
+  value: index < 4 ? (index + 1) * 10 : null,
+}));
+
+const readyFrame = (slots: QueueSlot[], head: number, tail: number, size: number): Frame => ({
+  slots: slots.map((s) => ({ ...s })),
+  head,
+  tail,
+  size,
+  activeSlot: null,
+  activeLine: -1,
+  log: `Circular Queue ready. Head: ${head}, Tail: ${tail}, Count: ${size}/${CAPACITY}.`,
+});
+
 export const QueueVisualizer: React.FC = () => {
-  const [slots, setSlots] = useState<QueueSlot[]>(() => [
-    { index: 0, value: 10 },
-    { index: 1, value: 20 },
-    { index: 2, value: 30 },
-    { index: 3, value: 40 },
-    { index: 4, value: null },
-    { index: 5, value: null },
-    { index: 6, value: null },
-    { index: 7, value: null },
-  ]);
+  const [slots, setSlots] = useState<QueueSlot[]>(INITIAL_SLOTS);
   const [head, setHead] = useState(0);
   const [tail, setTail] = useState(4);
   const [size, setSize] = useState(4);
   const [inputVal, setInputVal] = useState('50');
+  const [status, setStatus] = useState('');
 
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(() => [
+    readyFrame(INITIAL_SLOTS, 0, 4, 4),
+  ]);
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-
-  useEffect(() => {
-    setFrames([
-      {
-        slots: [...slots],
-        head,
-        tail,
-        size,
-        activeSlot: null,
-        activeLine: 0,
-        log: `Circular Queue ready. Head: ${head}, Tail: ${tail}, Count: ${size}/${CAPACITY}.`,
-      },
-    ]);
-    setFrameIdx(0);
-  }, [slots, head, tail, size]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -72,11 +66,13 @@ export const QueueVisualizer: React.FC = () => {
 
   // Enqueue
   const handleEnqueue = () => {
-    const val = parseInt(inputVal, 10) || 77;
+    const parsed = parseInt(inputVal, 10);
+    const val = Number.isNaN(parsed) ? 77 : parsed;
     if (size >= CAPACITY) {
-      alert('Queue is full (circular capacity reached)');
+      setStatus('Queue overflow: circular capacity reached.');
       return;
     }
+    setStatus('');
 
     const nextSlots = slots.map((s) => (s.index === tail ? { ...s, value: val } : s));
     const nextTail = (tail + 1) % CAPACITY;
@@ -89,7 +85,7 @@ export const QueueVisualizer: React.FC = () => {
         tail,
         size,
         activeSlot: tail,
-        activeLine: 1,
+        activeLine: 0,
         log: `Enqueue(${val}): placing into slot [${tail}] at TAIL pointer.`,
       },
       {
@@ -98,7 +94,7 @@ export const QueueVisualizer: React.FC = () => {
         tail: nextTail,
         size: nextSize,
         activeSlot: tail,
-        activeLine: 2,
+        activeLine: 1,
         log: `Advanced TAIL to (${tail} + 1) % ${CAPACITY} = ${nextTail}. Count is now ${nextSize}.`,
       },
     ];
@@ -114,6 +110,7 @@ export const QueueVisualizer: React.FC = () => {
   // Dequeue
   const handleDequeue = () => {
     if (size === 0) return;
+    setStatus('');
     const dequeuedVal = slots[head].value;
     const nextSlots = slots.map((s) => (s.index === head ? { ...s, value: null } : s));
     const nextHead = (head + 1) % CAPACITY;
@@ -126,7 +123,7 @@ export const QueueVisualizer: React.FC = () => {
         tail,
         size,
         activeSlot: head,
-        activeLine: 3,
+        activeLine: 2,
         log: `Dequeue(): removing element ${dequeuedVal} from HEAD slot [${head}].`,
       },
       {
@@ -135,7 +132,7 @@ export const QueueVisualizer: React.FC = () => {
         tail,
         size: nextSize,
         activeSlot: null,
-        activeLine: 4,
+        activeLine: 3,
         log: `Advanced HEAD to (${head} + 1) % ${CAPACITY} = ${nextHead}. Count is now ${nextSize}.`,
       },
     ];
@@ -151,6 +148,7 @@ export const QueueVisualizer: React.FC = () => {
   // Front
   const handleFront = () => {
     if (size === 0) return;
+    setStatus('');
     const frontVal = slots[head].value;
     const generated: Frame[] = [
       {
@@ -159,7 +157,7 @@ export const QueueVisualizer: React.FC = () => {
         tail,
         size,
         activeSlot: head,
-        activeLine: 5,
+        activeLine: 4,
         log: `Front() inspection: element at HEAD [${head}] is ${frontVal}. Queue unmodified.`,
       },
     ];
@@ -170,6 +168,7 @@ export const QueueVisualizer: React.FC = () => {
 
   // Clear
   const handleClear = () => {
+    setStatus('');
     const emptySlots = Array.from({ length: CAPACITY }, (_, i) => ({ index: i, value: null }));
     setSlots(emptySlots);
     setHead(0);
@@ -182,21 +181,14 @@ export const QueueVisualizer: React.FC = () => {
         tail: 0,
         size: 0,
         activeSlot: null,
-        activeLine: 0,
+        activeLine: -1,
         log: 'Queue cleared.',
       },
     ]);
+    setFrameIdx(0);
   };
 
-  const curr = frames[frameIdx] || {
-    slots,
-    head,
-    tail,
-    size,
-    activeSlot: null,
-    activeLine: 0,
-    log: 'Ready',
-  };
+  const curr = frames[frameIdx] || readyFrame(slots, head, tail, size);
 
   return (
     <div className="space-y-4">
@@ -213,19 +205,13 @@ export const QueueVisualizer: React.FC = () => {
         }}
         onReset={() => {
           setIsPlaying(false);
-          setSlots([
-            { index: 0, value: 10 },
-            { index: 1, value: 20 },
-            { index: 2, value: 30 },
-            { index: 3, value: 40 },
-            { index: 4, value: null },
-            { index: 5, value: null },
-            { index: 6, value: null },
-            { index: 7, value: null },
-          ]);
+          setStatus('');
+          setSlots(INITIAL_SLOTS);
           setHead(0);
           setTail(4);
           setSize(4);
+          setFrames([readyFrame(INITIAL_SLOTS, 0, 4, 4)]);
+          setFrameIdx(0);
         }}
         onRandomize={() => {
           const count = 4;
@@ -233,10 +219,14 @@ export const QueueVisualizer: React.FC = () => {
             index: i,
             value: i < count ? Math.floor(Math.random() * 90) + 10 : null,
           }));
+          setIsPlaying(false);
+          setStatus('');
           setSlots(newSlots);
           setHead(0);
           setTail(count);
           setSize(count);
+          setFrames([readyFrame(newSlots, 0, count, count)]);
+          setFrameIdx(0);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -278,6 +268,12 @@ export const QueueVisualizer: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {status && (
+        <p role="status" className="font-mono text-xs text-rose">
+          {status}
+        </p>
+      )}
 
       {/* Visual Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">

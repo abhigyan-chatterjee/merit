@@ -4,6 +4,7 @@
   "title": "Maximum Depth of Binary Tree",
   "topic": "trees",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Postorder DFS Depth",
   "statement": "Given the level-order array representation of a binary tree, return its maximum depth (number of nodes along the longest path from root to leaf).",
   "examples": [
@@ -39,8 +40,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(treeArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(treeArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(treeArray):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(TreeNode treeArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(TreeNode* treeArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

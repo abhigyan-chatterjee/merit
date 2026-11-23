@@ -56,6 +56,8 @@ def sample_questions(
 
     def pick_from(pool: list[Question], n: int) -> list[Question]:
         """Difficulty-weighted pick (40/40/20) from one pool, exposure-aware."""
+        if n <= 0:
+            return []
         fresh = [q for q in pool if q.id not in recent_exposed_ids]
         # Avoid stable database ordering making the fresh portion deterministic.
         random.shuffle(fresh)
@@ -72,8 +74,8 @@ def sample_questions(
         hard = [q for q in chosen if q.difficulty == "Hard"]
         for bucket in (easy, med, hard):
             random.shuffle(bucket)
-        t_easy = max(1, int(n * 0.4))
-        t_med = max(1, int(n * 0.4))
+        t_easy = min(n, max(1, int(n * 0.4)))
+        t_med = min(n - t_easy, max(0 if n <= 1 else 1, int(n * 0.4)))
         t_hard = n - t_easy - t_med
         picked = easy[:t_easy] + med[:t_med] + hard[:t_hard]
         if len(picked) < n:

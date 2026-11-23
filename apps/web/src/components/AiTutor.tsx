@@ -141,7 +141,7 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
           {!apiKey.trim() && (
             <div className="pt-3 text-xs font-mono text-muted">
               Set up a provider and key on your account to start a guided session.{" "}
-              <a href="/profile#tutor" className="inline-flex items-center gap-1 text-violet hover:underline">Open Account <ExternalLink className="w-3 h-3" /></a>
+              <a href="/profile#tutor" className="inline-flex items-center gap-1 text-violet hover:underline">Open account <ExternalLink className="w-3 h-3" /></a>
             </div>
           )}
           {models.length > 0 && (
@@ -157,8 +157,8 @@ export const AiTutor: React.FC<AiTutorProps> = ({ problemSlug, code = "", failed
           </div>
           {error && <p role="alert" className="text-xs font-mono text-rose">{error}</p>}
           <div className="flex items-center gap-2">
-            <input type="text" aria-label="Your question" value={question} onChange={(event) => { setError(null); setStatus(apiKey.trim() ? (models.length > 0 ? "models-loaded" : "key-set") : "idle"); setQuestion(event.target.value); }} onKeyDown={(event) => { if (event.key === "Enter") void handleSend(); }} placeholder="Ask about this problem…" className="flex-1 p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink placeholder-muted" />
-            <button onClick={() => void handleSend()} disabled={!canChat || !question.trim() || sending} aria-label="Send question" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet text-white font-mono font-semibold text-xs disabled:opacity-50 cursor-pointer"><Send className="w-3.5 h-3.5" />{sending ? "Sending…" : "Send"}</button>
+            <input type="text" aria-label="Your question" value={question} onChange={(event) => { setError(null); setStatus(apiKey.trim() ? (models.length > 0 ? "models-loaded" : "key-set") : "idle"); setQuestion(event.target.value); }} onKeyDown={(event) => { if (event.key === "Enter") void handleSend(); }} placeholder="Ask about this problem…" className="flex-1 p-2 rounded-lg bg-canvas border border-line text-base sm:text-xs font-mono text-ink placeholder-muted" />
+            <button onClick={() => void handleSend()} disabled={!canChat || !question.trim() || sending} aria-label="Send question" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet text-canvas font-mono font-semibold text-xs disabled:opacity-50 cursor-pointer"><Send className="w-3.5 h-3.5" />{sending ? "Sending…" : "Send"}</button>
           </div>
         </div>
       )}

@@ -33,7 +33,7 @@
   ],
   "editorial": {
     "approach": "### Greedy BFS Window Expansion\n\nWe must find the minimum number of jumps to reach index $n - 1$. Since reaching the end is guaranteed, we can interpret the problem as a Breadth-First Search (BFS) where each level corresponds to one additional jump.\n\n#### 1. BFS Level Window\nInstead of an explicit BFS queue, we track the current jump level's range $[start, currentEnd]$ and the maximum reach achievable by any jump within this range ($farthest$).\n\n#### 2. Greedy Transition\nIterate index $i$ from $0$ to $n - 2$:\n1. Update $farthest = \\max(farthest, i + nums[i])$.\n2. When $i == currentEnd$:\n   - A jump must be taken to advance to the next level: `jumps++`.\n   - Update $currentEnd = farthest$.\n   - If $currentEnd \\ge n - 1$, terminate early.\n\n#### 3. Complexity\nSingle linear pass visiting each element at most once: $O(n)$ time and $O(1)$ space.",
-    "why_optimal": "Dynamic programming iteratively updates minimum jumps for all reachable indices in O(n²) time. Greedy window expansion treats each jump as a BFS level boundary, finding the minimum jumps in a single O(n) pass with O(1) space. Across 24 verified test cases, greedy window expansion executed in 0.27 ms compared to 0.71 ms for quadratic DP.",
+    "why_optimal": "Dynamic programming iteratively updates minimum jumps for all reachable indices in O(n\u00b2) time. Greedy window expansion treats each jump as a BFS level boundary, finding the minimum jumps in a single O(n) pass with O(1) space. Across 24 verified test cases, greedy window expansion executed in 0.27 ms compared to 0.71 ms for quadratic DP.",
     "pitfalls": "Looping up to n - 1 instead of n - 2 causes an extra unwanted jump increment when already standing at the final index."
   },
   "reading_links": [
@@ -982,7 +982,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function jump(nums) {\n  const n = nums.length;\n  if (n <= 1) return 0;\n  const dp = new Array(n).fill(Infinity);\n  dp[0] = 0;\n  for (let i = 0; i < n; i++) {\n    if (dp[i] === Infinity) continue;\n    const maxReach = Math.min(n - 1, i + nums[i]);\n    for (let j = i + 1; j <= maxReach; j++) {\n      if (dp[i] + 1 < dp[j]) {\n        dp[j] = dp[i] + 1;\n      }\n    }\n  }\n  return dp[n - 1];\n}",
       "isReference": false
@@ -996,7 +996,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def jump(nums: list[int]) -> int:\n    n = len(nums)\n    if n <= 1:\n        return 0\n    dp = [float(\"inf\")] * n\n    dp[0] = 0\n    for i in range(n):\n        if dp[i] == float(\"inf\"):\n            continue\n        max_reach = min(n - 1, i + nums[i])\n        for j in range(i + 1, max_reach + 1):\n            if dp[i] + 1 < dp[j]:\n                dp[j] = dp[i] + 1\n    return int(dp[-1])\n",
       "isReference": false
@@ -1009,7 +1009,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
+  "sequence": 6,
   "prevSlug": "jump-game",
-  "nextSlug": null
+  "nextSlug": "maximum-number-of-events-that-can-be-attended"
 }

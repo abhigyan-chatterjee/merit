@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ListChecks, BrainCircuit } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
@@ -32,6 +32,8 @@ export const ExamDetailPage: React.FC = () => {
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [isAutoSubmitRequested, setIsAutoSubmitRequested] = useState(false);
   const [proctorNotice, setProctorNotice] = useState<string | null>(null);
+  const [warningCount, setWarningCount] = useState(0);
+  const warningsRef = useRef(0);
 
   useEffect(() => {
     setStarted(false);
@@ -41,11 +43,61 @@ export const ExamDetailPage: React.FC = () => {
     setAnsweredMcqs({});
     setLoadedMcqCount(0);
     setMcqQuestionIds([]);
-    setSecondsRemaining(exam?.durationSec ?? 0);
     setExamSubmitted(false);
     setIsAutoSubmitRequested(false);
     setProctorNotice(null);
-  }, [id]);
+    setWarningCount(0);
+    warningsRef.current = 0;
+
+    try {
+      const raw = sessionStorage.getItem(`merit_exam_${id}`);
+      if (raw) {
+        const data = JSON.parse(raw);
+        const now = Date.now();
+        if (data.started && data.endAtMs > now) {
+          setStarted(true);
+          setSecondsRemaining(Math.max(0, Math.ceil((data.endAtMs - now) / 1000)));
+          if (typeof data.warnings === 'number') {
+            setWarningCount(data.warnings);
+            warningsRef.current = data.warnings;
+          }
+          return;
+        } else if (data.started) {
+          sessionStorage.removeItem(`merit_exam_${id}`);
+        }
+      }
+    } catch {
+      // sessionStorage unavailable
+    }
+    setSecondsRemaining(exam?.durationSec ?? 0);
+  }, [id, exam?.durationSec]);
+
+  const handleStartExam = () => {
+    const duration = exam?.durationSec ?? 0;
+    const endAtMs = Date.now() + duration * 1000;
+    try {
+      sessionStorage.setItem(
+        `merit_exam_${id}`,
+        JSON.stringify({ started: true, endAtMs, warnings: 0 })
+      );
+    } catch {
+      // sessionStorage unavailable
+    }
+    setSecondsRemaining(duration);
+    warningsRef.current = 0;
+    setWarningCount(0);
+    setStarted(true);
+  };
+
+  useEffect(() => {
+    if (examSubmitted) {
+      try {
+        sessionStorage.removeItem(`merit_exam_${id}`);
+      } catch {
+        // sessionStorage unavailable
+      }
+    }
+  }, [examSubmitted, id]);
 
   useEffect(() => {
     if (!started || examSubmitted) return;
@@ -61,26 +113,48 @@ export const ExamDetailPage: React.FC = () => {
   }, [started, examSubmitted, secondsRemaining]);
 
   useEffect(() => {
+    warningsRef.current = warningCount;
+  }, [warningCount]);
+
+  useEffect(() => {
     if (!started || examSubmitted) return;
-    const notice = 'Exam auto-submitted: tab switch or window blur detected.';
+    const handleSwitch = () => {
+      const next = warningsRef.current + 1;
+      warningsRef.current = next;
+      setWarningCount(next);
+      try {
+        const raw = sessionStorage.getItem(`merit_exam_${id}`);
+        if (raw) {
+          const data = JSON.parse(raw);
+          sessionStorage.setItem(`merit_exam_${id}`, JSON.stringify({ ...data, warnings: next }));
+        }
+      } catch {
+        // sessionStorage unavailable
+      }
+      if (next >= 3) {
+        setIsAutoSubmitRequested(true);
+        setProctorNotice('Exam auto-submitted: tab switch or window blur detected.');
+      } else {
+        setProctorNotice(
+          `Warning ${next} of 2: Tab switch or window blur detected. On the 3rd event, the exam will auto-submit.`
+        );
+      }
+    };
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        setIsAutoSubmitRequested(true);
-        setProctorNotice(notice);
+        handleSwitch();
       }
     };
     const handleBlur = () => {
-      setIsAutoSubmitRequested(true);
-      setProctorNotice(notice);
+      handleSwitch();
     };
-    const previousBlurHandler = window.onblur;
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.onblur = handleBlur;
+    window.addEventListener('blur', handleBlur);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.onblur = previousBlurHandler;
+      window.removeEventListener('blur', handleBlur);
     };
-  }, [started, examSubmitted]);
+  }, [started, examSubmitted, id]);
 
   const formatTime = (seconds: number) =>
     `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
@@ -157,12 +231,12 @@ export const ExamDetailPage: React.FC = () => {
           <p className="text-xs text-muted max-w-lg mx-auto">
             {exam.questionCount} MCQs
             {exam.coding.length > 0 && ` · ${exam.coding.length} coding questions`} ·{' '}
-            {Math.round(exam.durationSec / 60)}-minute countdown · unanswered questions count as
+            {Math.round(exam.durationSec / 60)}-minute countdown · Leaving the tab or window gives 2 warnings; on the 3rd, the exam auto-submits · unanswered questions count as
             wrong. The timer auto-submits at zero.
           </p>
           {user ? (
             <button
-              onClick={() => setStarted(true)}
+              onClick={handleStartExam}
               className="px-5 py-2.5 rounded-lg bg-violet text-canvas font-semibold text-xs hover:brightness-110 transition cursor-pointer"
             >
               Start timed exam
@@ -178,7 +252,7 @@ export const ExamDetailPage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="sticky top-3 z-10 flex justify-end">
+          <div className="sticky top-16 z-30 flex justify-end">
             <div
               aria-label={`Time remaining ${formatTime(secondsRemaining)}`}
               className={`inline-flex items-center rounded-lg border px-3 py-1.5 font-mono text-sm font-bold shadow-sm ${
@@ -291,7 +365,7 @@ export const ExamDetailPage: React.FC = () => {
                 </div>
               )}
             </aside>
-            <main>
+            <div className="min-w-0">
               <div
                 hidden={selectedItem.type !== 'mcq'}
               >
@@ -314,7 +388,9 @@ export const ExamDetailPage: React.FC = () => {
                     setLoadedMcqCount(ids.length);
                   }}
                   onComplete={(pct) => {
-                    setExamSubmitted(true);
+                    if (exam.coding.length === 0) {
+                      setExamSubmitted(true);
+                    }
                     setMcqPct(pct);
                     saveQuizScore(`exam:${exam.id}`, pct);
                   }}
@@ -328,7 +404,7 @@ export const ExamDetailPage: React.FC = () => {
                   onVerdict={(slug, passed) => setCodingPassed((prev) => ({ ...prev, [slug]: passed }))}
                 />
               )}
-            </main>
+            </div>
           </div>
         </div>
       )}

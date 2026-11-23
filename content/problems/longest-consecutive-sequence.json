@@ -4,6 +4,7 @@
   "title": "Longest Consecutive Sequence",
   "topic": "arrays-hashing",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Union-Find / Set Streaks",
   "statement": "Given an unsorted array of integers nums, return the length of the longest run of consecutive integers. The algorithm must run in O(n) time.",
   "examples": [
@@ -43,7 +44,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -89,9 +90,9 @@
       "label": "[] empty"
     }
   ],
-  "sequence": 12,
+  "sequence": 21,
   "prevSlug": "group-anagrams",
-  "nextSlug": "product-of-array-except-self",
+  "nextSlug": "next-permutation",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Array_data_structure"
   ],

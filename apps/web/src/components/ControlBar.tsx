@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, RotateCcw, Shuffle } from 'lucide-react';
 import { SpeedControl } from './SpeedControl';
 
@@ -33,6 +33,27 @@ export const ControlBar: React.FC<ControlBarProps> = ({
     'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs font-mono text-muted hover:text-ink hover:border-steel disabled:opacity-35 disabled:pointer-events-none transition cursor-pointer';
 
   const stepForward = onStepForward ?? onStep;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
+
+      if (event.key === ' ') {
+        event.preventDefault();
+        onPlayPause();
+      } else if (event.key === 'ArrowLeft' && onStepBack && !isPlaying && !disabledBack) {
+        event.preventDefault();
+        onStepBack();
+      } else if (event.key === 'ArrowRight' && stepForward && !isPlaying && !disabledStep) {
+        event.preventDefault();
+        stepForward();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onPlayPause, onStepBack, stepForward, isPlaying, disabledBack, disabledStep]);
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-xl border border-line bg-surface">

@@ -4,6 +4,7 @@
   "title": "Find if Path Exists in Graph",
   "topic": "graphs",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "BFS / Union-Find Connectivity",
   "statement": "There is a bi-directional graph with n vertices. Given n, an edge list edges, source, and destination, return true if there is a valid path from source to destination.",
   "examples": [
@@ -40,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(n, edges, source, destination) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(n, edges, source, destination):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(int n, int[][] edges, int source, int destination) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    bool solve(int n, std::vector<std::vector<int>> edges, int source, int destination) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

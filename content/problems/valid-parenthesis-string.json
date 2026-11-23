@@ -1,0 +1,251 @@
+{
+  "slug": "valid-parenthesis-string",
+  "title": "Valid Parenthesis String",
+  "topic": "greedy",
+  "difficulty": "Medium",
+  "pattern": "greedy over the range of reachable open-bracket counts",
+  "statement": "A bracket string is built from three characters: `(`, `)` and `*`. A `*` is a wildcard and may stand for a `(`, for a `)`, or for nothing at all.\n\nGiven such a string `s`, decide whether some way of replacing every `*` turns `s` into a valid bracket sequence, meaning every `)` is matched by an earlier `(` and no `(` is left without a partner.\n\nReturn `true` if such a replacement exists, and `false` otherwise.\n\nExample: `s = \"(*))\"` is `true`, because the `*` can become `(`. `s = \"((*\"` is `false`, since after replacing the `*` there are still three opens and at most one close. `s = \")*\"` is `false`, because the leading `)` can never be matched.\n\nConstraints: `1 <= s.length <= 100` and every character of `s` is one of `(`, `)` or `*`.\n",
+  "examples": [
+    {
+      "input": "s = \"(\"",
+      "output": "false",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"*)\"",
+      "output": "true",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "You do not have to choose a meaning for each `*` right now. Instead, after each prefix ask which numbers of open brackets are still reachable.",
+    "That set of reachable open counts is always a contiguous range: `(` and `)` shift it by one, `*` widens it by one at each end. Two numbers therefore describe everything.",
+    "A prefix is already impossible when even the smallest reachable count is below zero. At the end the smallest reachable count must be exactly 0, because a string is not valid while an open bracket is still waiting."
+  ],
+  "editorial": {
+    "approach": "The brute force is interval dynamic programming. A valid bracket sequence is a concatenation of matched blocks, so `possible(i, j)` is true either when `s[i]` is a `*` used as nothing and `possible(i + 1, j)` holds, or when `s[i]` (a `(` or a `*`) matches some later position `k - 1` (a `)` or a `*`), which leaves the inside `possible(i + 1, k - 1)` and the tail `possible(k, j)` to be valid in turn. Every interval is filled in order of increasing length, giving O(n\u00b2) states and O(n) work per state. The optimal never decides what a `*` means. It tracks the interval `[lo, hi]` of how many brackets could be open after the prefix read so far: `(` raises both, `)` lowers both, and `*` lowers the minimum (it may be a `)`) while raising the maximum (it may be a `(`). If the maximum ever goes negative the prefix cannot be fixed, and the minimum is floored at 0, because a prefix never needs to close more brackets than it has opened.",
+    "why_optimal": "The reachable set of open counts after a prefix is always a contiguous range, so those two integers describe it completely and a single left-to-right pass suffices; every character must be examined at least once, making O(n) optimal. The final answer depends on the minimum being exactly 0, not the maximum: the string may end with fewer opens than the wildcards allowed, but it must not be forced to leave an open bracket unmatched. The O(n\u00b3) DP is legal at n <= 100 but is roughly 10^4 times slower than the counters.",
+    "pitfalls": "Testing only `hi === 0` at the end is wrong, since a shorter final count is also reachable; the condition is `lo === 0` while `hi` never went below zero. The minimum must be floored at 0 and not allowed to go negative, otherwise a run of `*` used as `)` incorrectly kills the string. A prefix whose maximum dips below 0 must return false immediately (`hi -= 1` before the check, and return as soon as `hi < 0`), because the extra `)` can never be matched. In the DP, a lone `*` is valid (it can be empty), so the length-one interval needs its own base case; forgetting it makes `\"*\"` come out false. Empty strings are valid and must return true."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dyck_language",
+    "https://en.wikipedia.org/wiki/Greedy_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public boolean solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    bool solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 9.70593700000001,
+    "optimalRuntimeMs": 0.11348300000000222,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "("
+      ],
+      "expected": false,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "*)"
+      ],
+      "expected": true,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "((*(***("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        ")(((((**(*(****)()*"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "((*)))(()"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "()()"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "*)(*)*()(*)*"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        ")*(*((*()((()))*)())"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "*)***(*"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "(**(()))***(*)((()))("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "**)(*))"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        ")()((***)**)*))((*)(("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "(*(*"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "*())*)*)*(**(*"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        ")*)())()(**)*(*(*)"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "**(()(**(*))(())(((*("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "*)("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "((*)*()**)(***(*))"
+      ],
+      "expected": true,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "*))*)(((()(**(*(((**(((()(*()*)(*(***)())(((*)))))*(***(()*)((((*)()())(()*((**(((()))()(()()))))***"
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "*)(()((***(*)((*)**((*(((*(*()(*(**(*()****))(**)())(**)))(()**((*(*)()(())()**)***(**)*(()((**())*("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        ")(**)*))((*))(()(*)(*)**)*(((*(*()**()(())()(*(*()*)**(((()((*))**()(*()()(()))(((*()))())**)**)(()("
+      ],
+      "expected": false,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        ")((*))*))**()*()(*)(*******())(*)*)*(*)*)*)))*)*(()*)**(**))*())()***))))*(*)*(*()****)((*)(((((()*("
+      ],
+      "expected": false,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b3) | Space: O(n\u00b2)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  const dp = Array.from({ length: n + 1 }, () => new Array(n + 1).fill(false));\n  for (let i = 0; i <= n; i++) dp[i][i] = true;\n  for (let len = 1; len <= n; len++) {\n    for (let i = 0; i + len <= n; i++) {\n      const j = i + len;\n      let ok = false;\n      if (s[i] === '*' && dp[i + 1][j]) ok = true;\n      if (!ok && (s[i] === '(' || s[i] === '*')) {\n        for (let k = i + 2; k <= j; k++) {\n          const closer = s[k - 1];\n          if ((closer === ')' || closer === '*') && dp[i + 1][k - 1] && dp[k][j]) {\n            ok = true;\n            break;\n          }\n        }\n      }\n      dp[i][j] = ok;\n    }\n  }\n  return dp[0][n];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  let lo = 0;\n  let hi = 0;\n  for (const ch of s) {\n    if (ch === '(') {\n      lo++;\n      hi++;\n    } else if (ch === ')') {\n      lo = Math.max(lo - 1, 0);\n      hi--;\n    } else {\n      lo = Math.max(lo - 1, 0);\n      hi++;\n    }\n    if (hi < 0) return false;\n  }\n  return lo === 0;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 9,
+  "prevSlug": "reorganize-string",
+  "nextSlug": "candy"
+}

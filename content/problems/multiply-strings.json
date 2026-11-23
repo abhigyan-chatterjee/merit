@@ -1,0 +1,273 @@
+{
+  "slug": "multiply-strings",
+  "title": "Multiply Strings",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "Digit-array long multiplication with carries",
+  "statement": "Two non-negative integers are given as decimal strings `num1` and `num2`, where every character is a digit from `'0'` to `'9'`. The values may be up to 200 digits long, so they can exceed what a 64-bit integer holds and converting the inputs to machine numbers is not an option.\n\nReturn the product `num1 * num2` as a decimal string. The result must not contain leading zeros, and the product of a value with `'0'` is the single character `'0'`. An input may itself carry leading zeros; the product is still expected in canonical form.\n\nConstraints: `1 <= num1.length <= 200` and `1 <= num2.length <= 200`, and every character of both strings is a digit from `'0'` to `'9'`.\n",
+  "examples": [
+    {
+      "input": "num1 = \"1\", num2 = \"4\"",
+      "output": "\"4\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "num1 = \"32\", num2 = \"18\"",
+      "output": "\"576\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(num1: string, num2: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Work with the digits themselves, never with parsed integers: a 200-digit value does not fit in a double.",
+    "The product of the digit at position i of num1 and the digit at position j of num2 belongs at positions i+j and i+j+1 of the result.",
+    "Multiply the whole of num1 by one digit of num2 at a time, shift the partial product, and add the rows; or allocate n + m slots and carry each digit pair into position i+j+1 as you go."
+  ],
+  "editorial": {
+    "approach": "The brute force is long multiplication the way it is done on paper: for every digit of `num2` it forms the partial product of the whole of `num1` with that one digit (a single carry-propagating pass over `num1`), shifts that partial product left by the number of `num2` digits still to its right, and adds it to a running decimal result with a grade-school string addition. There are m partial products and each costs O(n + m) character operations to build and add, so the total is O(m \u00d7 (n + m)) and only the running result plus one partial product are held at any moment, which is O(n + m) space. The optimal version never builds those strings: it keeps an array of n + m digit slots and, for every pair of digits, accumulates their two-digit product into slot i+j+1 and pushes the tens into slot i+j. That is the same multiplication with the carries resolved in place, and it never touches a value longer than the result itself.",
+    "why_optimal": "The product has at most n + m digits and each of the n \u00d7 m digit pairs must be multiplied once, so O(n \u00d7 m) work is the floor; the carry array already holds the result, so no additional string arithmetic is required to combine partial products. Reading the inputs as machine integers is impossible at 200 digits (10^200 far exceeds 2^53), which is exactly why the constraint is stated in digits rather than in value, and it is what makes the digit-array approach necessary rather than merely neat. Even at the full bound the partial products are only twice as long as an input, so the reference implementation stays well inside the time limit.",
+    "pitfalls": "Slot i+j can already hold a carry from a previous digit pair, so the product must be added into the accumulator at position i+j+1 before the split rather than into a local carry variable. In the row-by-row reference the carry has to be propagated across the whole multiplicand for a single multiplier digit, and the finished row must be shifted by exactly the number of multiplier digits to its right. Leading zeros must be stripped at the end, but the all-zero case must return '0' and not an empty string. Using Number() or parseInt() anywhere silently loses precision beyond 15 digits, and in Python using int() would pass the tests only if the judge ever allowed lengths beyond a few hundred digits."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Multiplication_algorithm",
+    "https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic"
+  ],
+  "starterCode": {
+    "javascript": "function solve(num1, num2) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(num1, num2):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String num1, String num2) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string num1, std::string num2) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 16.755165000000005,
+    "optimalRuntimeMs": 4.132302000000003,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "1",
+        "4"
+      ],
+      "expected": "4",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "32",
+        "18"
+      ],
+      "expected": "576",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "960",
+        "1"
+      ],
+      "expected": "960",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "3890838",
+        "37940265423511"
+      ],
+      "expected": "147619426439882692218",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "1559407816184",
+        "959310341316475255341"
+      ],
+      "expected": "1495956044395052345551582592238744",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "28327648350305641395",
+        "7672423"
+      ],
+      "expected": "217341700738797060068750085",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "884969653287101226916697",
+        "48018451462704828"
+      ],
+      "expected": "42494872342333390406167103795426255713116",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "4893",
+        "52880"
+      ],
+      "expected": "258741840",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "57015430391171822782",
+        "896383465"
+      ],
+      "expected": "51107689052504903915695099630",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "871331509839301",
+        "03105183473829973763116"
+      ],
+      "expected": "2705644204580316643215243631401021916",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "667010651333",
+        "726247317810801326"
+      ],
+      "expected": "484414696481826844117920067558",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "7360260647468723",
+        "3098050097"
+      ],
+      "expected": "22802456212835760094616131",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "82081219136193990",
+        "16998543534624751079"
+      ],
+      "expected": "1395261176861667744305133303205815210",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "1183842513542784980",
+        "8412411824493534874016"
+      ],
+      "expected": "9958970759265472061417726678930077079680",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "005242786",
+        "011280598262045053"
+      ],
+      "expected": "59141762639874135237658",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "3158692322602563421607",
+        "37543303"
+      ],
+      "expected": "118587742951241787114108347921",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "5414586850142",
+        "4019655698169340608"
+      ],
+      "expected": "21764774885406071838387851166336",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "356159514846564823",
+        "62994680443699"
+      ],
+      "expected": "22436154824742220702047605400277",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "57773872148951343320037917693676320163287083172788957986872774348734714345581223623166587603669096705466889373467065627298069901",
+        "62720465375564641708053100330923271937452991241904966319314919058651850671657262849877694531473799650752735454948083136783777014"
+      ],
+      "expected": "3623604147730601109115201089024274216087543690942110924121716718010029050846458790164946851097469616136454640543871837504145779661511995589446950528996029290778364875993493886828087541810057502150386193664038010588271476031148891903878897193007650969055614",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "63495788568557444313518233749894134352408240084271094777520471167190229413186999386774964990913341232812067974034471349361832421",
+        "24994717464887719065940139904902787429671756551256746807154516808760385977034824771093248086131712748467737826398214658404499727"
+      ],
+      "expected": "1587059295481340736789514115882270194246393689206768332224077874760686227032587109008635581646459197915858949299606237725397190194838297904867180486401141803960009275919650385466962145387694872344174360324248230522379314378407718374164111188009856514249067",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "75588675339636057662702895171870262174596158657809134316117240050455623869222196937923747407482175946474367136959440640909743953",
+        "39421047095214562328588424745171236851604817549651370985931746120047113826758692617964053773515850643171390053293183933529042284"
+      ],
+      "expected": "2979784730428676631477333205792554198780287965124534414698131315582018207225336502817623597633973821384275193842789931685670437603925102297789387447708163340503071079978508228373240359924389739921309669541398795310946475328666169494622231192821927750308652",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "10205395024026811775891783908470076617711592124998569847896118367365766156545271111615280988516560494519832731585149368998094024",
+        "45502296120183667525459910229014767976438156149784036900343244510762268388516060715969664160529751613696816453521818835523124329"
+      ],
+      "expected": "464368906406716903896534914093461645575751618124259070907026218903208834871911646929186718640928099161233035126468785209594158567664062276651956325358708239790579300408930521148644593954878535143185146637586699353662608394326775498465782846043378583909896",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(m \u00d7 (n + m)) | Space: O(n + m)",
+      "language": "javascript",
+      "code": "function solve(num1, num2) {\n  function addStrings(a, b) {\n    var i = a.length - 1;\n    var j = b.length - 1;\n    var carry = 0;\n    var digits = [];\n    while (i >= 0 || j >= 0 || carry > 0) {\n      var sum = carry;\n      if (i >= 0) {\n        sum += a.charCodeAt(i) - 48;\n        i--;\n      }\n      if (j >= 0) {\n        sum += b.charCodeAt(j) - 48;\n        j--;\n      }\n      digits.push(String(sum % 10));\n      carry = Math.floor(sum / 10);\n    }\n    return digits.reverse().join('');\n  }\n\n  function multiplyByDigit(num, digit) {\n    if (digit === 0) return '0';\n    var digits = [];\n    var carry = 0;\n    var k = num.length - 1;\n    while (k >= 0) {\n      var product = (num.charCodeAt(k) - 48) * digit + carry;\n      digits.push(String(product % 10));\n      carry = Math.floor(product / 10);\n      k--;\n    }\n    if (carry > 0) digits.push(String(carry));\n    return digits.reverse().join('');\n  }\n\n  var m = num2.length;\n  var total = '0';\n  for (var j = 0; j < m; j++) {\n    var digit = num2.charCodeAt(j) - 48;\n    if (digit === 0) continue;\n    var row = multiplyByDigit(num1, digit) + '0'.repeat(m - 1 - j);\n    total = addStrings(total, row);\n  }\n  var trimmed = total.replace(/^0+/, '');\n  return trimmed === '' ? '0' : trimmed;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n \u00d7 m) | Space: O(n + m)",
+      "language": "javascript",
+      "code": "function solve(num1, num2) {\n  var n = num1.length;\n  var m = num2.length;\n  var digits = new Array(n + m);\n  for (var q = 0; q < n + m; q++) digits[q] = 0;\n  for (var i = n - 1; i >= 0; i--) {\n    var a = num1.charCodeAt(i) - 48;\n    for (var j = m - 1; j >= 0; j--) {\n      var b = num2.charCodeAt(j) - 48;\n      var product = a * b + digits[i + j + 1];\n      digits[i + j + 1] = product % 10;\n      digits[i + j] += Math.floor(product / 10);\n    }\n  }\n  var out = digits.join('').replace(/^0+/, '');\n  return out === '' ? '0' : out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 7,
+  "prevSlug": "count-primes",
+  "nextSlug": "pow-x-n"
+}

@@ -15,7 +15,10 @@ OUTPUT_TS = REPO_ROOT / "apps" / "web" / "src" / "data" / "quizzes.ts"
 SEED = 20260920
 QUESTION_COUNT = 15
 TOPICS = [
+    ("aptitude", "Aptitude", "Quant, logical reasoning, and verbal for screening rounds."),
     ("arrays-hashing", "Arrays & Hashing", "Indexing, frequency maps, and subarray bounds."),
+    ("backtracking", "Backtracking", "Search trees, pruning, and constraint satisfaction."),
+    ("binary-search", "Binary Search", "Search invariants, monotonic predicates, and bounds."),
     ("trees", "Trees & BST", "Traversals, binary search trees, and heap invariants."),
     ("graphs", "Graphs & Traversals", "BFS, DFS, Dijkstra, topological sort, and connectivity."),
     (
@@ -23,25 +26,46 @@ TOPICS = [
         "Dynamic Programming",
         "Optimal substructure, memoization, and tabulation recurrence.",
     ),
+    ("greedy", "Greedy", "Greedy choices, exchange arguments, and scheduling."),
+    ("heap", "Heap & Priority Queue", "Heap invariants, top-k, and priority scheduling."),
+    ("intervals", "Intervals", "Interval merging, scheduling, and sweep-line reasoning."),
+    ("linked-lists", "Linked Lists", "Pointer manipulation, reversal, and cycle detection."),
+    ("math-matrices", "Math & Matrices", "Number theory, matrix operations, and combinatorics."),
+    ("sliding-windows", "Sliding Window", "Window invariants, two bounds, and amortized scans."),
     ("sorting", "Sorting & Searching", "Binary search invariants, in-place sorts, and comparison bounds."),
+    ("stack", "Stack", "Monotonic stacks, expression evaluation, and bracket matching."),
     (
         "data-structures",
         "Stacks, Queues & Heaps",
         "Amortized structures, circular queues, and priority queues.",
     ),
     ("bit-manipulation", "Bit Manipulation", "Bitwise masks, popcounts, and bit tricks."),
+    ("trie", "Trie", "Prefix trees, autocomplete, and string search."),
+    ("two-pointers", "Two Pointers", "Opposite and same-direction pointer techniques."),
     ("cs-fundamentals", "CS Fundamentals", "Operating systems, memory management, networks, and DBMS."),
     ("mixed", "Mixed Mastery", "Adaptive placement assessment drawn across all verified items."),
 ]
 
 SOURCE_TOPICS = {
+    "aptitude": "aptitude",
     "arrays-hashing": "arrays-hashing",
+    "backtracking": "backtracking",
+    "binary-search": "binary-search",
     "trees": "trees",
     "graphs": "graphs",
     "dynamic-programming": "dynamic-programming",
+    "greedy": "greedy",
+    "heap": "heap",
+    "intervals": "intervals",
+    "linked-lists": "linked-lists",
+    "math-matrices": "math-matrices",
+    "sliding-windows": "sliding-windows",
     "sorting": "sorting",
+    "stack": "stack",
     "data-structures": "data-structures",
     "bit-manipulation": "bit-manipulation",
+    "trie": "trie",
+    "two-pointers": "two-pointers",
     "cs-fundamentals": "core-cs",
 }
 

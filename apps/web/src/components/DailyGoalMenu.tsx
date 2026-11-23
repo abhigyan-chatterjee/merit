@@ -19,6 +19,7 @@ export const DailyGoalMenu: React.FC = () => {
   const [customLabel, setCustomLabel] = useState('');
   const [pinIt, setPinIt] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -26,7 +27,10 @@ export const DailyGoalMenu: React.FC = () => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     };
     window.addEventListener('mousedown', onDown);
     window.addEventListener('keydown', onKey);
@@ -34,7 +38,7 @@ export const DailyGoalMenu: React.FC = () => {
       window.removeEventListener('mousedown', onDown);
       window.removeEventListener('keydown', onKey);
     };
-  }, [open ]);
+  }, [open]);
 
   const progressText = dailyGoal
     ? dailyGoal.kind === 'problems'
@@ -53,6 +57,7 @@ export const DailyGoalMenu: React.FC = () => {
   return (
     <div ref={ref} className="relative">
       <button
+        ref={triggerRef}
         onClick={() => setOpen((o) => !o)}
         title={dailyGoal ? `Daily goal: ${dailyGoal.label}` : 'Set a daily goal'}
         aria-label="Daily goal"
@@ -142,7 +147,7 @@ export const DailyGoalMenu: React.FC = () => {
               onChange={(e) => setCustomLabel(e.target.value)}
               placeholder="Custom, e.g. Revise DP 20 min"
               aria-label="Custom daily goal"
-              className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-canvas border border-line text-xs text-ink placeholder-muted/60 focus:border-mint"
+              className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-canvas border border-line text-base sm:text-xs text-ink placeholder-muted/60 focus:border-mint"
             />
             <button
               type="submit"
@@ -159,7 +164,7 @@ export const DailyGoalMenu: React.FC = () => {
                 type="checkbox"
                 checked={pinIt}
                 onChange={(e) => setPinIt(e.target.checked)}
-                className="accent-emerald-500"
+                className="accent-mint"
               />
               Keep as my permanent goal
             </label>

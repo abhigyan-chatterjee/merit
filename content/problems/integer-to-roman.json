@@ -1,0 +1,219 @@
+{
+  "slug": "integer-to-roman",
+  "title": "Integer to Roman",
+  "topic": "greedy",
+  "difficulty": "Medium",
+  "pattern": "greedy over a canonical value table / denomination decomposition",
+  "statement": "Roman numerals are built from seven symbols: `I` = 1, `V` = 5, `X` = 10, `L` = 50, `C` = 100, `D` = 500 and `M` = 1000. Symbols are written from left to right in non-increasing value order, except for the six subtractive pairs, where a smaller symbol stands immediately before a larger one and its value is subtracted: `IV` = 4, `IX` = 9, `XL` = 40, `XC` = 90, `CD` = 400 and `CM` = 900. Nothing else is written subtractively, and no symbol appears more than three times in a row.\n\nReturn `num` written as a Roman numeral. Values above `3999` are outside the scope here, so no symbol is ever repeated more than three times and no overbar notation is needed. `num = 0` is written as the empty string.\n\nFor example, `num = 1994` gives `MCMXCIV` and `num = 4` gives `IV`; `num = 3999` gives `MMMCMXCIX`, the largest value in the domain.\n\nConstraints: `0 <= num <= 3999`.\n",
+  "examples": [
+    {
+      "input": "num = 0",
+      "output": "\"\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "num = 456",
+      "output": "\"CDLVI\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(num: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Six of the chunks you can write are two characters long, and they are exactly the ones that keep a symbol from repeating four times.",
+    "Line the writable chunks up by value and you can always take the biggest one that still fits, because the table is canonical.",
+    "That makes the conversion thirteen bounded steps with no digit extraction at all, so the run costs the same no matter how large the input is."
+  ],
+  "editorial": {
+    "approach": "The brute force splits `num` into its decimal digits and looks each one up in a per-place table: one table for the thousands, one for the hundreds, one for the tens and one for the units, each holding the ten spellings that place can produce (`''`, `C`, `CC`, `CCC`, `CD`, `D`, `DC`, `DCC`, `DCCC`, `CM` for the hundreds). Concatenating the lookups gives the numeral, but the number first has to be expanded into digits, which costs O(log num) time and keeps an O(log num) digit list around. The optimal solution never looks at the digits. It lists thirteen (value, glyph) pairs in decreasing value order, with the six subtractive pairs sitting in that list beside their values, and emits each glyph as many times as its value still fits. No separate rule is needed for the subtractive forms, and the walk is thirteen bounded steps whatever `num` is.",
+    "why_optimal": "With `num` capped at 3999 the numeral is at most fifteen glyphs and the pair table has thirteen fixed entries, so the table walk is constant work and constant extra space beyond the output: O(1) time and O(1) space. No algorithm can beat that here, because the answer itself never grows beyond fifteen characters. The digit version is not asymptotically terrible, but it pays for the decimal expansion it does not need, in both time and the digit list it materialises, and its four per-place tables store the same knowledge as the thirteen pairs in a more redundant shape.",
+    "pitfalls": "The subtractive pairs are the whole problem: a table of only the seven single symbols writes `IIII` for 4 and `VIIII` for 9, and dropping 400 or 900 breaks those values. Place alignment is the second trap, because the units table must line up with the last digit, not the first; getting it backwards turns 1904 into `CI`. Two loop bugs are common in the table walk: walking the pairs from the smallest value upward, and emitting a pair once with an `if` instead of repeating it, which turns 3000 into `M` instead of `MMM`. Finally `num = 0` must return the empty string, and neither version may index a table slot that does not exist."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Roman_numerals",
+    "https://en.wikipedia.org/wiki/Greedy_algorithm"
+  ],
+  "starterCode": {
+    "javascript": "function solve(num) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(num):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(int num) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(int num) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 18,
+    "bruteForceRuntimeMs": 0.14641300000000257,
+    "optimalRuntimeMs": 0.08417900000000245,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        0
+      ],
+      "expected": "",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        3999
+      ],
+      "expected": "MMMCMXCIX",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        2619
+      ],
+      "expected": "MMDCXIX",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        456
+      ],
+      "expected": "CDLVI",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        102
+      ],
+      "expected": "CII",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        3037
+      ],
+      "expected": "MMMXXXVII",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        1126
+      ],
+      "expected": "MCXXVI",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        1003
+      ],
+      "expected": "MIII",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        914
+      ],
+      "expected": "CMXIV",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        571
+      ],
+      "expected": "DLXXI",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        3016
+      ],
+      "expected": "MMMXVI",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        419
+      ],
+      "expected": "CDXIX",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        2771
+      ],
+      "expected": "MMDCCLXXI",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        3033
+      ],
+      "expected": "MMMXXXIII",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        3654
+      ],
+      "expected": "MMMDCLIV",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        2233
+      ],
+      "expected": "MMCCXXXIII",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        356
+      ],
+      "expected": "CCCLVI",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        2418
+      ],
+      "expected": "MMCDXVIII",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(log num) | Space: O(log num)",
+      "language": "javascript",
+      "code": "function solve(num) {\n  if (num <= 0) return \"\";\n  const places = [\n    [\"\", \"M\", \"MM\", \"MMM\"],\n    [\"\", \"C\", \"CC\", \"CCC\", \"CD\", \"D\", \"DC\", \"DCC\", \"DCCC\", \"CM\"],\n    [\"\", \"X\", \"XX\", \"XXX\", \"XL\", \"L\", \"LX\", \"LXX\", \"LXXX\", \"XC\"],\n    [\"\", \"I\", \"II\", \"III\", \"IV\", \"V\", \"VI\", \"VII\", \"VIII\", \"IX\"],\n  ];\n  const digits = String(num).split(\"\").map(Number);\n  let out = \"\";\n  for (let i = 0; i < digits.length; i++) {\n    const place = 4 - digits.length + i;\n    if (place < 0) continue;\n    const glyph = places[place][digits[i]];\n    if (glyph) out += glyph;\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(1) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(num) {\n  const values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];\n  const glyph = [\"M\", \"CM\", \"D\", \"CD\", \"C\", \"XC\", \"L\", \"XL\", \"X\", \"IX\", \"V\", \"IV\", \"I\"];\n  let out = \"\";\n  for (let i = 0; i < values.length; i++) {\n    while (num >= values[i]) {\n      out += glyph[i];\n      num -= values[i];\n    }\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 4,
+  "prevSlug": "gas-station",
+  "nextSlug": "jump-game"
+}

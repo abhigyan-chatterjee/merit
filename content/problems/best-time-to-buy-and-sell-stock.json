@@ -4,6 +4,7 @@
   "title": "Best Time to Buy and Sell Stock",
   "topic": "arrays-hashing",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "One-Pass Min Tracking",
   "statement": "You are given an array prices where prices[i] is the price of a stock on day i. Choose one day to buy and a later day to sell to maximize profit. Return the maximum profit achievable, or 0 if no profit is possible.",
   "examples": [
@@ -43,7 +44,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(prices) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(prices):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] prices) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> prices) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

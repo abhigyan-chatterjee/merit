@@ -658,3 +658,140 @@ def test_refresh_rotation_race_loser_triggers_reuse(client: TestClient, monkeypa
         updates[0].compile(dialect=sqlite.dialect(), compile_kwargs={"literal_binds": True})
     )
     assert "revoked_at IS NULL" in compiled
+
+
+def test_user_response_has_clerk_linked(db_session):
+    from app.schemas.auth import UserResponse
+
+    resp = client_register = None  # noqa: F841 - schema-only check below
+    user = db_session.scalar(select(User).limit(1))
+    if user is None:
+        from app.models.user import utcnow_iso
+
+        user = User(
+            email="schema@example.com",
+            display_name="Schema",
+            password_hash="x",
+            role="student",
+            is_active=1,
+            created_at=utcnow_iso(),
+        )
+        db_session.add(user)
+        db_session.commit()
+    assert UserResponse.model_validate(user).has_clerk_linked is False
+    user.clerk_id = "user_schema_clerk"
+    db_session.commit()
+    assert UserResponse.model_validate(user).has_clerk_linked is True
+
+
+def test_clerk_link_endpoint(client: TestClient, monkeypatch, db_session):
+    _configure_clerk(monkeypatch)
+    reg = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "linkme@example.com",
+            "display_name": "Link Me",
+            "password": "Password123456",
+        },
+    )
+    assert reg.status_code == 201
+    assert reg.json()["has_clerk_linked"] is False
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_link_new",
+            "email": "linkme@example.com",
+            "display_name": "Link Me",
+        },
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk/link", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["has_clerk_linked"] is True
+
+
+def test_clerk_link_email_mismatch(client: TestClient, monkeypatch):
+    _configure_clerk(monkeypatch)
+    client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "mismatch@example.com",
+            "display_name": "Mismatch",
+            "password": "Password123456",
+        },
+    )
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_other",
+            "email": "someone-else@example.com",
+            "display_name": "Other",
+        },
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk/link", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 409
+    assert resp.json()["detail"]["code"] == "OAUTH_EMAIL_MISMATCH"
+
+
+def test_clerk_link_already_linked_elsewhere(client: TestClient, monkeypatch, db_session):
+    from app.models.user import utcnow_iso
+
+    _configure_clerk(monkeypatch)
+    other = User(
+        email="taken@example.com",
+        display_name="Taken",
+        password_hash="oauth$clerk",
+        role="student",
+        is_active=1,
+        clerk_id="user_taken",
+        auth_provider="clerk",
+        created_at=utcnow_iso(),
+    )
+    db_session.add(other)
+    db_session.commit()
+    client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "link2@example.com",
+            "display_name": "Link Two",
+            "password": "Password123456",
+        },
+    )
+    _mock_verified_claims(
+        monkeypatch,
+        claims={
+            "clerk_id": "user_taken",
+            "email": "link2@example.com",
+            "display_name": "Link Two",
+        },
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk/link", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 409
+    assert resp.json()["detail"]["code"] == "OAUTH_ALREADY_LINKED"
+
+
+def test_clerk_link_requires_auth(client: TestClient, monkeypatch):
+    _configure_clerk(monkeypatch)
+    _mock_verified_claims(
+        monkeypatch,
+        claims={"clerk_id": "user_x", "email": "x@example.com", "display_name": "X"},
+    )
+    resp = client.post("/api/v1/auth/oauth/clerk/link", json=MOCK_TOKEN_PAYLOAD)
+    assert resp.status_code == 401
+
+
+def test_auth_rate_limit_returns_429(client: TestClient):
+    from app.routers.auth import _auth_limiter
+
+    for _ in range(20):
+        resp = client.post(
+            "/api/v1/auth/login",
+            json={"email": "rl@example.com", "password": "Password123456"},
+        )
+        assert resp.status_code in (401, 403)
+    resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "rl@example.com", "password": "Password123456"},
+    )
+    assert resp.status_code == 429
+    assert resp.json()["detail"]["code"] == "RATE_LIMITED"
+    _auth_limiter.reset()

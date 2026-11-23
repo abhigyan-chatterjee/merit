@@ -4,6 +4,7 @@
   "title": "Middle of the Linked List",
   "topic": "linked-lists",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Fast & Slow Pointers",
   "statement": "Given the head of a singly linked list, return the values starting from the middle node to the end. If there are two middle nodes, return from the second middle node.",
   "examples": [
@@ -39,8 +40,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(headArray,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(headArray) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(headArray):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[] headArray) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> headArray) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -93,7 +94,7 @@
       "label": "[1]"
     }
   ],
-  "sequence": 2,
+  "sequence": 3,
   "prevSlug": "linked-list-cycle",
   "nextSlug": "palindrome-linked-list",
   "reading_links": [

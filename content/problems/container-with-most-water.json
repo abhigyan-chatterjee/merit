@@ -4,6 +4,7 @@
   "title": "Container With Most Water",
   "topic": "two-pointers",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Two Pointers",
   "statement": "Given n non-negative integers height where each represents a point at coordinate (i, height[i]), find two lines that together with the x-axis form a container that holds the most water.",
   "examples": [
@@ -41,7 +42,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(height) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(height):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] height) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> height) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -88,9 +89,9 @@
       "label": "[4,3,2,1,4]"
     }
   ],
-  "sequence": 7,
+  "sequence": 13,
   "prevSlug": "boats-to-save-people",
-  "nextSlug": "remove-nth-node-from-end",
+  "nextSlug": "palindromic-substrings",
   "reading_links": [
     "https://en.wikipedia.org/wiki/Two-pointer_technique"
   ],

@@ -1,0 +1,527 @@
+{
+  "slug": "reconstruct-itinerary",
+  "title": "Reconstruct Itinerary",
+  "topic": "graphs",
+  "difficulty": "Hard",
+  "pattern": "Hierholzer's algorithm for an Eulerian trail with sorted adjacency",
+  "statement": "You are given `edges`, a list of airport numbers that encodes the one-way flight tickets in consecutive pairs: `edges[0] -> edges[1]` is the first ticket, `edges[2] -> edges[3]` is the second one, and so on. A ticket written `from -> to` departs airport `from` and arrives at airport `to`. When the list has an odd length the trailing number belongs to no ticket and is ignored, so the number of tickets is the length of `edges` divided by two, rounded down; call it `E`. There are only three airports, numbered `0`, `1` and `2`, and you start at airport `0`. An itinerary is a sequence of airports, and it is valid when its first airport is `0` and every ticket is used exactly once, so a valid itinerary over `E` tickets visits `E + 1` airports, and with no tickets at all the only itinerary is `[0]`. Among all valid itineraries return the lexicographically smallest one, comparing two itineraries element by element; because every itinerary has the same length this comparison is never a tie. If there is no valid itinerary, return an empty array.\n\nFor example with `edges = [0, 1, 0, 2, 1, 0, 2, 1]` the tickets are `0 -> 1`, `0 -> 2`, `1 -> 0` and `2 -> 1`, and the answer is `[0, 1, 0, 2, 1]`.\n\nConstraints: `1 <= edges.length <= 16` and `0 <= edges[i] <= 2`.\n",
+  "examples": [
+    {
+      "input": "edges = [0]",
+      "output": "[0]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "edges = [1, 0, 1]",
+      "output": "[]",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(edges: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "The list packs each ticket as two consecutive numbers, so read it in pairs first: every ticket is a directed edge, and you are looking for a walk that uses each edge exactly once, starting where the problem tells you to start.",
+    "Choosing the smallest ticket available at each step is correct, but only if the answer is built from the far end: when you reach an airport with no ticket left, that airport is the last one of the itinerary, so record it and step back.",
+    "Count how many airports your reconstruction used. If it is not E + 1, or the pairs it walks do not match the ticket multiset, no valid itinerary exists and the answer is the empty array."
+  ],
+  "editorial": {
+    "approach": "The brute force is a backtracking search over the tickets. The flat list is read in consecutive pairs to recover the tickets, which are then sorted once by `(departure, arrival)`, and from airport `0` the search repeatedly takes the smallest unused ticket leaving the current airport and recurses, undoing that choice whenever the recursion dead-ends. The first itinerary completed this way is built entirely from locally smallest choices, so it is the lexicographically smallest valid itinerary, but the search may try an exponential number of prefixes before it succeeds, or exhaust all of them to discover that no valid itinerary exists at all. The optimal solution is Hierholzer's algorithm for an Eulerian trail. Every airport keeps its outgoing destinations sorted, a stack starts at airport `0`, and while the airport on top of the stack still has an unused ticket the smallest such ticket is removed and its destination is pushed. When the top airport has no ticket left it is popped and appended to a result list. That list is the itinerary read backwards, so reversing it gives the answer.",
+    "why_optimal": "The outgoing destinations have to be in sorted order before anything greedy on them can be correct, and comparison sorting E tickets costs O(E log E); after that each ticket is removed from its airport's list exactly once, so O(E log E) is the total cost. The backtracking reference solution is factorial in the worst case, which is why the constraints cap the batch at 8 tickets, that is 16 numbers: at that size the exponential search is still instant, and the algorithm under test stays linear in the number of tickets.",
+    "pitfalls": "Forgetting that the list packs two numbers per ticket, so a trailing odd number must never be read as a departure or an arrival. Forgetting to reverse the popped list, which returns the itinerary backwards. Assuming a walk of length E + 1 is automatically valid: when the tickets split into disconnected groups, or the balance between incoming and outgoing degree is wrong, Hierholzer still emits E + 1 airports while repeating a ticket and skipping another, so the sequence must be checked against the ticket counts and an empty array returned when the check fails (for instance `[0, 1, 1, 2, 2, 1, 0, 2]` has no valid itinerary at all). Taking any available ticket instead of the smallest one produces a valid but not lexicographically smallest itinerary. Dropping self-loops such as the ticket `1 -> 1`, written `1, 1` in the list, which is an ordinary ticket that must be used."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Eulerian_path",
+    "https://cp-algorithms.com/graph/euler_path.html"
+  ],
+  "starterCode": {
+    "javascript": "function solve(edges) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(edges):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int[] solve(int[] edges) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> edges) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.9410770000000035,
+    "optimalRuntimeMs": 0.36336199999999863,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          0
+        ]
+      ],
+      "expected": [
+        0
+      ],
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          0,
+          2,
+          1,
+          0
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          0,
+          2,
+          0,
+          2,
+          2,
+          2,
+          0,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          2,
+          0,
+          2,
+          2,
+          2,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          0,
+          1,
+          2,
+          1,
+          0,
+          0,
+          2,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          1,
+          0,
+          1
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          2,
+          1,
+          0,
+          2,
+          1,
+          2,
+          0,
+          1,
+          0,
+          2,
+          1,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          2,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          1,
+          2,
+          1,
+          0,
+          1,
+          1,
+          0,
+          2,
+          1
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          2,
+          2,
+          0
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          0,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          0
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          2,
+          2,
+          1
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          2,
+          1,
+          1,
+          2,
+          1,
+          0,
+          1
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          0,
+          2,
+          2,
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        0,
+        2,
+        2
+      ],
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          2,
+          1,
+          1,
+          0,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          2,
+          0,
+          1,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          0,
+          2,
+          2,
+          0,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          2,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          2
+        ]
+      ],
+      "expected": [],
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          2,
+          2,
+          2,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0
+      ],
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          0,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          0,
+          0,
+          0,
+          2
+        ]
+      ],
+      "expected": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        2,
+        2,
+        2
+      ],
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(E!) | Space: O(E)",
+      "language": "javascript",
+      "code": "function solve(edges) {\n  const e = Math.floor(edges.length / 2);\n  if (e === 0) return [0];\n  const order = [];\n  for (let i = 0; i < e; i++) order.push(i);\n  order.sort((a, b) => {\n    if (edges[2 * a] !== edges[2 * b]) return edges[2 * a] - edges[2 * b];\n    if (edges[2 * a + 1] !== edges[2 * b + 1]) return edges[2 * a + 1] - edges[2 * b + 1];\n    return a - b;\n  });\n  const used = new Array(e).fill(false);\n  const path = [0];\n  function search(node, count) {\n    if (count === e) return true;\n    for (let t = 0; t < e; t++) {\n      const t2 = order[t];\n      if (used[t2]) continue;\n      if (edges[2 * t2] !== node) continue;\n      used[t2] = true;\n      path.push(edges[2 * t2 + 1]);\n      if (search(edges[2 * t2 + 1], count + 1)) return true;\n      path.pop();\n      used[t2] = false;\n    }\n    return false;\n  }\n  if (search(0, 0)) return path;\n  return [];\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(E log E) | Space: O(E)",
+      "language": "javascript",
+      "code": "function solve(edges) {\n  const e = Math.floor(edges.length / 2);\n  if (e === 0) return [0];\n  const adj = new Map();\n  for (let t = 0; t < e; t++) {\n    const u = edges[2 * t];\n    if (!adj.has(u)) adj.set(u, []);\n    adj.get(u).push(edges[2 * t + 1]);\n  }\n  adj.forEach((list) => list.sort((a, b) => a - b));\n  const stack = [0];\n  const out = [];\n  while (stack.length > 0) {\n    const u = stack[stack.length - 1];\n    const list = adj.get(u);\n    if (list !== undefined && list.length > 0) {\n      stack.push(list.shift());\n    } else {\n      out.push(stack.pop());\n    }\n  }\n  if (out.length !== e + 1) return [];\n  out.reverse();\n  const need = new Map();\n  for (let t = 0; t < e; t++) {\n    const key = edges[2 * t] + \",\" + edges[2 * t + 1];\n    need.set(key, (need.get(key) || 0) + 1);\n  }\n  for (let i = 0; i + 1 < out.length; i++) {\n    const key = out[i] + \",\" + out[i + 1];\n    const left = need.get(key);\n    if (left === undefined || left === 0) return [];\n    need.set(key, left - 1);\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 25,
+  "prevSlug": "making-a-large-island",
+  "nextSlug": "shortest-distance-from-all-buildings"
+}

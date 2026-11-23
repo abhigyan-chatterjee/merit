@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /**
  * Returns the YYYY-MM-DD day key in UTC. Every day-keyed record
@@ -13,29 +13,53 @@ export function getUTCDateString(d: Date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+/** How often a mounted tab re-checks whether the UTC day has rolled over. */
+const DAY_TICK_MS = 60_000;
+
 export function useStreak(streakDates: string[], recordActivityDate: (date: string) => void) {
-  const today = getUTCDateString();
+  // The day key is state, not a value computed at render: a tab left open
+  // across UTC midnight would otherwise keep crediting activity to yesterday.
+  const [today, setToday] = useState<string>(() => getUTCDateString());
+
+  useEffect(() => {
+    const refreshDay = () => {
+      setToday((prev) => {
+        const next = getUTCDateString();
+        return next === prev ? prev : next;
+      });
+    };
+    const onVisibility = () => {
+      if (!document.hidden) refreshDay();
+    };
+    const timer = setInterval(refreshDay, DAY_TICK_MS);
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('focus', refreshDay);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('focus', refreshDay);
+    };
+  }, []);
 
   const currentStreak = useMemo(() => {
     if (!streakDates || streakDates.length === 0) return 0;
     const uniqueSorted = Array.from(new Set(streakDates)).sort().reverse();
-    let streak = 0;
-    const d = new Date();
 
-    const todayStr = getUTCDateString(d);
-    const yesterdayDate = new Date(
-      Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - 1)
-    );
+    // Derived from the tracked day key (not the wall clock) so a rollover
+    // recomputes the streak against the same day everything else uses.
+    const [year, month, day] = today.split('-').map(Number);
+    const yesterdayDate = new Date(Date.UTC(year, month - 1, day - 1));
     const yesterdayStr = getUTCDateString(yesterdayDate);
 
-    const checkDate = uniqueSorted.includes(todayStr)
-      ? new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()))
+    const checkDate = uniqueSorted.includes(today)
+      ? new Date(Date.UTC(year, month - 1, day))
       : uniqueSorted.includes(yesterdayStr)
       ? yesterdayDate
       : null;
 
     if (!checkDate) return 0;
 
+    let streak = 0;
     while (true) {
       const dayStr = getUTCDateString(checkDate);
       if (uniqueSorted.includes(dayStr)) {
@@ -46,7 +70,7 @@ export function useStreak(streakDates: string[], recordActivityDate: (date: stri
       }
     }
     return streak;
-  }, [streakDates]);
+  }, [streakDates, today]);
 
   const markTodayActive = () => {
     if (!streakDates.includes(today)) {

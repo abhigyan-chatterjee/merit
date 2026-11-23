@@ -3,9 +3,9 @@
 > **"Step through the execution, not the explanation. Make the merit list."**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-merit.nullbit.in-00E599?style=flat-square&logo=googlechrome&logoColor=white)](https://merit.nullbit.in)
-[![API Tests](https://img.shields.io/badge/API%20Tests-153%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
-[![Web Tests](https://img.shields.io/badge/Web%20Tests-227%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
-[![Problem Bank](https://img.shields.io/badge/Problem%20Bank-140-informational?style=flat-square&logo=codeforces&logoColor=white)]()
+[![API Tests](https://img.shields.io/badge/API%20Tests-215%20Passed-3fb950?style=flat-square&logo=pytest&logoColor=white)]()
+[![Web Tests](https://img.shields.io/badge/Web%20Tests-262%20Passed-3fb950?style=flat-square&logo=vitest&logoColor=white)]()
+[![Verified Problems](https://img.shields.io/badge/Problem%20Bank-274%20AC-informational?style=flat-square&logo=codeforces&logoColor=white)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 MERIT is an end-to-end technical assessment and Data Structures & Algorithms learning platform tailored for Indian engineering campus placements (TCS NQT Ninja/Prime, Infosys SP/DSE, Cognizant, and product-based hiring drives).
@@ -21,8 +21,8 @@ graph TD
     Client["Browser Client (React 19 + TypeScript + Tailwind 4)"]
     
     subgraph Edge & Auth
-        Clerk["Clerk OAuth (Google / GitHub)"]
-        Caddy["Caddy Reverse Proxy (TLS + Rate Limiting)"]
+        Clerk["Clerk OAuth (Google / GitHub / Microsoft)"]
+        Edge["Host Reverse Proxy (TLS + Rate Limiting)"]
     end
     
     subgraph Application Stack
@@ -38,8 +38,8 @@ graph TD
     end
 
     Client -->|OAuth Session| Clerk
-    Client -->|HTTPS Traffic| Caddy
-    Caddy -->|Reverse Proxy| API
+    Client -->|HTTPS Traffic| Edge
+    Edge -->|Reverse Proxy| API
     API -->|Dialect-Aware Queries| DB
     API -->|Authenticated Invoke| JudgeLight
     API -->|Authenticated Invoke| JudgeHeavy
@@ -51,7 +51,7 @@ graph TD
 
 ## Key Features
 
-### 1. Interactive Algorithm Visualizers (12 structures)
+### 1. Interactive Algorithm Visualizers (12 Canvas Engines)
 * **Frame-by-frame state execution**: Step forward and backward with custom scrubbing speeds (0.25× to 2×).
 * **Synchronized pseudocode**: Visual memory pointers and stack frames sync with highlighted logic lines.
 * **Supported engines**:
@@ -71,18 +71,23 @@ graph TD
   * HackerRank-style sidebar navigator with answered/flagged/visited question states.
 
 ### 3. Curated Problem Bank & Practice Modules
-* **140 Problems**: Spanning 17 placement topics, 2,717 test cases in total. Every reference solution passes the content verifier through the judge, and all 140 ship typed starter code for Python, JavaScript, Java and C++ plus an editorial. 42 predate the editorial gates and are reported as legacy by the verifier.
+* **274 Verified Problems**: Spanning 18 placement topics with 100% automated Acceptance Criteria (AC) verified against reference solutions, and typed starter code for all four judged languages (Python, JavaScript, Java, C++).
 * **Continuous Doubly-Linked Sequences**: Seamless "Next in Category" navigation ordered strictly by pedagogical difficulty (`Easy` $\rightarrow$ `Medium` $\rightarrow$ `Hard`).
-* **341 Verified Multiple-Choice Questions**: 136 distinct designs across them, 86 derived from generator templates and 50 hand-written, with timed locks, detailed explanations, and anti-pattern analysis.
+* **341 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
 
 ### 4. Zero-Liability BYOK AI Tutor
-* **Bring Your Own Key**: Works with free Gemini API keys, OpenAI, Anthropic, DeepSeek, and Groq.
-* **Zero Server Storage**: API keys reside strictly on the user's client device and are transmitted ephemerally to the tutor proxy.
+* **Bring Your Own Key**: Presets for OpenAI, Gemini (OpenAI-compatible) and Groq; any OpenAI-compatible endpoint works via a custom base URL.
+* **Zero Server Storage**: The key is kept in `sessionStorage` (single-tab lifetime, never `localStorage`) and is sent ephemerally through the Merit tutor proxy to the chosen provider; the server does not persist it.
 * **Chain-of-Thought Sanitization**: Backend and frontend filters strip internal reasoning tags (`<thought>`, `<think>`) to ensure clean, pedagogical hints without leaking solutions.
 
 ### 5. In-App Bug & Test Case Feedback Webform
 * Self-hosted dialog accessible across the application.
 * Automatically captures problem context, page route, and error details, filing tracked issues directly into the public GitHub issue tracker via the GitHub REST API.
+
+### 6. Spaced Revision (SM-2)
+* **Automatic Scheduling**: A graded submission schedules the next review, so practice turns into retention instead of a single pass.
+* **Self-Rated Reviews**: The dashboard surfaces what is due today and lets you rate recall; the interval grows (`1d` → `6d` → `interval × ease`) and lapses reset it.
+* **Per-User Schedule**: `revision_items` is scoped to the signed-in user and keyed on `(user, item_type, item_id)`.
 
 ---
 
@@ -96,7 +101,7 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 | **merit-web** | `64MB` | `32MB` | Production Nginx serving gzip-compressed single-page app |
 | **Cloud Run judge-light** | — | — | Sandboxed Python / JavaScript execution, off-host in its own container |
 | **Cloud Run judge-heavy** | — | — | Adds JDK and g++, so Java and C++ compile before they run |
-| **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, Caddy TLS terminator, other host apps |
+| **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, host TLS terminator, other host apps |
 
 * **Total Memory Budget**: Stack caps itself at **414MB**, leaving ample headroom on a 1GB host.
 * **Dialect-Aware Persistence**: Zero-configuration SQLite for local offline development; automatic dialect branching for Neon Serverless PostgreSQL with atomic upserts in production.
@@ -114,21 +119,20 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 │   │   │   ├── routers/     # Auth, Judge, Quizzes, Tutor, Feedback, Progress
 │   │   │   ├── schemas/     # Pydantic validation schemas
 │   │   │   └── seed.py      # Problem and question seed loaders
-│   │   └── tests/           # 153 Pytest unit and integration tests
+│   │   └── tests/           # 215 Pytest unit and integration tests
 │   └── web/                 # React 19 single-page application
 │       ├── src/
 │       │   ├── components/  # Modals, Navbars, CodeRunner, QuizEngine, Tutor
 │       │   ├── pages/       # Problems, Exams, Dashboard, Profile, Landing
-│       │   ├── visualizers/ # 12 interactive canvas visualizers
+│       │   ├── visualizers/ # 12 interactive canvas algorithm engines
 │       │   └── store/       # Auth & Progress state contexts
-│       └── tests/           # 227 Vitest component tests
+│       └── tests/           # 262 Vitest component tests
 ├── content/
-│   ├── problems/            # 140 authored problem JSON specifications
-│   ├── questions/           # 341 verified multiple-choice questions
+│   ├── problems/            # 274 authored problem JSON specifications
+│   ├── questions/           # 341 verified multiple-choice question datasets
 │   ├── generators/          # Problem Authoring Framework (PAF) & TS sync scripts
 │   └── validators/          # Automated content & reference solution AC gates
 ├── docker-compose.yml       # Production multi-container composition
-└── Caddyfile                # Reverse proxy with automatic HTTPS
 ```
 
 ---
@@ -137,7 +141,7 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 
 ### Prerequisites
 * **Node.js**: v20+
-* **Python**: v3.11+
+* **Python**: 3.12+
 * **Docker & Docker Compose** (optional, for full sandboxed judge)
 
 ### 1. Clone the Repository
@@ -153,8 +157,9 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-# Run database migrations and seed problems
-python -c "from app.db import Base, engine, SessionLocal; from app.seed import seed_all; Base.metadata.create_all(bind=engine); db=SessionLocal(); seed_all(db); db.close()"
+# Apply migrations, then seed verified content
+alembic upgrade head
+python -m app.seed
 
 # Start API server
 uvicorn app.main:app --reload --port 8000
@@ -172,13 +177,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Running Test Suites
 
-### Backend Unit & Integration Tests (153 tests)
+### Backend Unit & Integration Tests (215 tests)
 ```bash
 cd apps/api
 pytest -q
 ```
 
-### Frontend Component & Route Tests (227 tests)
+### Frontend Component & Route Tests (262 tests)
 ```bash
 cd apps/web
 npm test

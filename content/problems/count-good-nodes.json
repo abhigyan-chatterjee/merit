@@ -34,7 +34,7 @@
   "editorial": {
     "approach": "Walk down from the root carrying the largest value met so far; count a node when it matches or beats that record, then extend the record into its children.",
     "why_optimal": "Each node is visited once with constant extra work, so the walk is linear in time with stack space bounded by the height. On 29 PAF-verified cases the judge measured the brute force at 2.28 ms and the optimal at 0.16 ms (about 14.2x faster).",
-    "pitfalls": "Ties still count — only strictly smaller values fail. Skip null holes without counting them, and remember the root always qualifies."
+    "pitfalls": "Ties still count \u2014 only strictly smaller values fail. Skip null holes without counting them, and remember the root always qualifies."
   },
   "reading_links": [
     "https://en.wikipedia.org/wiki/Binary_tree"
@@ -717,7 +717,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(h)",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
       "language": "javascript",
       "code": "function goodNodes(root) {\n  const present = [];\n  (function collect(i) {\n    if (i >= root.length || root[i] === null) return;\n    present.push(i);\n    collect(2 * i + 1);\n    collect(2 * i + 2);\n  })(0);\n  function pathTo(target) {\n    const path = [];\n    function dfs(i) {\n      if (i >= root.length || root[i] === null) return false;\n      path.push(root[i]);\n      if (i === target) return true;\n      if (dfs(2 * i + 1) || dfs(2 * i + 2)) return true;\n      path.pop();\n      return false;\n    }\n    dfs(0);\n    return path;\n  }\n  let count = 0;\n  for (const t of present) {\n    const path = pathTo(t);\n    const val = path[path.length - 1];\n    let ok = true;\n    for (let k = 0; k < path.length - 1; k++) {\n      if (path[k] > val) {\n        ok = false;\n        break;\n      }\n    }\n    if (ok) count++;\n  }\n  return count;\n}",
       "isReference": false
@@ -731,7 +731,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(h)",
+      "complexity": "Time: O(n\u00b2) | Space: O(h)",
       "language": "python",
       "code": "def goodNodes(root: list) -> int:\n    present = []\n    def collect(i):\n        if i >= len(root) or root[i] is None:\n            return\n        present.append(i)\n        collect(2 * i + 1)\n        collect(2 * i + 2)\n    collect(0)\n    def path_to(target):\n        path = []\n        def dfs(i):\n            if i >= len(root) or root[i] is None:\n                return False\n            path.append(root[i])\n            if i == target:\n                return True\n            if dfs(2 * i + 1) or dfs(2 * i + 2):\n                return True\n            path.pop()\n            return False\n        dfs(0)\n        return path\n    count = 0\n    for t in present:\n        path = path_to(t)\n        if all(a <= path[-1] for a in path[:-1]):\n            count += 1\n    return count\n",
       "isReference": false
@@ -744,7 +744,7 @@
       "isReference": true
     }
   ],
-  "sequence": 13,
+  "sequence": 16,
   "prevSlug": "construct-from-preorder-inorder",
   "nextSlug": "binary-tree-right-side-view"
 }

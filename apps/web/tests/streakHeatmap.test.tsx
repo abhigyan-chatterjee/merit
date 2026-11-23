@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { StreakHeatmap } from '../src/components/StreakHeatmap';
 
 const WEEKS = 18;
@@ -86,5 +86,38 @@ describe('StreakHeatmap', () => {
   it('showcases the streak alongside the activity count', () => {
     const { container } = render(<StreakHeatmap streakDates={['2026-10-07']} currentStreak={5} />);
     expect(readouts(container)).toEqual(['1', '5']);
+  });
+
+  it('uses real activity counts for intensity and a uniform level in guest mode', () => {
+    const days = ['2026-10-07', '2026-10-06', '2026-10-05'];
+    const cellFor = (container: HTMLElement, iso: string) => {
+      const cell = dayCells(container).find((el) =>
+        (el.getAttribute('title') ?? '').startsWith(iso),
+      );
+      if (!cell) throw new Error(`no cell for ${iso}`);
+      return cell;
+    };
+
+    const { container: counted } = render(
+      <StreakHeatmap
+        streakDates={[]}
+        currentStreak={3}
+        activityCounts={{ '2026-10-07': 4, '2026-10-06': 2, '2026-10-05': 1 }}
+      />,
+    );
+    expect(cellFor(counted, days[0]).className).toContain('bg-mint border-mint');
+    expect(cellFor(counted, days[1]).className).toContain('bg-mint/60');
+    expect(cellFor(counted, days[2]).className).toContain('bg-mint/30');
+    expect(within(counted).getByText('Less')).toBeInTheDocument();
+    expect(within(counted).getByText('More')).toBeInTheDocument();
+
+    const { container: guest } = render(
+      <StreakHeatmap streakDates={days} currentStreak={3} />,
+    );
+    days.forEach((iso) => {
+      expect(cellFor(guest, iso).className).toContain('bg-mint border-mint');
+    });
+    expect(within(guest).queryByText('Less')).not.toBeInTheDocument();
+    expect(within(guest).getByText('Active')).toBeInTheDocument();
   });
 });

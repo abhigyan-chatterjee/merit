@@ -19,7 +19,7 @@
     {
       "input": "preorder = [1,2,3], inorder = [3,2,1]",
       "output": "[1,2,null,3]",
-      "explanation": "1 is the root, 2 is its left child, and 3 hangs left of 2 — a pure left chain."
+      "explanation": "1 is the root, 2 is its left child, and 3 hangs left of 2 \u2014 a pure left chain."
     }
   ],
   "constraints": [
@@ -32,7 +32,7 @@
     "A map from value to inorder index keeps every split constant time."
   ],
   "editorial": {
-    "approach": "Take the next preorder value as the subtree root, split inorder at its position into left and right ranges, and recurse — with a value-to-index map for constant splits.",
+    "approach": "Take the next preorder value as the subtree root, split inorder at its position into left and right ranges, and recurse \u2014 with a value-to-index map for constant splits.",
     "why_optimal": "Each node is placed once and each inorder lookup is constant, so the rebuild is linear with stack space bounded by the height. On 24 PAF-verified cases the judge measured the brute force at 0.34 ms and the optimal at 0.42 ms on these small inputs; both scale linearly with input size.",
     "pitfalls": "Consume preorder in strict order across the recursion; trim trailing nulls from the level-order output so equivalent trees serialize identically."
   },
@@ -1011,7 +1011,7 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "javascript",
       "code": "function buildTree(preorder, inorder) {\n  function build(preL, preR, inL, inR) {\n    if (preL > preR) return null;\n    const value = preorder[preL];\n    let k = inL;\n    while (inorder[k] !== value) k++;\n    const leftSize = k - inL;\n    return {\n      v: value,\n      l: build(preL + 1, preL + leftSize, inL, k - 1),\n      r: build(preL + leftSize + 1, preR, k + 1, inR),\n    };\n  }\n  const tree = build(0, preorder.length - 1, 0, inorder.length - 1);\n  if (tree === null) return [];\n  const out = [];\n  const queue = [{ node: tree, i: 0 }];\n  while (queue.length > 0) {\n    const cur = queue.shift();\n    while (out.length <= cur.i) out.push(null);\n    out[cur.i] = cur.node.v;\n    if (cur.node.l !== null) queue.push({ node: cur.node.l, i: 2 * cur.i + 1 });\n    if (cur.node.r !== null) queue.push({ node: cur.node.r, i: 2 * cur.i + 2 });\n  }\n  while (out.length > 0 && out[out.length - 1] === null) out.pop();\n  return out;\n}",
       "isReference": false
@@ -1025,7 +1025,7 @@
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(n²) | Space: O(n)",
+      "complexity": "Time: O(n\u00b2) | Space: O(n)",
       "language": "python",
       "code": "def buildTree(preorder: list, inorder: list) -> list:\n    def build(pre_l, pre_r, in_l, in_r):\n        if pre_l > pre_r:\n            return None\n        value = preorder[pre_l]\n        k = in_l\n        while inorder[k] != value:\n            k += 1\n        left_size = k - in_l\n        return (\n            value,\n            build(pre_l + 1, pre_l + left_size, in_l, k - 1),\n            build(pre_l + left_size + 1, pre_r, k + 1, in_r),\n        )\n    def emit(tree):\n        if tree is None:\n            return []\n        out, queue = [], [(tree, 0)]\n        while queue:\n            node, i = queue.pop(0)\n            while len(out) <= i:\n                out.append(None)\n            out[i] = node[0]\n            if node[1] is not None:\n                queue.append((node[1], 2 * i + 1))\n            if node[2] is not None:\n                queue.append((node[2], 2 * i + 2))\n        while out and out[-1] is None:\n            out.pop()\n        return out\n    return emit(build(0, len(preorder) - 1, 0, len(inorder) - 1))\n",
       "isReference": false
@@ -1038,7 +1038,7 @@
       "isReference": true
     }
   ],
-  "sequence": 12,
+  "sequence": 15,
   "prevSlug": "flatten-binary-tree-preorder",
   "nextSlug": "count-good-nodes"
 }

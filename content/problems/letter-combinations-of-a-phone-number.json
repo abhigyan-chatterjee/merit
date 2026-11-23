@@ -9,7 +9,7 @@
     {
       "input": "digits = '23'",
       "output": "['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']",
-      "explanation": "Digit 2 maps to 'abc' and 3 maps to 'def', yielding 3 × 3 = 9 combinations."
+      "explanation": "Digit 2 maps to 'abc' and 3 maps to 'def', yielding 3 \u00d7 3 = 9 combinations."
     },
     {
       "input": "digits = ''",
@@ -1387,34 +1387,34 @@
   "solutions": [
     {
       "title": "Brute Force",
-      "complexity": "Time: O(4ⁿ) | Space: O(4ⁿ)",
+      "complexity": "Time: O(4\u207f) | Space: O(4\u207f)",
       "language": "javascript",
       "code": "function letterCombinations(digits) {\n  if (!digits || digits.length === 0) return [];\n  const map = {\n    \"2\": [\"a\", \"b\", \"c\"], \"3\": [\"d\", \"e\", \"f\"], \"4\": [\"g\", \"h\", \"i\"],\n    \"5\": [\"j\", \"k\", \"l\"], \"6\": [\"m\", \"n\", \"o\"], \"7\": [\"p\", \"q\", \"r\", \"s\"],\n    \"8\": [\"t\", \"u\", \"v\"], \"9\": [\"w\", \"x\", \"y\", \"z\"]\n  };\n  let queue = [\"\"];\n  for (let i = 0; i < digits.length; i++) {\n    const letters = map[digits[i]] || [];\n    const nextQueue = [];\n    for (let j = 0; j < queue.length; j++) {\n      for (let k = 0; k < letters.length; k++) {\n        nextQueue.push(queue[j] + letters[k]);\n      }\n    }\n    queue = nextQueue;\n  }\n  queue.sort();\n  return queue;\n}",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(4ⁿ) | Space: O(n)",
+      "complexity": "Time: O(4\u207f) | Space: O(n)",
       "language": "javascript",
       "code": "function letterCombinations(digits) {\n  if (!digits || digits.length === 0) return [];\n  const map = {\n    \"2\": [\"a\", \"b\", \"c\"], \"3\": [\"d\", \"e\", \"f\"], \"4\": [\"g\", \"h\", \"i\"],\n    \"5\": [\"j\", \"k\", \"l\"], \"6\": [\"m\", \"n\", \"o\"], \"7\": [\"p\", \"q\", \"r\", \"s\"],\n    \"8\": [\"t\", \"u\", \"v\"], \"9\": [\"w\", \"x\", \"y\", \"z\"]\n  };\n  const res = [];\n  const path = [];\n  function backtrack(idx) {\n    if (idx === digits.length) {\n      res.push(path.join(\"\"));\n      return;\n    }\n    const letters = map[digits[idx]] || [];\n    for (let i = 0; i < letters.length; i++) {\n      path.push(letters[i]);\n      backtrack(idx + 1);\n      path.pop();\n    }\n  }\n  backtrack(0);\n  res.sort();\n  return res;\n}",
       "isReference": true
     },
     {
       "title": "Brute Force",
-      "complexity": "Time: O(4ⁿ) | Space: O(4ⁿ)",
+      "complexity": "Time: O(4\u207f) | Space: O(4\u207f)",
       "language": "python",
       "code": "def letterCombinations(digits: str) -> list[str]:\n    if not digits:\n        return []\n    phone = {\n        \"2\": [\"a\", \"b\", \"c\"], \"3\": [\"d\", \"e\", \"f\"], \"4\": [\"g\", \"h\", \"i\"],\n        \"5\": [\"j\", \"k\", \"l\"], \"6\": [\"m\", \"n\", \"o\"], \"7\": [\"p\", \"q\", \"r\", \"s\"],\n        \"8\": [\"t\", \"u\", \"v\"], \"9\": [\"w\", \"x\", \"y\", \"z\"]\n    }\n    queue = [\"\"]\n    for d in digits:\n        queue = [prev + ch for prev in queue for ch in phone.get(d, [])]\n    queue.sort()\n    return queue\n",
       "isReference": false
     },
     {
       "title": "Optimal",
-      "complexity": "Time: O(4ⁿ) | Space: O(n)",
+      "complexity": "Time: O(4\u207f) | Space: O(n)",
       "language": "python",
       "code": "def letterCombinations(digits: str) -> list[str]:\n    if not digits:\n        return []\n    phone = {\n        \"2\": \"abc\", \"3\": \"def\", \"4\": \"ghi\", \"5\": \"jkl\",\n        \"6\": \"mno\", \"7\": \"pqrs\", \"8\": \"tuv\", \"9\": \"wxyz\"\n    }\n    res = []\n    path: list[str] = []\n\n    def backtrack(idx: int) -> None:\n        if idx == len(digits):\n            res.append(\"\".join(path))\n            return\n        for ch in phone.get(digits[idx], \"\"):\n            path.append(ch)\n            backtrack(idx + 1)\n            path.pop()\n\n    backtrack(0)\n    res.sort()\n    return res\n",
       "isReference": true
     }
   ],
-  "sequence": 2,
-  "prevSlug": "combination-sum",
+  "sequence": 4,
+  "prevSlug": "generate-parentheses",
   "nextSlug": "palindrome-partitioning"
 }

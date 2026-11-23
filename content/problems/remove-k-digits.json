@@ -1,0 +1,264 @@
+{
+  "slug": "remove-k-digits",
+  "title": "Remove K Digits",
+  "topic": "stack",
+  "difficulty": "Medium",
+  "pattern": "greedy / monotonic stack",
+  "statement": "A non-negative integer is handed to you as a string `num` of decimal digits, and you must delete exactly `k` of those digits. The digits that stay keep their original relative order and are read left to right to spell the new number.\n\nReturn the smallest number that can be spelled this way, written as a string with no unnecessary leading zeros. If you delete every digit, or if nothing but zeros is left, return `\"0\"`.\n\nFor example, `num = \"1432219\"` with `k = 3`: deleting the `4`, the `3` and one of the `2` digits leaves `1`, `2`, `1`, `9`, which spells `\"1219\"`. With `num = \"10200\"` and `k = 1`, dropping the leading `1` leaves `\"0200\"`, which spells `\"200\"` once the leading zero goes.\n\nConstraints: `1 <= num.length <= 100` and `1 <= k <= num.length`.\n",
+  "examples": [
+    {
+      "input": "num = \"1\", k = 1",
+      "output": "\"0\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "num = \"43\", k = 2",
+      "output": "\"0\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(num: string, k: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Think about the digits you keep rather than the digits you delete: they stay in order, so the answer is some subsequence of `num` of length `n - k`.",
+    "When a digit is smaller than a digit you already decided to keep, the kept digit is the one worth dropping, provided you still have deletions left.",
+    "A stack of kept digits does this in one pass: push each digit, popping larger digits while deletions remain, then trim the leftovers from the end and strip the leading zeros."
+  ],
+  "editorial": {
+    "approach": "The brute force is a DP over (length of the prefix already read, number of digits dropped so far). `dp[i][j]` holds the smallest digit string obtainable from the first `i` digits after removing exactly `j` of them, built from two choices: keep digit `i` (`dp[i-1][j] + digit`) or drop it (`dp[i-1][j-1]`). Every candidate at a given `(i, j)` has the same length `i - j`, so comparing them as strings compares them as numbers, which makes the reduction valid. That is O(n\u00b2k) time and O(nk) stored characters. The optimal is one greedy sweep with a monotonic stack: push each digit, but first pop kept digits that are strictly larger than the incoming digit while deletions remain, because any larger digit that blocks a smaller one to its right should go. Deletions left over at the end come off the right end of the stack, where the largest remaining digits sit.",
+    "why_optimal": "Each digit is pushed and popped at most once, so the sweep is O(n) time with O(n) stack space, and the answer can depend on every digit, so linear time is the floor. The DP's extra factor of `n\u00b7k` buys nothing except a proof of correctness; with `num.length <= 100` it still runs in a few thousand string operations, which is why it is a usable reference implementation rather than a thought experiment.",
+    "pitfalls": "Two boundaries catch nearly everyone. First, leftovers: when the digits are non-decreasing the pops never happen, so the remaining deletions must still be taken from the back, as in `\"12345\"` with `k = 2` which gives `\"123\"`. Second, leading zeros: `\"10200\"` with `k = 1` is `\"200\"` and not `\"0200\"`, and an all-zero result such as `\"10\"` with `k = 1` must print `\"0\"` rather than an empty string. In the DP, `dp[0][0]` is the empty string and `dp[i][j]` must stay unset whenever `j > i`, or you will compare strings of different lengths and the minimum becomes meaningless. The leftover trimming has one more edge: it has to drop the whole stack when the number of remaining deletions is at least the number of kept digits, so that `k` bigger than `num.length` returns `\"0\"` instead of a slice counted from the wrong end."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Greedy_algorithm",
+    "https://cp-algorithms.com/data_structures/stack_queue_modification.html"
+  ],
+  "starterCode": {
+    "javascript": "function solve(num, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(num, k):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String num, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string num, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 21,
+    "bruteForceRuntimeMs": 0.4643959999999865,
+    "optimalRuntimeMs": 0.3025539999999971,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "1",
+        1
+      ],
+      "expected": "0",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "43",
+        2
+      ],
+      "expected": "0",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "21819600",
+        1
+      ],
+      "expected": "1819600",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "3890838",
+        7
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "79402654",
+        1
+      ],
+      "expected": "7402654",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "5116155",
+        7
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "078161849",
+        1
+      ],
+      "expected": "7161849",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "3103413164752553419",
+        19
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "832764",
+        6
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "83503056413953767242388",
+        1
+      ],
+      "expected": "3503056413953767242388",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "969653287101226916697848",
+        1
+      ],
+      "expected": "69653287101226916697848",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "1845146270482814893252",
+        22
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "09570154303911718",
+        17
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "27824",
+        5
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "63834657871331509839",
+        1
+      ],
+      "expected": "3834657871331509839",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "031051834738299737631",
+        1
+      ],
+      "expected": "1051834738299737631",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "6566701065133387262473",
+        1
+      ],
+      "expected": "566701065133387262473",
+      "isSample": false
+    },
+    {
+      "label": "stress-18",
+      "input": [
+        "8108013267736026064746872343098050097882081219136193990916998543534624751079911838425135427849808412",
+        100
+      ],
+      "expected": "0",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "1824493534874016400524278680112805982620450533158692322602563421607337543303654145868501429401965569",
+        1
+      ],
+      "expected": "124493534874016400524278680112805982620450533158692322602563421607337543303654145868501429401965569",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "6934060883561595148465648236629946804436995777387214895134332003791769367632016328708317278895798687",
+        1
+      ],
+      "expected": "634060883561595148465648236629946804436995777387214895134332003791769367632016328708317278895798687",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "7743487347143455812236231665876036690967054668893734670656272980699016272046537556464170805310033092",
+        1
+      ],
+      "expected": "743487347143455812236231665876036690967054668893734670656272980699016272046537556464170805310033092",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2 \u00b7 k) | Space: O(n \u00b7 k)",
+      "language": "javascript",
+      "code": "function solve(num, k) {\n  const n = num.length;\n  if (k >= n) return \"0\";\n  if (k <= 0) {\n    const only = num.replace(/^0+/, \"\");\n    return only === \"\" ? \"0\" : only;\n  }\n  let dp = new Array(k + 1).fill(null);\n  dp[0] = \"\";\n  for (let i = 1; i <= n; i++) {\n    const nxt = new Array(k + 1).fill(null);\n    for (let j = 0; j <= k; j++) {\n      let best = null;\n      if (dp[j] !== null) best = dp[j] + num[i - 1];\n      if (j > 0 && dp[j - 1] !== null) {\n        const cand = dp[j - 1];\n        if (best === null || cand < best) best = cand;\n      }\n      nxt[j] = best;\n    }\n    dp = nxt;\n  }\n  const res = (dp[k] === null ? \"\" : dp[k]).replace(/^0+/, \"\");\n  return res === \"\" ? \"0\" : res;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(num, k) {\n  const stack = [];\n  let rem = k;\n  for (const ch of num) {\n    while (rem > 0 && stack.length > 0 && stack[stack.length - 1] > ch) {\n      stack.pop();\n      rem -= 1;\n    }\n    stack.push(ch);\n  }\n  if (rem >= stack.length) {\n    stack.length = 0;\n  } else if (rem > 0) {\n    stack.length -= rem;\n  }\n  const res = stack.join(\"\").replace(/^0+/, \"\");\n  return res === \"\" ? \"0\" : res;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 16,
+  "prevSlug": "remove-all-adjacent-duplicates-in-string-ii",
+  "nextSlug": "sum-of-subarray-minimums"
+}

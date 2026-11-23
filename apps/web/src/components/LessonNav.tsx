@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -34,6 +34,19 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
   const { state, recordVisualizerVisit } = useProgress();
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsDropdownOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isDropdownOpen]);
 
   // Only show path navigation when the user arrived through a path
   // (links from path pages carry ?path=<id>&step=<n>). Standalone visits
@@ -104,6 +117,7 @@ export const LessonNav: React.FC<LessonNavProps> = ({ currentType, currentId }) 
           {/* Step dropdown button */}
           <div className="relative">
             <button
+              ref={triggerRef}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-line bg-canvas/40 hover:bg-canvas text-left transition"
               aria-expanded={isDropdownOpen}

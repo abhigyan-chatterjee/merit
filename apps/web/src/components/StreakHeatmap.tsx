@@ -4,12 +4,20 @@ import { Flame } from 'lucide-react';
 interface StreakHeatmapProps {
   streakDates: string[];
   currentStreak: number;
+  activityCounts?: Record<string, number>;
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const WEEKS = 18;
+const GUEST_LEVEL = 3;
 
-export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, currentStreak }) => {
+const levelForCount = (count: number) => (count >= 4 ? 3 : count >= 2 ? 2 : count >= 1 ? 1 : 0);
+
+export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({
+  streakDates,
+  currentStreak,
+  activityCounts,
+}) => {
   const { weeks, monthMarks, activeCount } = useMemo(() => {
     const set = new Set(streakDates);
     const today = new Date();
@@ -29,12 +37,13 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
         const dt = new Date(anchor);
         dt.setUTCDate(anchor.getUTCDate() - offset);
         const iso = dt.toISOString().split('T')[0];
-        const active = set.has(iso);
+        const dailyCount = activityCounts ? (activityCounts[iso] ?? 0) : 0;
+        const active = activityCounts ? dailyCount > 0 : set.has(iso);
         if (active) count++;
         col.unshift({
           date: iso,
-          level: active ? ((dt.getUTCDate() % 3) + 1) : 0,
-          future: dt > today
+          level: active ? (activityCounts ? levelForCount(dailyCount) : GUEST_LEVEL) : 0,
+          future: dt > today,
         });
       }
       const colIndex = WEEKS - 1 - w;
@@ -46,7 +55,7 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
       grid.push(col);
     }
     return { weeks: grid, monthMarks: marks, activeCount: count };
-  }, [streakDates]);
+  }, [streakDates, activityCounts]);
 
   const cellClass = (level: number, future: boolean) => {
     if (future) return 'bg-transparent border-line/40';
@@ -78,8 +87,8 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
         </div>
       </div>
 
-      <div className="flex justify-center p-4">
-        <div>
+      <div className="overflow-x-auto p-4">
+        <div className="w-max mx-auto">
           {/* month axis */}
           <div className="flex gap-[3px] ml-8 mb-1.5 h-3">
             {weeks.map((_, i) => {
@@ -130,12 +139,21 @@ export const StreakHeatmap: React.FC<StreakHeatmapProps> = ({ streakDates, curre
 
       {/* legend rail */}
       <div className="flex items-center justify-end gap-1.5 px-4 py-2 border-t border-line text-[10px] font-mono text-muted">
-        <span className="mr-1">Less</span>
-        <span className="w-3 h-3 rounded-[2px] border border-line bg-canvas" />
-        <span className="w-3 h-3 rounded-[2px] border border-mint/30 bg-mint/30" />
-        <span className="w-3 h-3 rounded-[2px] border border-mint/50 bg-mint/60" />
-        <span className="w-3 h-3 rounded-[2px] border border-mint bg-mint" />
-        <span className="ml-1">More</span>
+        {activityCounts ? (
+          <>
+            <span className="mr-1">Less</span>
+            <span className="w-3 h-3 rounded-[2px] border border-line bg-canvas" />
+            <span className="w-3 h-3 rounded-[2px] border border-mint/30 bg-mint/30" />
+            <span className="w-3 h-3 rounded-[2px] border border-mint/50 bg-mint/60" />
+            <span className="w-3 h-3 rounded-[2px] border border-mint bg-mint" />
+            <span className="ml-1">More</span>
+          </>
+        ) : (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-[2px] border border-mint bg-mint" />
+            Active
+          </span>
+        )}
       </div>
     </div>
   );

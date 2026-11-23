@@ -327,7 +327,7 @@
       "isReference": true
     }
   ],
-  "sequence": 3,
+  "sequence": 5,
   "prevSlug": "coin-change",
-  "nextSlug": "house-robber"
+  "nextSlug": "delete-and-earn"
 }

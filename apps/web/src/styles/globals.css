@@ -5,6 +5,7 @@
    Dark-first engineering-instrument palette with a real light mode.
    ============================================================ */
 :root {
+  color-scheme: dark;
   --c-canvas: #0a0e14;
   --c-surface: #121826;
   --c-line: #1f2a3d;
@@ -22,6 +23,7 @@
 }
 
 .light {
+  color-scheme: light;
   --c-canvas: #f4f6fa;
   --c-surface: #ffffff;
   --c-line: #dfe5ee;

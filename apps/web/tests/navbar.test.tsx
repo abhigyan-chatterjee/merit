@@ -47,4 +47,51 @@ describe('Navbar search Enter-to-jump (D-search)', () => {
 
     expect(mockNavigate).not.toHaveBeenCalled();
   });
+
+  it('shows Suggested label when query is empty', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    expect(screen.getByText('Suggested')).toBeInTheDocument();
+  });
+
+  it('shows results count when typed', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'heap' } });
+    expect(screen.getByText(/result/i)).toBeInTheDocument();
+  });
+
+  it('ArrowDown moves active row', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    fireEvent.change(input, { target: { value: 'heap' } });
+
+    const options = screen.getAllByRole('option');
+    expect(options.length).toBeGreaterThan(1);
+    expect(options[0]).toHaveAttribute('aria-selected', 'true');
+    expect(input).toHaveAttribute('aria-activedescendant', options[0].id);
+
+    fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
+
+    expect(options[0]).toHaveAttribute('aria-selected', 'false');
+    expect(options[1]).toHaveAttribute('aria-selected', 'true');
+    expect(input).toHaveAttribute('aria-activedescendant', options[1].id);
+  });
+
+  it('match-quality: exact title match ranks above blurb match', () => {
+    renderNavbar();
+    fireEvent.click(screen.getByRole('button', { name: /open global search/i }));
+    const input = screen.getByPlaceholderText(/search structures/i);
+    // 'heap' matches the visualizer title and problems only via their pattern.
+    fireEvent.change(input, { target: { value: 'heap' } });
+    const options = screen.getAllByRole('option');
+    expect(options[0]).toHaveTextContent('Min / Max Binary Heap');
+    expect(options[0]).toHaveTextContent('Visualizer');
+    expect(options.findIndex((o) => o.textContent?.includes('Problem'))).toBeGreaterThan(0);
+
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(mockNavigate).toHaveBeenCalledWith('/visualizers/heap');
+  });
 });

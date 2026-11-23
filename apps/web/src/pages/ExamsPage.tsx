@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Play, ListChecks, Gauge } from 'lucide-react';
 import { TARGETED_EXAMS } from '../data/exams';
+import { TOPICS } from '../data/curriculum';
 import { Panel } from '../components/ui/Panel';
 
 const LEVEL_TONE: Record<string, string> = {
@@ -9,6 +10,9 @@ const LEVEL_TONE: Record<string, string> = {
   Intermediate: 'text-violet border-violet/40 bg-violet/10',
   Advanced: 'text-amber border-amber/40 bg-amber/10',
 };
+
+const TOPIC_TITLES = new Map(TOPICS.map((t) => [t.slug, t.title]));
+const formatTopic = (slug: string) => TOPIC_TITLES.get(slug) ?? slug.replace(/-/g, ' ');
 
 function formatDuration(sec: number): string {
   const m = Math.round(sec / 60);
@@ -45,14 +49,14 @@ export const ExamsPage: React.FC = () => {
                 <p className="text-xs text-muted leading-relaxed">{exam.description}</p>
               </div>
 
-              <div className="flex items-center gap-4 text-[11px] font-mono text-muted">
+              <div className="flex flex-wrap items-center gap-4 text-[11px] font-mono text-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <ListChecks className="w-3.5 h-3.5 text-mint" />
                   {exam.questionCount} MCQs{exam.coding.length > 0 && ` · ${exam.coding.length} coding`} · {formatDuration(exam.durationSec)}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Gauge className="w-3.5 h-3.5 text-violet" />
-                  {exam.topics.join(' · ')}
+                  {exam.topics.map(formatTopic).join(' · ')}
                 </span>
               </div>
 

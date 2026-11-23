@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.db import get_db
 from app.models.content import LearningPath, PathStep, Problem, Question
 from app.models.progress import ProblemProgress, VisualizerCompletion
-from app.models.quiz import PathStepProgress, QuizAttempt
+from app.models.quiz import PathStepProgress, QuizAttempt, QuizAttemptAnswer
 from app.models.user import User, utcnow_iso
 from app.security import get_current_user, get_optional_current_user
 
@@ -110,12 +110,33 @@ VISUALIZERS_CATALOG = [
 ]
 
 
-def _is_submitted_mock(attempt: QuizAttempt) -> bool:
-    try:
-        spec = json.loads(attempt.topic_spec) if attempt.topic_spec else {}
-    except (TypeError, json.JSONDecodeError):
-        return False
-    return bool(spec.get("is_mock")) and bool(attempt.answers)
+def _quiz_progress(db: Session, user_id: str) -> tuple[bool, set[str]]:
+    rows = db.execute(
+        select(QuizAttempt.topic_spec, QuizAttempt.score_pct)
+        .where(QuizAttempt.user_id == user_id)
+        .limit(500)
+    ).all()
+    passed: set[str] = set()
+    for topic_spec, score_pct in rows:
+        if score_pct >= 70:
+            try:
+                topics = json.loads(topic_spec).get("topics", [])
+            except (TypeError, json.JSONDecodeError):
+                continue
+            passed.update(topics)
+    mock_completed = (
+        db.scalar(
+            select(QuizAttempt.id)
+            .join(QuizAttemptAnswer, QuizAttemptAnswer.attempt_id == QuizAttempt.id)
+            .where(
+                QuizAttempt.user_id == user_id,
+                QuizAttempt.topic_spec.contains('"is_mock": true'),
+            )
+            .limit(1)
+        )
+        is not None
+    )
+    return mock_completed, passed
 
 
 @router.get("/visualizers")
@@ -336,21 +357,7 @@ def list_paths(
         ).all()
         user_visualizer_done = set(vis_rows)
 
-        quiz_attempts = db.scalars(
-            select(QuizAttempt)
-            .options(selectinload(QuizAttempt.answers))
-            .where(QuizAttempt.user_id == current_user.id)
-        ).all()
-        mock_completed = any(_is_submitted_mock(qa) for qa in quiz_attempts)
-        for qa in quiz_attempts:
-            if qa.score_pct >= 70:
-                try:
-                    spec = json.loads(qa.topic_spec)
-                    topics = spec.get("topics", [])
-                    for t in topics:
-                        user_quiz_passed.add(t)
-                except (TypeError, json.JSONDecodeError):
-                    continue
+        mock_completed, user_quiz_passed = _quiz_progress(db, current_user.id)
 
         step_progress_rows = db.scalars(
             select(PathStepProgress.step_id).where(
@@ -450,21 +457,7 @@ def get_path(
         ).all()
         user_visualizer_done = set(vis_rows)
 
-        quiz_attempts = db.scalars(
-            select(QuizAttempt)
-            .options(selectinload(QuizAttempt.answers))
-            .where(QuizAttempt.user_id == current_user.id)
-        ).all()
-        mock_completed = any(_is_submitted_mock(qa) for qa in quiz_attempts)
-        for qa in quiz_attempts:
-            if qa.score_pct >= 70:
-                try:
-                    spec = json.loads(qa.topic_spec)
-                    topics = spec.get("topics", [])
-                    for t in topics:
-                        user_quiz_passed.add(t)
-                except Exception:
-                    pass
+        mock_completed, user_quiz_passed = _quiz_progress(db, current_user.id)
 
         step_progress_rows = db.scalars(
             select(PathStepProgress.step_id).where(

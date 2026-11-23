@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ProblemDetailPage } from '../src/pages/ProblemDetailPage';
 import { ProgressProvider } from '../src/store/ProgressContext';
@@ -62,13 +62,19 @@ describe('ProblemDetailPage', () => {
     expect(stored().bookmarks).toContain('two-sum');
   });
 
-  it('saves revision notes', () => {
+  it('saves revision notes once the typing pause elapses', async () => {
     renderProblem();
-    fireEvent.change(screen.getByPlaceholderText(/Write down edge cases/i), {
-      target: { value: 'complement via hash map' },
-    });
-    expect((stored().notes as Record<string, string>)['two-sum']).toBe(
-      'complement via hash map',
+    const box = screen.getByPlaceholderText(/Write down edge cases/i);
+    fireEvent.change(box, { target: { value: 'complement via hash map' } });
+
+    // The textarea echoes immediately; the write is debounced.
+    expect(box).toHaveValue('complement via hash map');
+    expect((stored().notes as Record<string, string> | undefined)?.['two-sum']).toBeUndefined();
+
+    await waitFor(() =>
+      expect((stored().notes as Record<string, string>)['two-sum']).toBe(
+        'complement via hash map',
+      ),
     );
   });
 
@@ -81,7 +87,7 @@ describe('ProblemDetailPage', () => {
 
   it('shows a reference solution when a tab is chosen', () => {
     renderProblem();
-    fireEvent.click(screen.getByRole('button', { name: 'Brute Force' }));
+    fireEvent.click(screen.getByRole('button', { name: /Brute Force/i }));
     // The solution panel renders its Big-O annotation and code block.
     expect(screen.getByText(/Reference Solutions & Big-O/i)).toBeInTheDocument();
     expect(document.querySelector('pre')).not.toBeNull();

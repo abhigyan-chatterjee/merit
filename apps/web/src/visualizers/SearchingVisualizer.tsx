@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ControlBar } from '../components/ControlBar';
 import { VisualizerCanvas } from '../components/VisualizerCanvas';
 import { PseudoCodePanel } from '../components/PseudoCodePanel';
+import { PSEUDOCODE_MAP } from '../data/pseudocode';
 
 interface Frame {
   // Linear state
@@ -19,6 +20,8 @@ interface Frame {
   activeLine: number;
   log: string;
 }
+
+const pseudo = PSEUDOCODE_MAP['binary-search'];
 
 export const SearchingVisualizer: React.FC = () => {
   const [array, setArray] = useState<number[]>([12, 24, 35, 47, 53, 68, 72, 85, 91, 99]);
@@ -41,6 +44,7 @@ export const SearchingVisualizer: React.FC = () => {
     let bHigh = arr.length - 1;
     let bMid = Math.floor((bLow + bHigh) / 2);
     let bDone = false;
+    let bFound = false;
     let bSteps = 0;
 
     generated.push({
@@ -77,6 +81,7 @@ export const SearchingVisualizer: React.FC = () => {
         bMid = Math.floor((bLow + bHigh) / 2);
         if (arr[bMid] === tgt) {
           bDone = true;
+          bFound = true;
         } else if (tgt < arr[bMid]) {
           bHigh = bMid - 1;
           if (bLow > bHigh) bDone = true;
@@ -95,7 +100,7 @@ export const SearchingVisualizer: React.FC = () => {
         binaryHigh: bHigh,
         binaryDone: bDone,
         binarySteps: bSteps,
-        activeLine: 3,
+        activeLine: bDone ? (bFound ? 4 : 7) : 3,
         log: `Step: Linear at [${linIdx < arr.length ? linIdx : 'end'}] (${linSteps} ops) vs Binary mid [${bMid}] range [${bLow}..${bHigh}] (${bSteps} ops)`,
       });
     }
@@ -109,7 +114,7 @@ export const SearchingVisualizer: React.FC = () => {
       binaryHigh: bHigh,
       binaryDone: true,
       binarySteps: bSteps,
-      activeLine: 5,
+      activeLine: bFound ? 4 : 7,
       log: `Completed! Binary search finished in ${bSteps} steps (O(log n)). Linear search took ${linSteps} steps (O(n)).`,
     });
 
@@ -190,9 +195,9 @@ export const SearchingVisualizer: React.FC = () => {
 
         <div className="flex items-center gap-2 border-l border-line pl-3">
           <span className="text-muted">Quick Pick:</span>
-          {array.slice(0, 5).map((v) => (
+          {array.slice(0, 5).map((v, idx) => (
             <button
-              key={v}
+              key={`${v}-${idx}`}
               onClick={() => setTarget(v)}
               className="px-2 py-0.5 rounded bg-surface border border-line hover:border-mint text-ink font-mono text-[11px]"
             >
@@ -208,11 +213,11 @@ export const SearchingVisualizer: React.FC = () => {
           <VisualizerCanvas
             metrics={[
               { label: 'Target Value', value: `${target}`, color: 'var(--c-amber)' },
-              { label: 'Linear Ops', value: `${curr.linearSteps} steps`, color: 'var(--c-rose, #f43f5e)' },
+              { label: 'Linear Ops', value: `${curr.linearSteps} steps`, color: 'var(--c-rose)' },
               { label: 'Binary Ops', value: `${curr.binarySteps} steps`, color: 'var(--c-mint)' },
             ]}
             legend={[
-              { label: 'Linear Pointer', color: 'var(--c-rose, #f43f5e)' },
+              { label: 'Linear Pointer', color: 'var(--c-rose)' },
               { label: 'Binary Mid', color: 'var(--c-mint)' },
               { label: 'Binary Range [L..H]', color: 'var(--c-violet)' },
             ]}
@@ -233,16 +238,16 @@ export const SearchingVisualizer: React.FC = () => {
                     return (
                       <div key={idx} className="flex flex-col items-center gap-1">
                         <div className="h-4 text-[9px] font-mono font-bold">
-                          {isCurrent && <span className="text-rose-400">SCAN</span>}
+                          {isCurrent && <span className="text-rose">SCAN</span>}
                         </div>
                         <div
                           className={`w-11 h-11 sm:w-12 sm:h-12 rounded-lg border font-mono font-bold flex items-center justify-center text-xs transition-colors duration-150 ${
                             isFound
                               ? 'bg-mint text-canvas border-mint scale-105'
                               : isCurrent
-                              ? 'bg-rose-500/20 text-rose-400 border-rose-500 scale-105'
+                              ? 'bg-rose/15 text-rose border-rose scale-105'
                               : isPast
-                              ? 'bg-surface/30 border-line/40 text-muted/40'
+                              ? 'bg-surface/30 border-line text-muted/70'
                               : 'bg-surface border-line text-ink'
                           }`}
                         >
@@ -286,7 +291,7 @@ export const SearchingVisualizer: React.FC = () => {
                               ? 'bg-amber text-canvas border-amber scale-105 shadow'
                               : inRange
                               ? 'bg-violet/15 border-violet text-ink'
-                              : 'bg-surface/20 border-line/20 text-muted/30 opacity-40'
+                              : 'bg-surface/40 border-line text-muted/70'
                           }`}
                         >
                           {val}
@@ -311,18 +316,10 @@ export const SearchingVisualizer: React.FC = () => {
         <div className="lg:col-span-4">
           <PseudoCodePanel
             title="Search Complexity Comparison"
-            lines={[
-              '// Binary Search O(log n)',
-              'low = 0, high = n - 1',
-              'while low <= high:',
-              '    mid = (low + high) / 2',
-              '    if arr[mid] == target: return mid',
-              '    else if target < arr[mid]: high = mid - 1',
-              '    else: low = mid + 1',
-            ]}
+            lines={pseudo.lines}
             activeLine={curr.activeLine}
             timeComplexity="Binary O(log n) vs Linear O(n)"
-            spaceComplexity="O(1)"
+            spaceComplexity={pseudo.spaceComplexity}
             logs={frames.slice(0, frameIdx + 1).map((f) => f.log)}
           />
         </div>

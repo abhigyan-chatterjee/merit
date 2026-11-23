@@ -2836,7 +2836,7 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
+  "sequence": 8,
   "prevSlug": "add-two-numbers",
   "nextSlug": "odd-even-linked-list"
 }

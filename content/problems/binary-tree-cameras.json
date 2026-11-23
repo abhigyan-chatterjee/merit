@@ -1,0 +1,484 @@
+{
+  "slug": "binary-tree-cameras",
+  "title": "Binary Tree Cameras",
+  "topic": "trees",
+  "difficulty": "Hard",
+  "pattern": "greedy post-order DFS / minimum dominating set on a tree",
+  "statement": "A security team is installing cameras on a binary tree. A camera placed on a node watches exactly three things: the node it sits on, that node's parent, and that node's immediate children.\n\nThe tree is given as a level-order array `tree`. Index 0 is the root, and the left and right children of the node at index `i` are the nodes at indices `2i+1` and `2i+2`. A value of `-1` marks a missing node. A node exists only when the array covers its index, its value is not `-1`, and every ancestor up to the root also exists; the numeric values of the nodes that do exist carry no meaning, only the shape of the tree matters. If no node exists at all, no camera is needed.\n\nReturn the smallest number of cameras that leaves every existing node watched, directly by the camera on it or from a camera on its parent or one of its children.\n\nConstraints: `1 <= tree.length <= 15` and `-1 <= tree[i] <= 100`.\n",
+  "examples": [
+    {
+      "input": "tree = [-1]",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "tree = [47, 11]",
+      "output": "1",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(tree: number[])`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Think bottom-up. When a parent looks at a child's subtree, there is only one fact it needs: does that subtree still contain a node nobody watches?",
+    "Two states are not enough, because a node can be watched either by a camera on itself or by a camera above it. Use three states: holds a camera, watched without one, still unwatched.",
+    "If a child comes back unwatched when you process its parent, the parent is the only node left that can reach it, so put a camera there and mark the parent as holding one. At the very end, remember a root that is still unwatched has no parent and needs its own camera."
+  ],
+  "editorial": {
+    "approach": "The brute force is the definition of the problem stated mechanically. Collect the indices of the nodes that exist, enumerate all 2^m subsets of them as candidate camera placements, and keep the smallest subset that watches every node, where a node counts as watched if it holds a camera or its parent or any of its children does. It is exact and easy to trust, but exponential, which is why the array is capped at 15 entries. The optimal version runs one post-order DFS that returns to its parent one of three states: 2 means a camera sits on this node, 1 means this node is already watched without one, and 0 means it is still unwatched and can only be saved by its parent. A missing child reports 1 because it needs nothing. If either child reports 0, the node must take a camera and reports 2; otherwise if either child reports 2, this node is watched for free and reports 1; otherwise it reports 0 and its parent will handle it. A root that still reports 0 needs one final camera on top of it.",
+    "why_optimal": "Every node must be inspected at least once, so O(n) time is the floor and the DFS hits it; the O(n) space is the recursion stack, at most the tree's height, which the level-order layout already charges you for. The greedy is optimal rather than merely good because the decision is forced: when a child is unwatched, its own parent is the only node in the whole tree that can still watch it, so placing the camera there is never worse than placing it anywhere else. Cameras never need to be placed on leaves either, since a leaf's parent covers the leaf and one node more.",
+    "pitfalls": "- Treating a missing child as unwatched (state 0) rather than already watched (state 1). Every leaf edge then spawns a phantom camera and the count comes out far too high.\n- Forgetting to handle the root after the DFS. A root still in state 0 has no parent to rescue it, so one extra camera is needed; the single-node array `[5]` must answer 1, and `[-1]` must answer 0.\n- Assuming every array index is a node. A non-`-1` value sitting under a missing parent is not part of the tree, and reading it as a node inflates both the count and the recursion.\n- Getting the level-order arithmetic wrong: children of `i` are `2i+1` and `2i+2`, and the parent of `i` is `(i-1)/2`. Off by one at the boundary of the array drops the last leaf or walks into a node that does not exist.\n- Forgetting that values other than `-1` are all just 'present', including 0, so a node printed 0 is a real node."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Dominating_set",
+    "https://en.wikipedia.org/wiki/Tree_traversal"
+  ],
+  "starterCode": {
+    "javascript": "function solve(tree) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(tree):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int[] tree) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> tree) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 12.726588999999993,
+    "optimalRuntimeMs": 0.18364900000000262,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        [
+          -1
+        ]
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      ],
+      "expected": 5,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        [
+          13,
+          2,
+          93,
+          34,
+          30,
+          27,
+          16,
+          93,
+          12,
+          85,
+          93
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        [
+          68,
+          10,
+          74,
+          53,
+          3,
+          2,
+          10,
+          26,
+          28,
+          63,
+          76,
+          2,
+          70,
+          24,
+          90
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        [
+          88,
+          68,
+          52,
+          27,
+          56,
+          74,
+          34,
+          -1,
+          96,
+          19,
+          88
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        [
+          42,
+          34,
+          18,
+          26,
+          96,
+          42,
+          12
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        [
+          47,
+          11
+        ]
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        [
+          43,
+          76,
+          32,
+          4,
+          92,
+          57
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        [
+          14,
+          47,
+          9,
+          69,
+          36,
+          79,
+          78,
+          45,
+          72
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        [
+          89,
+          7,
+          4,
+          83
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        [
+          97,
+          36,
+          9,
+          28
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        [
+          11,
+          47,
+          34,
+          57,
+          80,
+          45,
+          19,
+          46,
+          44,
+          25,
+          84,
+          33,
+          88,
+          86
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        [
+          8,
+          76,
+          80,
+          20,
+          67,
+          92,
+          30,
+          19,
+          58,
+          47,
+          33
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        [
+          80,
+          87,
+          70,
+          27,
+          86,
+          40,
+          97,
+          98,
+          6,
+          28,
+          3,
+          39,
+          50,
+          33,
+          7
+        ]
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        [
+          71,
+          90,
+          39,
+          26
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        [
+          62,
+          49,
+          81,
+          57,
+          17,
+          32,
+          16,
+          30,
+          94,
+          70,
+          67
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        [
+          94,
+          73,
+          53,
+          73,
+          50
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        [
+          27,
+          16,
+          64,
+          62,
+          10,
+          95
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        [
+          -1,
+          -1,
+          -1,
+          0,
+          -1,
+          0,
+          100,
+          0,
+          -1,
+          100,
+          100,
+          0,
+          100,
+          0,
+          100
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        [
+          0,
+          -1,
+          0,
+          0,
+          -1,
+          0,
+          0,
+          100,
+          0,
+          100,
+          -1,
+          100,
+          100,
+          -1,
+          100
+        ]
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        [
+          -1,
+          0,
+          0,
+          100,
+          0,
+          -1,
+          0,
+          -1,
+          0,
+          100,
+          0,
+          0,
+          0,
+          -1,
+          -1
+        ]
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        [
+          100,
+          -1,
+          0,
+          0,
+          -1,
+          0,
+          100,
+          100,
+          -1,
+          -1,
+          100,
+          100,
+          -1,
+          -1,
+          -1
+        ]
+      ],
+      "expected": 2,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(2^m * m) | Space: O(m)",
+      "language": "javascript",
+      "code": "function solve(tree) {\n  const n = tree.length;\n  const present = new Array(n).fill(false);\n  if (n > 0 && tree[0] !== -1) {\n    present[0] = true;\n    for (let i = 1; i < n; i++) {\n      present[i] = present[(i - 1) >> 1] && tree[i] !== -1;\n    }\n  }\n  const nodes = [];\n  for (let i = 0; i < n; i++) if (present[i]) nodes.push(i);\n  const m = nodes.length;\n  if (m === 0) return 0;\n\n  const pos = {};\n  for (let i = 0; i < m; i++) pos[nodes[i]] = i;\n  const parent = new Array(m).fill(-1);\n  const kids = [];\n  for (let i = 0; i < m; i++) kids.push([]);\n  for (let i = 0; i < m; i++) {\n    if (nodes[i] !== 0) {\n      parent[i] = pos[(nodes[i] - 1) >> 1];\n      kids[parent[i]].push(i);\n    }\n  }\n\n  let best = m;\n  const total = 1 << m;\n  for (let mask = 0; mask < total; mask++) {\n    let cnt = 0;\n    for (let t = 0; t < m; t++) if (mask & (1 << t)) cnt++;\n    if (cnt >= best) continue;\n    let covers = true;\n    for (let i = 0; i < m && covers; i++) {\n      if (mask & (1 << i)) continue;\n      if (parent[i] !== -1 && (mask & (1 << parent[i]))) continue;\n      let ok = false;\n      for (const c of kids[i]) {\n        if (mask & (1 << c)) { ok = true; break; }\n      }\n      if (!ok) covers = false;\n    }\n    if (covers) best = cnt;\n  }\n  return best;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(tree) {\n  const n = tree.length;\n  const present = new Array(n).fill(false);\n  if (n > 0 && tree[0] !== -1) {\n    present[0] = true;\n    for (let i = 1; i < n; i++) {\n      present[i] = present[(i - 1) >> 1] && tree[i] !== -1;\n    }\n  }\n  if (n === 0 || !present[0]) return 0;\n\n  let cameras = 0;\n  function dfs(i) {\n    const l = (2 * i + 1 < n && present[2 * i + 1]) ? dfs(2 * i + 1) : 1;\n    const r = (2 * i + 2 < n && present[2 * i + 2]) ? dfs(2 * i + 2) : 1;\n    if (l === 0 || r === 0) {\n      cameras++;\n      return 2;\n    }\n    if (l === 2 || r === 2) return 1;\n    return 0;\n  }\n  if (dfs(0) === 0) cameras++;\n  return cameras;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 21,
+  "prevSlug": "binary-tree-maximum-path-sum",
+  "nextSlug": "serialize-and-deserialize-binary-tree"
+}

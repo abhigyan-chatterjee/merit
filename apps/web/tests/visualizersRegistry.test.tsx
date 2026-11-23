@@ -40,7 +40,7 @@ describe('Visualizers Registry & Dedicated Components (D1/D10)', () => {
     it(`renders dedicated workbench for "${id}" with testId "${testId}"`, () => {
       const { unmount } = renderVisualizer(id);
       expect(screen.getByTestId(testId)).toBeInTheDocument();
-      // Ensure it does not render generic fallback LinearVisualizer or NotFound
+      // Ensure a dedicated workbench renders instead of the NotFound fallback
       expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
       unmount();
     });

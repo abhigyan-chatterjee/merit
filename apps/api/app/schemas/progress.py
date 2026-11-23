@@ -50,7 +50,7 @@ class ProblemProgressResponse(BaseModel):
 
 
 class NoteUpdate(BaseModel):
-    text: str
+    text: str = Field(..., max_length=20000)
     local_date: str | None = None
 
     @field_validator("local_date")
@@ -126,6 +126,44 @@ class LocalImportRequest(BaseModel):
     def validate_date(cls, v: str | None) -> str | None:
         return validate_local_date(v)
 
+    @field_validator("progress")
+    @classmethod
+    def validate_progress_cap(cls, v: dict) -> dict:
+        if len(v) > 1000:
+            raise ValueError("progress is limited to 1000 entries")
+        return v
+
+    @field_validator("notes")
+    @classmethod
+    def validate_notes_cap(cls, v: dict) -> dict:
+        if len(v) > 1000:
+            raise ValueError("notes is limited to 1000 entries")
+        for text in v.values():
+            if not isinstance(text, str) or len(text) > 20000:
+                raise ValueError("each note is limited to 20000 characters")
+        return v
+
+    @field_validator("visited_visualizers")
+    @classmethod
+    def validate_visualizers_cap(cls, v: list) -> list:
+        if len(v) > 50:
+            raise ValueError("visited_visualizers is limited to 50 entries")
+        return v
+
+    @field_validator("activity_days")
+    @classmethod
+    def validate_activity_days(cls, v: list) -> list:
+        if len(v) > 400:
+            raise ValueError("activity_days is limited to 400 entries")
+        for day in v:
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", day):
+                raise ValueError("activity_days entries must be YYYY-MM-DD")
+            try:
+                datetime.strptime(day, "%Y-%m-%d").date()
+            except ValueError as err:
+                raise ValueError("activity_days entries must be valid dates") from err
+        return v
+
 
 class DailyGoalPayload(BaseModel):
     kind: str
@@ -145,6 +183,7 @@ class SettingsUpdate(BaseModel):
     preferred_language: str | None = None
     daily_goal: DailyGoalPayload | None = None
     clear_daily_goal: bool = False
+    unpin_daily_goal: bool = False
 
     @field_validator("preferred_language")
     @classmethod

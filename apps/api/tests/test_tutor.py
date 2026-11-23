@@ -124,6 +124,17 @@ def test_models_allow_guest_access(client: TestClient, monkeypatch):
     assert res.json() == {"models": ["guest-model"]}
 
 
+def test_models_missing_id_maps_to_502(client: TestClient, monkeypatch):
+    install_fake_client(
+        monkeypatch,
+        get=lambda url, headers: FakeResponse(200, {"data": [{"name": "unnamed"}]}),
+    )
+
+    res = client.post("/api/v1/tutor/models", json={"base_url": BASE_URL, "api_key": API_KEY})
+    assert res.status_code == 502
+    assert res.json()["detail"]["code"] == "TUTOR_UPSTREAM"
+
+
 def test_models_upstream_500_maps_to_502(client: TestClient, monkeypatch):
     register_user(client, "tutor_models_500@merit.org")
     install_fake_client(monkeypatch, get=lambda url, headers: FakeResponse(500, {"error": "boom"}))

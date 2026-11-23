@@ -1,20 +1,21 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Bookmark,
+  Check,
   ChevronDown,
   ChevronRight,
   ChevronUp,
   Search,
   Sparkles,
 } from 'lucide-react';
-import { PROBLEMS, Problem } from '../data/problems';
+import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { TOPICS } from '../data/curriculum';
 import { useProgress } from '../store/ProgressContext';
 
 const TAG_LIMIT = 8;
 
-const difficultyTone: Record<Problem['difficulty'], string> = {
+const difficultyTone: Record<ProblemManifestItem['difficulty'], string> = {
   Easy: 'text-mint',
   Medium: 'text-amber',
   Hard: 'text-rose',
@@ -32,7 +33,7 @@ export const ProblemListPage: React.FC = () => {
 
   const tagCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    PROBLEMS.forEach((problem) => {
+    PROBLEM_MANIFEST.forEach((problem) => {
       counts.set(problem.pattern, (counts.get(problem.pattern) ?? 0) + 1);
       counts.set(problem.topic, (counts.get(problem.topic) ?? 0) + 1);
     });
@@ -42,7 +43,7 @@ export const ProblemListPage: React.FC = () => {
   const visibleTags = showAllTags ? tagCounts : tagCounts.slice(0, TAG_LIMIT);
   const filteredProblems = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return PROBLEMS.filter((problem) => {
+    return PROBLEM_MANIFEST.filter((problem) => {
       const matchesSearch =
         !query ||
         problem.title.toLowerCase().includes(query) ||
@@ -54,7 +55,23 @@ export const ProblemListPage: React.FC = () => {
     });
   }, [searchQuery, selectedTags]);
 
-  const solvedCount = PROBLEMS.filter((problem) => state.progress[problem.slug] === 'Done').length;
+  const hasActiveFilter = searchQuery.trim().length > 0 || selectedTags.length > 0;
+  const matchingTopics = TOPICS.filter((item) =>
+    filteredProblems.some((problem) => problem.topic === item.slug)
+  );
+
+  useEffect(() => {
+    if (!hasActiveFilter) return;
+    const matches = TOPICS.filter((item) =>
+      filteredProblems.some((problem) => problem.topic === item.slug)
+    ).map((item) => item.slug);
+    setExpandedTopics((current) => {
+      const next = Array.from(new Set([...current, ...matches]));
+      return next.length === current.length ? current : next;
+    });
+  }, [hasActiveFilter, filteredProblems]);
+
+  const solvedCount = PROBLEM_MANIFEST.filter((problem) => state.progress[problem.slug] === 'Done').length;
 
   const toggleTag = (tag: string) => {
     setSelectedTags((current) =>
@@ -91,9 +108,9 @@ export const ProblemListPage: React.FC = () => {
           <div className="flex items-center gap-6 font-mono">
             <div>
               <div className="text-lg font-bold text-mint tnum">
-                {solvedCount}/{PROBLEMS.length}
+                {solvedCount}/{PROBLEM_MANIFEST.length}
               </div>
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Solved</div>
+              <div className="text-[10px] uppercase tracking-[0.16em] text-muted">Done</div>
             </div>
             <div>
               <div className="flex items-center gap-1.5 text-lg font-bold text-amber tnum">
@@ -132,7 +149,7 @@ export const ProblemListPage: React.FC = () => {
                 type="button"
                 onClick={() => toggleTag(tag)}
                 aria-pressed={active}
-                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[11px] font-mono transition ${
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 min-h-9 sm:min-h-0 sm:py-1.5 text-[11px] font-mono transition ${
                   active
                     ? 'border-mint bg-mint text-canvas font-semibold'
                     : 'border-line bg-surface text-muted hover:border-steel hover:text-ink'
@@ -156,10 +173,17 @@ export const ProblemListPage: React.FC = () => {
         </div>
       </section>
 
+      {hasActiveFilter && filteredProblems.length === 0 && (
+        <div className="rounded-xl border border-line bg-surface p-8 text-center">
+          <p className="text-sm font-semibold text-ink">No problems match your filters</p>
+          <p className="text-xs text-muted mt-1">Try a different search or clear the selected tags.</p>
+        </div>
+      )}
+
       <section className="space-y-3" aria-label="Problem topics">
-        {TOPICS.map((topicItem) => {
+        {(hasActiveFilter ? matchingTopics : TOPICS).map((topicItem) => {
           const topicProblems = filteredProblems.filter((problem) => problem.topic === topicItem.slug);
-          const allTopicProblems = PROBLEMS.filter((problem) => problem.topic === topicItem.slug);
+          const allTopicProblems = PROBLEM_MANIFEST.filter((problem) => problem.topic === topicItem.slug);
           const doneCount = allTopicProblems.filter(
             (problem) => state.progress[problem.slug] === 'Done'
           ).length;
@@ -213,13 +237,15 @@ export const ProblemListPage: React.FC = () => {
                           key={problem.id}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-canvas/40 transition"
                         >
-                          <span
-                            aria-label={isDone ? 'Solved' : 'Not solved'}
-                            className={`w-2 h-2 rounded-full shrink-0 ${isDone ? 'bg-mint' : 'bg-muted/50'}`}
-                          />
+                          {isDone ? (
+                            <Check className="w-3.5 h-3.5 text-mint shrink-0" aria-label="Solved" />
+                          ) : (
+                            <span className="w-2 h-2 rounded-full bg-muted/50 shrink-0" aria-hidden="true" />
+                          )}
+                          <span className="sr-only">{isDone ? 'Solved' : 'Not solved'}</span>
                           <Link
                             to={`/problems/${problem.topic}/${problem.slug}`}
-                            className="min-w-0 flex-1 py-1 text-sm text-ink hover:text-mint transition"
+                            className="min-w-0 flex-1 py-2.5 text-sm text-ink hover:text-mint transition"
                           >
                             {problem.title}
                           </Link>
@@ -231,7 +257,7 @@ export const ProblemListPage: React.FC = () => {
                             onClick={() => toggleBookmark(problem.slug)}
                             aria-label={`${isBookmarked ? 'Remove' : 'Add'} bookmark for ${problem.title}`}
                             aria-pressed={isBookmarked}
-                            className={`p-1 rounded transition ${
+                            className={`-mr-2 p-3 rounded transition ${
                               isBookmarked ? 'text-amber' : 'text-muted hover:text-amber'
                             }`}
                           >
@@ -249,7 +275,7 @@ export const ProblemListPage: React.FC = () => {
       </section>
 
       <p className="text-center text-[11px] font-mono text-muted">
-        Showing {filteredProblems.length} of {PROBLEMS.length} problems
+        Showing {filteredProblems.length} of {PROBLEM_MANIFEST.length} problems
         {selectedTags.length > 0 && ` across ${selectedTags.map(topicTitle).join(', ')}`}
       </p>
     </div>

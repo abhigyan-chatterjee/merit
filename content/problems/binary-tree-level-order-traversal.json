@@ -1379,7 +1379,7 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
+  "sequence": 12,
   "prevSlug": "kth-smallest-element-in-a-bst",
   "nextSlug": "lowest-common-ancestor-of-a-binary-tree"
 }

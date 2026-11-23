@@ -1,15 +1,36 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('merit_theme_v1');
+          if (!t) {
+            var s = localStorage.getItem('merit_store_v1');
+            if (s) {
+              var p = JSON.parse(s);
+              if (p && p.theme) t = p.theme;
+            }
+          }
+          var theme = (t === 'light') ? 'light' : 'dark';
+          var doc = document.documentElement;
+          doc.classList.remove('dark', 'light');
+          doc.classList.add(theme);
+          doc.style.colorScheme = theme;
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      })();
+    </script>
     <title>Merit — DSA workbench</title>
     <meta
       name="description"
       content="Step through the execution, not the explanation. Watch algorithms run, solve judge-verified DSA problems, and check yourself with timed quizzes and exams."
     />
-    <meta name="theme-color" content="#0a0e14" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f4f6fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0e14" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Merit — DSA workbench" />
     <meta

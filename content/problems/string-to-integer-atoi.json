@@ -1,0 +1,251 @@
+{
+  "slug": "string-to-integer-atoi",
+  "title": "String to Integer (atoi)",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "state machine parsing / clamp during accumulation",
+  "statement": "Implement the classic string to 32-bit signed integer conversion and return the value it produces for the string `s`.\n\nThe rules are applied in order:\n\n1. Skip any leading space characters. Spaces are allowed only before the number, never between the sign and the digits or inside the digits.\n2. Read one optional sign, either `'+'` or `'-'`. With no sign the number is positive.\n3. Read consecutive decimal digits until a non-digit character or the end of the string, and ignore everything from that point on.\n4. If no digit was read at all the answer is `0`.\n5. If the resulting value is below `-2147483648` the answer is `-2147483648`, and if it is above `2147483647` the answer is `2147483647`.\n\nThe input is arbitrary text made of digits, spaces and signs, so strings like `\"  -42\"` (answer `-42`), `\"+-12\"` (answer `0`, because `'+'` is consumed as the sign and `'-'` is not a digit) and `\"99999999999999999999\"` (answer `2147483647`) must all be handled by the same single pass.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"+\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"81\"",
+      "output": "81",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Split the work into three phases: consume spaces, consume one sign, consume digits. Which character ends each phase?",
+    "The interesting part is step 5. Building the full number first needs a big-integer type, at least in your head; is there a way to notice the overflow while the number is still being built?",
+    "Compare before multiplying: when value > (limit - digit) / 10 the next digit would push past the limit, so return the boundary at once. Use limit 2147483647 for positives and 2147483648 for negatives, and return 0 as soon as no digit follows the sign."
+  ],
+  "editorial": {
+    "approach": "Both versions strip leading spaces, consume one optional sign, then consume digits. The brute force collects the digit characters into a substring and hands that whole thing to the language's built-in converter, applying the clamp once at the end; it is correct on 200-digit inputs because the built-in handles arbitrary length (Python integers are unbounded, and in JavaScript a very long digit string converts to a large finite double or Infinity, both of which clamp to the correct boundary). The optimal solution folds the digits one at a time with `value = value * 10 + digit`, but before each step it checks whether `value` already exceeds `floor((limit - digit) / 10)`, where `limit` is `2147483647` for a positive number and `2147483648` for a negative one. When that test fires, the result is known to be saturated and the boundary is returned immediately.",
+    "why_optimal": "The spaces, sign and digits have to be examined anyway, so O(n) time is unavoidable. The gain is memory and range safety: the optimal version never materialises the number as text and never needs a big-integer type, keeping all state in one machine integer, so its extra space is O(1) while the brute force allocates a digit substring of up to n characters. The `limit` value also handles the asymmetry of the 32-bit range, where the negative side reaches one further than the positive side.",
+    "pitfalls": "Using the positive limit for a negative number: the negative boundary is one larger in magnitude, so testing against 2147483647 on both sides breaks `\"-2147483648\"` and answering -2147483648 for a negative overflow that should also be -2147483648 hides the bug until `\"-2147483649\"` is tested. Applying the early-exit test after the multiply rather than before it, which lets the accumulator run one step past the limit. Accepting spaces between the sign and the first digit, or skipping spaces after the digits start, so `\" 12 34\"` must give 12 and not 1234. Letting the sign alone drive the return value, so `\"-\"` or `\"+abc\"` returns a signed number instead of 0. Returning negative zero: in JavaScript multiplying zero by a negative sign gives `-0`, so a zero value has to be normalised to `0` before returning."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Integer_overflow",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.10866599999999238,
+    "optimalRuntimeMs": 0.15196500000000412,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "+"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "81"
+      ],
+      "expected": 81,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "0-8+785+"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "3  +0056 5087853046"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "9 99-8321"
+      ],
+      "expected": 9,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "092++"
+      ],
+      "expected": 92,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "+22619 845+3+"
+      ],
+      "expected": 22619,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "1762608+ 7091+0+31"
+      ],
+      "expected": 1762608,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "72-22071877+67-"
+      ],
+      "expected": 72,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "80-43178507299 0 9"
+      ],
+      "expected": 80,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "31+06820743"
+      ],
+      "expected": 31,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "4-1-085518636320-54+9"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "+-"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "-9736+3364515 78+7591"
+      ],
+      "expected": -9736,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "2+13-4 88159-5+717560"
+      ],
+      "expected": 2,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "29-59"
+      ],
+      "expected": 29,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        " 624 +2910 06++84"
+      ],
+      "expected": 624,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "959"
+      ],
+      "expected": 959,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "-745-1563059880813772454+00+2 65060 +87 0+ 2+5017405-8664094930++7323348 777+ 3829+00054-3-140+495+ 75 +90-34403 -3 319941388957"
+      ],
+      "expected": -745,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "4-010 685 82  6455- 5+-+6+703+6066 6+37665210782013-771429+ 466++5051-2+021-45816975 7517+-1++85-1160820771541 +731  29-71-84583"
+      ],
+      "expected": 4,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        " ++8-5 265-3- 129 20707+295368-0-99-3 -8293978901-98+3 400421900 70321+912753752 +1-61 +632892365+3601 83 59578887023+72627+8151"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "323815-037378-66135 1103966724447054998-7+157762+9071090-  0469+43760883430-78 99+930-9854 50+4-947556294685354-8441907199547014"
+      ],
+      "expected": 323815,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let i = 0;\n  while (i < n && s[i] === \" \") i++;\n  let sign = 1;\n  if (i < n && (s[i] === \"+\" || s[i] === \"-\")) {\n    if (s[i] === \"-\") sign = -1;\n    i++;\n  }\n  let digits = \"\";\n  while (i < n && s[i] >= \"0\" && s[i] <= \"9\") {\n    digits += s[i];\n    i++;\n  }\n  if (digits === \"\") return 0;\n  const value = sign * Number(digits);\n  if (value < -2147483648) return -2147483648;\n  if (value > 2147483647) return 2147483647;\n  if (value === 0) return 0;\n  return value;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const n = s.length;\n  let i = 0;\n  while (i < n && s[i] === \" \") i++;\n  let sign = 1;\n  if (i < n && (s[i] === \"+\" || s[i] === \"-\")) {\n    if (s[i] === \"-\") sign = -1;\n    i++;\n  }\n  const limit = sign === 1 ? 2147483647 : 2147483648;\n  let value = 0;\n  while (i < n && s[i] >= \"0\" && s[i] <= \"9\") {\n    const digit = s.charCodeAt(i) - 48;\n    if (value > Math.floor((limit - digit) / 10)) {\n      return sign === 1 ? 2147483647 : -2147483648;\n    }\n    value = value * 10 + digit;\n    i++;\n  }\n  if (value === 0) return 0;\n  return sign * value;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 13,
+  "prevSlug": "spiral-matrix",
+  "nextSlug": "zigzag-conversion"
+}

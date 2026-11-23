@@ -14,6 +14,7 @@ import {
   computeTreeLayout,
   BinaryHeap,
   computeHeapLayout,
+  cloneTree,
   HeapType,
 } from './treeEngine';
 
@@ -24,6 +25,7 @@ interface TreeVisualizerProps {
 interface Frame {
   highlightNodeIds: string[];
   activeNodeId: string | null;
+  heap?: number[];
   activeLine: number;
   log: string;
 }
@@ -54,13 +56,20 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
 
-  // Compute Layout
+  // Compute current frame and Layout
+  const currentFrame: Frame = frames[frameIdx] || {
+    highlightNodeIds: [],
+    activeNodeId: null,
+    activeLine: -1,
+    log: 'Ready',
+  };
+
   const layout = useMemo(() => {
     if (variant === 'heap') {
-      return computeHeapLayout(heapInstance.items, 440, 320);
+      return computeHeapLayout(currentFrame.heap ?? heapInstance.items, 440, 320);
     }
     return computeTreeLayout(treeRoot, 440, 320);
-  }, [variant, treeRoot, heapInstance]);
+  }, [variant, treeRoot, heapInstance, currentFrame.heap]);
 
   // Generate Traversal Frames
   const generateTraversalFrames = useCallback(() => {
@@ -78,7 +87,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       {
         highlightNodeIds: [],
         activeNodeId: null,
-        activeLine: 1,
+        activeLine: 0,
         log: `Starting ${traversalOrder} traversal on tree...`,
       },
     ];
@@ -97,7 +106,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     generated.push({
       highlightNodeIds: [...visitedIds],
       activeNodeId: null,
-      activeLine: 5,
+      activeLine: 0,
       log: `Traversal completed: [${res.values.join(', ')}]`,
     });
 
@@ -136,20 +145,21 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       const opFrames = newHeap.insert(num);
       setHeapInstance(newHeap);
 
-      const animFrames: Frame[] = opFrames.map((f, i) => ({
+      const animFrames: Frame[] = opFrames.map((f) => ({
         highlightNodeIds: f.activeIndices.map((idx) => `heap-${idx}`),
         activeNodeId: f.activeIndices[0] !== undefined ? `heap-${f.activeIndices[0]}` : null,
-        activeLine: i + 1,
+        heap: f.heap,
+        activeLine: 1,
         log: f.log,
       }));
       setFrames(animFrames);
       setFrameIdx(0);
       setIsPlaying(true);
     } else if (variant === 'bst') {
-      const newRoot = insertBST(treeRoot ? { ...treeRoot } : null, num);
+      const newRoot = insertBST(cloneTree(treeRoot), num);
       setTreeRoot(newRoot);
     } else {
-      const newRoot = insertBinaryTree(treeRoot ? { ...treeRoot } : null, num);
+      const newRoot = insertBinaryTree(cloneTree(treeRoot), num);
       setTreeRoot(newRoot);
     }
 
@@ -167,7 +177,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       {
         highlightNodeIds: [],
         activeNodeId: null,
-        activeLine: 1,
+        activeLine: 5,
         log: `Searching for ${num} in BST...`,
       },
     ];
@@ -178,7 +188,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       animFrames.push({
         highlightNodeIds: [...currentPath],
         activeNodeId: path[i],
-        activeLine: 2,
+        activeLine: 6,
         log: `Checking node ${path[i]} against target ${num}`,
       });
     }
@@ -186,7 +196,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     animFrames.push({
       highlightNodeIds: [...currentPath],
       activeNodeId: found ? path[path.length - 1] : null,
-      activeLine: found ? 4 : 5,
+      activeLine: 8,
       log: found ? `Found ${num} in BST!` : `Target ${num} not found in BST.`,
     });
 
@@ -206,7 +216,8 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     const animFrames: Frame[] = opFrames.map((f, i) => ({
       highlightNodeIds: f.activeIndices.map((idx) => `heap-${idx}`),
       activeNodeId: f.activeIndices[0] !== undefined ? `heap-${f.activeIndices[0]}` : null,
-      activeLine: i + 1,
+      heap: f.heap,
+      activeLine: i === 0 ? 3 : 4,
       log: f.log,
     }));
     setFrames(animFrames);
@@ -219,6 +230,9 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     setHeapType(type);
     const rebuilt = new BinaryHeap(type, heapInstance.items);
     setHeapInstance(rebuilt);
+    setFrames([]);
+    setFrameIdx(0);
+    setIsPlaying(false);
   };
 
   // Reset to default
@@ -226,6 +240,8 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
     setIsPlaying(false);
     if (variant === 'heap') {
       setHeapInstance(new BinaryHeap(heapType, [12, 18, 25, 30, 42, 55, 68]));
+      setFrames([]);
+      setFrameIdx(0);
     } else if (variant === 'bst') {
       let root: TreeNode | null = null;
       for (const v of [40, 20, 60, 10, 30, 50, 70]) {
@@ -239,13 +255,6 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
       }
       setTreeRoot(root);
     }
-  };
-
-  const currentFrame = frames[frameIdx] || {
-    highlightNodeIds: [],
-    activeNodeId: null,
-    activeLine: 0,
-    log: 'Ready',
   };
 
   return (
@@ -264,11 +273,13 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
         }}
         onReset={handleReset}
         onRandomize={() => {
+          const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
           if (variant === 'heap') {
-            const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
             setHeapInstance(new BinaryHeap(heapType, randoms));
+            setFrames([]);
+            setFrameIdx(0);
+            setIsPlaying(false);
           } else {
-            const randoms = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
             let root: TreeNode | null = null;
             for (const r of randoms) {
               root = variant === 'bst' ? insertBST(root, r) : insertBinaryTree(root, r);
@@ -355,7 +366,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
                 key={order}
                 onClick={() => setTraversalOrder(order)}
                 className={`px-2 py-1 rounded capitalize transition ${
-                  traversalOrder === order ? 'bg-white/10 text-ink font-semibold' : 'text-muted hover:text-ink'
+                  traversalOrder === order ? 'bg-mint/15 text-mint font-semibold' : 'text-muted hover:text-ink'
                 }`}
               >
                 {order}
@@ -379,7 +390,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
                 label: variant === 'heap' ? 'Heap Array' : 'Mode',
                 value:
                   variant === 'heap'
-                    ? `[${heapInstance.items.join(', ')}]`
+                    ? `[${(currentFrame.heap ?? heapInstance.items).join(', ')}]`
                     : variant === 'bst'
                     ? 'Binary Search Tree'
                     : 'Binary Tree',
@@ -395,7 +406,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
             <svg
               data-testid="tree-svg"
               className="w-full h-80 select-none"
-              viewBox="0 0 440 320"
+              viewBox={`0 0 ${layout.width} ${layout.height}`}
             >
               {/* Edges */}
               {layout.edges.map((e, idx) => (
@@ -422,11 +433,11 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
                 if (isActive) {
                   fill = 'var(--c-amber)';
                   stroke = 'var(--c-amber)';
-                  textColor = '#0f141c';
+                  textColor = 'var(--c-canvas)';
                 } else if (isHighlighted) {
                   fill = 'var(--c-mint)';
                   stroke = 'var(--c-mint)';
-                  textColor = '#0f141c';
+                  textColor = 'var(--c-canvas)';
                 }
 
                 return (
@@ -495,6 +506,7 @@ export const TreeVisualizer: React.FC<TreeVisualizerProps> = ({ variant = 'binar
                 ? PSEUDOCODE_MAP.bst.spaceComplexity
                 : PSEUDOCODE_MAP['binary-tree'].spaceComplexity
             }
+            logs={frames.slice(0, frameIdx + 1).map((f) => f.log)}
           />
         </div>
       </div>

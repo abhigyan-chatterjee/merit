@@ -980,7 +980,7 @@
       "isReference": true
     }
   ],
-  "sequence": 5,
+  "sequence": 8,
   "prevSlug": "house-robber",
-  "nextSlug": "longest-increasing-subsequence"
+  "nextSlug": "longest-common-subsequence"
 }

@@ -1,0 +1,219 @@
+{
+  "slug": "count-primes",
+  "title": "Count Primes Below a Bound",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "enumeration / sieve of eratosthenes",
+  "statement": "Given an integer `n`, return how many primes are strictly less than `n`. A prime is an integer greater than 1 whose only positive divisors are 1 and itself.\n\nThe direct route tests every integer below `n` for divisors up to its square root. A faster route sweeps instead of testing: walk upward from 2, and every time you meet a number that no earlier step has marked, count it and mark all of its multiples starting from its square. Numbers 0 and 1 are never prime, so an upper bound of 2 or less gives 0.\n\nReturn that count.\n\nConstraints: `2 <= n <= 10000`.\n",
+  "examples": [
+    {
+      "input": "n = 2",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "n = 411",
+      "output": "80",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(n: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Decide first what a single number needs: a divisibility check only has to try divisors up to its square root, because any factor above the root pairs with one below it.",
+    "Testing each number independently repeats a lot of work. Ask instead which numbers you can cross out once you know a small number is prime.",
+    "When you mark multiples of a prime i, begin at i*i: every smaller multiple already carries a smaller prime factor and has been crossed out."
+  ],
+  "editorial": {
+    "approach": "The brute force enumerates every integer x with 2 <= x < n and runs a trial-division primality test on it: divide x by every candidate d from 2 up to sqrt(x), and keep x only if no d divides it. That is O(n * sqrt(n)) work and answers each number in isolation. The optimal replaces per-number testing with bulk marking: the sieve of Eratosthenes keeps one boolean per value below n. Walking i from 2 upward, the first time an unmarked i is seen it must be prime, so it is counted, and every multiple of i from i*i upward is marked composite. Every composite number is crossed out by its smallest prime factor and never contributes more work.",
+    "why_optimal": "Every value below n must at minimum be looked at once, which is already O(n), so no algorithm can beat linear time, and the sieve achieves O(n log log n) by amortising the marking across all values instead of paying sqrt(x) per number. With n capped at 10000 the sieve marks on the order of n * sum(1/p) entries, a few tens of thousands of writes, so both routes finish instantly; the difference only shows up if the bound is pushed much higher.",
+    "pitfalls": "Starting the inner marking loop at 2*i instead of i*i stays correct but wastes work, since every smaller multiple of i already carries a smaller prime factor. A genuinely wrong version counts 1 as prime or loops `x < n + 1`, both of which shift the answer by one. With n = 2 the result is 0 and with n = 3 it is 1, so index 0 and 1 must never be counted. In JavaScript, allocating `new Array(n)` and forgetting `.fill(false)` leaves holes that read as undefined; `if (!composite[i])` still behaves correctly there, but `composite[i] === false` does not."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes",
+    "https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html"
+  ],
+  "starterCode": {
+    "javascript": "function solve(n) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(n):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(int n) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(int n) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 18,
+    "bruteForceRuntimeMs": 3.870660000000015,
+    "optimalRuntimeMs": 1.8973510000000076,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        2
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10000
+      ],
+      "expected": 1229,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        1826
+      ],
+      "expected": 281,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        411
+      ],
+      "expected": 80,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        4508
+      ],
+      "expected": 611,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        4014
+      ],
+      "expected": 554,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        3659
+      ],
+      "expected": 510,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        2288
+      ],
+      "expected": 340,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        1681
+      ],
+      "expected": 263,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        8937
+      ],
+      "expected": 1111,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        1426
+      ],
+      "expected": 224,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        9676
+      ],
+      "expected": 1193,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        6914
+      ],
+      "expected": 889,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        522
+      ],
+      "expected": 98,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        490
+      ],
+      "expected": 93,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        1537
+      ],
+      "expected": 242,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        3584
+      ],
+      "expected": 502,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        3813
+      ],
+      "expected": 529,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n * sqrt(n)) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  let count = 0;\n  for (let x = 2; x < n; x++) {\n    let prime = true;\n    for (let d = 2; d * d <= x; d++) {\n      if (x % d === 0) { prime = false; break; }\n    }\n    if (prime) count++;\n  }\n  return count;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n log log n) | Space: O(n)",
+      "language": "javascript",
+      "code": "function solve(n) {\n  if (n <= 2) return 0;\n  const composite = new Array(n).fill(false);\n  let count = 0;\n  for (let i = 2; i < n; i++) {\n    if (composite[i]) continue;\n    count++;\n    for (let j = i * i; j < n; j += i) composite[j] = true;\n  }\n  return count;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 6,
+  "prevSlug": "roman-to-integer",
+  "nextSlug": "multiply-strings"
+}

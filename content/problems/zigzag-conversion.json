@@ -1,0 +1,273 @@
+{
+  "slug": "zigzag-conversion",
+  "title": "Zigzag Conversion",
+  "topic": "math-matrices",
+  "difficulty": "Medium",
+  "pattern": "index arithmetic over a repeated cycle / virtual grid",
+  "statement": "A string is written onto numRows rows in a zigzag walk. Place the first character in the top row, step straight down one row per character until the bottom row is reached, then step diagonally up-right one row per character until the top row is reached, then step down again, and keep alternating. Each character of the string lands in the next cell of that walk.\n\nOnce every character has been placed, read the visited cells row by row, top row first and left to right inside each row, skipping cells the walk never touched. The characters in that reading order, concatenated, are the converted string.\n\nReturn the converted string. numRows may be larger than the length of s, in which case the walk never reaches the bottom row and every character keeps a row of its own; a single row makes the walk flat, so the string comes back unchanged.\n\nConstraints: `1 <= s.length <= 200` and `1 <= numRows <= 100`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\", numRows = 1",
+      "output": "\"d\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"xi\", numRows = 100",
+      "output": "\"xi\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string, numRows: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Write the walk out on paper for a few characters and see which positions belong to each row; a per-row collection pass is enough to solve it, even without a grid.",
+    "For numRows greater than 1 the pattern of rows repeats every 2 * numRows - 2 characters; the first and last rows take one character per repeat, every other row takes two.",
+    "In a repeat that starts at index i, a middle row r owns i + r and i + cycle - r; make sure the second index is still inside the string."
+  ],
+  "editorial": {
+    "approach": "The brute force reads the string once per row, replaying the whole walk each time (row counter plus a direction that flips at the top and the bottom) and keeping the characters whose row matches. That is numRows passes over s, so O(n * numRows), with no extra storage. The optimal notices that the walk repeats with period cycle = 2 * numRows - 2: row 0 and row numRows - 1 receive one character per cycle (indices r + k * cycle), while each middle row r receives two (r + k * cycle and the diagonal partner (k + 1) * cycle - r), so a nested loop with a stride of cycle emits the answer directly.",
+    "why_optimal": "Each character belongs to the output exactly once, so any method must touch all n of them and O(n) is a lower bound; the stride version touches each once, and the only state it carries is the row counter and its two partner indices. Space is O(1) auxiliaries because the row-by-row reading means no grid has to exist: the positions that a row owns are computed, not stored.",
+    "pitfalls": "Dividing or stepping by cycle when numRows is 1, where cycle collapses to 0 and the loop never advances. Forgetting that numRows can exceed the length of s, in which case a middle row's diagonal partner index runs past the end and must be range-checked. Appending the diagonal character before the vertical one, which reverses the two characters of that cycle. Emitting a diagonal partner on the top and bottom rows, where it would duplicate a character that the vertical step already produced."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Rail_fence_cipher",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s, numRows) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s, numRows):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(String s, int numRows) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(std::string s, int numRows) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.6430169999999933,
+    "optimalRuntimeMs": 0.10378100000000501,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d",
+        1
+      ],
+      "expected": "d",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xi",
+        100
+      ],
+      "expected": "xi",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "hexdvxrc",
+        76
+      ],
+      "expected": "hexdvxrc",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "bacghqtargwuwr",
+        54
+      ],
+      "expected": "bacghqtargwuwr",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "osizayzf",
+        90
+      ],
+      "expected": "osizayzf",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "kiegykdcmdllti",
+        6
+      ],
+      "expected": "klidlemtgciydk",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "ordmcrjutlsgwcbvhyjchdmi",
+        59
+      ],
+      "expected": "ordmcrjutlsgwcbvhyjchdmi",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "lfllgviwvuctufrxhfomi",
+        82
+      ],
+      "expected": "lfllgviwvuctufrxhfomi",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "rhvkyybhbzkmicgswkgupmu",
+        59
+      ],
+      "expected": "rhvkyybhbzkmicgswkgupmu",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "iehxr",
+        69
+      ],
+      "expected": "iehxr",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "xsnsmlheq",
+        64
+      ],
+      "expected": "xsnsmlheq",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "ybd",
+        20
+      ],
+      "expected": "ybd",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "fzvntcmmtoqiravxdvryi",
+        99
+      ],
+      "expected": "fzvntcmmtoqiravxdvryi",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg",
+        20
+      ],
+      "expected": "kdjnfoaxxiqyfqdujuqgt",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "yfryqatkpadl",
+        40
+      ],
+      "expected": "yfryqatkpadl",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "bhsccxpc",
+        98
+      ],
+      "expected": "bhsccxpc",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "yeevprfiqtngryxwgw",
+        40
+      ],
+      "expected": "yeevprfiqtngryxwgw",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "vuloqodhhckas",
+        71
+      ],
+      "expected": "vuloqodhhckas",
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "shacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdburacyhfnppgmbfmamizzojnwxzrvwpegjgbsxrbxkbbspqqfbqcfctcvhmdsh",
+        1
+      ],
+      "expected": "shacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdburacyhfnppgmbfmamizzojnwxzrvwpegjgbsxrbxkbbspqqfbqcfctcvhmdsh",
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "cnvssqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeiddxreijtgwkgvuiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzz",
+        1
+      ],
+      "expected": "cnvssqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeiddxreijtgwkgvuiqpibcunibakyeuifxorwnradcwerblsrenebjlzblgvhvdlyrntxehfzz",
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "afxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqp",
+        1
+      ],
+      "expected": "afxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqjvnkmwjregnvmvxftsjmrajjgnzstukooovgqp",
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "cjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhiocwjhikkrceehmwewgcnnkronbgnmyswaysmpaljym",
+        100
+      ],
+      "expected": "cjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtkyotxqnrofxmpyojilyahpumisyyyaqwpsuyhminogcbwnjohrikknknrccgeweehwm",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n * numRows) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, numRows) {\n  const n = s.length;\n  if (numRows <= 1) return s;\n  let out = '';\n  for (let r = 0; r < numRows; r++) {\n    let row = 0;\n    let dir = 1;\n    for (let i = 0; i < n; i++) {\n      if (row === r) out += s[i];\n      row += dir;\n      if (row === numRows - 1) dir = -1;\n      else if (row === 0) dir = 1;\n    }\n  }\n  return out;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s, numRows) {\n  const n = s.length;\n  if (numRows <= 1 || numRows >= n) return s;\n  const cycle = 2 * numRows - 2;\n  let out = '';\n  for (let r = 0; r < numRows; r++) {\n    for (let i = r; i < n; i += cycle) {\n      out += s[i];\n      if (r !== 0 && r !== numRows - 1) {\n        const diag = i + cycle - 2 * r;\n        if (diag > i && diag < n) out += s[diag];\n      }\n    }\n  }\n  return out;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 14,
+  "prevSlug": "string-to-integer-atoi",
+  "nextSlug": "integer-to-english-words"
+}

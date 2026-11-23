@@ -40,6 +40,7 @@ function renderEngine(ui: React.ReactElement) {
 describe('Exams catalog', () => {
   beforeEach(() => {
     window.localStorage.clear();
+    window.sessionStorage.clear();
     vi.restoreAllMocks();
   });
 

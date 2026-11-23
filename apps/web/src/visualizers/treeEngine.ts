@@ -42,6 +42,16 @@ export function createTreeNode(value: number, id?: string): TreeNode {
   };
 }
 
+export function cloneTree(node: TreeNode | null): TreeNode | null {
+  if (!node) return null;
+  return {
+    id: node.id,
+    value: node.value,
+    left: cloneTree(node.left),
+    right: cloneTree(node.right),
+  };
+}
+
 // --------------------------------------------------------
 // Binary Tree (Level-Order Insertion into first open slot)
 // --------------------------------------------------------
@@ -180,8 +190,8 @@ export function computeTreeLayout(
   root: TreeNode | null,
   width: number = 440,
   height: number = 320
-): { nodes: TreeLayoutNode[]; edges: TreeLayoutEdge[] } {
-  if (!root) return { nodes: [], edges: [] };
+): { nodes: TreeLayoutNode[]; edges: TreeLayoutEdge[]; width: number; height: number } {
+  if (!root) return { nodes: [], edges: [], width, height };
 
   const nodes: TreeLayoutNode[] = [];
   const edges: TreeLayoutEdge[] = [];
@@ -191,14 +201,25 @@ export function computeTreeLayout(
   // First count total nodes for horizontal spacing
   const { ids } = inorderTraversal(root);
   const total = ids.length;
-  const colWidth = width / (total + 1);
+  let maxDepth = 0;
+  function measureDepth(node: TreeNode | null, depth: number) {
+    if (!node) return;
+    maxDepth = Math.max(maxDepth, depth);
+    measureDepth(node.left, depth + 1);
+    measureDepth(node.right, depth + 1);
+  }
+  measureDepth(root, 0);
+
+  const layoutWidth = total >= 13 ? Math.max(width, total * 42 + 40) : width;
+  const layoutHeight = maxDepth >= 5 ? Math.max(height, 45 + maxDepth * 55 + 40) : height;
+  const colWidth = layoutWidth / (total + 1);
 
   function assignPositions(node: TreeNode | null, depth: number) {
     if (!node) return;
     assignPositions(node.left, depth + 1);
 
     const x = Math.round((inorderIndex + 1) * colWidth);
-    const y = Math.min(height - 35, 45 + depth * 55);
+    const y = Math.min(layoutHeight - 35, 45 + depth * 55);
     inorderIndex++;
 
     const layoutNode: TreeLayoutNode = {
@@ -243,7 +264,7 @@ export function computeTreeLayout(
     }
   }
 
-  return { nodes, edges };
+  return { nodes, edges, width: layoutWidth, height: layoutHeight };
 }
 
 // --------------------------------------------------------
@@ -409,16 +430,21 @@ export function computeHeapLayout(
   heap: number[],
   width: number = 440,
   height: number = 320
-): { nodes: TreeLayoutNode[]; edges: TreeLayoutEdge[] } {
+): { nodes: TreeLayoutNode[]; edges: TreeLayoutEdge[]; width: number; height: number } {
   const nodes: TreeLayoutNode[] = [];
   const edges: TreeLayoutEdge[] = [];
+
+  const levels = heap.length > 0 ? Math.floor(Math.log2(heap.length)) + 1 : 0;
+  const widestLevel = levels > 0 ? 1 << (levels - 1) : 0;
+  const layoutWidth = heap.length >= 16 ? Math.max(width, widestLevel * 34 + 60) : width;
+  const layoutHeight = levels >= 5 ? Math.max(height, 45 + (levels - 1) * 65 + 40) : height;
 
   for (let i = 0; i < heap.length; i++) {
     const level = Math.floor(Math.log2(i + 1));
     const offset = i - ((1 << level) - 1);
     const countInLevel = 1 << level;
-    const x = Math.round(((offset + 1) / (countInLevel + 1)) * width);
-    const y = Math.min(height - 35, 45 + level * 65);
+    const x = Math.round(((offset + 1) / (countInLevel + 1)) * layoutWidth);
+    const y = Math.min(layoutHeight - 35, 45 + level * 65);
 
     const leftIdx = 2 * i + 1;
     const rightIdx = 2 * i + 2;
@@ -462,5 +488,5 @@ export function computeHeapLayout(
     }
   }
 
-  return { nodes, edges };
+  return { nodes, edges, width: layoutWidth, height: layoutHeight };
 }

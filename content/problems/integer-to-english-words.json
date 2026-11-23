@@ -1,0 +1,219 @@
+{
+  "slug": "integer-to-english-words",
+  "title": "Integer to English Words",
+  "topic": "math-matrices",
+  "difficulty": "Hard",
+  "pattern": "math / chunked number spelling",
+  "statement": "Spell a non-negative integer in English using the short scale, with every word in Title Case and single spaces between words. Groups of three digits are followed by the scale word 'Thousand', 'Million' and so on, a hundreds digit is followed by 'Hundred', and the value zero is written as 'Zero'. Values from eleven to nineteen are single words, values from twenty upwards combine the tens word and the units word, groups whose value is zero are skipped entirely, and no leading, trailing or doubled spaces may appear in the answer.\n\nFor example, 0 is 'Zero', 115 is 'One Hundred Fifteen', 1001 is 'One Thousand One' and 10000 is 'Ten Thousand'.\n\nConstraints: `0 <= num <= 10000`.\n",
+  "examples": [
+    {
+      "input": "num = 0",
+      "output": "\"Zero\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "num = 409",
+      "output": "\"Four Hundred Nine\"",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(num: number)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "Write down the words for one through nineteen and for the multiples of ten first; those two tables cover any two digit value.",
+    "Split the number into groups of three digits from the right, because every group is read in exactly the same way and only the scale word after it changes.",
+    "Handle the tens digit before the units digit, and when the tens digit is 1 the units digit is consumed by the teen word."
+  ],
+  "editorial": {
+    "approach": "The brute force walks the digits from the least significant end and tracks the position inside the current group of three, assembling each group word by attaching the hundreds part, then the tens part, and finally prepending the finished group with its scale name to the growing output string. Repeated string concatenation on that growing output makes it O(d^2) in the number of digits d. The optimal solution slices the number into groups of three digits from the right, renders each group once with two small lookup tables, and joins the rendered groups with their scale names.",
+    "why_optimal": "Any correct spelling emits a constant number of words per digit, so Omega(d) output is unavoidable and one pass over the digits is enough, which the chunked version does in O(d) time with O(d) characters of output. Because the constraint caps num at 10000, at most five digits and two scale names are ever reachable, which keeps both implementations fast in practice while still exercising the grouping logic.",
+    "pitfalls": "Forgetting that 11 to 19 are single words while 21 is two, which produces 'Ten One' where 'Eleven' belongs. Printing an empty string for zero instead of 'Zero'. Emitting the scale word for a group whose value is zero, which is what keeps 10000 from turning into 'Ten Thousand Thousand'. Leaving a doubled or trailing space after 'Hundred' or between groups. Using integer division on the wrong digit, for instance taking the hundreds digit after the tens digit has already consumed the remainder."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/English_numerals",
+    "https://en.wikipedia.org/wiki/Names_of_large_numbers"
+  ],
+  "starterCode": {
+    "javascript": "function solve(num) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(num):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public String solve(int num) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    std::string solve(int num) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 18,
+    "bruteForceRuntimeMs": 0.17999700000000018,
+    "optimalRuntimeMs": 0.19721700000000197,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        0
+      ],
+      "expected": "Zero",
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        10000
+      ],
+      "expected": "Ten Thousand",
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        1824
+      ],
+      "expected": "One Thousand Eight Hundred Twenty Four",
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        409
+      ],
+      "expected": "Four Hundred Nine",
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        4506
+      ],
+      "expected": "Four Thousand Five Hundred Six",
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        4012
+      ],
+      "expected": "Four Thousand Twelve",
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        3657
+      ],
+      "expected": "Three Thousand Six Hundred Fifty Seven",
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        2286
+      ],
+      "expected": "Two Thousand Two Hundred Eighty Six",
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        1679
+      ],
+      "expected": "One Thousand Six Hundred Seventy Nine",
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        8935
+      ],
+      "expected": "Eight Thousand Nine Hundred Thirty Five",
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        1424
+      ],
+      "expected": "One Thousand Four Hundred Twenty Four",
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        9674
+      ],
+      "expected": "Nine Thousand Six Hundred Seventy Four",
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        6912
+      ],
+      "expected": "Six Thousand Nine Hundred Twelve",
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        520
+      ],
+      "expected": "Five Hundred Twenty",
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        488
+      ],
+      "expected": "Four Hundred Eighty Eight",
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        1535
+      ],
+      "expected": "One Thousand Five Hundred Thirty Five",
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        3582
+      ],
+      "expected": "Three Thousand Five Hundred Eighty Two",
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        3811
+      ],
+      "expected": "Three Thousand Eight Hundred Eleven",
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(d * d) | Space: O(d)",
+      "language": "javascript",
+      "code": "function solve(num) {\n  if (num === 0) return 'Zero';\n  const small = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven',\n    'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen',\n    'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];\n  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty',\n    'Seventy', 'Eighty', 'Ninety'];\n  const scales = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];\n  const digits = String(num).split('').map(Number);\n  const n = digits.length;\n  let result = '';\n  let groupWord = '';\n  let groupUnits = 0;\n  for (let k = 0; k < n; k++) {\n    const place = k;\n    const d = digits[n - 1 - k];\n    const inGroup = place % 3;\n    const scaleIndex = Math.floor(place / 3);\n    if (inGroup === 0) {\n      groupUnits = d;\n      groupWord = d > 0 ? small[d] : '';\n    } else if (inGroup === 1) {\n      if (d === 1) {\n        groupWord = small[10 + groupUnits];\n      } else if (d > 0) {\n        groupWord = groupUnits > 0 ? tens[d] + ' ' + small[groupUnits] : tens[d];\n      }\n    } else if (d > 0) {\n      groupWord = small[d] + ' Hundred' + (groupWord ? ' ' + groupWord : '');\n    }\n    if (inGroup === 2 || k === n - 1) {\n      if (groupWord) {\n        const tail = scaleIndex > 0 ? groupWord + ' ' + scales[scaleIndex] : groupWord;\n        result = result ? tail + ' ' + result : tail;\n      }\n      groupWord = '';\n      groupUnits = 0;\n    }\n  }\n  return result;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(d) | Space: O(d)",
+      "language": "javascript",
+      "code": "function solve(num) {\n  if (num === 0) return 'Zero';\n  const small = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven',\n    'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen',\n    'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];\n  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty',\n    'Seventy', 'Eighty', 'Ninety'];\n  const scales = ['', 'Thousand', 'Million', 'Billion'];\n  function chunkToWords(value) {\n    const parts = [];\n    let rest = value;\n    if (rest >= 100) {\n      parts.push(small[Math.floor(rest / 100)]);\n      parts.push('Hundred');\n      rest = rest % 100;\n    }\n    if (rest >= 20) {\n      parts.push(tens[Math.floor(rest / 10)]);\n      rest = rest % 10;\n    }\n    if (rest > 0) parts.push(small[rest]);\n    return parts.join(' ');\n  }\n  const groups = [];\n  let value = num;\n  let index = 0;\n  while (value > 0) {\n    const chunk = value % 1000;\n    if (chunk > 0) {\n      const words = chunkToWords(chunk);\n      groups.unshift(index > 0 ? words + ' ' + scales[index] : words);\n    }\n    value = Math.floor(value / 1000);\n    index++;\n  }\n  return groups.join(' ');\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 15,
+  "prevSlug": "zigzag-conversion",
+  "nextSlug": null
+}

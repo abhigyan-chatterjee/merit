@@ -78,3 +78,6 @@ tmp/
 
 # Scratch output from the signature authoring pipeline (regenerable)
 .signature-batches/
+
+# Scratch output from the net-new problem authoring pipeline (regenerable)
+.netnew/

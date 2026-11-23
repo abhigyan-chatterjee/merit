@@ -23,6 +23,15 @@ from pydantic import BaseModel, Field
 
 from sandbox import MAX_CODE_BYTES, execute_code
 
+# Starlette renamed this code (`HTTP_413_REQUEST_ENTITY_TOO_LARGE` before the
+# rename, `HTTP_413_CONTENT_TOO_LARGE` after). The pin here is fastapi==0.115.6,
+# which resolves Starlette 0.41.x and therefore does NOT have the new name — so
+# referencing it directly raised AttributeError inside the handler and an
+# oversized submission came back as a 500 instead of a 413. Resolve at import.
+HTTP_413 = getattr(status, "HTTP_413_CONTENT_TOO_LARGE", None) or getattr(
+    status, "HTTP_413_REQUEST_ENTITY_TOO_LARGE"
+)
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("merit.judge")
 
@@ -80,7 +89,7 @@ async def run(req: RunRequest) -> RunResponse:
 
     if len(req.code.encode("utf-8")) > MAX_CODE_BYTES:
         raise HTTPException(
-            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            status_code=HTTP_413,
             detail="Code exceeds the maximum size",
         )
 

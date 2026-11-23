@@ -4,6 +4,7 @@
   "title": "Longest Substring Without Repeating Characters",
   "topic": "sliding-windows",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Sliding Window",
   "statement": "Given a string s, find the length of the longest substring without repeating characters.",
   "examples": [
@@ -40,8 +41,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(s,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -69,7 +70,7 @@
       "label": "\"pwwkew\""
     }
   ],
-  "sequence": 2,
+  "sequence": 6,
   "prevSlug": "longest-repeating-character-replacement",
   "nextSlug": "max-consecutive-ones-iii",
   "reading_links": [

@@ -14,7 +14,7 @@
     {
       "input": "n = 1",
       "output": "2147483648",
-      "explanation": "1 with bit 0 set becomes bit 31 set, which is 2³¹ = 2147483648."
+      "explanation": "1 with bit 0 set becomes bit 31 set, which is 2\u00b3\u00b9 = 2147483648."
     },
     {
       "input": "n = 4294967295",

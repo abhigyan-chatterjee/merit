@@ -20,7 +20,7 @@ export const NotFound: React.FC<NotFoundProps> = ({
       data-testid="not-found-page"
       className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16"
     >
-      <div className="w-16 h-16 rounded-2xl bg-white/5 border border-line flex items-center justify-center mb-6 text-mint">
+      <div className="w-16 h-16 rounded-2xl bg-surface border border-line flex items-center justify-center mb-6 text-mint">
         <Compass className="w-8 h-8 animate-pulse" />
       </div>
 
@@ -38,7 +38,7 @@ export const NotFound: React.FC<NotFoundProps> = ({
         </Link>
         <button
           onClick={() => window.history.back()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink hover:bg-white/5 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-xs text-muted hover:text-ink hover:bg-surface transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Go Back

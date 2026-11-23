@@ -165,12 +165,7 @@ export const GuidedPathDetailPage: React.FC = () => {
   }
 
   const doneCount = stepStatus.filter((s) => s.done).length;
-  const pct =
-    serverPath != null
-      ? serverPath.progress_pct
-      : steps.length > 0
-      ? Math.round((doneCount / steps.length) * 100)
-      : 0;
+  const pct = steps.length > 0 ? Math.round((doneCount / steps.length) * 100) : 0;
 
   const nextIndex = stepStatus.findIndex((s) => s.next);
   const nextStep = nextIndex !== -1 ? steps[nextIndex] : null;

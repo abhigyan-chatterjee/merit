@@ -1,0 +1,251 @@
+{
+  "slug": "first-unique-character-in-a-string",
+  "title": "First Unique Character in a String",
+  "topic": "arrays-hashing",
+  "difficulty": "Easy",
+  "pattern": "frequency counting",
+  "statement": "Given a string `s` made of lowercase English letters, call a character unique when it occurs exactly once in the whole string. Return the index of the leftmost unique character of `s`. If every character of `s` appears at least twice, return `-1`.\n\nFor example, for `s = \"loveleetcode\"` the answer is `2`, because `v` is the first letter that appears only once.\n\nConstraints: `1 <= s.length <= 200`.\n",
+  "examples": [
+    {
+      "input": "s = \"d\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    },
+    {
+      "input": "s = \"xi\"",
+      "output": "0",
+      "explanation": "Produced by the reference solution, verified against all four implementations."
+    }
+  ],
+  "constraints": [
+    "Function signature: `function solve(s: string)`.",
+    "Inputs are JSON-serializable values satisfying the bounds stated above."
+  ],
+  "hints": [
+    "If someone handed you the frequency of every letter, how would you find the answer with no further scanning of counts?",
+    "Use one pass to build the frequencies, since uniqueness is a global property, then a second pass to find the leftmost letter with frequency one.",
+    "Only 26 letters exist, so a fixed-size array indexed by the letter's position in the alphabet replaces any map."
+  ],
+  "editorial": {
+    "approach": "The brute force takes each index in turn and rescans the entire string to count how often that character appears, which is O(n\u00b2) time. The optimal version separates the two questions the problem asks: one pass tallies the frequency of each lowercase letter into a fixed 26-slot array, and a second pass returns the first index whose letter has a tally of exactly 1. Both passes are linear and the table size never depends on n, so the extra space is constant.",
+    "why_optimal": "Whether a character is unique depends on the whole string, so no index can be reported before every character has been counted; that makes \u03a9(n) time unavoidable and the two-pass counting solution optimal. The second pass cannot be folded into the first, because the count for a letter is not final until the string has been read to the end.",
+    "pitfalls": "Slot the letters with `ord(ch) - ord('a')` (or its JavaScript equivalent), and size the array at 26; indexing with the raw code point wastes space and using 25 crashes on `z`. Return the first index with frequency 1, not the first index at which a letter was seen - a wrong version reports the repeated `l` in `\"loveleetcode\"` instead of the `v`. Do not forget the `-1` fallback when every character repeats, such as `\"aabb\"`, and note that the constraints guarantee at least one character, so the empty string never reaches the function."
+  },
+  "reading_links": [
+    "https://en.wikipedia.org/wiki/Hash_table",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt"
+  ],
+  "starterCode": {
+    "javascript": "function solve(s) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}\n",
+    "python": "def solve(s):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "java": "class Solution {\n    public int solve(String s) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
+    "cpp": "class Solution {\npublic:\n    int solve(std::string s) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
+  },
+  "functionName": "solve",
+  "timeLimitMs": 2000,
+  "reviewStatus": "verified",
+  "pafVerification": {
+    "seed": 42,
+    "generatedCaseCount": 22,
+    "bruteForceRuntimeMs": 0.6844869999999936,
+    "optimalRuntimeMs": 0.17193900000000184,
+    "crossLanguage": true
+  },
+  "testCases": [
+    {
+      "label": "edge-min-1",
+      "input": [
+        "d"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "edge-max-2",
+      "input": [
+        "xi"
+      ],
+      "expected": 0,
+      "isSample": true
+    },
+    {
+      "label": "random-3",
+      "input": [
+        "hexdvxrc"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-4",
+      "input": [
+        "nbacghqtargwuwrnhos"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-5",
+      "input": [
+        "zayzfwnki"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-6",
+      "input": [
+        "gykdc"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-7",
+      "input": [
+        "dlltizbxordmc"
+      ],
+      "expected": 3,
+      "isSample": false
+    },
+    {
+      "label": "random-8",
+      "input": [
+        "jutlsgwcbvhyjchdmi"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-9",
+      "input": [
+        "ulfllgviwvuctuf"
+      ],
+      "expected": 5,
+      "isSample": false
+    },
+    {
+      "label": "random-10",
+      "input": [
+        "xhfomiuwrhvkyybhbz"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-11",
+      "input": [
+        "micgswkgupm"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-12",
+      "input": [
+        "oeiehxrrixsnsmlheqpcy"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-13",
+      "input": [
+        "de"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-14",
+      "input": [
+        "fzvntcmmtoqiravxdvryi"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-15",
+      "input": [
+        "kdjnfoaxxiqyfqdujuqtg"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-16",
+      "input": [
+        "lyfry"
+      ],
+      "expected": 0,
+      "isSample": false
+    },
+    {
+      "label": "random-17",
+      "input": [
+        "atkpadlzjhbhsccxp"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "random-18",
+      "input": [
+        "yry"
+      ],
+      "expected": 1,
+      "isSample": false
+    },
+    {
+      "label": "stress-19",
+      "input": [
+        "evprfiqtngryxwgwjmvuloqodhhckasrhshacwubhcbkcqhivpgrexssphzpzngddvnlnnoxbvuudbmxkzdhggroenfiohcozrdburacyhfnppgmbfmamizzojnwxzrv"
+      ],
+      "expected": 7,
+      "isSample": false
+    },
+    {
+      "label": "stress-20",
+      "input": [
+        "pegjgbsxrbxkbbspqqfbqcfctcvhmdshstbtcnvssqkigvwkhimevujokycaotsdcrgqielchljforwjtzuqavrjvdeiddxreijtgwkgvuiqpibcunibakyeuifxorwn"
+      ],
+      "expected": 81,
+      "isSample": false
+    },
+    {
+      "label": "stress-21",
+      "input": [
+        "adcwerblsrenebjlzblgvhvdlyrntxehfzzfnafxkznzvxzhifzwdmbphgoljzhhavgmkicyiluqmvrkadifsibdtnlxzkntqdmsgibwnaqzrvxxxvglncvktkvdxjqj"
+      ],
+      "expected": 55,
+      "isSample": false
+    },
+    {
+      "label": "stress-22",
+      "input": [
+        "nkmwjregnvmvxftsjmrajjgnzstukooovgqpzzxfvcjqvutkcyhvjhzgeabhptyconusgwwmpmheuwayydynhfzwqobrhdoezovqrtkyotxqnrofxpoiyhuiyyqpuhio"
+      ],
+      "expected": -1,
+      "isSample": false
+    }
+  ],
+  "solutions": [
+    {
+      "title": "Brute Force",
+      "complexity": "Time: O(n\u00b2) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  for (let i = 0; i < s.length; i++) {\n    let count = 0;\n    for (let j = 0; j < s.length; j++) {\n      if (s[j] === s[i]) count++;\n    }\n    if (count === 1) return i;\n  }\n  return -1;\n}",
+      "isReference": false
+    },
+    {
+      "title": "Optimal",
+      "complexity": "Time: O(n) | Space: O(1)",
+      "language": "javascript",
+      "code": "function solve(s) {\n  const counts = new Array(26).fill(0);\n  for (let i = 0; i < s.length; i++) {\n    counts[s.charCodeAt(i) - 97]++;\n  }\n  for (let i = 0; i < s.length; i++) {\n    if (counts[s.charCodeAt(i) - 97] === 1) return i;\n  }\n  return -1;\n}",
+      "isReference": true
+    }
+  ],
+  "sequence": 5,
+  "prevSlug": "find-pivot-index",
+  "nextSlug": "intersection-of-two-arrays"
+}

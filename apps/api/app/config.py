@@ -1,3 +1,4 @@
+import warnings
 from typing import Any
 
 from pydantic import model_validator
@@ -37,8 +38,12 @@ class Settings(BaseSettings):
     # Python/JavaScript path does not pay for a compile toolchain it never uses.
     judge_heavy_url: str = ""
     # Cloud Run cold starts are slow, especially on a heavier image, so this is
-    # far above the judge's own per-submission time limit.
-    judge_timeout_sec: float = 60.0
+    # far above the judge's own per-submission time limit. It must also sit at or
+    # above the heavy tier's own request timeout (180s) and above
+    # `_COMPILE_TIMEOUT_SEC` (120s): a compile that outlives this client-side
+    # budget reports "could not be reached" while the judge is still working and
+    # holding its only slot.
+    judge_timeout_sec: float = 180.0
     # Path to the service-account JSON used to mint identity tokens for the
     # judge service. Only read when judge_url is set.
     google_application_credentials: str = ""
@@ -47,6 +52,14 @@ class Settings(BaseSettings):
         "env_file": ".env",
         "env_file_encoding": "utf-8",
         "case_sensitive": False,
+        # Ignore, rather than reject, environment variables this service does
+        # not define. The default is to forbid them, which makes the API refuse
+        # to boot whenever it shares an environment with anything else: sourced
+        # from the repository root it dies on the web bundle's own keys
+        # (VITE_CLERK_*, CLERK_TEST_EMAIL), and on the VPS the project-root
+        # .env carries both services' values. A service must not fail to start
+        # over a variable that belongs to a sibling.
+        "extra": "ignore",
     }
 
     @model_validator(mode="before")
@@ -95,6 +108,22 @@ class Settings(BaseSettings):
                 values.secret_key = dev_key
 
         return values
+
+    @model_validator(mode="after")
+    def validate_security(self) -> "Settings":
+        if (
+            self.environment == "production"
+            and self.database_url.startswith("postgresql")
+            and "sslmode=" not in self.database_url
+            and "localhost" not in self.database_url
+            and "127.0.0.1" not in self.database_url
+        ):
+            warnings.warn(
+                "Production Postgres DATABASE_URL lacks sslmode=; connections may be unencrypted.",
+                UserWarning,
+                stacklevel=2,
+            )
+        return self
 
     @model_validator(mode="after")
     def validate_judge_config(self) -> "Settings":

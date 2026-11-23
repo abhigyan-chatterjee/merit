@@ -25,6 +25,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.http_status import HTTP_422
 from app.models.content import Problem
 from app.models.user import User
 from app.schemas.tutor import (
@@ -77,7 +78,7 @@ def _upstream_error() -> HTTPException:
 
 def _bad_url() -> HTTPException:
     return HTTPException(
-        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        status_code=HTTP_422,
         detail={"code": "TUTOR_BAD_URL", "message": "Tutor provider URL is not allowed."},
     )
 
@@ -162,8 +163,16 @@ def _extract_model_ids(payload: object) -> list[str]:
         raise _upstream_error()
     data = payload.get("data")
     if isinstance(data, list):
-        ids = [item["id"] for item in data if isinstance(item, dict)]
-        return [i for i in ids if isinstance(i, str)]
+        ids = [
+            i
+            for item in data
+            if isinstance(item, dict)
+            for i in [item.get("id")]
+            if isinstance(i, str) and i
+        ]
+        if not ids:
+            raise _upstream_error()
+        return ids
     models = payload.get("models")
     if isinstance(models, list):
         return [m for m in models if isinstance(m, str)]

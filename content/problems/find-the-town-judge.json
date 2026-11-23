@@ -4,6 +4,7 @@
   "title": "Find the Town Judge",
   "topic": "graphs",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Graph In-Degree & Out-Degree",
   "statement": "In a town of n people labeled 1 to n, the town judge trusts nobody and everybody else trusts the town judge. Return the label of the town judge, or -1 if none exists.",
   "examples": [
@@ -40,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(n, trust) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(n, trust):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int n, int[][] trust) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    int solve(int n, std::vector<std::vector<int>> trust) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

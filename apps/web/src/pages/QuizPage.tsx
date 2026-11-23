@@ -24,7 +24,7 @@ export const QuizPage: React.FC = () => {
   const currentTopic = staticTopic ?? {
     id: topic,
     title: prettifyTopic(topic),
-    description: 'Targeted review drawn live from the verified question bank.',
+    description: 'Targeted review drawn live from the placement question bank.',
   };
   const questions = QUIZZES[currentTopic.id] || [];
 

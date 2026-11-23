@@ -1,7 +1,7 @@
-# Merit Production Handoff — Clerk OAuth (Google/GitHub)
+# Merit Production Handoff — Clerk OAuth (Google/GitHub/Microsoft)
 
 Password login is untouched. This doc covers enabling **Sign in with
-Google/GitHub via Clerk**, linked to existing Merit accounts.
+Google/GitHub/Microsoft via Clerk**, linked to existing Merit accounts.
 
 How it works:
 
@@ -25,11 +25,11 @@ How it works:
 ## 1. Clerk dashboard steps (owner)
 
 1. Go to <https://dashboard.clerk.com> → **Create application** (name it
-   e.g. `Merit`), choose Google + GitHub as social options at creation
+   e.g. `Merit`), choose Google + GitHub + Microsoft as social options at creation
    (or add later).
-2. **Enable Google + GitHub:**
+2. **Enable Google + GitHub + Microsoft:**
    Configure → **SSO connections** (a.k.a. Social connections) → enable
-   **Google** and **GitHub**. For production, supply your own Google OAuth
+   **Google**, **GitHub** and **Microsoft**. For production, supply your own Google OAuth
    Client ID/secret and GitHub OAuth App Client ID/secret on those pages;
    Clerk's shared dev keys only work on Clerk dev domains.
 3. **Copy the keys** (Configure → **API keys**):
@@ -90,6 +90,18 @@ How it works:
    `npm run dev`), hard-refresh the browser, and confirm the
    “or continue with Google / GitHub” block appears on `/login`.
 
+### 1.1 Linking an existing password account (`POST /oauth/clerk/link`)
+
+Password accounts are never auto-linked on email match (that would let anyone
+who registered a victim's email keep the password). Instead:
+
+1. Sign in with the password (issues `merit_access`/`merit_refresh` cookies).
+2. While signed in, POST `{clerk_token}` to `/api/v1/auth/oauth/clerk/link`
+   with those cookies. The OAuth email must equal the account email
+   (`409 OAUTH_EMAIL_MISMATCH` otherwise) and the Clerk identity must not
+   already be linked elsewhere (`409 OAUTH_ALREADY_LINKED`).
+3. The response confirms `has_clerk_linked: true` on the user object.
+
 ## 2. Owner verification (owner executes — real token, live keys)
 
 ```bash
@@ -148,7 +160,7 @@ points at Neon. No live URL exists yet — everything below is ready short of
 the owner-run cutover.
 
 Why it works without a data migration: all models use `String`/`Text`/
-`Integer`/`Float` (no SQLite-only DDL in any of the 9 migrations), UUID
+`Integer`/`Float` (no SQLite-only DDL in any of the 11 migrations), UUID
 primary keys are generated client-side (`str(uuid.uuid4())`, no `pgcrypto`
 needed), `server_default`s are plain string literals valid on Postgres, and
 the Clerk migration (`c4f1a2b3d4e5`) uses a unique *index* on nullable
@@ -191,11 +203,13 @@ server required).
 # here; the deploy itself lives at /home/ubuntu/merit.
 cd /home/ubuntu/merit/apps/api
 
-# 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 9 revisions)
+# 1. Migrate the EMPTY Neon DB to head (safe to re-run; applies all 11 revisions)
 DATABASE_URL="$DATABASE_URL" .venv/bin/alembic upgrade head
 
 # 2. Seed verified content ONCE (problems, questions, paths). Re-runs are
-#    idempotent — existing rows are skipped, never duplicated.
+#    idempotent — existing rows are skipped, never duplicated. The API also
+#    syncs content on boot when the tree changed, so this step only matters for
+#    the one-off cutover to an empty database.
 DATABASE_URL="$DATABASE_URL" .venv/bin/python -m app.seed
 
 # 3. Recreate the API so the engine binds the pg URL. `restart` does not
@@ -291,7 +305,7 @@ Set these in the **compose-root** `/home/ubuntu/merit/.env` (see section 1):
 JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
 JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
 GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
-JUDGE_TIMEOUT_SEC=60
+JUDGE_TIMEOUT_SEC=180
 ```
 
 `JUDGE_HEAVY_URL` is the Java/C++ tier and is optional — but until it is set,

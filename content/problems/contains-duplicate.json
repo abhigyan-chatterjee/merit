@@ -4,6 +4,7 @@
   "title": "Contains Duplicate",
   "topic": "arrays-hashing",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Hash Set",
   "statement": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
   "examples": [
@@ -40,7 +41,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(int[] nums) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    bool solve(std::vector<int> nums) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },

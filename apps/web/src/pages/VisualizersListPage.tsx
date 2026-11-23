@@ -17,7 +17,7 @@ export const VisualizersListPage: React.FC = () => {
   const { state, toggleBookmark } = useProgress();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const categories = ['All', 'Algorithms', 'Linear', 'Trees', 'Graphs', 'Hashing'];
+  const categories = ['All', ...Array.from(new Set(VISUALIZERS.map((v) => v.category)))];
   const filtered = VISUALIZERS.filter((v) =>
     selectedCategory === 'All' ? true : v.category === selectedCategory
   );
@@ -30,7 +30,7 @@ export const VisualizersListPage: React.FC = () => {
           Workbenches
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-ink">
-          Twelve interactive structures
+          {VISUALIZERS.length} interactive structures
         </h1>
         <p className="text-xs text-muted max-w-2xl">
           A step-debuggable canvas, synchronised pseudocode and a live operation log for every

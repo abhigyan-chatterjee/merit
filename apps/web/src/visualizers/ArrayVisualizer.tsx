@@ -12,29 +12,25 @@ interface Frame {
   log: string;
 }
 
+const INITIAL_ARRAY = [14, 32, 67, 89, 45, 23, 78];
+
+const readyFrame = (values: number[]): Frame => ({
+  array: [...values],
+  highlightIndices: [],
+  activeIndices: [],
+  activeLine: -1,
+  log: 'Array initialized. Contiguous memory allocated.',
+});
+
 export const ArrayVisualizer: React.FC = () => {
-  const [array, setArray] = useState<number[]>([14, 32, 67, 89, 45, 23, 78]);
+  const [array, setArray] = useState<number[]>(INITIAL_ARRAY);
   const [targetIndex, setTargetIndex] = useState<number>(2);
   const [insertVal, setInsertVal] = useState<number>(99);
 
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(() => [readyFrame(INITIAL_ARRAY)]);
   const [frameIdx, setFrameIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1);
-
-  // Initialize with initial frame
-  useEffect(() => {
-    setFrames([
-      {
-        array: [...array],
-        highlightIndices: [],
-        activeIndices: [],
-        activeLine: 0,
-        log: 'Array initialized. Contiguous memory allocated.',
-      },
-    ]);
-    setFrameIdx(0);
-  }, [array]);
 
   // Timer playback
   useEffect(() => {
@@ -59,7 +55,7 @@ export const ArrayVisualizer: React.FC = () => {
         array: [...array],
         highlightIndices: [],
         activeIndices: [],
-        activeLine: 1,
+        activeLine: 0,
         log: `Computing memory address: BaseAddr (0x1000) + ${idx} * 4 bytes = 0x${(0x1000 + idx * 4).toString(16).toUpperCase()}`,
       },
       {
@@ -67,7 +63,7 @@ export const ArrayVisualizer: React.FC = () => {
         highlightIndices: [idx],
         activeIndices: [idx],
         pointers: [{ label: 'access', index: idx, color: 'var(--c-amber)' }],
-        activeLine: 2,
+        activeLine: 1,
         log: `O(1) Direct Lookup: arr[${idx}] = ${array[idx]}`,
       },
     ];
@@ -85,7 +81,7 @@ export const ArrayVisualizer: React.FC = () => {
         array: [...array],
         highlightIndices: [],
         activeIndices: [],
-        activeLine: 1,
+        activeLine: 2,
         log: `Request to insert ${val} at index ${idx}. Must shift elements right.`,
       },
     ];
@@ -129,8 +125,8 @@ export const ArrayVisualizer: React.FC = () => {
         array: [...array],
         highlightIndices: [idx],
         activeIndices: [idx],
-        pointers: [{ label: 'del', index: idx, color: 'var(--c-rose, #f43f5e)' }],
-        activeLine: 1,
+        pointers: [{ label: 'del', index: idx, color: 'var(--c-rose)' }],
+        activeLine: 5,
         log: `Deleting element arr[${idx}] = ${val}. Shifting subsequent elements left.`,
       },
     ];
@@ -143,7 +139,7 @@ export const ArrayVisualizer: React.FC = () => {
         highlightIndices: [i, i + 1],
         activeIndices: [i],
         pointers: [{ label: 'shift', index: i, color: 'var(--c-amber)' }],
-        activeLine: 3,
+        activeLine: 6,
         log: `Shifted element from index ${i + 1} (${temp[i]}) to index ${i}`,
       });
     }
@@ -153,7 +149,7 @@ export const ArrayVisualizer: React.FC = () => {
       array: [...temp],
       highlightIndices: [],
       activeIndices: [],
-      activeLine: 4,
+      activeLine: 7,
       log: `Deletion complete. New array size: ${temp.length}.`,
     });
 
@@ -163,46 +159,73 @@ export const ArrayVisualizer: React.FC = () => {
     setIsPlaying(true);
   };
 
-  // 4. Two-Pointer Scan
+  // 4. Two-Pointer Pair-Sum Scan
   const handleTwoPointer = () => {
     const sorted = [...array].sort((a, b) => a - b);
+    const n = sorted.length;
+    const firstPairIdx = Math.floor((n - 1) / 2);
+    const secondPairIdx = Math.min(n - 1, firstPairIdx + 2);
+    const targetSum = sorted[firstPairIdx] + sorted[secondPairIdx];
+
     const generated: Frame[] = [
       {
         array: sorted,
         highlightIndices: [],
         activeIndices: [],
-        activeLine: 1,
-        log: 'Sorted array for two-pointer demonstration.',
+        activeLine: 8,
+        log: `Sorted array. Two-pointer objective: find a pair summing to ${targetSum}.`,
       },
     ];
 
     let left = 0;
-    let right = sorted.length - 1;
+    let right = n - 1;
+    let found = false;
 
     while (left < right) {
+      const sum = sorted[left] + sorted[right];
+      const pointers = [
+        { label: 'Left', index: left, color: 'var(--c-mint)' },
+        { label: 'Right', index: right, color: 'var(--c-violet)' },
+      ];
+
+      if (sum === targetSum) {
+        generated.push({
+          array: sorted,
+          highlightIndices: [left, right],
+          activeIndices: [left, right],
+          pointers,
+          activeLine: 11,
+          log: `arr[${left}] + arr[${right}] = ${sum} == ${targetSum}. Pair found.`,
+        });
+        found = true;
+        break;
+      }
+
       generated.push({
         array: sorted,
         highlightIndices: [left, right],
         activeIndices: [left, right],
-        pointers: [
-          { label: 'Left', index: left, color: 'var(--c-mint)' },
-          { label: 'Right', index: right, color: 'var(--c-violet)' },
-        ],
-        activeLine: 3,
-        log: `Scanning: Left [${left}] = ${sorted[left]}, Right [${right}] = ${sorted[right]}. Sum = ${sorted[left] + sorted[right]}`,
+        pointers,
+        activeLine: sum < targetSum ? 12 : 13,
+        log: `arr[${left}] + arr[${right}] = ${sum} ${sum < targetSum ? '<' : '>'} ${targetSum}. Move ${sum < targetSum ? 'left pointer right' : 'right pointer left'}.`,
       });
-      left++;
-      right--;
+
+      if (sum < targetSum) {
+        left++;
+      } else {
+        right--;
+      }
     }
 
-    generated.push({
-      array: sorted,
-      highlightIndices: [left],
-      activeIndices: [],
-      pointers: [{ label: 'Mid', index: left, color: 'var(--c-amber)' }],
-      activeLine: 5,
-      log: 'Pointers met at middle. Scan finished.',
-    });
+    if (!found) {
+      generated.push({
+        array: sorted,
+        highlightIndices: [],
+        activeIndices: [],
+        activeLine: 9,
+        log: `Pointers met. No pair in the array sums to ${targetSum}.`,
+      });
+    }
 
     setArray(sorted);
     setFrames(generated);
@@ -210,13 +233,7 @@ export const ArrayVisualizer: React.FC = () => {
     setIsPlaying(true);
   };
 
-  const curr = frames[frameIdx] || {
-    array,
-    highlightIndices: [],
-    activeIndices: [],
-    activeLine: 0,
-    log: 'Ready',
-  };
+  const curr = frames[frameIdx] || readyFrame(array);
 
   return (
     <div className="space-y-4">
@@ -233,11 +250,16 @@ export const ArrayVisualizer: React.FC = () => {
         }}
         onReset={() => {
           setIsPlaying(false);
-          setArray([14, 32, 67, 89, 45, 23, 78]);
+          setArray(INITIAL_ARRAY);
+          setFrames([readyFrame(INITIAL_ARRAY)]);
+          setFrameIdx(0);
         }}
         onRandomize={() => {
           const rand = Array.from({ length: 7 }, () => Math.floor(Math.random() * 90) + 10);
+          setIsPlaying(false);
           setArray(rand);
+          setFrames([readyFrame(rand)]);
+          setFrameIdx(0);
         }}
         speed={speed}
         onSpeedChange={setSpeed}
@@ -252,7 +274,10 @@ export const ArrayVisualizer: React.FC = () => {
             value={targetIndex}
             min={0}
             max={array.length}
-            onChange={(e) => setTargetIndex(parseInt(e.target.value, 10) || 0)}
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10);
+              setTargetIndex(Number.isNaN(n) ? 0 : n);
+            }}
             className="w-14 px-2 py-1 bg-surface border border-line rounded text-ink text-center"
           />
           <button
@@ -268,7 +293,10 @@ export const ArrayVisualizer: React.FC = () => {
           <input
             type="number"
             value={insertVal}
-            onChange={(e) => setInsertVal(parseInt(e.target.value, 10) || 0)}
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10);
+              setInsertVal(Number.isNaN(n) ? 0 : n);
+            }}
             className="w-16 px-2 py-1 bg-surface border border-line rounded text-ink text-center"
           />
           <button
@@ -370,10 +398,19 @@ export const ArrayVisualizer: React.FC = () => {
             title="Array Contiguous Addressing"
             lines={[
               'address = base_address + index * element_size',
-              'value = memory[address]  // O(1) Access',
-              'for i from length down to index:',
-              '    memory[i] = memory[i - 1]  // Shift right for insert',
+              'value = memory[address]         // O(1) index access',
+              'for i = length down to index + 1:',
+              '    memory[i] = memory[i - 1]   // shift right for insert',
               'memory[index] = new_value',
+              'for i = index to length - 2:',
+              '    memory[i] = memory[i + 1]   // shift left for delete',
+              'length = length - 1',
+              'left = 0, right = length - 1    // two-pointer pair sum',
+              'while left < right:',
+              '    sum = arr[left] + arr[right]',
+              '    if sum == target: return (left, right)',
+              '    elif sum < target: left += 1',
+              '    else: right -= 1',
             ]}
             activeLine={curr.activeLine}
             timeComplexity="Access O(1) · Insert/Delete O(n)"

@@ -4,6 +4,7 @@
   "title": "Validate Binary Search Tree",
   "topic": "trees",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Range Bound DFS (min, max)",
   "statement": "Given the level-order representation of a binary tree, determine if it is a valid Binary Search Tree (BST).",
   "examples": [
@@ -39,8 +40,8 @@
     }
   ],
   "starterCode": {
-    "javascript": "function solve(tree,) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "javascript": "function solve(tree) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
+    "python": "def solve(tree):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public boolean solve(TreeNode tree) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}",
     "cpp": "class Solution {\npublic:\n    bool solve(TreeNode* tree) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};"
   },
@@ -88,7 +89,7 @@
       "label": "[10,5,15,null,null,6,20]"
     }
   ],
-  "sequence": 16,
+  "sequence": 19,
   "prevSlug": "sum-root-to-leaf-numbers",
   "nextSlug": "binary-tree-maximum-path-sum",
   "reading_links": [

@@ -17,7 +17,7 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 - Old learning paths (`foundations`, `pointers`, `structures`, `algorithms`, `placement-dsa`) are deleted; new slugs are `foundation`, `targeted`, `mastery`. Purge stale `learning_paths` rows if upgrading a dev DB.
 - Problem topics use the 18-category taxonomy (`content/taxonomy.py`); old slugs (`arrays`, `strings`, `linked-list`, `dp`) no longer exist.
 - Question topics remapped the same way (`arrays`→`arrays-hashing`, `dp`→`dynamic-programming`, etc.); `complexity` folded into `sorting`, CS topics into `data-structures`. New banks: `aptitude`, `core-cs`.
-- `users` gains `preferred_language` (default `javascript`) and `daily_goal_json`.
+- `users` gains `preferred_language` (default `python`) and `daily_goal_json`.
 - `problems` gains `sequence`, `prev_slug`, `next_slug`. `path_steps` gains `summary`, `reading_links_json`.
 - Sampler no longer widens empty topics: unknown topics return 404 `NO_QUESTIONS_FOR_TOPICS`.
 
@@ -27,19 +27,19 @@ python3 -m app.seed    # backfills problem topics/sequence, question topics, re-
 
 | Layer | Verification Gate | Status | Evidence / Artifact |
 |---|---|---|---|
-| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 223 tests across 39 files (visualizers, auth, code runner, quiz engine, admin) |
+| **Frontend Codebase** | Vitest unit/component suite & React 19 testing | **PASSED** | 262 tests across 49 files (visualizers, auth, code runner, quiz engine, admin) |
 | **Frontend Build** | Vite production bundle & Route chunking | **PASSED** | Code-split into lazy route chunks with Suspense fallbacks |
 | **Correctness Defects** | D1–D12 Base Audit defects | **100% RESOLVED** | Verified: node-based BST/Heap, SVG scaling, dedicated visualizers |
-| **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Lax, Secure cookies; strict sub claim validation |
+| **Security & Auth** | Argon2id + rotating refresh tokens + theft detection | **PASSED** | HttpOnly, SameSite=Strict, Secure cookies; strict sub claim validation |
 | **User Data Isolation** | Server-side user_id filtering authz matrix | **PASSED** | `apps/api/tests/test_authz.py` asserts complete cross-user isolation |
 | **Sandboxed Judge** | Cloud Run judge service replacing `new Function()` | **PASSED** | Runs in its own container with no secrets/database, zero browser code evaluation |
-| **Content Bank** | 539 verified questions & 140 original problems | **PASSED** | `content/validators/run_all.py` (140/140 AC, 539 verified / 341 unique) |
+| **Content Bank** | 341 verified questions & 274 original problems | **PASSED** | `content/validators/run_all.py` (274/274 AC, 341 verified questions) |
 | **Adaptive Quizzes** | 50-exposure no-repeat window & server-side snapshots | **PASSED** | `test_quizzes.py` confirms no answer leakage + 404 on unknown topics; 20s auto-advance |
 | **Learning Paths v2** | Server-resolved step completion & next pointer | **PASSED** | Foundation, Targeted, Mastery (summaries + reading links per step) |
 | **Placement Features** | Spaced-repetition revision queue & Timed mock exam | **PASSED** | 20 MCQ + 2 coding exams (7 types incl. 3h full mock); rolling weak areas |
 | **User Accounts** | Dropdown + profile/email/password/language | **PASSED** | `PATCH /me`, `POST /email`, `POST /password`, `/profile` page, preferred language |
 | **Admin Console** | Review queue, coverage matrix, audit trail | **PASSED** | `role='admin'` guard; students strictly receive 403 Forbidden |
-| **Deployment & Ops** | Docker Compose, SPA fallback, SQLite WAL & Postgres | **PASSED** | `docker-compose.yml`, `nginx.conf`, `vercel.json`, `backup_drill.sh` |
+| **Deployment & Ops** | Docker Compose, SPA fallback, SQLite WAL & Postgres | **PASSED** | `docker-compose.yml`, `nginx.conf`, `backup_drill.sh` |
 
 ---
 

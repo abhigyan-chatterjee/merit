@@ -15,20 +15,20 @@ from app.services import judge_backend
 
 @pytest.fixture
 def settings_snapshot():
-    """Restores global settings after a test mutates them."""
+    """Restores global settings after a test mutates them.
+
+    Snapshots the whole model rather than a hand-listed tuple. The earlier
+    version saved only judge_url, google_application_credentials and
+    judge_timeout_sec, so a test that set `judge_heavy_url` left it set for every
+    later test in the session — which made the suite order-dependent and made
+    unrelated judge tests fail when this file ran first.
+    """
     from app.config import settings
 
-    original = (
-        settings.judge_url,
-        settings.google_application_credentials,
-        settings.judge_timeout_sec,
-    )
+    original = settings.model_dump()
     yield settings
-    (
-        settings.judge_url,
-        settings.google_application_credentials,
-        settings.judge_timeout_sec,
-    ) = original
+    for field, value in original.items():
+        setattr(settings, field, value)
 
 
 def _base_env() -> dict:
@@ -57,6 +57,96 @@ def test_judge_url_with_credentials_is_accepted():
         google_application_credentials="/run/secrets/judge-sa.json",
     )
     assert cfg.judge_url == "https://judge.example.run.app"
+
+
+@pytest.mark.asyncio
+async def test_401_evicts_token_and_retries_once(settings_snapshot, monkeypatch):
+    settings_snapshot.judge_url = "https://judge.example.run.app"
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+    judge_backend._cached_tokens.clear()
+
+    tokens = iter(["stale-token", "fresh-token"])
+
+    async def fake_mint(audience: str) -> str:
+        return next(tokens)
+
+    class Response:
+        def __init__(self, status_code: int):
+            self.status_code = status_code
+            self.text = ""
+
+        def json(self):
+            return {"verdict": "AC", "runtime_ms": 1, "test_results": [{"passed": True}]}
+
+    class Client:
+        calls = 0
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, *args, **kwargs):
+            Client.calls += 1
+            return Response(401 if Client.calls == 1 else 200)
+
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", fake_mint)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", Client)
+
+    result = await judge_backend.execute(
+        language="python",
+        code="def solve(): pass",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+    assert Client.calls == 2
+    assert result.verdict == "AC"
+
+
+@pytest.mark.asyncio
+async def test_malformed_200_fails_closed(settings_snapshot, monkeypatch):
+    settings_snapshot.judge_url = "https://judge.example.run.app"
+    settings_snapshot.google_application_credentials = "/tmp/keys.json"
+
+    async def fake_mint(audience: str) -> str:
+        return "fake-token"
+
+    class Response:
+        status_code = 200
+        text = ""
+
+        def json(self):
+            return {"verdict": "AC", "runtime_ms": "bad", "test_results": "bad"}
+
+    class Client:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, *args, **kwargs):
+            return Response()
+
+    monkeypatch.setattr(judge_backend, "_mint_identity_token", fake_mint)
+    monkeypatch.setattr(judge_backend.httpx, "AsyncClient", Client)
+
+    result = await judge_backend.execute(
+        language="python",
+        code="def solve(): pass",
+        function_name="solve",
+        test_cases=[{"input": [], "expected": None}],
+    )
+    assert result.verdict == "RE"
+    assert result.infrastructure_error is True
+    assert "invalid response" in result.compile_output.lower()
 
 
 def test_local_sandbox_is_the_default():
@@ -118,6 +208,9 @@ async def test_judge_4xx_surfaces_the_reason(settings_snapshot, monkeypatch):
     in the network rather than in the service that was deployed.
     """
     settings_snapshot.judge_url = "https://judge.example.run.app"
+    # Java routes to the heavy tier, so it must be configured or the request is
+    # refused before dispatch (see _missing_tier) and never reaches the 4xx.
+    settings_snapshot.judge_heavy_url = "https://judge.example.run.app"
 
     class _Response:
         status_code = 400
@@ -298,15 +391,51 @@ async def test_interpreted_languages_use_the_light_service(routing):
 
 
 @pytest.mark.asyncio
-async def test_a_single_configured_url_serves_every_language(
+async def test_a_language_without_its_tier_is_refused_honestly(
     routing, settings_snapshot
 ):
-    """One service is a supported deployment: it is used for all languages."""
+    """A light-only deployment must say Java is unavailable, not "CE".
+
+    The two images carry different toolchains, so the tiers are not
+    interchangeable. Sending Java to the light image produced a compile error
+    that read as the student's fault; it is an operator decision and must be
+    reported as one.
+    """
     settings_snapshot.judge_heavy_url = ""
-    await _submit("java")
+    result = await _submit("java")
+
+    assert routing.posted_urls == [], "must not dispatch Java to the light image"
+    assert result.verdict == "RE"
+    assert result.infrastructure_error is True
+    assert "not enabled on this deployment" in result.compile_output
+
+    # Python still works on that same deployment.
+    routing.posted_urls.clear()
+    await _submit("python")
     assert routing.posted_urls == ["https://judge-light.run.app/run"]
 
+
+@pytest.mark.asyncio
+async def test_compiled_languages_go_to_the_heavy_tier(routing, settings_snapshot):
+    settings_snapshot.judge_url = "https://judge-light.run.app"
+    settings_snapshot.judge_heavy_url = "https://judge-heavy.run.app"
+    await _submit("java")
+    assert routing.posted_urls == ["https://judge-heavy.run.app/run"]
+
     routing.posted_urls.clear()
+    await _submit("python")
+    assert routing.posted_urls == ["https://judge-light.run.app/run"]
+
+
+@pytest.mark.asyncio
+async def test_python_falls_back_to_heavy_when_light_is_unset(
+    routing, settings_snapshot
+):
+    """With only a heavy tier deployed, interpreted languages still run.
+
+    The heavy image can execute them; it just pays a cold start it did not need
+    to. Better that than a deployment with no runner at all.
+    """
     settings_snapshot.judge_url = ""
     settings_snapshot.judge_heavy_url = "https://judge-heavy.run.app"
     await _submit("python")

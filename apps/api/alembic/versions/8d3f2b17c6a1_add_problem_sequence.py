@@ -18,13 +18,27 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+def _inspector():
+    return sa.inspect(op.get_bind())
+
+
+def _has_column(table: str, column: str) -> bool:
+    if table not in _inspector().get_table_names():
+        return False
+    return any(c["name"] == column for c in _inspector().get_columns(table))
+
+
 def upgrade() -> None:
-    op.add_column("problems", sa.Column("sequence", sa.Integer(), nullable=True))
-    op.add_column("problems", sa.Column("prev_slug", sa.String(), nullable=True))
-    op.add_column("problems", sa.Column("next_slug", sa.String(), nullable=True))
+    for name, col in (
+        ("sequence", sa.Column("sequence", sa.Integer(), nullable=True)),
+        ("prev_slug", sa.Column("prev_slug", sa.String(), nullable=True)),
+        ("next_slug", sa.Column("next_slug", sa.String(), nullable=True)),
+    ):
+        if not _has_column("problems", name):
+            op.add_column("problems", col)
 
 
 def downgrade() -> None:
-    op.drop_column("problems", "next_slug")
-    op.drop_column("problems", "prev_slug")
-    op.drop_column("problems", "sequence")
+    for name in ("next_slug", "prev_slug", "sequence"):
+        if _has_column("problems", name):
+            op.drop_column("problems", name)

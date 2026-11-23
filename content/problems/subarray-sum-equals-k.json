@@ -4,6 +4,7 @@
   "title": "Subarray Sum Equals K",
   "topic": "arrays-hashing",
   "difficulty": "Medium",
+  "reviewStatus": "verified",
   "pattern": "Prefix Sum Hash Map",
   "statement": "Given an array of integers nums and an integer k, return the number of contiguous subarrays whose elements sum to exactly k.",
   "examples": [
@@ -44,7 +45,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums, k) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums, k):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int solve(int[] nums, int k) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    int solve(std::vector<int> nums, int k) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -87,7 +88,7 @@
       "label": "[1,-1,0], k=0"
     }
   ],
-  "sequence": 15,
+  "sequence": 30,
   "prevSlug": "sort-colors",
   "nextSlug": "top-k-frequent-elements",
   "reading_links": [

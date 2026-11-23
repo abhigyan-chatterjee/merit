@@ -4,6 +4,7 @@
   "title": "Two Sum",
   "topic": "arrays-hashing",
   "difficulty": "Easy",
+  "reviewStatus": "verified",
   "pattern": "Hash Map / Complement",
   "statement": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution.",
   "examples": [
@@ -43,7 +44,7 @@
   ],
   "starterCode": {
     "javascript": "function solve(nums, target) {\n  // Write your solution here\n  throw new Error('Not implemented');\n}",
-    "python": "def solve(*args):\n    # Write your solution here\n    raise NotImplementedError\n",
+    "python": "def solve(nums, target):\n    # Write your solution here\n    raise NotImplementedError\n",
     "java": "class Solution {\n    public int[] solve(int[] nums, int target) {\n        // Write your solution here\n        throw new UnsupportedOperationException(\"Not implemented\");\n    }\n}\n",
     "cpp": "class Solution {\npublic:\n    std::vector<int> solve(std::vector<int> nums, int target) {\n        // Write your solution here\n        throw std::logic_error(\"Not implemented\");\n    }\n};\n"
   },
@@ -95,7 +96,7 @@
       "label": "nums=[3,3], target=6"
     }
   ],
-  "sequence": 8,
+  "sequence": 13,
   "prevSlug": "remove-duplicates-sorted",
   "nextSlug": "two-sum-ii-sorted",
   "reading_links": [

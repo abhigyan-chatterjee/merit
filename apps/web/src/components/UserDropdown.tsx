@@ -15,6 +15,7 @@ export const UserDropdown: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -22,7 +23,10 @@ export const UserDropdown: React.FC = () => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     };
     window.addEventListener('mousedown', onDown);
     window.addEventListener('keydown', onKey);
@@ -30,7 +34,7 @@ export const UserDropdown: React.FC = () => {
       window.removeEventListener('mousedown', onDown);
       window.removeEventListener('keydown', onKey);
     };
-  }, [open ]);
+  }, [open]);
 
   if (!user) return null;
 
@@ -42,6 +46,7 @@ export const UserDropdown: React.FC = () => {
   return (
     <div ref={ref} className="relative">
       <button
+        ref={triggerRef}
         onClick={() => setOpen((o) => !o)}
         title={`Signed in as ${user.displayName} (${user.email})`}
         aria-label="Account menu"
