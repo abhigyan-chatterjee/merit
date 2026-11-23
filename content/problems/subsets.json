@@ -11252,5 +11252,12 @@
   ],
   "sequence": 8,
   "prevSlug": "restore-ip-addresses",
-  "nextSlug": "word-search"
+  "nextSlug": "word-search",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "PayPal",
+    "Walmart Labs",
+    "ByteDance"
+  ]
 }

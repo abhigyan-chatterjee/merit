@@ -5890,5 +5890,12 @@
   ],
   "sequence": 2,
   "prevSlug": "last-stone-weight",
-  "nextSlug": "k-closest-points-to-origin"
+  "nextSlug": "k-closest-points-to-origin",
+  "companies": [
+    "Swiggy",
+    "Microsoft",
+    "Salesforce",
+    "Adobe",
+    "PayPal"
+  ]
 }

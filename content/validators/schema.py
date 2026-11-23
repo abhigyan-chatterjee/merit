@@ -80,6 +80,7 @@ class ProblemSchema(BaseModel):
     sequence: int | None = Field(default=None, ge=1)
     prev_slug: str | None = Field(default=None, alias="prevSlug")
     next_slug: str | None = Field(default=None, alias="nextSlug")
+    companies: list[str] = Field(default_factory=list, max_length=12)
 
     model_config = {"populate_by_name": True}
 
@@ -89,6 +90,16 @@ class ProblemSchema(BaseModel):
         if not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", v):
             raise ValueError(f"Slug must be kebab-case: {v}")
         return v
+
+    @field_validator("companies")
+    @classmethod
+    def validate_companies(cls, v: list[str]) -> list[str]:
+        cleaned = []
+        for c in v:
+            if not isinstance(c, str) or not c.strip():
+                raise ValueError("Company name must be a non-empty string")
+            cleaned.append(c.strip())
+        return cleaned
 
     @model_validator(mode="after")
     def validate_reference_solution_and_samples(self) -> "ProblemSchema":

@@ -1629,5 +1629,12 @@
   ],
   "sequence": 22,
   "prevSlug": "longest-consecutive-sequence",
-  "nextSlug": "peak-element"
+  "nextSlug": "peak-element",
+  "companies": [
+    "Qualcomm",
+    "Deloitte",
+    "Amazon",
+    "Samsung",
+    "Atlassian"
+  ]
 }

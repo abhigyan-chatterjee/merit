@@ -1837,5 +1837,12 @@
   ],
   "sequence": 25,
   "prevSlug": "product-of-array-except-self",
-  "nextSlug": "search-a-2d-matrix-ii"
+  "nextSlug": "search-a-2d-matrix-ii",
+  "companies": [
+    "Amazon",
+    "Deloitte",
+    "Samsung",
+    "Capgemini",
+    "Zoho"
+  ]
 }

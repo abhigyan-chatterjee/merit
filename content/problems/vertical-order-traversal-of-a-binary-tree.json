@@ -1497,5 +1497,12 @@
   ],
   "sequence": 23,
   "prevSlug": "serialize-and-deserialize-binary-tree",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Walmart Labs",
+    "Meta",
+    "Samsung",
+    "DoorDash",
+    "Salesforce"
+  ]
 }

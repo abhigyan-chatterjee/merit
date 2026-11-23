@@ -1160,5 +1160,12 @@
   ],
   "sequence": 16,
   "prevSlug": "merge-k-sorted-lists",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Walmart Labs",
+    "Bloomberg",
+    "Qualcomm",
+    "Oracle",
+    "Uber"
+  ]
 }

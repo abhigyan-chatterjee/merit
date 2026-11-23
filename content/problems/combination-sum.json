@@ -947,5 +947,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "combination-sum-ii"
+  "nextSlug": "combination-sum-ii",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Salesforce",
+    "PayPal",
+    "ByteDance"
+  ]
 }

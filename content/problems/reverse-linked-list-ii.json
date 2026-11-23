@@ -1162,5 +1162,12 @@
   ],
   "sequence": 12,
   "prevSlug": "reorder-list",
-  "nextSlug": "rotate-list"
+  "nextSlug": "rotate-list",
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Nvidia",
+    "ByteDance",
+    "Walmart Labs"
+  ]
 }

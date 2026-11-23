@@ -237,5 +237,11 @@
   ],
   "sequence": 6,
   "prevSlug": "remove-all-adjacent-duplicates-in-string",
-  "nextSlug": "valid-parentheses"
+  "nextSlug": "valid-parentheses",
+  "companies": [
+    "Amazon",
+    "Microsoft",
+    "Google",
+    "Bloomberg"
+  ]
 }

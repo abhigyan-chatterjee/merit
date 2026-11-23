@@ -1041,5 +1041,12 @@
   ],
   "sequence": 4,
   "prevSlug": "search-suggestions-system",
-  "nextSlug": "find-words-on-board"
+  "nextSlug": "find-words-on-board",
+  "companies": [
+    "Amazon",
+    "DoorDash",
+    "Snowflake",
+    "Citadel",
+    "Uber"
+  ]
 }

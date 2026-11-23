@@ -1288,5 +1288,12 @@
   ],
   "sequence": 14,
   "prevSlug": "rotate-list",
-  "nextSlug": "merge-k-sorted-lists"
+  "nextSlug": "merge-k-sorted-lists",
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "PayPal",
+    "Goldman Sachs",
+    "TCS"
+  ]
 }

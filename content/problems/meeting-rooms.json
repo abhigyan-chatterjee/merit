@@ -1920,5 +1920,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "insert-interval"
+  "nextSlug": "insert-interval",
+  "companies": [
+    "Meta",
+    "Uber",
+    "Oracle",
+    "Palo Alto Networks",
+    "TikTok"
+  ]
 }

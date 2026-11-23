@@ -281,5 +281,12 @@
   ],
   "sequence": 3,
   "prevSlug": "power-of-two",
-  "nextSlug": "single-number"
+  "nextSlug": "single-number",
+  "companies": [
+    "Qualcomm",
+    "Apple",
+    "Airbnb",
+    "Nvidia",
+    "Meta"
+  ]
 }

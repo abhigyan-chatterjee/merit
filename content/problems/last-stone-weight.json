@@ -927,5 +927,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "design-twitter"
+  "nextSlug": "design-twitter",
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "PayPal",
+    "Salesforce",
+    "Nvidia"
+  ]
 }

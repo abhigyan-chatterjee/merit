@@ -327,7 +327,14 @@
       "isReference": true
     }
   ],
-  "sequence": 11,
+  "sequence": 12,
   "prevSlug": "longest-increasing-subsequence",
-  "nextSlug": "longest-string-chain"
+  "nextSlug": "longest-string-chain",
+  "companies": [
+    "Visa",
+    "Cognizant",
+    "Bloomberg",
+    "PhonePe",
+    "Infosys"
+  ]
 }

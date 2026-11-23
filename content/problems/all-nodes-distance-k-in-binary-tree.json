@@ -1065,7 +1065,14 @@
       "isReference": true
     }
   ],
-  "sequence": 6,
+  "sequence": 7,
   "prevSlug": "same-tree",
-  "nextSlug": "amount-of-time-for-binary-tree-to-be-infected"
+  "nextSlug": "amount-of-time-for-binary-tree-to-be-infected",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "DE Shaw",
+    "Salesforce",
+    "Nvidia"
+  ]
 }

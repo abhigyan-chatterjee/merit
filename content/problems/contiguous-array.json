@@ -828,5 +828,12 @@
   ],
   "sequence": 17,
   "prevSlug": "insert-delete-getrandom-o-1",
-  "nextSlug": "find-the-duplicate-number"
+  "nextSlug": "find-the-duplicate-number",
+  "companies": [
+    "Walmart Labs",
+    "Google",
+    "Morgan Stanley",
+    "TCS",
+    "Accenture"
+  ]
 }

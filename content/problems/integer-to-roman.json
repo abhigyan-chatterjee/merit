@@ -215,5 +215,12 @@
   ],
   "sequence": 4,
   "prevSlug": "gas-station",
-  "nextSlug": "jump-game"
+  "nextSlug": "jump-game",
+  "companies": [
+    "Infosys",
+    "Microsoft",
+    "DoorDash",
+    "IBM",
+    "Adobe"
+  ]
 }

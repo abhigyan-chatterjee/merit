@@ -1088,5 +1088,12 @@
   ],
   "sequence": 10,
   "prevSlug": "odd-even-linked-list",
-  "nextSlug": "reorder-list"
+  "nextSlug": "reorder-list",
+  "companies": [
+    "Meta",
+    "Microsoft",
+    "Bloomberg",
+    "Amazon",
+    "Google"
+  ]
 }

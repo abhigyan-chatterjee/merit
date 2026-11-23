@@ -1576,5 +1576,12 @@
   ],
   "sequence": 29,
   "prevSlug": "sort-characters-by-frequency",
-  "nextSlug": "subarray-sum-equals-k"
+  "nextSlug": "subarray-sum-equals-k",
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "ServiceNow",
+    "Samsung",
+    "Morgan Stanley"
+  ]
 }

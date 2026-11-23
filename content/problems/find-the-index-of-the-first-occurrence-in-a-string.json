@@ -269,5 +269,12 @@
   ],
   "sequence": 2,
   "prevSlug": "contains-duplicate-ii",
-  "nextSlug": "find-all-anagrams-in-a-string"
+  "nextSlug": "find-all-anagrams-in-a-string",
+  "companies": [
+    "Capgemini",
+    "Bloomberg",
+    "Cognizant",
+    "Zoho",
+    "PayPal"
+  ]
 }

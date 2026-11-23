@@ -239,5 +239,12 @@
   ],
   "sequence": 28,
   "prevSlug": "second-highest-salary",
-  "nextSlug": "sort-colors"
+  "nextSlug": "sort-colors",
+  "companies": [
+    "Wipro",
+    "Amazon",
+    "Salesforce",
+    "Flipkart",
+    "Visa"
+  ]
 }

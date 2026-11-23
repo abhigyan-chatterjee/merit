@@ -3399,5 +3399,12 @@
   ],
   "sequence": 2,
   "prevSlug": "meeting-rooms",
-  "nextSlug": "meeting-rooms-ii"
+  "nextSlug": "meeting-rooms-ii",
+  "companies": [
+    "PhonePe",
+    "Amazon",
+    "TCS",
+    "Walmart Labs",
+    "PayPal"
+  ]
 }

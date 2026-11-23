@@ -281,5 +281,12 @@
   ],
   "sequence": 5,
   "prevSlug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
-  "nextSlug": "longest-substring-without-repeating"
+  "nextSlug": "longest-substring-without-repeating",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "ServiceNow",
+    "Infosys",
+    "Adobe"
+  ]
 }

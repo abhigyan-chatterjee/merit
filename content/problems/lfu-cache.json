@@ -1045,5 +1045,12 @@
   ],
   "sequence": 8,
   "prevSlug": "find-median-from-data-stream",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Walmart Labs",
+    "Apple",
+    "ServiceNow",
+    "Uber",
+    "DoorDash"
+  ]
 }

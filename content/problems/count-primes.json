@@ -215,5 +215,12 @@
   ],
   "sequence": 6,
   "prevSlug": "roman-to-integer",
-  "nextSlug": "multiply-strings"
+  "nextSlug": "multiply-strings",
+  "companies": [
+    "Accenture",
+    "Google",
+    "SAP",
+    "TCS",
+    "Nvidia"
+  ]
 }

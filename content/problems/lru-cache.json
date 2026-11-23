@@ -686,5 +686,14 @@
   ],
   "sequence": 4,
   "prevSlug": "flatten-nested-list-iterator",
-  "nextSlug": "simple-bank-system"
+  "nextSlug": "simple-bank-system",
+  "companies": [
+    "Amazon",
+    "Google",
+    "Visa",
+    "Walmart Labs",
+    "Zoho",
+    "Cognizant",
+    "Infosys"
+  ]
 }

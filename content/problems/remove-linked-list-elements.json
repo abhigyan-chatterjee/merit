@@ -1264,5 +1264,12 @@
   ],
   "sequence": 5,
   "prevSlug": "palindrome-linked-list",
-  "nextSlug": "reverse-linked-list"
+  "nextSlug": "reverse-linked-list",
+  "companies": [
+    "TCS",
+    "Apple",
+    "Oracle",
+    "Arista Networks",
+    "Amazon"
+  ]
 }

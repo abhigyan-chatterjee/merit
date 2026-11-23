@@ -1198,5 +1198,12 @@
   ],
   "sequence": 12,
   "prevSlug": "move-zeroes",
-  "nextSlug": "two-sum"
+  "nextSlug": "two-sum",
+  "companies": [
+    "Wipro",
+    "Microsoft",
+    "Cognizant",
+    "Zoho",
+    "Flipkart"
+  ]
 }

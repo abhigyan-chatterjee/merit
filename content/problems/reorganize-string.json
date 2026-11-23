@@ -247,5 +247,12 @@
   ],
   "sequence": 8,
   "prevSlug": "maximum-number-of-events-that-can-be-attended",
-  "nextSlug": "valid-parenthesis-string"
+  "nextSlug": "valid-parenthesis-string",
+  "companies": [
+    "IBM",
+    "Meta",
+    "Citadel",
+    "DE Shaw",
+    "Salesforce"
+  ]
 }

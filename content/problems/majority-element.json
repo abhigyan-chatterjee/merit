@@ -939,5 +939,12 @@
   ],
   "sequence": 9,
   "prevSlug": "logger-rate-limiter",
-  "nextSlug": "missing-number"
+  "nextSlug": "missing-number",
+  "companies": [
+    "Microsoft",
+    "Wipro",
+    "Morgan Stanley",
+    "Cognizant",
+    "Oracle"
+  ]
 }

@@ -282,5 +282,12 @@
   ],
   "sequence": 9,
   "prevSlug": "minimum-size-subarray-sum",
-  "nextSlug": "subarray-product-less-than-k"
+  "nextSlug": "subarray-product-less-than-k",
+  "companies": [
+    "Walmart Labs",
+    "Google",
+    "Cisco",
+    "TCS",
+    "Adobe"
+  ]
 }

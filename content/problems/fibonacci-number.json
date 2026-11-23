@@ -175,5 +175,12 @@
   ],
   "sequence": 2,
   "prevSlug": "climbing-stairs",
-  "nextSlug": "pascal-s-triangle"
+  "nextSlug": "pascal-s-triangle",
+  "companies": [
+    "Accenture",
+    "Amazon",
+    "Morgan Stanley",
+    "Infosys",
+    "Nvidia"
+  ]
 }

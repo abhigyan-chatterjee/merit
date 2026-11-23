@@ -1853,5 +1853,12 @@
   ],
   "sequence": 14,
   "prevSlug": "min-stack",
-  "nextSlug": "remove-all-adjacent-duplicates-in-string-ii"
+  "nextSlug": "remove-all-adjacent-duplicates-in-string-ii",
+  "companies": [
+    "Zoho",
+    "Apple",
+    "ServiceNow",
+    "Morgan Stanley",
+    "Visa"
+  ]
 }

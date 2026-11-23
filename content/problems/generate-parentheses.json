@@ -2057,5 +2057,12 @@
   ],
   "sequence": 3,
   "prevSlug": "combination-sum-ii",
-  "nextSlug": "letter-combinations-of-a-phone-number"
+  "nextSlug": "letter-combinations-of-a-phone-number",
+  "companies": [
+    "TCS",
+    "Apple",
+    "Samsung",
+    "Qualcomm",
+    "Intuit"
+  ]
 }

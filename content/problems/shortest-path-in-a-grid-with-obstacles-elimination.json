@@ -2776,5 +2776,12 @@
   ],
   "sequence": 27,
   "prevSlug": "shortest-distance-from-all-buildings",
-  "nextSlug": "word-ladder"
+  "nextSlug": "word-ladder",
+  "companies": [
+    "Amazon",
+    "DE Shaw",
+    "Cisco",
+    "Adobe",
+    "Uber"
+  ]
 }

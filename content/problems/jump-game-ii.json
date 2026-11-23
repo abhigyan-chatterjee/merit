@@ -1011,5 +1011,12 @@
   ],
   "sequence": 6,
   "prevSlug": "jump-game",
-  "nextSlug": "maximum-number-of-events-that-can-be-attended"
+  "nextSlug": "maximum-number-of-events-that-can-be-attended",
+  "companies": [
+    "PhonePe",
+    "Microsoft",
+    "Samsung",
+    "DoorDash",
+    "Goldman Sachs"
+  ]
 }

@@ -547,5 +547,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "remove-all-adjacent-duplicates"
+  "nextSlug": "remove-all-adjacent-duplicates",
+  "companies": [
+    "Microsoft",
+    "Bloomberg",
+    "Turing",
+    "Google",
+    "Meta"
+  ]
 }

@@ -239,5 +239,12 @@
   ],
   "sequence": 19,
   "prevSlug": "daily-temperatures",
-  "nextSlug": "basic-calculator-iii"
+  "nextSlug": "basic-calculator-iii",
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "Salesforce",
+    "Uber",
+    "Snowflake"
+  ]
 }

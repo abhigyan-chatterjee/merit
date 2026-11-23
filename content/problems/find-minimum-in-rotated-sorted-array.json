@@ -448,5 +448,12 @@
   ],
   "sequence": 5,
   "prevSlug": "capacity-to-ship-packages-within-d-days",
-  "nextSlug": "find-first-and-last-position-of-element-in-sorted-array"
+  "nextSlug": "find-first-and-last-position-of-element-in-sorted-array",
+  "companies": [
+    "IBM",
+    "Meta",
+    "TCS",
+    "Flipkart",
+    "Uber"
+  ]
 }

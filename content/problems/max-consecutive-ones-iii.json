@@ -932,5 +932,12 @@
   ],
   "sequence": 7,
   "prevSlug": "longest-substring-without-repeating",
-  "nextSlug": "minimum-size-subarray-sum"
+  "nextSlug": "minimum-size-subarray-sum",
+  "companies": [
+    "Infosys",
+    "Meta",
+    "DE Shaw",
+    "Citadel",
+    "IBM"
+  ]
 }

@@ -1503,5 +1503,12 @@
   ],
   "sequence": 11,
   "prevSlug": "candy",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Google",
+    "Atlassian",
+    "DE Shaw",
+    "Airbnb",
+    "LinkedIn"
+  ]
 }

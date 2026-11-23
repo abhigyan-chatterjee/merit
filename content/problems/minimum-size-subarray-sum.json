@@ -1040,5 +1040,12 @@
   ],
   "sequence": 8,
   "prevSlug": "max-consecutive-ones-iii",
-  "nextSlug": "permutation-in-string"
+  "nextSlug": "permutation-in-string",
+  "companies": [
+    "TCS",
+    "Google",
+    "DoorDash",
+    "Goldman Sachs",
+    "Infosys"
+  ]
 }

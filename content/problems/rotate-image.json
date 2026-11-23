@@ -6379,5 +6379,12 @@
   ],
   "sequence": 10,
   "prevSlug": "reverse-integer",
-  "nextSlug": "set-matrix-zeroes"
+  "nextSlug": "set-matrix-zeroes",
+  "companies": [
+    "Wipro",
+    "Apple",
+    "TCS",
+    "Goldman Sachs",
+    "Samsung"
+  ]
 }

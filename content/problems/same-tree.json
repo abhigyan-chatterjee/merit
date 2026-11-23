@@ -95,7 +95,7 @@
       "label": "p=[1,2,1], q=[1,1,2]"
     }
   ],
-  "sequence": 5,
+  "sequence": 6,
   "prevSlug": "symmetric-tree",
   "nextSlug": "all-nodes-distance-k-in-binary-tree",
   "reading_links": [
@@ -106,5 +106,12 @@
     "approach": "Simultaneous recursive DFS comparison: given roots p and q, if both are null, they are identical (true). If only one is null, they differ (false). If their values differ (p.val != q.val), return false. Otherwise, return sameTree(p.left, q.left) && sameTree(p.right, q.right).",
     "why_optimal": "Traverses both trees in lockstep in O(min(N, M)) time and O(min(H_p, H_q)) stack space, terminating at the earliest structural or value discrepancy.",
     "pitfalls": "Comparing node values before verifying that neither node is null, raising null dereference errors."
-  }
+  },
+  "companies": [
+    "TCS",
+    "Amazon",
+    "SAP",
+    "LinkedIn",
+    "Google"
+  ]
 }

@@ -269,5 +269,12 @@
   ],
   "sequence": 26,
   "prevSlug": "maximum-profit-in-job-scheduling",
-  "nextSlug": "wildcard-matching"
+  "nextSlug": "wildcard-matching",
+  "companies": [
+    "PhonePe",
+    "Apple",
+    "Airbnb",
+    "ByteDance",
+    "Zoho"
+  ]
 }

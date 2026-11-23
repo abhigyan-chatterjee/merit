@@ -282,5 +282,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "count-binary-substrings"
+  "nextSlug": "count-binary-substrings",
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "Goldman Sachs",
+    "Salesforce",
+    "Meta"
+  ]
 }

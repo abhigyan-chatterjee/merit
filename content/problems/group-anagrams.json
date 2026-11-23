@@ -1772,5 +1772,12 @@
   ],
   "sequence": 20,
   "prevSlug": "find-the-length-of-the-longest-common-prefix",
-  "nextSlug": "longest-consecutive-sequence"
+  "nextSlug": "longest-consecutive-sequence",
+  "companies": [
+    "Capgemini",
+    "Bloomberg",
+    "Citadel",
+    "Cisco",
+    "Atlassian"
+  ]
 }

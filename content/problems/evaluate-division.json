@@ -6743,7 +6743,14 @@
       "isReference": true
     }
   ],
-  "sequence": 11,
+  "sequence": 10,
   "prevSlug": "course-schedule-ii",
-  "nextSlug": "max-area-of-island"
+  "nextSlug": "keys-and-rooms",
+  "companies": [
+    "PhonePe",
+    "Meta",
+    "Stripe",
+    "Goldman Sachs",
+    "Uber"
+  ]
 }

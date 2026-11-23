@@ -252,5 +252,12 @@
   ],
   "sequence": 9,
   "prevSlug": "valid-palindrome",
-  "nextSlug": "3sum"
+  "nextSlug": "3sum",
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "Uber",
+    "Visa",
+    "eBay"
+  ]
 }

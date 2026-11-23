@@ -1025,5 +1025,12 @@
   ],
   "sequence": 11,
   "prevSlug": "3sum",
-  "nextSlug": "boats-to-save-people"
+  "nextSlug": "boats-to-save-people",
+  "companies": [
+    "Accenture",
+    "Apple",
+    "DoorDash",
+    "TCS",
+    "ServiceNow"
+  ]
 }

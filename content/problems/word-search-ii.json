@@ -682,5 +682,12 @@
   ],
   "sequence": 6,
   "prevSlug": "find-words-on-board",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Meta",
+    "Cisco",
+    "Visa",
+    "Airbnb",
+    "DoorDash"
+  ]
 }

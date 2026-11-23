@@ -1040,5 +1040,12 @@
   ],
   "sequence": 15,
   "prevSlug": "flatten-binary-tree-preorder",
-  "nextSlug": "count-good-nodes"
+  "nextSlug": "count-good-nodes",
+  "companies": [
+    "Wipro",
+    "Bloomberg",
+    "Cognizant",
+    "Adobe",
+    "Flipkart"
+  ]
 }

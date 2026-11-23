@@ -478,5 +478,12 @@
   ],
   "sequence": 29,
   "prevSlug": "word-ladder",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Apple",
+    "LinkedIn",
+    "Citadel",
+    "Goldman Sachs",
+    "Uber"
+  ]
 }

@@ -247,5 +247,12 @@
   ],
   "sequence": 14,
   "prevSlug": "container-with-most-water",
-  "nextSlug": "remove-nth-node-from-end"
+  "nextSlug": "remove-nth-node-from-end",
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "Intuit",
+    "Cisco",
+    "Salesforce"
+  ]
 }

@@ -1386,5 +1386,12 @@
   ],
   "sequence": 3,
   "prevSlug": "remove-all-adjacent-duplicates",
-  "nextSlug": "next-greater-element-i"
+  "nextSlug": "next-greater-element-i",
+  "companies": [
+    "Goldman Sachs",
+    "Oracle",
+    "Infosys",
+    "Apple",
+    "SAP"
+  ]
 }

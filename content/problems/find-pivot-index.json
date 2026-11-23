@@ -1050,5 +1050,12 @@
   ],
   "sequence": 4,
   "prevSlug": "counting-bits",
-  "nextSlug": "first-unique-character-in-a-string"
+  "nextSlug": "first-unique-character-in-a-string",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "Goldman Sachs",
+    "IBM",
+    "Salesforce"
+  ]
 }

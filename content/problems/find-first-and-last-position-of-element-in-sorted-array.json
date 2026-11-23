@@ -1137,5 +1137,12 @@
   ],
   "sequence": 6,
   "prevSlug": "find-minimum-in-rotated-sorted-array",
-  "nextSlug": "design-hit-counter"
+  "nextSlug": "design-hit-counter",
+  "companies": [
+    "Capgemini",
+    "Amazon",
+    "Atlassian",
+    "Infosys",
+    "Citadel"
+  ]
 }

@@ -1801,5 +1801,12 @@
   ],
   "sequence": 2,
   "prevSlug": "design-circular-queue",
-  "nextSlug": "flatten-nested-list-iterator"
+  "nextSlug": "flatten-nested-list-iterator",
+  "companies": [
+    "Meta",
+    "Nvidia",
+    "Uber",
+    "Visa",
+    "ByteDance"
+  ]
 }

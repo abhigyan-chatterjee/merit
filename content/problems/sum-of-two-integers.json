@@ -323,5 +323,12 @@
   ],
   "sequence": 5,
   "prevSlug": "single-number",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "Google",
+    "Swiggy",
+    "Meta"
+  ]
 }

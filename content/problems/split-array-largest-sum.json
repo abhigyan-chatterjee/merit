@@ -958,5 +958,12 @@
   ],
   "sequence": 16,
   "prevSlug": "median-of-two-sorted-arrays",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "PhonePe",
+    "Google",
+    "Samsung",
+    "DE Shaw",
+    "Flipkart"
+  ]
 }

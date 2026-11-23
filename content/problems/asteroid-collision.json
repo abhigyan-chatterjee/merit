@@ -1342,5 +1342,12 @@
   ],
   "sequence": 10,
   "prevSlug": "simplify-path",
-  "nextSlug": "decode-string"
+  "nextSlug": "decode-string",
+  "companies": [
+    "Deloitte",
+    "Meta",
+    "TCS",
+    "PayPal",
+    "Nvidia"
+  ]
 }

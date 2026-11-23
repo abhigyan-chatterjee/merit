@@ -247,5 +247,12 @@
   ],
   "sequence": 17,
   "prevSlug": "reverse-words-in-a-string",
-  "nextSlug": "three-sum"
+  "nextSlug": "three-sum",
+  "companies": [
+    "Cognizant",
+    "Amazon",
+    "Nvidia",
+    "Oracle",
+    "Goldman Sachs"
+  ]
 }

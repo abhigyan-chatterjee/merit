@@ -3417,7 +3417,14 @@
       "isReference": true
     }
   ],
-  "sequence": 8,
+  "sequence": 7,
   "prevSlug": "cheapest-flights-within-k-stops",
-  "nextSlug": "course-schedule"
+  "nextSlug": "course-schedule",
+  "companies": [
+    "Google",
+    "Nvidia",
+    "ByteDance",
+    "Uber",
+    "Oracle"
+  ]
 }

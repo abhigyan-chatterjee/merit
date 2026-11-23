@@ -1343,5 +1343,12 @@
   ],
   "sequence": 6,
   "prevSlug": "task-scheduler",
-  "nextSlug": "find-median-from-data-stream"
+  "nextSlug": "find-median-from-data-stream",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "PayPal",
+    "Adobe",
+    "Goldman Sachs"
+  ]
 }

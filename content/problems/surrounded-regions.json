@@ -2638,5 +2638,12 @@
   ],
   "sequence": 20,
   "prevSlug": "shortest-path-in-binary-matrix",
-  "nextSlug": "alien-dictionary"
+  "nextSlug": "alien-dictionary",
+  "companies": [
+    "Meta",
+    "Uber",
+    "Adobe",
+    "Oracle",
+    "Nutanix"
+  ]
 }

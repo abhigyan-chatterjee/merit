@@ -3314,5 +3314,12 @@
   ],
   "sequence": 34,
   "prevSlug": "first-missing-positive",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Zoho",
+    "Meta",
+    "Citadel",
+    "Cisco",
+    "Nvidia"
+  ]
 }

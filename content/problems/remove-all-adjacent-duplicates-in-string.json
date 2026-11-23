@@ -246,5 +246,12 @@
   ],
   "sequence": 5,
   "prevSlug": "next-greater-element-i",
-  "nextSlug": "make-the-string-great"
+  "nextSlug": "make-the-string-great",
+  "companies": [
+    "Deloitte",
+    "Amazon",
+    "Cisco",
+    "Oracle",
+    "Paytm"
+  ]
 }

@@ -4743,5 +4743,12 @@
   ],
   "sequence": 3,
   "prevSlug": "design-twitter",
-  "nextSlug": "kth-largest-element-in-an-array"
+  "nextSlug": "kth-largest-element-in-an-array",
+  "companies": [
+    "Swiggy",
+    "Meta",
+    "Goldman Sachs",
+    "LinkedIn",
+    "Salesforce"
+  ]
 }

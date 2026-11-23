@@ -960,5 +960,12 @@
   ],
   "sequence": 5,
   "prevSlug": "letter-combinations-of-a-phone-number",
-  "nextSlug": "permutations"
+  "nextSlug": "permutations",
+  "companies": [
+    "Accenture",
+    "Microsoft",
+    "Salesforce",
+    "DE Shaw",
+    "Infosys"
+  ]
 }

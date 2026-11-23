@@ -1767,5 +1767,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "linked-list-cycle"
+  "nextSlug": "linked-list-cycle",
+  "companies": [
+    "Walmart Labs",
+    "Amazon",
+    "Samsung",
+    "LinkedIn",
+    "TCS"
+  ]
 }

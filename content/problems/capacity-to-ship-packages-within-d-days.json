@@ -940,5 +940,12 @@
   ],
   "sequence": 4,
   "prevSlug": "sqrt-x",
-  "nextSlug": "find-minimum-in-rotated-sorted-array"
+  "nextSlug": "find-minimum-in-rotated-sorted-array",
+  "companies": [
+    "Flipkart",
+    "Google",
+    "Walmart Labs",
+    "Visa",
+    "Goldman Sachs"
+  ]
 }

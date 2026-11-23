@@ -2768,5 +2768,12 @@
   ],
   "sequence": 26,
   "prevSlug": "reconstruct-itinerary",
-  "nextSlug": "shortest-path-in-a-grid-with-obstacles-elimination"
+  "nextSlug": "shortest-path-in-a-grid-with-obstacles-elimination",
+  "companies": [
+    "Microsoft",
+    "ByteDance",
+    "DoorDash",
+    "Uber",
+    "TikTok"
+  ]
 }

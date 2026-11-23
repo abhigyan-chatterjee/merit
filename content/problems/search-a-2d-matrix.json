@@ -2627,5 +2627,12 @@
   ],
   "sequence": 11,
   "prevSlug": "random-pick-with-weight",
-  "nextSlug": "search-in-rotated-sorted-array"
+  "nextSlug": "search-in-rotated-sorted-array",
+  "companies": [
+    "TCS",
+    "Google",
+    "SAP",
+    "PayPal",
+    "DE Shaw"
+  ]
 }

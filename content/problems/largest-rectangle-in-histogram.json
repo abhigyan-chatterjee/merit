@@ -944,5 +944,12 @@
   ],
   "sequence": 23,
   "prevSlug": "number-of-visible-people-in-a-queue",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Flipkart",
+    "Meta",
+    "Salesforce",
+    "LinkedIn",
+    "Cisco"
+  ]
 }

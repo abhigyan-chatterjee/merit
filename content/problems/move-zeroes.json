@@ -1620,5 +1620,12 @@
   ],
   "sequence": 11,
   "prevSlug": "missing-number",
-  "nextSlug": "remove-duplicates-sorted"
+  "nextSlug": "remove-duplicates-sorted",
+  "companies": [
+    "Cognizant",
+    "Apple",
+    "Wipro",
+    "Intuit",
+    "Qualcomm"
+  ]
 }

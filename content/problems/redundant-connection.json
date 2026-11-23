@@ -3556,5 +3556,12 @@
   ],
   "sequence": 16,
   "prevSlug": "pacific-atlantic-water-flow",
-  "nextSlug": "rotting-oranges"
+  "nextSlug": "rotting-oranges",
+  "companies": [
+    "Google",
+    "Amazon",
+    "Oracle",
+    "Apple",
+    "Microsoft"
+  ]
 }

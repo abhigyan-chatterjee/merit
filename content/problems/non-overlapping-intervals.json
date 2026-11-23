@@ -1953,5 +1953,12 @@
   ],
   "sequence": 5,
   "prevSlug": "merge-intervals",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "IBM",
+    "Microsoft",
+    "PayPal",
+    "Visa",
+    "TCS"
+  ]
 }

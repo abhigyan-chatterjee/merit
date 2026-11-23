@@ -886,5 +886,12 @@
   ],
   "sequence": 21,
   "prevSlug": "surrounded-regions",
-  "nextSlug": "bus-routes"
+  "nextSlug": "bus-routes",
+  "companies": [
+    "Microsoft",
+    "Walmart Labs",
+    "Intuit",
+    "Airbnb",
+    "Uber"
+  ]
 }

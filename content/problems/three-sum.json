@@ -1352,5 +1352,12 @@
   ],
   "sequence": 18,
   "prevSlug": "string-compression",
-  "nextSlug": "trapping-rain-water"
+  "nextSlug": "trapping-rain-water",
+  "companies": [
+    "Accenture",
+    "Microsoft",
+    "Infosys",
+    "Flipkart",
+    "Zoho"
+  ]
 }

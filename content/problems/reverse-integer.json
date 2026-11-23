@@ -224,5 +224,12 @@
   ],
   "sequence": 9,
   "prevSlug": "pow-x-n",
-  "nextSlug": "rotate-image"
+  "nextSlug": "rotate-image",
+  "companies": [
+    "Wipro",
+    "Google",
+    "Capgemini",
+    "Adobe",
+    "Uber"
+  ]
 }

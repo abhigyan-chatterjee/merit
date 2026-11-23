@@ -482,5 +482,12 @@
   ],
   "sequence": 13,
   "prevSlug": "sudoku-solver",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Meta",
+    "ServiceNow",
+    "Uber",
+    "Visa",
+    "Oracle"
+  ]
 }

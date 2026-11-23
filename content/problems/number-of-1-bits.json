@@ -281,5 +281,12 @@
   ],
   "sequence": 1,
   "prevSlug": null,
-  "nextSlug": "power-of-two"
+  "nextSlug": "power-of-two",
+  "companies": [
+    "IBM",
+    "Apple",
+    "Nvidia",
+    "Qualcomm",
+    "Meta"
+  ]
 }

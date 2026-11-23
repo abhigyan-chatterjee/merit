@@ -1050,5 +1050,12 @@
   ],
   "sequence": 6,
   "prevSlug": "decode-ways",
-  "nextSlug": "house-robber"
+  "nextSlug": "edit-distance",
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "Morgan Stanley",
+    "Infosys",
+    "Accenture"
+  ]
 }

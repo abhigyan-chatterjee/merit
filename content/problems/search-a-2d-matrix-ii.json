@@ -3043,5 +3043,12 @@
   ],
   "sequence": 26,
   "prevSlug": "rotate-array",
-  "nextSlug": "second-highest-salary"
+  "nextSlug": "second-highest-salary",
+  "companies": [
+    "Zomato",
+    "Google",
+    "PayPal",
+    "Goldman Sachs",
+    "Oracle"
+  ]
 }

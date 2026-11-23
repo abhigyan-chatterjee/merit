@@ -239,5 +239,12 @@
   ],
   "sequence": 6,
   "prevSlug": "merge-two-sorted-lists",
-  "nextSlug": "squares-of-sorted-array"
+  "nextSlug": "squares-of-sorted-array",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "Qualcomm",
+    "Wipro",
+    "Goldman Sachs"
+  ]
 }

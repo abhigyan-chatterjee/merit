@@ -523,5 +523,12 @@
   ],
   "sequence": 25,
   "prevSlug": "making-a-large-island",
-  "nextSlug": "shortest-distance-from-all-buildings"
+  "nextSlug": "shortest-distance-from-all-buildings",
+  "companies": [
+    "PhonePe",
+    "Amazon",
+    "Citadel",
+    "Walmart Labs",
+    "Flipkart"
+  ]
 }

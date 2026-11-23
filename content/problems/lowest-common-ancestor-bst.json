@@ -585,7 +585,14 @@
       "isReference": true
     }
   ],
-  "sequence": 8,
+  "sequence": 9,
   "prevSlug": "amount-of-time-for-binary-tree-to-be-infected",
-  "nextSlug": "binary-tree-zigzag-level-order-traversal"
+  "nextSlug": "binary-tree-zigzag-level-order-traversal",
+  "companies": [
+    "Zoho",
+    "Meta",
+    "TCS",
+    "Accenture",
+    "Flipkart"
+  ]
 }

@@ -1219,5 +1219,12 @@
   ],
   "sequence": 3,
   "prevSlug": "fibonacci-number",
-  "nextSlug": "coin-change"
+  "nextSlug": "coin-change",
+  "companies": [
+    "Zoho",
+    "Apple",
+    "Goldman Sachs",
+    "Accenture",
+    "Wipro"
+  ]
 }

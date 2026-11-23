@@ -1052,7 +1052,14 @@
       "isReference": true
     }
   ],
-  "sequence": 7,
+  "sequence": 8,
   "prevSlug": "all-nodes-distance-k-in-binary-tree",
-  "nextSlug": "lowest-common-ancestor-bst"
+  "nextSlug": "lowest-common-ancestor-bst",
+  "companies": [
+    "PhonePe",
+    "Google",
+    "Goldman Sachs",
+    "ServiceNow",
+    "Uber"
+  ]
 }

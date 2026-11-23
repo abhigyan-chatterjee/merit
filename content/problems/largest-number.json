@@ -412,5 +412,12 @@
   ],
   "sequence": 3,
   "prevSlug": "minimum-absolute-difference",
-  "nextSlug": "sort-an-array"
+  "nextSlug": "sort-an-array",
+  "companies": [
+    "TCS",
+    "Amazon",
+    "ServiceNow",
+    "Infosys",
+    "Adobe"
+  ]
 }

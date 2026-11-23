@@ -1039,5 +1039,12 @@
   ],
   "sequence": 17,
   "prevSlug": "remove-k-digits",
-  "nextSlug": "daily-temperatures"
+  "nextSlug": "daily-temperatures",
+  "companies": [
+    "Accenture",
+    "Apple",
+    "Morgan Stanley",
+    "Infosys",
+    "Flipkart"
+  ]
 }

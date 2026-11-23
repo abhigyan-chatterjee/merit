@@ -135,5 +135,12 @@
   ],
   "sequence": 11,
   "prevSlug": "n-queens-count",
-  "nextSlug": "sudoku-solver"
+  "nextSlug": "sudoku-solver",
+  "companies": [
+    "Zoho",
+    "Microsoft",
+    "Adobe",
+    "Oracle",
+    "Goldman Sachs"
+  ]
 }

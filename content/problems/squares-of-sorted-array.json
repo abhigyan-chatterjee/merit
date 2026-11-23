@@ -1559,5 +1559,12 @@
   ],
   "sequence": 7,
   "prevSlug": "reverse-string",
-  "nextSlug": "valid-palindrome"
+  "nextSlug": "valid-palindrome",
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Adobe",
+    "Cognizant",
+    "Zoho"
+  ]
 }

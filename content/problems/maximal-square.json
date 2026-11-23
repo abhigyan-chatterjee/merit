@@ -2877,7 +2877,14 @@
       "isReference": true
     }
   ],
-  "sequence": 13,
+  "sequence": 14,
   "prevSlug": "longest-string-chain",
-  "nextSlug": "maximum-product-subarray"
+  "nextSlug": "maximum-product-subarray",
+  "companies": [
+    "Flipkart",
+    "Apple",
+    "SAP",
+    "PhonePe",
+    "Nvidia"
+  ]
 }

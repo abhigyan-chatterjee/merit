@@ -1853,5 +1853,12 @@
   ],
   "sequence": 22,
   "prevSlug": "maximal-rectangle",
-  "nextSlug": "largest-rectangle-in-histogram"
+  "nextSlug": "largest-rectangle-in-histogram",
+  "companies": [
+    "Meesho",
+    "Amazon",
+    "ServiceNow",
+    "Nvidia",
+    "LinkedIn"
+  ]
 }

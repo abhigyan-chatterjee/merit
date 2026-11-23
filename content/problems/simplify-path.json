@@ -251,5 +251,12 @@
   ],
   "sequence": 9,
   "prevSlug": "basic-calculator-ii",
-  "nextSlug": "asteroid-collision"
+  "nextSlug": "asteroid-collision",
+  "companies": [
+    "IBM",
+    "Meta",
+    "Snowflake",
+    "Nvidia",
+    "Visa"
+  ]
 }

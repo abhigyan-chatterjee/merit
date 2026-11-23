@@ -2867,5 +2867,12 @@
   ],
   "sequence": 22,
   "prevSlug": "alien-dictionary",
-  "nextSlug": "longest-increasing-path-in-a-matrix"
+  "nextSlug": "longest-increasing-path-in-a-matrix",
+  "companies": [
+    "Walmart Labs",
+    "Bloomberg",
+    "PhonePe",
+    "Uber",
+    "Salesforce"
+  ]
 }

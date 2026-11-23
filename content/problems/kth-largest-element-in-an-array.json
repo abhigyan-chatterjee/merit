@@ -1100,5 +1100,12 @@
   ],
   "sequence": 4,
   "prevSlug": "k-closest-points-to-origin",
-  "nextSlug": "task-scheduler"
+  "nextSlug": "task-scheduler",
+  "companies": [
+    "Deloitte",
+    "Apple",
+    "Accenture",
+    "Oracle",
+    "Morgan Stanley"
+  ]
 }

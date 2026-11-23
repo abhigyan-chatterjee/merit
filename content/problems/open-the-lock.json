@@ -889,5 +889,12 @@
   ],
   "sequence": 14,
   "prevSlug": "number-of-islands",
-  "nextSlug": "pacific-atlantic-water-flow"
+  "nextSlug": "pacific-atlantic-water-flow",
+  "companies": [
+    "Amazon",
+    "DE Shaw",
+    "Uber",
+    "Goldman Sachs",
+    "LinkedIn"
+  ]
 }

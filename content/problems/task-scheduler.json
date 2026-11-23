@@ -1069,5 +1069,12 @@
   ],
   "sequence": 5,
   "prevSlug": "kth-largest-element-in-an-array",
-  "nextSlug": "top-k-frequent-words"
+  "nextSlug": "top-k-frequent-words",
+  "companies": [
+    "TCS",
+    "Bloomberg",
+    "LinkedIn",
+    "Snowflake",
+    "Walmart Labs"
+  ]
 }

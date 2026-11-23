@@ -522,7 +522,14 @@
       "isReference": true
     }
   ],
-  "sequence": 19,
+  "sequence": 20,
   "prevSlug": "unique-paths",
-  "nextSlug": "best-time-to-buy-and-sell-stock-iii"
+  "nextSlug": "best-time-to-buy-and-sell-stock-iii",
+  "companies": [
+    "Walmart Labs",
+    "Microsoft",
+    "Intuit",
+    "Visa",
+    "Uber"
+  ]
 }

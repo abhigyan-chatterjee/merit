@@ -3116,5 +3116,12 @@
   ],
   "sequence": 32,
   "prevSlug": "top-k-frequent-elements",
-  "nextSlug": "first-missing-positive"
+  "nextSlug": "first-missing-positive",
+  "companies": [
+    "Zoho",
+    "Apple",
+    "PayPal",
+    "Walmart Labs",
+    "Goldman Sachs"
+  ]
 }

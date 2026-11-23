@@ -939,5 +939,14 @@
   ],
   "sequence": 19,
   "prevSlug": "three-sum",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "PayU",
+    "Google",
+    "Flipkart",
+    "SAP",
+    "Uber",
+    "Visa",
+    "ServiceNow"
+  ]
 }

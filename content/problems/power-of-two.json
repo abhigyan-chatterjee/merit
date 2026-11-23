@@ -289,5 +289,12 @@
   ],
   "sequence": 2,
   "prevSlug": "number-of-1-bits",
-  "nextSlug": "reverse-bits"
+  "nextSlug": "reverse-bits",
+  "companies": [
+    "TCS",
+    "Google",
+    "Qualcomm",
+    "Goldman Sachs",
+    "Nvidia"
+  ]
 }

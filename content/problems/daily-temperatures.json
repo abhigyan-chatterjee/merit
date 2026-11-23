@@ -1636,5 +1636,12 @@
   ],
   "sequence": 18,
   "prevSlug": "sum-of-subarray-minimums",
-  "nextSlug": "basic-calculator"
+  "nextSlug": "basic-calculator",
+  "companies": [
+    "Accenture",
+    "Bloomberg",
+    "SAP",
+    "ServiceNow",
+    "Intuit"
+  ]
 }

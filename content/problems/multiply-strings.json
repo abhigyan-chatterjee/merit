@@ -269,5 +269,12 @@
   ],
   "sequence": 7,
   "prevSlug": "count-primes",
-  "nextSlug": "pow-x-n"
+  "nextSlug": "pow-x-n",
+  "companies": [
+    "Zoho",
+    "Google",
+    "ByteDance",
+    "Oracle",
+    "Two Sigma"
+  ]
 }

@@ -800,5 +800,12 @@
   ],
   "sequence": 27,
   "prevSlug": "search-a-2d-matrix-ii",
-  "nextSlug": "sort-characters-by-frequency"
+  "nextSlug": "sort-characters-by-frequency",
+  "companies": [
+    "Deloitte",
+    "Google",
+    "Cognizant",
+    "Oracle",
+    "Capgemini"
+  ]
 }

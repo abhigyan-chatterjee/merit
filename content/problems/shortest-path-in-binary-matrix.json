@@ -2516,5 +2516,12 @@
   ],
   "sequence": 19,
   "prevSlug": "shortest-bridge",
-  "nextSlug": "surrounded-regions"
+  "nextSlug": "surrounded-regions",
+  "companies": [
+    "Amazon",
+    "Airbnb",
+    "Goldman Sachs",
+    "Uber",
+    "Databricks"
+  ]
 }

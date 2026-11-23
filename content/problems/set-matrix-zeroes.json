@@ -6379,5 +6379,12 @@
   ],
   "sequence": 11,
   "prevSlug": "rotate-image",
-  "nextSlug": "spiral-matrix"
+  "nextSlug": "spiral-matrix",
+  "companies": [
+    "Walmart Labs",
+    "Google",
+    "Nvidia",
+    "ServiceNow",
+    "TCS"
+  ]
 }

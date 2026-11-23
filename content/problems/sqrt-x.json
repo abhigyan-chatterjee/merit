@@ -215,5 +215,12 @@
   ],
   "sequence": 3,
   "prevSlug": "search-insert-position",
-  "nextSlug": "capacity-to-ship-packages-within-d-days"
+  "nextSlug": "capacity-to-ship-packages-within-d-days",
+  "companies": [
+    "Infosys",
+    "Google",
+    "Nvidia",
+    "TCS",
+    "Oracle"
+  ]
 }

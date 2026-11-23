@@ -1050,5 +1050,12 @@
   ],
   "sequence": 10,
   "prevSlug": "valid-parenthesis-string",
-  "nextSlug": "text-justification"
+  "nextSlug": "text-justification",
+  "companies": [
+    "PhonePe",
+    "Amazon",
+    "SAP",
+    "Morgan Stanley",
+    "Intuit"
+  ]
 }

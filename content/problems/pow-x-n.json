@@ -331,5 +331,12 @@
   ],
   "sequence": 8,
   "prevSlug": "multiply-strings",
-  "nextSlug": "reverse-integer"
+  "nextSlug": "reverse-integer",
+  "companies": [
+    "Infosys",
+    "Meta",
+    "Qualcomm",
+    "Cisco",
+    "Nvidia"
+  ]
 }

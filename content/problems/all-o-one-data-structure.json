@@ -2222,5 +2222,12 @@
   ],
   "sequence": 6,
   "prevSlug": "simple-bank-system",
-  "nextSlug": null
+  "nextSlug": null,
+  "companies": [
+    "Apple",
+    "Atlassian",
+    "Uber",
+    "Airbnb",
+    "LinkedIn"
+  ]
 }

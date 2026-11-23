@@ -267,7 +267,14 @@
       "isReference": true
     }
   ],
-  "sequence": 9,
+  "sequence": 10,
   "prevSlug": "house-robber-ii",
-  "nextSlug": "longest-increasing-subsequence"
+  "nextSlug": "longest-increasing-subsequence",
+  "companies": [
+    "VMware",
+    "Walmart Labs",
+    "Apple",
+    "Cisco",
+    "Morgan Stanley"
+  ]
 }
