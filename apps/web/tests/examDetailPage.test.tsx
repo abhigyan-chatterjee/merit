@@ -66,6 +66,7 @@ function renderExam(id = 'foundational-dsa', signedIn = false) {
 describe('ExamDetailPage', () => {
   beforeEach(() => {
     window.localStorage.clear();
+    window.sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -103,5 +104,38 @@ describe('ExamDetailPage', () => {
 
     // The countdown appears with an accessible label naming the time left.
     expect(await screen.findByLabelText(/Time remaining \d+:\d\d/i)).toBeInTheDocument();
+  });
+
+  it('gives 2 grace warnings on blur/tab switch before auto-submitting on the 3rd event', async () => {
+    stubFetch({ signedIn: true });
+    renderExam();
+
+    const start = await screen.findByRole('button', { name: /Start timed exam/i });
+    fireEvent.click(start);
+
+    // Event 1: warning 1
+    fireEvent.blur(window);
+    expect(await screen.findByText(/Warning 1 of 2/i)).toBeInTheDocument();
+
+    // Event 2: warning 2
+    fireEvent.blur(window);
+    expect(await screen.findByText(/Warning 2 of 2/i)).toBeInTheDocument();
+
+    // Event 3: auto-submit
+    fireEvent.blur(window);
+    expect(await screen.findByText(/Exam auto-submitted/i)).toBeInTheDocument();
+  });
+
+  it('restores active exam countdown and warnings from sessionStorage on refresh', async () => {
+    stubFetch({ signedIn: true });
+    const endAtMs = Date.now() + 1200 * 1000;
+    window.sessionStorage.setItem(
+      'merit_exam_foundational-dsa',
+      JSON.stringify({ started: true, endAtMs, warnings: 1 })
+    );
+
+    renderExam('foundational-dsa', true);
+
+    expect(await screen.findByLabelText(/Time remaining (19:\d\d|20:00)/i)).toBeInTheDocument();
   });
 });

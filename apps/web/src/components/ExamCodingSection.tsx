@@ -160,7 +160,7 @@ export const ExamCodingSection: React.FC<{
               </div>
             )}
           </div>
-          {item.testCases.length > 0 ? (
+          {item.testCases.length > 0 || item.statement || item.starterCode ? (
             <CodeRunner
               problemSlug={item.slug}
               starterCode={item.starterCode}
@@ -168,7 +168,6 @@ export const ExamCodingSection: React.FC<{
               starterCodeJava={item.starterCodeJava}
               starterCodeCpp={item.starterCodeCpp}
               functionName={item.functionName}
-              testCases={item.testCases}
               onVerdict={(passed) => {
                 setItems((prev) =>
                   prev.map((p) => (p.slug === item.slug ? { ...p, passed: passed ? true : false } : p)),

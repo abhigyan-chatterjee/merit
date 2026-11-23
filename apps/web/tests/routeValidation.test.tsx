@@ -77,9 +77,8 @@ describe('Route Validation & 404 Handling (D5)', () => {
       },
       { timeout: 10000 }
     );
-    // Guest with no static bank for aptitude: honest empty-state, never a 404.
-    expect(await screen.findByText('No Questions Available', {}, { timeout: 10000 })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Aptitude/i })).toBeInTheDocument();
+    // Aptitude now ships a static quiz bank: a live quiz renders, never a 404.
+    expect(await screen.findByText(/Question 1 of 10/i, {}, { timeout: 10000 })).toBeInTheDocument();
   }, 20000);
 
   it('serves a live quiz instead of 404 for unknown quiz topic', async () => {

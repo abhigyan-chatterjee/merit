@@ -76,9 +76,9 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
         durationSec,
         topicPlan,
       );
-      const loaded = response.questions as ExamQuestion[];
+      const loaded = (response?.questions || []) as ExamQuestion[];
       setQuestions(loaded);
-      setAttemptId(response.attempt_id || null);
+      setAttemptId(response?.attempt_id || null);
       callbacksRef.current.onQuestionIdsChange(loaded.map((question) => question.id));
       callbacksRef.current.onAnswersChange({});
       callbacksRef.current.onCurrentIndexChange(0);
@@ -144,9 +144,6 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
     if (isAutoSubmitRequested) void submitExam();
   }, [isAutoSubmitRequested, submitExam]);
 
-  const currentQuestion = questions[currentIndex];
-  const answered = Object.keys(answers).length;
-
   if (isLoading) {
     return <div role="status" className="rounded-xl border border-line bg-surface p-6 text-sm text-muted">Loading exam questions…</div>;
   }
@@ -162,9 +159,12 @@ export const ExamMcqSection: React.FC<ExamMcqSectionProps> = ({
     );
   }
 
+  const currentQuestion = questions[currentIndex];
+  const answered = Object.keys(answers).length;
+
   if (submitted && result) {
     return (
-      <section aria-label={`${examTitle} result`} className="rounded-xl border border-mint/40 bg-surface p-6 space-y-5">
+      <section role="status" aria-label={`${examTitle} result`} className="rounded-xl border border-mint/40 bg-surface p-6 space-y-5">
         <div>
           <h2 className="text-lg font-bold text-ink">Exam Result</h2>
           <p className="mt-1 text-3xl font-bold text-mint">{result.scorePct}%</p>
