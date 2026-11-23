@@ -1,0 +1,16 @@
+**/scrap-*.json
+.netnew
+.signature-batches
+load-tests
+design ideas
+.hermes
+.judge
+.env
+apps/api/.venv
+apps/api/*.db*
+apps/web/node_modules
+apps/web/dist
+.git
+**/__pycache__
+**/.pytest_cache
+test-results
