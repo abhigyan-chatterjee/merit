@@ -1,7 +1,7 @@
-# Merit Production Handoff — Clerk OAuth (Google/GitHub)
+# Merit Production Handoff — Clerk OAuth (Google/GitHub/Microsoft)
 
 Password login is untouched. This doc covers enabling **Sign in with
-Google/GitHub via Clerk**, linked to existing Merit accounts.
+Google/GitHub/Microsoft via Clerk**, linked to existing Merit accounts.
 
 How it works:
 
@@ -25,11 +25,11 @@ How it works:
 ## 1. Clerk dashboard steps (owner)
 
 1. Go to <https://dashboard.clerk.com> → **Create application** (name it
-   e.g. `Merit`), choose Google + GitHub as social options at creation
+   e.g. `Merit`), choose Google + GitHub + Microsoft as social options at creation
    (or add later).
-2. **Enable Google + GitHub:**
+2. **Enable Google + GitHub + Microsoft:**
    Configure → **SSO connections** (a.k.a. Social connections) → enable
-   **Google** and **GitHub**. For production, supply your own Google OAuth
+   **Google**, **GitHub** and **Microsoft**. For production, supply your own Google OAuth
    Client ID/secret and GitHub OAuth App Client ID/secret on those pages;
    Clerk's shared dev keys only work on Clerk dev domains.
 3. **Copy the keys** (Configure → **API keys**):
@@ -89,6 +89,18 @@ How it works:
 7. Restart both servers (`uvicorn app.main:app --reload --port 8000` and
    `npm run dev`), hard-refresh the browser, and confirm the
    “or continue with Google / GitHub” block appears on `/login`.
+
+### 1.1 Linking an existing password account (`POST /oauth/clerk/link`)
+
+Password accounts are never auto-linked on email match (that would let anyone
+who registered a victim's email keep the password). Instead:
+
+1. Sign in with the password (issues `merit_access`/`merit_refresh` cookies).
+2. While signed in, POST `{clerk_token}` to `/api/v1/auth/oauth/clerk/link`
+   with those cookies. The OAuth email must equal the account email
+   (`409 OAUTH_EMAIL_MISMATCH` otherwise) and the Clerk identity must not
+   already be linked elsewhere (`409 OAUTH_ALREADY_LINKED`).
+3. The response confirms `has_clerk_linked: true` on the user object.
 
 ## 2. Owner verification (owner executes — real token, live keys)
 
@@ -293,7 +305,7 @@ Set these in the **compose-root** `/home/ubuntu/merit/.env` (see section 1):
 JUDGE_URL=https://merit-judge-light-<hash>-as.a.run.app
 JUDGE_HEAVY_URL=https://merit-judge-heavy-<hash>-as.a.run.app
 GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/judge-sa.json
-JUDGE_TIMEOUT_SEC=60
+JUDGE_TIMEOUT_SEC=180
 ```
 
 `JUDGE_HEAVY_URL` is the Java/C++ tier and is optional — but until it is set,

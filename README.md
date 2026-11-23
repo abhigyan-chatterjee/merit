@@ -21,8 +21,8 @@ graph TD
     Client["Browser Client (React 19 + TypeScript + Tailwind 4)"]
     
     subgraph Edge & Auth
-        Clerk["Clerk OAuth (Google / GitHub)"]
-        Caddy["Caddy Reverse Proxy (TLS + Rate Limiting)"]
+        Clerk["Clerk OAuth (Google / GitHub / Microsoft)"]
+        Edge["Host Reverse Proxy (TLS + Rate Limiting)"]
     end
     
     subgraph Application Stack
@@ -38,8 +38,8 @@ graph TD
     end
 
     Client -->|OAuth Session| Clerk
-    Client -->|HTTPS Traffic| Caddy
-    Caddy -->|Reverse Proxy| API
+    Client -->|HTTPS Traffic| Edge
+    Edge -->|Reverse Proxy| API
     API -->|Dialect-Aware Queries| DB
     API -->|Authenticated Invoke| JudgeLight
     API -->|Authenticated Invoke| JudgeHeavy
@@ -76,8 +76,8 @@ graph TD
 * **341 Verified Multiple-Choice Questions**: High-yield conceptual quizzes with timed locks, detailed explanations, and anti-pattern analysis.
 
 ### 4. Zero-Liability BYOK AI Tutor
-* **Bring Your Own Key**: Works with free Gemini API keys, OpenAI, Anthropic, DeepSeek, and Groq.
-* **Zero Server Storage**: API keys reside strictly on the user's client device and are transmitted ephemerally to the tutor proxy.
+* **Bring Your Own Key**: Presets for OpenAI, Gemini (OpenAI-compatible) and Groq; any OpenAI-compatible endpoint works via a custom base URL.
+* **Zero Server Storage**: The key is kept in `sessionStorage` (single-tab lifetime, never `localStorage`) and is sent ephemerally through the Merit tutor proxy to the chosen provider; the server does not persist it.
 * **Chain-of-Thought Sanitization**: Backend and frontend filters strip internal reasoning tags (`<thought>`, `<think>`) to ensure clean, pedagogical hints without leaking solutions.
 
 ### 5. In-App Bug & Test Case Feedback Webform
@@ -101,7 +101,7 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 | **merit-web** | `64MB` | `32MB` | Production Nginx serving gzip-compressed single-page app |
 | **Cloud Run judge-light** | — | — | Sandboxed Python / JavaScript execution, off-host in its own container |
 | **Cloud Run judge-heavy** | — | — | Adds JDK and g++, so Java and C++ compile before they run |
-| **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, Caddy TLS terminator, other host apps |
+| **OS & Buffer** | `~610MB` | — | Kernel headroom, swap cache, host TLS terminator, other host apps |
 
 * **Total Memory Budget**: Stack caps itself at **414MB**, leaving ample headroom on a 1GB host.
 * **Dialect-Aware Persistence**: Zero-configuration SQLite for local offline development; automatic dialect branching for Neon Serverless PostgreSQL with atomic upserts in production.
@@ -133,7 +133,6 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 │   ├── generators/          # Problem Authoring Framework (PAF) & TS sync scripts
 │   └── validators/          # Automated content & reference solution AC gates
 ├── docker-compose.yml       # Production multi-container composition
-└── Caddyfile                # Reverse proxy with automatic HTTPS
 ```
 
 ---
@@ -142,7 +141,7 @@ Merit is intentionally architected to operate **free of cloud compute costs**: t
 
 ### Prerequisites
 * **Node.js**: v20+
-* **Python**: v3.11+
+* **Python**: 3.12+
 * **Docker & Docker Compose** (optional, for full sandboxed judge)
 
 ### 1. Clone the Repository
