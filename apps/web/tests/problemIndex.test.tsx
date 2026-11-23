@@ -54,7 +54,7 @@ describe('ProblemListPage', () => {
     renderPage();
     expandArrays();
 
-    expect(screen.getByText('Starred')).toBeInTheDocument();
+    expect(screen.getByText('Starred', { selector: 'div' })).toBeInTheDocument();
     expect(screen.getByText('0', { selector: 'div' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Add bookmark for Two Sum' }));
 

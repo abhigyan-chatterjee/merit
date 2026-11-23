@@ -5,6 +5,8 @@ import {
   GitCommit,
   Network,
   Cpu,
+  Briefcase,
+  Target,
   ChevronRight,
   Layers,
   Code2,
@@ -25,6 +27,8 @@ const PATH_ICONS: Record<string, React.ComponentType<any>> = {
   GitCommit,
   Network,
   Cpu,
+  Briefcase,
+  Target,
 };
 const STEP_ICONS: Record<PathStep['type'], React.ComponentType<any>> = {
   visualizer: Layers,
@@ -170,6 +174,8 @@ export const GuidedPathDetailPage: React.FC = () => {
   const nextIndex = stepStatus.findIndex((s) => s.next);
   const nextStep = nextIndex !== -1 ? steps[nextIndex] : null;
   const nextResolved = nextStep ? resolveStep(nextStep) : null;
+  const stepHref = (link: string, idx: number) =>
+    `${link}${link.includes('?') ? '&' : '?'}path=${id}&step=${idx}`;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -205,7 +211,7 @@ export const GuidedPathDetailPage: React.FC = () => {
       {/* Next step CTA */}
       {nextResolved && (
         <Link
-          to={`${nextResolved.link}?path=${id}&step=${nextIndex}`}
+          to={stepHref(nextResolved.link, nextIndex)}
           className="group flex items-center gap-4 p-4 rounded-xl border border-mint/40 bg-mint/5 hover:bg-mint/10 transition-colors"
         >
           <div className="w-9 h-9 rounded-lg bg-mint grid place-items-center text-canvas shrink-0">
@@ -259,7 +265,7 @@ export const GuidedPathDetailPage: React.FC = () => {
               {/* step body */}
               <div className="flex-1 min-w-0 pb-4">
                 <Link
-                  to={`${resolved.link}?path=${id}&step=${i}`}
+                  to={stepHref(resolved.link, i)}
                   className="block group"
                 >
                   <div className="flex items-baseline gap-3 min-w-0">

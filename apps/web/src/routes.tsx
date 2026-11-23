@@ -76,6 +76,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/visualizers/:id" element={<VisualizerDetailPage />} />
         <Route path="/learn" element={<GuidedPathsPage />} />
         <Route path="/learn/:id" element={<GuidedPathDetailPage />} />
+        <Route path="/problems" element={<ProblemListPage />} />
         <Route path="/problems/:topic" element={<ProblemListPage />} />
         <Route path="/problems/:topic/:slug" element={<ProblemDetailPage />} />
         <Route path="/quiz/:topic" element={<QuizPage />} />

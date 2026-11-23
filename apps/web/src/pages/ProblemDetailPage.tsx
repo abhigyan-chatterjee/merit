@@ -30,6 +30,7 @@ export const ProblemDetailPage: React.FC = () => {
 
   const problem = PROBLEMS.find((p) => p.slug === slug && p.topic === topic);
   const [hintsOpen, setHintsOpen] = useState(false);
+  const [showAllCompanies, setShowAllCompanies] = useState(false);
   const [editorialOpen, setEditorialOpen] = useState(false);
   const [activeSolutionTab, setActiveSolutionTab] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<'statement' | 'editor'>('statement');
@@ -125,6 +126,28 @@ export const ProblemDetailPage: React.FC = () => {
                 {problem.pattern}
               </span>
             </div>
+            {(problem.companies ?? []).length > 0 && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-label="Companies that ask this problem">
+                {(showAllCompanies ? problem.companies : problem.companies.slice(0, 6)).map((company) => (
+                  <Link
+                    key={company}
+                    to={`/problems?company=${encodeURIComponent(company)}`}
+                    className="rounded border border-line bg-canvas px-1.5 py-0.5 text-[10px] font-mono text-muted hover:text-mint hover:border-mint transition"
+                  >
+                    {company}
+                  </Link>
+                ))}
+                {problem.companies.length > 6 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllCompanies((current) => !current)}
+                    className="px-1 py-0.5 text-[10px] font-mono text-mint hover:text-ink"
+                  >
+                    {showAllCompanies ? 'Show less' : `+${problem.companies.length - 6} more`}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

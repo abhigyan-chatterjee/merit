@@ -8,6 +8,8 @@ import { PROBLEMS } from '../src/data/problems';
 import { TOPICS } from '../src/data/curriculum';
 import { LEARNING_PATHS } from '../src/data/learningPaths';
 
+const FOUNDATION = LEARNING_PATHS.find((p) => p.id === 'foundation')!;
+
 function mockFetch(user: boolean) {
   vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
@@ -81,8 +83,10 @@ describe('DashboardPage Honest Initial State (D7)', () => {
     );
 
     const foundation = screen.getByText('Foundation').closest('a');
+    const done = 4;
+    const pct = Math.round((done / FOUNDATION.steps.length) * 100);
     expect(foundation).toHaveTextContent(
-      `${LEARNING_PATHS[0].steps.length} steps · 4/21 complete · 19%`
+      `${FOUNDATION.steps.length} steps · ${done}/${FOUNDATION.steps.length} complete · ${pct}%`
     );
   });
 

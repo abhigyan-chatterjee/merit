@@ -402,7 +402,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============ FEATURES ============ */}
-      <section className="max-w-7xl mx-auto px-4 pt-6 pb-16 space-y-8">
+      <section className="max-w-7xl mx-auto px-4 pt-6 pb-8 space-y-8">
         <SectionLabel index="01" title="Capabilities" />
 
         {/* Broken grid on purpose. The synchronised pseudocode panel is the
@@ -476,7 +476,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============ HOW IT WORKS ============ */}
-      <section className="max-w-7xl mx-auto px-4 py-16 space-y-8">
+      <section className="max-w-7xl mx-auto px-4 pt-6 pb-12 space-y-8">
         <SectionLabel index="02" title="Method" />
 
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">

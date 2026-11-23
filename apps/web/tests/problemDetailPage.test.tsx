@@ -98,6 +98,37 @@ describe('ProblemDetailPage', () => {
     expect(screen.getByText(/Further reading/i)).toBeInTheDocument();
   });
 
+  it('links company badges to the company-filtered list', () => {
+    renderProblem();
+    expect(screen.getByRole('link', { name: 'TCS', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=TCS',
+    );
+    expect(screen.getByRole('link', { name: 'Infosys', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=Infosys',
+    );
+  });
+
+  it('expands all companies beyond six via +N more', () => {
+    renderProblem();
+    // Two Sum has 7 companies: 6 badges plus the expansion control.
+    expect(screen.queryByRole('link', { name: 'Goldman Sachs', exact: true })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '+1 more' }));
+    expect(screen.getByRole('link', { name: 'Goldman Sachs', exact: true })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    expect(screen.queryByRole('link', { name: 'Goldman Sachs', exact: true })).not.toBeInTheDocument();
+  });
+
+  it('does not offer expansion for six or fewer companies', () => {
+    renderProblem('/problems/stack/baseball-game');
+    expect(screen.getByRole('link', { name: 'Turing', exact: true })).toHaveAttribute(
+      'href',
+      '/problems?company=Turing',
+    );
+    expect(screen.queryByRole('button', { name: /\+\d+ more/ })).not.toBeInTheDocument();
+  });
+
   it('renders not-found for an unknown slug', () => {
     renderProblem('/problems/arrays-hashing/does-not-exist');
     expect(screen.getByText(/Problem Not Found/i)).toBeInTheDocument();

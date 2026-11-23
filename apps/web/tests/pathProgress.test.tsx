@@ -6,10 +6,13 @@ import { ProgressProvider } from '../src/store/ProgressContext';
 import { GuidedPathsPage, usePathProgress } from '../src/pages/GuidedPathsPage';
 import { renderHookForTest } from './testUtils';
 import { PROBLEMS } from '../src/data/problems';
+import { LEARNING_PATHS } from '../src/data/learningPaths';
 import { resolveStep } from '../src/utils/stepLink';
 import foundationPath from '../../../content/paths/foundation.json';
 import targetedPath from '../../../content/paths/targeted.json';
 import masteryPath from '../../../content/paths/mastery.json';
+
+const FOUNDATION = LEARNING_PATHS.find((p) => p.id === 'foundation')!;
 
 function renderPage() {
   return render(
@@ -49,10 +52,11 @@ describe('Path progress consistency (/learn cards)', () => {
     );
 
     const { result } = renderHookForTest(() => usePathProgress('foundation'));
-    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4/21
-    expect(result.current.done).toBe(4);
-    expect(result.current.total).toBe(21);
-    expect(result.current.pct).toBe(19);
+    // Foundation: array viz + two-sum + contains-duplicate + arrays-hashing quiz = 4 done
+    const done = 4;
+    expect(result.current.done).toBe(done);
+    expect(result.current.total).toBe(FOUNDATION.steps.length);
+    expect(result.current.pct).toBe(Math.round((done / FOUNDATION.steps.length) * 100));
   });
 
   it('renders one consistent percentage on the card (no 13% ghost)', () => {
@@ -76,12 +80,14 @@ describe('Path progress consistency (/learn cards)', () => {
     );
 
     renderPage();
+    const done = 4;
+    const pct = Math.round((done / FOUNDATION.steps.length) * 100);
     const card = screen.getByText('Foundation').closest('a')!;
-    const pcts = within(card).getAllByText('19%');
+    const pcts = within(card).getAllByText(`${pct}%`);
     expect(pcts.length).toBeGreaterThanOrEqual(1);
     const countLabel = within(card).getByText((_content, el) => {
       if (!el || el.children.length > 0) return false;
-      return (el.textContent ?? '').replace(/\s+/g, ' ').includes('4/21 complete');
+      return (el.textContent ?? '').replace(/\s+/g, ' ').includes(`${done}/${FOUNDATION.steps.length} complete`);
     });
     expect(countLabel).toBeInTheDocument();
   });

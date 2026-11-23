@@ -74,6 +74,54 @@ describe('Exams catalog', () => {
     expect(screen.getAllByText(/20 MCQs/i).length).toBeGreaterThanOrEqual(6);
   });
 
+  it('filters exams by category tab', async () => {
+    mockGuestFetch();
+    renderExams();
+    expect(await screen.findByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Recruiter Mocks/i }));
+    expect(screen.getByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+    expect(screen.getByText('Infosys SP & DSE Mock')).toBeInTheDocument();
+    expect(screen.getByText('Product OA Simulation')).toBeInTheDocument();
+    expect(screen.queryByText('Aptitude')).not.toBeInTheDocument();
+    expect(screen.queryByText('Foundational DSA')).not.toBeInTheDocument();
+    expect(screen.queryByText('Full Placement Mock')).not.toBeInTheDocument();
+    expect(screen.queryByText('Service Screening Mock')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^Screening$/i }));
+    expect(screen.getByText('Aptitude')).toBeInTheDocument();
+    expect(screen.getByText('Full Placement Mock')).toBeInTheDocument();
+    expect(screen.getByText('Service Screening Mock')).toBeInTheDocument();
+    expect(screen.queryByText('TCS NQT & Digital Mock')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /DSA Topics/i }));
+    expect(screen.getByText('Foundational DSA')).toBeInTheDocument();
+    expect(screen.getByText('Intermediate DSA')).toBeInTheDocument();
+    expect(screen.getByText('Sorting & Searching')).toBeInTheDocument();
+    expect(screen.getByText('DP & Greedy')).toBeInTheDocument();
+    expect(screen.getByText('Trees & Graphs')).toBeInTheDocument();
+    expect(screen.queryByText('Aptitude')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^All$/i }));
+    for (const exam of TARGETED_EXAMS) {
+      expect(screen.getByText(exam.title)).toBeInTheDocument();
+    }
+  });
+
+  it('shows a compact company badge on company exam cards', async () => {
+    mockGuestFetch();
+    renderExams();
+    expect(await screen.findByText('TCS NQT & Digital Mock')).toBeInTheDocument();
+    expect(screen.getByText('TCS')).toBeInTheDocument();
+    expect(screen.getByText('Infosys')).toBeInTheDocument();
+    expect(screen.getByText('Product')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /DSA Topics/i }));
+    expect(screen.queryByText('TCS')).not.toBeInTheDocument();
+    expect(screen.queryByText('Infosys')).not.toBeInTheDocument();
+    expect(screen.queryByText('Product')).not.toBeInTheDocument();
+  });
+
   it('routes an exam card to its timed detail page', async () => {
     mockGuestFetch();
     renderExams();

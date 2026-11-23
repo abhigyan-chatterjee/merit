@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { GuidedPathsPage } from '../src/pages/GuidedPathsPage';
 import { GuidedPathDetailPage } from '../src/pages/GuidedPathDetailPage';
@@ -46,6 +46,46 @@ describe('guided paths', () => {
     renderAt('/learn', <GuidedPathsPage />, '/learn');
     const card = screen.getByRole('link', { name: /Foundation/i });
     expect(within(card).getByText(/Start here/i)).toBeInTheDocument();
+  });
+
+  it('filters path cards by track tab', () => {
+    renderAt('/learn', <GuidedPathsPage />, '/learn');
+
+    fireEvent.click(screen.getByRole('button', { name: /^Foundational$/i }));
+    expect(screen.getByRole('link', { name: /Foundation/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /^Targeted/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /TCS/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Infosys/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Mastery/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Product/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Placement & Company/i }));
+    expect(screen.getByRole('link', { name: /^Targeted/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /TCS/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Infosys/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Foundation/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /Mastery/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^Specialised$/i }));
+    expect(screen.getByRole('link', { name: /Mastery/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Product/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /^Targeted/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^All$/i }));
+    for (const path of LEARNING_PATHS) {
+      expect(screen.getByRole('link', { name: new RegExp(path.title, 'i') })).toBeInTheDocument();
+    }
+  });
+
+  it('shows a compact step breakdown on each path card', () => {
+    renderAt('/learn', <GuidedPathsPage />, '/learn');
+    for (const path of LEARNING_PATHS) {
+      const counts: Record<string, number> = {};
+      for (const step of path.steps) counts[step.type] = (counts[step.type] ?? 0) + 1;
+      const card = screen.getByRole('link', { name: new RegExp(path.title, 'i') });
+      expect(within(card).getByText(new RegExp(`\\b${counts.problem} problems\\b`))).toBeInTheDocument();
+      expect(within(card).getByText(new RegExp(`\\b${counts.quiz} quizzes\\b`))).toBeInTheDocument();
+    }
   });
 
   it('shows not-found for an unknown path id', () => {
@@ -97,5 +137,21 @@ describe('guided paths', () => {
     expect(screen.getByText(new RegExp(`/${FOUNDATION.steps.length} complete`))).toBeInTheDocument();
     const pathCalls = fetchSpy.mock.calls.filter((c) => String(c[0]).includes('/paths/'));
     expect(pathCalls).toHaveLength(0);
+  });
+
+  it('appends path context with & when a mock step already has ?mock=true', () => {
+    const targeted = LEARNING_PATHS.find((p) => p.id === 'targeted')!;
+    const mockIdx = targeted.steps.findIndex((s) => s.type === 'mock');
+    expect(mockIdx).toBeGreaterThan(-1);
+
+    renderAt(`/learn/${targeted.id}`, <GuidedPathDetailPage />, '/learn/:id');
+
+    const mockLink = screen.getByRole('link', {
+      name: new RegExp(targeted.steps[mockIdx].title ?? 'mock', 'i'),
+    });
+    expect(mockLink).toHaveAttribute(
+      'href',
+      `/quiz/mixed?mock=true&path=${targeted.id}&step=${mockIdx}`,
+    );
   });
 });

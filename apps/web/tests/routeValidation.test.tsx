@@ -128,6 +128,14 @@ describe('Route Validation & 404 Handling (D5)', () => {
     expect(await screen.findByRole('heading', { name: 'Terms of Service' })).toBeInTheDocument();
   });
 
+  it('renders ProblemListPage for bare /problems?company=TCS without 404', async () => {
+    renderWithRouter('/problems?company=TCS');
+    expect(
+      await screen.findByRole('heading', { name: /Master the patterns/i }, { timeout: 10000 })
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('not-found-page')).not.toBeInTheDocument();
+  }, 15000);
+
   it('renders real problem when topic and slug match', async () => {
     renderWithRouter('/problems/arrays-hashing/two-sum');
     await waitFor(() => {

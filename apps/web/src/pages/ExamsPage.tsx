@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, ListChecks, Gauge } from 'lucide-react';
-import { TARGETED_EXAMS } from '../data/exams';
+import { Play, ListChecks, Gauge, Briefcase } from 'lucide-react';
+import { TARGETED_EXAMS, TargetedExam } from '../data/exams';
 import { TOPICS } from '../data/curriculum';
 import { Panel } from '../components/ui/Panel';
 
@@ -10,6 +10,13 @@ const LEVEL_TONE: Record<string, string> = {
   Intermediate: 'text-violet border-violet/40 bg-violet/10',
   Advanced: 'text-amber border-amber/40 bg-amber/10',
 };
+
+const CATEGORY_TABS: Array<{ id: TargetedExam['category'] | 'all'; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'company', label: 'Recruiter Mocks' },
+  { id: 'screening', label: 'Screening' },
+  { id: 'dsa', label: 'DSA Topics' },
+];
 
 const TOPIC_TITLES = new Map(TOPICS.map((t) => [t.slug, t.title]));
 const formatTopic = (slug: string) => TOPIC_TITLES.get(slug) ?? slug.replace(/-/g, ' ');
@@ -20,6 +27,9 @@ function formatDuration(sec: number): string {
 }
 
 export const ExamsPage: React.FC = () => {
+  const [category, setCategory] = useState<TargetedExam['category'] | 'all'>('all');
+  const exams = category === 'all' ? TARGETED_EXAMS : TARGETED_EXAMS.filter((e) => e.category === category);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       <div className="space-y-1.5">
@@ -33,8 +43,25 @@ export const ExamsPage: React.FC = () => {
         </p>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        {CATEGORY_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setCategory(tab.id)}
+            className={`px-3 py-1.5 rounded-lg border font-mono text-[11px] uppercase tracking-[0.12em] transition cursor-pointer ${
+              category === tab.id
+                ? 'bg-violet text-canvas border-violet'
+                : 'bg-surface text-muted border-line hover:border-steel'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {TARGETED_EXAMS.map((exam) => (
+        {exams.map((exam) => (
           <Panel key={exam.id} label={exam.level} bracket>
             <div className="flex flex-col gap-4 h-full">
               <div className="space-y-1.5">
@@ -44,6 +71,12 @@ export const ExamsPage: React.FC = () => {
                   >
                     {exam.level}
                   </span>
+                  {exam.company && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-mint/40 bg-mint/10 font-mono text-[10px] uppercase text-mint">
+                      <Briefcase className="w-3 h-3" />
+                      {exam.company}
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-base font-bold text-ink">{exam.title}</h2>
                 <p className="text-xs text-muted leading-relaxed">{exam.description}</p>
