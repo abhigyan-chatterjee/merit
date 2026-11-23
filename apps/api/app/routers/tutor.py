@@ -315,7 +315,32 @@ def _extract_model_ids(payload: object) -> list[str]:
     raise _upstream_error()
 
 
-def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: int) -> str:
+_COACHING_MODE_DIRECTIVES = {
+    "hint": (
+        "Coaching mode: Progressive Step Hint. Structure your reply as: (1) Core Invariant, "
+        "(2) State / Transition, and (3) Next Concrete Step. Never provide a complete solution "
+        "or code block."
+    ),
+    "code_review": (
+        "Coaching mode: Code & Complexity Review. Critique <student_code> for time/space Big-O "
+        "complexity, corner cases (empty input, duplicates, boundary values, off-by-one), and OA "
+        "readiness without providing a complete solution or code block."
+    ),
+    "interview": (
+        "Coaching mode: 30-Minute Technical Mock Interviewer. Act as a realistic campus/FAANG "
+        "interviewer: probe clarifying assumptions, ask for time/space complexity before "
+        "coding, and challenge edge cases. When asked for a rubric evaluation or wrap-up, score "
+        "the candidate on 4 dimensions: Problem Clarification (0-5), Algorithmic Approach (0-5), "
+        "Code & Edge Cases (0-5), Communication & Big-O (0-5), Total (/20), Verdict (Strong Hire "
+        "/ Hire / Leaning Hire / No Hire), and 2 actionable improvements. Never provide a "
+        "complete solution or code block."
+    ),
+}
+
+
+def _build_system_prompt(
+    problem: Problem, code: str | None, failed_attempts: int, mode: str = "socratic"
+) -> str:
     if failed_attempts >= 3:
         policy = (
             f"The student has made {failed_attempts} failed submissions. "
@@ -331,7 +356,7 @@ def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: in
             "reason about the next step."
         )
     student_code = code if code else "(no code shared yet)"
-    return (
+    prompt = (
         "You are a Socratic DSA tutor helping a student solve "
         f'"{problem.title}" (topic: {problem.topic}, difficulty: {problem.difficulty}).\n'
         f"Problem statement:\n{problem.statement}\n"
@@ -342,6 +367,8 @@ def _build_system_prompt(problem: Problem, code: str | None, failed_attempts: in
         f"<student_code>\n{student_code}\n</student_code>\n"
         f"Tutoring policy: {policy}"
     )
+    directive = _COACHING_MODE_DIRECTIVES.get(mode)
+    return f"{prompt}\n{directive}" if directive else prompt
 
 
 @router.post("/models", response_model=TutorModelsResponse)
@@ -395,10 +422,13 @@ async def chat(
     messages = [
         {
             "role": "system",
-            "content": _build_system_prompt(problem, req.code, req.failed_attempts),
+            "content": _build_system_prompt(problem, req.code, req.failed_attempts, req.mode),
         },
-        {"role": "user", "content": req.question},
     ]
+    messages.extend(
+        {"role": turn.role, "content": turn.content} for turn in req.history[-12:]
+    )
+    messages.append({"role": "user", "content": req.question})
     transport = _PinnedTransport(hostname, pinned_ips)
     try:
         async with httpx.AsyncClient(

@@ -23,12 +23,17 @@ def test_list_visualizers():
     resp = client.get("/api/v1/visualizers")
     assert resp.status_code == 200
     visualizers = resp.json()
-    assert len(visualizers) == 12
+    assert len(visualizers) == 17
     ids = {v["id"] for v in visualizers}
     assert "array" in ids
     assert "sorting" in ids
     assert "bst" in ids
     assert "graph" in ids
+    assert "dp-table" in ids
+    assert "sliding-window" in ids
+    assert "shortest-path" in ids
+    assert "union-find" in ids
+    assert "trie" in ids
 
 
 def test_list_problems_and_filter():

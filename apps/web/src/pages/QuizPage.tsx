@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { QUIZZES, QUIZ_TOPICS } from '../data/quizzes';
 import { QuizEngine } from '../components/QuizEngine';
 import { useProgress } from '../store/ProgressContext';
 import { BrainCircuit } from 'lucide-react';
 import { LessonNav } from '../components/LessonNav';
+import { OnboardingDiagnostic } from '../components/OnboardingDiagnostic';
 
 const prettifyTopic = (topic: string) =>
   topic
@@ -22,6 +23,7 @@ export const QuizPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const isMock = searchParams.get('mock') === 'true';
   const { saveQuizScore } = useProgress();
+  const [diagOpen, setDiagOpen] = useState(false);
 
 
   const staticTopic = QUIZ_TOPICS.find((t) => t.id === topic);
@@ -54,7 +56,15 @@ export const QuizPage: React.FC = () => {
           </h1>
           <p className="text-xs text-muted">{currentTopic.description}</p>
         </div>
+        <button
+          type="button"
+          onClick={() => setDiagOpen(true)}
+          className="px-3 py-1.5 rounded-full border border-mint/50 bg-mint/10 text-mint font-mono text-[11px] hover:brightness-110 transition cursor-pointer shrink-0"
+        >
+          12-Q Diagnostic
+        </button>
       </div>
+      <OnboardingDiagnostic isOpen={diagOpen} onClose={() => setDiagOpen(false)} />
 
       {/* Unified Topic Bar: Screening & Mixed pills + DSA topics dropdown */}
       <div className="flex flex-wrap items-center gap-2">

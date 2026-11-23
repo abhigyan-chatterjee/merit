@@ -12,6 +12,11 @@ import { QueueVisualizer } from '../visualizers/QueueVisualizer';
 import { HashMapVisualizer } from '../visualizers/HashMapVisualizer';
 import { SearchingVisualizer } from '../visualizers/SearchingVisualizer';
 import { RecursionTreeVisualizer } from '../visualizers/RecursionTreeVisualizer';
+import { DpTableVisualizer } from '../visualizers/DpTableVisualizer';
+import { SlidingWindowVisualizer } from '../visualizers/SlidingWindowVisualizer';
+import { ShortestPathVisualizer } from '../visualizers/ShortestPathVisualizer';
+import { UnionFindVisualizer } from '../visualizers/UnionFindVisualizer';
+import { TrieVisualizer } from '../visualizers/TrieVisualizer';
 import { useProgress } from '../store/ProgressContext';
 import { NotFound } from '../components/NotFound';
 import { LessonNav } from '../components/LessonNav';
@@ -64,6 +69,26 @@ const VISUALIZER_READING: Record<string, { label: string; url: string }[]> = {
   'recursion-tree': [
     { label: 'Wikipedia: Recursion (computer science)', url: 'https://en.wikipedia.org/wiki/Recursion_(computer_science)' },
     { label: 'CP-Algorithms: Dynamic programming', url: 'https://cp-algorithms.com/dynamic_programming/intro-to-dp.html' },
+  ],
+  'dp-table': [
+    { label: 'Wikipedia: Dynamic programming', url: 'https://en.wikipedia.org/wiki/Dynamic_programming' },
+    { label: 'CP-Algorithms: Dynamic programming', url: 'https://cp-algorithms.com/dynamic_programming/intro-to-dp.html' },
+  ],
+  'sliding-window': [
+    { label: 'Wikipedia: Sliding window protocol', url: 'https://en.wikipedia.org/wiki/Sliding_window_protocol' },
+    { label: 'VisuAlgo: Array', url: 'https://visualgo.net/en/array' },
+  ],
+  'shortest-path': [
+    { label: "Wikipedia: Dijkstra's algorithm", url: 'https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm' },
+    { label: 'CP-Algorithms: Dijkstra', url: 'https://cp-algorithms.com/graph/dijkstra.html' },
+  ],
+  'union-find': [
+    { label: 'Wikipedia: Disjoint-set data structure', url: 'https://en.wikipedia.org/wiki/Disjoint-set_data_structure' },
+    { label: 'CP-Algorithms: Disjoint Set Union', url: 'https://cp-algorithms.com/data_structures/disjoint_set_union.html' },
+  ],
+  trie: [
+    { label: 'Wikipedia: Trie', url: 'https://en.wikipedia.org/wiki/Trie' },
+    { label: 'CP-Algorithms: Trie', url: 'https://cp-algorithms.com/data_structures/trie.html' },
   ],
 };
 
@@ -123,6 +148,16 @@ export const VisualizerDetailPage: React.FC = () => {
         return <SearchingVisualizer />;
       case 'recursion-tree':
         return <RecursionTreeVisualizer />;
+      case 'dp-table':
+        return <DpTableVisualizer />;
+      case 'sliding-window':
+        return <SlidingWindowVisualizer />;
+      case 'shortest-path':
+        return <ShortestPathVisualizer />;
+      case 'union-find':
+        return <UnionFindVisualizer />;
+      case 'trie':
+        return <TrieVisualizer />;
     }
   };
 

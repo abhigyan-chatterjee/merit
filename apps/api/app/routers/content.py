@@ -107,6 +107,47 @@ VISUALIZERS_CATALOG = [
         "complexity": "Call stack frames & branching",
         "description": "Recursive state branching, subproblem memoization, and base cases.",
     },
+    {
+        "id": "dp-table",
+        "title": "2D Dynamic Programming Table",
+        "category": "Algorithmic Paradigms",
+        "complexity": "O(m·n) time, O(m·n) space",
+        "description": (
+            "2D tabulation grids for LCS, 0/1 Knapsack, and Edit Distance with traceback."
+        ),
+    },
+    {
+        "id": "sliding-window",
+        "title": "Sliding Window & Two Pointers",
+        "category": "Fundamental Algorithms",
+        "complexity": "O(n) time, O(1) - O(k) space",
+        "description": "Variable and fixed window expansion/contraction with frequency invariants.",
+    },
+    {
+        "id": "shortest-path",
+        "title": "Dijkstra & Bellman-Ford",
+        "category": "Network Structures",
+        "complexity": "O((V+E) log V), O(V·E) worst",
+        "description": (
+            "Greedy priority-queue relaxation versus V-1 pass negative-weight relaxation."
+        ),
+    },
+    {
+        "id": "union-find",
+        "title": "Union-Find (Disjoint Set)",
+        "category": "Network Structures",
+        "complexity": "O(α(n)) amortized",
+        "description": (
+            "Connected components and cycle detection with path compression and union by rank."
+        ),
+    },
+    {
+        "id": "trie",
+        "title": "Trie (Prefix Tree)",
+        "category": "Hierarchical Structures",
+        "complexity": "O(L) per word",
+        "description": "Prefix tree insertion, exact search, and prefix autocomplete.",
+    },
 ]
 
 

@@ -24,6 +24,7 @@ import { progressApi, revisionApi, ProgressSummary, RevisionItem } from '../util
 import { StreakHeatmap } from '../components/StreakHeatmap';
 import { ProgressRing } from '../components/ProgressRing';
 import { PlacementReadinessPanel } from '../components/PlacementReadinessPanel';
+import { OnboardingDiagnostic } from '../components/OnboardingDiagnostic';
 import { DailyGoalMenu } from '../components/DailyGoalMenu';
 import { Panel } from '../components/ui/Panel';
 import { SectionLabel } from '../components/ui/SectionLabel';
@@ -65,6 +66,7 @@ export const DashboardPage: React.FC = () => {
   const resetBtnRef = useRef<HTMLButtonElement>(null);
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
   const [dueLoading, setDueLoading] = useState(false);
+  const [diagOpen, setDiagOpen] = useState(false);
 
   const prevConfirmResetRef = useRef(confirmReset);
   useEffect(() => {
@@ -216,6 +218,17 @@ export const DashboardPage: React.FC = () => {
 
       {/* ===== Placement readiness ===== */}
       <PlacementReadinessPanel summaryQuizScores={allQuizScores} summaryDueCount={summary?.due_today_count} />
+
+      <div>
+        <button
+          type="button"
+          onClick={() => setDiagOpen(true)}
+          className="px-4 py-2.5 rounded-lg border border-mint/50 bg-mint/10 text-mint font-semibold text-xs hover:brightness-110 transition cursor-pointer"
+        >
+          Take 12-Q Calibration Diagnostic
+        </button>
+      </div>
+      <OnboardingDiagnostic isOpen={diagOpen} onClose={() => setDiagOpen(false)} />
 
       {/* ===== Resume session (top) ===== */}
       <Panel label="Resume session" bracket>

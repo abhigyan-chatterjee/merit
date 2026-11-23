@@ -7,7 +7,7 @@ import { useTheme } from '../store/ProgressContext';
 import { apiRequest, authApi, progressApi } from '../utils/api';
 import { NotFound } from '../components/NotFound';
 import { isClerkConfigured } from '../components/ClerkOAuth';
-import { loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
+import { getTutorSnapshot, loadTutorCatalog, TUTOR_PRESETS, useTutorKey } from '../hooks/useTutorKey';
 import { EDITOR_LANGUAGES, EditorLang, isEditorLang } from '../data/languages';
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
@@ -298,13 +298,18 @@ export const ProfilePage: React.FC = () => {
     }
   }, [search, location.hash]);
 
-  const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === tutor.baseUrl) ?? TUTOR_PRESETS[0];
-  const loadCatalog = async (catalogId: string) => {
+  const normalizedBaseUrl = tutor.baseUrl.trim().replace(/\/+$/, '');
+  const selectedPreset = TUTOR_PRESETS.find((preset) => preset.baseUrl === normalizedBaseUrl) ?? TUTOR_PRESETS[0];
+  const modelOptions = tutor.model.trim() && !models.includes(tutor.model) ? [tutor.model, ...models] : models;
+  const loadCatalog = async (catalogId: string, resetIfUnlisted = false) => {
     setModelsError(null);
     try {
       const list = await loadTutorCatalog(catalogId);
       setModels(list);
-      if (list.length > 0 && !list.includes(tutor.model)) tutor.setModel(list[0]);
+      const currentModel = getTutorSnapshot().model.trim();
+      if (list.length > 0 && (!currentModel || (resetIfUnlisted && !list.includes(currentModel)))) {
+        tutor.setModel(list[0]);
+      }
     } catch (error) {
       setModelsError(error instanceof Error ? error.message : 'Could not load the model catalog.');
     }
@@ -323,9 +328,17 @@ export const ProfilePage: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({ base_url: tutor.baseUrl, api_key: tutor.apiKey }),
       });
-      const list = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
+      const rawList = Array.isArray(data.models) ? data.models.filter((item): item is string => typeof item === 'string') : [];
+      const list = selectedPreset.catalogId === 'google'
+        ? rawList.map((item) => item.replace(/^models\//, ''))
+        : rawList;
       setModels(list);
-      if (list.length > 0) tutor.setModel(list[0]);
+      const currentModel = getTutorSnapshot().model.trim().replace(/^models\//, '');
+      if (currentModel && list.includes(currentModel)) {
+        tutor.setModel(currentModel);
+      } else if (list.length > 0 && !currentModel) {
+        tutor.setModel(list[0]);
+      }
       setConnResult({ ok: true, text: `Connection successful! Provider returned ${list.length} models.` });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Could not load provider models.';
@@ -454,7 +467,7 @@ export const ProfilePage: React.FC = () => {
               <select aria-label="Provider preset" value={selectedPreset.id} onChange={(event) => {
                 const preset = TUTOR_PRESETS.find((item) => item.id === event.target.value) ?? TUTOR_PRESETS[0];
                 tutor.setBaseUrl(preset.baseUrl);
-                void loadCatalog(preset.catalogId);
+                void loadCatalog(preset.catalogId, true);
               }} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
                 {TUTOR_PRESETS.map((preset) => <option key={preset.id} value={preset.id}>{preset.label}</option>)}
               </select>
@@ -475,7 +488,7 @@ export const ProfilePage: React.FC = () => {
               <label className="flex-1 min-w-40 block text-xs font-mono">
                 <span className="text-muted">Model</span>
                 <select aria-label="Model" value={tutor.model} onChange={(event) => tutor.setModel(event.target.value)} className="mt-1 w-full p-2 rounded-lg bg-canvas border border-line text-xs font-mono text-ink">
-                  {models.length === 0 ? <option value="">Loading catalog…</option> : models.map((item) => <option key={item} value={item}>{item}</option>)}
+                  {modelOptions.length === 0 ? <option value="">Loading catalog…</option> : modelOptions.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
               </label>
               <button onClick={saveTutorSettings} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-mint text-canvas text-xs font-mono font-semibold hover:brightness-110 transition cursor-pointer"><Save className="w-3.5 h-3.5" />Save</button>
