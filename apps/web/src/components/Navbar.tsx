@@ -21,9 +21,25 @@ import { FeedbackModal } from './FeedbackModal';
 import { useProgress } from '../store/ProgressContext';
 import { useAuth } from '../store/AuthContext';
 import { useDialogFocus } from '../hooks/useDialogFocus';
-import { PROBLEMS } from '../data/problems';
+import { PROBLEM_MANIFEST, ProblemManifestItem } from '../data/problemManifest';
 import { VISUALIZERS } from '../data/curriculum';
 import { LEARNING_PATHS } from '../data/learningPaths';
+
+const scoreMatch = (title: string, q: string, extra: string[] = [], blurb?: string) => {
+  const t = title.toLowerCase();
+  if (t === q) return 5;
+  if (t.startsWith(q)) return 4;
+  if (t.includes(q)) return 3;
+  if (extra.some((f) => f.toLowerCase().includes(q))) return 2;
+  if (blurb && blurb.toLowerCase().includes(q)) return 1;
+  return 0;
+};
+
+const KindBadge: React.FC<{ label: string }> = ({ label }) => (
+  <span className="px-1.5 py-0.5 rounded border border-line text-[9px] font-mono uppercase tracking-wider text-muted shrink-0">
+    {label}
+  </span>
+);
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -58,49 +74,113 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const searchResults = useMemo(() => {
+  const isTyped = query.trim().length > 0;
+
+  type PaletteEntry =
+    | { kind: 'path'; path: (typeof LEARNING_PATHS)[number]; score: number; navigate: () => void }
+    | { kind: 'visualizer'; viz: (typeof VISUALIZERS)[number]; score: number; navigate: () => void }
+    | { kind: 'problem'; problem: ProblemManifestItem; score: number; navigate: () => void };
+
+  const entries = useMemo<PaletteEntry[]>(() => {
     const q = query.trim().toLowerCase();
-    if (!q)
-      return {
-        paths: LEARNING_PATHS.slice(0, 2),
-        visualizers: VISUALIZERS.slice(0, 4),
-        problems: PROBLEMS.slice(0, 5)
-      };
-    const problemHits = PROBLEMS.filter(
+    if (!q) {
+      const out: PaletteEntry[] = [];
+      LEARNING_PATHS.slice(0, 2).forEach((p) =>
+        out.push({
+          kind: 'path',
+          path: p,
+          score: 0,
+          navigate: () => {
+            setSearchOpen(false);
+            navigate(`/learn/${p.id}`);
+          }
+        })
+      );
+      VISUALIZERS.slice(0, 4).forEach((v) =>
+        out.push({
+          kind: 'visualizer',
+          viz: v,
+          score: 0,
+          navigate: () => {
+            setSearchOpen(false);
+            navigate(`/visualizers/${v.id}`);
+          }
+        })
+      );
+      const seenTopics = new Set<string>();
+      PROBLEM_MANIFEST.filter((p) => {
+        if (seenTopics.has(p.topic)) return false;
+        seenTopics.add(p.topic);
+        return true;
+      })
+        .slice(0, 5)
+        .forEach((p) =>
+          out.push({
+            kind: 'problem',
+            problem: p,
+            score: 0,
+            navigate: () => {
+              setSearchOpen(false);
+              navigate(`/problems/${p.topic}/${p.slug}`);
+            }
+          })
+        );
+      return out;
+    }
+    const pathHits: PaletteEntry[] = LEARNING_PATHS.filter(
+      (p) => p.title.toLowerCase().includes(q) || p.blurb.toLowerCase().includes(q)
+    )
+      .map((p) => ({
+        kind: 'path',
+        path: p,
+        score: scoreMatch(p.title, q, [], p.blurb),
+        navigate: () => {
+          setSearchOpen(false);
+          navigate(`/learn/${p.id}`);
+        }
+      }));
+    const vizHits: PaletteEntry[] = VISUALIZERS.filter(
+      (v) => v.title.toLowerCase().includes(q) || v.category.toLowerCase().includes(q)
+    )
+      .map((v) => ({
+        kind: 'visualizer',
+        viz: v,
+        score: scoreMatch(v.title, q, [v.category]),
+        navigate: () => {
+          setSearchOpen(false);
+          navigate(`/visualizers/${v.id}`);
+        }
+      }));
+    const probHits: PaletteEntry[] = PROBLEM_MANIFEST.filter(
       (p) =>
         p.title.toLowerCase().includes(q) ||
         p.pattern.toLowerCase().includes(q) ||
         p.topic.toLowerCase().includes(q)
-    ).slice(0, 20);
-    return {
-      paths: LEARNING_PATHS.filter(
-        (p) => p.title.toLowerCase().includes(q) || p.blurb.toLowerCase().includes(q)
-      ).slice(0, 10),
-      visualizers: VISUALIZERS.filter(
-        (v) => v.title.toLowerCase().includes(q) || v.category.toLowerCase().includes(q)
-      ).slice(0, 10),
-      problems: problemHits
-    };
-  }, [query]);
+    )
+      .map((p) => ({
+        kind: 'problem',
+        problem: p,
+        score: scoreMatch(p.title, q, [p.pattern, p.topic]),
+        navigate: () => {
+          setSearchOpen(false);
+          navigate(`/problems/${p.topic}/${p.slug}`);
+        }
+      }));
+    const combined = [...pathHits, ...vizHits, ...probHits];
+    const kindRank = (e: PaletteEntry) =>
+      e.kind === 'path' ? 0 : e.kind === 'visualizer' ? 1 : 2;
+    const titleOf = (e: PaletteEntry) =>
+      e.kind === 'path' ? e.path.title : e.kind === 'visualizer' ? e.viz.title : e.problem.title;
+    combined.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const kr = kindRank(a) - kindRank(b);
+      if (kr !== 0) return kr;
+      return titleOf(a).localeCompare(titleOf(b));
+    });
+    return combined.slice(0, 40);
+  }, [query, navigate]);
 
-  const totalResults =
-    searchResults.paths.length + searchResults.visualizers.length + searchResults.problems.length;
-
-  const isTyped = query.trim().length > 0;
-
-  const flatResults = useMemo(() => {
-    const out: { navigate: () => void }[] = [];
-    searchResults.paths.forEach((p) =>
-      out.push({ navigate: () => { setSearchOpen(false); navigate(`/learn/${p.id}`); } })
-    );
-    searchResults.visualizers.forEach((v) =>
-      out.push({ navigate: () => { setSearchOpen(false); navigate(`/visualizers/${v.id}`); } })
-    );
-    searchResults.problems.forEach((p) =>
-      out.push({ navigate: () => { setSearchOpen(false); navigate(`/problems/${p.topic}/${p.slug}`); } })
-    );
-    return out;
-  }, [searchResults, navigate]);
+  const totalResults = entries.length;
 
   // Reset the active row whenever the result set changes.
   useEffect(() => {
@@ -131,17 +211,17 @@ export const Navbar: React.FC = () => {
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIndex((i) => (flatResults.length === 0 ? 0 : Math.min(i + 1, flatResults.length - 1)));
+      setActiveIndex((i) => (entries.length === 0 ? 0 : Math.min(i + 1, entries.length - 1)));
       return;
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveIndex((i) => (flatResults.length === 0 ? 0 : Math.max(i - 1, 0)));
+      setActiveIndex((i) => (entries.length === 0 ? 0 : Math.max(i - 1, 0)));
       return;
     }
     if (e.key !== 'Enter') return;
     e.preventDefault();
-    const r = flatResults[activeIndex];
+    const r = entries[activeIndex];
     if (r) r.navigate();
     else closeSearch();
   };
@@ -166,7 +246,7 @@ export const Navbar: React.FC = () => {
                 MERIT
               </span>
               <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-muted mt-0.5 hidden sm:inline">
-                dsa workbench
+                placement prep
               </span>
             </div>
           </Link>
@@ -186,6 +266,7 @@ export const Navbar: React.FC = () => {
                   key={link.to}
                   to={link.to}
                   aria-label={link.label}
+                  aria-current={active ? 'page' : undefined}
                   title={link.label}
                   className={`relative inline-flex items-center gap-2 px-3 xl:px-3.5 py-2.5 xl:py-2 rounded-lg text-xs font-medium transition-colors duration-200 before:absolute before:-inset-1.5 before:content-[''] ${
                     active ? 'text-ink' : 'text-muted hover:text-ink'
@@ -266,7 +347,7 @@ export const Navbar: React.FC = () => {
       </header>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-line bg-canvas/95 backdrop-blur-md">
+      <nav aria-label="Mobile navigation" className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-line bg-canvas/95 backdrop-blur-md">
         <div className="grid grid-cols-6">
           {navLinks.map((link) => {
             const Icon = link.icon;
@@ -275,13 +356,14 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.to}
                 to={link.to}
+                aria-current={active ? 'page' : undefined}
                 className={`relative flex flex-col items-center justify-center gap-1 h-14 font-sans text-[11px] font-medium ${
                   active ? 'text-mint' : 'text-muted'
                 }`}
               >
                 {active && <span className="absolute top-0 w-8 h-px bg-mint" />}
                 <Icon className="w-4 h-4" />
-                <span className="truncate">{link.label}</span>
+                <span className="truncate max-w-full px-0.5">{link.label}</span>
               </Link>
             );
           })}
@@ -313,12 +395,17 @@ export const Navbar: React.FC = () => {
               <Search className="w-4 h-4 text-mint shrink-0" />
               <input
                 type="text"
+                role="combobox"
+                aria-expanded={searchOpen}
+                aria-controls="global-search-options"
+                aria-activedescendant={entries.length > 0 ? `search-option-${activeIndex}` : undefined}
+                aria-autocomplete="list"
                 autoFocus
                 placeholder="Search structures, problems or patterns…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
-                className="flex-1 bg-transparent text-sm text-ink placeholder-muted"
+                className="flex-1 bg-transparent text-base sm:text-xs text-ink placeholder-muted"
               />
               <span className="text-[10px] font-mono text-muted tnum hidden sm:inline">
                 {isTyped ? `${totalResults} ${totalResults === 1 ? 'result' : 'results'}` : ''}
@@ -332,7 +419,7 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
 
-            <div className="max-h-[52vh] overflow-y-auto p-2">
+            <div id="global-search-options" role="listbox" aria-label="Search results" className="max-h-[52vh] overflow-y-auto p-2">
               {isTyped && totalResults === 0 && (
                 <div className="py-10 text-center">
                   <p className="text-xs text-muted font-mono">
@@ -347,68 +434,54 @@ export const Navbar: React.FC = () => {
                 </div>
               )}
 
-              {searchResults.paths.length > 0 && (
-                <div className="mb-2">
-                  {isTyped && (
-                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                      Learning paths
-                    </div>
-                  )}
-                  {searchResults.paths.map((p, i) => {
-                    const gIdx = i;
-                    const isActiveRow = gIdx === activeIndex;
-                    return (
+              {entries.map((entry, i) => {
+                const isActiveRow = i === activeIndex;
+                const cls = `group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer border-l-2 ${
+                  isActiveRow ? 'bg-canvas/60 border-mint' : 'border-transparent hover:bg-canvas'
+                }`;
+                if (entry.kind === 'path') {
+                  const p = entry.path;
+                  return (
                     <button
-                      key={p.id}
-                      onClick={() => {
-                        setSearchOpen(false);
-                        navigate(`/learn/${p.id}`);
-                      }}
-                      onMouseEnter={() => setActiveIndex(gIdx)}
-                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
-                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
-                      }`}
+                      key={`path-${p.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         <Route className="w-3.5 h-3.5 text-mint shrink-0" />
                         <span className="text-xs font-medium text-ink truncate">{p.title}</span>
                       </span>
-                      <span className="font-mono text-[10px] text-muted shrink-0">
-                        {p.steps.length} steps
+                      <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Path" />
+                        <span className="font-mono text-[10px] text-muted">
+                          {p.steps.length} steps
+                        </span>
                       </span>
                     </button>
                   );
-                })}
-                </div>
-              )}
-
-              {searchResults.visualizers.length > 0 && (
-                <div className="mb-2">
-                  {isTyped && (
-                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                      Visualizers
-                    </div>
-                  )}
-                  {searchResults.visualizers.map((v, i) => {
-                    const gIdx = searchResults.paths.length + i;
-                    const isActiveRow = gIdx === activeIndex;
-                    return (
+                }
+                if (entry.kind === 'visualizer') {
+                  const v = entry.viz;
+                  return (
                     <button
-                      key={v.id}
-                      onClick={() => {
-                        setSearchOpen(false);
-                        navigate(`/visualizers/${v.id}`);
-                      }}
-                      onMouseEnter={() => setActiveIndex(gIdx)}
-                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
-                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
-                      }`}
+                      key={`viz-${v.id}`}
+                      id={`search-option-${i}`}
+                      role="option"
+                      aria-selected={isActiveRow}
+                      onClick={entry.navigate}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cls}
                     >
                       <span className="flex items-center gap-2.5 min-w-0">
                         <Layers className="w-3.5 h-3.5 text-mint shrink-0" />
                         <span className="text-xs font-medium text-ink truncate">{v.title}</span>
                       </span>
                       <span className="flex items-center gap-2 shrink-0">
+                        <KindBadge label="Visualizer" />
                         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
                           {v.category}
                         </span>
@@ -416,58 +489,40 @@ export const Navbar: React.FC = () => {
                       </span>
                     </button>
                   );
-                })}
-                </div>
-              )}
-
-              {searchResults.problems.length > 0 && (
-                <div>
-                  {isTyped && (
-                    <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted">
-                      Problems
-                    </div>
-                  )}
-                  {searchResults.problems.map((p, i) => {
-                    const gIdx = searchResults.paths.length + searchResults.visualizers.length + i;
-                    const isActiveRow = gIdx === activeIndex;
-                    return (
-                    <button
-                      key={p.id}
-                      onClick={() => {
-                        setSearchOpen(false);
-                        navigate(`/problems/${p.topic}/${p.slug}`);
-                      }}
-                      onMouseEnter={() => setActiveIndex(gIdx)}
-                      className={`group w-full text-left px-3 py-2 rounded-lg flex items-center justify-between gap-3 cursor-pointer ${
-                        isActiveRow ? 'bg-canvas/60 border-l-2 border-mint' : 'hover:bg-canvas'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2.5 min-w-0">
-                        {/* Difficulty carries a word as well as a hue: a
-                            colored dot alone is unreadable to a colorblind
-                            user and vanishes entirely on a high-contrast
-                            display. */}
-                        <span className="flex items-center gap-1.5 shrink-0">
-                          <span
-                            aria-hidden="true"
-                            className={`w-1.5 h-1.5 rounded-full ${difficultyDot(p.difficulty)}`}
-                          />
-                          <span className="text-[10px] font-mono uppercase text-muted">
-                            {p.difficulty}
-                          </span>
-                        </span>
-                        <span className="text-xs font-medium text-ink truncate">{p.title}</span>
-                        <span className="text-[10px] font-mono text-violet truncate hidden sm:inline">
-                          {p.pattern}
+                }
+                const p = entry.problem;
+                return (
+                  <button
+                    key={`problem-${p.id}`}
+                    id={`search-option-${i}`}
+                    role="option"
+                    aria-selected={isActiveRow}
+                    onClick={entry.navigate}
+                    onMouseEnter={() => setActiveIndex(i)}
+                    className={cls}
+                  >
+                    <span className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex items-center gap-1.5 shrink-0">
+                        <span
+                          aria-hidden="true"
+                          className={`w-1.5 h-1.5 rounded-full ${difficultyDot(p.difficulty)}`}
+                        />
+                        <span className="text-[10px] font-mono uppercase text-muted">
+                          {p.difficulty}
                         </span>
                       </span>
-                      <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                    </button>
-                  );
-                })}
-
-                </div>
-              )}
+                      <span className="text-xs font-medium text-ink truncate">{p.title}</span>
+                      <span className="text-[10px] font-mono text-violet truncate hidden sm:inline">
+                        {p.pattern}
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-2 shrink-0">
+                      <KindBadge label="Problem" />
+                      <CornerDownLeft className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             <div className="flex items-center gap-4 px-4 h-9 border-t border-line bg-canvas text-[10px] font-mono text-muted">
