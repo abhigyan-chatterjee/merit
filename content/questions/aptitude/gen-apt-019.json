@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-019",
+  "topic": "aptitude",
+  "subtopic": "ratios-proportions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If 3:5 = x:20, what is x?",
+  "options": [
+    "15",
+    "12",
+    "18",
+    "10"
+  ],
+  "correct_index": 1,
+  "explanation": "x = 20 * 3/5 = 12.",
+  "source": "generated",
+  "generator_key": "aptitude.ratios_proportions",
+  "content_hash": "92d0230448fec143144bfb5849d0bfad7c69ce3f20e8d73c90dcdcfac0fceb51",
+  "review_status": "verified"
+}

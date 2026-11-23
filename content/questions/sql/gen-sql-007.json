@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-007",
+  "topic": "sql",
+  "subtopic": "group-having",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Three groups have SUM(score) values 90, 120 and 100. How many pass HAVING SUM(score) >= 100?",
+  "options": [
+    "0",
+    "6",
+    "2",
+    "4"
+  ],
+  "correct_index": 2,
+  "explanation": "Sums 120 and 100 qualify, so two groups pass.",
+  "source": "generated",
+  "generator_key": "sql.group_having",
+  "content_hash": "56ee02348c52aaeb0845c0fad5e7238fd502c6a7b4abb18a1e06b85ecd898f78",
+  "review_status": "verified"
+}

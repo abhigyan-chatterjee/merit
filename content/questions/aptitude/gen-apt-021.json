@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-021",
+  "topic": "aptitude",
+  "subtopic": "mixtures-alligations",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Milk and water are in the ratio 4:1 in 40 litres. How much water must be added to make the ratio 2:1? Give only the number.",
+  "options": [
+    "12",
+    "16",
+    "10",
+    "8"
+  ],
+  "correct_index": 3,
+  "explanation": "Milk is 32 L and water is 8 L; 32/(8+x) = 2 gives x = 8.",
+  "source": "generated",
+  "generator_key": "aptitude.mixtures_alligations",
+  "content_hash": "f84ed76de7ca01782935976dcfd98439d405676cb01fbc2be1963e7b3b021ad6",
+  "review_status": "verified"
+}

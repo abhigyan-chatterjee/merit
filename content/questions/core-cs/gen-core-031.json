@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-031",
+  "topic": "core-cs",
+  "subtopic": "dbms-normalization",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which normal form removes transitive dependencies on the primary key?",
+  "options": [
+    "Boyce-Codd Normal Form (BCNF)",
+    "Third Normal Form (3NF)",
+    "First Normal Form (1NF)",
+    "Second Normal Form (2NF)"
+  ],
+  "correct_index": 1,
+  "explanation": "3NF requires non-key attributes to depend directly on the key. The correct answer is Third Normal Form (3NF).",
+  "source": "generated",
+  "generator_key": "core_cs.normalization",
+  "content_hash": "49e3a3c51a350d35b06390919493d9beb535254798f790f1f09da67b2f3d72e3",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-057",
+  "topic": "core-cs",
+  "subtopic": "cn-addressing",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How many usable host addresses does a /24 network provide?",
+  "options": [
+    "257",
+    "256",
+    "252",
+    "254"
+  ],
+  "correct_index": 3,
+  "explanation": "A /24 leaves 8 host bits, giving 2^8 - 2 = 254 usable addresses.",
+  "source": "generated",
+  "generator_key": "core_cs.cidr_subnetting",
+  "content_hash": "0fad6147a03b5b3baf2c430a720792a4a9f0d7d939feeb2d533b7afe65057632",
+  "review_status": "verified"
+}

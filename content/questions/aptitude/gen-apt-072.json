@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-072",
+  "topic": "aptitude",
+  "subtopic": "syllogisms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Some flying things are insects. Which conclusion is definitely true?",
+  "options": [
+    "All insects fly",
+    "Some insects fly",
+    "No insect flies",
+    "All flying things are insects"
+  ],
+  "correct_index": 1,
+  "explanation": "The statement directly asserts an overlap between insects and flying things. The correct answer is Some insects fly.",
+  "source": "generated",
+  "generator_key": "aptitude.syllogisms",
+  "content_hash": "2f53cc8a9049840cf4ab52f2724dcf9253f594b8f2763c3cc6332f3e45870bd3",
+  "review_status": "verified"
+}

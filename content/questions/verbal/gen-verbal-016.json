@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-016",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What does the idiom 'let the cat out of the bag' mean?",
+  "options": [
+    "He was frightened",
+    "He bought a pet",
+    "He made a mistake",
+    "He revealed a secret"
+  ],
+  "correct_index": 3,
+  "explanation": "The idiom means to reveal a secret. The correct answer is He revealed a secret.",
+  "source": "generated",
+  "generator_key": "verbal.prepositions_idioms",
+  "content_hash": "5eebf5787359962107bac32b7237d21fe9fa1c8fb682ca7b14aa7be87429a288",
+  "review_status": "verified"
+}

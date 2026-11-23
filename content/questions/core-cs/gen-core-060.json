@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-060",
+  "topic": "core-cs",
+  "subtopic": "cn-addressing",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How many usable host addresses does a /27 network provide?",
+  "options": [
+    "30",
+    "28",
+    "34",
+    "32"
+  ],
+  "correct_index": 0,
+  "explanation": "A /27 leaves 5 host bits, giving 2^5 - 2 = 30 usable addresses.",
+  "source": "generated",
+  "generator_key": "core_cs.cidr_subnetting",
+  "content_hash": "4846a7452ee8e15194d0a06fcad7f301e767c07c9a4663b790664c27bbd739ce",
+  "review_status": "verified"
+}

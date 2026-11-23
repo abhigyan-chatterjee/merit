@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-046",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which schedule is equivalent to some serial execution?",
+  "options": [
+    "A schedule with cycles",
+    "Conflict-serializable schedule",
+    "Any interleaved schedule",
+    "A non-recoverable schedule"
+  ],
+  "correct_index": 1,
+  "explanation": "Conflict serializability preserves precedence order. The correct answer is Conflict-serializable schedule.",
+  "source": "generated",
+  "generator_key": "core_cs.schedules_locks",
+  "content_hash": "d327006842d2d0fe5dfcb72e7bf1148a5135877b909cb9ac1548872a16c18e94",
+  "review_status": "verified"
+}

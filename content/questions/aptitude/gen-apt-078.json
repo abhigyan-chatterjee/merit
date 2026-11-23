@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-078",
+  "topic": "aptitude",
+  "subtopic": "direction-sense",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A person faces north and turns right twice. Which direction do they face?",
+  "options": [
+    "West",
+    "South",
+    "North",
+    "East"
+  ],
+  "correct_index": 1,
+  "explanation": "Two right turns from north give south.",
+  "source": "generated",
+  "generator_key": "aptitude.direction_sense",
+  "content_hash": "daeb8be8b478aefe686a8328108f457a50d67f6ea2ce3e41fc811198a62f73e5",
+  "review_status": "verified"
+}

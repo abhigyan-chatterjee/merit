@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-070",
+  "topic": "core-cs",
+  "subtopic": "oop-java",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In Java, methods with the same name but different parameter lists demonstrate?",
+  "options": [
+    "Overloading",
+    "Shadowing",
+    "Overriding",
+    "Hiding"
+  ],
+  "correct_index": 0,
+  "explanation": "Overloading is resolved at compile time.",
+  "source": "generated",
+  "generator_key": "core_cs.java_polymorphism",
+  "content_hash": "7bf8f3617f0f9bec659d1a927595540f61c5aa22a0f70cb5a3b40ad4e96d6996",
+  "review_status": "verified"
+}

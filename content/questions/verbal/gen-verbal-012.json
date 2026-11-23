@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-012",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the correct version of: 'I have seen him yesterday.'",
+  "options": [
+    "I have saw him yesterday.",
+    "I had seen him yesterday.",
+    "I am seeing him yesterday.",
+    "I saw him yesterday."
+  ],
+  "correct_index": 3,
+  "explanation": "A finished past time such as yesterday takes the simple past. The correct answer is I saw him yesterday..",
+  "source": "generated",
+  "generator_key": "verbal.sentence_correction",
+  "content_hash": "51932be6e8821e2b3e670c0733e5978ad8b026633f3fe95341a32b39fc70a4e7",
+  "review_status": "verified"
+}

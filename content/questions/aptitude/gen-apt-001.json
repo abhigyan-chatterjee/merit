@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-001",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is 18% of 450? Give only the number.",
+  "options": [
+    "84",
+    "79",
+    "81",
+    "83"
+  ],
+  "correct_index": 2,
+  "explanation": "18% of 450 = 450 * 18/100 = 81.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "7183902e4ec4db3f133d14a3f45011db300e808154f49fb7ad877dc3c50531ea",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-102",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How does round-robin balancing distribute requests?",
+  "options": [
+    "Randomly",
+    "To the fastest server only",
+    "Equally in rotation",
+    "By hash of the URL"
+  ],
+  "correct_index": 2,
+  "explanation": "Round robin cycles through the backend list. The correct answer is Equally in rotation.",
+  "source": "generated",
+  "generator_key": "core_cs.load_balancing",
+  "content_hash": "35fb5ca0114ad691a9a5d0d5a13d1012307025e427fa4992568f06955d335601",
+  "review_status": "verified"
+}

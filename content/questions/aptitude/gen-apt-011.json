@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-011",
+  "topic": "aptitude",
+  "subtopic": "simple-interest",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the simple interest on Rs. 4000 at 6% per annum for 5 years. Give only the number.",
+  "options": [
+    "1202",
+    "1198",
+    "1200",
+    "1203"
+  ],
+  "correct_index": 2,
+  "explanation": "Simple interest = 4000 * 6 * 5/100 = 1200.",
+  "source": "generated",
+  "generator_key": "aptitude.simple_interest",
+  "content_hash": "50a106cee508300cdfe86e37cee3fe5ed7951e695a44c4366fd1220112e58473",
+  "review_status": "verified"
+}

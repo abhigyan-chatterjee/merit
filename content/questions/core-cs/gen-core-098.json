@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-098",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which limiter smooths traffic with a sliding time window?",
+  "options": [
+    "Sliding window log",
+    "Fixed window only",
+    "Least connections",
+    "Token bucket"
+  ],
+  "correct_index": 0,
+  "explanation": "A sliding window log tracks recent request timestamps.",
+  "source": "generated",
+  "generator_key": "core_cs.rate_limiting",
+  "content_hash": "0a3c3371cb7c341e79b6532f4c225578c2ad04da86839c741767047f66155712",
+  "review_status": "verified"
+}

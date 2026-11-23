@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-021",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Using FIFO replacement with 3 frames and reference string [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5], how many page faults occur? Give only the number.",
+  "options": [
+    "11",
+    "9",
+    "7",
+    "12"
+  ],
+  "correct_index": 1,
+  "explanation": "FIFO with 3 frames incurs 9 page faults.",
+  "source": "generated",
+  "generator_key": "core_cs.page_replacement",
+  "content_hash": "dcdf630fa63497376c367daf104f26a6b3a33f54127d265aedf8588304a160e1",
+  "review_status": "verified"
+}

@@ -1,0 +1,355 @@
+{
+  "slug": "infosys-sp-dse",
+  "title": "Infosys SP & DSE",
+  "blurb": "Infosys SP and DSE prep: greedy, binary search, DP, graph, sliding-window, heap, and backtracking drills at OA difficulty.",
+  "icon": "Target",
+  "track": "placement",
+  "ordinal": 5,
+  "is_published": true,
+  "steps": [
+    {
+      "ordinal": 1,
+      "step_type": "quiz",
+      "ref_id": "aptitude",
+      "title": "Aptitude screen",
+      "summary": "Quant, logical reasoning, and verbal questions in screening style.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 2,
+      "step_type": "quiz",
+      "ref_id": "cs-fundamentals",
+      "title": "CS fundamentals screen",
+      "summary": "OS, DBMS, networks, and memory questions asked in service rounds.",
+      "reading_links": []
+    },
+    {
+      "step_type": "quiz",
+      "ref_id": "sql",
+      "title": "SQL & joins screen",
+      "summary": "Join types, grouping, and NULL traps from Infosys database screening rounds.",
+      "reading_links": [],
+      "ordinal": 3
+    },
+    {
+      "ordinal": 4,
+      "step_type": "problem",
+      "ref_id": "jump-game",
+      "title": "Jump Game",
+      "summary": "Track the farthest reachable index and fail as soon as the scan passes it.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 5,
+      "step_type": "problem",
+      "ref_id": "gas-station",
+      "title": "Gas Station",
+      "summary": "Single pass: reset the start whenever the running fuel total goes negative.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 6,
+      "step_type": "problem",
+      "ref_id": "integer-to-roman",
+      "title": "Integer to Roman",
+      "summary": "Greedy over value-symbol pairs from largest to smallest, subtracting as you append.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 7,
+      "step_type": "problem",
+      "ref_id": "best-time-to-buy-and-sell-stock-ii",
+      "title": "Best Time to Buy and Sell Stock II",
+      "summary": "Sum every upward step: any rise can be captured by selling before the next dip.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 8,
+      "step_type": "problem",
+      "ref_id": "binary-search",
+      "title": "Binary Search",
+      "summary": "Halve the range each step, keeping the invariant that the target lies inside it.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 9,
+      "step_type": "problem",
+      "ref_id": "search-insert-position",
+      "title": "Search Insert Position",
+      "summary": "Binary search for the first index whose value is not smaller than the target.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 10,
+      "step_type": "problem",
+      "ref_id": "sqrt-x",
+      "title": "Sqrt(x)",
+      "summary": "Binary search the integer square root, or use Newton's iteration.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 11,
+      "step_type": "problem",
+      "ref_id": "find-first-and-last-position-of-element-in-sorted-array",
+      "title": "First and Last Position of a Target",
+      "summary": "Two binary searches: the leftmost and the rightmost occurrence of the target.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 12,
+      "step_type": "problem",
+      "ref_id": "koko-eating-bananas",
+      "title": "Koko Eating Bananas",
+      "summary": "Binary search the eating speed; the hours needed is a monotone feasibility check.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 13,
+      "step_type": "problem",
+      "ref_id": "find-minimum-in-rotated-sorted-array",
+      "title": "Find Minimum in Rotated Sorted Array",
+      "summary": "Binary search comparing the midpoint with the right edge to locate the rotation point.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 14,
+      "step_type": "problem",
+      "ref_id": "maximum-subarray",
+      "title": "Maximum Subarray (Kadane)",
+      "summary": "Kadane: keep the best sum ending here, restarting whenever it turns negative.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 15,
+      "step_type": "problem",
+      "ref_id": "minimum-path-sum",
+      "title": "Minimum Path Sum",
+      "summary": "Grid DP: each cell adds the cheaper of the cell above and the cell to the left.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 16,
+      "step_type": "problem",
+      "ref_id": "coin-change",
+      "title": "Coin Change (Minimum Coins)",
+      "summary": "Bottom-up DP over amounts; each coin relaxes every reachable amount above it.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 17,
+      "step_type": "problem",
+      "ref_id": "house-robber",
+      "title": "House Robber",
+      "summary": "DP over houses: take the current plus two-back, or skip to the previous best.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 18,
+      "step_type": "problem",
+      "ref_id": "decode-ways",
+      "title": "Decode Ways",
+      "summary": "DP over prefixes: one-digit and valid two-digit continuations add up.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 19,
+      "step_type": "problem",
+      "ref_id": "longest-increasing-subsequence",
+      "title": "Longest Increasing Subsequence",
+      "summary": "Patience sorting: binary search where each value lands in the tails array.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 20,
+      "step_type": "problem",
+      "ref_id": "house-robber-ii",
+      "title": "House Robber II",
+      "summary": "Run the linear robber twice, once excluding the first house and once the last.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 21,
+      "step_type": "problem",
+      "ref_id": "delete-and-earn",
+      "title": "Delete and Earn",
+      "summary": "Bucket values by number, then run house-robber DP across the value range.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 22,
+      "step_type": "problem",
+      "ref_id": "longest-palindromic-substring",
+      "title": "Longest Palindromic Substring",
+      "summary": "Expand around the 2n-1 centres, or DP over substring endpoints.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 23,
+      "step_type": "problem",
+      "ref_id": "maximum-product-subarray",
+      "title": "Maximum Product Subarray",
+      "summary": "Track both the running max and min product, because a negative flips the sign.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 24,
+      "step_type": "problem",
+      "ref_id": "number-of-islands",
+      "title": "Number of Islands",
+      "summary": "BFS or DFS flood each land cell and count the components.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 25,
+      "step_type": "problem",
+      "ref_id": "rotting-oranges",
+      "title": "Rotting Oranges",
+      "summary": "Multi-source BFS from every rotten orange; the last level reached is the elapsed time.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 26,
+      "step_type": "problem",
+      "ref_id": "course-schedule",
+      "title": "Course Schedule (Cycle Detection)",
+      "summary": "Detect a cycle in the prerequisite graph with DFS colours or Kahn's topological sort.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 27,
+      "step_type": "problem",
+      "ref_id": "course-schedule-ii",
+      "title": "Course Schedule II",
+      "summary": "Topological order via an indegree queue; a short output means the graph has a cycle.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 28,
+      "step_type": "problem",
+      "ref_id": "clone-graph",
+      "title": "Clone Graph",
+      "summary": "Hash map from original node to clone, then DFS or BFS to copy every neighbour.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 29,
+      "step_type": "problem",
+      "ref_id": "longest-repeating-character-replacement",
+      "title": "Longest Repeating Character Replacement",
+      "summary": "Window with a letter count: shrink while length minus the top count exceeds k.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 30,
+      "step_type": "problem",
+      "ref_id": "max-consecutive-ones-iii",
+      "title": "Max Consecutive Ones III",
+      "summary": "Window counting zeros; shrink from the left while the zero count exceeds k.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 31,
+      "step_type": "problem",
+      "ref_id": "minimum-size-subarray-sum",
+      "title": "Minimum Size Subarray Sum",
+      "summary": "Window sum that shrinks from the left whenever the target is met.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 32,
+      "step_type": "problem",
+      "ref_id": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
+      "title": "Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit",
+      "summary": "Two monotonic deques track the window max and min as the left edge advances.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 33,
+      "step_type": "problem",
+      "ref_id": "find-the-index-of-the-first-occurrence-in-a-string",
+      "title": "Find the Index of the First Occurrence in a String",
+      "summary": "Slide the pattern across the text, comparing characters; return the first match.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 34,
+      "step_type": "problem",
+      "ref_id": "kth-largest-element-in-an-array",
+      "title": "Kth Largest Element in an Array",
+      "summary": "Min-heap of size k, or quickselect for average linear time.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 35,
+      "step_type": "problem",
+      "ref_id": "top-k-frequent-elements",
+      "title": "Top K Frequent Elements",
+      "summary": "Count with a hash map, then bucket by frequency or keep a size-k heap.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 36,
+      "step_type": "problem",
+      "ref_id": "letter-combinations-of-a-phone-number",
+      "title": "Letter Combinations of a Phone Number",
+      "summary": "Backtrack over digit-to-letters maps, appending one letter per digit.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 37,
+      "step_type": "problem",
+      "ref_id": "subsets",
+      "title": "Subsets",
+      "summary": "Backtrack over include and exclude decisions for each element.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 38,
+      "step_type": "problem",
+      "ref_id": "generate-parentheses",
+      "title": "Generate Parentheses",
+      "summary": "Backtrack with counts of open and close brackets, never closing before opening.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 39,
+      "step_type": "problem",
+      "ref_id": "palindrome-partitioning",
+      "title": "Palindrome Partitioning",
+      "summary": "Backtrack over palindromic prefixes, checking each cut with two pointers.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 40,
+      "step_type": "problem",
+      "ref_id": "permutations",
+      "title": "Permutations",
+      "summary": "Backtrack with a used set, or swap values in place at each depth.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 41,
+      "step_type": "quiz",
+      "ref_id": "graphs",
+      "title": "Graphs check",
+      "summary": "BFS, DFS, topological order, and connectivity questions.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 42,
+      "step_type": "quiz",
+      "ref_id": "dynamic-programming",
+      "title": "DP check",
+      "summary": "Recurrence choices, state design, and tabulation order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 43,
+      "step_type": "mock",
+      "ref_id": "mixed",
+      "title": "Final mock assessment",
+      "summary": "Timed mixed set across the whole bank, to test exam pacing.",
+      "reading_links": []
+    }
+  ]
+}

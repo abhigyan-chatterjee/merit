@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-040",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 20 days and B in 30 days. Working together, how many days do they take? Give only the number.",
+  "options": [
+    "10",
+    "12",
+    "16",
+    "14"
+  ],
+  "correct_index": 1,
+  "explanation": "Combined rate 1/20 + 1/30 per day gives 12.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.time_work",
+  "content_hash": "8c02c3d64d285acc638557cf9b95719ff3c666f420ccb35417ce3f27e24bb19a",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-047",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What does two-phase locking guarantee?",
+  "options": [
+    "Deadlock freedom",
+    "Referential integrity",
+    "Conflict serializability",
+    "Fault tolerance"
+  ],
+  "correct_index": 2,
+  "explanation": "2PL produces conflict-serializable schedules. The correct answer is Conflict serializability.",
+  "source": "generated",
+  "generator_key": "core_cs.schedules_locks",
+  "content_hash": "9159c4a6b1db2272648a26c264f9e9ad93adf737330871712e690a6469d216e2",
+  "review_status": "verified"
+}

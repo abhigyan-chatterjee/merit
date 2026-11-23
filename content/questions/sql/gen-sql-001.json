@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-001",
+  "topic": "sql",
+  "subtopic": "select-where",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A table t has rows with id 1 through 5. What does SELECT COUNT(*) FROM t WHERE id > 2 return? Give only the number.",
+  "options": [
+    "3",
+    "7",
+    "5",
+    "1"
+  ],
+  "correct_index": 0,
+  "explanation": "IDs 3, 4 and 5 qualify, so the count is 3.",
+  "source": "generated",
+  "generator_key": "sql.select_where",
+  "content_hash": "82d95f49cd6e516e8407b606b1ec3aba3aba2a799b291bb6db1afa8f696a6c29",
+  "review_status": "verified"
+}

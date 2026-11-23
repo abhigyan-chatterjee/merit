@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-008",
+  "topic": "aptitude",
+  "subtopic": "profit-loss",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An article with cost price Rs. 1200 is sold at a 25% profit. What is the selling price? Give only the number.",
+  "options": [
+    "1502",
+    "1500",
+    "1498",
+    "1504"
+  ],
+  "correct_index": 1,
+  "explanation": "Selling price = 1200 * (100 + 25)/100 = 1500.",
+  "source": "generated",
+  "generator_key": "aptitude.profit_loss",
+  "content_hash": "66253d9299cc1719ff78de636e6475f5d2900b4b023dd705539f3bf9c0cc6549",
+  "review_status": "verified"
+}

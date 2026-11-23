@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-031",
+  "topic": "sql",
+  "subtopic": "result-shaping",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Values 4, 7 and 2 are sorted with ORDER BY x DESC. What is the first value?",
+  "options": [
+    "9",
+    "7",
+    "5",
+    "11"
+  ],
+  "correct_index": 1,
+  "explanation": "Descending order starts with the largest value 7.",
+  "source": "generated",
+  "generator_key": "sql.distinct_order_limit",
+  "content_hash": "d7c7a915fa301992eb7fbb7f462654438bc77f63441fde87ca0aabd8ba744406",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-033",
+  "topic": "sql",
+  "subtopic": "dml-indexes",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A table has 7 rows. How many rows remain after DELETE FROM t with no WHERE clause?",
+  "options": [
+    "3",
+    "4",
+    "2",
+    "0"
+  ],
+  "correct_index": 3,
+  "explanation": "DELETE without a predicate removes every row. The correct answer is 0.",
+  "source": "generated",
+  "generator_key": "sql.dml_indexes",
+  "content_hash": "0c509e6c7d9dd6e6fea0a899156e3ce8325b0c674ae21dab1cf77c5ef5e42117",
+  "review_status": "verified"
+}

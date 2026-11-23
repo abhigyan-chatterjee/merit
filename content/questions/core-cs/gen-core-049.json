@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-049",
+  "topic": "core-cs",
+  "subtopic": "cn-transport",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which protocol provides a reliable, ordered byte stream between hosts?",
+  "options": [
+    "ARP",
+    "TCP",
+    "UDP",
+    "ICMP"
+  ],
+  "correct_index": 1,
+  "explanation": "TCP adds sequence numbers, ACKs and retransmission.",
+  "source": "generated",
+  "generator_key": "core_cs.tcp_udp",
+  "content_hash": "d53f0332ad43e4f374eece29904c5c66873aa672e472e10f3e6fb51d06c42291",
+  "review_status": "verified"
+}

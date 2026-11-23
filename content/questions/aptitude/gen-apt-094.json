@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-094",
+  "topic": "aptitude",
+  "subtopic": "data-interpretation",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a survey of 800 students, 25% chose Mathematics. How many chose Mathematics? Give only the number.",
+  "options": [
+    "225",
+    "200",
+    "250",
+    "180"
+  ],
+  "correct_index": 1,
+  "explanation": "25% of 800 = 200.",
+  "source": "generated",
+  "generator_key": "aptitude.data_interpretation",
+  "content_hash": "c00cefd49f87b7b202905a5a3e90813dfd343a1c411fb27c21d71132acb35622",
+  "review_status": "verified"
+}

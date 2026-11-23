@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-016",
+  "topic": "core-cs",
+  "subtopic": "os-deadlock",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which condition requires a closed chain of processes each awaiting a resource held by the next?",
+  "options": [
+    "No preemption",
+    "Mutual exclusion",
+    "Circular wait",
+    "Hold and wait"
+  ],
+  "correct_index": 2,
+  "explanation": "A circular wait is a cycle in the resource allocation graph.",
+  "source": "generated",
+  "generator_key": "core_cs.deadlock_conditions",
+  "content_hash": "a7d5149e2845cf7b856459a09f79e2bf1650cf572df3f54424dc66905402e245",
+  "review_status": "verified"
+}

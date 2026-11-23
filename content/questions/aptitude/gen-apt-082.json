@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-082",
+  "topic": "aptitude",
+  "subtopic": "coding-decoding",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If CAT is coded as DBU, how is DOG coded?",
+  "options": [
+    "EPH",
+    "DOH",
+    "CNF",
+    "EPI"
+  ],
+  "correct_index": 0,
+  "explanation": "Each letter advances by one. The correct answer is EPH.",
+  "source": "generated",
+  "generator_key": "aptitude.coding_decoding",
+  "content_hash": "c55bdd8f73cac0609858e26acdfad88425004a21ed66f58d675aeb7dcf4bad89",
+  "review_status": "verified"
+}

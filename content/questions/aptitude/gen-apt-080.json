@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-080",
+  "topic": "aptitude",
+  "subtopic": "direction-sense",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A man faces west. He turns 90 degrees clockwise and then another 90 degrees clockwise. Which direction does he face?",
+  "options": [
+    "South",
+    "East",
+    "North",
+    "West"
+  ],
+  "correct_index": 1,
+  "explanation": "Two clockwise turns from west give east.",
+  "source": "generated",
+  "generator_key": "aptitude.direction_sense",
+  "content_hash": "07171335bc0bda8e4abada2d035444e8672f8d8a21b76646dfef469375e9ff33",
+  "review_status": "verified"
+}

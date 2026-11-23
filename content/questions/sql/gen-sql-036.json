@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-036",
+  "topic": "sql",
+  "subtopic": "dml-indexes",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does CREATE UNIQUE INDEX enforce on the indexed column?",
+  "options": [
+    "Compression",
+    "A foreign key",
+    "Automatic sorting only",
+    "Distinct values"
+  ],
+  "correct_index": 3,
+  "explanation": "A unique index rejects duplicate values. The correct answer is Distinct values.",
+  "source": "generated",
+  "generator_key": "sql.dml_indexes",
+  "content_hash": "fd81faebdcf3a250ba0d380e986e3fbc971ba5c2e2eed219c2c5c5ccf80c44a3",
+  "review_status": "verified"
+}

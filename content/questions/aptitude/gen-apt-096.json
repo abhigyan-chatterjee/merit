@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-096",
+  "topic": "aptitude",
+  "subtopic": "data-interpretation",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Monthly sales rose from 200 to 250 units. What was the percentage growth? Give only the number.",
+  "options": [
+    "15",
+    "50",
+    "30",
+    "25"
+  ],
+  "correct_index": 3,
+  "explanation": "Growth = (250 - 200)/200 = 25%.",
+  "source": "generated",
+  "generator_key": "aptitude.data_interpretation",
+  "content_hash": "95a241db6f3a7aa54b5a1da0dad334d36318ad2fe589fcd934ec6a59fcae348e",
+  "review_status": "verified"
+}

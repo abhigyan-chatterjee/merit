@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-025",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is thrashing in a virtual memory system?",
+  "options": [
+    "Excessive paging with little useful work",
+    "Disk fragmentation",
+    "Interrupt storms",
+    "Cache coherence traffic"
+  ],
+  "correct_index": 0,
+  "explanation": "Thrashing means the CPU spends most of its time servicing page faults. The correct answer is Excessive paging with little useful work.",
+  "source": "generated",
+  "generator_key": "core_cs.thrashing",
+  "content_hash": "80c84651c19a4ed399c56d1d326c28fa618583f5823c0ef15f33a7b8cec4632d",
+  "review_status": "verified"
+}

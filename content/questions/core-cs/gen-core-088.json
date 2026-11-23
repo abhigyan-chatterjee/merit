@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-088",
+  "topic": "core-cs",
+  "subtopic": "design-caching",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which pattern writes to cache and database in the same operation?",
+  "options": [
+    "Read-through",
+    "Cache-aside",
+    "Write-behind",
+    "Write-through"
+  ],
+  "correct_index": 3,
+  "explanation": "Write-through updates both stores synchronously.",
+  "source": "generated",
+  "generator_key": "core_cs.caching",
+  "content_hash": "edadb10c7f43803189765394189946922a7ed764b7a81fc65c0dddb26b747eb4",
+  "review_status": "verified"
+}

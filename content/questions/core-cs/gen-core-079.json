@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-079",
+  "topic": "core-cs",
+  "subtopic": "oop-python",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the value of len({1, 2, 2, 3}) in Python?",
+  "options": [
+    "2",
+    "3",
+    "4",
+    "5"
+  ],
+  "correct_index": 1,
+  "explanation": "A set removes duplicates, leaving three elements. The correct answer is 3.",
+  "source": "generated",
+  "generator_key": "core_cs.python_semantics",
+  "content_hash": "32b30da5da47058e4f8e2457fbfe3b0d9d7d10b2c324a577f33fc309820f5c2b",
+  "review_status": "verified"
+}

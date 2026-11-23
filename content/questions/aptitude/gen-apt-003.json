@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-003",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is 25% of 240? Give only the number.",
+  "options": [
+    "64",
+    "62",
+    "58",
+    "60"
+  ],
+  "correct_index": 3,
+  "explanation": "25% of 240 = 240 * 25/100 = 60.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "d59ecc13e1947616640c55ab23b23f458516f152eb1d155ca57021ab94b7e6d3",
+  "review_status": "verified"
+}

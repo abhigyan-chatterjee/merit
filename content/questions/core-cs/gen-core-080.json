@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-080",
+  "topic": "core-cs",
+  "subtopic": "oop-python",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which decorator caches a function's results by its arguments?",
+  "options": [
+    "functools.lru_cache",
+    "functools.wraps",
+    "functools.partial",
+    "functools.reduce"
+  ],
+  "correct_index": 0,
+  "explanation": "lru_cache memoizes results keyed by arguments. The correct answer is functools.lru_cache.",
+  "source": "generated",
+  "generator_key": "core_cs.python_semantics",
+  "content_hash": "73784a5213159fbcc7118bf47312a1331a4bbc046cee656af19947dceb69f7b6",
+  "review_status": "verified"
+}

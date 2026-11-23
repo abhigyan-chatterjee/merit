@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-091",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which technique maps keys evenly to shards and minimizes remapping?",
+  "options": [
+    "List partitioning",
+    "Modulo hashing",
+    "Range partitioning",
+    "Consistent hashing"
+  ],
+  "correct_index": 3,
+  "explanation": "Consistent hashing limits key movement when shards change.",
+  "source": "generated",
+  "generator_key": "core_cs.sharding",
+  "content_hash": "3818499d42b2ae8a631c186fb718daa5eba9f58667b119b4df059ac790ea6fd1",
+  "review_status": "verified"
+}

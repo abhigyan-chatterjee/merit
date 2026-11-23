@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-061",
+  "topic": "aptitude",
+  "subtopic": "number-system",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the smallest number divisible by 12, 18 and 24. Give only the number.",
+  "options": [
+    "216",
+    "72",
+    "36",
+    "144"
+  ],
+  "correct_index": 1,
+  "explanation": "The number is LCM(12,18,24) = 72.",
+  "source": "generated",
+  "generator_key": "aptitude.divisibility_remainders",
+  "content_hash": "f6b1b59f3d6cccb65ef35fd74a22fd16d72c2657da24a25ca4e82ad61032186b",
+  "review_status": "verified"
+}

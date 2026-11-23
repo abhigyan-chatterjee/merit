@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-009",
+  "topic": "aptitude",
+  "subtopic": "simple-interest",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the simple interest on Rs. 1000 at 5% per annum for 3 years. Give only the number.",
+  "options": [
+    "152",
+    "150",
+    "148",
+    "154"
+  ],
+  "correct_index": 1,
+  "explanation": "Simple interest = 1000 * 5 * 3/100 = 150.",
+  "source": "generated",
+  "generator_key": "aptitude.simple_interest",
+  "content_hash": "941751d0efc289b1caa4a4020178270da9a738672f24cad0e557c61aff94a660",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-019",
+  "topic": "core-cs",
+  "subtopic": "os-sync",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What does a counting semaphore initialized to 5 directly control?",
+  "options": [
+    "Deadlock freedom",
+    "CPU affinity",
+    "Exactly one thread total",
+    "Up to 5 concurrent accesses"
+  ],
+  "correct_index": 3,
+  "explanation": "The count tracks five identical resource units. The correct answer is Up to 5 concurrent accesses.",
+  "source": "generated",
+  "generator_key": "core_cs.semaphores_mutex",
+  "content_hash": "e0ba2d51bf15d25dd3d5e59c2085b5c73e2c2596a559af1c645680f1677f059e",
+  "review_status": "verified"
+}

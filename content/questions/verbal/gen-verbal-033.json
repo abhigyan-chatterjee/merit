@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-033",
+  "topic": "verbal",
+  "subtopic": "para-jumbles",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Arrange: (1) He opened the door. (2) He heard a noise. (3) He woke up. (4) He went outside. Which sentence comes first?",
+  "options": [
+    "He woke up.",
+    "He went outside.",
+    "He heard a noise.",
+    "He opened the door."
+  ],
+  "correct_index": 0,
+  "explanation": "Waking up must precede the other actions. The correct answer is He woke up..",
+  "source": "generated",
+  "generator_key": "verbal.para_jumbles",
+  "content_hash": "702f82268435c1fb546da12b7a1635b9ce9a44249357b1f63b3836de2923c662",
+  "review_status": "verified"
+}

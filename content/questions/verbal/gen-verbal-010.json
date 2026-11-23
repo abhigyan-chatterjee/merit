@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-010",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the correct version of: 'She is more taller than me.'",
+  "options": [
+    "She is tallest than me.",
+    "She is more taller than I.",
+    "She is taller than me.",
+    "She is more tall than me."
+  ],
+  "correct_index": 2,
+  "explanation": "Comparative 'taller' already expresses the comparison. The correct answer is She is taller than me..",
+  "source": "generated",
+  "generator_key": "verbal.sentence_correction",
+  "content_hash": "41ff6dea16d002a471300ad4f9be6d797ca5cdd5072f48f0dae43009cf4dfa4a",
+  "review_status": "verified"
+}

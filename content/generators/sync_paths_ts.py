@@ -43,12 +43,13 @@ export interface LearningPath {
   id: string;
   title: string;
   blurb: string;
-  icon: 'LayoutGrid' | 'GitCommit' | 'Network' | 'Cpu';
+  icon: 'LayoutGrid' | 'GitCommit' | 'Network' | 'Cpu' | 'Briefcase' | 'Target';
+  track: 'foundational' | 'specialised' | 'placement';
   steps: PathStep[];
 }
 
 /**
- * Canonical 3-path structure (mirrors content/paths/*.json).
+ * Canonical path structure (6 paths; mirrors every content/paths/*.json).
  * Summaries + reading links live in the JSON; the TS mirror keeps
  * routing/progress working offline. Regenerate with sync_paths_ts.py
  * when JSON changes -- do not hand-edit steps below.
@@ -104,6 +105,7 @@ def sync() -> int:
         chunks.append(f"    title: {ts_string(d['title'])},")
         chunks.append(f"    blurb: {ts_string(d['blurb'])},")
         chunks.append(f"    icon: {ts_string(d['icon'])},")
+        chunks.append(f"    track: {ts_string(d['track'])},")
         chunks.append("    steps: [")
         for step in sorted(d["steps"], key=lambda s: s["ordinal"]):
             chunks.append(f"      {render_step(step)},")

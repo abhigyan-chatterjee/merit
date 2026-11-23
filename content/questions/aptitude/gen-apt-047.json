@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-047",
+  "topic": "aptitude",
+  "subtopic": "permutations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of permutations P(7, 3) = 7P3. Give only the number.",
+  "options": [
+    "212",
+    "210",
+    "214",
+    "208"
+  ],
+  "correct_index": 1,
+  "explanation": "7P3 = 7!/(7-3)! = 210.",
+  "source": "generated",
+  "generator_key": "aptitude.permutations",
+  "content_hash": "eabc94fddc7dc3fa2feb966a03b6e8d44c842080e47bf93627b772bcf6f86cdb",
+  "review_status": "verified"
+}

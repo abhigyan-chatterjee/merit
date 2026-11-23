@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-061",
+  "topic": "core-cs",
+  "subtopic": "cn-application",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which HTTP status code means a resource has moved permanently?",
+  "options": [
+    "301",
+    "404",
+    "200",
+    "500"
+  ],
+  "correct_index": 0,
+  "explanation": "301 indicates a permanent redirect.",
+  "source": "generated",
+  "generator_key": "core_cs.http_tls_dns",
+  "content_hash": "964e45dccef55efff6b6aa4172b7388d0a1090e826c82b050fd3b08683d9c185",
+  "review_status": "verified"
+}

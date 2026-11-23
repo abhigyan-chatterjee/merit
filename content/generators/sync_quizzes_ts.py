@@ -16,6 +16,8 @@ SEED = 20260920
 QUESTION_COUNT = 15
 TOPICS = [
     ("aptitude", "Aptitude", "Quant, logical reasoning, and verbal for screening rounds."),
+    ("verbal", "Verbal Ability", "Grammar correction, vocabulary in context, para-jumbles, and inference."),
+    ("sql", "SQL & Databases", "Queries, joins, grouping, NULL traps, and window functions."),
     ("arrays-hashing", "Arrays & Hashing", "Indexing, frequency maps, and subarray bounds."),
     ("backtracking", "Backtracking", "Search trees, pruning, and constraint satisfaction."),
     ("binary-search", "Binary Search", "Search invariants, monotonic predicates, and bounds."),
@@ -48,6 +50,8 @@ TOPICS = [
 
 SOURCE_TOPICS = {
     "aptitude": "aptitude",
+    "verbal": "verbal",
+    "sql": "sql",
     "arrays-hashing": "arrays-hashing",
     "backtracking": "backtracking",
     "binary-search": "binary-search",
@@ -70,6 +74,16 @@ SOURCE_TOPICS = {
 }
 
 DIFFICULTIES = ("Easy", "Medium", "Hard")
+
+SCREENING_TOPICS = {"aptitude", "verbal", "sql", "cs-fundamentals"}
+
+
+def topic_category(topic_id: str) -> str:
+    if topic_id == "mixed":
+        return "mixed"
+    if topic_id in SCREENING_TOPICS:
+        return "screening"
+    return "dsa"
 
 
 def load_questions() -> list[dict]:
@@ -162,6 +176,7 @@ def render(topic_questions: dict[str, list[dict]]) -> str:
             "  id: string;",
             "  title: string;",
             "  description: string;",
+            "  category: 'screening' | 'dsa' | 'mixed';",
             "}",
             "",
             "export const QUIZ_TOPICS: QuizTopicMeta[] = [",
@@ -170,7 +185,7 @@ def render(topic_questions: dict[str, list[dict]]) -> str:
     for topic_id, title, description in TOPICS:
         lines.append(
             f"  {{ id: {ts_string(topic_id)}, title: {ts_string(title)}, "
-            f"description: {ts_string(description)} }},"
+            f"description: {ts_string(description)}, category: {ts_string(topic_category(topic_id))} }},"
         )
     lines.extend(["];", ""])
     return "\n".join(lines)

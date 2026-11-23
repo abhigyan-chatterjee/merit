@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-055",
+  "topic": "aptitude",
+  "subtopic": "probability",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A bag has 5 red and 3 blue balls. Two are drawn without replacement. What is the probability both are red?",
+  "options": [
+    "3/14",
+    "1/2",
+    "5/14",
+    "5/28"
+  ],
+  "correct_index": 2,
+  "explanation": "C(5,2)/C(8,2) = 10/28 = 5/14.",
+  "source": "generated",
+  "generator_key": "aptitude.probability",
+  "content_hash": "761fded4d808b47006c2202c6d92cda5d10abf417e30c486ed169241e0b9910f",
+  "review_status": "verified"
+}

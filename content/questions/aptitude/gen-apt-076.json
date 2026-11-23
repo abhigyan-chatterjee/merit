@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-076",
+  "topic": "aptitude",
+  "subtopic": "blood-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "P is Q's sister and R is P's father. What is R to Q?",
+  "options": [
+    "Uncle",
+    "Brother",
+    "Father",
+    "Grandfather"
+  ],
+  "correct_index": 2,
+  "explanation": "R is the father of both siblings.",
+  "source": "generated",
+  "generator_key": "aptitude.blood_relations",
+  "content_hash": "300e983517fdfc558af5bcac963b2b70f7d1b1e1eea5ca71a567d4d73901f8de",
+  "review_status": "verified"
+}

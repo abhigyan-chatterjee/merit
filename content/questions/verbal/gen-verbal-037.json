@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-037",
+  "topic": "verbal",
+  "subtopic": "reading-comprehension",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Riya studied every evening for months, failed her first mock test, but revised her plan and eventually topped her class. What is the central message of the passage?",
+  "options": [
+    "Persistence and adaptation lead to success",
+    "Luck is the only factor in exams",
+    "Toppers never fail",
+    "Mock tests are a waste of time"
+  ],
+  "correct_index": 0,
+  "explanation": "The passage emphasizes persistence and changing the plan after failure. The correct answer is Persistence and adaptation lead to success.",
+  "source": "generated",
+  "generator_key": "verbal.reading_comprehension",
+  "content_hash": "4442294645f4dfb0b53322c9f6f1317af758543aa01df7896a1bbe36a55d636f",
+  "review_status": "verified"
+}

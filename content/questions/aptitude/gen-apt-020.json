@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-020",
+  "topic": "aptitude",
+  "subtopic": "ratios-proportions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Two numbers are in the ratio 3:4 and their sum is 140. What is the larger number?",
+  "options": [
+    "84",
+    "80",
+    "70",
+    "60"
+  ],
+  "correct_index": 1,
+  "explanation": "Numbers are 60 and 80; the larger is 80.",
+  "source": "generated",
+  "generator_key": "aptitude.ratios_proportions",
+  "content_hash": "92bed3537f54016c6477e8a5c0d27a01d8a1f782ec2055d1c5fb4cfca87977c5",
+  "review_status": "verified"
+}

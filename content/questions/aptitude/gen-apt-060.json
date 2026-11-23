@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-060",
+  "topic": "aptitude",
+  "subtopic": "number-system",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the HCF of 24 and 36. Give only the number.",
+  "options": [
+    "10",
+    "12",
+    "15",
+    "14"
+  ],
+  "correct_index": 1,
+  "explanation": "HCF(24, 36) = 12.",
+  "source": "generated",
+  "generator_key": "aptitude.lcm_hcf",
+  "content_hash": "b98f2246dc0a463df721b83130d128871c62dbdc20312b1da49f082970c6ebcc",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-059",
+  "topic": "core-cs",
+  "subtopic": "cn-addressing",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the broadcast address of 192.168.1.0/24?",
+  "options": [
+    "192.168.0.255",
+    "192.168.1.255",
+    "192.168.1.254",
+    "192.168.2.0"
+  ],
+  "correct_index": 1,
+  "explanation": "All eight host bits set gives 192.168.1.255.",
+  "source": "generated",
+  "generator_key": "core_cs.cidr_subnetting",
+  "content_hash": "58345d294c0c8b605d4227cefb238b641d6f219613b473b958405f0197127000",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-018",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Convert to passive voice: 'They are building a bridge.'",
+  "options": [
+    "A bridge was being built.",
+    "A bridge is being built.",
+    "A bridge has built.",
+    "A bridge is built."
+  ],
+  "correct_index": 1,
+  "explanation": "Present continuous passive uses 'is being built'. The correct answer is A bridge is being built..",
+  "source": "generated",
+  "generator_key": "verbal.active_passive",
+  "content_hash": "b0fd33404859cf4dc5fc25cf3a462aabfb3821aafc0a8e7b5f4ada872792e1d2",
+  "review_status": "verified"
+}

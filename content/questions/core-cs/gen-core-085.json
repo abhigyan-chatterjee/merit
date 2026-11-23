@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-085",
+  "topic": "core-cs",
+  "subtopic": "design-caching",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which cache strategy loads data from the database only on a read miss?",
+  "options": [
+    "Write-behind",
+    "Cache-aside",
+    "Read-through",
+    "Write-through"
+  ],
+  "correct_index": 1,
+  "explanation": "Cache-aside populates on a miss.",
+  "source": "generated",
+  "generator_key": "core_cs.caching",
+  "content_hash": "b7ef3d353919199d7ec4cee32c8eb40a97f939b241b84b997ad36635e15bc9f4",
+  "review_status": "verified"
+}

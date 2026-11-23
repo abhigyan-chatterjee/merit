@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-003",
+  "topic": "sql",
+  "subtopic": "select-where",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What value does SELECT 7 + 3 AS total return?",
+  "options": [
+    "13",
+    "10",
+    "14",
+    "12"
+  ],
+  "correct_index": 1,
+  "explanation": "The expression evaluates to 10.",
+  "source": "generated",
+  "generator_key": "sql.select_where",
+  "content_hash": "25a6b8f8a6ec56376d64dd1c94e699d475cc61a7a44d3813639529452311870d",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-037",
+  "topic": "core-cs",
+  "subtopic": "dbms-indexing",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In a B+ tree of order 4 (maximum 4 children per internal node), what is the maximum number of search keys in a node? Give only the number.",
+  "options": [
+    "6",
+    "7",
+    "3",
+    "5"
+  ],
+  "correct_index": 2,
+  "explanation": "Maximum keys = order - 1 = 4 - 1 = 3.",
+  "source": "generated",
+  "generator_key": "core_cs.bplus_tree",
+  "content_hash": "466e168a1fafaaec4432fcee23af8e19ef35ccfbcac715aa7b1b5285702f65f4",
+  "review_status": "verified"
+}

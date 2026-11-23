@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-090",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What problem can naive range sharding cause?",
+  "options": [
+    "Hot spots",
+    "phantom reads",
+    "Cache stampedes",
+    "Lost updates"
+  ],
+  "correct_index": 0,
+  "explanation": "Adjacent keys can concentrate load on one shard. The correct answer is Hot spots.",
+  "source": "generated",
+  "generator_key": "core_cs.sharding",
+  "content_hash": "4078bd6ad95de284cbebd08da6443a349538d1cfe62c02a39d9339715d58f91d",
+  "review_status": "verified"
+}

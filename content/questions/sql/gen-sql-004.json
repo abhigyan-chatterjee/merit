@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-004",
+  "topic": "sql",
+  "subtopic": "select-where",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A users table has ages 18, 22, 28 and 35. How many rows match WHERE age BETWEEN 20 AND 30?",
+  "options": [
+    "5",
+    "4",
+    "0",
+    "2"
+  ],
+  "correct_index": 3,
+  "explanation": "Ages 22 and 28 are in range, so two rows match.",
+  "source": "generated",
+  "generator_key": "sql.select_where",
+  "content_hash": "0d49b3e5635cac9f8e1563d62471f34c6c499ed1e4700d23bab77e70fdeb3c6b",
+  "review_status": "verified"
+}

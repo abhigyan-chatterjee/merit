@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-084",
+  "topic": "aptitude",
+  "subtopic": "coding-decoding",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If a word's code is the sum of letter positions (A=1), what is the code for BLUE?",
+  "options": [
+    "36",
+    "42",
+    "38",
+    "40"
+  ],
+  "correct_index": 3,
+  "explanation": "B=2, L=12, U=21, E=5, summing to 40.",
+  "source": "generated",
+  "generator_key": "aptitude.coding_decoding",
+  "content_hash": "6ee68cca73edc2e336756ed93a0337c3054de5dc14f21e6a74f5a8e388ac4646",
+  "review_status": "verified"
+}

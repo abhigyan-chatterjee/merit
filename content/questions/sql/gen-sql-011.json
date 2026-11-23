@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-011",
+  "topic": "sql",
+  "subtopic": "joins",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A users table has 4 rows and an orders table has 6 rows, of which 2 orders have a NULL user_id. How many rows does a LEFT JOIN from users produce?",
+  "options": [
+    "9",
+    "6",
+    "10",
+    "8"
+  ],
+  "correct_index": 1,
+  "explanation": "A LEFT JOIN keeps all 6 orders that reference a user.",
+  "source": "generated",
+  "generator_key": "sql.joins",
+  "content_hash": "25bb4aa30fdc5e0544be72e0f3e7bd634b68c629f9b2b15493e358ad8f5f87e2",
+  "review_status": "verified"
+}

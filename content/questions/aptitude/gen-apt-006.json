@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-006",
+  "topic": "aptitude",
+  "subtopic": "profit-loss",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An article with cost price Rs. 500 is sold at a 12% loss. What is the selling price? Give only the number.",
+  "options": [
+    "440",
+    "438",
+    "443",
+    "444"
+  ],
+  "correct_index": 0,
+  "explanation": "Selling price = 500 * (100 - 12)/100 = 440.",
+  "source": "generated",
+  "generator_key": "aptitude.profit_loss",
+  "content_hash": "3b6b355683b33ce915743b80fbb5e0c6edc5bc01fcb57fb4db2922c1798fd50e",
+  "review_status": "verified"
+}

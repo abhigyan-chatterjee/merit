@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-030",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "How long does it take to cover 120 km at 40 km/h? Give only the number of hours.",
+  "options": [
+    "5",
+    "3",
+    "6",
+    "4"
+  ],
+  "correct_index": 1,
+  "explanation": "Time = 120/40 = 3 hours.",
+  "source": "generated",
+  "generator_key": "aptitude.time_speed_distance",
+  "content_hash": "a56e34ccbf7f90952844d881499f7fd50cb04476f77f6569391568d7e325e529",
+  "review_status": "verified"
+}

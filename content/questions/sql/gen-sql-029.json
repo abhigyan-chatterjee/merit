@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-029",
+  "topic": "sql",
+  "subtopic": "result-shaping",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An emp table has dept values A, A, B and C. How many rows does SELECT DISTINCT dept return?",
+  "options": [
+    "3",
+    "6",
+    "7",
+    "1"
+  ],
+  "correct_index": 0,
+  "explanation": "There are three distinct departments. The correct answer is 3.",
+  "source": "generated",
+  "generator_key": "sql.distinct_order_limit",
+  "content_hash": "3f8b067b8e80413287526b93820f6d4c5f086f9d1375dd0e2787c2e75b9be4dd",
+  "review_status": "verified"
+}

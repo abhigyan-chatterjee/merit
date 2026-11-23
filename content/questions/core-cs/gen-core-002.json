@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-002",
+  "topic": "core-cs",
+  "subtopic": "os-scheduling",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Four processes arrive together with burst times [5, 3, 8, 4]. Using SJF scheduling, what is the total waiting time? Give only the number.",
+  "options": [
+    "20",
+    "22",
+    "26",
+    "24"
+  ],
+  "correct_index": 1,
+  "explanation": "Under SJF the total waiting time is 22.",
+  "source": "generated",
+  "generator_key": "core_cs.cpu_scheduling",
+  "content_hash": "38d7b088d39af0257aee0be93bca3a772276348c55ab1df2c8edf80b508e929d",
+  "review_status": "verified"
+}

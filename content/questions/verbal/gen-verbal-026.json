@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-026",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word closest in meaning to 'laconic'.",
+  "options": [
+    "Concise",
+    "Wordy",
+    "Angry",
+    "Loud"
+  ],
+  "correct_index": 0,
+  "explanation": "Laconic means using very few words, or concise.",
+  "source": "generated",
+  "generator_key": "verbal.synonyms",
+  "content_hash": "23edd9271f8a08c13c52e705a2d3b0e50763ce5b62733ff1ed1314d9d2edd9b2",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-066",
+  "topic": "aptitude",
+  "subtopic": "number-series",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the next term: 1, 4, 9, 16, 25, ?",
+  "options": [
+    "35",
+    "30",
+    "36",
+    "49"
+  ],
+  "correct_index": 2,
+  "explanation": "The series is n^2, so the next term is 6^2 = 36.",
+  "source": "generated",
+  "generator_key": "aptitude.number_series",
+  "content_hash": "e437d4872109c73bda7206df7fad2fe249fe27269d0a123860dc4344028dc84b",
+  "review_status": "verified"
+}

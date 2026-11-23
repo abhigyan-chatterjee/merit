@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-002",
+  "topic": "aptitude",
+  "subtopic": "percentages",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is 35% of 800? Give only the number.",
+  "options": [
+    "280",
+    "282",
+    "283",
+    "284"
+  ],
+  "correct_index": 0,
+  "explanation": "35% of 800 = 800 * 35/100 = 280.",
+  "source": "generated",
+  "generator_key": "aptitude.percentages",
+  "content_hash": "4d21de80578d72a2cb56b0a71cbd3dfac15180d887b4523ad03ad2e0e77d6be4",
+  "review_status": "verified"
+}

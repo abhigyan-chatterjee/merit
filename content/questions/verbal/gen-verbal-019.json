@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-019",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Convert to passive voice: 'She will finish the work.'",
+  "options": [
+    "The work will finish by her.",
+    "The work will be finishing.",
+    "The work will be finished by her.",
+    "The work is finished by her."
+  ],
+  "correct_index": 2,
+  "explanation": "The future passive uses 'will be finished'. The correct answer is The work will be finished by her..",
+  "source": "generated",
+  "generator_key": "verbal.active_passive",
+  "content_hash": "aa7ae6abed7bb0dd29f9e35f29d94a677ab10a3512021e9adfa6898ec6cb9c08",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-007",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: If I ___ you, I would accept the offer.",
+  "options": [
+    "was being",
+    "were",
+    "am",
+    "will be"
+  ],
+  "correct_index": 1,
+  "explanation": "A hypothetical condition takes the subjunctive 'were'.",
+  "source": "generated",
+  "generator_key": "verbal.tense_modifiers",
+  "content_hash": "9aa500d9455509e1112eb8245f35709c7adda1b8b0165d0c4b0301703edf4c34",
+  "review_status": "verified"
+}

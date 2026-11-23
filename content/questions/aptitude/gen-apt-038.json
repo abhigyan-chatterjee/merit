@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-038",
+  "topic": "aptitude",
+  "subtopic": "time-work",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A finishes a job in 10 days and B in 15 days. Working together, how many days do they take? Give only the number.",
+  "options": [
+    "4",
+    "6",
+    "9",
+    "8"
+  ],
+  "correct_index": 1,
+  "explanation": "Combined rate 1/10 + 1/15 per day gives 6.0 days.",
+  "source": "generated",
+  "generator_key": "aptitude.time_work",
+  "content_hash": "07fd26a4d637771a88d84217220b246f10658c06781b0cc907d23e74d30c2f49",
+  "review_status": "verified"
+}

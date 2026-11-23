@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-043",
+  "topic": "core-cs",
+  "subtopic": "dbms-recovery",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which log information enables undoing an uncommitted transaction?",
+  "options": [
+    "Before-image in the undo log",
+    "The query plan",
+    "The index root",
+    "The page checksum"
+  ],
+  "correct_index": 0,
+  "explanation": "The before-image restores the prior value. The correct answer is Before-image in the undo log.",
+  "source": "generated",
+  "generator_key": "core_cs.wal_recovery",
+  "content_hash": "6cfc85388985c08be160c46f48f87609ecd3c94110a847c743f365e7d501dbf7",
+  "review_status": "verified"
+}

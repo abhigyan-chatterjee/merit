@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-023",
+  "topic": "aptitude",
+  "subtopic": "mixtures-alligations",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "200 kg costing Rs. 15 per kg is mixed with 100 kg costing Rs. 30 per kg. What is the average cost per kg? Give only the number.",
+  "options": [
+    "24",
+    "25",
+    "18",
+    "20"
+  ],
+  "correct_index": 3,
+  "explanation": "Average cost = (200*15 + 100*30)/300 = 6000/300 = 20.",
+  "source": "generated",
+  "generator_key": "aptitude.mixtures_alligations",
+  "content_hash": "7b32d873f5c957b31163739de31b0653e4d5f081e403bad75810b354cc287f83",
+  "review_status": "verified"
+}

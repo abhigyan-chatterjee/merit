@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-024",
+  "topic": "aptitude",
+  "subtopic": "mixtures-alligations",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Two ingredients costing Rs. 10 and Rs. 20 per kg are mixed to get a mean price of Rs. 14. What is the ratio of cheap to dear ingredient?",
+  "options": [
+    "3:2",
+    "4:3",
+    "5:2",
+    "3:4"
+  ],
+  "correct_index": 0,
+  "explanation": "Alligation gives (20-14):(14-10) = 6:4 = 3:2.",
+  "source": "generated",
+  "generator_key": "aptitude.mixtures_alligations",
+  "content_hash": "efc2c6f09f66514566db7fe7a7db909d6f36a04386188288f738704b75e77efa",
+  "review_status": "verified"
+}

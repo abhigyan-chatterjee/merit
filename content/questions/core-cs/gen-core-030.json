@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-030",
+  "topic": "core-cs",
+  "subtopic": "dbms-normalization",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which normal form removes partial dependencies on a composite primary key?",
+  "options": [
+    "First Normal Form (1NF)",
+    "Second Normal Form (2NF)",
+    "Third Normal Form (3NF)",
+    "Fourth Normal Form (4NF)"
+  ],
+  "correct_index": 1,
+  "explanation": "2NF builds on 1NF and removes partial dependencies. The correct answer is Second Normal Form (2NF).",
+  "source": "generated",
+  "generator_key": "core_cs.normalization",
+  "content_hash": "25794f48b560679c7f3fc6b7eef544bce2a63ca05345078c91ca371e1a4032a5",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-039",
+  "topic": "verbal",
+  "subtopic": "reading-comprehension",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "The library closed early on Fridays, so Meera finished her research at home that evening. What caused Meera to work at home?",
+  "options": [
+    "Her laptop was faster",
+    "The internet was down",
+    "She disliked the library",
+    "The library's early closure"
+  ],
+  "correct_index": 3,
+  "explanation": "The early Friday closure forced her to work elsewhere. The correct answer is The library's early closure.",
+  "source": "generated",
+  "generator_key": "verbal.reading_comprehension",
+  "content_hash": "b4ce58a5907f757247ec3cceba0d788b6b1c9f97eaccaebd9683fc93c3ce3da3",
+  "review_status": "verified"
+}

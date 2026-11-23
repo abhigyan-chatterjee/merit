@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-026",
+  "topic": "core-cs",
+  "subtopic": "os-memory",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What is the usual cause of thrashing?",
+  "options": [
+    "Fast disks",
+    "A small page size",
+    "Too few processes in memory",
+    "Working set larger than available frames"
+  ],
+  "correct_index": 3,
+  "explanation": "When the working set exceeds frames, page faults dominate. The correct answer is Working set larger than available frames.",
+  "source": "generated",
+  "generator_key": "core_cs.thrashing",
+  "content_hash": "0c77b9990a156fa20774a742df6eb53e55cbdf3438b3675b7d8d78a3d9162424",
+  "review_status": "verified"
+}

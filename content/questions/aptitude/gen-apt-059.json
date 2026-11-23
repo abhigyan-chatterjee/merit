@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-059",
+  "topic": "aptitude",
+  "subtopic": "number-system",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the LCM of 8 and 12. Give only the number.",
+  "options": [
+    "26",
+    "22",
+    "24",
+    "28"
+  ],
+  "correct_index": 2,
+  "explanation": "LCM(8, 12) = 24.",
+  "source": "generated",
+  "generator_key": "aptitude.lcm_hcf",
+  "content_hash": "bd775a838239174f2d73e81f85e520e8b7e9ca4806cdae64138143fd4d502c7f",
+  "review_status": "verified"
+}

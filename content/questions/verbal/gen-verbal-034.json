@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-034",
+  "topic": "verbal",
+  "subtopic": "para-jumbles",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Arrange: (A) The seeds were sown. (B) The soil was prepared. (C) The plants grew. (D) It rained. Which sentence comes first?",
+  "options": [
+    "The soil was prepared.",
+    "The plants grew.",
+    "The seeds were sown.",
+    "It rained."
+  ],
+  "correct_index": 0,
+  "explanation": "Preparing the soil must come before sowing. The correct answer is The soil was prepared..",
+  "source": "generated",
+  "generator_key": "verbal.para_jumbles",
+  "content_hash": "8c863c20e2a4b3331b14c8ffdba5dde6496b9a0cdaec559675bed54f1c0362c1",
+  "review_status": "verified"
+}

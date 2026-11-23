@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-041",
+  "topic": "core-cs",
+  "subtopic": "dbms-recovery",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Why does a database use write-ahead logging?",
+  "options": [
+    "To shard tables",
+    "To compress backups",
+    "To speed up SELECT parsing",
+    "To persist intent before data changes for durability"
+  ],
+  "correct_index": 3,
+  "explanation": "WAL records changes durably before applying them. The correct answer is To persist intent before data changes for durability.",
+  "source": "generated",
+  "generator_key": "core_cs.wal_recovery",
+  "content_hash": "24d47f37d65a29bfcd8e9744bcb2abd75363bedbe1680a40ade0a27844de612d",
+  "review_status": "verified"
+}

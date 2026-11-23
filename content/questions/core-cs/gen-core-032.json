@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-032",
+  "topic": "core-cs",
+  "subtopic": "dbms-normalization",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which normal form requires every determinant to be a candidate key?",
+  "options": [
+    "Second Normal Form (2NF)",
+    "Boyce-Codd Normal Form (BCNF)",
+    "Third Normal Form (3NF)",
+    "First Normal Form (1NF)"
+  ],
+  "correct_index": 1,
+  "explanation": "BCNF is a stricter form of 3NF. The correct answer is Boyce-Codd Normal Form (BCNF).",
+  "source": "generated",
+  "generator_key": "core_cs.normalization",
+  "content_hash": "e7610f8ab0490898a0c56f438da6337620a8fb3755921ca78e3ee62c71588163",
+  "review_status": "verified"
+}

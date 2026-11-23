@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-051",
+  "topic": "core-cs",
+  "subtopic": "cn-transport",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which TCP header field advertises the receiver's available buffer space?",
+  "options": [
+    "Window size",
+    "Sequence number",
+    "Checksum",
+    "Urgent pointer"
+  ],
+  "correct_index": 0,
+  "explanation": "The window field drives flow control. The correct answer is Window size.",
+  "source": "generated",
+  "generator_key": "core_cs.tcp_udp",
+  "content_hash": "a55e10d6461fd5acf818b3afeed2e697a7d12da6394d1f0e43ebf2543b18c14f",
+  "review_status": "verified"
+}

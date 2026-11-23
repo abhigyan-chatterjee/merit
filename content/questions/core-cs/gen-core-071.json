@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-071",
+  "topic": "core-cs",
+  "subtopic": "oop-java",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which Java keyword prevents a method from being overridden?",
+  "options": [
+    "static",
+    "final",
+    "transient",
+    "abstract"
+  ],
+  "correct_index": 1,
+  "explanation": "A final method cannot be redefined.",
+  "source": "generated",
+  "generator_key": "core_cs.java_polymorphism",
+  "content_hash": "fa4e1b0b72a1c416cce8e27e5b0bdc2dd4757168e7d14a91854b8b357cb0bbd6",
+  "review_status": "verified"
+}

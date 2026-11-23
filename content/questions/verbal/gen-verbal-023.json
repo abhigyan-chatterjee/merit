@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-023",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Change to indirect speech: He said, 'I finished it yesterday.'",
+  "options": [
+    "He said that he finished it yesterday.",
+    "He said that he had finished it the previous day.",
+    "He said that he has finished it the previous day.",
+    "He said that he had finished it yesterday."
+  ],
+  "correct_index": 1,
+  "explanation": "The past shifts to past perfect and time markers change. The correct answer is He said that he had finished it the previous day..",
+  "source": "generated",
+  "generator_key": "verbal.direct_indirect",
+  "content_hash": "cde2b1dddb3ed917a780ea74022424164607782e142147b7e0b885965306d288",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-089",
+  "topic": "aptitude",
+  "subtopic": "clocks-calendars",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "What is the angle between the hour and minute hands at 3:00?",
+  "options": [
+    "60 degrees",
+    "120 degrees",
+    "90 degrees",
+    "30 degrees"
+  ],
+  "correct_index": 2,
+  "explanation": "Each hour mark is 30 degrees; at 3:00 the hands are 3 marks apart. The correct answer is 90 degrees.",
+  "source": "generated",
+  "generator_key": "aptitude.clocks_calendars",
+  "content_hash": "689dc3b6af57e4c892e35022f95444dae998b9ee0dcaabe520405822033b6c9f",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-069",
+  "topic": "core-cs",
+  "subtopic": "oop-java",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A reference of type Animal points to a Dog object and calling speak() invokes Dog's method. What is this behaviour called?",
+  "options": [
+    "Shadowing",
+    "Dynamic dispatch",
+    "Overloading",
+    "Hiding"
+  ],
+  "correct_index": 1,
+  "explanation": "Runtime dispatch selects the overriding method. The correct answer is Dynamic dispatch.",
+  "source": "generated",
+  "generator_key": "core_cs.java_polymorphism",
+  "content_hash": "c86b0200136e1c041df5eee81eb8d0ee130e0e7a487f4a7614b27c649f36832f",
+  "review_status": "verified"
+}

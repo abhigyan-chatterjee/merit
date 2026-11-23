@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-083",
+  "topic": "core-cs",
+  "subtopic": "code-output",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "How many calls are made in total by naive fib(5) with fib(0)=0 and fib(1)=1?",
+  "options": [
+    "12",
+    "15",
+    "9",
+    "10"
+  ],
+  "correct_index": 1,
+  "explanation": "The recurrence of the call count gives 15 calls.",
+  "source": "generated",
+  "generator_key": "core_cs.recursion_complexity",
+  "content_hash": "300f5e980c731921ec9ff39a7f0214576eb64c407eb60e43b0a821e96388686a",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-069",
+  "topic": "aptitude",
+  "subtopic": "syllogisms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "All pens are books. All books are papers. Which conclusion always follows?",
+  "options": [
+    "All pens are papers",
+    "All papers are pens",
+    "No pen is paper",
+    "Some books are not papers"
+  ],
+  "correct_index": 0,
+  "explanation": "Universal affirmative statements are transitive. The correct answer is All pens are papers.",
+  "source": "generated",
+  "generator_key": "aptitude.syllogisms",
+  "content_hash": "397d98f2cf01647e2f3af03d05840e602d05418521fa48ae191925babb31b2be",
+  "review_status": "verified"
+}

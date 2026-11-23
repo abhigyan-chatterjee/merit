@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-048",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "How is a deadlock detected in a lock manager?",
+  "options": [
+    "A cycle in the wait-for graph",
+    "A missing index",
+    "A full log buffer",
+    "A low cache hit ratio"
+  ],
+  "correct_index": 0,
+  "explanation": "A cycle in the wait-for graph indicates deadlock.",
+  "source": "generated",
+  "generator_key": "core_cs.schedules_locks",
+  "content_hash": "d5b654b43f0dee692af4addd8de37813f41355667818d0c723f131dd3a41e766",
+  "review_status": "verified"
+}

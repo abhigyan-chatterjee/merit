@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-091",
+  "topic": "aptitude",
+  "subtopic": "clocks-calendars",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "How many times do the hour and minute hands coincide in 24 hours?",
+  "options": [
+    "23",
+    "24",
+    "22",
+    "12"
+  ],
+  "correct_index": 2,
+  "explanation": "The hands overlap 11 times in 12 hours, so 22 times a day.",
+  "source": "generated",
+  "generator_key": "aptitude.clocks_calendars",
+  "content_hash": "d9a56deac0e80dd0301092f694d2ba394d49986ab076afa17902572591544da7",
+  "review_status": "verified"
+}

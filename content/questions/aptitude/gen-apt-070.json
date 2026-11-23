@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-070",
+  "topic": "aptitude",
+  "subtopic": "syllogisms",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "No cats are dogs. Some dogs are pets. Which conclusion follows?",
+  "options": [
+    "No pets are cats",
+    "Some pets are not cats",
+    "All pets are cats",
+    "All dogs are cats"
+  ],
+  "correct_index": 1,
+  "explanation": "The dogs that are pets cannot be cats. The correct answer is Some pets are not cats.",
+  "source": "generated",
+  "generator_key": "aptitude.syllogisms",
+  "content_hash": "ee6f2ce3df3ee71641163b3013f1a451939968321ac3c9dcb5a46e3d7b6eb772",
+  "review_status": "verified"
+}

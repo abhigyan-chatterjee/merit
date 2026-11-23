@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-018",
+  "topic": "sql",
+  "subtopic": "set-operations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Set A has 3 rows and set B has 2 rows with 1 row in common. How many rows does UNION ALL return?",
+  "options": [
+    "3",
+    "7",
+    "5",
+    "9"
+  ],
+  "correct_index": 2,
+  "explanation": "UNION ALL keeps duplicates, giving 3 + 2 = 5 rows.",
+  "source": "generated",
+  "generator_key": "sql.union",
+  "content_hash": "2c02ae6b4167241aa3acc77483b87d61b5655e41d31ab30946210971d9086781",
+  "review_status": "verified"
+}

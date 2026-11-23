@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-034",
+  "topic": "aptitude",
+  "subtopic": "trains-boats",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A 200 m train travelling at 20 m/s crosses a 300 m bridge. How many seconds does it take?",
+  "options": [
+    "30",
+    "20",
+    "25",
+    "10"
+  ],
+  "correct_index": 2,
+  "explanation": "Distance = 200 + 300 = 500 m, time = 500/20 = 25 s.",
+  "source": "generated",
+  "generator_key": "aptitude.trains_boats",
+  "content_hash": "86e6dd6be9879a04260eae8970e632ab3b71efeb64432d2f1e58847d8225e6bf",
+  "review_status": "verified"
+}

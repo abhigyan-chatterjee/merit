@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-010",
+  "topic": "aptitude",
+  "subtopic": "simple-interest",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the simple interest on Rs. 2500 at 8% per annum for 2 years. Give only the number.",
+  "options": [
+    "400",
+    "402",
+    "398",
+    "403"
+  ],
+  "correct_index": 0,
+  "explanation": "Simple interest = 2500 * 8 * 2/100 = 400.",
+  "source": "generated",
+  "generator_key": "aptitude.simple_interest",
+  "content_hash": "389dec543f976f76a03329909ddfaf9f96784e0fc2e60808c295c3561fd02435",
+  "review_status": "verified"
+}

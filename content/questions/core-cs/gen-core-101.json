@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-101",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which algorithm routes each request to the backend with the fewest active connections?",
+  "options": [
+    "IP hash",
+    "Round robin",
+    "Random",
+    "Least connections"
+  ],
+  "correct_index": 3,
+  "explanation": "Least connections adapts to uneven load.",
+  "source": "generated",
+  "generator_key": "core_cs.load_balancing",
+  "content_hash": "ca7d12622f27c3bd2f79ef6526cefbfd6ba261f21148d25ef5e4b6c76804944d",
+  "review_status": "verified"
+}

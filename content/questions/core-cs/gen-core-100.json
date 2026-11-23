@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-100",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Where should a public API enforce rate limits first?",
+  "options": [
+    "At the edge gateway",
+    "In database triggers",
+    "In batch jobs",
+    "Inside each browser tab"
+  ],
+  "correct_index": 0,
+  "explanation": "Edge enforcement protects all backend services. The correct answer is At the edge gateway.",
+  "source": "generated",
+  "generator_key": "core_cs.rate_limiting",
+  "content_hash": "f8babaec62fa764dddf1ba932a346cc7e6cb33e5da10abdfea28687130d7549f",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-048",
+  "topic": "aptitude",
+  "subtopic": "permutations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Compute the number of permutations P(8, 2) = 8P2. Give only the number.",
+  "options": [
+    "59",
+    "60",
+    "58",
+    "56"
+  ],
+  "correct_index": 3,
+  "explanation": "8P2 = 8!/(8-2)! = 56.",
+  "source": "generated",
+  "generator_key": "aptitude.permutations",
+  "content_hash": "82b9447e53d8612f60b99fd02636afdb4f143e365e7715a34db28acb5df1cb0d",
+  "review_status": "verified"
+}

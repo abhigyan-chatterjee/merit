@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-029",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word most opposite in meaning to 'abundant'.",
+  "options": [
+    "Ample",
+    "Generous",
+    "Plentiful",
+    "Scarce"
+  ],
+  "correct_index": 3,
+  "explanation": "Abundant means plentiful, so its opposite is scarce.",
+  "source": "generated",
+  "generator_key": "verbal.antonyms",
+  "content_hash": "f7e35d57f1bf35f192469453ea3283e624f9e62dbe661519d40442906923864c",
+  "review_status": "verified"
+}

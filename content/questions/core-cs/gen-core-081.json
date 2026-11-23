@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-081",
+  "topic": "core-cs",
+  "subtopic": "code-output",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "For T(n) = T(n-1) + n with T(0) = 0, what is T(4)?",
+  "options": [
+    "9",
+    "11",
+    "10",
+    "15"
+  ],
+  "correct_index": 2,
+  "explanation": "T(4) = 1 + 2 + 3 + 4 = 10.",
+  "source": "generated",
+  "generator_key": "core_cs.recursion_complexity",
+  "content_hash": "00cb2fea820d1ad88317e11e32ffcc8f5f52e56ce6c627e0bf57294fcd007d21",
+  "review_status": "verified"
+}

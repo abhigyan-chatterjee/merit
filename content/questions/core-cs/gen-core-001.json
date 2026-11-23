@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-001",
+  "topic": "core-cs",
+  "subtopic": "os-scheduling",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Four processes arrive together with burst times [5, 3, 8, 4]. Using FCFS scheduling, what is the total waiting time? Give only the number.",
+  "options": [
+    "33",
+    "32",
+    "29",
+    "31"
+  ],
+  "correct_index": 2,
+  "explanation": "Under FCFS the total waiting time is 29.",
+  "source": "generated",
+  "generator_key": "core_cs.cpu_scheduling",
+  "content_hash": "51ac0715ea71b421e81ded92c1e0a795abe0f833a0247a45f93f7c57f8d5a0b1",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-062",
+  "topic": "core-cs",
+  "subtopic": "cn-application",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which DNS record maps a hostname to an IPv4 address?",
+  "options": [
+    "TXT record",
+    "A record",
+    "MX record",
+    "CNAME record"
+  ],
+  "correct_index": 1,
+  "explanation": "The A record stores an IPv4 address.",
+  "source": "generated",
+  "generator_key": "core_cs.http_tls_dns",
+  "content_hash": "9edd64c49ec35bbee5a885f0b61909e39647cd10ae5e1a641b38dcd9bfd1ba78",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-084",
+  "topic": "core-cs",
+  "subtopic": "code-output",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Solve the recurrence T(n) = 2T(n/2) + n using the master theorem.",
+  "options": [
+    "O(n^2)",
+    "O(n)",
+    "O(n log n)",
+    "O(log n)"
+  ],
+  "correct_index": 2,
+  "explanation": "The equal case of the master theorem gives n log n. The correct answer is O(n log n).",
+  "source": "generated",
+  "generator_key": "core_cs.recursion_complexity",
+  "content_hash": "b1c691e60e7f9ed6eefeb671b4d70350e24d4ed7ba96fef075e1ae2d389d3edf",
+  "review_status": "verified"
+}

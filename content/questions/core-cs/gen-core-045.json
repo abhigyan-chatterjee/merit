@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-045",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which lock allows several readers but blocks writers?",
+  "options": [
+    "Schema lock",
+    "Shared lock",
+    "Exclusive lock",
+    "Intent lock"
+  ],
+  "correct_index": 1,
+  "explanation": "Shared locks are compatible with other shared locks.",
+  "source": "generated",
+  "generator_key": "core_cs.schedules_locks",
+  "content_hash": "2b7ac8dd28fa68837a0a9b39b998b2ae21e17acd50dbf403fb5734479daf2653",
+  "review_status": "verified"
+}

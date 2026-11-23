@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-025",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word closest in meaning to 'meticulous'.",
+  "options": [
+    "Vague",
+    "Careless",
+    "Thorough",
+    "Hasty"
+  ],
+  "correct_index": 2,
+  "explanation": "Meticulous means showing great attention to detail, or thorough.",
+  "source": "generated",
+  "generator_key": "verbal.synonyms",
+  "content_hash": "7a3e673dc9d33306d9a0212cdebc630d5876499f638d44bba01530169d0fd5a1",
+  "review_status": "verified"
+}

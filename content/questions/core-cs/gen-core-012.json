@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-012",
+  "topic": "core-cs",
+  "subtopic": "os-deadlock",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "With available resources [1, 1, 1], needs [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]] and releases [[1, 1, 0], [1, 1, 0], [1, 1, 0], [1, 1, 0]], how many processes can finish in a safe state?",
+  "options": [
+    "4",
+    "7",
+    "1",
+    "3"
+  ],
+  "correct_index": 2,
+  "explanation": "The safety algorithm allows 1 processes to finish.",
+  "source": "generated",
+  "generator_key": "core_cs.bankers_algorithm",
+  "content_hash": "6269fa5becfea77c7c167b2d6903ce9780876537578bc56c63356033f96388cc",
+  "review_status": "verified"
+}

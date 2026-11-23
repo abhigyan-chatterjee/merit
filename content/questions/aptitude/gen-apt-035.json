@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-035",
+  "topic": "aptitude",
+  "subtopic": "trains-boats",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A boat's downstream speed is 20 km/h and upstream speed is 12 km/h. Find the speed of the boat in still water. Give only the number.",
+  "options": [
+    "14",
+    "12",
+    "16",
+    "18"
+  ],
+  "correct_index": 2,
+  "explanation": "Still-water speed = (20 + 12)/2 = 16 km/h.",
+  "source": "generated",
+  "generator_key": "aptitude.trains_boats",
+  "content_hash": "30ee2f3f6c59b9437ab4de5be9b7a45d1221a8f91708519be15c690ce2ba584d",
+  "review_status": "verified"
+}

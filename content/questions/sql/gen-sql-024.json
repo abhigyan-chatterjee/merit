@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-024",
+  "topic": "sql",
+  "subtopic": "subqueries",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "The orders table contains 4 distinct non-null user_ids. How many distinct users placed an order?",
+  "options": [
+    "2",
+    "8",
+    "4",
+    "6"
+  ],
+  "correct_index": 2,
+  "explanation": "There are four distinct user_ids. The correct answer is 4.",
+  "source": "generated",
+  "generator_key": "sql.subqueries",
+  "content_hash": "09178ad18adb840449d6a81f8159d8773e1940345c60727865981ce765ef99b0",
+  "review_status": "verified"
+}

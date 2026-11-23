@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-042",
+  "topic": "core-cs",
+  "subtopic": "dbms-recovery",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "In ARIES recovery, what does the redo phase do?",
+  "options": [
+    "Repeats committed changes",
+    "Discards all log records",
+    "Deletes the checkpoint",
+    "Rolls back every transaction"
+  ],
+  "correct_index": 0,
+  "explanation": "Redo re-applies committed updates. The correct answer is Repeats committed changes.",
+  "source": "generated",
+  "generator_key": "core_cs.wal_recovery",
+  "content_hash": "1382d8345730da1e32ab568b9ff2ed056882690d6e0e67a199680086226c465a",
+  "review_status": "verified"
+}

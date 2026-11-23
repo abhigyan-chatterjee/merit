@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-065",
+  "topic": "core-cs",
+  "subtopic": "cn-addressing",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "At which OSI layer does a router operate?",
+  "options": [
+    "Data link layer",
+    "Physical layer",
+    "Transport layer",
+    "Network layer"
+  ],
+  "correct_index": 3,
+  "explanation": "Routers make forwarding decisions at the network layer.",
+  "source": "generated",
+  "generator_key": "core_cs.osi_routing",
+  "content_hash": "7c4fc2da496bfd04fab6a5cc7c9bd3f901a6eb8e89bbb13412a92fc7f59b5462",
+  "review_status": "verified"
+}

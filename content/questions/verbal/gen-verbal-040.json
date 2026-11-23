@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-040",
+  "topic": "verbal",
+  "subtopic": "reading-comprehension",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "The old bridge was rebuilt using stronger steel after repeated inspections found cracks. What can be inferred about the inspections?",
+  "options": [
+    "They revealed safety problems",
+    "They were done only once",
+    "They found no issues",
+    "They were purely ceremonial"
+  ],
+  "correct_index": 0,
+  "explanation": "Finding cracks means the inspections uncovered safety problems. The correct answer is They revealed safety problems.",
+  "source": "generated",
+  "generator_key": "verbal.reading_comprehension",
+  "content_hash": "f48e0d9552153c4298e0f076d784da11a1920447f4eabe5e6a56170d312e3900",
+  "review_status": "verified"
+}

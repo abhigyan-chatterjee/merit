@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-085",
+  "topic": "aptitude",
+  "subtopic": "seating-ranking",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "In a row of 25, Ravi is 9th from the left. What is his position from the right?",
+  "options": [
+    "17th",
+    "15th",
+    "18th",
+    "16th"
+  ],
+  "correct_index": 0,
+  "explanation": "25 - 9 + 1 = 17th.",
+  "source": "generated",
+  "generator_key": "aptitude.seating_ranking",
+  "content_hash": "82b317af7d8c559fbb83be019cf59f7a3e175fd5ee62e2fa72014e7796ad1db5",
+  "review_status": "verified"
+}

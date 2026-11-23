@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-012",
+  "topic": "aptitude",
+  "subtopic": "simple-interest",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the simple interest on Rs. 1500 at 10% per annum for 4 years. Give only the number.",
+  "options": [
+    "600",
+    "598",
+    "604",
+    "602"
+  ],
+  "correct_index": 0,
+  "explanation": "Simple interest = 1500 * 10 * 4/100 = 600.",
+  "source": "generated",
+  "generator_key": "aptitude.simple_interest",
+  "content_hash": "913efd7340c1a8f3784f5d5151e84ef668893dd3e60a858798c227efb22e1323",
+  "review_status": "verified"
+}

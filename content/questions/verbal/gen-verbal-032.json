@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-032",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word most opposite in meaning to 'fragile'.",
+  "options": [
+    "Robust",
+    "Delicate",
+    "Brittle",
+    "Frail"
+  ],
+  "correct_index": 0,
+  "explanation": "Fragile means easily broken, so its opposite is robust.",
+  "source": "generated",
+  "generator_key": "verbal.antonyms",
+  "content_hash": "3b82bd1de93ddac5236e241bb6121a88dac2582b1fd8eef1dc485ef967a62fa7",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-038",
+  "topic": "verbal",
+  "subtopic": "reading-comprehension",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "When the sky darkened, Arjun grabbed an umbrella before leaving for the market. Why did Arjun take an umbrella?",
+  "options": [
+    "He was carrying it for a friend",
+    "He wanted to shield himself from the sun",
+    "The market required one",
+    "He expected rain"
+  ],
+  "correct_index": 3,
+  "explanation": "Darkening skies signal expected rain. The correct answer is He expected rain.",
+  "source": "generated",
+  "generator_key": "verbal.reading_comprehension",
+  "content_hash": "fcd0b90c44f9dc64c2c874dc0df6caed675cf61bc883e339011fcd3fb720ae5d",
+  "review_status": "verified"
+}

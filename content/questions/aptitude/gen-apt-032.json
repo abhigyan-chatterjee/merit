@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-032",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Convert 72 km/h to m/s. Give only the number.",
+  "options": [
+    "18",
+    "24",
+    "20",
+    "25"
+  ],
+  "correct_index": 2,
+  "explanation": "72 km/h = 72 * 5/18 = 20 m/s.",
+  "source": "generated",
+  "generator_key": "aptitude.time_speed_distance",
+  "content_hash": "8c3797e631a6cd0ed289f542e6b15363c98f93192cbd34ea0bc7fb351c83bab6",
+  "review_status": "verified"
+}

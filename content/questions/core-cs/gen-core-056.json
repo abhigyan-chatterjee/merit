@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-056",
+  "topic": "core-cs",
+  "subtopic": "cn-transport",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "What event triggers window reduction in TCP Tahoe?",
+  "options": [
+    "A successful handshake",
+    "A DNS lookup",
+    "Packet loss detected",
+    "A cache miss"
+  ],
+  "correct_index": 2,
+  "explanation": "Loss is the signal of congestion. The correct answer is Packet loss detected.",
+  "source": "generated",
+  "generator_key": "core_cs.congestion_control",
+  "content_hash": "3ffad3e50d2119a0ae0b4306a400ef4b124eca879a99ff2ccfe2573003f836c7",
+  "review_status": "verified"
+}

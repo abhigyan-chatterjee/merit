@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-057",
+  "topic": "aptitude",
+  "subtopic": "number-system",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Find the LCM of 12 and 18. Give only the number.",
+  "options": [
+    "36",
+    "38",
+    "34",
+    "40"
+  ],
+  "correct_index": 0,
+  "explanation": "LCM(12, 18) = 36.",
+  "source": "generated",
+  "generator_key": "aptitude.lcm_hcf",
+  "content_hash": "be828ba2c6db0ee4a39ef4854765bff1acddcac76e41bd250c9c5740d3fba90b",
+  "review_status": "verified"
+}

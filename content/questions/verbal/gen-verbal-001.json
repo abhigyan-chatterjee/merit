@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-001",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Fill in the blank: The list of items ___ longer than expected.",
+  "options": [
+    "is",
+    "are",
+    "have",
+    "were"
+  ],
+  "correct_index": 0,
+  "explanation": "The subject is the singular 'list', so the verb is 'is'.",
+  "source": "generated",
+  "generator_key": "verbal.subject_verb_agreement",
+  "content_hash": "e66481e1985fdbcae80f8210159d255c8928e6c7dda4635684ce54a4520a2eb3",
+  "review_status": "verified"
+}

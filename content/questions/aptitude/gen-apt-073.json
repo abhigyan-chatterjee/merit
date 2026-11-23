@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-073",
+  "topic": "aptitude",
+  "subtopic": "blood-relations",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "A is B's brother and B is C's mother. What is A to C?",
+  "options": [
+    "Maternal uncle",
+    "Father",
+    "Paternal uncle",
+    "Grandfather"
+  ],
+  "correct_index": 0,
+  "explanation": "A is the brother of C's mother. The correct answer is Maternal uncle.",
+  "source": "generated",
+  "generator_key": "aptitude.blood_relations",
+  "content_hash": "c0408020b6b2fb1297ac75b9270055bf6d736d393a113515dd71ff757583cfcb",
+  "review_status": "verified"
+}

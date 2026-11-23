@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-099",
+  "topic": "core-cs",
+  "subtopic": "design-scaling",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Which HTTP status code signals that a client has exceeded its rate limit?",
+  "options": [
+    "200",
+    "401",
+    "503",
+    "429"
+  ],
+  "correct_index": 3,
+  "explanation": "429 means Too Many Requests.",
+  "source": "generated",
+  "generator_key": "core_cs.rate_limiting",
+  "content_hash": "2478876db34a9d48086a0d2ff8c021940c76b23d9e7c6d595d6c8fd51bda98d7",
+  "review_status": "verified"
+}

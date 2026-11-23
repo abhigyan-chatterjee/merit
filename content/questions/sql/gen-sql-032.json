@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-032",
+  "topic": "sql",
+  "subtopic": "result-shaping",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A query matches 5 rows and uses OFFSET 2 LIMIT 2. How many rows are returned?",
+  "options": [
+    "2",
+    "4",
+    "0",
+    "6"
+  ],
+  "correct_index": 0,
+  "explanation": "OFFSET skips two rows and LIMIT returns two. The correct answer is 2.",
+  "source": "generated",
+  "generator_key": "sql.distinct_order_limit",
+  "content_hash": "24bbbc5c1f5b194095b7dfda17e27472cd38f929bb937bc7cba4a620b7d1c30d",
+  "review_status": "verified"
+}

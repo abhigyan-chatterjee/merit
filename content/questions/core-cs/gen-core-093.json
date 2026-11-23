@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-093",
+  "topic": "core-cs",
+  "subtopic": "design-messaging",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which messaging pattern delivers each task to exactly one worker?",
+  "options": [
+    "Pub-sub",
+    "Work queue",
+    "Fan-out topics",
+    "Request-response"
+  ],
+  "correct_index": 1,
+  "explanation": "A work queue distributes tasks among consumers.",
+  "source": "generated",
+  "generator_key": "core_cs.queues",
+  "content_hash": "accd7ea86676269714374b5bbf50aa8121c2f8b1641616d09bb5fad4c6600412",
+  "review_status": "verified"
+}

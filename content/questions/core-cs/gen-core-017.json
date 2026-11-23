@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-017",
+  "topic": "core-cs",
+  "subtopic": "os-sync",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which synchronization primitive is ownership-aware and supports priority inheritance?",
+  "options": [
+    "Binary semaphore",
+    "Mutex",
+    "Counting semaphore",
+    "Spinlock"
+  ],
+  "correct_index": 1,
+  "explanation": "A mutex has ownership and can implement priority inheritance.",
+  "source": "generated",
+  "generator_key": "core_cs.semaphores_mutex",
+  "content_hash": "5d4a9c275c64714917495f821654b1eb59f3cfa242aa77f388dac068c5191373",
+  "review_status": "verified"
+}

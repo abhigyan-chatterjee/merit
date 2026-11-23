@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-018",
+  "topic": "core-cs",
+  "subtopic": "os-sync",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "What happens when wait() is called on a binary semaphore whose value is 0?",
+  "options": [
+    "The value is reset to 1",
+    "The calling thread blocks",
+    "The thread is terminated",
+    "The semaphore value becomes negative always"
+  ],
+  "correct_index": 1,
+  "explanation": "A zero semaphore causes the caller to block until signal. The correct answer is The calling thread blocks.",
+  "source": "generated",
+  "generator_key": "core_cs.semaphores_mutex",
+  "content_hash": "5d833470a9906b98c3980458d67b1b6fd5e9a834b60cae8c6bd874b7ee7d52dd",
+  "review_status": "verified"
+}

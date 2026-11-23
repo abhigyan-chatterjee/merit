@@ -1,0 +1,506 @@
+{
+  "slug": "product-50",
+  "title": "Product OA 50",
+  "blurb": "Product OA 50: the highest-yield Medium and Hard problems asked by Amazon, Google, Microsoft, Flipkart, and Goldman Sachs.",
+  "icon": "Cpu",
+  "track": "specialised",
+  "ordinal": 6,
+  "is_published": true,
+  "steps": [
+    {
+      "ordinal": 1,
+      "step_type": "problem",
+      "ref_id": "two-sum",
+      "title": "Two Sum",
+      "summary": "Store each value's index in a hash map and look up the complement in one pass.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 2,
+      "step_type": "problem",
+      "ref_id": "group-anagrams",
+      "title": "Group Anagrams",
+      "summary": "Sort each word or count its letters to build a canonical key for a hash map.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 3,
+      "step_type": "problem",
+      "ref_id": "product-of-array-except-self",
+      "title": "Product of Array Except Self",
+      "summary": "Prefix products left to right, then suffix products right to left, multiplied in place.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 4,
+      "step_type": "problem",
+      "ref_id": "longest-consecutive-sequence",
+      "title": "Longest Consecutive Sequence",
+      "summary": "Put values in a set and grow runs upward only from numbers with no predecessor.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 5,
+      "step_type": "problem",
+      "ref_id": "top-k-frequent-elements",
+      "title": "Top K Frequent Elements",
+      "summary": "Count with a hash map, then bucket by frequency or keep a size-k heap.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 6,
+      "step_type": "problem",
+      "ref_id": "subarray-sum-equals-k",
+      "title": "Subarray Sum Equals K",
+      "summary": "Prefix sums in a hash map: count earlier prefixes equal to the current sum minus k.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 7,
+      "step_type": "problem",
+      "ref_id": "first-missing-positive",
+      "title": "First Missing Positive",
+      "summary": "Index placement: move each value 1..n into its own slot, then scan for the gap.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 8,
+      "step_type": "problem",
+      "ref_id": "3sum",
+      "title": "3Sum",
+      "summary": "Sort, then fix one value and two-pointer the rest, skipping duplicates at each level.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 9,
+      "step_type": "problem",
+      "ref_id": "container-with-most-water",
+      "title": "Container With Most Water",
+      "summary": "Two pointers at the ends: move the shorter wall inward, tracking the best area.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 10,
+      "step_type": "problem",
+      "ref_id": "trapping-rain-water",
+      "title": "Trapping Rain Water",
+      "summary": "Water above a bar is the smaller of the two side maxima minus the bar's own height.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 11,
+      "step_type": "problem",
+      "ref_id": "longest-repeating-character-replacement",
+      "title": "Longest Repeating Character Replacement",
+      "summary": "Window with a letter count: shrink while length minus the top count exceeds k.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 12,
+      "step_type": "problem",
+      "ref_id": "minimum-window-substring",
+      "title": "Smallest Window Covering a Multiset",
+      "summary": "Expand until every needed character is covered, then contract to the smallest window.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 13,
+      "step_type": "problem",
+      "ref_id": "sliding-window-maximum",
+      "title": "Sliding Window Maximum",
+      "summary": "Monotonic deque of indices, dropping values smaller than the incoming one.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 14,
+      "step_type": "problem",
+      "ref_id": "find-all-anagrams-in-a-string",
+      "title": "Find All Anagram Windows",
+      "summary": "Fixed-size window with a 26-slot count compared against the pattern.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 15,
+      "step_type": "problem",
+      "ref_id": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "summary": "Push openers on a stack and require every closer to match the current top.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 16,
+      "step_type": "problem",
+      "ref_id": "daily-temperatures",
+      "title": "Waiting for Warmer Days",
+      "summary": "Monotonic stack of indices waiting for a warmer day; pop and record the gaps.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 17,
+      "step_type": "problem",
+      "ref_id": "largest-rectangle-in-histogram",
+      "title": "Widest Bar Rectangle",
+      "summary": "Monotonic stack of bar indices; pop to measure each bar's widest span.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 18,
+      "step_type": "problem",
+      "ref_id": "merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "summary": "Iterative splice with a dummy head, always attaching the smaller current node.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 19,
+      "step_type": "problem",
+      "ref_id": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "summary": "Walk the list once, pointing each node back at its predecessor.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 20,
+      "step_type": "problem",
+      "ref_id": "merge-k-sorted-lists",
+      "title": "Merge k Sorted Lists",
+      "summary": "Min-heap of list heads, or pairwise merging, keeps order in O(n log k).",
+      "reading_links": []
+    },
+    {
+      "ordinal": 21,
+      "step_type": "problem",
+      "ref_id": "reverse-nodes-in-k-group",
+      "title": "Reverse Nodes in k-Group",
+      "summary": "Reverse each k-sized block, then stitch blocks through the saved boundary nodes.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 22,
+      "step_type": "problem",
+      "ref_id": "search-in-rotated-sorted-array",
+      "title": "Search in Rotated Sorted Array",
+      "summary": "Binary search that first decides which half of the rotation is sorted.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 23,
+      "step_type": "problem",
+      "ref_id": "median-of-two-sorted-arrays",
+      "title": "Median of Two Arrays",
+      "summary": "Binary search a partition of the shorter array so both halves balance.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 24,
+      "step_type": "problem",
+      "ref_id": "koko-eating-bananas",
+      "title": "Koko Eating Bananas",
+      "summary": "Binary search the eating speed; the hours needed is a monotone feasibility check.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 25,
+      "step_type": "problem",
+      "ref_id": "split-array-largest-sum",
+      "title": "Split Array Largest Sum",
+      "summary": "Binary search the largest allowed sum, with a greedy split as the feasibility test.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 26,
+      "step_type": "problem",
+      "ref_id": "validate-binary-search-tree",
+      "title": "Validate Binary Search Tree",
+      "summary": "Carry open bounds down the recursion, or check that an inorder walk is sorted.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 27,
+      "step_type": "problem",
+      "ref_id": "kth-smallest-element-in-a-bst",
+      "title": "Kth Smallest Element in a BST",
+      "summary": "Inorder traversal visits BST values ascending; stop at the k-th visit.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 28,
+      "step_type": "problem",
+      "ref_id": "lowest-common-ancestor-of-a-binary-tree",
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "summary": "Postorder search: the node with both targets in different branches is the LCA.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 29,
+      "step_type": "problem",
+      "ref_id": "binary-tree-maximum-path-sum",
+      "title": "Best Downward Chain",
+      "summary": "Postorder gain clamping: pass up the better child branch, record the two-branch total.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 30,
+      "step_type": "problem",
+      "ref_id": "serialize-and-deserialize-binary-tree",
+      "title": "Serialize and Deserialize Binary Tree",
+      "summary": "Encode with preorder plus null markers, then rebuild by consuming the same stream.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 31,
+      "step_type": "problem",
+      "ref_id": "kth-largest-element-in-an-array",
+      "title": "Kth Largest Element in an Array",
+      "summary": "Min-heap of size k, or quickselect for average linear time.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 32,
+      "step_type": "problem",
+      "ref_id": "find-median-from-data-stream",
+      "title": "Find Median from Data Stream",
+      "summary": "Two heaps, max for the lower half and min for the upper, rebalanced to stay within one.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 33,
+      "step_type": "problem",
+      "ref_id": "task-scheduler",
+      "title": "Task Scheduler",
+      "summary": "Count frequencies, lay out the most common task with idle gaps, then take the max.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 34,
+      "step_type": "problem",
+      "ref_id": "subsets",
+      "title": "Subsets",
+      "summary": "Backtrack over include and exclude decisions for each element.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 35,
+      "step_type": "problem",
+      "ref_id": "combination-sum",
+      "title": "Combination Sum",
+      "summary": "Backtrack over candidates, allowing reuse by recursing from the same index.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 36,
+      "step_type": "problem",
+      "ref_id": "word-search",
+      "title": "Word Search",
+      "summary": "DFS from each cell, marking visited letters and unmarking them on backtrack.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 37,
+      "step_type": "problem",
+      "ref_id": "n-queens",
+      "title": "N-Queens Placements",
+      "summary": "Backtrack row by row, rejecting columns and diagonals already in use.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 38,
+      "step_type": "problem",
+      "ref_id": "number-of-islands",
+      "title": "Number of Islands",
+      "summary": "BFS or DFS flood each land cell and count the components.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 39,
+      "step_type": "problem",
+      "ref_id": "rotting-oranges",
+      "title": "Rotting Oranges",
+      "summary": "Multi-source BFS from every rotten orange; the last level reached is the elapsed time.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 40,
+      "step_type": "problem",
+      "ref_id": "course-schedule",
+      "title": "Course Schedule (Cycle Detection)",
+      "summary": "Detect a cycle in the prerequisite graph with DFS colours or Kahn's topological sort.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 41,
+      "step_type": "problem",
+      "ref_id": "word-ladder",
+      "title": "Word Ladder",
+      "summary": "BFS over one-letter mutations; the first time the target appears is the shortest chain.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 42,
+      "step_type": "problem",
+      "ref_id": "alien-dictionary",
+      "title": "Alien Dictionary",
+      "summary": "Build edges from adjacent characters, then topologically sort to read the letter order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 43,
+      "step_type": "problem",
+      "ref_id": "coin-change",
+      "title": "Coin Change (Minimum Coins)",
+      "summary": "Bottom-up DP over amounts; each coin relaxes every reachable amount above it.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 44,
+      "step_type": "problem",
+      "ref_id": "longest-increasing-subsequence",
+      "title": "Longest Increasing Subsequence",
+      "summary": "Patience sorting: binary search where each value lands in the tails array.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 45,
+      "step_type": "problem",
+      "ref_id": "edit-distance",
+      "title": "Edit Distance",
+      "summary": "Grid DP over prefixes with insert, delete, and replace costs.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 46,
+      "step_type": "problem",
+      "ref_id": "word-break",
+      "title": "Word Break",
+      "summary": "DP over prefixes: a cut is valid if the tail is a dictionary word and its prefix is reachable.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 47,
+      "step_type": "problem",
+      "ref_id": "maximum-subarray",
+      "title": "Maximum Subarray (Kadane)",
+      "summary": "Kadane: keep the best sum ending here, restarting whenever it turns negative.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 48,
+      "step_type": "problem",
+      "ref_id": "burst-balloons",
+      "title": "Burst Balloons",
+      "summary": "Interval DP: choose which balloon bursts last in each range and split the problem.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 49,
+      "step_type": "problem",
+      "ref_id": "merge-intervals",
+      "title": "Merge Intervals",
+      "summary": "Sort by start, then extend the current interval whenever the next one overlaps.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 50,
+      "step_type": "problem",
+      "ref_id": "meeting-rooms-ii",
+      "title": "Meeting Rooms II",
+      "summary": "Sort start and end times separately, then sweep counting overlapping meetings.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 51,
+      "step_type": "visualizer",
+      "ref_id": "array",
+      "title": "Arrays: indexed storage",
+      "summary": "Arrays store items contiguously for O(1) indexing; a middle insert shifts the whole tail.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Array_data_structure",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+      ]
+    },
+    {
+      "ordinal": 52,
+      "step_type": "visualizer",
+      "ref_id": "sorting",
+      "title": "Sorting basics",
+      "summary": "Sorting puts data in order so binary search and two-pointer scans work; watch the comparisons.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Sorting_algorithm",
+        "https://visualgo.net/en/sorting"
+      ]
+    },
+    {
+      "ordinal": 53,
+      "step_type": "visualizer",
+      "ref_id": "graph",
+      "title": "Graph traversal",
+      "summary": "BFS explores by distance, DFS by depth; both mark nodes so nothing is revisited.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Graph_traversal",
+        "https://cp-algorithms.com/graph/breadth-first-search.html"
+      ]
+    },
+    {
+      "ordinal": 54,
+      "step_type": "visualizer",
+      "ref_id": "heap",
+      "title": "Binary heap",
+      "summary": "A complete tree kept in array form: the root holds the min or max, sift to repair.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Binary_heap"
+      ]
+    },
+    {
+      "ordinal": 55,
+      "step_type": "visualizer",
+      "ref_id": "recursion-tree",
+      "title": "Recursion tree",
+      "summary": "Draw every call as a node to see the branching that sets the time complexity.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Recursion_(computer_science)"
+      ]
+    },
+    {
+      "ordinal": 56,
+      "step_type": "visualizer",
+      "ref_id": "binary-tree",
+      "title": "Tree traversals",
+      "summary": "Inorder, preorder, and postorder each visit every node once in a different order.",
+      "reading_links": [
+        "https://en.wikipedia.org/wiki/Tree_traversal"
+      ]
+    },
+    {
+      "ordinal": 57,
+      "step_type": "quiz",
+      "ref_id": "graphs",
+      "title": "Graphs check",
+      "summary": "BFS, DFS, topological order, and connectivity questions.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 58,
+      "step_type": "quiz",
+      "ref_id": "dynamic-programming",
+      "title": "DP check",
+      "summary": "Recurrence choices, state design, and tabulation order.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 59,
+      "step_type": "quiz",
+      "ref_id": "cs-fundamentals",
+      "title": "CS fundamentals screen",
+      "summary": "OS, DBMS, networks, and memory questions asked in service rounds.",
+      "reading_links": []
+    },
+    {
+      "ordinal": 60,
+      "step_type": "mock",
+      "ref_id": "mixed",
+      "title": "Final mock assessment",
+      "summary": "Timed mixed set across the whole bank, to test exam pacing.",
+      "reading_links": []
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-015",
+  "topic": "core-cs",
+  "subtopic": "os-deadlock",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which condition means a resource can be used by only one process at a time?",
+  "options": [
+    "Circular wait",
+    "Mutual exclusion",
+    "No preemption",
+    "Hold and wait"
+  ],
+  "correct_index": 1,
+  "explanation": "Mutual exclusion grants exclusive use of a resource.",
+  "source": "generated",
+  "generator_key": "core_cs.deadlock_conditions",
+  "content_hash": "4f7cb8ea7fc26ad520b634f6f1c24a274a88da2888c6e7f1fea1cf807c340bb7",
+  "review_status": "verified"
+}

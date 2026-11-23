@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-088",
+  "topic": "aptitude",
+  "subtopic": "seating-ranking",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Priya ranks 8th from the top among 20 students. What is her rank from the bottom?",
+  "options": [
+    "11th",
+    "12th",
+    "14th",
+    "13th"
+  ],
+  "correct_index": 3,
+  "explanation": "20 - 8 + 1 = 13th.",
+  "source": "generated",
+  "generator_key": "aptitude.seating_ranking",
+  "content_hash": "dda7750f2058accd9aa6518967f7dc6fe59fe9c4e49557aeb1789549ed9f78fd",
+  "review_status": "verified"
+}

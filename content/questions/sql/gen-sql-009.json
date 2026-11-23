@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-009",
+  "topic": "sql",
+  "subtopic": "joins",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "A users table has 4 rows and an orders table has 6 rows, with every order referencing a user. How many rows does an INNER JOIN produce?",
+  "options": [
+    "8",
+    "9",
+    "4",
+    "6"
+  ],
+  "correct_index": 3,
+  "explanation": "Every order matches one user, so the join has 6 rows.",
+  "source": "generated",
+  "generator_key": "sql.joins",
+  "content_hash": "cbaef9afbd5080757852fcda4efcc137dcc11fe9973ca713cea1640835b59272",
+  "review_status": "verified"
+}

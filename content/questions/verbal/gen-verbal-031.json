@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-031",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word most opposite in meaning to 'explicit'.",
+  "options": [
+    "Direct",
+    "Implicit",
+    "Obvious",
+    "Clear"
+  ],
+  "correct_index": 1,
+  "explanation": "Explicit means stated clearly, so its opposite is implicit.",
+  "source": "generated",
+  "generator_key": "verbal.antonyms",
+  "content_hash": "ae221a90ed99675d86dde1d43d67319854ce7487d6294a014d2b1738077497d8",
+  "review_status": "verified"
+}

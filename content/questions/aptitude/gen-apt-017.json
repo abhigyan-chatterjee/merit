@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-017",
+  "topic": "aptitude",
+  "subtopic": "ratios-proportions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "If A:B = 2:3 and B:C = 4:5, what is A:C?",
+  "options": [
+    "6:5",
+    "2:5",
+    "8:15",
+    "8:9"
+  ],
+  "correct_index": 2,
+  "explanation": "A:C = (2*4):(3*5) = 8:15.",
+  "source": "generated",
+  "generator_key": "aptitude.ratios_proportions",
+  "content_hash": "bcf05fa012fd1e257b79da0ac264dea3e1eeef65757bc65a95baaf01691b4c9d",
+  "review_status": "verified"
+}

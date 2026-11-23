@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-026",
+  "topic": "sql",
+  "subtopic": "window-functions",
+  "difficulty": "Hard",
+  "qtype": "mcq",
+  "prompt": "Four rows have scores 100, 90, 90, 80. What RANK does the first row with score 90 receive?",
+  "options": [
+    "4",
+    "2",
+    "5",
+    "6"
+  ],
+  "correct_index": 1,
+  "explanation": "RANK gives both 90-score rows rank 2.",
+  "source": "generated",
+  "generator_key": "sql.window_functions",
+  "content_hash": "517614c443800992528466a8c5a361c157bd8c2aaa4362c383b9affaea37745d",
+  "review_status": "verified"
+}

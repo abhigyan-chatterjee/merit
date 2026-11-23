@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-035",
+  "topic": "core-cs",
+  "subtopic": "dbms-transactions",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Which anomaly occurs when re-reading the same row returns a different committed value?",
+  "options": [
+    "Dirty read",
+    "Non-repeatable read",
+    "Phantom read",
+    "Lost update"
+  ],
+  "correct_index": 1,
+  "explanation": "A non-repeatable read changes a row between reads.",
+  "source": "generated",
+  "generator_key": "core_cs.acid_isolation",
+  "content_hash": "41b90a030873e7d836c9aeeb6dc547b635b84b38f5080ecd2f9223b639b5e228",
+  "review_status": "verified"
+}

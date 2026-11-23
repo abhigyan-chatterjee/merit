@@ -1,0 +1,20 @@
+{
+  "id": "gen-core-063",
+  "topic": "core-cs",
+  "subtopic": "cn-application",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "Which TLS handshake message carries the server's certificate?",
+  "options": [
+    "ClientHello",
+    "Certificate",
+    "ChangeCipherSpec",
+    "Finished"
+  ],
+  "correct_index": 1,
+  "explanation": "The server sends its Certificate message during the handshake.",
+  "source": "generated",
+  "generator_key": "core_cs.http_tls_dns",
+  "content_hash": "ab00414fece6b42b1f18094498ffcd44393d54915ae5f31b7f2714ca440651cf",
+  "review_status": "verified"
+}

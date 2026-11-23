@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-017",
+  "topic": "verbal",
+  "subtopic": "grammar",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Convert to passive voice: 'The cat chased the mouse.'",
+  "options": [
+    "The mouse was chased by the cat.",
+    "The mouse was chasing the cat.",
+    "The mouse is chased by the cat.",
+    "The cat was chased by the mouse."
+  ],
+  "correct_index": 0,
+  "explanation": "The object becomes the subject with 'was chased'. The correct answer is The mouse was chased by the cat..",
+  "source": "generated",
+  "generator_key": "verbal.active_passive",
+  "content_hash": "4386a3aa715beaa9ef1a0eb1fc3340a21fdda85a2e8e27d7f43dc0db4ef4ac10",
+  "review_status": "verified"
+}

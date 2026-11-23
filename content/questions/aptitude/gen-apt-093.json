@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-093",
+  "topic": "aptitude",
+  "subtopic": "data-interpretation",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Daily sales were 40, 60 and 50 on Monday, Tuesday and Wednesday. What was the average daily sale? Give only the number.",
+  "options": [
+    "55",
+    "60",
+    "50",
+    "45"
+  ],
+  "correct_index": 2,
+  "explanation": "Average = (40 + 60 + 50)/3 = 50.",
+  "source": "generated",
+  "generator_key": "aptitude.data_interpretation",
+  "content_hash": "0119709027edfaa19299f24455f2e302cf91ca77d39dd3bcf2164d52f1490ea8",
+  "review_status": "verified"
+}

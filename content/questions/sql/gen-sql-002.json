@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-002",
+  "topic": "sql",
+  "subtopic": "select-where",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A table t has ids 1 through 5. How many rows does SELECT * FROM t WHERE id IN (2, 4) return?",
+  "options": [
+    "2",
+    "6",
+    "0",
+    "4"
+  ],
+  "correct_index": 0,
+  "explanation": "Only ids 2 and 4 match, so two rows are returned.",
+  "source": "generated",
+  "generator_key": "sql.select_where",
+  "content_hash": "139ab3fe488981207778cb58c60c6ba234870abf80fe41009ead16fff133b499",
+  "review_status": "verified"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "gen-verbal-028",
+  "topic": "verbal",
+  "subtopic": "vocabulary",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Choose the word closest in meaning to 'candid'.",
+  "options": [
+    "Frank",
+    "Hostile",
+    "Timid",
+    "Secretive"
+  ],
+  "correct_index": 0,
+  "explanation": "Candid means honest and direct, or frank.",
+  "source": "generated",
+  "generator_key": "verbal.synonyms",
+  "content_hash": "d70300c35a439e168cdf5f4e0e8ee3a6fe1d14c40b03d37d3fed7560226e4b06",
+  "review_status": "verified"
+}

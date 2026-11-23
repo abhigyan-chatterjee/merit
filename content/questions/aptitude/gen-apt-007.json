@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-007",
+  "topic": "aptitude",
+  "subtopic": "profit-loss",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "An article with cost price Rs. 800 is sold at a 20% profit. What is the selling price? Give only the number.",
+  "options": [
+    "960",
+    "964",
+    "962",
+    "958"
+  ],
+  "correct_index": 0,
+  "explanation": "Selling price = 800 * (100 + 20)/100 = 960.",
+  "source": "generated",
+  "generator_key": "aptitude.profit_loss",
+  "content_hash": "f59f8e0b5c7c3a2263a1ef3404fdbcef5673ac4955ce9b46494b641f9556f0f4",
+  "review_status": "verified"
+}

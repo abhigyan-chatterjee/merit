@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-030",
+  "topic": "sql",
+  "subtopic": "result-shaping",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A query matches 10 rows but ends with LIMIT 5. How many rows are returned?",
+  "options": [
+    "9",
+    "8",
+    "5",
+    "7"
+  ],
+  "correct_index": 2,
+  "explanation": "LIMIT caps the result at 5 rows.",
+  "source": "generated",
+  "generator_key": "sql.distinct_order_limit",
+  "content_hash": "2f079663c2499e5d9ff06c3ebc4baca1cb961b9e6e3ec47f9446e5c3c361d114",
+  "review_status": "verified"
+}

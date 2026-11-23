@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-015",
+  "topic": "aptitude",
+  "subtopic": "compound-interest",
+  "difficulty": "Medium",
+  "qtype": "mcq",
+  "prompt": "Find the compound interest on Rs. 5000 at 4% per annum for 2 years, compounded annually. Give only the number.",
+  "options": [
+    "408",
+    "406",
+    "412",
+    "410"
+  ],
+  "correct_index": 0,
+  "explanation": "CI = 5000 * ((1 + 4/100)^2 - 1) = 408.",
+  "source": "generated",
+  "generator_key": "aptitude.compound_interest",
+  "content_hash": "890b41321c4eb884d95cb79769896b7c6be6b1f485bc53c4c3906166c0976dbd",
+  "review_status": "verified"
+}

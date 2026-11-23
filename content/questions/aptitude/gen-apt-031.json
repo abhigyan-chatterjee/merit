@@ -1,0 +1,20 @@
+{
+  "id": "gen-apt-031",
+  "topic": "aptitude",
+  "subtopic": "time-speed-distance",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A runner moves at 15 m/s for 20 seconds. How far does he travel in metres? Give only the number.",
+  "options": [
+    "300",
+    "320",
+    "350",
+    "280"
+  ],
+  "correct_index": 0,
+  "explanation": "Distance = 15 * 20 = 300 m.",
+  "source": "generated",
+  "generator_key": "aptitude.time_speed_distance",
+  "content_hash": "dd6950ae1ac6fd476b102f652d2ec0e322130e04675b5c477b535835eca07bee",
+  "review_status": "verified"
+}

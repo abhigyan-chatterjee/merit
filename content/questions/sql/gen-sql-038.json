@@ -1,0 +1,20 @@
+{
+  "id": "gen-sql-038",
+  "topic": "sql",
+  "subtopic": "aggregates",
+  "difficulty": "Easy",
+  "qtype": "mcq",
+  "prompt": "A column holds [10, 20, 30]. What does SELECT MIN(x) return? Give only the number.",
+  "options": [
+    "12",
+    "14",
+    "10",
+    "13"
+  ],
+  "correct_index": 2,
+  "explanation": "MIN of [10, 20, 30] is 10.",
+  "source": "generated",
+  "generator_key": "sql.aggregates",
+  "content_hash": "e848bd8b382b8f59ba4e3764de6133ac79de2cd6e8c039c0dce52f2efc06735f",
+  "review_status": "verified"
+}
